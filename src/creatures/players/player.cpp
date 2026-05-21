@@ -48,6 +48,7 @@
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items_classification.hpp"
@@ -9087,7 +9088,8 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	uint32_t totalCount,
 	uint32_t &actuallyAdded,
 	uint32_t flags /*= 0*/,
-	uint8_t tier /*= 0*/
+	uint8_t tier /*= 0*/,
+	bool testOnly /*= false*/
 ) {
 	actuallyAdded = 0;
 
@@ -9104,14 +9106,144 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
+	uint32_t maxStackSize = itemType.stackable && itemType.stackSize > 0 ? itemType.stackSize : 1;
+	std::shared_ptr<Item> mergeProbeItem;
+	if (itemType.stackable) {
+		mergeProbeItem = Item::createItemBatch(itemId, 1, 0);
+		if (!mergeProbeItem) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		if (tier > 0) {
+			mergeProbeItem->setTier(tier);
+		}
+	}
+
+	const auto canMergeWithExistingStack = [&](const std::shared_ptr<Item> &existingItem) {
+		return existingItem
+			&& mergeProbeItem
+			&& existingItem->isStackable()
+			&& existingItem->equals(mergeProbeItem)
+			&& existingItem->getItemCount() < existingItem->getStackSize();
+	};
+
+	struct StackMergeSnapshot {
+		std::shared_ptr<Item> item;
+		std::shared_ptr<Cylinder> parent;
+		uint32_t count = 0;
+	};
+
+	std::vector<StackMergeSnapshot> stackMergeSnapshots;
+	std::vector<std::shared_ptr<Item>> addedItems;
+
+	auto rollbackBatchChanges = [&]() {
+		for (auto it = addedItems.rbegin(); it != addedItems.rend(); ++it) {
+			const auto &addedItem = *it;
+			if (!addedItem || !addedItem->getParent()) {
+				continue;
+			}
+
+			const ReturnValue removeResult = removeItem(addedItem, addedItem->getItemCount());
+			if (removeResult != RETURNVALUE_NOERROR) {
+				g_logger().error("{} - Failed to rollback added item {} amount {} for player {}, error code: {}", __FUNCTION__, addedItem->getID(), addedItem->getItemCount(), getName(), getReturnMessage(removeResult));
+			}
+		}
+
+		for (auto it = stackMergeSnapshots.rbegin(); it != stackMergeSnapshots.rend(); ++it) {
+			if (!it->item || !it->parent) {
+				continue;
+			}
+
+			it->parent->updateThing(it->item, it->item->getID(), it->count);
+		}
+
+		actuallyAdded = 0;
+	};
+
+	const auto failAfterBatchMutation = [&](ReturnValue returnValue) {
+		if (!testOnly) {
+			rollbackBatchChanges();
+		}
+		return returnValue;
+	};
+
+	bool hasReservedCapacity = false;
+	uint64_t remainingItemCapacity = 0;
+	ReturnValue capacityError = RETURNVALUE_CONTAINERISFULL;
+
+	if (const auto &inboxContainer = std::dynamic_pointer_cast<Inbox>(container)) {
+		hasReservedCapacity = true;
+		remainingItemCapacity = inboxContainer->getRemainingItemCapacity();
+		capacityError = RETURNVALUE_DEPOTISFULL;
+	} else if (container->hasPagination()) {
+		hasReservedCapacity = true;
+		const uint64_t currentItems = container->getItemHoldingCount();
+		const uint64_t maxItems = container->getMaxCapacity();
+		remainingItemCapacity = currentItems >= maxItems ? 0 : maxItems - currentItems;
+	}
+
+	if (hasReservedCapacity) {
+		uint64_t mergeableCount = 0;
+		for (const auto &existingItem : container->getItemList()) {
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			mergeableCount += existingItem->getStackSize() - existingItem->getItemCount();
+			if (mergeableCount >= totalCount) {
+				break;
+			}
+		}
+
+		const uint64_t remainingAfterMerge = totalCount > mergeableCount ? static_cast<uint64_t>(totalCount) - mergeableCount : 0;
+		const uint64_t chunksNeeded = (remainingAfterMerge + maxStackSize - 1) / maxStackSize;
+		if (chunksNeeded > remainingItemCapacity) {
+			return capacityError;
+		}
+	}
+
 	uint32_t remaining = totalCount;
+	if (itemType.stackable) {
+		for (const auto &existingItem : container->getItemList()) {
+			if (remaining == 0) {
+				break;
+			}
+
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			uint32_t spaceInStack = existingItem->getStackSize() - existingItem->getItemCount();
+			uint32_t toMerge = std::min(remaining, spaceInStack);
+			if (toMerge == 0) {
+				continue;
+			}
+
+			if (!testOnly) {
+				const auto &parent = existingItem->getParent();
+				if (!parent) {
+					return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+				}
+
+				const uint32_t previousCount = existingItem->getItemCount();
+				stackMergeSnapshots.push_back({ existingItem, parent, previousCount });
+				parent->updateThing(existingItem, existingItem->getID(), existingItem->getItemCount() + toMerge);
+				if (existingItem->getItemCount() != previousCount + toMerge) {
+					return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+				}
+				actuallyAdded += toMerge;
+			}
+
+			remaining -= toMerge;
+		}
+	}
+
 	while (remaining > 0) {
 		uint32_t toStack = std::min(remaining, maxStackSize);
 
 		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack, 0);
 		if (!newItem) {
-			return RETURNVALUE_NOTPOSSIBLE;
+			return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
 		}
 
 		auto charges = newItem->getCharges();
@@ -9125,16 +9257,30 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 
 		ReturnValue rv = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
 		if (rv != RETURNVALUE_NOERROR) {
-			return rv;
+			return failAfterBatchMutation(rv);
 		}
 
-		container->addThing(newItem);
+		if (!testOnly) {
+			container->addThing(newItem);
+			if (newItem->getParent() != container) {
+				return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+			}
 
-		actuallyAdded += toStack;
+			addedItems.emplace_back(newItem);
+			actuallyAdded += toStack;
+		}
 		remaining -= toStack;
 	}
 
-	return actuallyAdded > 0 ? RETURNVALUE_NOERROR : RETURNVALUE_NOTENOUGHROOM;
+	if (testOnly) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	if (actuallyAdded != totalCount) {
+		return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+	}
+
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Player::addItemBatch(

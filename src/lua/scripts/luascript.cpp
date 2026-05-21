@@ -48,6 +48,38 @@ int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputStr
 	return output.good() ? 0 : 1;
 }
 
+std::optional<std::string> readLuaFileBuffer(const std::filesystem::path &file) {
+	std::ifstream input(file, std::ios::binary | std::ios::ate);
+	if (!input.is_open()) {
+		return std::nullopt;
+	}
+
+	const auto fileSize = input.tellg();
+	if (fileSize < 0) {
+		return std::nullopt;
+	}
+
+	std::string buffer(static_cast<size_t>(fileSize), '\0');
+	input.seekg(0, std::ios::beg);
+	if (!buffer.empty()) {
+		input.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+		if (input.gcount() != static_cast<std::streamsize>(buffer.size())) {
+			return std::nullopt;
+		}
+	}
+
+	return buffer;
+}
+
+std::optional<int> loadLuaChunkFromFileBuffer(lua_State* luaState, const std::filesystem::path &file, const std::string &chunkName) {
+	const auto buffer = readLuaFileBuffer(file);
+	if (!buffer) {
+		return std::nullopt;
+	}
+
+	return luaL_loadbuffer(luaState, buffer->data(), buffer->size(), chunkName.c_str());
+}
+
 bool ensureLuaBytecodeCacheDirectory(const std::filesystem::path &cacheDirectory) {
 	static std::mutex mutex;
 	static bool directoryReady = false;
@@ -211,17 +243,21 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 	int ret = -1;
 	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file, sourceMetadata) : std::nullopt;
 	if (bytecodeCacheFile) {
-		ret = luaL_loadfile(luaState, bytecodeCacheFile->string().c_str());
-		if (ret != 0) {
-			lua_pop(luaState, 1);
-			std::error_code error;
-			std::filesystem::remove(*bytecodeCacheFile, error);
+		const auto cacheLoadResult = loadLuaChunkFromFileBuffer(luaState, *bytecodeCacheFile, "@" + file);
+		if (cacheLoadResult) {
+			ret = *cacheLoadResult;
+			if (ret != 0) {
+				lua_pop(luaState, 1);
+				std::error_code error;
+				std::filesystem::remove(*bytecodeCacheFile, error);
+			}
 		}
 	}
 
 	const bool loadedFromBytecodeCache = ret == 0;
 	if (!loadedFromBytecodeCache) {
-		ret = luaL_loadfile(luaState, file.c_str());
+		const auto sourceLoadResult = loadLuaChunkFromFileBuffer(luaState, file, "@" + file);
+		ret = sourceLoadResult ? *sourceLoadResult : luaL_loadfile(luaState, file.c_str());
 	}
 
 	if (ret != 0) {

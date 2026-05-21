@@ -14,8 +14,11 @@
 #include "lib/metrics/metrics.hpp"
 
 #include <fstream>
+#include <limits>
 #include <optional>
 #include <string_view>
+#include <unordered_map>
+#include <unordered_set>
 
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
@@ -25,201 +28,388 @@ ScriptEnvironment Lua::scriptEnv[16];
 int32_t Lua::scriptEnvIndex = -1;
 
 namespace {
-constexpr std::string_view LuaBytecodeCacheFallbackPath = "cache/lua-bytecode";
+	constexpr std::string_view LuaBytecodeCacheFallbackPath = "cache/lua-bytecode";
+	constexpr std::string_view LuaBytecodePackMagic = "CLBP1";
+	constexpr uint64_t LuaBytecodePackMaxChunkSize = 256ULL * 1024ULL * 1024ULL;
 
 #if defined(LUAJIT_VERSION)
-constexpr std::string_view LuaBytecodeCacheVersion = LUAJIT_VERSION;
+	constexpr std::string_view LuaBytecodeCacheVersion = LUAJIT_VERSION;
 #else
-constexpr std::string_view LuaBytecodeCacheVersion = LUA_RELEASE;
+	constexpr std::string_view LuaBytecodeCacheVersion = LUA_RELEASE;
 #endif
 
-uint64_t fnv1a64(std::string_view value) noexcept {
-	uint64_t hash = 14695981039346656037ULL;
-	for (const auto character : value) {
-		hash ^= static_cast<uint8_t>(character);
-		hash *= 1099511628211ULL;
-	}
-	return hash;
-}
-
-int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputStream) {
-	auto &output = *static_cast<std::ofstream*>(outputStream);
-	output.write(static_cast<const char*>(data), static_cast<std::streamsize>(size));
-	return output.good() ? 0 : 1;
-}
-
-std::optional<std::string> readLuaFileBuffer(const std::filesystem::path &file) {
-	std::ifstream input(file, std::ios::binary | std::ios::ate);
-	if (!input.is_open()) {
-		return std::nullopt;
+	uint64_t fnv1a64(std::string_view value) noexcept {
+		uint64_t hash = 14695981039346656037ULL;
+		for (const auto character : value) {
+			hash ^= static_cast<uint8_t>(character);
+			hash *= 1099511628211ULL;
+		}
+		return hash;
 	}
 
-	const auto fileSize = input.tellg();
-	if (fileSize < 0) {
-		return std::nullopt;
+	struct LuaBytecodeCacheEntry {
+		std::filesystem::path file;
+		std::filesystem::path packFile;
+		std::string key;
+	};
+
+	struct LuaFileBufferLoadResult {
+		int status = -1;
+		std::string buffer;
+	};
+
+	struct LuaBytecodePack {
+		bool loaded = false;
+		std::unordered_map<std::string, std::string> chunks;
+	};
+
+	int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputBuffer) {
+		auto &output = *static_cast<std::string*>(outputBuffer);
+		try {
+			output.append(static_cast<const char*>(data), size);
+		} catch (...) {
+			return 1;
+		}
+
+		return 0;
 	}
 
-	std::string buffer(static_cast<size_t>(fileSize), '\0');
-	input.seekg(0, std::ios::beg);
-	if (!buffer.empty()) {
-		input.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
-		if (input.gcount() != static_cast<std::streamsize>(buffer.size())) {
+	std::optional<std::string> readLuaFileBuffer(const std::filesystem::path &file) {
+		std::ifstream input(file, std::ios::binary | std::ios::ate);
+		if (!input.is_open()) {
 			return std::nullopt;
 		}
-	}
 
-	return buffer;
-}
-
-std::optional<int> loadLuaChunkFromFileBuffer(lua_State* luaState, const std::filesystem::path &file, const std::string &chunkName) {
-	const auto buffer = readLuaFileBuffer(file);
-	if (!buffer) {
-		return std::nullopt;
-	}
-
-	return luaL_loadbuffer(luaState, buffer->data(), buffer->size(), chunkName.c_str());
-}
-
-bool ensureLuaBytecodeCacheDirectory(const std::filesystem::path &cacheDirectory) {
-	static std::mutex mutex;
-	static bool directoryReady = false;
-
-	if (directoryReady) {
-		return true;
-	}
-
-	std::scoped_lock lock(mutex);
-	if (directoryReady) {
-		return true;
-	}
-
-	std::error_code error;
-	std::filesystem::create_directories(cacheDirectory, error);
-	if (error) {
-		g_logger().debug("Could not create Lua bytecode cache directory '{}': {}", cacheDirectory.string(), error.message());
-		return false;
-	}
-
-	directoryReady = true;
-	return true;
-}
-
-const std::filesystem::path &getLuaBytecodeCacheDirectory() {
-	static const auto cacheDirectory = [] {
-		auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
-		if (configuredPath.empty()) {
-			configuredPath = std::string(LuaBytecodeCacheFallbackPath);
+		const auto fileSize = input.tellg();
+		if (fileSize < 0) {
+			return std::nullopt;
 		}
 
-		std::filesystem::path directory(configuredPath);
-		if (directory.is_relative()) {
-			std::error_code error;
-			const auto currentPath = std::filesystem::current_path(error);
-			if (!error) {
-				directory = currentPath / directory;
+		std::string buffer(static_cast<size_t>(fileSize), '\0');
+		input.seekg(0, std::ios::beg);
+		if (!buffer.empty()) {
+			input.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+			if (input.gcount() != static_cast<std::streamsize>(buffer.size())) {
+				return std::nullopt;
 			}
 		}
 
-		return directory.lexically_normal();
-	}();
+		return buffer;
+	}
 
-	return cacheDirectory;
-}
+	std::optional<LuaFileBufferLoadResult> loadLuaChunkFromFileBuffer(lua_State* luaState, const std::filesystem::path &file, const std::string &chunkName) {
+		auto buffer = readLuaFileBuffer(file);
+		if (!buffer) {
+			return std::nullopt;
+		}
 
-const std::filesystem::path &getLuaStartupWorkingDirectory() {
-	static const auto workingDirectory = [] {
+		LuaFileBufferLoadResult result;
+		result.status = luaL_loadbuffer(luaState, buffer->data(), buffer->size(), chunkName.c_str());
+		result.buffer = std::move(*buffer);
+		return result;
+	}
+
+	bool ensureLuaBytecodeCacheDirectory(const std::filesystem::path &cacheDirectory) {
+		static std::mutex mutex;
+		static std::unordered_set<std::string> readyDirectories;
+
+		const auto directoryKey = cacheDirectory.lexically_normal().string();
+		if (readyDirectories.contains(directoryKey)) {
+			return true;
+		}
+
+		std::scoped_lock lock(mutex);
+		if (readyDirectories.contains(directoryKey)) {
+			return true;
+		}
+
 		std::error_code error;
-		auto directory = std::filesystem::current_path(error);
+		std::filesystem::create_directories(cacheDirectory, error);
 		if (error) {
-			return std::filesystem::path();
+			g_logger().debug("Could not create Lua bytecode cache directory '{}': {}", cacheDirectory.string(), error.message());
+			return false;
 		}
 
-		return directory.lexically_normal();
-	}();
-
-	return workingDirectory;
-}
-
-std::string getLuaBytecodeSourceIdentity(const std::string &file) {
-	std::filesystem::path sourcePath(file);
-	if (sourcePath.is_relative()) {
-		sourcePath = getLuaStartupWorkingDirectory() / sourcePath;
+		readyDirectories.insert(directoryKey);
+		return true;
 	}
 
-	return sourcePath.lexically_normal().generic_string();
-}
+	const std::filesystem::path &getLuaBytecodeCacheDirectory() {
+		static const auto cacheDirectory = [] {
+			auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
+			if (configuredPath.empty()) {
+				configuredPath = std::string(LuaBytecodeCacheFallbackPath);
+			}
 
-std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &file, const LuaScriptFileMetadata* sourceMetadata) {
-	LuaScriptFileMetadata fallbackMetadata;
-	if (sourceMetadata == nullptr) {
+			std::filesystem::path directory(configuredPath);
+			if (directory.is_relative()) {
+				std::error_code error;
+				const auto currentPath = std::filesystem::current_path(error);
+				if (!error) {
+					directory = currentPath / directory;
+				}
+			}
+
+			return directory.lexically_normal();
+		}();
+
+		return cacheDirectory;
+	}
+
+	const std::filesystem::path &getLuaStartupWorkingDirectory() {
+		static const auto workingDirectory = [] {
+			std::error_code error;
+			auto directory = std::filesystem::current_path(error);
+			if (error) {
+				return std::filesystem::path();
+			}
+
+			return directory.lexically_normal();
+		}();
+
+		return workingDirectory;
+	}
+
+	std::string getLuaBytecodeSourceIdentity(const std::string &file) {
+		std::filesystem::path sourcePath(file);
+		if (sourcePath.is_relative()) {
+			sourcePath = getLuaStartupWorkingDirectory() / sourcePath;
+		}
+
+		return sourcePath.lexically_normal().generic_string();
+	}
+
+	std::filesystem::path getLuaBytecodePackFile(const std::string &sourceIdentity) {
+		const auto sourceFolder = std::filesystem::path(sourceIdentity).parent_path().generic_string();
+		const auto packKey = fmt::format("{}:{}:{}", LuaBytecodeCacheVersion, sizeof(void*), sourceFolder);
+		return getLuaBytecodeCacheDirectory() / "packs" / fmt::format("{:016x}.luapack", fnv1a64(packKey));
+	}
+
+	bool readBytes(std::istream &input, char* data, std::streamsize size) {
+		input.read(data, size);
+		return input.gcount() == size;
+	}
+
+	template <typename T>
+	bool readBinaryValue(std::istream &input, T &value) {
+		return readBytes(input, reinterpret_cast<char*>(&value), static_cast<std::streamsize>(sizeof(T)));
+	}
+
+	template <typename T>
+	void writeBinaryValue(std::ostream &output, T value) {
+		output.write(reinterpret_cast<const char*>(&value), static_cast<std::streamsize>(sizeof(T)));
+	}
+
+	LuaBytecodePack readLuaBytecodePack(const std::filesystem::path &packFile) {
+		LuaBytecodePack pack;
+		pack.loaded = true;
+
+		std::ifstream input(packFile, std::ios::binary);
+		if (!input.is_open()) {
+			return pack;
+		}
+
+		std::string magic(LuaBytecodePackMagic.size(), '\0');
+		if (!readBytes(input, magic.data(), static_cast<std::streamsize>(magic.size())) || magic != std::string(LuaBytecodePackMagic)) {
+			return pack;
+		}
+
+		while (true) {
+			uint16_t keySize = 0;
+			if (!readBinaryValue(input, keySize)) {
+				break;
+			}
+
+			uint64_t chunkSize = 0;
+			if (!readBinaryValue(input, chunkSize) || keySize == 0 || chunkSize > LuaBytecodePackMaxChunkSize) {
+				break;
+			}
+
+			std::string key(keySize, '\0');
+			if (!readBytes(input, key.data(), static_cast<std::streamsize>(key.size()))) {
+				break;
+			}
+
+			std::string bytecode(static_cast<size_t>(chunkSize), '\0');
+			if (!bytecode.empty() && !readBytes(input, bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
+				break;
+			}
+
+			pack.chunks[std::move(key)] = std::move(bytecode);
+		}
+
+		return pack;
+	}
+
+	bool luaBytecodePackHasValidMagic(const std::filesystem::path &packFile) {
+		std::ifstream input(packFile, std::ios::binary);
+		if (!input.is_open()) {
+			return false;
+		}
+
+		std::string magic(LuaBytecodePackMagic.size(), '\0');
+		return readBytes(input, magic.data(), static_cast<std::streamsize>(magic.size())) && magic == std::string(LuaBytecodePackMagic);
+	}
+
+	std::mutex &getLuaBytecodePackMutex() {
+		static std::mutex mutex;
+		return mutex;
+	}
+
+	std::unordered_map<std::string, LuaBytecodePack> &getLuaBytecodePacks() {
+		static std::unordered_map<std::string, LuaBytecodePack> packs;
+		return packs;
+	}
+
+	const std::string* findLuaBytecodePackChunk(const LuaBytecodeCacheEntry &cacheEntry) {
+		std::scoped_lock lock(getLuaBytecodePackMutex());
+		auto &packs = getLuaBytecodePacks();
+		const auto packKey = cacheEntry.packFile.string();
+		auto [packIt, inserted] = packs.try_emplace(packKey);
+		if (inserted || !packIt->second.loaded) {
+			packIt->second = readLuaBytecodePack(cacheEntry.packFile);
+		}
+
+		const auto chunkIt = packIt->second.chunks.find(cacheEntry.key);
+		return chunkIt != packIt->second.chunks.end() ? &chunkIt->second : nullptr;
+	}
+
+	void invalidateLuaBytecodePack(const std::filesystem::path &packFile) {
+		std::scoped_lock lock(getLuaBytecodePackMutex());
 		std::error_code error;
-		const std::filesystem::directory_entry sourceEntry(file, error);
-		if (error) {
-			return std::nullopt;
-		}
-
-		fallbackMetadata.size = sourceEntry.file_size(error);
-		if (error) {
-			return std::nullopt;
-		}
-
-		fallbackMetadata.lastWriteTime = sourceEntry.last_write_time(error);
-		if (error) {
-			return std::nullopt;
-		}
-
-		sourceMetadata = &fallbackMetadata;
+		std::filesystem::remove(packFile, error);
+		getLuaBytecodePacks().erase(packFile.string());
 	}
 
-	const auto sourceIdentity = getLuaBytecodeSourceIdentity(file);
-	const auto cacheKey = fmt::format(
-		"{}:{}:{}:{}:{}",
-		LuaBytecodeCacheVersion,
-		sizeof(void*),
-		sourceIdentity,
-		sourceMetadata->size,
-		sourceMetadata->lastWriteTime.time_since_epoch().count()
-	);
+	void appendLuaBytecodePack(const LuaBytecodeCacheEntry &cacheEntry, std::string_view bytecode) {
+		if (cacheEntry.key.size() > std::numeric_limits<uint16_t>::max() || bytecode.size() > LuaBytecodePackMaxChunkSize) {
+			return;
+		}
 
-	return getLuaBytecodeCacheDirectory() / fmt::format("{:016x}.luac", fnv1a64(cacheKey));
-}
+		if (!ensureLuaBytecodeCacheDirectory(cacheEntry.packFile.parent_path())) {
+			return;
+		}
 
-void writeLuaBytecodeCache(lua_State* luaState, const std::filesystem::path &cacheFile) {
-	if (!ensureLuaBytecodeCacheDirectory(cacheFile.parent_path())) {
-		return;
+		std::scoped_lock lock(getLuaBytecodePackMutex());
+		std::error_code error;
+		const auto packSize = std::filesystem::file_size(cacheEntry.packFile, error);
+		bool writeMagic = error || packSize == 0;
+		if (!writeMagic && !luaBytecodePackHasValidMagic(cacheEntry.packFile)) {
+			error.clear();
+			std::filesystem::remove(cacheEntry.packFile, error);
+			writeMagic = true;
+		}
+
+		std::ofstream output(cacheEntry.packFile, std::ios::binary | std::ios::app);
+		if (!output.is_open()) {
+			return;
+		}
+
+		if (writeMagic) {
+			output.write(LuaBytecodePackMagic.data(), static_cast<std::streamsize>(LuaBytecodePackMagic.size()));
+		}
+
+		writeBinaryValue(output, static_cast<uint16_t>(cacheEntry.key.size()));
+		writeBinaryValue(output, static_cast<uint64_t>(bytecode.size()));
+		output.write(cacheEntry.key.data(), static_cast<std::streamsize>(cacheEntry.key.size()));
+		output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()));
+
+		output.close();
+		if (!output.good()) {
+			return;
+		}
+
+		auto &pack = getLuaBytecodePacks()[cacheEntry.packFile.string()];
+		if (!pack.loaded) {
+			pack = readLuaBytecodePack(cacheEntry.packFile);
+		}
+		pack.chunks[cacheEntry.key] = std::string(bytecode);
 	}
 
-	const auto temporaryFile = cacheFile.string() + ".tmp";
-	std::ofstream output(temporaryFile, std::ios::binary | std::ios::trunc);
-	if (!output.is_open()) {
-		g_logger().debug("Could not write Lua bytecode cache file '{}'", temporaryFile);
-		return;
+	std::optional<LuaBytecodeCacheEntry> getLuaBytecodeCacheEntry(const std::string &file, const LuaScriptFileMetadata* sourceMetadata) {
+		LuaScriptFileMetadata fallbackMetadata;
+		if (sourceMetadata == nullptr) {
+			std::error_code error;
+			const std::filesystem::directory_entry sourceEntry(file, error);
+			if (error) {
+				return std::nullopt;
+			}
+
+			fallbackMetadata.size = sourceEntry.file_size(error);
+			if (error) {
+				return std::nullopt;
+			}
+
+			fallbackMetadata.lastWriteTime = sourceEntry.last_write_time(error);
+			if (error) {
+				return std::nullopt;
+			}
+
+			sourceMetadata = &fallbackMetadata;
+		}
+
+		const auto sourceIdentity = getLuaBytecodeSourceIdentity(file);
+		const auto cacheKey = fmt::format(
+			"{}:{}:{}:{}:{}",
+			LuaBytecodeCacheVersion,
+			sizeof(void*),
+			sourceIdentity,
+			sourceMetadata->size,
+			sourceMetadata->lastWriteTime.time_since_epoch().count()
+		);
+		const auto cacheKeyHash = fmt::format("{:016x}", fnv1a64(cacheKey));
+
+		LuaBytecodeCacheEntry entry;
+		entry.file = getLuaBytecodeCacheDirectory() / fmt::format("{}.luac", cacheKeyHash);
+		entry.packFile = getLuaBytecodePackFile(sourceIdentity);
+		entry.key = cacheKeyHash;
+		return entry;
 	}
 
+	void writeLuaBytecodeCache(lua_State* luaState, const LuaBytecodeCacheEntry &cacheEntry) {
+		if (!ensureLuaBytecodeCacheDirectory(cacheEntry.file.parent_path())) {
+			return;
+		}
+
+		std::string bytecode;
 #if LUA_VERSION_NUM >= 503
-	const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &output, 0);
+		const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &bytecode, 0);
 #else
-	const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &output);
+		const int dumpResult = lua_dump(luaState, luaBytecodeWriter, &bytecode);
 #endif
+		if (dumpResult != 0) {
+			return;
+		}
 
-	output.close();
-	if (dumpResult != 0 || !output.good()) {
+		const auto temporaryFile = cacheEntry.file.string() + ".tmp";
+		std::ofstream output(temporaryFile, std::ios::binary | std::ios::trunc);
+		if (!output.is_open()) {
+			g_logger().debug("Could not write Lua bytecode cache file '{}'", temporaryFile);
+			return;
+		}
+
+		output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()));
+		output.close();
+		if (!output.good()) {
+			std::error_code error;
+			std::filesystem::remove(temporaryFile, error);
+			return;
+		}
+
 		std::error_code error;
-		std::filesystem::remove(temporaryFile, error);
-		return;
-	}
+		error.clear();
+		std::filesystem::remove(cacheEntry.file, error);
 
-	std::error_code error;
-	error.clear();
-	std::filesystem::remove(cacheFile, error);
+		error.clear();
+		std::filesystem::rename(temporaryFile, cacheEntry.file, error);
+		if (error) {
+			g_logger().debug("Could not publish Lua bytecode cache file '{}': {}", cacheEntry.file.string(), error.message());
+			std::filesystem::remove(temporaryFile, error);
+			return;
+		}
 
-	error.clear();
-	std::filesystem::rename(temporaryFile, cacheFile, error);
-	if (error) {
-		g_logger().debug("Could not publish Lua bytecode cache file '{}': {}", cacheFile.string(), error.message());
-		std::filesystem::remove(temporaryFile, error);
+		appendLuaBytecodePack(cacheEntry, bytecode);
 	}
-}
 }
 
 LuaScriptInterface::LuaScriptInterface(std::string initInterfaceName) :
@@ -241,15 +431,29 @@ bool LuaScriptInterface::reInitState() {
 int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string &scriptName, const LuaScriptFileMetadata* sourceMetadata) {
 	// loads file as a chunk at stack top
 	int ret = -1;
-	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file, sourceMetadata) : std::nullopt;
-	if (bytecodeCacheFile) {
-		const auto cacheLoadResult = loadLuaChunkFromFileBuffer(luaState, *bytecodeCacheFile, "@" + file);
-		if (cacheLoadResult) {
-			ret = *cacheLoadResult;
+	const auto bytecodeCacheEntry = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheEntry(file, sourceMetadata) : std::nullopt;
+	if (bytecodeCacheEntry) {
+		const std::string chunkName = "@" + file;
+		if (const auto* packedBytecode = findLuaBytecodePackChunk(*bytecodeCacheEntry)) {
+			ret = luaL_loadbuffer(luaState, packedBytecode->data(), packedBytecode->size(), chunkName.c_str());
 			if (ret != 0) {
 				lua_pop(luaState, 1);
-				std::error_code error;
-				std::filesystem::remove(*bytecodeCacheFile, error);
+				invalidateLuaBytecodePack(bytecodeCacheEntry->packFile);
+				ret = -1;
+			}
+		}
+
+		if (ret != 0) {
+			const auto cacheLoadResult = loadLuaChunkFromFileBuffer(luaState, bytecodeCacheEntry->file, chunkName);
+			if (cacheLoadResult) {
+				ret = cacheLoadResult->status;
+				if (ret == 0) {
+					appendLuaBytecodePack(*bytecodeCacheEntry, cacheLoadResult->buffer);
+				} else {
+					lua_pop(luaState, 1);
+					std::error_code error;
+					std::filesystem::remove(bytecodeCacheEntry->file, error);
+				}
 			}
 		}
 	}
@@ -257,7 +461,7 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 	const bool loadedFromBytecodeCache = ret == 0;
 	if (!loadedFromBytecodeCache) {
 		const auto sourceLoadResult = loadLuaChunkFromFileBuffer(luaState, file, "@" + file);
-		ret = sourceLoadResult ? *sourceLoadResult : luaL_loadfile(luaState, file.c_str());
+		ret = sourceLoadResult ? sourceLoadResult->status : luaL_loadfile(luaState, file.c_str());
 	}
 
 	if (ret != 0) {
@@ -270,8 +474,8 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 		return -1;
 	}
 
-	if (bytecodeCacheFile && !loadedFromBytecodeCache) {
-		writeLuaBytecodeCache(luaState, *bytecodeCacheFile);
+	if (bytecodeCacheEntry && !loadedFromBytecodeCache) {
+		writeLuaBytecodeCache(luaState, *bytecodeCacheEntry);
 	}
 
 	loadingFile = file;

@@ -238,7 +238,7 @@ namespace {
 				break;
 			}
 
-			static_cast<void>(pack.chunks.try_emplace(std::move(key), std::move(bytecode)));
+			static_cast<void>(pack.chunks.insert_or_assign(std::move(key), std::move(bytecode)));
 		}
 
 		return pack;
@@ -401,6 +401,7 @@ namespace {
 
 		if (!output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
 			std::error_code error;
+			output.close();
 			static_cast<void>(std::filesystem::remove(temporaryFile, error));
 			return;
 		}

@@ -13,6 +13,7 @@
 #include "utils/mapsector.hpp"
 
 class Map;
+class MapCache;
 class Tile;
 class Item;
 struct Position;
@@ -120,8 +121,11 @@ struct BasicTile {
 private:
 	void hash(size_t &h) const;
 
+	const MapCache* retainedByMapCacheOwner = nullptr;
 	mutable size_t cachedHash { 0 };
 	mutable bool cachedHashValid { false };
+
+	friend class MapCache;
 };
 
 struct MapCacheFloorCursor {
@@ -177,5 +181,4 @@ private:
 
 	// Floor tile caches store observer pointers; these shared owners keep them valid after flush().
 	std::vector<std::shared_ptr<BasicTile>> retainedBasicTiles;
-	phmap::flat_hash_set<const BasicTile*> retainedBasicTilePointers;
 };

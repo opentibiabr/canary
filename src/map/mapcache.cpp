@@ -29,7 +29,7 @@ constexpr size_t kMaxGenericTileCacheReserve = 262144;
 constexpr size_t kMaxFlaggedTileCacheReserve = 65536;
 constexpr size_t kMaxGroundAndItemTileCacheReserve = 262144;
 constexpr size_t kMaxMapSectorReserve = 1048576;
-constexpr size_t kMaxRetainedBasicTileReserve = 1048576;
+constexpr size_t kMaxRetainedBasicTileReserve = 2097152;
 
 size_t estimateCacheReserve(size_t fileSize, size_t bytesPerEntry, size_t maxReserve) {
 	if (fileSize == 0 || bytesPerEntry == 0) {
@@ -146,9 +146,8 @@ void MapCache::reserveForMap(uint16_t width, uint16_t height, size_t fileSize) {
 	flaggedGroundTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
 	flaggedItemTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
 	groundAndItemTiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGroundAndItemTileCacheReserve));
-	const auto retainedTileReserve = estimateCacheReserve(fileSize, 128, kMaxRetainedBasicTileReserve);
+	const auto retainedTileReserve = estimateCacheReserve(fileSize, 64, kMaxRetainedBasicTileReserve);
 	retainedBasicTiles.reserve(retainedTileReserve);
-	retainedBasicTilePointers.reserve(retainedTileReserve);
 	mapSectors.reserve(estimateSectorReserve(width, height));
 }
 
@@ -170,7 +169,8 @@ void MapCache::flush() const {
 }
 
 void MapCache::retainBasicTile(const std::shared_ptr<BasicTile> &tile) {
-	if (tile && retainedBasicTilePointers.insert(tile.get()).second) {
+	if (tile && tile->retainedByMapCacheOwner != this) {
+		tile->retainedByMapCacheOwner = this;
 		retainedBasicTiles.emplace_back(tile);
 	}
 }

@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <array>
 #include <limits>
+#include <utility>
 
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -30,6 +31,7 @@ constexpr size_t kMaxFlaggedTileCacheReserve = 65536;
 constexpr size_t kMaxGroundAndItemTileCacheReserve = 262144;
 constexpr size_t kMaxMapSectorReserve = 1048576;
 constexpr size_t kMaxRetainedBasicTileReserve = 2097152;
+constexpr size_t kInitialParsedContainerItemReserve = 2;
 
 size_t estimateCacheReserve(size_t fileSize, size_t bytesPerEntry, size_t maxReserve) {
 	if (fileSize == 0 || bytesPerEntry == 0) {
@@ -467,7 +469,12 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 		}
 
-		items.emplace_back(item->isSimple() ? static_getBasicItemFromCache(streamId) : static_tryGetItemFromCache(item));
+		if (items.empty()) {
+			items.reserve(kInitialParsedContainerItemReserve);
+		}
+
+		auto cachedItem = item->isSimple() ? static_getBasicItemFromCache(streamId) : static_tryGetItemFromCache(item);
+		items.emplace_back(std::move(cachedItem));
 
 		if (!stream.endNode()) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));

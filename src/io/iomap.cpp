@@ -13,6 +13,8 @@
 #include "game/game.hpp"
 #include "io/filestream.hpp"
 
+#include <utility>
+
 /*
     OTBM_ROOTV1
     |
@@ -36,6 +38,10 @@
     |
     |--- OTBM_ITEM_DEF (not implemented)
 */
+
+namespace {
+constexpr size_t kInitialParsedTileItemReserve = 2;
+}
 
 void IOMap::loadMap(Map* map, const Position &pos) {
 	Benchmark bm_mapLoad;
@@ -132,6 +138,13 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 			}
 
 			BasicTile tile;
+			auto addTileItem = [&tile](std::shared_ptr<BasicItem> item) {
+				if (tile.items.empty()) {
+					tile.items.reserve(kInitialParsedTileItemReserve);
+				}
+
+				tile.items.emplace_back(std::move(item));
+			};
 
 			const uint8_t tileCoordsX = stream.getU8();
 			const uint8_t tileCoordsY = stream.getU8();
@@ -175,7 +188,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 					} else if (iType.isGroundTile()) {
 						tile.ground = map.getBasicItemFromCache(id);
 					} else {
-						tile.items.emplace_back(map.getBasicItemFromCache(id));
+						addTileItem(map.getBasicItemFromCache(id));
 					}
 				}
 			}
@@ -201,11 +214,11 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 							                "at position: x {}, y {}, z {}",
 							                id, tile.houseId, x, y, z);
 						} else if (iType.isGroundTile()) {
-							const auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
-							tile.ground = cachedItem;
+							auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							tile.ground = std::move(cachedItem);
 						} else {
-							const auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
-							tile.items.emplace_back(cachedItem);
+							auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							addTileItem(std::move(cachedItem));
 						}
 					} break;
 					case OTBM_TILE_ZONE: {

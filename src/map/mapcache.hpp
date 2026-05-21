@@ -18,7 +18,6 @@ class Item;
 struct Position;
 class FileStream;
 
-#pragma pack(1)
 struct BasicItem {
 	std::string text;
 	// size_t description { 0 };
@@ -76,8 +75,6 @@ struct BasicTile {
 private:
 	void hash(size_t &h) const;
 };
-
-#pragma pack()
 
 class MapCache {
 public:

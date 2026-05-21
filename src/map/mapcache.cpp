@@ -23,79 +23,31 @@
 #include "utils/hash.hpp"
 
 namespace {
-constexpr size_t maxCompactSimpleTileItems = 4;
+uint64_t makeFlagsAndIdKey(uint32_t flags, uint16_t id) {
+	return (static_cast<uint64_t>(flags) << 16) | id;
+}
 
-struct CompactSimpleTileKey {
-	std::array<uint16_t, maxCompactSimpleTileItems> itemIds {};
-	uint32_t flags { 0 };
-	uint16_t groundId { 0 };
-	uint8_t itemCount { 0 };
-	uint8_t type { TILESTATE_NONE };
-	bool isStatic { false };
+uint64_t makeGroundAndItemKey(uint32_t flags, uint16_t groundId, uint16_t itemId) {
+	return (static_cast<uint64_t>(flags) << 32) | (static_cast<uint64_t>(groundId) << 16) | itemId;
+}
 
-	bool operator==(const CompactSimpleTileKey &other) const {
-		return flags == other.flags
-			&& groundId == other.groundId
-			&& itemCount == other.itemCount
-			&& type == other.type
-			&& isStatic == other.isStatic
-			&& itemIds == other.itemIds;
-	}
-};
-
-struct CompactSimpleTileKeyHash {
-	size_t operator()(const CompactSimpleTileKey &key) const {
-		size_t h = 0;
-		stdext::hash_combine(h, key.flags);
-		stdext::hash_combine(h, key.groundId);
-		stdext::hash_combine(h, key.itemCount);
-		stdext::hash_combine(h, key.type);
-		stdext::hash_combine(h, key.isStatic);
-
-		for (size_t i = 0; i < key.itemCount; ++i) {
-			stdext::hash_combine(h, key.itemIds[i]);
-		}
-
-		return h;
-	}
-};
-
-bool tryBuildCompactSimpleTileKey(const BasicTile &ref, CompactSimpleTileKey &key) {
-	if (ref.isHouse() || ref.items.size() > maxCompactSimpleTileItems) {
-		return false;
+std::shared_ptr<BasicTile> getOrCreateTile(std::shared_ptr<BasicTile> &cachedTile, const BasicTile &ref) {
+	if (!cachedTile) {
+		cachedTile = std::make_shared<BasicTile>(ref);
 	}
 
-	key.flags = ref.flags;
-	key.type = ref.type;
-	key.isStatic = ref.isStatic;
-
-	if (ref.ground) {
-		if (!ref.ground->isSimple()) {
-			return false;
-		}
-
-		key.groundId = ref.ground->id;
-	}
-
-	key.itemCount = static_cast<uint8_t>(ref.items.size());
-	for (size_t i = 0; i < ref.items.size(); ++i) {
-		const auto &item = ref.items[i];
-		if (!item || !item->isSimple()) {
-			return false;
-		}
-
-		key.itemIds[i] = item->id;
-	}
-
-	return true;
+	return cachedTile;
 }
 }
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
-static phmap::flat_hash_map<CompactSimpleTileKey, std::shared_ptr<BasicTile>, CompactSimpleTileKeyHash> compactSimpleTiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> flaggedGroundTiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> flaggedItemTiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> groundAndItemTiles;
 static std::array<std::shared_ptr<BasicItem>, std::numeric_limits<uint16_t>::max() + 1> simpleItems;
 static std::array<std::shared_ptr<BasicTile>, std::numeric_limits<uint16_t>::max() + 1> groundOnlyTiles;
+static std::array<std::shared_ptr<BasicTile>, std::numeric_limits<uint16_t>::max() + 1> itemOnlyTiles;
 
 std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
@@ -112,23 +64,45 @@ std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
 }
 
 std::shared_ptr<BasicTile> static_tryGetTileFromCache(const BasicTile &ref) {
-	if (ref.flags == 0 && ref.type == TILESTATE_NONE && !ref.isStatic && !ref.isHouse() && ref.ground && ref.ground->isSimple() && ref.items.empty()) {
-		auto &cachedTile = groundOnlyTiles[ref.ground->id];
-		if (!cachedTile) {
-			cachedTile = std::make_shared<BasicTile>(ref);
+	if (!ref.isHouse() && ref.type == TILESTATE_NONE && !ref.isStatic) {
+		if (ref.ground && ref.ground->isSimple() && ref.items.empty()) {
+			if (ref.flags == 0) {
+				return getOrCreateTile(groundOnlyTiles[ref.ground->id], ref);
+			}
+
+			const auto key = makeFlagsAndIdKey(ref.flags, ref.ground->id);
+			if (const auto it = flaggedGroundTiles.find(key); it != flaggedGroundTiles.end()) {
+				return it->second;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			return flaggedGroundTiles.try_emplace(key, std::move(tile)).first->second;
 		}
 
-		return cachedTile;
-	}
+		if (!ref.ground && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
+			const auto itemId = ref.items.front()->id;
+			if (ref.flags == 0) {
+				return getOrCreateTile(itemOnlyTiles[itemId], ref);
+			}
 
-	CompactSimpleTileKey compactKey;
-	if (tryBuildCompactSimpleTileKey(ref, compactKey)) {
-		if (const auto it = compactSimpleTiles.find(compactKey); it != compactSimpleTiles.end()) {
-			return it->second;
+			const auto key = makeFlagsAndIdKey(ref.flags, itemId);
+			if (const auto it = flaggedItemTiles.find(key); it != flaggedItemTiles.end()) {
+				return it->second;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			return flaggedItemTiles.try_emplace(key, std::move(tile)).first->second;
 		}
 
-		auto tile = std::make_shared<BasicTile>(ref);
-		return compactSimpleTiles.try_emplace(compactKey, std::move(tile)).first->second;
+		if (ref.ground && ref.ground->isSimple() && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
+			const auto key = makeGroundAndItemKey(ref.flags, ref.ground->id, ref.items.front()->id);
+			if (const auto it = groundAndItemTiles.find(key); it != groundAndItemTiles.end()) {
+				return it->second;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			return groundAndItemTiles.try_emplace(key, std::move(tile)).first->second;
+		}
 	}
 
 	if (!ref.isCacheShareable()) {
@@ -147,11 +121,16 @@ std::shared_ptr<BasicTile> static_tryGetTileFromCache(const BasicTile &ref) {
 void MapCache::flush() const {
 	items.clear();
 	tiles.clear();
-	compactSimpleTiles.clear();
+	flaggedGroundTiles.clear();
+	flaggedItemTiles.clear();
+	groundAndItemTiles.clear();
 	for (auto &item : simpleItems) {
 		item.reset();
 	}
 	for (auto &tile : groundOnlyTiles) {
+		tile.reset();
+	}
+	for (auto &tile : itemOnlyTiles) {
 		tile.reset();
 	}
 }

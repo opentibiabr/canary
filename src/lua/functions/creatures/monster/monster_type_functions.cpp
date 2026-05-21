@@ -1198,10 +1198,12 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	const auto eventName = Lua::getString(L, 2);
 	monsterType->info.scripts.insert(eventName);
 
-	for (const auto &monster : g_game().getMonsters()) {
-		const auto monsterTypeCompare = monster->getMonsterType();
-		if (monsterTypeCompare == monsterType) {
-			monster->registerCreatureEvent(eventName);
+	if (g_game().getGameState() != GAME_STATE_STARTUP) {
+		for (const auto &monster : g_game().getMonsters()) {
+			const auto monsterTypeCompare = monster->getMonsterType();
+			if (monsterTypeCompare == monsterType) {
+				monster->registerCreatureEvent(eventName);
+			}
 		}
 	}
 

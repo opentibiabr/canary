@@ -65,10 +65,11 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
-	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+	constexpr size_t EXIVA_RESTRICTIONS_MIN_PAYLOAD_SIZE = 6 + (sizeof(uint16_t) * 4);
 
 	size_t getUnreadBytes(const NetworkMessage &msg) {
-		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
+		const auto bufferPosition = msg.getBufferPosition();
+		const auto consumedBytes = bufferPosition >= NetworkMessage::INITIAL_BUFFER_POSITION ? bufferPosition - NetworkMessage::INITIAL_BUFFER_POSITION : 0;
 		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
 	}
 
@@ -1372,13 +1373,13 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			break;
 		case 0xC9: /* update tile */
 			break;
-		case 0xCA:
-			if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
-				parseUpdateContainer(msg);
-			} else if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+		case 0xCA: {
+			const auto unreadBytes = getUnreadBytes(msg);
+			if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP && unreadBytes >= EXIVA_RESTRICTIONS_MIN_PAYLOAD_SIZE) {
 				parseExivaRestrictions(msg);
 			}
 			break;
+		}
 		case 0xCB:
 			parseBrowseField(msg);
 			break;

@@ -156,31 +156,21 @@ void Zone::clearZones() {
 }
 
 std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position position) {
-	Benchmark bm_getZones;
 	std::vector<std::shared_ptr<Zone>> result;
 	for (const auto &[_, zone] : zones) {
 		if (zone && zone->contains(position)) {
 			result.push_back(zone);
 		}
 	}
-	auto duration = bm_getZones.duration();
-	if (duration > 100) {
-		g_logger().warn("Listed {} zones for position {} in {} milliseconds", result.size(), position.toString(), duration);
-	}
 	return result;
 }
 
 std::vector<std::shared_ptr<Zone>> Zone::getZones() {
-	Benchmark bm_getZones;
 	std::vector<std::shared_ptr<Zone>> result;
 	for (const auto &[_, zone] : zones) {
 		if (zone) {
 			result.push_back(zone);
 		}
-	}
-	auto duration = bm_getZones.duration();
-	if (duration > 100) {
-		g_logger().warn("Listed {} zones in {} milliseconds", result.size(), duration);
 	}
 	return result;
 }

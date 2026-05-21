@@ -494,6 +494,7 @@ enum CylinderFlags_t {
 	FLAG_IGNORENOTMOVABLE = 1 << 6, // Bypass check for mobility
 	FLAG_IGNOREAUTOSTACK = 1 << 7, // queryDestination will not try to stack items together
 	FLAG_DROPONMAP = 1 << 8, // Drop item on map
+	FLAG_LOOTPOUCH = 1 << 9, // Bypass loot pouch capacity guards for trusted batch operations
 };
 
 enum CylinderLink_t {

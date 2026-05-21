@@ -482,6 +482,8 @@ public:
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
 	void closeContainer(uint8_t cid);
 	void setContainerIndex(uint8_t cid, uint16_t index);
+	void closeContainersOutOfRange();
+	bool shouldCloseContainer(const std::shared_ptr<Container> &container) const;
 
 	std::shared_ptr<Container> getContainerByID(uint8_t cid);
 	int8_t getContainerID(const std::shared_ptr<Container> &container) const;
@@ -742,6 +744,12 @@ public:
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
 	bool isAttackable() const override;
+	void beginBatchUpdate();
+	void endBatchUpdate();
+	void sendBatchUpdateContainer(Container* container, bool hasParent);
+	bool isBatching() const {
+		return m_batching > 0;
+	}
 	static bool lastHitIsPlayer(const std::shared_ptr<Creature> &lastHitCreature);
 
 	// stash functions
@@ -762,7 +770,8 @@ public:
 		uint32_t totalCount,
 		uint32_t &actuallyAdded,
 		uint32_t flags = 0,
-		uint8_t tier = 0
+		uint8_t tier = 0,
+		bool testOnly = false
 	);
 	ReturnValue addItemBatch(
 		uint16_t itemId,
@@ -1923,6 +1932,7 @@ private:
 	WeaponProficiency m_weaponProficiency;
 
 	std::mutex quickLootMutex;
+	uint32_t m_batching = 0;
 
 	std::shared_ptr<Account> account;
 	bool online = true;

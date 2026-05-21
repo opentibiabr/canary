@@ -99,9 +99,6 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "VCPKG_HOST_TRIPLET": "x64-linux",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF"
       },

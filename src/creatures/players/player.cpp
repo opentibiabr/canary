@@ -49,11 +49,13 @@
 #include "items/bed.hpp"
 #include "items/containers/depot/depotchest.hpp"
 #include "items/containers/depot/depotlocker.hpp"
+#include "items/containers/inbox/inbox.hpp"
 #include "items/containers/rewards/reward.hpp"
 #include "items/containers/rewards/rewardchest.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/batch_update.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/actions.hpp"
 #include "lua/creature/creatureevent.hpp"
@@ -5209,11 +5211,21 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 		return false;
 	}
 
+	BatchUpdate batchUpdate(getPlayer());
+	std::unordered_set<Container*> batchedContainers;
 	uint32_t amountToRemove = itemAmount;
 	// Check items from inventory
 	for (const auto &item : getAllInventoryItems()) {
 		if (!item || item->getID() != itemId) {
 			continue;
+		}
+
+		if (const auto &parent = item->getParent()) {
+			if (const auto &container = parent->getContainer()) {
+				if (batchedContainers.emplace(container.get()).second) {
+					batchUpdate.add(container);
+				}
+			}
 		}
 
 		// If the item quantity is already needed, remove the quantity and stop the loop
@@ -5223,8 +5235,9 @@ bool Player::removeItemCountById(uint16_t itemId, uint32_t itemAmount, bool remo
 		}
 
 		// If not, we continue removing items and checking the next slot.
+		const auto removedAmount = item->getItemAmount();
 		g_game().internalRemoveItem(item);
-		amountToRemove -= item->getItemAmount();
+		amountToRemove -= removedAmount;
 	}
 
 	// If there are not enough items in the inventory, we will remove the remaining from stash
@@ -8453,6 +8466,10 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		g_moveEvents().onPlayerEquip(getPlayer(), thing->getItem(), static_cast<Slots_t>(index), false);
 	}
 
+	if (m_batching) {
+		return;
+	}
+
 	bool requireListUpdate = true;
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
 		const auto &item = oldParent ? oldParent->getItem() : nullptr;
@@ -8479,23 +8496,7 @@ void Player::postAddNotification(const std::shared_ptr<Thing> &thing, const std:
 		}
 	} else if (const auto &creature = thing->getCreature()) {
 		if (creature == getPlayer()) {
-			// check containers
-			std::vector<std::shared_ptr<Container>> containers;
-
-			for (const auto &[containerId, containerInfo] : openContainers) {
-				const auto &container = containerInfo.container;
-				if (container == nullptr) {
-					continue;
-				}
-
-				if (!Position::areInRange<1, 1, 0>(container->getPosition(), getPosition())) {
-					containers.emplace_back(container);
-				}
-			}
-
-			for (const auto &container : containers) {
-				autoCloseContainers(container);
-			}
+			closeContainersOutOfRange();
 		}
 	}
 }
@@ -8518,6 +8519,10 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 		}
 	}
 
+	if (m_batching) {
+		return;
+	}
+
 	bool requireListUpdate = true;
 
 	if (link == LINK_OWNER || link == LINK_TOPPARENT) {
@@ -8537,39 +8542,13 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 
 	if (const auto &item = copyThing->getItem()) {
 		if (const auto &container = item->getContainer()) {
-			const auto &containerTopParent = container->getTopParent();
-			// Check if the container is not in the player's inventory
-			if (containerTopParent != thisPlayer) {
+			if (container->getTopParent() != thisPlayer) {
 				checkLootContainers(container);
 			}
-
-			if (container->isRemoved() || !Position::areInRange<1, 1, 0>(getPosition(), container->getPosition())) {
+			if (shouldCloseContainer(container)) {
 				autoCloseContainers(container);
-			} else if (containerTopParent == thisPlayer) {
-				onSendContainer(container);
-			} else if (const auto &topContainer = containerTopParent->getContainer()) {
-				if (const auto &depotChest = std::dynamic_pointer_cast<DepotChest>(topContainer)) {
-					bool isOwner = false;
-
-					for (const auto &[depotId, depotChestMap] : depotChests) {
-						if (depotId == 0) {
-							continue;
-						}
-
-						if (depotChestMap == depotChest) {
-							isOwner = true;
-							onSendContainer(container);
-						}
-					}
-
-					if (!isOwner) {
-						autoCloseContainers(container);
-					}
-				} else {
-					onSendContainer(container);
-				}
 			} else {
-				autoCloseContainers(container);
+				onSendContainer(container);
 			}
 		}
 
@@ -8893,6 +8872,103 @@ void Player::sendContainer(uint8_t cid, const std::shared_ptr<Container> &contai
 	}
 }
 
+void Player::beginBatchUpdate() {
+	++m_batching;
+}
+
+void Player::endBatchUpdate() {
+	if (!m_batching) {
+		return;
+	}
+
+	--m_batching;
+	if (m_batching > 0) {
+		return;
+	}
+
+	updateState();
+	closeContainersOutOfRange();
+}
+
+void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
+	if (!container || !client) {
+		g_logger().warn("Player::sendBatchUpdateContainer - Invalid container or client for player {}.", getName());
+		return;
+	}
+
+	if (!m_batching) {
+		updateState();
+		closeContainersOutOfRange();
+	}
+
+	for (const auto &[cid, containerInfo] : openContainers) {
+		if (containerInfo.container.get() != container) {
+			continue;
+		}
+
+		auto sharedContainer = containerInfo.container;
+		checkLootContainers(sharedContainer);
+		client->sendContainer(cid, sharedContainer, hasParent, containerInfo.index);
+		g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
+	}
+}
+
+void Player::closeContainersOutOfRange() {
+	if (!client) {
+		return;
+	}
+
+	std::vector<uint8_t> containersToClose;
+	for (const auto &[containerId, containerInfo] : openContainers) {
+		const auto &container = containerInfo.container;
+		if (!container) {
+			continue;
+		}
+
+		if (shouldCloseContainer(container)) {
+			checkLootContainers(container);
+			containersToClose.emplace_back(containerId);
+		}
+	}
+
+	for (const uint8_t containerId : containersToClose) {
+		g_logger().debug("Player::closeContainersOutOfRange - Closing container {} for player {} due to out of range.", containerId, getName());
+		closeContainer(containerId);
+		client->sendCloseContainer(containerId);
+	}
+}
+
+bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) const {
+	if (!container || container->isRemoved()) {
+		return true;
+	}
+
+	const auto topParent = container->getTopParent();
+	if (!topParent) {
+		return true;
+	}
+
+	if (topParent == getPlayer()) {
+		return false;
+	}
+
+	if (const auto topItem = topParent->getItem()) {
+		if (Position::areInRange<1, 1, 0>(getPosition(), topItem->getPosition())) {
+			return false;
+		}
+	}
+
+	if (const auto &depotChest = topParent->getDepotChest()) {
+		for (const auto &[depotId, chest] : depotChests) {
+			if (depotId != 0 && chest == depotChest) {
+				return false;
+			}
+		}
+	}
+
+	return !Position::areInRange<1, 1, 0>(getPosition(), container->getPosition());
+}
+
 void Player::sendExivaRestrictions() {
 	if (client) {
 		client->sendExivaRestrictions();
@@ -9098,6 +9174,8 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 
 	uint32_t addedItemCount = 0;
 	uint32_t remainingToRetrieve = finalRetrievable;
+	BatchUpdate batchUpdate(getPlayer());
+	batchUpdate.addContainers(containersCache);
 
 	if (itemType.stackable) {
 		while (remainingToRetrieve > 0 && availableCapacity >= itemWeight) {
@@ -9153,7 +9231,9 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 					}
 
 					targetContainer->addThing(newItem);
-					onSendContainer(targetContainer);
+					if (!isBatching()) {
+						onSendContainer(targetContainer);
+					}
 					addedItemCount += toCreate;
 					availableCapacity -= toCreate * itemWeight;
 					addValue -= toCreate;
@@ -9188,7 +9268,9 @@ ReturnValue Player::addItemFromStash(uint16_t itemId, uint32_t itemCount) {
 				}
 
 				targetContainer->addThing(newItem);
-				onSendContainer(targetContainer);
+				if (!isBatching()) {
+					onSendContainer(targetContainer);
+				}
 				addedItemCount += 1;
 				finalRetrievable -= 1;
 			}
@@ -9284,7 +9366,8 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 	uint32_t totalCount,
 	uint32_t &actuallyAdded,
 	uint32_t flags /*= 0*/,
-	uint8_t tier /*= 0*/
+	uint8_t tier /*= 0*/,
+	bool testOnly /*= false*/
 ) {
 	actuallyAdded = 0;
 
@@ -9301,14 +9384,150 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	uint32_t maxStackSize = itemType.stackable ? itemType.stackSize : 1;
+	uint32_t maxStackSize = itemType.stackable && itemType.stackSize > 0 ? itemType.stackSize : 1;
+	std::shared_ptr<Item> mergeProbeItem;
+	if (itemType.stackable) {
+		mergeProbeItem = Item::createItemBatch(itemId, 1, 0);
+		if (!mergeProbeItem) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+
+		if (tier > 0) {
+			mergeProbeItem->setTier(tier);
+		}
+	}
+
+	const auto canMergeWithExistingStack = [&](const std::shared_ptr<Item> &existingItem) {
+		return existingItem
+			&& mergeProbeItem
+			&& existingItem->isStackable()
+			&& existingItem->equals(mergeProbeItem)
+			&& existingItem->getItemCount() < existingItem->getStackSize();
+	};
+
+	struct StackMergeSnapshot {
+		std::shared_ptr<Item> item;
+		std::shared_ptr<Cylinder> parent;
+		uint32_t count = 0;
+	};
+
+	std::vector<StackMergeSnapshot> stackMergeSnapshots;
+	std::vector<std::shared_ptr<Item>> addedItems;
+
+	auto rollbackBatchChanges = [&]() {
+		for (auto it = addedItems.rbegin(); it != addedItems.rend(); ++it) {
+			const auto &addedItem = *it;
+			if (!addedItem || !addedItem->getParent()) {
+				continue;
+			}
+
+			const ReturnValue removeResult = removeItem(addedItem, addedItem->getItemCount());
+			if (removeResult != RETURNVALUE_NOERROR) {
+				g_logger().error("{} - Failed to rollback added item {} amount {} for player {}, error code: {}", __FUNCTION__, addedItem->getID(), addedItem->getItemCount(), getName(), getReturnMessage(removeResult));
+			}
+		}
+
+		for (auto it = stackMergeSnapshots.rbegin(); it != stackMergeSnapshots.rend(); ++it) {
+			if (!it->item || !it->parent) {
+				continue;
+			}
+
+			it->parent->updateThing(it->item, it->item->getID(), it->count);
+		}
+
+		actuallyAdded = 0;
+	};
+
+	const auto failAfterBatchMutation = [&](ReturnValue returnValue) {
+		if (!testOnly) {
+			rollbackBatchChanges();
+		}
+		return returnValue;
+	};
+
+	bool hasReservedCapacity = false;
+	uint64_t remainingItemCapacity = 0;
+	ReturnValue capacityError = RETURNVALUE_CONTAINERISFULL;
+
+	if (const auto &inboxContainer = std::dynamic_pointer_cast<Inbox>(container)) {
+		hasReservedCapacity = true;
+		remainingItemCapacity = inboxContainer->getRemainingItemCapacity();
+		capacityError = RETURNVALUE_DEPOTISFULL;
+	} else if (container->hasPagination()) {
+		hasReservedCapacity = true;
+		const uint64_t currentItems = container->getItemHoldingCount();
+		const uint64_t maxItems = container->getMaxCapacity();
+		remainingItemCapacity = currentItems >= maxItems ? 0 : maxItems - currentItems;
+	}
+
+	if (hasReservedCapacity) {
+		uint64_t mergeableCount = 0;
+		for (const auto &existingItem : container->getItemList()) {
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			mergeableCount += existingItem->getStackSize() - existingItem->getItemCount();
+			if (mergeableCount >= totalCount) {
+				break;
+			}
+		}
+
+		const uint64_t remainingAfterMerge = totalCount > mergeableCount ? static_cast<uint64_t>(totalCount) - mergeableCount : 0;
+		const uint64_t chunksNeeded = (remainingAfterMerge + maxStackSize - 1) / maxStackSize;
+		if (chunksNeeded > remainingItemCapacity) {
+			return capacityError;
+		}
+	}
+
+	std::unique_ptr<BatchUpdate> batchUpdate;
+	if (!testOnly && client) {
+		batchUpdate = std::make_unique<BatchUpdate>(getPlayer());
+		batchUpdate->add(container);
+	}
+
 	uint32_t remaining = totalCount;
+	if (itemType.stackable) {
+		for (const auto &existingItem : container->getItemList()) {
+			if (remaining == 0) {
+				break;
+			}
+
+			if (!canMergeWithExistingStack(existingItem)) {
+				continue;
+			}
+
+			uint32_t spaceInStack = existingItem->getStackSize() - existingItem->getItemCount();
+			uint32_t toMerge = std::min(remaining, spaceInStack);
+			if (toMerge == 0) {
+				continue;
+			}
+
+			if (!testOnly) {
+				const auto &parent = existingItem->getParent();
+				if (!parent) {
+					return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+				}
+
+				const uint32_t previousCount = existingItem->getItemCount();
+				stackMergeSnapshots.push_back({ existingItem, parent, previousCount });
+				parent->updateThing(existingItem, existingItem->getID(), existingItem->getItemCount() + toMerge);
+				if (existingItem->getItemCount() != previousCount + toMerge) {
+					return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+				}
+				actuallyAdded += toMerge;
+			}
+
+			remaining -= toMerge;
+		}
+	}
+
 	while (remaining > 0) {
 		uint32_t toStack = std::min(remaining, maxStackSize);
 
 		std::shared_ptr<Item> newItem = Item::createItemBatch(itemId, toStack, 0);
 		if (!newItem) {
-			return RETURNVALUE_NOTPOSSIBLE;
+			return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
 		}
 
 		auto charges = newItem->getCharges();
@@ -9322,16 +9541,30 @@ ReturnValue Player::addItemBatchToPaginedContainer(
 
 		ReturnValue rv = container->queryAdd(INDEX_WHEREEVER, newItem, toStack, flags);
 		if (rv != RETURNVALUE_NOERROR) {
-			return rv;
+			return failAfterBatchMutation(rv);
 		}
 
-		container->addThing(newItem);
+		if (!testOnly) {
+			container->addThing(newItem);
+			if (newItem->getParent() != container) {
+				return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+			}
 
-		actuallyAdded += toStack;
+			addedItems.emplace_back(newItem);
+			actuallyAdded += toStack;
+		}
 		remaining -= toStack;
 	}
 
-	return actuallyAdded > 0 ? RETURNVALUE_NOERROR : RETURNVALUE_NOTENOUGHROOM;
+	if (testOnly) {
+		return RETURNVALUE_NOERROR;
+	}
+
+	if (actuallyAdded != totalCount) {
+		return failAfterBatchMutation(RETURNVALUE_NOTPOSSIBLE);
+	}
+
+	return RETURNVALUE_NOERROR;
 }
 
 ReturnValue Player::addItemBatch(
@@ -9384,6 +9617,7 @@ ReturnValue Player::addItemBatch(
 	}
 
 	const auto &thisPlayer = getPlayer();
+	BatchUpdate batchUpdate(thisPlayer);
 
 	std::vector<std::shared_ptr<Container>> containersCache;
 	// If the item is a shopping bag, we need to find the correct container to add the items to obtain container
@@ -9456,6 +9690,7 @@ ReturnValue Player::addItemBatch(
 			const auto &itemParent = existingItem->getParent();
 			const auto &itemParentContainer = itemParent ? itemParent->getContainer() : nullptr;
 			if (itemParentContainer) {
+				batchUpdate.add(itemParentContainer);
 				itemParentContainer->updateThing(
 					existingItem,
 					existingItem->getID(),
@@ -9571,6 +9806,7 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
+			batchUpdate.add(container);
 			container->addThing(newItem);
 			state.actuallyAdded += toStack;
 			state.remaining -= toStack;
@@ -9613,6 +9849,7 @@ ReturnValue Player::addItemBatch(
 								   FLAG_IGNORENOTMOVABLE
 							   ) == RETURNVALUE_NOERROR;
 						if (addedBackpack) {
+							batchUpdate.add(container);
 							container->addThing(currentBackpack);
 							containersCache.push_back(currentBackpack);
 							break;
@@ -9646,6 +9883,7 @@ ReturnValue Player::addItemBatch(
 				return false;
 			}
 
+			batchUpdate.add(currentBackpack);
 			currentBackpack->addItem(newItem);
 			state.remaining -= itemsToAdd;
 			state.actuallyAdded += itemsToAdd;
@@ -12793,6 +13031,10 @@ void Player::healFromHarmony(uint8_t charges /* = 1 */) {
 	// Check if the player is in a party
 	if (const auto &party = getParty()) {
 		for (const auto &partyMember : party->getPlayers()) {
+			if (!partyMember || partyMember->isRemoved() || partyMember->isDead()) {
+				continue;
+			}
+
 			// Skip healing self during the search
 			if (this == partyMember.get()) {
 				continue;

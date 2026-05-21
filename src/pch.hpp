@@ -102,8 +102,6 @@ format_as(E e) {
 	#include <lua.hpp>
 #endif
 
-#include "lua/global/shared_object.hpp"
-
 /**
  * @brief Magic Enum is a C++ library that facilitates easy conversion between enums and strings.
  * By default, the range of supported enum values is from -128 to 128. We need extends that range.

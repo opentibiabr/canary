@@ -1,20 +1,37 @@
-# OpenTibiaBR - Canary
+# Canary
 
-[![Discord Channel](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/gvTj5sh9Mp)
+[![Discord](https://img.shields.io/discord/528117503952551936.svg?style=flat-square&logo=discord)](https://discord.gg/gvTj5sh9Mp)
 [![CI](https://github.com/opentibiabr/canary/actions/workflows/ci.yml/badge.svg)](https://github.com/opentibiabr/canary/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=opentibiabr_canary&metric=alert_status)](https://sonarcloud.io/dashboard?id=opentibiabr_canary)
-![GitHub repo size](https://img.shields.io/github/repo-size/opentibiabr/canary)
-[![GitHub license](https://img.shields.io/github/license/opentibiabr/canary.svg)](https://github.com/opentibiabr/canary/blob/main/LICENSE)
+![Repository size](https://img.shields.io/github/repo-size/opentibiabr/canary)
+[![License](https://img.shields.io/github/license/opentibiabr/canary.svg)](https://github.com/opentibiabr/canary/blob/main/LICENSE)
 
-OpenTibiaBR - Canary is a free and open-source MMORPG server emulator written in C++. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. To connect to the server and to take a stable experience, you can use [mehah's otclient](https://github.com/mehah/otclient)
-or [tibia client](https://github.com/dudantas/tibia-client/releases/latest) and if you want to edit something, check
-our [customized tools](https://docs.opentibiabr.com/opentibiabr/downloads/tools). If you want to edit the map, use our own [remere's map editor](https://github.com/opentibiabr/remeres-map-editor/).
+Canary is a free and open-source MMORPG server emulator for the OpenTibia community, written in C++20 and Lua. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. The repository includes the server core, datapacks, Lua scripts, database schema, build presets, automated tests, and development tooling used by the project.
+
+---
 
 ## Getting Started
 
-- [Gitbook](https://docs.opentibiabr.com/opentibiabr/projects/canary).
 - [Wiki](https://github.com/opentibiabr/canary/wiki).
-- [Crypto backend evaluation](docs/crypto-backend-evaluation.md).
+
+---
+
+## Recommended Tools and Clients
+
+- [Assets Editor](https://github.com/Arch-Mina/Assets-Editor).
+- [Remere's Map Editor](https://github.com/opentibiabr/remeres-map-editor/).
+- [OTClient Redemption](https://github.com/opentibiabr/otclient).
+- [Game Client](https://github.com/dudantas/tibia-client/releases/latest).
+
+---
+
+## Nightly Packages
+
+Development builds can be downloaded from GitHub Actions artifacts. They are useful for testing recent changes from the `main` branch, but may include behavior that is not present in stable releases yet.
+
+- [Github Actions](https://github.com/opentibiabr/canary/actions/workflows/ci.yml?query=branch%3Amain).
+
+---
 
 ## Running Tests
 
@@ -34,36 +51,41 @@ ctest --preset linux-debug
 
 For detailed testing information including adding tests and framework usage, see [tests/README.md](tests/README.md).
 
-## Support
+---
 
-If you need help, please visit our [discord](https://discord.gg/gvTj5sh9Mp). Our issue tracker is not a support forum, and using it as one will result in your issue being closed.
+## Support & Community
+
+For real-time support, join the [OpenTibiaBR Discord](https://discord.gg/gvTj5sh9Mp).
+
+The GitHub issue tracker should be used for bugs, improvements, and technical project tasks. It is not a support forum.
+
+---
 
 ## Contributing
 
-Here are some ways you can contribute:
+Contributions are welcome. You can help in several ways:
 
-- [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
-- [Pull Request](https://github.com/opentibiabr/canary/pulls).
+- Report bugs through the [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
+- Submit improvements through [Pull Requests](https://github.com/opentibiabr/canary/pulls).
+- Improve tests, documentation, scripts, datapacks, or C++ code.
+- Validate releases, nightly builds, and recent changes.
 
-You are subject to our code of conduct, read at [this link](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md).
+Before contributing, read the [Code of Conduct](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md) and the project [Contributing](https://github.com/opentibiabr/canary/blob/main/CONTRIBUTING.md) guide.
 
-## Special Thanks
+---
 
-- Our contributors ([Canary](https://github.com/opentibiabr/canary/graphs/contributors) | [OTServBR-Global](https://github.com/opentibiabr/otservbr-global/graphs/contributors)).
+## Sponsorship
 
-## Sponsors
+Canary is maintained by community contributors. To support development, visit the [OpenTibiaBR sponsors page](https://github.com/sponsors/opentibiabr).
 
-See our [donate page](https://docs.opentibiabr.com/home/donate).
+---
 
-## Project supported by JetBrains
+## Acknowledgements
 
-We extend our heartfelt gratitude to Jetbrains for generously granting us licenses to collaborate on this and various
-other open-source initiatives.
+Thanks to all contributors of [Canary](https://github.com/opentibiabr/canary/graphs/contributors), [OTServBR-Global](https://github.com/opentibiabr/otservbr-global/graphs/contributors) and the OpenTibia community.
 
-<a href="https://jb.gg/OpenSourceSupport/?from=https://github.com/opentibiabr/canary/">
-  <img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.svg" alt="JetBrains" width="150" />
-</a>
+---
 
-## Partners
+## License
 
-[![Supported by OTServ Brasil](https://raw.githubusercontent.com/otbr/otserv-brasil/main/otbr.png)](https://forums.otserv.com.br)
+This project is distributed under the [GPL-2.0 license](https://github.com/opentibiabr/canary/blob/main/LICENSE).

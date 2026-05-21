@@ -33,6 +33,8 @@ void ContainerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Container", "addItemEx", ContainerFunctions::luaContainerAddItemEx);
 	Lua::registerMethod(L, "Container", "getCorpseOwner", ContainerFunctions::luaContainerGetCorpseOwner);
 	Lua::registerMethod(L, "Container", "registerReward", ContainerFunctions::luaContainerRegisterReward);
+	Lua::registerMethod(L, "Container", "removeAllItems", ContainerFunctions::luaContainerRemoveAllItems);
+	Lua::registerMethod(L, "Container", "removeItemById", ContainerFunctions::luaContainerRemoveItemById);
 }
 
 int ContainerFunctions::luaContainerCreate(lua_State* L) {
@@ -308,5 +310,47 @@ int ContainerFunctions::luaContainerRegisterReward(lua_State* L) {
 	container->setRewardCorpse();
 
 	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int ContainerFunctions::luaContainerRemoveAllItems(lua_State* L) {
+	// container:removeAllItems(actor = nil, recursive = false)
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
+	if (!container) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto &actor = Lua::getUserdataShared<Player>(L, 2, "Player");
+	bool isRecursive = Lua::getBoolean(L, 3, false);
+
+	auto removedItems = container->removeAllItems(actor ? actor : nullptr, isRecursive);
+
+	lua_pushnumber(L, static_cast<lua_Number>(removedItems));
+	return 1;
+}
+
+int ContainerFunctions::luaContainerRemoveItemById(lua_State* L) {
+	// container:removeItemById(itemId, count[, subType = -1])
+	const auto &container = Lua::getUserdataShared<Container>(L, 1, "Container");
+	if (!container) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	uint16_t itemId;
+	if (Lua::isNumber(L, 2)) {
+		itemId = Lua::getNumber<uint16_t>(L, 2);
+	} else {
+		itemId = Item::items.getItemIdByName(Lua::getString(L, 2));
+		if (itemId == 0) {
+			lua_pushnil(L);
+			return 1;
+		}
+	}
+
+	uint32_t count = Lua::getNumber<uint32_t>(L, 3, 1);
+	int32_t subType = Lua::getNumber<int32_t>(L, 4, -1);
+	Lua::pushBoolean(L, container->removeItemById(itemId, count, subType));
 	return 1;
 }

@@ -29,6 +29,7 @@ constexpr size_t kMaxGenericTileCacheReserve = 262144;
 constexpr size_t kMaxFlaggedTileCacheReserve = 65536;
 constexpr size_t kMaxGroundAndItemTileCacheReserve = 262144;
 constexpr size_t kMaxMapSectorReserve = 1048576;
+constexpr size_t kMaxRetainedBasicTileReserve = 1048576;
 
 size_t estimateCacheReserve(size_t fileSize, size_t bytesPerEntry, size_t maxReserve) {
 	if (fileSize == 0 || bytesPerEntry == 0) {
@@ -145,6 +146,9 @@ void MapCache::reserveForMap(uint16_t width, uint16_t height, size_t fileSize) {
 	flaggedGroundTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
 	flaggedItemTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
 	groundAndItemTiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGroundAndItemTileCacheReserve));
+	const auto retainedTileReserve = estimateCacheReserve(fileSize, 128, kMaxRetainedBasicTileReserve);
+	retainedBasicTiles.reserve(retainedTileReserve);
+	retainedBasicTilePointers.reserve(retainedTileReserve);
 	mapSectors.reserve(estimateSectorReserve(width, height));
 }
 
@@ -162,6 +166,12 @@ void MapCache::flush() const {
 	}
 	for (auto &tile : itemOnlyTiles) {
 		tile.reset();
+	}
+}
+
+void MapCache::retainBasicTile(const std::shared_ptr<BasicTile> &tile) {
+	if (tile && retainedBasicTilePointers.insert(tile.get()).second) {
+		retainedBasicTiles.emplace_back(tile);
 	}
 }
 
@@ -230,7 +240,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 }
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto &cachedTile = floor->getTileCache(x, y);
+	const auto* cachedTile = floor->getTileCache(x, y);
 	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
 		return oldTile;
@@ -308,7 +318,8 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &
 		return;
 	}
 
-	const auto &tile = static_tryGetTileFromCache(newTile);
+	const auto tile = static_tryGetTileFromCache(newTile);
+	retainBasicTile(tile);
 	const auto sectorIndex = static_cast<uint32_t>(x / SECTOR_SIZE) | (static_cast<uint32_t>(y / SECTOR_SIZE) << 16);
 	Floor* floor = nullptr;
 
@@ -332,7 +343,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &
 	}
 
 	if (floor) {
-		floor->setTileCache(x, y, tile);
+		floor->setTileCache(x, y, tile.get());
 	}
 }
 

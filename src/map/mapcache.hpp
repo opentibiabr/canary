@@ -171,6 +171,11 @@ protected:
 	std::unordered_map<uint32_t, MapSector> mapSectors;
 
 private:
+	void retainBasicTile(const std::shared_ptr<BasicTile> &tile);
 	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const;
 	std::shared_ptr<Item> createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position);
+
+	// Floor tile caches store observer pointers; these shared owners keep them valid after flush().
+	std::vector<std::shared_ptr<BasicTile>> retainedBasicTiles;
+	phmap::flat_hash_set<const BasicTile*> retainedBasicTilePointers;
 };

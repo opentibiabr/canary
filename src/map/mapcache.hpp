@@ -141,6 +141,7 @@ public:
 	std::shared_ptr<BasicItem> getBasicItemFromCache(uint16_t id) const;
 	std::shared_ptr<BasicItem> tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) const;
 
+	void reserveForMap(uint16_t width, uint16_t height, size_t fileSize);
 	void flush() const;
 
 	/**

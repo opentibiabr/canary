@@ -9,6 +9,7 @@
 
 #include "map/mapcache.hpp"
 
+#include <algorithm>
 #include <array>
 #include <limits>
 
@@ -23,6 +24,26 @@
 #include "utils/hash.hpp"
 
 namespace {
+constexpr size_t kMaxItemCacheReserve = 131072;
+constexpr size_t kMaxGenericTileCacheReserve = 262144;
+constexpr size_t kMaxFlaggedTileCacheReserve = 65536;
+constexpr size_t kMaxGroundAndItemTileCacheReserve = 262144;
+constexpr size_t kMaxMapSectorReserve = 1048576;
+
+size_t estimateCacheReserve(size_t fileSize, size_t bytesPerEntry, size_t maxReserve) {
+	if (fileSize == 0 || bytesPerEntry == 0) {
+		return 0;
+	}
+
+	return std::min(fileSize / bytesPerEntry + 1, maxReserve);
+}
+
+size_t estimateSectorReserve(uint16_t width, uint16_t height) {
+	const auto sectorColumns = (static_cast<size_t>(width) + SECTOR_SIZE - 1) / SECTOR_SIZE;
+	const auto sectorRows = (static_cast<size_t>(height) + SECTOR_SIZE - 1) / SECTOR_SIZE;
+	return std::min(sectorColumns * sectorRows, kMaxMapSectorReserve);
+}
+
 uint64_t makeFlagsAndIdKey(uint32_t flags, uint16_t id) {
 	return (static_cast<uint64_t>(flags) << 16) | id;
 }
@@ -116,6 +137,15 @@ std::shared_ptr<BasicTile> static_tryGetTileFromCache(const BasicTile &ref) {
 
 	auto tile = std::make_shared<BasicTile>(ref);
 	return tiles.try_emplace(hash, std::move(tile)).first->second;
+}
+
+void MapCache::reserveForMap(uint16_t width, uint16_t height, size_t fileSize) {
+	items.reserve(estimateCacheReserve(fileSize, 512, kMaxItemCacheReserve));
+	tiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGenericTileCacheReserve));
+	flaggedGroundTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
+	flaggedItemTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
+	groundAndItemTiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGroundAndItemTileCacheReserve));
+	mapSectors.reserve(estimateSectorReserve(width, height));
 }
 
 void MapCache::flush() const {

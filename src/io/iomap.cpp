@@ -66,6 +66,8 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 		throw IOMapException("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 	}
 
+	map->reserveForMap(map->width, map->height, fileByte.size());
+
 	if (stream.startNode(OTBM_MAP_DATA)) {
 		parseMapDataAttributes(stream, map);
 		parseTileArea(stream, *map, pos);

@@ -1449,9 +1449,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
-			if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
-				parseUpdateContainer(msg);
-			} else if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+			if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 				parseExivaRestrictions(msg);
 			}
 			break;

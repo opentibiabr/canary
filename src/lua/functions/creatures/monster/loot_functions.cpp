@@ -89,41 +89,42 @@ int LootFunctions::luaLootSetId(lua_State* L) {
 int LootFunctions::luaLootSetIdFromName(lua_State* L) {
 	// loot:setIdFromName(name)
 	const auto &loot = Lua::getUserdataShared<Loot>(L, 1, "Loot");
-	if (loot && Lua::isString(L, 2)) {
-		auto name = Lua::getString(L, 2);
-		const auto &monsterName = loot->monsterName;
-		const auto monsterContext = monsterName.empty() ? "" : " (monster: " + monsterName + ")";
-		const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
-
-		if (ids.first == Item::items.nameToItems.cend()) {
-			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Unknown loot item '{}'{}",
-			                name, monsterContext);
-			lua_pushnil(L);
-			return 1;
-		}
-
-		if (std::next(ids.first) != ids.second) {
-			// Build a list of all conflicting IDs for a useful debug message
-			std::string conflictingIds;
-			for (auto it = ids.first; it != ids.second; ++it) {
-				if (!conflictingIds.empty()) {
-					conflictingIds += ", ";
-				}
-				conflictingIds += std::to_string(it->second);
-			}
-			g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
-			                "Duplicate item name '{}' found with IDs: [{}]. Using first ID: {}{}",
-			                name, conflictingIds, ids.first->second, monsterContext);
-		}
-
-		loot->lootBlock.id = ids.first->second;
-		Lua::pushBoolean(L, true);
-	} else {
+	if (!loot || !Lua::isString(L, 2)) {
 		g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
 		                "Unknown loot item loot, string value expected");
 		lua_pushnil(L);
+		return 1;
 	}
+
+	auto name = Lua::getString(L, 2);
+	const auto &monsterName = loot->monsterName;
+	const auto monsterContext = monsterName.empty() ? "" : " (monster: " + monsterName + ")";
+	const auto ids = Item::items.nameToItems.equal_range(asLowerCaseString(name));
+
+	if (ids.first == Item::items.nameToItems.cend()) {
+		g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
+		                "Unknown loot item '{}'{}",
+		                name, monsterContext);
+		lua_pushnil(L);
+		return 1;
+	}
+
+	if (std::next(ids.first) != ids.second) {
+		// Build a list of all conflicting IDs for a useful debug message
+		std::string conflictingIds;
+		for (auto it = ids.first; it != ids.second; ++it) {
+			if (!conflictingIds.empty()) {
+				conflictingIds += ", ";
+			}
+			conflictingIds += std::to_string(it->second);
+		}
+		g_logger().warn("[LootFunctions::luaLootSetIdFromName] - "
+		                "Duplicate item name '{}' found with IDs: [{}]. Using first ID: {}{}",
+		                name, conflictingIds, ids.first->second, monsterContext);
+	}
+
+	loot->lootBlock.id = ids.first->second;
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

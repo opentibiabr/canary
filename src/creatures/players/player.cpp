@@ -67,6 +67,41 @@
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
 
+namespace {
+	[[nodiscard]] double getItemImbuementSkillEquipment(const std::shared_ptr<Item> &item, uint16_t skill) {
+		double imbuementSkill = 0.0;
+		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotid, &imbuementInfo) || !imbuementInfo.imbuement) {
+				continue;
+			}
+
+			imbuementSkill += imbuementInfo.imbuement->skills[skill] / 10000.0;
+		}
+
+		return imbuementSkill;
+	}
+
+	[[nodiscard]] bool hasMatchingImbuementInOtherSlot(const std::shared_ptr<Item> &item, uint8_t ignoredSlot, const Imbuement* imbuement) {
+		for (uint8_t slot = 0; slot < item->getImbuementSlot(); slot++) {
+			if (slot == ignoredSlot) {
+				continue;
+			}
+
+			ImbuementInfo existingImbuement;
+			if (!item->getImbuementInfo(slot, &existingImbuement) || !existingImbuement.imbuement) {
+				continue;
+			}
+
+			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+}
+
 MuteCountMap Player::muteCountMap;
 
 /**
@@ -2621,8 +2656,7 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 	}
 
 	const auto &thisPlayer = getPlayer();
-	bool canAddImbuement = item->canAddImbuement(slot, thisPlayer, imbuement);
-	if (!canAddImbuement) {
+	if (!item->canAddImbuement(slot, thisPlayer, imbuement)) {
 		return;
 	}
 
@@ -2633,25 +2667,10 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		return;
 	}
 
-	for (uint8_t i = 0; i < item->getImbuementSlot(); i++) {
-		if (i == slot) {
-			continue;
-		}
-
-		ImbuementInfo existingImbuement;
-		if (item->getImbuementInfo(i, &existingImbuement) && existingImbuement.imbuement) {
-			if (existingImbuement.imbuement->getName() == imbuement->getName()) {
-				g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
-				sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
-				return;
-			}
-		}
-
-		if (imbuementInfo.imbuement == imbuement) {
-			g_logger().error("[Player::onApplyImbuement] - Duplicate imbuement application detected for '{}'", imbuement->getName());
-			sendImbuementResult("This imbuement is already applied to this item.");
-			return;
-		}
+	if (hasMatchingImbuementInOtherSlot(item, slot, imbuement)) {
+		g_logger().error("[Player::onApplyImbuement] - Player {} attempted to apply the same imbuement in multiple slots", this->getName());
+		sendImbuementResult("You cannot apply the same imbuement in multiple slots.");
+		return;
 	}
 
 	const auto &items = imbuement->getItems();
@@ -2703,19 +2722,17 @@ void Player::onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<
 		sendTextMessage(MESSAGE_STATUS, withdrawItemMessage.str());
 	}
 
-	if (canAddImbuement) {
-		// Update imbuement stats item if the item is equipped
-		if (item->getParent() == thisPlayer) {
-			ImbuementInfo oldImb;
-			if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
-				removeItemImbuementStats(oldImb.imbuement);
-			}
-
-			addItemImbuementStats(imbuement);
+	// Update imbuement stats item if the item is equipped
+	if (item->getParent() == thisPlayer) {
+		ImbuementInfo oldImb;
+		if (item->getImbuementInfo(slot, &oldImb) && oldImb.imbuement) {
+			removeItemImbuementStats(oldImb.imbuement);
 		}
-		item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
-		g_imbuementDecay().startImbuementDecay(item);
+
+		addItemImbuementStats(imbuement);
 	}
+	item->setImbuement(slot, imbuement->getID(), baseImbuement->duration);
+	g_imbuementDecay().startImbuementDecay(item);
 
 	openImbuementWindow(ImbuementAction::PickItem, item);
 }
@@ -12879,12 +12896,7 @@ std::array<SkillsEquipment, SKILL_LAST + 1> Player::getSkillsEquipment() const {
 				skillEquipment.equipment += itemType.abilities->skills[skill] / 10000.0;
 			}
 
-			for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-				ImbuementInfo imbuementInfo;
-				if (item->getImbuementInfo(slotid, &imbuementInfo) && imbuementInfo.imbuement) {
-					skillEquipment.imbuement += imbuementInfo.imbuement->skills[skill] / 10000.0;
-				}
-			}
+			skillEquipment.imbuement += getItemImbuementSkillEquipment(item, skill);
 		}
 
 		skillsEquipment[skill] = skillEquipment;

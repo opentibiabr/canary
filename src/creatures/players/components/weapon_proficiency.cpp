@@ -325,7 +325,7 @@ std::vector<uint16_t> WeaponProficiency::getTrackedWeaponIds() const {
 		weaponIds.push_back(weaponId);
 	}
 
-	std::ranges::sort(weaponIds);
+	(void)std::ranges::sort(weaponIds);
 	return weaponIds;
 }
 
@@ -760,8 +760,8 @@ void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* 
 	uint32_t maxExperience = getMaxExperience(weaponId);
 
 	if (!proficiency.contains(weaponId)) {
-		const auto insertResult = proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
-		if (!insertResult.second) {
+		const auto [_, inserted] = proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
+		if (!inserted) {
 			g_logger().warn("{} - Failed to create proficiency state for weapon ID '{}'", __FUNCTION__, weaponId);
 			return;
 		}
@@ -941,7 +941,7 @@ std::vector<ProficiencyPerk> WeaponProficiency::collectValidSelectedPerks(uint16
 		usedLevels[level] = true;
 	}
 
-	std::ranges::sort(validPerks, [](const auto &lhs, const auto &rhs) {
+	(void)std::ranges::sort(validPerks, [](const auto &lhs, const auto &rhs) {
 		if (lhs.level != rhs.level) {
 			return lhs.level < rhs.level;
 		}
@@ -1431,10 +1431,10 @@ std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiari
 	std::vector<std::pair<std::string, double>> bestiariesDamage;
 	bestiariesDamage.reserve(aggregatedBestiaries.size());
 	for (const auto &[name, value] : aggregatedBestiaries) {
-		bestiariesDamage.push_back({ name, value });
+		(void)bestiariesDamage.emplace_back(name, value);
 	}
 
-	std::ranges::sort(bestiariesDamage, [](const auto &lhs, const auto &rhs) {
+	(void)std::ranges::sort(bestiariesDamage, [](const auto &lhs, const auto &rhs) {
 		return lhs.first < rhs.first;
 	});
 

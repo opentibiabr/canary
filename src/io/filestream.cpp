@@ -11,7 +11,7 @@
 
 #include "io/fileloader.hpp"
 
-uint32_t FileStream::tell() const {
+[[nodiscard]] uint32_t FileStream::tell() const {
 	return m_pos;
 }
 
@@ -27,7 +27,7 @@ void FileStream::skip(uint32_t len) {
 	seek(tell() + len);
 }
 
-uint32_t FileStream::size() const {
+[[nodiscard]] uint32_t FileStream::size() const {
 	std::size_t size = m_data.size();
 	if (size > std::numeric_limits<uint32_t>::max()) {
 		g_logger().error("File size exceeds uint32_t range");
@@ -45,7 +45,7 @@ std::string FileStream::getString() {
 			return {};
 		}
 
-		str = { (char*)&m_data[m_pos], len };
+		str.assign(reinterpret_cast<const char*>(m_data.data() + m_pos), len);
 		m_pos += len;
 	} else if (len != 0) {
 		g_logger().error("[FileStream::getString] - Read failed because string is too big");

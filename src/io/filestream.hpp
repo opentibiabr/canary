@@ -29,25 +29,26 @@ public:
 	void back(uint32_t pos = 1);
 	void seek(uint32_t pos);
 	void skip(uint32_t len);
-	uint32_t size() const;
-	uint32_t tell() const;
+	[[nodiscard]] uint32_t size() const;
+	[[nodiscard]] uint32_t tell() const;
 
 	bool startNode(uint8_t type = 0);
 	bool endNode();
 	bool isProp(uint8_t prop, bool toNext = true);
 
 	uint8_t getU8() {
+		if (m_nodes > 0) {
+			uint8_t value = 0;
+			if (!readEscapedByte(value, "Failed to getU8")) {
+				return {};
+			}
+
+			return value;
+		}
+
 		if (m_pos >= m_data.size()) {
 			g_logger().error("Failed to getU8");
 			return {};
-		}
-
-		if (m_nodes > 0 && m_data[m_pos] == kOtbNodeEscapeByte) {
-			++m_pos;
-			if (m_pos >= m_data.size()) {
-				g_logger().error("Failed to getU8");
-				return {};
-			}
 		}
 
 		return m_data[m_pos++];
@@ -55,25 +56,49 @@ public:
 
 	uint16_t getU16() {
 		uint16_t v = 0;
-		read(v, m_nodes > 0);
+		if (!read(v, m_nodes > 0)) {
+			return {};
+		}
 		return v;
 	}
 
 	uint32_t getU32() {
 		uint32_t v = 0;
-		read(v, m_nodes > 0);
+		if (!read(v, m_nodes > 0)) {
+			return {};
+		}
 		return v;
 	}
 
 	uint64_t getU64() {
 		uint64_t v = 0;
-		read(v, m_nodes > 0);
+		if (!read(v, m_nodes > 0)) {
+			return {};
+		}
 		return v;
 	}
 
 	std::string getString();
 
 private:
+	bool readEscapedByte(uint8_t &value, const char* errorMessage) {
+		if (m_pos >= m_data.size()) {
+			g_logger().error(errorMessage);
+			return false;
+		}
+
+		if (m_data[m_pos] == kOtbNodeEscapeByte) {
+			++m_pos;
+			if (m_pos >= m_data.size()) {
+				g_logger().error(errorMessage);
+				return false;
+			}
+		}
+
+		value = m_data[m_pos++];
+		return true;
+	}
+
 	template <typename T>
 	bool read(T &ret, bool escape = false) {
 		static_assert(std::is_trivially_copyable_v<T>, "Type T must be trivially copyable");
@@ -83,19 +108,9 @@ private:
 		if (escape) {
 			std::array<uint8_t, size> array {};
 			for (uint_fast8_t i = 0; i < size; ++i) {
-				if (m_pos >= m_data.size()) {
-					g_logger().error("Read failed");
+				if (!readEscapedByte(array[i], "Read failed")) {
 					return false;
 				}
-
-				if (m_data[m_pos] == kOtbNodeEscapeByte) {
-					++m_pos;
-					if (m_pos >= m_data.size()) {
-						g_logger().error("Read failed");
-						return false;
-					}
-				}
-				array[i] = m_data[m_pos++];
 			}
 			ret = std::bit_cast<T>(array);
 			return true;
@@ -106,7 +121,9 @@ private:
 			return false;
 		}
 
-		std::memcpy(&ret, m_data.data() + m_pos, size);
+		if (std::memcpy(&ret, m_data.data() + m_pos, size) != &ret) {
+			return false;
+		}
 		m_pos += size;
 		return true;
 	}

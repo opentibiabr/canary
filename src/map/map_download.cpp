@@ -142,6 +142,10 @@ namespace MapDownload {
 	}
 
 	void warnIfOutdatedMapDownloadUrl(const std::string &configuredMapDownloadUrl) {
+		if (!extractCanaryReleaseTag(configuredMapDownloadUrl)) {
+			return;
+		}
+
 		const auto currentMapDownloadUrl = fetchCurrentConfigDistMapDownloadUrl();
 		if (!currentMapDownloadUrl) {
 			return;

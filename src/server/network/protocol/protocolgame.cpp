@@ -65,6 +65,12 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
+	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+
+	size_t getUnreadBytes(const NetworkMessage &msg) {
+		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
+		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
+	}
 
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
@@ -1367,7 +1373,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
-			if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+			if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
+				parseUpdateContainer(msg);
+			} else if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 				parseExivaRestrictions(msg);
 			}
 			break;

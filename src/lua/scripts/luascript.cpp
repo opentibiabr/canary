@@ -114,10 +114,6 @@ namespace {
 		static std::unordered_set<std::string> readyDirectories;
 
 		const auto directoryKey = cacheDirectory.lexically_normal().string();
-		if (readyDirectories.contains(directoryKey)) {
-			return true;
-		}
-
 		std::scoped_lock lock(mutex);
 		if (readyDirectories.contains(directoryKey)) {
 			return true;
@@ -261,7 +257,7 @@ namespace {
 		return packs;
 	}
 
-	const std::string* findLuaBytecodePackChunk(const LuaBytecodeCacheEntry &cacheEntry) {
+	std::optional<std::string> findLuaBytecodePackChunk(const LuaBytecodeCacheEntry &cacheEntry) {
 		std::scoped_lock lock(getLuaBytecodePackMutex());
 		auto &packs = getLuaBytecodePacks();
 		const auto packKey = cacheEntry.packFile.string();
@@ -271,7 +267,11 @@ namespace {
 		}
 
 		const auto chunkIt = packIt->second.chunks.find(cacheEntry.key);
-		return chunkIt != packIt->second.chunks.end() ? &chunkIt->second : nullptr;
+		if (chunkIt == packIt->second.chunks.end()) {
+			return std::nullopt;
+		}
+
+		return chunkIt->second;
 	}
 
 	void invalidateLuaBytecodePack(const std::filesystem::path &packFile) {
@@ -434,7 +434,7 @@ int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string 
 	const auto bytecodeCacheEntry = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheEntry(file, sourceMetadata) : std::nullopt;
 	if (bytecodeCacheEntry) {
 		const std::string chunkName = "@" + file;
-		if (const auto* packedBytecode = findLuaBytecodePackChunk(*bytecodeCacheEntry)) {
+		if (const auto packedBytecode = findLuaBytecodePackChunk(*bytecodeCacheEntry)) {
 			ret = luaL_loadbuffer(luaState, packedBytecode->data(), packedBytecode->size(), chunkName.c_str());
 			if (ret != 0) {
 				lua_pop(luaState, 1);

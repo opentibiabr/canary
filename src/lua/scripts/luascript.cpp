@@ -20,6 +20,10 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <exception>
+#endif
+
 ScriptEnvironment::DBResultMap ScriptEnvironment::tempResults;
 uint32_t ScriptEnvironment::lastResultId = 0;
 std::multimap<ScriptEnvironment*, std::shared_ptr<Item>> ScriptEnvironment::tempItems;
@@ -66,8 +70,8 @@ namespace {
 	int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputBuffer) {
 		auto &output = *static_cast<std::string*>(outputBuffer);
 		try {
-			output.append(static_cast<const char*>(data), size);
-		} catch (...) {
+			static_cast<void>(output.append(static_cast<const char*>(data), size));
+		} catch (const std::exception &) {
 			return 1;
 		}
 
@@ -86,10 +90,13 @@ namespace {
 		}
 
 		std::string buffer(static_cast<size_t>(fileSize), '\0');
-		input.seekg(0, std::ios::beg);
+		if (!input.seekg(0, std::ios::beg)) {
+			return std::nullopt;
+		}
 		if (!buffer.empty()) {
-			input.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
-			if (input.gcount() != static_cast<std::streamsize>(buffer.size())) {
+			const auto expectedSize = static_cast<std::streamsize>(buffer.size());
+			const bool readOk = static_cast<bool>(input.read(buffer.data(), expectedSize));
+			if (input.gcount() != expectedSize || (!readOk && !input.eof())) {
 				return std::nullopt;
 			}
 		}
@@ -126,7 +133,7 @@ namespace {
 			return false;
 		}
 
-		readyDirectories.insert(directoryKey);
+		static_cast<void>(readyDirectories.insert(directoryKey));
 		return true;
 	}
 
@@ -182,8 +189,7 @@ namespace {
 	}
 
 	bool readBytes(std::istream &input, char* data, std::streamsize size) {
-		input.read(data, size);
-		return input.gcount() == size;
+		return static_cast<bool>(input.read(data, size)) || input.gcount() == size;
 	}
 
 	template <typename T>
@@ -192,8 +198,9 @@ namespace {
 	}
 
 	template <typename T>
-	void writeBinaryValue(std::ostream &output, T value) {
-		output.write(reinterpret_cast<const char*>(&value), static_cast<std::streamsize>(sizeof(T)));
+	bool writeBinaryValue(std::ostream &output, T value) {
+		const auto size = static_cast<std::streamsize>(sizeof(T));
+		return static_cast<bool>(output.write(reinterpret_cast<const char*>(&value), size));
 	}
 
 	LuaBytecodePack readLuaBytecodePack(const std::filesystem::path &packFile) {
@@ -231,7 +238,7 @@ namespace {
 				break;
 			}
 
-			pack.chunks[std::move(key)] = std::move(bytecode);
+			static_cast<void>(pack.chunks.try_emplace(std::move(key), std::move(bytecode)));
 		}
 
 		return pack;
@@ -277,8 +284,8 @@ namespace {
 	void invalidateLuaBytecodePack(const std::filesystem::path &packFile) {
 		std::scoped_lock lock(getLuaBytecodePackMutex());
 		std::error_code error;
-		std::filesystem::remove(packFile, error);
-		getLuaBytecodePacks().erase(packFile.string());
+		static_cast<void>(std::filesystem::remove(packFile, error));
+		static_cast<void>(getLuaBytecodePacks().erase(packFile.string()));
 	}
 
 	void appendLuaBytecodePack(const LuaBytecodeCacheEntry &cacheEntry, std::string_view bytecode) {
@@ -296,7 +303,7 @@ namespace {
 		bool writeMagic = error || packSize == 0;
 		if (!writeMagic && !luaBytecodePackHasValidMagic(cacheEntry.packFile)) {
 			error.clear();
-			std::filesystem::remove(cacheEntry.packFile, error);
+			static_cast<void>(std::filesystem::remove(cacheEntry.packFile, error));
 			writeMagic = true;
 		}
 
@@ -306,13 +313,17 @@ namespace {
 		}
 
 		if (writeMagic) {
-			output.write(LuaBytecodePackMagic.data(), static_cast<std::streamsize>(LuaBytecodePackMagic.size()));
+			if (!output.write(LuaBytecodePackMagic.data(), static_cast<std::streamsize>(LuaBytecodePackMagic.size()))) {
+				return;
+			}
 		}
 
-		writeBinaryValue(output, static_cast<uint16_t>(cacheEntry.key.size()));
-		writeBinaryValue(output, static_cast<uint64_t>(bytecode.size()));
-		output.write(cacheEntry.key.data(), static_cast<std::streamsize>(cacheEntry.key.size()));
-		output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()));
+		if (!writeBinaryValue(output, static_cast<uint16_t>(cacheEntry.key.size()))
+			|| !writeBinaryValue(output, static_cast<uint64_t>(bytecode.size()))
+			|| !output.write(cacheEntry.key.data(), static_cast<std::streamsize>(cacheEntry.key.size()))
+			|| !output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
+			return;
+		}
 
 		output.close();
 		if (!output.good()) {
@@ -323,7 +334,7 @@ namespace {
 		if (!pack.loaded) {
 			pack = readLuaBytecodePack(cacheEntry.packFile);
 		}
-		pack.chunks[cacheEntry.key] = std::string(bytecode);
+		static_cast<void>(pack.chunks.insert_or_assign(cacheEntry.key, std::string(bytecode)));
 	}
 
 	std::optional<LuaBytecodeCacheEntry> getLuaBytecodeCacheEntry(const std::string &file, const LuaScriptFileMetadata* sourceMetadata) {
@@ -381,30 +392,35 @@ namespace {
 			return;
 		}
 
-		const auto temporaryFile = cacheEntry.file.string() + ".tmp";
+		const auto temporaryFile = cacheEntry.file.parent_path() / (cacheEntry.file.filename().string() + ".tmp");
 		std::ofstream output(temporaryFile, std::ios::binary | std::ios::trunc);
 		if (!output.is_open()) {
-			g_logger().debug("Could not write Lua bytecode cache file '{}'", temporaryFile);
+			g_logger().debug("Could not write Lua bytecode cache file '{}'", temporaryFile.string());
 			return;
 		}
 
-		output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()));
+		if (!output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
+			std::error_code error;
+			static_cast<void>(std::filesystem::remove(temporaryFile, error));
+			return;
+		}
+
 		output.close();
 		if (!output.good()) {
 			std::error_code error;
-			std::filesystem::remove(temporaryFile, error);
+			static_cast<void>(std::filesystem::remove(temporaryFile, error));
 			return;
 		}
 
 		std::error_code error;
 		error.clear();
-		std::filesystem::remove(cacheEntry.file, error);
+		static_cast<void>(std::filesystem::remove(cacheEntry.file, error));
 
 		error.clear();
 		std::filesystem::rename(temporaryFile, cacheEntry.file, error);
 		if (error) {
 			g_logger().debug("Could not publish Lua bytecode cache file '{}': {}", cacheEntry.file.string(), error.message());
-			std::filesystem::remove(temporaryFile, error);
+			static_cast<void>(std::filesystem::remove(temporaryFile, error));
 			return;
 		}
 

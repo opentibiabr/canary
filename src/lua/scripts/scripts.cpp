@@ -61,6 +61,7 @@ bool Scripts::loadEventSchedulerScripts(const std::filesystem::path &filePath) {
 }
 
 bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) {
+	Benchmark loadScriptsBenchmark;
 	const auto dir = std::filesystem::current_path() / folderName;
 
 	// Checks if the folder exists and is really a folder
@@ -71,9 +72,17 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 
 	// Declare a string variable to store the last directory
 	std::string lastDirectory;
+	uint64_t scannedEntries = 0;
+	uint64_t luaFiles = 0;
+	uint64_t loadedFiles = 0;
+	uint64_t skippedFiles = 0;
+	uint64_t disabledFiles = 0;
+	uint64_t failedFiles = 0;
+	uintmax_t luaBytes = 0;
 
 	// Recursive iterate through all entries in the directory
 	for (const auto &entry : std::filesystem::recursive_directory_iterator(dir)) {
+		++scannedEntries;
 		// Get the filename of the entry as a string
 		const auto &realPath = entry.path();
 		std::string fileFolder = realPath.parent_path().filename().string();
@@ -89,7 +98,15 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 
 		if (!std::filesystem::is_regular_file(entry) || realPath.extension() != ".lua") {
 			// Skip this entry if it is not a regular file or does not have a .lua extension
+			++skippedFiles;
 			continue;
+		}
+
+		++luaFiles;
+		std::error_code fileSizeError;
+		const auto fileSize = std::filesystem::file_size(realPath, fileSizeError);
+		if (!fileSizeError) {
+			luaBytes += fileSize;
 		}
 
 		// Check if file start with "#"
@@ -99,6 +116,7 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 			if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
 				g_logger().info("[script]: {} [disabled]", realPath.filename().string());
 			}
+			++disabledFiles;
 			// Skip for next loop and ignore disabled file
 			continue;
 		}
@@ -120,8 +138,13 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 				// Log the error and the file path, and skip to the next iteration of the loop.
 				g_logger().error(realPath.string());
 				g_logger().error(scriptInterface.getLastLuaError());
+				++failedFiles;
 				continue;
 			}
+			++loadedFiles;
+		} else {
+			++skippedFiles;
+			continue;
 		}
 
 		if (g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS)) {
@@ -131,6 +154,21 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 				g_logger().info("[script reloaded]: {}", realPath.filename().string());
 			}
 		}
+	}
+
+	if (g_configManager().getBoolean(LUA_STARTUP_LOAD_TELEMETRY)) {
+		g_logger().info(
+			"Loaded scripts from '{}' in {:.3f} ms (entries: {}, lua: {}, loaded: {}, disabled: {}, skipped: {}, failed: {}, bytes: {})",
+			folderName,
+			loadScriptsBenchmark.duration(),
+			scannedEntries,
+			luaFiles,
+			loadedFiles,
+			disabledFiles,
+			skippedFiles,
+			failedFiles,
+			luaBytes
+		);
 	}
 
 	return true;

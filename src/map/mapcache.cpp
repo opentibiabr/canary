@@ -53,13 +53,6 @@ uint64_t makeGroundAndItemKey(uint32_t flags, uint16_t groundId, uint16_t itemId
 	return (static_cast<uint64_t>(flags) << 32) | (static_cast<uint64_t>(groundId) << 16) | itemId;
 }
 
-std::shared_ptr<BasicTile> &getOrCreateTile(std::shared_ptr<BasicTile> &cachedTile, const BasicTile &ref) {
-	if (!cachedTile) {
-		cachedTile = std::make_shared<BasicTile>(ref);
-	}
-
-	return cachedTile;
-}
 }
 
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
@@ -89,12 +82,18 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 	if (!ref.isHouse() && ref.type == TILESTATE_NONE && !ref.isStatic) {
 		if (ref.ground && ref.ground->isSimple() && ref.items.empty()) {
 			if (ref.flags == 0) {
-				return retainBasicTile(getOrCreateTile(groundOnlyTiles[ref.ground->id], ref));
+				auto &cachedTile = groundOnlyTiles[ref.ground->id];
+				if (!cachedTile) {
+					cachedTile = std::make_shared<BasicTile>(ref);
+					return retainBasicTile(cachedTile);
+				}
+
+				return cachedTile.get();
 			}
 
 			const auto key = makeFlagsAndIdKey(ref.flags, ref.ground->id);
 			if (const auto it = flaggedGroundTiles.find(key); it != flaggedGroundTiles.end()) {
-				return retainBasicTile(it->second);
+				return it->second.get();
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
@@ -104,12 +103,18 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 		if (!ref.ground && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
 			const auto itemId = ref.items.front()->id;
 			if (ref.flags == 0) {
-				return retainBasicTile(getOrCreateTile(itemOnlyTiles[itemId], ref));
+				auto &cachedTile = itemOnlyTiles[itemId];
+				if (!cachedTile) {
+					cachedTile = std::make_shared<BasicTile>(ref);
+					return retainBasicTile(cachedTile);
+				}
+
+				return cachedTile.get();
 			}
 
 			const auto key = makeFlagsAndIdKey(ref.flags, itemId);
 			if (const auto it = flaggedItemTiles.find(key); it != flaggedItemTiles.end()) {
-				return retainBasicTile(it->second);
+				return it->second.get();
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
@@ -119,7 +124,7 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 		if (ref.ground && ref.ground->isSimple() && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
 			const auto key = makeGroundAndItemKey(ref.flags, ref.ground->id, ref.items.front()->id);
 			if (const auto it = groundAndItemTiles.find(key); it != groundAndItemTiles.end()) {
-				return retainBasicTile(it->second);
+				return it->second.get();
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
@@ -133,7 +138,7 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 
 	const auto hash = ref.hash();
 	if (const auto it = tiles.find(hash); it != tiles.end()) {
-		return retainBasicTile(it->second);
+		return it->second.get();
 	}
 
 	auto tile = std::make_shared<BasicTile>(ref);

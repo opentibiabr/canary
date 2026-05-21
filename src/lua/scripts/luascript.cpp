@@ -319,9 +319,9 @@ namespace {
 		}
 
 		if (!writeBinaryValue(output, static_cast<uint16_t>(cacheEntry.key.size()))
-			|| !writeBinaryValue(output, static_cast<uint64_t>(bytecode.size()))
-			|| !output.write(cacheEntry.key.data(), static_cast<std::streamsize>(cacheEntry.key.size()))
-			|| !output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
+		    || !writeBinaryValue(output, static_cast<uint64_t>(bytecode.size()))
+		    || !output.write(cacheEntry.key.data(), static_cast<std::streamsize>(cacheEntry.key.size()))
+		    || !output.write(bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
 			return;
 		}
 

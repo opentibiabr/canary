@@ -117,8 +117,8 @@ class MapCache {
 public:
 	virtual ~MapCache() = default;
 
-	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &BasicTile);
-	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &BasicTile, MapCacheFloorCursor &floorCursor);
+	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &basicTile);
+	void setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &basicTile, MapCacheFloorCursor &floorCursor);
 
 	std::shared_ptr<BasicItem> getBasicItemFromCache(uint16_t id) const;
 	std::shared_ptr<BasicItem> tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) const;

@@ -40,8 +40,14 @@ std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
 	return cachedItem;
 }
 
-std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<BasicTile> &ref) {
-	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
+std::shared_ptr<BasicTile> static_tryGetTileFromCache(const BasicTile &ref) {
+	const auto hash = ref.hash();
+	if (const auto it = tiles.find(hash); it != tiles.end()) {
+		return it->second;
+	}
+
+	auto tile = std::make_shared<BasicTile>(ref);
+	return tiles.try_emplace(hash, std::move(tile)).first->second;
 }
 
 void MapCache::flush() const {
@@ -184,12 +190,12 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	return tile;
 }
 
-void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile) {
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &newTile) {
 	MapCacheFloorCursor floorCursor;
 	setBasicTile(x, y, z, newTile, floorCursor);
 }
 
-void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile, MapCacheFloorCursor &floorCursor) {
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &newTile, MapCacheFloorCursor &floorCursor) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;

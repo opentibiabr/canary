@@ -177,9 +177,17 @@ protected:
 private:
 	const BasicTile* getOrCreateBasicTileFromCache(const BasicTile &basicTile);
 	const BasicTile* retainBasicTile(const std::shared_ptr<BasicTile> &tile);
+	void resetBasicTileLookupCache() const;
 	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const;
 	std::shared_ptr<Item> createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position);
 
 	// Floor tile caches store observer pointers; these shared owners keep them valid after flush().
 	std::vector<std::shared_ptr<BasicTile>> retainedBasicTiles;
+
+	mutable uint64_t lastFlaggedGroundTileKey { 0 };
+	mutable const BasicTile* lastFlaggedGroundTile { nullptr };
+	mutable uint64_t lastFlaggedItemTileKey { 0 };
+	mutable const BasicTile* lastFlaggedItemTile { nullptr };
+	mutable uint64_t lastGroundAndItemTileKey { 0 };
+	mutable const BasicTile* lastGroundAndItemTile { nullptr };
 };

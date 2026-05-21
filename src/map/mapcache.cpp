@@ -94,12 +94,20 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 			}
 
 			const auto key = makeFlagsAndIdKey(ref.flags, ref.ground->id);
+			if (lastFlaggedGroundTile && lastFlaggedGroundTileKey == key) {
+				return lastFlaggedGroundTile;
+			}
+
 			if (const auto it = flaggedGroundTiles.find(key); it != flaggedGroundTiles.end()) {
-				return it->second.get();
+				lastFlaggedGroundTileKey = key;
+				lastFlaggedGroundTile = it->second.get();
+				return lastFlaggedGroundTile;
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
-			return retainBasicTile(flaggedGroundTiles.try_emplace(key, std::move(tile)).first->second);
+			lastFlaggedGroundTileKey = key;
+			lastFlaggedGroundTile = retainBasicTile(flaggedGroundTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastFlaggedGroundTile;
 		}
 
 		if (!ref.ground && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
@@ -115,22 +123,38 @@ const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
 			}
 
 			const auto key = makeFlagsAndIdKey(ref.flags, itemId);
+			if (lastFlaggedItemTile && lastFlaggedItemTileKey == key) {
+				return lastFlaggedItemTile;
+			}
+
 			if (const auto it = flaggedItemTiles.find(key); it != flaggedItemTiles.end()) {
-				return it->second.get();
+				lastFlaggedItemTileKey = key;
+				lastFlaggedItemTile = it->second.get();
+				return lastFlaggedItemTile;
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
-			return retainBasicTile(flaggedItemTiles.try_emplace(key, std::move(tile)).first->second);
+			lastFlaggedItemTileKey = key;
+			lastFlaggedItemTile = retainBasicTile(flaggedItemTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastFlaggedItemTile;
 		}
 
 		if (ref.ground && ref.ground->isSimple() && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
 			const auto key = makeGroundAndItemKey(ref.flags, ref.ground->id, ref.items.front()->id);
+			if (lastGroundAndItemTile && lastGroundAndItemTileKey == key) {
+				return lastGroundAndItemTile;
+			}
+
 			if (const auto it = groundAndItemTiles.find(key); it != groundAndItemTiles.end()) {
-				return it->second.get();
+				lastGroundAndItemTileKey = key;
+				lastGroundAndItemTile = it->second.get();
+				return lastGroundAndItemTile;
 			}
 
 			auto tile = std::make_shared<BasicTile>(ref);
-			return retainBasicTile(groundAndItemTiles.try_emplace(key, std::move(tile)).first->second);
+			lastGroundAndItemTileKey = key;
+			lastGroundAndItemTile = retainBasicTile(groundAndItemTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastGroundAndItemTile;
 		}
 	}
 
@@ -164,6 +188,7 @@ void MapCache::flush() const {
 	flaggedGroundTiles.clear();
 	flaggedItemTiles.clear();
 	groundAndItemTiles.clear();
+	resetBasicTileLookupCache();
 	for (auto &item : simpleItems) {
 		item.reset();
 	}
@@ -173,6 +198,15 @@ void MapCache::flush() const {
 	for (auto &tile : itemOnlyTiles) {
 		tile.reset();
 	}
+}
+
+void MapCache::resetBasicTileLookupCache() const {
+	lastFlaggedGroundTileKey = 0;
+	lastFlaggedGroundTile = nullptr;
+	lastFlaggedItemTileKey = 0;
+	lastFlaggedItemTile = nullptr;
+	lastGroundAndItemTileKey = 0;
+	lastGroundAndItemTile = nullptr;
 }
 
 const BasicTile* MapCache::retainBasicTile(const std::shared_ptr<BasicTile> &tile) {

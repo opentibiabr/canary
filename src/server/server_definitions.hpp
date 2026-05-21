@@ -83,7 +83,8 @@ enum InspectObjectTypes : uint8_t {
 	INSPECT_NORMALOBJECT = 0,
 	INSPECT_NPCTRADE = 1,
 	INSPECT_PLAYERTRADE = 2,
-	INSPECT_CYCLOPEDIA = 3
+	INSPECT_CYCLOPEDIA = 3,
+	INSPECT_PROFICIENCY = 4,
 };
 
 enum CyclopediaCharacterInfo_OutfitType_t : uint8_t {

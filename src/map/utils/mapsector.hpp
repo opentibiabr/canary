@@ -11,11 +11,18 @@
 
 #include "map/map_const.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+#endif
+
 class Creature;
 class Tile;
 struct BasicTile;
 
 struct Floor {
+	using TileGrid = std::array<std::array<std::shared_ptr<Tile>, SECTOR_SIZE>, SECTOR_SIZE>;
+	using BasicTileGrid = std::array<std::array<const BasicTile*, SECTOR_SIZE>, SECTOR_SIZE>;
+
 	explicit Floor(uint8_t z) :
 		z(z) { }
 
@@ -51,8 +58,8 @@ struct Floor {
 	}
 
 private:
-	std::shared_ptr<Tile> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
-	const BasicTile* tileCache[SECTOR_SIZE][SECTOR_SIZE] = {};
+	TileGrid tiles {};
+	BasicTileGrid tileCache {};
 
 	mutable std::shared_mutex mutex;
 
@@ -106,7 +113,7 @@ private:
 
 	mutable std::mutex floors_mutex;
 
-	std::shared_ptr<Floor> floors[MAP_MAX_LAYERS] = {};
+	std::array<std::shared_ptr<Floor>, MAP_MAX_LAYERS> floors {};
 
 	uint32_t floorBits = 0;
 

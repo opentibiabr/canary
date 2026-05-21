@@ -32,6 +32,18 @@ local function containsName(list, name)
 	return nil
 end
 
+local function removeNameOccurrences(list, name)
+	local removed = false
+	name = name:lower()
+	for index = #list, 1, -1 do
+		if list[index]:lower() == name then
+			table.remove(list, index)
+			removed = true
+		end
+	end
+	return removed
+end
+
 local function joinNames(list)
 	return table.concat(list, ", ")
 end
@@ -180,6 +192,8 @@ function talkaction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_STATUS, "You are not streaming right now.")
 		elseif not value then
 			player:sendTextMessage(MESSAGE_STATUS, "You need to type a name.")
+		elseif containsName(data.bans, value) then
+			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " is already banned.")
 		elseif containsName(data.names, value) then
 			table.insert(data.bans, value)
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " has been banned.")
@@ -187,11 +201,9 @@ function talkaction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " not found.")
 		end
 	elseif table.contains({ "unban", "unblock" }, command) then
-		local index = value and containsName(data.bans, value)
 		if not value then
 			player:sendTextMessage(MESSAGE_STATUS, "You need to type a name.")
-		elseif index then
-			table.remove(data.bans, index)
+		elseif removeNameOccurrences(data.bans, value) then
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " has been unbanned.")
 		else
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " not found.")
@@ -207,6 +219,8 @@ function talkaction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_STATUS, "You are not streaming right now.")
 		elseif not value then
 			player:sendTextMessage(MESSAGE_STATUS, "You need to type a name.")
+		elseif containsName(data.mutes, value) then
+			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " is already muted.")
 		elseif containsName(data.names, value) then
 			table.insert(data.mutes, value)
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " has been muted.")
@@ -214,11 +228,9 @@ function talkaction.onSay(player, words, param)
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " not found.")
 		end
 	elseif table.contains({ "unmute", "unsquelch" }, command) then
-		local index = value and containsName(data.mutes, value)
 		if not value then
 			player:sendTextMessage(MESSAGE_STATUS, "You need to type a name.")
-		elseif index then
-			table.remove(data.mutes, index)
+		elseif removeNameOccurrences(data.mutes, value) then
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " has been unmuted.")
 		else
 			player:sendTextMessage(MESSAGE_STATUS, "Spectator " .. value .. " not found.")

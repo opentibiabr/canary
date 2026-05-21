@@ -270,12 +270,12 @@ void LivestreamManager::stopBroadcast(const std::shared_ptr<Player> &caster, boo
 	disconnectViewers(*session, true);
 	session->broadcasting = false;
 	session->broadcastStarted = 0;
-	session->viewerCounter = 0;
 	if (auto owner = session->owner.lock()) {
 		owner->m_isLivestreamBroadcaster = false;
 	}
 
 	if (clearAll) {
+		session->viewerCounter = 0;
 		session->password.clear();
 		session->description.clear();
 		session->bans.clear();
@@ -751,7 +751,13 @@ void LivestreamManager::changeViewerName(const ProtocolGame_ptr &client, Session
 		return;
 	}
 
-	const auto &newName = params[1];
+	auto newName = params[1];
+	trimString(newName);
+	if (newName.empty()) {
+		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, "Please provide a new name."));
+		return;
+	}
+
 	if (newName.size() < MIN_VIEWER_NAME_LENGTH || newName.size() > MAX_VIEWER_NAME_LENGTH) {
 		client->sendTextMessage(TextMessage(MESSAGE_FAILURE, fmt::format("Name must be between {} and {} letters.", MIN_VIEWER_NAME_LENGTH, MAX_VIEWER_NAME_LENGTH)));
 		return;

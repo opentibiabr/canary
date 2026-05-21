@@ -38,6 +38,13 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 namespace {
+	bool hasTableField(lua_State* L, const char* field) {
+		lua_getfield(L, 2, field);
+		const bool hasField = !lua_isnil(L, -1);
+		lua_pop(L, 1);
+		return hasField;
+	}
+
 	std::string getOptionalStringField(lua_State* L, const char* field) {
 		lua_getfield(L, 2, field);
 		std::string value;
@@ -5323,13 +5330,25 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 		return 1;
 	}
 
-	LivestreamState state;
-	state.description = getOptionalStringField(L, "description");
-	state.broadcast = getOptionalBooleanField(L, "broadcast");
-	state.password = getOptionalStringField(L, "password");
-	state.mutes = getStringListField(L, "mutes");
-	state.bans = getStringListField(L, "bans");
-	state.kick = getStringListField(L, "kick");
+	auto state = g_livestream().getState(player);
+	if (hasTableField(L, "description")) {
+		state.description = getOptionalStringField(L, "description");
+	}
+	if (hasTableField(L, "broadcast")) {
+		state.broadcast = getOptionalBooleanField(L, "broadcast");
+	}
+	if (hasTableField(L, "password")) {
+		state.password = getOptionalStringField(L, "password");
+	}
+	if (hasTableField(L, "mutes")) {
+		state.mutes = getStringListField(L, "mutes");
+	}
+	if (hasTableField(L, "bans")) {
+		state.bans = getStringListField(L, "bans");
+	}
+	if (hasTableField(L, "kick")) {
+		state.kick = getStringListField(L, "kick");
+	}
 
 	g_livestream().applyState(player, state);
 	Lua::pushBoolean(L, true);

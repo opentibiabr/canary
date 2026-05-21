@@ -10508,7 +10508,6 @@ void ProtocolGame::castViewerLogin(const std::string &name, const std::string &p
 	acceptPackets = true;
 	sendLivestreamViewerAppear(foundPlayer);
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
-	sendBosstiaryCooldownTimer();
 }
 
 bool ProtocolGame::canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password) {

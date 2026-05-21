@@ -172,6 +172,14 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 
 	std::string password = msg.getString();
 	if (accountDescriptor == "@livestream") {
+		if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
+			disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			return;
+		} else if (!oldProtocol) {
+			disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			return;
+		}
+
 		g_dispatcher().addEvent(
 			[self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), password] {
 				self->getLivestreamCharacterList(password);

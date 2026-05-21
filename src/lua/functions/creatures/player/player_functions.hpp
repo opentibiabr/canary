@@ -382,6 +382,11 @@ class PlayerFunctions {
 	static int luaPlayerAddAchievementPoints(lua_State* L);
 	static int luaPlayerRemoveAchievementPoints(lua_State* L);
 
+	static int luaPlayerGetLivestreamViewersCount(lua_State* L);
+	static int luaPlayerGetLivestreamViewers(lua_State* L);
+	static int luaPlayerSetLivestreamViewers(lua_State* L);
+	static int luaPlayerIsLivestreamViewer(lua_State* L);
+
 	static int luaPlayerAddBadge(lua_State* L);
 
 	static int luaPlayerAddTitle(lua_State* L);

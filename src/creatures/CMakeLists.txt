@@ -20,6 +20,7 @@ target_sources(
             players/grouping/guild.cpp
             players/grouping/party.cpp
             players/imbuements/imbuements.cpp
+            players/livestream/livestream.cpp
             players/management/ban.cpp
             players/management/waitlist.cpp
             players/storages/storages.cpp

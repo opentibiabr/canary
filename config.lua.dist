@@ -486,6 +486,16 @@ combatChainSkillFormulaClub = 0.7
 combatChainSkillFormulaSword = 1.1
 combatChainSkillFormulaFist = 1.1
 
+-- Livestream system
+-- NOTE: set livestreamExperienceMultiplier to 1.0 to disable the experience bonus.
+-- NOTE: set livestreamMaximumViewers to 0 for no global viewer limit.
+-- NOTE: use livestreamPremiumMaximumViewers or a positive livestreamMaximumViewers value to restrict viewer counts.
+livestreamExperienceMultiplier = 1.15
+livestreamMaximumViewersPerIP = 2
+livestreamMaximumViewers = 10
+livestreamPremiumMaximumViewers = 20
+livestreamCasterMinLevel = 200
+
 -- Global server Save
 -- NOTE: globalServerSaveNotifyDuration in minutes
 globalServerSaveNotifyMessage = true

@@ -25,6 +25,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/livestream/livestream.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
@@ -65,6 +66,12 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
+	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+
+	size_t getUnreadBytes(const NetworkMessage &msg) {
+		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
+		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
+	}
 
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
@@ -546,7 +553,11 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 void ProtocolGame::release() {
 	// dispatcher thread
-	if (player && player->client == shared_from_this()) {
+	if (m_isLivestreamViewer) {
+		g_livestream().removeViewer(getThis());
+		player = nullptr;
+	} else if (player && player->client == shared_from_this()) {
+		g_livestream().stopBroadcast(player, true);
 		player->client.reset();
 		player = nullptr;
 	}
@@ -556,23 +567,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// OTCV8 features
-	if (otclientV8 > 0) {
-		sendFeatures();
-	}
-
-	// Extended opcodes
-	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
-		isOTC = true;
-		if (isOTC && otclientV8 == 0) {
-			sendOTCRFeatures();
-		}
-		NetworkMessage opcodeMessage;
-		opcodeMessage.addByte(0x32);
-		opcodeMessage.addByte(0x00);
-		opcodeMessage.add<uint16_t>(0x00);
-		writeToOutputBuffer(opcodeMessage);
-	}
+	sendClientLoginPreamble(operatingSystem);
 
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
 
@@ -758,6 +753,11 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 		return;
 	}
 
+	if (m_isLivestreamViewer) {
+		sendSessionEndInformation(SESSION_END_LOGOUT);
+		return;
+	}
+
 	bool removePlayer = !player->isRemoved() && !forced;
 	auto tile = player->getTile();
 	if (removePlayer && !player->isAccessPlayer()) {
@@ -876,7 +876,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	const auto &onlinePlayer = g_game().getPlayerByName(characterName);
 	const auto &foundPlayer = !onlinePlayer ? g_game().getDeadPlayer(characterName) : onlinePlayer;
-	if (foundPlayer && foundPlayer->client) {
+	if (foundPlayer && foundPlayer->client && accountDescriptor != "@livestream") {
 		if (foundPlayer->isDead()) {
 			disconnectClient("You are already logged in.");
 			return;
@@ -934,6 +934,14 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
 		disconnectClient(ss.str());
+		return;
+	}
+
+	if (accountDescriptor == "@livestream") {
+		g_dispatcher().addEvent([self = getThis(), characterName, password, operatingSystem] {
+			self->castViewerLogin(characterName, password, operatingSystem);
+		},
+		                        "ProtocolGame::castViewerLogin");
 		return;
 	}
 
@@ -996,13 +1004,17 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 }
 
 void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
+	auto writeMessage = [self = getThis(), msg]() mutable {
+		self->getOutputBuffer(msg.getLength())->append(msg);
+		if (self->m_isLivestreamBroadcaster && self->player && !self->m_isLivestreamViewer) {
+			g_livestream().broadcastPacket(self->player, self, msg);
+		}
+	};
+
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([self = getThis(), msg] {
-			self->getOutputBuffer(msg.getLength())->append(msg);
-		},
-		                        __FUNCTION__);
+		g_dispatcher().addEvent(std::move(writeMessage), __FUNCTION__);
 	} else {
-		getOutputBuffer(msg.getLength())->append(msg);
+		writeMessage();
 	}
 }
 
@@ -1022,6 +1034,11 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 		if (recvbyte == 0x0F) {
 			disconnect();
 		}
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		parsePacketFromDispatcher(msg, recvbyte);
 		return;
 	}
 
@@ -1090,6 +1107,40 @@ void ProtocolGame::addBless() {
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte) {
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN) {
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		switch (recvbyte) {
+			case 0x14:
+				logout(true, false);
+				break;
+			case 0x1D:
+				break;
+			case 0x1E:
+				sendPingBack();
+				break;
+			case 0x96:
+				parseSay(msg);
+				break;
+			case 0xCA:
+				if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
+					resendLivestreamViewerContainer(msg);
+				}
+				break;
+			case 0xA1:
+				sendCancelTarget();
+				break;
+			case 0xFA:
+			case 0xFB:
+			case 0xFC:
+			case 0xFD:
+			case 0xFE:
+				break;
+			default:
+				sendCancelWalk();
+				break;
+		}
 		return;
 	}
 
@@ -1367,7 +1418,9 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xC9: /* update tile */
 			break;
 		case 0xCA:
-			if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
+			if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
+				parseUpdateContainer(msg);
+			} else if (!oldProtocol && g_game().getWorldType() == WORLD_TYPE_NO_PVP) {
 				parseExivaRestrictions(msg);
 			}
 			break;
@@ -2042,6 +2095,16 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 
 	const std::string text = msg.getString();
 	if (text.length() > 255) {
+		return;
+	}
+
+	if (channelId == CHANNEL_LIVESTREAM) {
+		g_livestream().handleChat(getThis(), text);
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		sendTextMessage(TextMessage(MESSAGE_LOOK, "You only can talk in the Livestream channel."));
 		return;
 	}
 
@@ -5213,6 +5276,10 @@ void ProtocolGame::sendGameNews() {
 }
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
+	if (m_isLivestreamViewer) {
+		return;
+	}
+
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
@@ -10407,4 +10474,109 @@ void ProtocolGame::sendExivaRestrictions(
 	}
 
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendClientLoginPreamble(OperatingSystem_t operatingSystem) {
+	if (otclientV8 > 0) {
+		sendFeatures();
+	}
+
+	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		isOTC = true;
+		if (otclientV8 == 0) {
+			sendOTCRFeatures();
+		}
+
+		NetworkMessage opcodeMessage;
+		opcodeMessage.addByte(0x32);
+		opcodeMessage.addByte(0x00);
+		opcodeMessage.add<uint16_t>(0x00);
+		writeToOutputBuffer(opcodeMessage);
+	}
+}
+
+void ProtocolGame::castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem) {
+	sendClientLoginPreamble(operatingSystem);
+
+	const auto &foundPlayer = g_game().getPlayerByName(name);
+	if (!canWatchLivestream(foundPlayer, password)) {
+		return;
+	}
+
+	m_isLivestreamViewer = true;
+	player = foundPlayer;
+	acceptPackets = true;
+	sendLivestreamViewerAppear(foundPlayer);
+	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
+	sendBosstiaryCooldownTimer();
+}
+
+bool ProtocolGame::canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password) {
+	std::string reason;
+	if (!g_livestream().canWatch(foundPlayer, getThis(), password, reason)) {
+		disconnectClient(reason);
+		return false;
+	}
+
+	return true;
+}
+
+void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer) {
+	if (!foundPlayer) {
+		return;
+	}
+
+	player = foundPlayer;
+	const auto ownerClient = foundPlayer->client;
+	foundPlayer->client = getThis();
+	sendAddCreature(player, player->getPosition(), 0, true);
+	foundPlayer->client = ownerClient;
+
+	syncLivestreamViewerOpenContainers(player);
+	g_livestream().addViewer(player, getThis());
+
+	const auto viewerCount = g_livestream().getViewerCount(player);
+	sendTextMessage(TextMessage(MESSAGE_LOOK, fmt::format("{} is broadcasting for {} people.\nLivestream time: {}", player->getName(), viewerCount, g_livestream().getBroadcastTimeString(player))));
+
+	const auto description = g_livestream().getDescription(player);
+	if (!description.empty()) {
+		sendCreatureSay(player, TALKTYPE_SAY, description);
+	}
+
+	if (!oldProtocol) {
+		std::unordered_set<PlayerIcon> iconSet;
+		iconSet.insert(PlayerIcon::Rooted);
+		sendIcons(iconSet, IconBakragore::None);
+	}
+
+	sendChannel(CHANNEL_LIVESTREAM, "Livestream", nullptr, nullptr);
+	sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
+}
+
+void ProtocolGame::syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer) {
+	if (!foundPlayer) {
+		return;
+	}
+
+	for (const auto &[cid, openContainer] : foundPlayer->getOpenContainers()) {
+		if (openContainer.container) {
+			sendContainer(cid, openContainer.container, openContainer.container->hasParent(), openContainer.index);
+		}
+	}
+}
+
+void ProtocolGame::resendLivestreamViewerContainer(NetworkMessage &msg) {
+	if (!player) {
+		return;
+	}
+
+	const uint8_t cid = msg.getByte();
+	const auto &openContainers = player->getOpenContainers();
+	const auto it = openContainers.find(cid);
+	if (it == openContainers.end() || !it->second.container) {
+		sendCloseContainer(cid);
+		return;
+	}
+
+	sendContainer(cid, it->second.container, it->second.container->hasParent(), it->second.index);
 }

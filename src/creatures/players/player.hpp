@@ -368,6 +368,7 @@ public:
 	bool isOldProtocol() const;
 
 	uint32_t getProtocolVersion() const;
+	std::shared_ptr<ProtocolGame> getClient() const;
 
 	bool hasSecureMode() const;
 

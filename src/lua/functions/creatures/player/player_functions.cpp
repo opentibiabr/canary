@@ -15,6 +15,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/interactions/chat.hpp"
 #include "creatures/monsters/monsters.hpp"
+#include "creatures/players/livestream/livestream.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "server/network/protocol/protocolgame.hpp"
@@ -35,6 +36,55 @@
 #include "enums/account_errors.hpp"
 #include "enums/player_icons.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
+
+namespace {
+	std::string getOptionalStringField(lua_State* L, const char* field) {
+		lua_getfield(L, 2, field);
+		std::string value;
+		if (lua_isstring(L, -1)) {
+			value = Lua::getString(L, -1);
+		}
+		lua_pop(L, 1);
+		return value;
+	}
+
+	bool getOptionalBooleanField(lua_State* L, const char* field) {
+		lua_getfield(L, 2, field);
+		const bool value = lua_toboolean(L, -1) != 0;
+		lua_pop(L, 1);
+		return value;
+	}
+
+	std::vector<std::string> getStringListField(lua_State* L, const char* field) {
+		std::vector<std::string> values;
+		lua_getfield(L, 2, field);
+		if (!lua_istable(L, -1)) {
+			lua_pop(L, 1);
+			return values;
+		}
+
+		lua_pushnil(L);
+		while (lua_next(L, -2) != 0) {
+			if (lua_isstring(L, -1)) {
+				values.emplace_back(Lua::getString(L, -1));
+			}
+			lua_pop(L, 1);
+		}
+
+		lua_pop(L, 1);
+		return values;
+	}
+
+	void pushStringList(lua_State* L, const char* field, const std::vector<std::string> &values) {
+		lua_createtable(L, static_cast<int>(values.size()), 0);
+		int index = 0;
+		for (const auto &value : values) {
+			Lua::pushString(L, value);
+			lua_rawseti(L, -2, ++index);
+		}
+		lua_setfield(L, -2, field);
+	}
+}
 
 void PlayerFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
@@ -390,6 +440,11 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "getAchievementPoints", PlayerFunctions::luaPlayerGetAchievementPoints);
 	Lua::registerMethod(L, "Player", "addAchievementPoints", PlayerFunctions::luaPlayerAddAchievementPoints);
 	Lua::registerMethod(L, "Player", "removeAchievementPoints", PlayerFunctions::luaPlayerRemoveAchievementPoints);
+
+	Lua::registerMethod(L, "Player", "getLivestreamViewersCount", PlayerFunctions::luaPlayerGetLivestreamViewersCount);
+	Lua::registerMethod(L, "Player", "getLivestreamViewers", PlayerFunctions::luaPlayerGetLivestreamViewers);
+	Lua::registerMethod(L, "Player", "setLivestreamViewers", PlayerFunctions::luaPlayerSetLivestreamViewers);
+	Lua::registerMethod(L, "Player", "isLivestreamViewer", PlayerFunctions::luaPlayerIsLivestreamViewer);
 
 	// Badge Functions
 	Lua::registerMethod(L, "Player", "addBadge", PlayerFunctions::luaPlayerAddBadge);
@@ -5215,5 +5270,81 @@ int PlayerFunctions::luaPlayerGetVirtue(lua_State* L) {
 	}
 
 	lua_pushnumber(L, static_cast<lua_Number>(player->getVirtue()));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLivestreamViewersCount(lua_State* L) {
+	// player:getLivestreamViewersCount()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, static_cast<lua_Number>(g_livestream().getViewerCount(player)));
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetLivestreamViewers(lua_State* L) {
+	// player:getLivestreamViewers()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto state = g_livestream().getState(player);
+	lua_createtable(L, 0, 7);
+	Lua::setField(L, "description", state.description);
+	Lua::pushBoolean(L, state.broadcast);
+	lua_setfield(L, -2, "broadcast");
+	Lua::setField(L, "password", state.password);
+	pushStringList(L, "names", state.names);
+	pushStringList(L, "mutes", state.mutes);
+	pushStringList(L, "bans", state.bans);
+	pushStringList(L, "kick", state.kick);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
+	// player:setLivestreamViewers(data)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	if (!lua_istable(L, 2)) {
+		Lua::reportErrorFunc("Livestream data table expected.");
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	LivestreamState state;
+	state.description = getOptionalStringField(L, "description");
+	state.broadcast = getOptionalBooleanField(L, "broadcast");
+	state.password = getOptionalStringField(L, "password");
+	state.mutes = getStringListField(L, "mutes");
+	state.bans = getStringListField(L, "bans");
+	state.kick = getStringListField(L, "kick");
+
+	g_livestream().applyState(player, state);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerIsLivestreamViewer(lua_State* L) {
+	// player:isLivestreamViewer()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	Lua::pushBoolean(L, g_livestream().isViewer(player->getClient()));
 	return 1;
 }

@@ -20,6 +20,8 @@
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
 
+#include <optional>
+
 Scripts::Scripts() :
 	scriptInterface("Scripts Interface") {
 	scriptInterface.initState();
@@ -65,6 +67,7 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 	const auto dir = std::filesystem::current_path() / folderName;
 	const auto startupLoadTelemetry = g_configManager().getBoolean(LUA_STARTUP_LOAD_TELEMETRY);
 	const auto scriptsConsoleLogs = g_configManager().getBoolean(SCRIPTS_CONSOLE_LOGS);
+	const auto bytecodeCacheEnabled = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE);
 
 	// Checks if the folder exists and is really a folder
 	if (!std::filesystem::exists(dir) || !std::filesystem::is_directory(dir)) {
@@ -95,11 +98,22 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 		}
 
 		++luaFiles;
-		if (startupLoadTelemetry) {
-			std::error_code fileSizeError;
-			const auto fileSize = std::filesystem::file_size(realPath, fileSizeError);
-			if (!fileSizeError) {
-				luaBytes += fileSize;
+		std::optional<LuaScriptFileMetadata> sourceMetadata;
+		if (startupLoadTelemetry || bytecodeCacheEnabled) {
+			std::error_code metadataError;
+			const auto fileSize = entry.file_size(metadataError);
+			if (!metadataError) {
+				if (startupLoadTelemetry) {
+					luaBytes += fileSize;
+				}
+
+				if (bytecodeCacheEnabled) {
+					metadataError.clear();
+					const auto lastWriteTime = entry.last_write_time(metadataError);
+					if (!metadataError) {
+						sourceMetadata = LuaScriptFileMetadata { fileSize, lastWriteTime };
+					}
+				}
 			}
 		}
 
@@ -137,7 +151,7 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 
 			const auto scriptPath = realPath.string();
 			// If the function 'loadFile' returns -1, then there was an error loading the file
-			if (scriptInterface.loadFile(scriptPath, file) == -1) {
+			if (scriptInterface.loadFile(scriptPath, file, sourceMetadata ? &*sourceMetadata : nullptr) == -1) {
 				// Log the error and the file path, and skip to the next iteration of the loop.
 				g_logger().error(scriptPath);
 				g_logger().error(scriptInterface.getLastLuaError());

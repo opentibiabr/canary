@@ -12,6 +12,13 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
+#include <filesystem>
+
+struct LuaScriptFileMetadata {
+	uintmax_t size = 0;
+	std::filesystem::file_time_type lastWriteTime {};
+};
+
 class LuaScriptInterface : public Lua {
 public:
 	explicit LuaScriptInterface(std::string interfaceName);
@@ -24,7 +31,7 @@ public:
 	virtual bool initState();
 	virtual bool reInitState();
 
-	int32_t loadFile(const std::string &file, const std::string &scriptName);
+	int32_t loadFile(const std::string &file, const std::string &scriptName, const LuaScriptFileMetadata* sourceMetadata = nullptr);
 
 	const std::string &getFileById(int32_t scriptId);
 	int32_t getEvent(const std::string &eventName);

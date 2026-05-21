@@ -117,21 +117,26 @@ std::string getLuaBytecodeSourceIdentity(const std::string &file) {
 	return sourcePath.lexically_normal().generic_string();
 }
 
-std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &file) {
-	std::error_code error;
-	const std::filesystem::directory_entry sourceEntry(file, error);
-	if (error) {
-		return std::nullopt;
-	}
+std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &file, const LuaScriptFileMetadata* sourceMetadata) {
+	LuaScriptFileMetadata fallbackMetadata;
+	if (sourceMetadata == nullptr) {
+		std::error_code error;
+		const std::filesystem::directory_entry sourceEntry(file, error);
+		if (error) {
+			return std::nullopt;
+		}
 
-	const auto sourceSize = sourceEntry.file_size(error);
-	if (error) {
-		return std::nullopt;
-	}
+		fallbackMetadata.size = sourceEntry.file_size(error);
+		if (error) {
+			return std::nullopt;
+		}
 
-	const auto sourceWriteTime = sourceEntry.last_write_time(error);
-	if (error) {
-		return std::nullopt;
+		fallbackMetadata.lastWriteTime = sourceEntry.last_write_time(error);
+		if (error) {
+			return std::nullopt;
+		}
+
+		sourceMetadata = &fallbackMetadata;
 	}
 
 	const auto sourceIdentity = getLuaBytecodeSourceIdentity(file);
@@ -140,8 +145,8 @@ std::optional<std::filesystem::path> getLuaBytecodeCacheFile(const std::string &
 		LuaBytecodeCacheVersion,
 		sizeof(void*),
 		sourceIdentity,
-		sourceSize,
-		sourceWriteTime.time_since_epoch().count()
+		sourceMetadata->size,
+		sourceMetadata->lastWriteTime.time_since_epoch().count()
 	);
 
 	return getLuaBytecodeCacheDirectory() / fmt::format("{:016x}.luac", fnv1a64(cacheKey));
@@ -201,10 +206,10 @@ bool LuaScriptInterface::reInitState() {
 }
 
 /// Same as lua_pcall, but adds stack trace to error strings in called function.
-int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string &scriptName) {
+int32_t LuaScriptInterface::loadFile(const std::string &file, const std::string &scriptName, const LuaScriptFileMetadata* sourceMetadata) {
 	// loads file as a chunk at stack top
 	int ret = -1;
-	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file) : std::nullopt;
+	const auto bytecodeCacheFile = g_configManager().getBoolean(LUA_SCRIPT_BYTECODE_CACHE) ? getLuaBytecodeCacheFile(file, sourceMetadata) : std::nullopt;
 	if (bytecodeCacheFile) {
 		ret = luaL_loadfile(luaState, bytecodeCacheFile->string().c_str());
 		if (ret != 0) {

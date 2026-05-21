@@ -12,7 +12,10 @@
 #include <algorithm>
 #include <array>
 #include <limits>
-#include <utility>
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <utility>
+#endif
 
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"

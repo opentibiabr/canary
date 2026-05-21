@@ -13,7 +13,9 @@
 #include "game/game.hpp"
 #include "io/filestream.hpp"
 
-#include <utility>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <utility>
+#endif
 
 /*
     OTBM_ROOTV1

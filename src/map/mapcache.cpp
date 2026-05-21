@@ -283,6 +283,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
 	}
 
+	if (!cachedTile->items.empty()) {
+		tile->makeItemList()->reserve(cachedTile->items.size());
+	}
+
 	for (const auto &BasicItemd : cachedTile->items) {
 		tile->internalAddThing(createItem(BasicItemd, pos));
 	}

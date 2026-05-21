@@ -41,6 +41,7 @@ public:
 	using ItemVector::push_back;
 	using ItemVector::rbegin;
 	using ItemVector::rend;
+	using ItemVector::reserve;
 	using ItemVector::reverse_iterator;
 	using ItemVector::size;
 	using ItemVector::value_type;

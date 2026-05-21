@@ -96,10 +96,10 @@ Validation:
 
 Each entry represents one proficiency profile:
 
-- `ProficiencyId`
-- `Name`
-- `Levels` (array)
+- `ProficiencyId` (server-required)
+- `Levels` (server-required array)
 - `Levels[].Perks` (array of selectable perks at that level)
+- `Name` and `Version` (metadata kept in the JSON, not used by server logic)
 
 Basic example:
 
@@ -126,12 +126,13 @@ Common perk fields:
   - `SkillId`
   - `SpellId`
   - `AugmentType`
-  - `ElementId` or `DamageType` (in source json, converted internally)
+  - `DamageType` for specialized magic level perks
+  - `ElementId` for elemental hit/critical perks
   - `BestiaryId`
   - `BestiaryName`
   - `Range`
 
-If you reference a proficiency ID in protobuf/XML that does not exist in this file, that item proficiency will be ignored.
+If protobuf references a proficiency ID that does not exist in this file, the protobuf value is ignored. If an XML override references an unknown or invalid proficiency ID, only that override is ignored; any previously loaded valid protobuf value remains active.
 
 ## 6. Proficiency bonus type IDs (`Type`)
 
@@ -221,7 +222,7 @@ From current code:
   - `2 -> 70`
   - `3 -> 100`
   - `4 -> 165`
-  - `5 -> 241`
+  - `5 -> 240`
 - Bosstiary rarity:
   - `BANE -> 500`
   - `ARCHFOE -> 5000`
@@ -291,7 +292,7 @@ Use this quick validation flow after changes:
 
 ## 13. Troubleshooting
 
-### "I changed both JSON files and nothing changed."
+### "I changed the server and client proficiency data and nothing changed."
 
 Check all of the following:
 

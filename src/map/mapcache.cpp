@@ -185,16 +185,41 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 }
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile) {
+	MapCacheFloorCursor floorCursor;
+	setBasicTile(x, y, z, newTile, floorCursor);
+}
+
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile, MapCacheFloorCursor &floorCursor) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
 	const auto &tile = static_tryGetTileFromCache(newTile);
-	if (const auto sector = getMapSector(x, y)) {
-		sector->createFloor(z)->setTileCache(x, y, tile);
-	} else {
-		getBestMapSector(x, y)->createFloor(z)->setTileCache(x, y, tile);
+	const auto sectorIndex = static_cast<uint32_t>(x / SECTOR_SIZE) | (static_cast<uint32_t>(y / SECTOR_SIZE) << 16);
+	Floor* floor = nullptr;
+
+	if (floorCursor.valid && floorCursor.sectorIndex == sectorIndex && floorCursor.z == z) {
+		floor = floorCursor.floor.get();
+	}
+
+	if (!floor) {
+		std::shared_ptr<Floor> cachedFloor;
+		if (const auto sector = getMapSector(x, y)) {
+			cachedFloor = sector->createFloor(z);
+		} else {
+			cachedFloor = getBestMapSector(x, y)->createFloor(z);
+		}
+
+		floorCursor.valid = true;
+		floorCursor.sectorIndex = sectorIndex;
+		floorCursor.z = z;
+		floorCursor.floor = std::move(cachedFloor);
+		floor = floorCursor.floor.get();
+	}
+
+	if (floor) {
+		floor->setTileCache(x, y, tile);
 	}
 }
 

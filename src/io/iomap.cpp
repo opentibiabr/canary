@@ -121,6 +121,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		const uint16_t base_x = stream.getU16();
 		const uint16_t base_y = stream.getU16();
 		const uint8_t base_z = stream.getU8();
+		MapCacheFloorCursor floorCursor;
 
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
@@ -233,7 +234,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				continue;
 			}
 
-			map.setBasicTile(x, y, z, tile);
+			map.setBasicTile(x, y, z, tile, floorCursor);
 		}
 
 		if (!stream.endNode()) {

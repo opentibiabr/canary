@@ -41,6 +41,10 @@ std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
 }
 
 std::shared_ptr<BasicTile> static_tryGetTileFromCache(const BasicTile &ref) {
+	if (!ref.isCacheShareable()) {
+		return std::make_shared<BasicTile>(ref);
+	}
+
 	const auto hash = ref.hash();
 	if (const auto it = tiles.find(hash); it != tiles.end()) {
 		return it->second;

@@ -87,6 +87,24 @@ struct BasicTile {
 		return houseId != 0;
 	}
 
+	bool isCacheShareable() const {
+		if (isHouse()) {
+			return false;
+		}
+
+		if (ground && !ground->isSimple()) {
+			return false;
+		}
+
+		for (const auto &item : items) {
+			if (item && !item->isSimple()) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	size_t hash() const {
 		if (cachedHashValid) {
 			return cachedHash;

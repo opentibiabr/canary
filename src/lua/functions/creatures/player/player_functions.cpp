@@ -38,11 +38,31 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 namespace {
-	bool hasTableField(lua_State* L, const char* field) {
+	const char* getLuaTypeName(int type) {
+		switch (type) {
+			case LUA_TSTRING:
+				return "string";
+			case LUA_TBOOLEAN:
+				return "boolean";
+			case LUA_TTABLE:
+				return "table";
+			default:
+				return "value";
+		}
+	}
+
+	bool getTypedTableField(lua_State* L, const char* field, int expectedType, bool &hasField) {
 		lua_getfield(L, 2, field);
-		const bool hasField = !lua_isnil(L, -1);
+		const int actualType = lua_type(L, -1);
 		lua_pop(L, 1);
-		return hasField;
+
+		hasField = actualType != LUA_TNIL;
+		if (!hasField || actualType == expectedType) {
+			return true;
+		}
+
+		Lua::reportErrorFunc(std::string("Livestream field '") + field + "' must be " + getLuaTypeName(expectedType) + ".");
+		return false;
 	}
 
 	std::string getOptionalStringField(lua_State* L, const char* field) {
@@ -5331,22 +5351,52 @@ int PlayerFunctions::luaPlayerSetLivestreamViewers(lua_State* L) {
 	}
 
 	auto state = g_livestream().getState(player);
-	if (hasTableField(L, "description")) {
+	bool hasField = false;
+	if (!getTypedTableField(L, "description", LUA_TSTRING, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.description = getOptionalStringField(L, "description");
 	}
-	if (hasTableField(L, "broadcast")) {
+
+	if (!getTypedTableField(L, "broadcast", LUA_TBOOLEAN, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.broadcast = getOptionalBooleanField(L, "broadcast");
 	}
-	if (hasTableField(L, "password")) {
+
+	if (!getTypedTableField(L, "password", LUA_TSTRING, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.password = getOptionalStringField(L, "password");
 	}
-	if (hasTableField(L, "mutes")) {
+
+	if (!getTypedTableField(L, "mutes", LUA_TTABLE, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.mutes = getStringListField(L, "mutes");
 	}
-	if (hasTableField(L, "bans")) {
+
+	if (!getTypedTableField(L, "bans", LUA_TTABLE, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.bans = getStringListField(L, "bans");
 	}
-	if (hasTableField(L, "kick")) {
+
+	if (!getTypedTableField(L, "kick", LUA_TTABLE, hasField)) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	if (hasField) {
 		state.kick = getStringListField(L, "kick");
 	}
 

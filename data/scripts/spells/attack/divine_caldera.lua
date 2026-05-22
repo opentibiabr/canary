@@ -28,6 +28,6 @@ spell:isPremium(true)
 spell:isSelfTarget(true)
 spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("paladin;true", "royal paladin;true")
 spell:register()

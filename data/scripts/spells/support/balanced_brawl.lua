@@ -34,5 +34,5 @@ spell:needDirection(true)
 spell:blockWalls(true)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

@@ -15,5 +15,5 @@ spell:mana(520)
 spell:soul(2)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

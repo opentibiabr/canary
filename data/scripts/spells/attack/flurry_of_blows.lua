@@ -1,10 +1,11 @@
-local SPELL_BASE_POWER = 15
+local SPELL_BASE_POWER = 65
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_CLAW_WHITE)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_WHIRLWIND_BLOW_WHITE)
 combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
 combat:setParameter(COMBAT_PARAM_USECHARGES, 1)
+combat:setArea(createCombatArea(AREA_FLURRY_OF_BLOWS))
 
 function onGetFormulaValues(player, skill, attack, factor)
 	local damageHealing = player:calculateFlatDamageHealing()
@@ -14,15 +15,7 @@ function onGetFormulaValues(player, skill, attack, factor)
 	local min = damage - (damage / 10)
 	local max = damage + (damage / 10)
 
-	if min < 5 then
-		min = 5
-	end
-
-	if max < 10 then
-		max = 10
-	end
-
-	return player:getHarmonyDamage(min, max)
+	return min, max
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
@@ -34,19 +27,17 @@ function spell.onCastSpell(creature, var)
 end
 
 spell:group("attack")
-spell:id(291)
-spell:name("Tiger Clash")
-spell:words("exori infir nia")
-spell:castSound(SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE)
-spell:level(0)
-spell:mana(3)
-spell:isPremium(false)
-spell:range(1)
-spell:needTarget(true)
-spell:blockWalls(true)
-spell:cooldown(8 * 1000)
+spell:id(287)
+spell:name("Flurry of Blows")
+spell:words("exori mas pug")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_BERSERK)
+spell:level(35)
+spell:mana(110)
+spell:isPremium(true)
+spell:needDirection(true)
+spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
-spell:monkSpellType(MonkSpell_Spender)
+
+spell:monkSpellType(MonkSpell_Builder)
 spell:vocation("monk;true", "exalted monk;true")
 spell:register()

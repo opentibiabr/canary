@@ -3,10 +3,11 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_HEALING)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
 combat:setParameter(COMBAT_PARAM_DISPEL, CONDITION_PARALYZE)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
-combat:setFormula(COMBAT_FORMULA_DAMAGE, -5, 0, -9, 0)
 
-function onGetFormulaValues(player, level, magicLevel)
-	return 5, 9
+function onGetFormulaValues(_player, level, magicLevel)
+	local min = (level * 0.2 + magicLevel * 7.22) + 44
+	local max = (level * 0.2 + magicLevel * 12.79) + 79
+	return min, max
 end
 
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
@@ -17,17 +18,18 @@ function spell.onCastSpell(creature, variant)
 	return combat:execute(creature, variant)
 end
 
-spell:name("Practice Healing")
-spell:words("exura dis")
+spell:name("Spirit Mend")
+spell:words("exura gran tio")
 spell:group("healing")
-spell:vocation("none")
-spell:castSound(SOUND_EFFECT_TYPE_SPELL_PRACTISE_HEALING)
-spell:id(166)
-spell:cooldown(1 * 1000)
-spell:groupCooldown(1 * 1000)
-spell:level(1)
-spell:mana(5)
+spell:vocation("monk;true", "exalted monk;true")
+spell:castSound(SOUND_EFFECT_TYPE_SPELL_DIVINE_HEALING)
+spell:id(273)
+spell:cooldown(1000)
+spell:groupCooldown(1000)
+spell:level(80)
+spell:mana(210)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+spell:isPremium(true)
+
 spell:register()

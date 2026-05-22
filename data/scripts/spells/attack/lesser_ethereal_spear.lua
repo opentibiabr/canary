@@ -7,8 +7,8 @@ combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
 function onGetFormulaValues(player, skill, attack, factor)
 	local level = player:getLevel()
 
-	local min = (level / 5) + (skill + 25) / 3
-	local max = (level / 5) + skill + 25
+	local min = (level / 5) + (skill + 9) / 3
+	local max = (level / 5) + skill + 9
 
 	return -min, -max
 end
@@ -22,13 +22,13 @@ function spell.onCastSpell(creature, var)
 end
 
 spell:group("attack")
-spell:id(111)
-spell:name("Ethereal Spear")
-spell:words("exori con")
+spell:id(169)
+spell:name("Lesser Ethereal Spear")
+spell:words("exori infir con")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_ETHEREAL_SPEAR)
-spell:level(23)
-spell:mana(25)
+spell:level(1)
+spell:mana(6)
 spell:isPremium(true)
 spell:range(7)
 spell:needTarget(true)

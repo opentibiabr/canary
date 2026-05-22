@@ -471,6 +471,7 @@ toggleMountInProtectionZone = false
 freePremium = false
 kickIdlePlayerAfterMinutes = 15
 maxMessageBuffer = 4
+toggleLearnSpells = true
 emoteSpells = false
 allowWalkthrough = true
 coinPacketSize = 25

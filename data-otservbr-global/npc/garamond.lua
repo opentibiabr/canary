@@ -50,284 +50,284 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local lightMagicMissileNode = keywordHandler:addKeyword({ "light magic missile" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {light magic missile} magic spell for 500 gold?" 
+local lightMagicMissileNode = keywordHandler:addKeyword({ "light magic missile" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {light magic missile} magic spell for 500 gold?",
 })
-lightMagicMissileNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Light Magic Missile", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 500, 
-	level = 15 
-})
-
-local apprenticeStrikeNode = keywordHandler:addKeyword({ "apprentice's strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {apprentice's strike} magic spell for free?" 
-})
-apprenticeStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Apprentice's Strike", 
+lightMagicMissileNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Light Magic Missile",
 	vocation = { 1, 2, 5, 6 },
-	price = 0, 
-	level = 8 
+	price = 500,
+	level = 15,
 })
 
-local physicalStrikeNode = keywordHandler:addKeyword({ "physical strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {physical strike} magic spell for 800?" 
+local apprenticeStrikeNode = keywordHandler:addKeyword({ "apprentice's strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {apprentice's strike} magic spell for free?",
 })
-physicalStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Physical Strike", 
-	vocation = { 2, 6 }, 
-	price = 800, 
-	level = 16 
-})
-
-local deathStrikeNode = keywordHandler:addKeyword({ "death strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {death strike} magic spell for 800 gold?" 
-})
-deathStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Death Strike", 
-	vocation = { 1, 5 }, 
-	price = 800, 
-	level = 16 
+apprenticeStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Apprentice's Strike",
+	vocation = { 1, 2, 5, 6 },
+	price = 0,
+	level = 8,
 })
 
-local energyStrikeNode = keywordHandler:addKeyword({ "energy strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {energy strike} magic spell for 800 gold?" 
+local physicalStrikeNode = keywordHandler:addKeyword({ "physical strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {physical strike} magic spell for 800?",
 })
-energyStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Energy Strike", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 800, 
-	level = 12 
-})
-
-local terraStrikeNode = keywordHandler:addKeyword({ "terra strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {terra strike} magic spell for 800 gold?" 
-})
-terraStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Terra Strike", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 800, 
-	level = 13 
+physicalStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Physical Strike",
+	vocation = { 2, 6 },
+	price = 800,
+	level = 16,
 })
 
-local flameStrikeNode = keywordHandler:addKeyword({ "flame strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {flame strike} magic spell for 800 gold?" 
+local deathStrikeNode = keywordHandler:addKeyword({ "death strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {death strike} magic spell for 800 gold?",
 })
-flameStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Flame Strike", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 800, 
-	level = 14 
-})
-
-local iceStrikeNode = keywordHandler:addKeyword({ "ice strike" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {ice strike} magic spell for 800 gold?" 
-})
-iceStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Ice Strike", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 800, 
-	level = 15 
+deathStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Death Strike",
+	vocation = { 1, 5 },
+	price = 800,
+	level = 16,
 })
 
-local poisonFieldNode = keywordHandler:addKeyword({ "poison field" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {poison field} magic spell for 300 gold?" 
+local energyStrikeNode = keywordHandler:addKeyword({ "energy strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {energy strike} magic spell for 800 gold?",
 })
-poisonFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Poison Field", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 300, 
-	level = 14 
-})
-
-local fireFieldNode = keywordHandler:addKeyword({ "fire field" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {fire field} magic spell for 500 gold?" 
-})
-fireFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Fire Field", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 500, 
-	level = 15 
+energyStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Energy Strike",
+	vocation = { 1, 2, 5, 6 },
+	price = 800,
+	level = 12,
 })
 
-local energyFieldNode = keywordHandler:addKeyword({ "energy field" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {energy field} magic spell for 700 gold?" 
+local terraStrikeNode = keywordHandler:addKeyword({ "terra strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {terra strike} magic spell for 800 gold?",
 })
-energyFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Energy Field", 
-	vocation = { 1, 2, 5, 6 }, 
-	price = 700, 
-	level = 18 
-})
-
-local iceWaveNode = keywordHandler:addKeyword({ "ice wave" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {ice wave} magic spell for 850 gold?" 
-})
-iceWaveNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Ice Wave", 
-	vocation = { 2, 6 }, 
-	price = 850, 
-	level = 18 
+terraStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Terra Strike",
+	vocation = { 1, 2, 5, 6 },
+	price = 800,
+	level = 13,
 })
 
-local curePoisonNode = keywordHandler:addKeyword({ "cure poison" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {cure poison} magic spell for 150 gold?" 
+local flameStrikeNode = keywordHandler:addKeyword({ "flame strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {flame strike} magic spell for 800 gold?",
 })
-curePoisonNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Cure Poison", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 150, 
-	level = 10 
-})
-
-local magicRopeNode = keywordHandler:addKeyword({ "magic rope" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {magic rope} magic spell for 200 gold?" 
-})
-magicRopeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Magic Rope", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 200, 
-	level = 9 
+flameStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Flame Strike",
+	vocation = { 1, 2, 5, 6 },
+	price = 800,
+	level = 14,
 })
 
-local findPersonNode = keywordHandler:addKeyword({ "find person" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {find person} magic spell for 80 gold?" 
+local iceStrikeNode = keywordHandler:addKeyword({ "ice strike" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {ice strike} magic spell for 800 gold?",
 })
-findPersonNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Find Person", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 80, 
-	level = 8 
-})
-
-local greatLightNode = keywordHandler:addKeyword({ "great light" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {great light} magic spell for 500 gold?" 
-})
-greatLightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Great Light", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 500, 
-	level = 13 
+iceStrikeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Ice Strike",
+	vocation = { 1, 2, 5, 6 },
+	price = 800,
+	level = 15,
 })
 
-local lightHealingNode = keywordHandler:addKeyword({ "light healing" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {light healing} magic spell for free?" 
+local poisonFieldNode = keywordHandler:addKeyword({ "poison field" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {poison field} magic spell for 300 gold?",
 })
-lightHealingNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Light Healing", 
-	vocation = { 1, 2, 3, 5, 6, 7, 9, 10 }, 
-	price = 0, 
-	level = 8 
-})
-
-local levitateNode = keywordHandler:addKeyword({ "levitate" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {levitate} magic spell for 500 gold?" 
-})
-levitateNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Levitate", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 500, 
-	level = 12 
+poisonFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Poison Field",
+	vocation = { 1, 2, 5, 6 },
+	price = 300,
+	level = 14,
 })
 
-local hasteNode = keywordHandler:addKeyword({ "haste" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {haste} magic spell for 600 gold?" 
+local fireFieldNode = keywordHandler:addKeyword({ "fire field" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {fire field} magic spell for 500 gold?",
 })
-hasteNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Haste", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 600, 
-	level = 14 
+fireFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Fire Field",
+	vocation = { 1, 2, 5, 6 },
+	price = 500,
+	level = 15,
 })
 
-local lightNode = keywordHandler:addKeyword({ "light" }, StdModule.say, { 
-	npcHandler = npcHandler, 
-	onlyFocus = true, 
-	text = "Would you like to learn {light} magic spell for free?" 
+local energyFieldNode = keywordHandler:addKeyword({ "energy field" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {energy field} magic spell for 700 gold?",
 })
-lightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, { 
-	npcHandler = npcHandler, 
-	premium = false, 
-	spellName = "Light", 
-	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, 
-	price = 0, 
-	level = 8 
+energyFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Energy Field",
+	vocation = { 1, 2, 5, 6 },
+	price = 700,
+	level = 18,
+})
+
+local iceWaveNode = keywordHandler:addKeyword({ "ice wave" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {ice wave} magic spell for 850 gold?",
+})
+iceWaveNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Ice Wave",
+	vocation = { 2, 6 },
+	price = 850,
+	level = 18,
+})
+
+local curePoisonNode = keywordHandler:addKeyword({ "cure poison" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {cure poison} magic spell for 150 gold?",
+})
+curePoisonNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Cure Poison",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 150,
+	level = 10,
+})
+
+local magicRopeNode = keywordHandler:addKeyword({ "magic rope" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {magic rope} magic spell for 200 gold?",
+})
+magicRopeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Magic Rope",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 200,
+	level = 9,
+})
+
+local findPersonNode = keywordHandler:addKeyword({ "find person" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {find person} magic spell for 80 gold?",
+})
+findPersonNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Find Person",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 80,
+	level = 8,
+})
+
+local greatLightNode = keywordHandler:addKeyword({ "great light" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {great light} magic spell for 500 gold?",
+})
+greatLightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Great Light",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 500,
+	level = 13,
+})
+
+local lightHealingNode = keywordHandler:addKeyword({ "light healing" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {light healing} magic spell for free?",
+})
+lightHealingNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Light Healing",
+	vocation = { 1, 2, 3, 5, 6, 7, 9, 10 },
+	price = 0,
+	level = 8,
+})
+
+local levitateNode = keywordHandler:addKeyword({ "levitate" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {levitate} magic spell for 500 gold?",
+})
+levitateNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Levitate",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 500,
+	level = 12,
+})
+
+local hasteNode = keywordHandler:addKeyword({ "haste" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {haste} magic spell for 600 gold?",
+})
+hasteNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Haste",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 600,
+	level = 14,
+})
+
+local lightNode = keywordHandler:addKeyword({ "light" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {light} magic spell for free?",
+})
+lightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "Light",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 0,
+	level = 8,
 })
 
 keywordHandler:addKeyword({ "healing" }, StdModule.say, { npcHandler = npcHandler, text = "In this category I have '{light healing}' and '{cure poison}'." })
@@ -351,7 +351,14 @@ keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "main" }, StdModule.say, { npcHandler = npcHandler, text = "Most of the major cities are on the Tibian mainland, such as the rich merchant city of Venore, for example. You will find spell teachers for your vocation in almost every major city." })
 keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Tibia is the world we live in. Rookgaard is not far off from the Tibian {mainland}, though it's a tricky passage with contrary winds. On the mainland, you will find more adventure, mystery and monsters and can prove yourself a hero or villain." })
 keywordHandler:addKeyword({ "oressa" }, StdModule.say, { npcHandler = npcHandler, text = "A very intelligent girl. Prefers to listen to wild animals' noises instead of humans', which is quite understandable when you think about it. However, she's also a very apt healer and can give you advice on your choice of vocation." })
-keywordHandler:addKeyword({ "vocation" }, StdModule.say, { npcHandler = npcHandler, text = "Your choice of vocation will determine your life in Tibia, and the skills and fighting techniques you may use. There are four vocation: knight, druid, paladin and sorcerer. If you want to know more about them, talk to Oressa in the temple. I myself teach try-out spells for both the magical classes, whereas Tybald in the next room specialises in knight and paladin spells." })
+keywordHandler:addKeyword(
+	{ "vocation" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Your choice of vocation will determine your life in Tibia, and the skills and fighting techniques you may use. There are four vocation: knight, druid, paladin and sorcerer. If you want to know more about them, talk to Oressa in the temple. I myself teach try-out spells for both the magical classes, whereas Tybald in the next room specialises in knight and paladin spells.",
+	}
+)
 keywordHandler:addKeyword({ "menesto" }, StdModule.say, { npcHandler = npcHandler, text = "Very young and sometimes precipitate, burning for everything mystical, holy, godly, which is not a bad thing as such. Just a little hasty and prone to fall into a nest of monsters now and then, but he always comes out alive." })
 keywordHandler:addKeyword({ "key" }, StdModule.say, { npcHandler = npcHandler, text = "How should I know where that key has gotten to? I rarely sleep at my age anyway! Though I must say that my young adventurer fellows handled it quite carelessly, from what I saw." })
 

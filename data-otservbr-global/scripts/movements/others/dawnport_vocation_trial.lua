@@ -4,16 +4,23 @@ local tutorialEffects = {
 }
 
 local vocationSpells = {
-    [VOCATION.ID.SORCERER] = {"Magic Patch", "Buzz", "Scorch"},
-    [VOCATION.ID.DRUID] = {"Magic Patch", "Chill Out", "Mud Attack"},
-    [VOCATION.ID.PALADIN] = {"Magic Patch", "Arrow Call", "Lesser Ethereal Spear"},
-    [VOCATION.ID.KNIGHT] = {"Bruise Bane", "Lesser Front Sweep"},
-    [VOCATION.ID.MONK] = {"Magic Patch", "Swift Jab", "Tiger Clash"}
+	[VOCATION.ID.SORCERER] = { "Magic Patch", "Buzz", "Scorch" },
+	[VOCATION.ID.DRUID] = { "Magic Patch", "Chill Out", "Mud Attack" },
+	[VOCATION.ID.PALADIN] = { "Magic Patch", "Arrow Call", "Lesser Ethereal Spear" },
+	[VOCATION.ID.KNIGHT] = { "Bruise Bane", "Lesser Front Sweep" },
+	[VOCATION.ID.MONK] = { "Magic Patch", "Swift Jab", "Tiger Clash" },
 }
 
 local dawnportSpells = {
-    "Magic Patch", "Buzz", "Scorch", "Chill Out", "Mud Attack", 
-    "Arrow Call", "Bruise Bane", "Swift Jab", "Tiger Clash"
+	"Magic Patch",
+	"Buzz",
+	"Scorch",
+	"Chill Out",
+	"Mud Attack",
+	"Arrow Call",
+	"Bruise Bane",
+	"Swift Jab",
+	"Tiger Clash",
 }
 
 local vocationTrials = {
@@ -290,24 +297,24 @@ local function setOutfit(player, outfit)
 end
 
 local function forgetDawnportSpells(player)
-    for i = 1, #dawnportSpells do
-        local spellName = dawnportSpells[i]
-        if player:hasLearnedSpell(spellName) then
-            player:forgetSpell(spellName)
-        end
-    end
+	for i = 1, #dawnportSpells do
+		local spellName = dawnportSpells[i]
+		if player:hasLearnedSpell(spellName) then
+			player:forgetSpell(spellName)
+		end
+	end
 end
 
 local function learnVocationSpells(player, vocationId)
-    local spells = vocationSpells[vocationId]
-    if spells then
-        for i = 1, #spells do
-            local spellName = spells[i]
-            if not player:hasLearnedSpell(spellName) then
-                player:learnSpell(spellName)
-            end
-        end
-    end
+	local spells = vocationSpells[vocationId]
+	if spells then
+		for i = 1, #spells do
+			local spellName = spells[i]
+			if not player:hasLearnedSpell(spellName) then
+				player:learnSpell(spellName)
+			end
+		end
+	end
 end
 
 -- Dawnport trial tiles step event

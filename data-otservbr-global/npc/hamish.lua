@@ -107,8 +107,19 @@ keywordHandler:addKeyword({ "menesto" }, StdModule.say, { npcHandler = npcHandle
 keywordHandler:addKeyword({ "potions" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, just browse through my wares. You can also look at {wands} or {runes}." })
 keywordHandler:addKeyword({ "wands" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, just browse through my wares. You can also look at {potions} or {runes}." })
 keywordHandler:addKeyword({ "runes" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, just browse through my wares. You can also look at {potions} or {wands}." })
-keywordHandler:addKeyword({ "dawnport" }, StdModule.say, { npcHandler = npcHandler, text = "Small and deceptively friendly-looking island. Well, I used to study the plants and herbs here for my potions. Nowadays, I leave that to Oressa, she has a better way with that horrible wildlife here. I prefer to distil potions in the quiet of my lab. If you need some potions, runes or other magic equipment, ask for a trade." })
-keywordHandler:addKeyword({ "main" }, StdModule.say, { npcHandler = npcHandler, text = "Dawnport is not far off from the coast of the Tibian Mainland. Lots of cities, monsters, bandits, brigands, mean folk and people of low understanding with no sense of respect towards alchemical genius. <mutters to himself> Ahem. Once you're level 8, you should be experienced enough to choose your definite vocation and leave Dawnport for Main - and Tibia definitely needs more skilled adventurers to keep those monsters in check which roam our lands!" })
+keywordHandler:addKeyword(
+	{ "dawnport" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "Small and deceptively friendly-looking island. Well, I used to study the plants and herbs here for my potions. Nowadays, I leave that to Oressa, she has a better way with that horrible wildlife here. I prefer to distil potions in the quiet of my lab. If you need some potions, runes or other magic equipment, ask for a trade." }
+)
+keywordHandler:addKeyword(
+	{ "main" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Dawnport is not far off from the coast of the Tibian Mainland. Lots of cities, monsters, bandits, brigands, mean folk and people of low understanding with no sense of respect towards alchemical genius. <mutters to himself> Ahem. Once you're level 8, you should be experienced enough to choose your definite vocation and leave Dawnport for Main - and Tibia definitely needs more skilled adventurers to keep those monsters in check which roam our lands!",
+	}
+)
 keywordHandler:addKeyword({ "key" }, StdModule.say, { npcHandler = npcHandler, text = "I've seen Mr Morris leaving the key here and there on several occasions. He really should have put it somewhere safe." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Hi there, fellow adventurer. What's your need? Say {trade} and we'll soon get you fixed up. Or ask me about {potions}, {wands}, or {runes}.")

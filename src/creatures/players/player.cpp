@@ -8924,7 +8924,6 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
 		}
 
 		auto sharedContainer = containerInfo.container;
-		checkLootContainers(sharedContainer);
 		client->sendContainer(cid, sharedContainer, hasParent, containerInfo.index);
 		g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
 	}

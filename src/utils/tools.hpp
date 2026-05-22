@@ -40,6 +40,7 @@ enum PlayerSex_t : uint8_t;
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <random>
+	#include <string_view>
 #endif
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result);
@@ -48,7 +49,7 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 
 [[nodiscard]] std::string transformToSHA1(const std::string &input);
 
-[[nodiscard]] std::string transformToSHA256(const std::string &input);
+[[nodiscard]] std::string transformToSHA256(std::string_view input);
 
 [[nodiscard]] uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList);
 

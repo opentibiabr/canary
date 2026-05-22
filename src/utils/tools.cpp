@@ -38,12 +38,16 @@ namespace {
 
 		std::string hex(bytes.size() * 2, '\0');
 		for (size_t i = 0; i < bytes.size(); ++i) {
-			const auto byte = static_cast<uint8_t>(bytes[i]);
 			const auto offset = i * 2;
-			hex[offset] = hexDigits[byte >> 4];
-			hex[offset + 1] = hexDigits[byte & 0x0F];
+			hex[offset] = hexDigits[std::to_integer<size_t>(bytes[i] >> 4)];
+			hex[offset + 1] = hexDigits[std::to_integer<size_t>(bytes[i] & std::byte { 0x0F })];
 		}
 		return hex;
+	}
+
+	std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
+		// mbedTLS exposes a C API that writes to unsigned char buffers.
+		return { reinterpret_cast<unsigned char*>(bytes.data()), bytes.size() }; // NOSONAR
 	}
 }
 
@@ -232,7 +236,8 @@ std::string transformToSHA1(const std::string &input) {
 
 std::string transformToSHA256(std::string_view input) {
 	std::array<std::byte, 32> hash {};
-	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), reinterpret_cast<unsigned char*>(hash.data()), 0) != 0) {
+	const auto hashOutput = asWritableUnsignedBytes(hash);
+	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), hashOutput.data(), 0) != 0) {
 		return {};
 	}
 

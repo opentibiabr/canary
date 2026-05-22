@@ -477,6 +477,11 @@ coinPacketSize = 25
 coinImagesURL = "http://127.0.0.1/images/store/"
 classicAttackSpeed = false
 showScriptsLogInConsole = false
+luaStartupLoadTelemetry = false
+luaScriptBytecodeCache = true
+luaScriptBytecodeCachePath = "cache/lua-bytecode"
+luaScriptDebugHook = false
+luaScriptDebugHookInterval = 30000
 -- time to suppress negative conditions after being affected by them (ms)
 minDelayBetweenConditions = 0
 -- configure maximum value of critical imbuement

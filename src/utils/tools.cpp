@@ -45,7 +45,7 @@ namespace {
 		return hex;
 	}
 
-	std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
+	[[nodiscard]] std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
 		// mbedTLS exposes a C API that writes to unsigned char buffers.
 		return { reinterpret_cast<unsigned char*>(bytes.data()), bytes.size() }; // NOSONAR
 	}

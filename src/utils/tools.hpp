@@ -48,6 +48,8 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 
 [[nodiscard]] std::string transformToSHA1(const std::string &input);
 
+[[nodiscard]] std::string transformToSHA256(const std::string &input);
+
 [[nodiscard]] uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList);
 
 [[nodiscard]] std::string generateToken(const std::string &secret, uint32_t ticks);

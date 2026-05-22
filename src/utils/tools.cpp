@@ -19,6 +19,11 @@
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
+#include "mbedtls/sha256.h"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+#endif
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -204,6 +209,23 @@ std::string transformToSHA1(const std::string &input) {
 		hexstring[index + 1] = hexDigits[byte & 15];
 	}
 	return std::string(hexstring, 40);
+}
+
+std::string transformToSHA256(const std::string &input) {
+	std::array<unsigned char, 32> hash {};
+	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), hash.data(), 0) != 0) {
+		return {};
+	}
+
+	char hexstring[65];
+	static constexpr char hexDigits[] = { "0123456789abcdef" };
+	for (size_t i = 0; i < hash.size(); ++i) {
+		const auto byte = hash[i];
+		const auto offset = i * 2;
+		hexstring[offset] = hexDigits[byte >> 4];
+		hexstring[offset + 1] = hexDigits[byte & 15];
+	}
+	return std::string(hexstring, 64);
 }
 
 uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {

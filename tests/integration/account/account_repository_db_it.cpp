@@ -135,8 +135,8 @@ namespace it_account_repo_db {
 			auto ids = getTestIds();
 			auto expectedLastDay = createAccount(db, ids);
 			ASSERT_TRUE(db.executeQuery(fmt::format(
-				"UPDATE `account_sessions` SET `id` = SHA2({}, 256) WHERE `account_id` = {}",
-				db.escapeString(ids.name),
+				"UPDATE `account_sessions` SET `id` = {} WHERE `account_id` = {}",
+				db.escapeString(transformToSHA256(ids.name)),
 				ids.id
 			)));
 
@@ -144,6 +144,25 @@ namespace it_account_repo_db {
 			ASSERT_TRUE(accRepo.loadBySession(ids.name, acc));
 			assertAccountLoad(*acc, ids, expectedLastDay);
 			EXPECT_EQ(1337, acc->sessionExpires);
+		})();
+	}
+
+	TEST_F(AccountRepositoryDBTest, LoadBySessionPrefersSHA256SessionId) {
+		auto &db = g_database();
+		databaseTest(db, [&db] {
+			AccountRepositoryDB accRepo {};
+			auto ids = getTestIds();
+			auto expectedLastDay = createAccount(db, ids);
+			ASSERT_TRUE(db.executeQuery(fmt::format(
+				"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) VALUES ({}, {}, 7331)",
+				db.escapeString(transformToSHA256(ids.name)),
+				ids.id
+			)));
+
+			auto acc = std::make_unique<AccountInfo>();
+			ASSERT_TRUE(accRepo.loadBySession(ids.name, acc));
+			assertAccountLoad(*acc, ids, expectedLastDay);
+			EXPECT_EQ(7331, acc->sessionExpires);
 		})();
 	}
 

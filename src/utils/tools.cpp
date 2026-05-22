@@ -30,21 +30,21 @@
 #endif
 
 namespace {
-std::string bytesToHex(std::span<const std::byte> bytes) {
-	static constexpr std::array<char, 16> hexDigits = {
-		'0', '1', '2', '3', '4', '5', '6', '7',
-		'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
-	};
+	std::string bytesToHex(std::span<const std::byte> bytes) {
+		static constexpr std::array<char, 16> hexDigits = {
+			'0', '1', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+		};
 
-	std::string hex(bytes.size() * 2, '\0');
-	for (size_t i = 0; i < bytes.size(); ++i) {
-		const auto byte = static_cast<uint8_t>(bytes[i]);
-		const auto offset = i * 2;
-		hex[offset] = hexDigits[byte >> 4];
-		hex[offset + 1] = hexDigits[byte & 0x0F];
+		std::string hex(bytes.size() * 2, '\0');
+		for (size_t i = 0; i < bytes.size(); ++i) {
+			const auto byte = static_cast<uint8_t>(bytes[i]);
+			const auto offset = i * 2;
+			hex[offset] = hexDigits[byte >> 4];
+			hex[offset + 1] = hexDigits[byte & 0x0F];
+		}
+		return hex;
 	}
-	return hex;
-}
 }
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {

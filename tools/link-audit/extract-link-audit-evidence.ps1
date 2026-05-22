@@ -7,7 +7,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-if (-not (Test-Path $InputDir)) {
+if (-not (Test-Path $InputDir -PathType Container)) {
     throw "Input directory not found: $InputDir. Pass -InputDir with the directory that contains the link audit artifacts."
 }
 
@@ -19,6 +19,7 @@ if (-not $OutputDir) {
 
 New-Item -ItemType Directory -Force -Path $OutputDir | Out-Null
 $OutputDir = (Resolve-Path -LiteralPath $OutputDir).Path
+$OutputDirWithSeparator = $OutputDir.TrimEnd([System.IO.Path]::DirectorySeparatorChar, [System.IO.Path]::AltDirectorySeparatorChar) + [System.IO.Path]::DirectorySeparatorChar
 
 $Patterns = "link.exe|/VERBOSE:LIB|/MAP|LINK_LIBRARIES|libcrypto|libssl|libcurl|mariadbclient|lua51|libprotobuf|libprotobuf-lite|libprotoc|absl_|fmt|spdlog|pugixml|argon2|zs\.lib|bcrypt|ncrypt|crypt32|ws2_32|Searching|Found|Loaded|Referenced in|Processed|LNK"
 
@@ -32,12 +33,12 @@ if ($VcpkgInstalled) {
 # 1) Extract interesting lines from existing logs, if any
 $LogFiles = Get-ChildItem $InputDir -Recurse -File -Include "*.log","*.txt" -ErrorAction SilentlyContinue |
     Where-Object {
-        $_.FullName -notmatch "\\link-audit-extract\\"
+        -not $_.FullName.StartsWith($OutputDirWithSeparator, [System.StringComparison]::InvariantCultureIgnoreCase)
     }
 
 if ($LogFiles) {
     Select-String -Path $LogFiles.FullName -Pattern $Patterns -CaseSensitive:$false |
-        Set-Content (Join-Path $OutputDir "existing-logs-interesting-lines.txt")
+        Set-Content (Join-Path $OutputDir "existing-logs-interesting-lines.txt") -Encoding utf8
 
     Write-Host "OK: existing-logs-interesting-lines.txt"
 } else {
@@ -54,13 +55,13 @@ if ($Map) {
     Write-Host "Map: $($Map.FullName)"
 
     Select-String $Map.FullName -Pattern "libcrypto|libssl|libcurl|mariadbclient|libprotobuf|libprotobuf-lite|libprotoc|absl_|fmt|spdlog|pugixml|argon2|zs\.lib" -CaseSensitive:$false |
-        Set-Content (Join-Path $OutputDir "map-libs.txt")
+        Set-Content (Join-Path $OutputDir "map-libs.txt") -Encoding utf8
 
     Select-String $Map.FullName -Pattern "libcrypto|libssl|BN_|RSA_|EVP_|PEM_|BIO_|SSL_|ERR_|CRYPTO_|SHA|HMAC|RAND_|AES_|X509_|OPENSSL_" -CaseSensitive:$false |
-        Set-Content (Join-Path $OutputDir "map-openssl-symbols.txt")
+        Set-Content (Join-Path $OutputDir "map-openssl-symbols.txt") -Encoding utf8
 
     Select-String $Map.FullName -Pattern "libprotobuf|libprotobuf-lite|libprotoc|MessageLite|protobuf" -CaseSensitive:$false |
-        Set-Content (Join-Path $OutputDir "map-protobuf-symbols.txt")
+        Set-Content (Join-Path $OutputDir "map-protobuf-symbols.txt") -Encoding utf8
 
     Write-Host "OK: map-libs.txt"
     Write-Host "OK: map-openssl-symbols.txt"
@@ -74,7 +75,7 @@ $LinkMetadataFiles = Get-ChildItem $InputDir -Recurse -File -Include "*.rsp","*.
 
 if ($LinkMetadataFiles) {
     Select-String -Path $LinkMetadataFiles.FullName -Pattern $Patterns -CaseSensitive:$false |
-        Set-Content (Join-Path $OutputDir "link-metadata-interesting-lines.txt")
+        Set-Content (Join-Path $OutputDir "link-metadata-interesting-lines.txt") -Encoding utf8
 
     Write-Host "OK: link-metadata-interesting-lines.txt"
 } else {
@@ -87,19 +88,19 @@ Get-ChildItem $InputDir -Recurse -File -Include "canary.exe","canary.pdb","*.map
     Sort-Object MB -Descending |
     Format-Table -AutoSize |
     Out-String |
-    Set-Content (Join-Path $OutputDir "artifact-sizes.txt")
+    Set-Content (Join-Path $OutputDir "artifact-sizes.txt") -Encoding utf8
 
 Write-Host "OK: artifact-sizes.txt"
 
 # 5) Largest files from the installed vcpkg tree
-if ($VcpkgInstalled -and (Test-Path $VcpkgInstalled)) {
+if ($VcpkgInstalled -and (Test-Path $VcpkgInstalled -PathType Container)) {
     Get-ChildItem $VcpkgInstalled -Recurse -File -Include "*.lib","*.exe","*.pdb" -ErrorAction SilentlyContinue |
         Select-Object FullName, @{Name="MB";Expression={[math]::Round($_.Length / 1MB, 2)}} |
         Sort-Object MB -Descending |
         Select-Object -First 100 |
         Format-Table -AutoSize |
         Out-String |
-        Set-Content (Join-Path $OutputDir "vcpkg-largest-files.txt")
+        Set-Content (Join-Path $OutputDir "vcpkg-largest-files.txt") -Encoding utf8
 
     Write-Host "OK: vcpkg-largest-files.txt"
 } elseif ($VcpkgInstalled) {

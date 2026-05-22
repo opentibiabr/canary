@@ -236,7 +236,7 @@
       "binaryDir": "${sourceDir}/build/windows-release-link-audit",
       "cacheVariables": {
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
-        "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO": "/VERBOSE:LIB /MAP:\"${sourceDir}/build/windows-release-link-audit/canary-link-audit.map\""
+        "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO": "/VERBOSE:LIB /MAP:\"${sourceDir}/build/${presetName}/canary-link-audit.map\""
       }
     }
   ],

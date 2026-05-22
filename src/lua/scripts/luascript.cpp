@@ -256,7 +256,6 @@ namespace {
 
 	[[nodiscard]] LuaBytecodePack readLuaBytecodePack(const std::filesystem::path &packFile) {
 		LuaBytecodePack pack;
-		pack.loaded = true;
 
 		std::ifstream input(packFile, std::ios::binary);
 		if (!input.is_open()) {
@@ -271,22 +270,25 @@ namespace {
 		while (true) {
 			uint16_t keySize = 0;
 			if (!readBinaryValue(input, keySize)) {
-				break;
+				if (input.eof() && input.gcount() == 0) {
+					pack.loaded = true;
+				}
+				return pack;
 			}
 
 			uint64_t chunkSize = 0;
 			if (!readBinaryValue(input, chunkSize) || keySize == 0 || chunkSize > LuaBytecodePackMaxChunkSize) {
-				break;
+				return {};
 			}
 
 			std::string key(keySize, '\0');
 			if (!readBytes(input, key.data(), static_cast<std::streamsize>(key.size()))) {
-				break;
+				return {};
 			}
 
 			std::string bytecode(static_cast<size_t>(chunkSize), '\0');
 			if (!bytecode.empty() && !readBytes(input, bytecode.data(), static_cast<std::streamsize>(bytecode.size()))) {
-				break;
+				return {};
 			}
 
 			static_cast<void>(pack.chunks.insert_or_assign(std::move(key), std::move(bytecode)));
@@ -386,6 +388,11 @@ namespace {
 	}
 
 	[[nodiscard]] std::optional<LuaBytecodeCacheEntry> getLuaBytecodeCacheEntry(const std::string &file, const LuaScriptFileMetadata* sourceMetadata) {
+		const auto sourceBuffer = readLuaFileBuffer(file);
+		if (!sourceBuffer) {
+			return std::nullopt;
+		}
+		const auto sourceHash = fnv1a64(std::string_view { *sourceBuffer });
 		LuaScriptFileMetadata fallbackMetadata;
 		if (sourceMetadata == nullptr) {
 			std::error_code error;
@@ -409,12 +416,13 @@ namespace {
 
 		const auto sourceIdentity = getLuaBytecodeSourceIdentity(file);
 		const auto cacheKey = fmt::format(
-			"{}:{}:{}:{}:{}",
+			"{}:{}:{}:{}:{}:{}",
 			LuaBytecodeCacheVersion,
 			sizeof(void*),
 			sourceIdentity,
 			sourceMetadata->size,
-			sourceMetadata->lastWriteTime.time_since_epoch().count()
+			sourceMetadata->lastWriteTime.time_since_epoch().count(),
+			fmt::format("{:016x}", sourceHash)
 		);
 		const auto cacheKeyHash = fmt::format("{:016x}", fnv1a64(cacheKey));
 

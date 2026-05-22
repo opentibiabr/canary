@@ -256,8 +256,8 @@ These Lua cache improvements were intentionally left out of this profiling PR:
 
 - Manual cache clearing: useful for operators, but it touches command or startup-option behavior rather than the measured startup hot path. It should be added separately with clear permissions and logging.
 - Cache pruning or garbage collection: safe for loose `.luac` files, but packed `.luapack` files are append-only and need a rebuild step to remove stale chunks. Doing that during every reload would add I/O to the path this PR is trying to keep fast.
-- Strict content-hash validation: stronger than size and timestamp, but it requires reading every source file to hash it before cache lookup. That would trade away part of the startup gain and is better as an explicit opt-in mode if deployments need it.
-- Automated reload/cache tests: the expected scenarios are documented below, but a robust test harness needs isolated temporary datapacks, cache directories, reload calls, and corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
+- Strict content-hash validation in cache identity: content is now included in the Lua bytecode cache key. This avoids stale cache entries when file contents change without timestamp/size drift, while keeping cache lookup and regeneration scoped to existing file loads.
+- Automated reload/cache tests: The expected scenarios are documented below, but a robust test harness requires isolated temporary datapacks, separate cache directories, controlled reload calls, and simulated corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
 
 Useful future test scenarios:
 

@@ -23,7 +23,7 @@
 #include <optional>
 
 namespace {
-	LuaBytecodeCacheStats subtractLuaBytecodeCacheStats(const LuaBytecodeCacheStats &after, const LuaBytecodeCacheStats &before) {
+	[[nodiscard]] LuaBytecodeCacheStats subtractLuaBytecodeCacheStats(const LuaBytecodeCacheStats &after, const LuaBytecodeCacheStats &before) {
 		return LuaBytecodeCacheStats {
 			.packHits = after.packHits - before.packHits,
 			.fileHits = after.fileHits - before.fileHits,

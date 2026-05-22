@@ -1154,7 +1154,7 @@ bool Game::internalPlaceCreature(const std::shared_ptr<Creature> &creature, cons
 		return false;
 	}
 
-	if (!map.placeCreature(pos, creature, extendedPos, forced)) {
+	if (!map.placeCreature(pos, creature, extendedPos, forced, tile)) {
 		return false;
 	}
 

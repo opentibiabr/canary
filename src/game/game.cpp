@@ -12053,7 +12053,11 @@ void Game::updatePlayersOnline() const {
 			auto result = g_database().storeQuery(query);
 			int count = result->getNumber<int>("count");
 			if (count > 0) {
-				g_database().executeQuery("DELETE FROM `players_online`;");
+				const bool cleaned = g_database().executeQuery("DELETE FROM `players_online`;");
+				if (!cleaned) {
+					g_logger().error("[Game::updatePlayersOnline] Failed to cleanup players_online");
+					return false;
+				}
 				changesMade = true;
 			}
 		} else {
@@ -12075,7 +12079,11 @@ void Game::updatePlayersOnline() const {
 			}
 			cleanupQuery.seekp(-1, std::ostringstream::cur); // Remove the last comma
 			cleanupQuery << ");";
-			g_database().executeQuery(cleanupQuery.str());
+			const bool cleaned = g_database().executeQuery(cleanupQuery.str());
+			if (!cleaned) {
+				g_logger().error("[Game::updatePlayersOnline] Failed to cleanup stale players_online entries");
+				return false;
+			}
 		}
 
 		return changesMade;

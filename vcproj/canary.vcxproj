@@ -39,6 +39,7 @@
     <ClInclude Include="..\src\creatures\players\grouping\party.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\team_finder.hpp" />
     <ClInclude Include="..\src\creatures\players\imbuements\imbuements.hpp" />
+    <ClInclude Include="..\src\creatures\players\livestream\livestream.hpp" />
     <ClInclude Include="..\src\creatures\players\management\ban.hpp" />
     <ClInclude Include="..\src\creatures\players\management\waitlist.hpp" />
     <ClInclude Include="..\src\creatures\players\storages\storages.hpp" />
@@ -265,6 +266,7 @@
     <ClCompile Include="..\src\creatures\players\grouping\guild.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\party.cpp" />
     <ClCompile Include="..\src\creatures\players\imbuements\imbuements.cpp" />
+    <ClCompile Include="..\src\creatures\players\livestream\livestream.cpp" />
     <ClCompile Include="..\src\creatures\players\management\ban.cpp" />
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
     <ClCompile Include="..\src\creatures\players\storages\storages.cpp" />

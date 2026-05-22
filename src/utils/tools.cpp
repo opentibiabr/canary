@@ -19,6 +19,37 @@
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
+#include "mbedtls/sha256.h"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <cstddef>
+	#include <cstdint>
+	#include <span>
+	#include <string_view>
+#endif
+
+namespace {
+	std::string bytesToHex(std::span<const std::byte> bytes) {
+		static constexpr std::array<char, 16> hexDigits = {
+			'0', '1', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+		};
+
+		std::string hex(bytes.size() * 2, '\0');
+		for (size_t i = 0; i < bytes.size(); ++i) {
+			const auto offset = i * 2;
+			hex[offset] = hexDigits[std::to_integer<size_t>(bytes[i] >> 4)];
+			hex[offset + 1] = hexDigits[std::to_integer<size_t>(bytes[i] & std::byte { 0x0F })];
+		}
+		return hex;
+	}
+
+	[[nodiscard]] std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
+		// mbedTLS exposes a C API that writes to unsigned char buffers.
+		return { reinterpret_cast<unsigned char*>(bytes.data()), bytes.size() }; // NOSONAR
+	}
+}
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -195,15 +226,22 @@ std::string transformToSHA1(const std::string &input) {
 
 	processSHA1MessageBlock(messageBlock, H);
 
-	char hexstring[41];
-	static constexpr char hexDigits[] = { "0123456789abcdef" };
-	for (int hashByte = 20; --hashByte >= 0;) {
+	std::array<std::byte, 20> hash {};
+	for (size_t hashByte = hash.size(); hashByte-- > 0;) {
 		const uint8_t byte = H[hashByte >> 2] >> (((3 - hashByte) & 3) << 3);
-		index = hashByte << 1;
-		hexstring[index] = hexDigits[byte >> 4];
-		hexstring[index + 1] = hexDigits[byte & 15];
+		hash[hashByte] = static_cast<std::byte>(byte);
 	}
-	return std::string(hexstring, 40);
+	return bytesToHex(hash);
+}
+
+std::string transformToSHA256(std::string_view input) {
+	std::array<std::byte, 32> hash {};
+	const auto hashOutput = asWritableUnsignedBytes(hash);
+	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), hashOutput.data(), 0) != 0) {
+		return {};
+	}
+
+	return bytesToHex(hash);
 }
 
 uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {

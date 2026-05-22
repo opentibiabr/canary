@@ -89,6 +89,14 @@ namespace it_account_repo_db {
 		EXPECT_NEAR(static_cast<double>(acc.creationTime), 42183281.0, 1.0);
 	}
 
+	inline void assertSessionLoad(const TestIds &ids, time_t expectedLastDay, int64_t expectedSessionExpires) {
+		AccountRepositoryDB accRepo {};
+		auto acc = std::make_unique<AccountInfo>();
+		ASSERT_TRUE(accRepo.loadBySession(ids.name, acc));
+		assertAccountLoad(*acc, ids, expectedLastDay);
+		EXPECT_EQ(expectedSessionExpires, acc->sessionExpires);
+	}
+
 	TEST_F(AccountRepositoryDBTest, LoadByID) {
 		auto &db = g_database();
 		databaseTest(db, [&db] {
@@ -125,6 +133,34 @@ namespace it_account_repo_db {
 			ASSERT_TRUE(accRepo.loadBySession(ids.name, acc));
 			assertAccountLoad(*acc, ids, expectedLastDay);
 			EXPECT_EQ(1337, acc->sessionExpires);
+		})();
+	}
+
+	TEST_F(AccountRepositoryDBTest, LoadBySessionWithSHA256SessionId) {
+		auto &db = g_database();
+		databaseTest(db, [&db] {
+			auto ids = getTestIds();
+			auto expectedLastDay = createAccount(db, ids);
+			ASSERT_TRUE(db.executeQuery(fmt::format(
+				"UPDATE `account_sessions` SET `id` = {} WHERE `account_id` = {}",
+				db.escapeString(transformToSHA256(ids.name)),
+				ids.id
+			)));
+			assertSessionLoad(ids, expectedLastDay, 1337);
+		})();
+	}
+
+	TEST_F(AccountRepositoryDBTest, LoadBySessionPrefersSHA256SessionId) {
+		auto &db = g_database();
+		databaseTest(db, [&db] {
+			auto ids = getTestIds();
+			auto expectedLastDay = createAccount(db, ids);
+			ASSERT_TRUE(db.executeQuery(fmt::format(
+				"INSERT INTO `account_sessions` (`id`, `account_id`, `expires`) VALUES ({}, {}, 7331)",
+				db.escapeString(transformToSHA256(ids.name)),
+				ids.id
+			)));
+			assertSessionLoad(ids, expectedLastDay, 7331);
 		})();
 	}
 

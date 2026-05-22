@@ -16,6 +16,12 @@ Canary is a free and open-source MMORPG server emulator for the OpenTibia commun
 
 ---
 
+## Documentation
+
+- [System documentation](docs/systems/README.md).
+
+---
+
 ## Recommended Tools and Clients
 
 - [Assets Editor](https://github.com/Arch-Mina/Assets-Editor).

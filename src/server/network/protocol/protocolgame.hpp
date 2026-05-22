@@ -46,6 +46,7 @@ class Container;
 class Tile;
 class Connection;
 class ProtocolGame;
+class LivestreamManager;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
@@ -538,6 +539,16 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+	void sendWeaponProficiency(uint16_t weaponId);
+	void sendWeaponProficiencyWindow(uint16_t weaponId);
+
+	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
+	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);
+	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer);
+	void resendLivestreamViewerContainer(NetworkMessage &msg);
+	bool canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password);
+
 	/**
 	 * @brief Sends monk-specific data to the client.
 	 *
@@ -560,6 +571,7 @@ private:
 	friend class PlayerWheel;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class LivestreamManager;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -581,6 +593,10 @@ private:
 	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
+	bool m_isLivestreamBroadcaster = false;
+	bool m_isLivestreamViewer = false;
+	int64_t m_livestreamMessageCooldownTime = 0;
+	uint32_t m_livestreamMessageCount = 0;
 
 	// ProtocolGame instances are per-connection and handled on the connection thread,
 	// so the fine-grained throttle here does not require cross-thread synchronization.
@@ -615,7 +631,4 @@ private:
 		const std::vector<std::string> &addedGuildNames = {},
 		const std::vector<std::string> &removedGuildNames = {}
 	);
-
-	void sendWeaponProficiency(uint16_t weaponId);
-	void sendWeaponProficiencyWindow(uint16_t weaponId);
 };

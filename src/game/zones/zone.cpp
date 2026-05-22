@@ -9,7 +9,9 @@
 
 #include "game/zones/zone.hpp"
 
-#include <algorithm>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+#endif
 
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"

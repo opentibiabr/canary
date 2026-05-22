@@ -9,9 +9,11 @@
 
 #pragma once
 
-#include <optional>
-#include <string>
-#include <string_view>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+	#include <string>
+	#include <string_view>
+#endif
 
 namespace MapDownload {
 

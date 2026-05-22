@@ -20,7 +20,9 @@
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
 
-#include <optional>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
 
 namespace {
 	[[nodiscard]] LuaBytecodeCacheStats subtractLuaBytecodeCacheStats(const LuaBytecodeCacheStats &after, const LuaBytecodeCacheStats &before) {

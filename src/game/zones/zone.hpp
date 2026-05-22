@@ -9,7 +9,9 @@
 
 #pragma once
 
-#include <memory>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
 
 #include "game/movement/position.hpp"
 #include "items/item.hpp"

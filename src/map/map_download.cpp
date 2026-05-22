@@ -12,10 +12,12 @@
 #include "core.hpp"
 #include "lib/logging/log_with_spd_log.hpp"
 
-#include <curl/curl.h>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <regex>
+#endif
 
-#include <array>
-#include <regex>
+#include <curl/curl.h>
 
 namespace {
 

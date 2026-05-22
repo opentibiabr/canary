@@ -9,9 +9,11 @@
 
 #include "map/mapcache.hpp"
 
-#include <algorithm>
-#include <array>
-#include <limits>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+	#include <array>
+	#include <limits>
+#endif
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <utility>

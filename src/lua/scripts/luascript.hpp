@@ -12,9 +12,8 @@
 #include "lua/functions/lua_functions_loader.hpp"
 #include "lua/scripts/script_environment.hpp"
 
-#include <filesystem>
-
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <filesystem>
 	#include <cstdint>
 #endif
 

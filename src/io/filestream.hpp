@@ -9,10 +9,12 @@
 
 #pragma once
 
-#include <array>
-#include <bit>
-#include <cstring>
-#include <span>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <bit>
+	#include <cstring>
+	#include <span>
+#endif
 
 class FileStream {
 public:

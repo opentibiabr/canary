@@ -81,16 +81,13 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	local player = Player(creature)
 	local level = player:getLevel()
-	local minLevelLeaveRook = configManager.getNumber(configKeys.MIN_LEVEL_LEAVE_ROOK)
-	local maxLevelLeaveRook = configManager.getNumber(configKeys.MAX_LEVEL_LEAVE_ROOK)
-
-	if level < minLevelLeaveRook then
+	if level < 8 then
 		npcHandler:say("CHILD! COME BACK WHEN YOU HAVE GROWN UP!", npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
-	elseif level > maxLevelLeaveRook then
+	elseif level > 10 then
 		npcHandler:say(player:getName() .. ", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! \z
-		YOU CAN ONLY LEAVE WITH LEVEL " .. (maxLevelLeaveRook - 1) .. " OR LOWER.", npc, creature)
+		YOU CAN ONLY LEAVE WITH LEVEL 9 OR LOWER.", npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
 	elseif player:getVocation():getId() > VOCATION.ID.NONE then
@@ -138,7 +135,6 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif npcHandler:getTopic(playerId) == 3 then
 		if MsgContains(message, "yes") then
 			npcHandler:say("SO BE IT!", npc, creature)
-			player:addItem(3035, 10)
 			player:setVocation(Vocation(vocation[playerId]))
 			player:setTown(Town(town[playerId]))
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)

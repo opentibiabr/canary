@@ -12,6 +12,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "config/configmanager.hpp"
 #include "lib/metrics/metrics.hpp"
+#include "utils/transparent_string_hash.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <atomic>
@@ -67,7 +68,7 @@ namespace {
 
 	struct LuaBytecodePack {
 		bool loaded = false;
-		std::unordered_map<std::string, std::string> chunks;
+		std::unordered_map<std::string, std::string, TransparentStringHasher, std::equal_to<>> chunks;
 	};
 
 	struct AtomicLuaBytecodeCacheStats {
@@ -79,16 +80,30 @@ namespace {
 		std::atomic<uint64_t> fileInvalidations = 0;
 	};
 
+	AtomicLuaBytecodeCacheStats g_luaBytecodeCacheStats;
+	std::mutex g_luaBytecodeCacheDirectoryMutex;
+	std::unordered_set<std::string, TransparentStringHasher, std::equal_to<>> g_luaBytecodeReadyDirectories;
+	std::once_flag g_luaBytecodeCacheDirectoryInitFlag;
+	std::filesystem::path g_luaBytecodeCacheDirectory;
+	std::once_flag g_luaStartupWorkingDirectoryInitFlag;
+	std::filesystem::path g_luaStartupWorkingDirectory;
+	std::mutex g_luaBytecodePackMutex;
+	std::unordered_map<std::string, LuaBytecodePack, TransparentStringHasher, std::equal_to<>> g_luaBytecodePacks;
+
 	[[nodiscard]] AtomicLuaBytecodeCacheStats &getMutableLuaBytecodeCacheStats() {
-		static AtomicLuaBytecodeCacheStats stats;
-		return stats;
+		return g_luaBytecodeCacheStats;
 	}
 
-	uint64_t incrementLuaBytecodeCacheCounter(std::atomic<uint64_t> &counter) noexcept {
-		return counter.fetch_add(1, std::memory_order_relaxed) + 1;
+	void incrementLuaBytecodeCacheCounter(std::atomic<uint64_t> &counter) noexcept {
+		static_cast<void>(counter.fetch_add(1, std::memory_order_relaxed));
 	}
 
-	int luaBytecodeWriter(lua_State*, const void* data, size_t size, void* outputBuffer) {
+	int luaBytecodeWriter(
+		lua_State*,
+		const void* data, // NOSONAR
+		size_t size,
+		void* outputBuffer // NOSONAR
+	) {
 		auto &output = *static_cast<std::string*>(outputBuffer);
 		try {
 			static_cast<void>(output.append(static_cast<const char*>(data), size));
@@ -141,12 +156,9 @@ namespace {
 	}
 
 	bool ensureLuaBytecodeCacheDirectory(const std::filesystem::path &cacheDirectory) {
-		static std::mutex mutex;
-		static std::unordered_set<std::string> readyDirectories;
-
 		const auto directoryKey = cacheDirectory.lexically_normal().string();
-		std::scoped_lock lock(mutex);
-		if (readyDirectories.contains(directoryKey)) {
+		std::scoped_lock lock(g_luaBytecodeCacheDirectoryMutex);
+		if (g_luaBytecodeReadyDirectories.contains(directoryKey)) {
 			return true;
 		}
 
@@ -165,12 +177,12 @@ namespace {
 			}
 		}
 
-		static_cast<void>(readyDirectories.insert(directoryKey));
+		static_cast<void>(g_luaBytecodeReadyDirectories.insert(directoryKey));
 		return true;
 	}
 
 	[[nodiscard]] const std::filesystem::path &getLuaBytecodeCacheDirectory() {
-		static const auto cacheDirectory = [] {
+		std::call_once(g_luaBytecodeCacheDirectoryInitFlag, [] {
 			auto configuredPath = g_configManager().getString(LUA_SCRIPT_BYTECODE_CACHE_PATH);
 			if (configuredPath.empty()) {
 				configuredPath = std::string(LuaBytecodeCacheFallbackPath);
@@ -185,24 +197,25 @@ namespace {
 				}
 			}
 
-			return directory.lexically_normal();
-		}();
+			g_luaBytecodeCacheDirectory = directory.lexically_normal();
+		});
 
-		return cacheDirectory;
+		return g_luaBytecodeCacheDirectory;
 	}
 
 	[[nodiscard]] const std::filesystem::path &getLuaStartupWorkingDirectory() {
-		static const auto workingDirectory = [] {
+		std::call_once(g_luaStartupWorkingDirectoryInitFlag, [] {
 			std::error_code error;
 			auto directory = std::filesystem::current_path(error);
 			if (error) {
-				return std::filesystem::path();
+				g_luaStartupWorkingDirectory.clear();
+				return;
 			}
 
-			return directory.lexically_normal();
-		}();
+			g_luaStartupWorkingDirectory = directory.lexically_normal();
+		});
 
-		return workingDirectory;
+		return g_luaStartupWorkingDirectory;
 	}
 
 	[[nodiscard]] std::string getLuaBytecodeSourceIdentity(const std::string &file) {
@@ -293,13 +306,11 @@ namespace {
 	}
 
 	[[nodiscard]] std::mutex &getLuaBytecodePackMutex() {
-		static std::mutex mutex;
-		return mutex;
+		return g_luaBytecodePackMutex;
 	}
 
-	[[nodiscard]] std::unordered_map<std::string, LuaBytecodePack> &getLuaBytecodePacks() {
-		static std::unordered_map<std::string, LuaBytecodePack> packs;
-		return packs;
+	[[nodiscard]] std::unordered_map<std::string, LuaBytecodePack, TransparentStringHasher, std::equal_to<>> &getLuaBytecodePacks() {
+		return g_luaBytecodePacks;
 	}
 
 	[[nodiscard]] std::optional<std::string> findLuaBytecodePackChunk(const LuaBytecodeCacheEntry &cacheEntry) {

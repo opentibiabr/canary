@@ -225,8 +225,7 @@ namespace {
 	}
 
 	template <typename T>
-	[[nodiscard]]
-	bool readBinaryValue(std::istream &input, T &value) {
+	[[nodiscard]] bool readBinaryValue(std::istream &input, T &value) {
 		std::array<char, sizeof(T)> bytes {};
 		if (!readBytes(input, bytes.data(), static_cast<std::streamsize>(bytes.size()))) {
 			return false;
@@ -237,8 +236,7 @@ namespace {
 	}
 
 	template <typename T>
-	[[nodiscard]]
-	bool writeBinaryValue(std::ostream &output, T value) {
+	[[nodiscard]] bool writeBinaryValue(std::ostream &output, T value) {
 		const auto bytes = std::bit_cast<std::array<char, sizeof(T)>>(value);
 		return static_cast<bool>(output.write(bytes.data(), static_cast<std::streamsize>(bytes.size())));
 	}

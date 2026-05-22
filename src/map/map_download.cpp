@@ -22,7 +22,7 @@ namespace {
 	constexpr auto MAIN_CONFIG_DIST_URL = "https://raw.githubusercontent.com/opentibiabr/canary/main/config.lua.dist";
 	constexpr auto CANARY_RELEASE_MAP_URL_PREFIX = "https://github.com/opentibiabr/canary/releases/download/";
 
-	size_t writeResponseBody(char* contents, size_t size, size_t nmemb, void* userp) {
+	size_t writeResponseBody(char* contents, size_t size, size_t nmemb, void* userp) { // NOSONAR
 		const size_t realSize = size * nmemb;
 		auto* responseBody = static_cast<std::string*>(userp);
 		static_cast<void>(responseBody->append(contents, realSize));

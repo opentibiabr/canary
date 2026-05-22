@@ -85,7 +85,7 @@ local function greetCallback(npc, creature)
 		npcHandler:say("CHILD! COME BACK WHEN YOU HAVE GROWN UP!", npc, creature)
 		npcHandler:resetNpc(creature)
 		return false
-	elseif level > 10 then
+	elseif level >= 10 then
 		npcHandler:say(player:getName() .. ", I CAN'T LET YOU LEAVE - YOU ARE TOO STRONG ALREADY! \z
 		YOU CAN ONLY LEAVE WITH LEVEL 9 OR LOWER.", npc, creature)
 		npcHandler:resetNpc(creature)

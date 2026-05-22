@@ -258,7 +258,7 @@ These Lua cache improvements were intentionally left out of this profiling PR:
 - Manual cache clearing: useful for operators, but it touches command or startup-option behavior rather than the measured startup hot path. It should be added separately with clear permissions and logging.
 - Cache pruning or garbage collection: safe for loose `.luac` files, but packed `.luapack` files are append-only and need a rebuild step to remove stale chunks. Doing that during every reload would add I/O to the path this PR is trying to keep fast.
 - Optional pack compaction: content-hash keys can leave old chunks in append-only `.luapack` files after source edits. Rebuilding packs to drop unreachable chunks should be a separate maintenance path with clear logging.
-- Automated reload/cache tests: The expected scenarios are documented below, but a robust test harness needs isolated temporary datapacks, separate cache directories, controlled reload calls, and simulated corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
+- Automated reload/cache tests: The expected scenarios are documented below, but a robust test harness requires isolated temporary datapacks, separate cache directories, controlled reload calls, and simulated corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
 
 Useful future test scenarios:
 

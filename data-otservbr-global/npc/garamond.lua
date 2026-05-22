@@ -351,14 +351,10 @@ keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "main" }, StdModule.say, { npcHandler = npcHandler, text = "Most of the major cities are on the Tibian mainland, such as the rich merchant city of Venore, for example. You will find spell teachers for your vocation in almost every major city." })
 keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Tibia is the world we live in. Rookgaard is not far off from the Tibian {mainland}, though it's a tricky passage with contrary winds. On the mainland, you will find more adventure, mystery and monsters and can prove yourself a hero or villain." })
 keywordHandler:addKeyword({ "oressa" }, StdModule.say, { npcHandler = npcHandler, text = "A very intelligent girl. Prefers to listen to wild animals' noises instead of humans', which is quite understandable when you think about it. However, she's also a very apt healer and can give you advice on your choice of vocation." })
-keywordHandler:addKeyword(
-	{ "vocation" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Your choice of vocation will determine your life in Tibia, and the skills and fighting techniques you may use. There are four vocation: knight, druid, paladin and sorcerer. If you want to know more about them, talk to Oressa in the temple. I myself teach try-out spells for both the magical classes, whereas Tybald in the next room specialises in knight and paladin spells.",
-	}
-)
+keywordHandler:addKeyword({ "vocation" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Your choice of vocation will determine your life in Tibia, and the skills and fighting techniques you may use. There are four vocation: knight, druid, paladin and sorcerer. If you want to know more about them, talk to Oressa in the temple. I myself teach try-out spells for both the magical classes, whereas Tybald in the next room specialises in knight and paladin spells.",
+})
 keywordHandler:addKeyword({ "menesto" }, StdModule.say, { npcHandler = npcHandler, text = "Very young and sometimes precipitate, burning for everything mystical, holy, godly, which is not a bad thing as such. Just a little hasty and prone to fall into a nest of monsters now and then, but he always comes out alive." })
 keywordHandler:addKeyword({ "key" }, StdModule.say, { npcHandler = npcHandler, text = "How should I know where that key has gotten to? I rarely sleep at my age anyway! Though I must say that my young adventurer fellows handled it quite carelessly, from what I saw." })
 

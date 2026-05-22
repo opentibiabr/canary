@@ -37,12 +37,16 @@ bool AccountRepositoryDB::loadByEmailOrName(bool oldProtocol, const std::string 
 };
 
 bool AccountRepositoryDB::loadBySession(const std::string &sessionKey, std::unique_ptr<AccountInfo> &acc) {
+	const auto escapedSessionKey = g_database().escapeString(sessionKey);
+	const auto escapedLegacySessionId = g_database().escapeString(transformToSHA1(sessionKey));
 	auto query = fmt::format(
 		"SELECT `accounts`.`id`, `type`, `premdays`, `lastday`, `creation`, `premdays_purchased`, `account_sessions`.`expires` "
 		"FROM `accounts` "
 		"INNER JOIN `account_sessions` ON `account_sessions`.`account_id` = `accounts`.`id` "
-		"WHERE `account_sessions`.`id` = {}",
-		g_database().escapeString(transformToSHA1(sessionKey))
+		"WHERE `account_sessions`.`id` IN (SHA2({}, 256), {}) "
+		"ORDER BY CHAR_LENGTH(`account_sessions`.`id`) DESC LIMIT 1",
+		escapedSessionKey,
+		escapedLegacySessionId
 	);
 	return load(query, acc);
 };

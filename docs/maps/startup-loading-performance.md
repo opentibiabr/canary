@@ -211,6 +211,17 @@ The main changes were:
 
 Do not remove zone callbacks from startup placement just to reduce CPU. Datapacks can depend on zone entry behavior, monster variants, and spawn-related side effects.
 
+## Spawn selection behavior change
+
+`spawnBlock_t::getMonsterType()` now uses a weighted-random selection for multi-monster spawn blocks:
+
+- Single-monster blocks still return that monster directly.
+- For non-singleton blocks, boss monsters still take precedence exactly as before.
+- The combined weights of non-boss monster types are summed, and the function now safely returns `nullptr` when `totalWeight == 0`.
+- A random value in `[0, totalWeight - 1]` is used to pick the winner by subtracting weights from the random value as we iterate candidates.
+
+This means mixed spawn blocks now follow weighted distribution instead of the previous deterministic threshold order. Server operators should expect non-deterministic ordering when monitoring spawn logs and map scripts that relied on fixed ordering.
+
 ## What improved
 
 Across the profiling captures, the largest improvement was the Lua loader path. `Loaded modules and scripts` moved from tens of seconds to low single-digit seconds in release profiling runs, and `luaL_loadfile` stopped being the main cost.
@@ -265,7 +276,7 @@ Map loading optimizations must preserve these behaviors:
 - Do not change item creation order for action id, unique id, containers, or item attributes.
 - Do not let cached `BasicTile` raw pointers outlive the owning map cache.
 - Do not skip zone callbacks during real creature placement.
-- Do not change monster spawn weighting semantics.
+- Keep monster spawn weighting behavior in `spawnBlock_t::getMonsterType()` aligned with weighted-random selection and `totalWeight == 0` guard semantics unless intentionally changing it later.
 - Do not enable Lua debug hooks by default.
 - Do not leave startup telemetry enabled by default.
 - Keep widely used new headers in the precompiled header when appropriate, otherwise compile time can regress even if runtime improves.

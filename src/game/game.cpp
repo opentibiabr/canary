@@ -12043,53 +12043,63 @@ void Game::updatePlayersOnline() const {
 	// Function to be executed within the transaction
 	auto updateOperation = [this]() {
 		const auto &m_players = getPlayers();
-		bool changesMade = false;
 
 		// g_metrics().addUpDownCounter("players_online", 1);
 		// g_metrics().addUpDownCounter("players_online", -1);
 
 		if (m_players.empty()) {
-			std::string query = "SELECT COUNT(*) AS count FROM players_online;";
-			auto result = g_database().storeQuery(query);
-			int count = result->getNumber<int>("count");
-			if (count > 0) {
-				const bool cleaned = g_database().executeQuery("DELETE FROM `players_online`;");
-				if (!cleaned) {
-					g_logger().error("[Game::updatePlayersOnline] Failed to cleanup players_online");
-					return false;
-				}
-				changesMade = true;
-			}
-		} else {
-			// Insert the current players
-			DBInsert stmt("INSERT IGNORE INTO `players_online` (player_id) VALUES ");
-			for (const auto &[key, player] : m_players) {
-				std::ostringstream playerQuery;
-				playerQuery << "(" << player->getGUID() << ")";
-				stmt.addRow(playerQuery.str());
-			}
-			stmt.execute();
-			changesMade = true;
-
-			// Remove players who are no longer online
-			std::ostringstream cleanupQuery;
-			cleanupQuery << "DELETE FROM `players_online` WHERE `player_id` NOT IN (";
-			for (const auto &[key, player] : m_players) {
-				cleanupQuery << player->getGUID() << ",";
-			}
-			cleanupQuery.seekp(-1, std::ostringstream::cur); // Remove the last comma
-			cleanupQuery << ");";
-			const bool cleaned = g_database().executeQuery(cleanupQuery.str());
-			if (!cleaned) {
-				g_logger().error("[Game::updatePlayersOnline] Failed to cleanup stale players_online entries");
+			auto result = g_database().storeQuery("SELECT COUNT(*) AS count FROM players_online;");
+			if (!result) {
+				g_logger().error("[Game::updatePlayersOnline] Failed to count players_online records.");
 				return false;
 			}
+
+			if (result->getNumber<int>("count") == 0) {
+				return true;
+			}
+
+			if (!g_database().executeQuery("DELETE FROM `players_online`;")) {
+				g_logger().error("[Game::updatePlayersOnline] Failed to clear players_online records.");
+				return false;
+			}
+
+			return true;
 		}
 
-		return changesMade;
+		// Insert the current players
+		DBInsert stmt("INSERT IGNORE INTO `players_online` (`player_id`) VALUES ");
+		std::vector<uint32_t> onlinePlayerIds;
+		onlinePlayerIds.reserve(m_players.size());
+
+		for (const auto &player : m_players | std::views::values) {
+			const auto playerGuid = player->getGUID();
+			if (!stmt.addRow(fmt::format("{}", playerGuid))) {
+				g_logger().error("[Game::updatePlayersOnline] Failed to add players_online insert row.");
+				return false;
+			}
+
+			onlinePlayerIds.emplace_back(playerGuid);
+		}
+
+		if (!stmt.execute()) {
+			g_logger().error("[Game::updatePlayersOnline] Failed to insert players_online records.");
+			return false;
+		}
+
+		// Remove players who are no longer online
+		const auto cleanupQuery = fmt::format(
+			"DELETE FROM `players_online` WHERE `player_id` NOT IN ({});",
+			fmt::join(onlinePlayerIds, ",")
+		);
+		if (!g_database().executeQuery(cleanupQuery)) {
+			g_logger().error("[Game::updatePlayersOnline] Failed to prune offline players_online records.");
+			return false;
+		}
+
+		return true;
 	};
 
-	const bool success = DBTransaction::executeWithinTransaction(updateOperation);
+	const bool success = DBTransaction::executeWithinTransactionRollbackOnFailure(updateOperation);
 	if (!success) {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
 	}

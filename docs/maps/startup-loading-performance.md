@@ -138,9 +138,10 @@ process pointer size
 normalized source path
 source file size
 source file last-write timestamp
+source content hash
 ```
 
-This avoids reading every Lua file just to hash content during startup. The tradeoff is that a deployment system that preserves both file size and timestamp while changing content could theoretically reuse stale bytecode. Normal edits, rebuilds, syncs, and reloads update at least the timestamp, so this is an acceptable default for the startup path.
+The content hash prevents stale bytecode reuse when a script changes without a size or timestamp change. Source bytes are already needed when a cache miss falls back to loading the Lua file, so the stronger identity keeps cache behavior correct while preserving the loader's normal source-load fallback path.
 
 ## Map loading changes
 
@@ -256,8 +257,8 @@ These Lua cache improvements were intentionally left out of this profiling PR:
 
 - Manual cache clearing: useful for operators, but it touches command or startup-option behavior rather than the measured startup hot path. It should be added separately with clear permissions and logging.
 - Cache pruning or garbage collection: safe for loose `.luac` files, but packed `.luapack` files are append-only and need a rebuild step to remove stale chunks. Doing that during every reload would add I/O to the path this PR is trying to keep fast.
-- Strict content-hash validation in cache identity: content is now included in the Lua bytecode cache key. This avoids stale cache entries when file contents change without timestamp/size drift, while keeping cache lookup and regeneration scoped to existing file loads.
-- Automated reload/cache tests: The expected scenarios are documented below, but a robust test harness requires isolated temporary datapacks, separate cache directories, controlled reload calls, and simulated corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
+- Optional pack compaction: content-hash keys can leave old chunks in append-only `.luapack` files after source edits. Rebuilding packs to drop unreachable chunks should be a separate maintenance path with clear logging.
+- Automated reload/cache tests: The expected scenarios are documented below, but a robust test harness needs isolated temporary datapacks, separate cache directories, controlled reload calls, and simulated corruption cases. That should be a focused test follow-up rather than being mixed into this performance patch.
 
 Useful future test scenarios:
 

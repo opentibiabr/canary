@@ -12085,6 +12085,10 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 		}
 	}
 
+	if (shopOwner && !shopOwner->canInteract(getPosition())) {
+		closeShopWindow();
+	}
+
 	// close modal windows
 	if (!modalWindows.empty()) {
 		// TODO: This shouldn't be hardcoded

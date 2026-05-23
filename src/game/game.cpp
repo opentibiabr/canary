@@ -70,6 +70,17 @@
 
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
+namespace {
+	bool closeNpcShopIfOutOfRange(const std::shared_ptr<Player> &player, const std::shared_ptr<Npc> &merchant) {
+		if (merchant->canInteract(player->getPosition())) {
+			return false;
+		}
+
+		player->closeShopWindow();
+		return true;
+	}
+}
+
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
@@ -5736,6 +5747,10 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
+	if (closeNpcShopIfOutOfRange(player, merchant)) {
+		return;
+	}
+
 	const ItemType &it = Item::items[itemId];
 	if (it.id == 0) {
 		return;
@@ -5792,6 +5807,10 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
+	if (closeNpcShopIfOutOfRange(player, merchant)) {
+		return;
+	}
+
 	const ItemType &it = Item::items[itemId];
 	if (it.id == 0) {
 		return;
@@ -5828,6 +5847,10 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 
 	std::shared_ptr<Npc> merchant = player->getShopOwner();
 	if (!merchant) {
+		return;
+	}
+
+	if (closeNpcShopIfOutOfRange(player, merchant)) {
 		return;
 	}
 

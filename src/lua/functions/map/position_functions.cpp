@@ -181,6 +181,12 @@ int PositionFunctions::luaPositionGetZones(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendMagicEffect
+ * @param magicEffect MagicEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
@@ -212,6 +218,12 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:removeMagicEffect
+ * @param magicEffect MagicEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	// position:removeMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
@@ -243,6 +255,13 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendDistanceEffect
+ * @param positionEx Position
+ * @param distanceEffect DistanceEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
 	CreatureVector spectators;

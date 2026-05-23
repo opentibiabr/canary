@@ -189,6 +189,17 @@ int GameFunctions::luaGameGetMonsterTypeByName(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.getSpectators
+ * @param position Position
+ * @param multifloor? boolean
+ * @param onlyPlayer? boolean
+ * @param minRangeX? integer
+ * @param maxRangeX? integer
+ * @param minRangeY? integer
+ * @param maxRangeY? integer
+ * @return Creature[]
+ */
 int GameFunctions::luaGameGetSpectators(lua_State* L) {
 	// Game.getSpectators(position[, multifloor = false[, onlyPlayer = false[, minRangeX = 0[, maxRangeX = 0[, minRangeY = 0[, maxRangeY = 0]]]]]])
 	const Position &position = Lua::getPosition(L, 1);
@@ -327,6 +338,10 @@ int GameFunctions::luaGameGetNpcCount(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.getMonsterTypes
+ * @return table<string, MonsterType>
+ */
 int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	// Game.getMonsterTypes()
 	const auto type = g_monsters().monsters;
@@ -340,6 +355,10 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.getTowns
+ * @return Town[]
+ */
 int GameFunctions::luaGameGetTowns(lua_State* L) {
 	// Game.getTowns()
 	const auto towns = g_game().map.towns.getTowns();
@@ -354,6 +373,10 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.getHouses
+ * @return House[]
+ */
 int GameFunctions::luaGameGetHouses(lua_State* L) {
 	// Game.getHouses()
 	const auto houses = g_game().map.houses.getHouses();

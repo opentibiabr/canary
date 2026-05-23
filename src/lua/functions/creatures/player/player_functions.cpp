@@ -2427,10 +2427,11 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 
 /***
  * @function Player:addItemEx
- * @overload fun(item: Item, canDropOnMap: true, slot?: integer): integer
+ * @overload fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil
+ * @overload fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil
  * @param item Item
- * @param canDropOnMap? false
- * @param index? integer
+ * @param canDropOnMap? boolean
+ * @param indexOrSlot? integer
  * @param flags? integer
  * @return integer|false|nil
  */

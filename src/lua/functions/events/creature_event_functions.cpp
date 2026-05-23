@@ -31,6 +31,10 @@ void CreatureEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "CreatureEvent", "onExtendedOpcode", CreatureEventFunctions::luaCreatureEventOnCallback);
 }
 
+/***
+ * @class CreatureEvent
+ * @overload fun(eventName: string): CreatureEvent
+ */
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	const auto creatureEvent = std::make_shared<CreatureEvent>();

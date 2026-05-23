@@ -29,6 +29,10 @@ void TalkActionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "TalkAction", "getGroupType", TalkActionFunctions::luaTalkActionGetGroupType);
 }
 
+/***
+ * @class TalkAction
+ * @overload fun(...: string): TalkAction
+ */
 int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 	// TalkAction(words) or TalkAction(word1, word2, word3)
 	std::vector<std::string> wordsVector;

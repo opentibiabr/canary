@@ -56,6 +56,10 @@ void WeaponFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Weapon", "shootType", WeaponFunctions::luaWeaponShootType);
 }
 
+/***
+ * @class Weapon
+ * @overload fun(type: integer): Weapon?
+ */
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
 	const WeaponType_t type = Lua::getNumber<WeaponType_t>(L, 2);

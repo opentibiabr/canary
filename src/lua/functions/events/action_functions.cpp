@@ -28,6 +28,10 @@ void ActionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
 }
 
+/***
+ * @class Action
+ * @overload fun(): Action
+ */
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	const auto action = std::make_shared<Action>();

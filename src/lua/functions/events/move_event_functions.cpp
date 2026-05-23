@@ -35,6 +35,10 @@ void MoveEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MoveEvent", "onRemoveItem", MoveEventFunctions::luaMoveEventOnCallback);
 }
 
+/***
+ * @class MoveEvent
+ * @overload fun(): MoveEvent
+ */
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
 	const auto moveevent = std::make_shared<MoveEvent>();

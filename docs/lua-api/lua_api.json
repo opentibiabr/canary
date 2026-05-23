@@ -1,4 +1,11 @@
 {
+  "typeAliases": {
+    "CombatType": "integer",
+    "DistanceEffect": "integer",
+    "MagicEffect": "integer",
+    "ReturnValue": "integer",
+    "TileState": "integer"
+  },
   "classes": {
     "Action": [
       {
@@ -1534,7 +1541,7 @@
       {
         "name": "getHouses",
         "params": [],
-        "return": "table",
+        "return": "House[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1582,7 +1589,7 @@
       {
         "name": "getMonsterTypes",
         "params": [],
-        "return": "table",
+        "return": "table<string, MonsterType>",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1660,12 +1667,12 @@
           "position: Position",
           "multifloor?: boolean",
           "onlyPlayer?: boolean",
-          "minRangeX?: number",
-          "maxRangeX?: number",
-          "minRangeY?: number",
-          "maxRangeY?: number"
+          "minRangeX?: integer",
+          "maxRangeX?: integer",
+          "minRangeY?: integer",
+          "maxRangeY?: integer"
         ],
-        "return": "table",
+        "return": "Creature[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1677,7 +1684,7 @@
       {
         "name": "getTowns",
         "params": [],
-        "return": "table",
+        "return": "Town[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -5391,7 +5398,7 @@
       {
         "name": "getInvitees",
         "params": [],
-        "return": "table|nil",
+        "return": "Player[]|nil",
         "source": "src/lua/functions/creatures/player/party_functions.cpp"
       },
       {
@@ -5409,7 +5416,7 @@
       {
         "name": "getMembers",
         "params": [],
-        "return": "table|nil",
+        "return": "Player[]|nil",
         "source": "src/lua/functions/creatures/player/party_functions.cpp"
       },
       {
@@ -5607,12 +5614,13 @@
       {
         "name": "addItemEx",
         "overloads": [
-          "fun(item: Item, canDropOnMap: true, slot?: integer): integer"
+          "fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil",
+          "fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil"
         ],
         "params": [
           "item: Item",
-          "canDropOnMap?: false",
-          "index?: integer",
+          "canDropOnMap?: boolean",
+          "indexOrSlot?: integer",
           "flags?: integer"
         ],
         "return": "integer|false|nil",
@@ -7782,7 +7790,7 @@
       {
         "name": "removeMagicEffect",
         "params": [
-          "magicEffect: any",
+          "magicEffect: MagicEffect",
           "player?: Player"
         ],
         "return": "boolean",
@@ -7792,7 +7800,7 @@
         "name": "sendDistanceEffect",
         "params": [
           "positionEx: Position",
-          "distanceEffect: any",
+          "distanceEffect: DistanceEffect",
           "player?: Player"
         ],
         "return": "boolean",
@@ -7811,7 +7819,7 @@
       {
         "name": "sendMagicEffect",
         "params": [
-          "magicEffect: any",
+          "magicEffect: MagicEffect",
           "player?: Player"
         ],
         "return": "boolean",
@@ -9180,6 +9188,33 @@
       "fun(): Position",
       "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
       "fun(position: Position): Position"
+    ],
+    "Action": [
+      "fun(): Action"
+    ],
+    "Combat": [
+      "fun(): Combat"
+    ],
+    "Condition": [
+      "fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?"
+    ],
+    "CreatureEvent": [
+      "fun(eventName: string): CreatureEvent"
+    ],
+    "GlobalEvent": [
+      "fun(name: string): GlobalEvent"
+    ],
+    "MoveEvent": [
+      "fun(): MoveEvent"
+    ],
+    "Spell": [
+      "fun(nameOrTypeOrId: string|integer): Spell?"
+    ],
+    "TalkAction": [
+      "fun(...: string): TalkAction"
+    ],
+    "Weapon": [
+      "fun(type: integer): Weapon?"
     ]
   },
   "globals": []

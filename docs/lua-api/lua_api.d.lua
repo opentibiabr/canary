@@ -1,7 +1,14 @@
 ---@meta
 --- Auto-generated Lua API (do not edit manually)
 
+---@alias CombatType integer
+---@alias DistanceEffect integer
+---@alias MagicEffect integer
+---@alias ReturnValue integer
+---@alias TileState integer
+
 ---@class Action
+---@overload fun(): Action
 Action = {}
 
 ---@param aids number
@@ -142,6 +149,7 @@ function Charm:type() end
 
 ---@class Combat
 ---@operator eq(Combat):boolean
+---@overload fun(): Combat
 Combat = {}
 
 ---@param condition Condition
@@ -181,6 +189,7 @@ function Combat:setParameter(key, value) end
 
 ---@class Condition
 ---@operator eq(Condition):boolean
+---@overload fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?
 Condition = {}
 
 ---@param rounds number
@@ -606,6 +615,7 @@ function Creature:teleportTo(position, pushMovement) end
 function Creature:unregisterEvent(name) end
 
 ---@class CreatureEvent
+---@overload fun(eventName: string): CreatureEvent
 CreatureEvent = {}
 
 ---@return boolean|nil
@@ -841,7 +851,7 @@ function Game.getFiendishMonsters() end
 ---@return number
 function Game.getGameState() end
 
----@return table
+---@return House[]
 function Game.getHouses() end
 
 ---@return table
@@ -865,7 +875,7 @@ function Game.getMonstersByRace(race) end
 ---@return boolean|MonsterType
 function Game.getMonsterTypeByName(name) end
 
----@return table
+---@return table<string, MonsterType>
 function Game.getMonsterTypes() end
 
 ---@param name string
@@ -906,17 +916,17 @@ function Game.getSoulCoreItems() end
 ---@param position Position
 ---@param multifloor? boolean
 ---@param onlyPlayer? boolean
----@param minRangeX? number
----@param maxRangeX? number
----@param minRangeY? number
----@param maxRangeY? number
----@return table
+---@param minRangeX? integer
+---@param maxRangeX? integer
+---@param minRangeY? integer
+---@param maxRangeY? integer
+---@return Creature[]
 function Game.getSpectators(position, multifloor, onlyPlayer, minRangeX, maxRangeX, minRangeY, maxRangeY) end
 
 ---@return table
 function Game.getTalkActions() end
 
----@return table
+---@return Town[]
 function Game.getTowns() end
 
 ---@return number
@@ -978,6 +988,7 @@ function Game.setWorldType(type) end
 function Game.startRaid(raidName) end
 
 ---@class GlobalEvent
+---@overload fun(name: string): GlobalEvent
 GlobalEvent = {}
 
 ---@param interval number
@@ -2439,6 +2450,7 @@ function Mount:getName() end
 function Mount:getSpeed() end
 
 ---@class MoveEvent
+---@overload fun(): MoveEvent
 MoveEvent = {}
 
 ---@param ids number
@@ -2873,7 +2885,7 @@ function Party:disband() end
 ---@return number|nil
 function Party:getInviteeCount() end
 
----@return table|nil
+---@return Player[]|nil
 function Party:getInvitees() end
 
 ---@return nil|Player
@@ -2882,7 +2894,7 @@ function Party:getLeader() end
 ---@return number|nil
 function Party:getMemberCount() end
 
----@return table|nil
+---@return Player[]|nil
 function Party:getMembers() end
 
 ---@return number|nil
@@ -2994,13 +3006,14 @@ function Player:addItem(itemId, count, canDropOnMap, subType, slot, tier) end
 ---@return number|nil
 function Player:addItemBatchToPaginedContainer(container, itemId, count, tier, flags) end
 
----@overload fun(item: Item, canDropOnMap: true, slot?: integer): integer
+---@overload fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil
+---@overload fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil
 ---@param item Item
----@param canDropOnMap? false
----@param index? integer
+---@param canDropOnMap? boolean
+---@param indexOrSlot? integer
 ---@param flags? integer
 ---@return integer|false|nil
-function Player:addItemEx(item, canDropOnMap, index, flags) end
+function Player:addItemEx(item, canDropOnMap, indexOrSlot, flags) end
 
 ---@param itemId number
 ---@param count number
@@ -4134,13 +4147,13 @@ function Position:getZones() end
 ---@return boolean
 function Position:isSightClear(positionEx, sameFloor) end
 
----@param magicEffect any
+---@param magicEffect MagicEffect
 ---@param player? Player
 ---@return boolean
 function Position:removeMagicEffect(magicEffect, player) end
 
 ---@param positionEx Position
----@param distanceEffect any
+---@param distanceEffect DistanceEffect
 ---@param player? Player
 ---@return boolean
 function Position:sendDistanceEffect(positionEx, distanceEffect, player) end
@@ -4151,7 +4164,7 @@ function Position:sendDistanceEffect(positionEx, distanceEffect, player) end
 ---@return boolean
 function Position:sendDoubleSoundEffect(mainSoundId, secondarySoundId, actor) end
 
----@param magicEffect any
+---@param magicEffect MagicEffect
 ---@param player? Player
 ---@return boolean
 function Position:sendMagicEffect(magicEffect, player) end
@@ -4251,6 +4264,7 @@ function Spdlog.warn(text) end
 
 ---@class Spell
 ---@operator eq(Spell):boolean
+---@overload fun(nameOrTypeOrId: string|integer): Spell?
 Spell = {}
 
 ---@param value? boolean
@@ -4407,6 +4421,7 @@ function Spell:vocation(vocation) end
 function Spell:words(words, separator) end
 
 ---@class TalkAction
+---@overload fun(...: string): TalkAction
 TalkAction = {}
 
 ---@return boolean|string
@@ -4660,6 +4675,7 @@ function Vocation:getRequiredSkillTries(skillType, skillLevel) end
 function Vocation:getSoulGainTicks() end
 
 ---@class Weapon
+---@overload fun(type: integer): Weapon?
 Weapon = {}
 
 ---@param callback string

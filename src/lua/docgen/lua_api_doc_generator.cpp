@@ -1416,7 +1416,7 @@ namespace {
 		output << indent << "}";
 	}
 
-	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::*member) {
+	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::* member) {
 		output << "  \"" << key << "\": {\n";
 		bool firstClass = true;
 		for (const auto &[name, classInfo] : classes) {
@@ -1471,7 +1471,7 @@ namespace {
 		appendMappedClassStringValues(classInfo.overloads, scanResult.classOverloads, className);
 	}
 
-	void applyScannedClassValues(LuaClassMap &classes, const LuaClassValuesMap &valuesByClass, std::vector<std::string> LuaClassInfo::*member) {
+	void applyScannedClassValues(LuaClassMap &classes, const LuaClassValuesMap &valuesByClass, std::vector<std::string> LuaClassInfo::* member) {
 		for (const auto &[name, values] : valuesByClass) {
 			auto &classInfo = classes[name];
 			classInfo.name = name;
@@ -1525,6 +1525,46 @@ namespace {
 		for (const auto &function : globals) {
 			writeMarkdownFunctionEntry(output, "###", function.name, function);
 		}
+	}
+
+	const std::vector<std::pair<std::string_view, std::string_view>> &getLuaTypeAliases() {
+		static const std::vector<std::pair<std::string_view, std::string_view>> aliases = {
+			{ "CombatType", "integer" },
+			{ "DistanceEffect", "integer" },
+			{ "MagicEffect", "integer" },
+			{ "ReturnValue", "integer" },
+			{ "TileState", "integer" },
+		};
+		return aliases;
+	}
+
+	void writeLuaTypeAliases(std::ostringstream &output) {
+		for (const auto &[name, type] : getLuaTypeAliases()) {
+			output << "---@alias " << name << " " << type << "\n";
+		}
+		output << "\n";
+	}
+
+	void writeMarkdownTypeAliases(std::ostringstream &output) {
+		output << "## Type Aliases\n\n";
+		for (const auto &[name, type] : getLuaTypeAliases()) {
+			output << "- `" << name << "`: `" << type << "`\n";
+		}
+		output << "\n";
+	}
+
+	void writeJsonTypeAliases(std::ostringstream &output) {
+		output << "  \"typeAliases\": {\n";
+		const auto &aliases = getLuaTypeAliases();
+		for (size_t i = 0; i < aliases.size(); ++i) {
+			const auto &[name, type] = aliases[i];
+			output << "    \"" << jsonEscape(std::string(name)) << "\": \"" << jsonEscape(std::string(type)) << "\"";
+			if (i + 1 < aliases.size()) {
+				output << ",";
+			}
+			output << "\n";
+		}
+		output << "  },\n";
 	}
 
 	std::vector<const LuaFunctionInfo*> getPublicMethods(const LuaClassInfo &classInfo) {
@@ -2122,6 +2162,7 @@ bool LuaApiDocGenerator::exportEmmyLua() const {
 
 	output << "---@meta\n";
 	output << "--- Auto-generated Lua API (do not edit manually)\n\n";
+	writeLuaTypeAliases(output);
 
 	for (const auto &[name, classInfo] : classes) {
 		output << "---@class " << name;
@@ -2176,6 +2217,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "- `" << docsFilePath("lua_api.d.lua") << "`: Lua Language Server definition file for IntelliSense.\n";
 	output << "- `" << docsFilePath("lua_api.md") << "`: human-readable API reference.\n";
 	output << "- `" << docsFilePath("lua_api.json") << "`: structured API metadata for tooling.\n\n";
+	writeMarkdownTypeAliases(output);
 	output << "## VSCode IntelliSense\n\n";
 	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
@@ -2198,6 +2240,7 @@ bool LuaApiDocGenerator::exportJson() const {
 	std::ostringstream output;
 
 	output << "{\n";
+	writeJsonTypeAliases(output);
 	writeJsonClasses(output, classes);
 	writeJsonClassParents(output, classes);
 	writeJsonClassStringArrayMap(output, classes, "classFields", &LuaClassInfo::fields);

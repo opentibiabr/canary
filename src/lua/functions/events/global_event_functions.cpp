@@ -29,6 +29,10 @@ void GlobalEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "GlobalEvent", "onSave", GlobalEventFunctions::luaGlobalEventOnCallback);
 }
 
+/***
+ * @class GlobalEvent
+ * @overload fun(name: string): GlobalEvent
+ */
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 	const auto global = std::make_shared<GlobalEvent>();
 	global->setName(Lua::getString(L, 2));

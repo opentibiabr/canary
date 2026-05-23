@@ -8,6 +8,14 @@ This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manua
 - `docs/lua-api/lua_api.md`: human-readable API reference.
 - `docs/lua-api/lua_api.json`: structured API metadata for tooling.
 
+## Type Aliases
+
+- `CombatType`: `integer`
+- `DistanceEffect`: `integer`
+- `MagicEffect`: `integer`
+- `ReturnValue`: `integer`
+- `TileState`: `integer`
+
 ## VSCode IntelliSense
 
 Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.
@@ -21,6 +29,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 ## Classes
 
 ### Action
+
+- Overloads:
+  - `fun(): Action`
+
 
 #### `Action:aid(aids: number)`
 
@@ -190,6 +202,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Combat
 
+- Overloads:
+  - `fun(): Combat`
+
+
 #### `Combat:addCondition(condition: Condition)`
 
 - Returns: `boolean|nil`
@@ -226,6 +242,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
 
 ### Condition
+
+- Overloads:
+  - `fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?`
+
 
 #### `Condition:addDamage(rounds: number, time: number, value: number)`
 
@@ -762,6 +782,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### CreatureEvent
 
+- Overloads:
+  - `fun(eventName: string): CreatureEvent`
+
+
 #### `CreatureEvent:onAdvance()`
 
 - Returns: `boolean|nil`
@@ -1045,7 +1069,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Game.getHouses()`
 
-- Returns: `table`
+- Returns: `House[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getInfluencedMonsters()`
@@ -1080,7 +1104,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Game.getMonsterTypes()`
 
-- Returns: `table`
+- Returns: `table<string, MonsterType>`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getNormalizedGuildName(name: string)`
@@ -1133,9 +1157,9 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getSpectators(position: Position, multifloor?: boolean, onlyPlayer?: boolean, minRangeX?: number, maxRangeX?: number, minRangeY?: number, maxRangeY?: number)`
+#### `Game.getSpectators(position: Position, multifloor?: boolean, onlyPlayer?: boolean, minRangeX?: integer, maxRangeX?: integer, minRangeY?: integer, maxRangeY?: integer)`
 
-- Returns: `table`
+- Returns: `Creature[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getTalkActions()`
@@ -1145,7 +1169,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Game.getTowns()`
 
-- Returns: `table`
+- Returns: `Town[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getWorldType()`
@@ -1214,6 +1238,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 ### GlobalEvent
+
+- Overloads:
+  - `fun(name: string): GlobalEvent`
+
 
 #### `GlobalEvent:interval(interval: number)`
 
@@ -3243,6 +3271,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### MoveEvent
 
+- Overloads:
+  - `fun(): MoveEvent`
+
+
 #### `MoveEvent:aid(ids: number)`
 
 - Returns: `boolean|nil`
@@ -3805,7 +3837,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Party:getInvitees()`
 
-- Returns: `table|nil`
+- Returns: `Player[]|nil`
 - Source: `src/lua/functions/creatures/player/party_functions.cpp`
 
 #### `Party:getLeader()`
@@ -3820,7 +3852,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Party:getMembers()`
 
-- Returns: `table|nil`
+- Returns: `Player[]|nil`
 - Source: `src/lua/functions/creatures/player/party_functions.cpp`
 
 #### `Party:getUniqueVocationsCount()`
@@ -3947,10 +3979,11 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:addItemEx(item: Item, canDropOnMap?: false, index?: integer, flags?: integer)`
+#### `Player:addItemEx(item: Item, canDropOnMap?: boolean, indexOrSlot?: integer, flags?: integer)`
 
 - Overloads:
-  - `fun(item: Item, canDropOnMap: true, slot?: integer): integer`
+  - `fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil`
+  - `fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil`
 
 - Returns: `integer|false|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5413,12 +5446,12 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
-#### `Position:removeMagicEffect(magicEffect: any, player?: Player)`
+#### `Position:removeMagicEffect(magicEffect: MagicEffect, player?: Player)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
-#### `Position:sendDistanceEffect(positionEx: Position, distanceEffect: any, player?: Player)`
+#### `Position:sendDistanceEffect(positionEx: Position, distanceEffect: DistanceEffect, player?: Player)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
@@ -5428,7 +5461,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
-#### `Position:sendMagicEffect(magicEffect: any, player?: Player)`
+#### `Position:sendMagicEffect(magicEffect: MagicEffect, player?: Player)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
@@ -5540,6 +5573,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/core/libs/logger_functions.cpp`
 
 ### Spell
+
+- Overloads:
+  - `fun(nameOrTypeOrId: string|integer): Spell?`
+
 
 #### `Spell:allowFarUse(value?: boolean)`
 
@@ -5732,6 +5769,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 ### TalkAction
+
+- Overloads:
+  - `fun(...: string): TalkAction`
+
 
 #### `TalkAction:getDescription()`
 
@@ -6081,6 +6122,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/player/vocation_functions.cpp`
 
 ### Weapon
+
+- Overloads:
+  - `fun(type: integer): Weapon?`
+
 
 #### `Weapon:action(callback: string)`
 

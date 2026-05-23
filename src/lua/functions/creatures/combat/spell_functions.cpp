@@ -64,6 +64,10 @@ void SpellFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Spell", "monkSpellType", SpellFunctions::luaSpellMonkSpellType);
 }
 
+/***
+ * @class Spell
+ * @overload fun(nameOrTypeOrId: string|integer): Spell?
+ */
 int SpellFunctions::luaSpellCreate(lua_State* L) {
 	// Spell(words, name or id) to get an existing spell
 	// Spell(type) ex: Spell(SPELL_INSTANT) or Spell(SPELL_RUNE) to create a new spell

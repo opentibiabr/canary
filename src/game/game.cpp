@@ -85,10 +85,7 @@ namespace {
 			return merchant;
 		}
 
-		if (!player->closeShopWindow()) {
-			return nullptr;
-		}
-
+		[[maybe_unused]] const auto shopClosed = player->closeShopWindow();
 		return nullptr;
 	}
 }

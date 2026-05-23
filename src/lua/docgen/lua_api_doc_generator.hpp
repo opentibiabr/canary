@@ -9,15 +9,37 @@
 #pragma once
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <cstddef>
 	#include <filesystem>
+	#include <functional>
 	#include <map>
 	#include <string>
+	#include <string_view>
 	#include <unordered_map>
 	#include <unordered_set>
 	#include <vector>
 #endif
 
 class Logger;
+
+struct TransparentStringHash {
+	using is_transparent = void;
+
+	std::size_t operator()(const std::string_view value) const noexcept {
+		return std::hash<std::string_view> {}(value);
+	}
+
+	std::size_t operator()(const std::string &value) const noexcept {
+		return (*this)(std::string_view(value));
+	}
+
+	std::size_t operator()(const char* value) const noexcept {
+		return (*this)(std::string_view(value));
+	}
+};
+
+using LuaStringSet = std::unordered_set<std::string, TransparentStringHash, std::equal_to<>>;
+using LuaStringMap = std::unordered_map<std::string, std::string, TransparentStringHash, std::equal_to<>>;
 
 struct LuaFunctionInfo {
 	std::string name;
@@ -39,8 +61,8 @@ struct LuaClassInfo {
 
 struct LuaScanResult {
 	std::vector<LuaFunctionInfo> functions;
-	std::unordered_set<std::string> classes;
-	std::unordered_map<std::string, std::string> classBaseClasses;
+	LuaStringSet classes;
+	LuaStringMap classBaseClasses;
 };
 
 class LuaBindingScanner {
@@ -64,7 +86,7 @@ private:
 
 class LuaApiDocGenerator {
 public:
-	LuaApiDocGenerator(const std::filesystem::path &projectRoot, std::filesystem::path outputDirectory, Logger &logger);
+	LuaApiDocGenerator(const std::filesystem::path &initialProjectRoot, std::filesystem::path outputDirectory, Logger &logger);
 	bool generate();
 
 private:
@@ -78,6 +100,6 @@ private:
 	Logger &logger;
 	std::filesystem::path projectRoot;
 	std::filesystem::path docsDirectory;
-	std::map<std::string, LuaClassInfo> classes;
+	std::map<std::string, LuaClassInfo, std::less<>> classes;
 	std::vector<LuaFunctionInfo> globals;
 };

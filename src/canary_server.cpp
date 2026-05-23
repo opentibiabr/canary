@@ -58,19 +58,24 @@ CanaryServer::CanaryServer(
 #endif
 }
 
+void CanaryServer::generateLuaApiDocs() const {
+	if (!g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
+		logger.debug("Lua API documentation generation is disabled.");
+		return;
+	}
+
+	LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
+	if (apiDocGenerator.generate()) {
+		logger.info("Lua API documentation generated successfully.");
+	}
+}
+
 int CanaryServer::run() {
 	g_dispatcher().addEvent(
 		[this] {
 			try {
 				loadConfigLua();
-				if (g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
-					LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
-					if (apiDocGenerator.generate()) {
-						logger.info("Lua API documentation generated successfully.");
-					}
-				} else {
-					logger.debug("Lua API documentation generation is disabled.");
-				}
+				generateLuaApiDocs();
 				validateDatapack();
 
 				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");

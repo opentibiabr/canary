@@ -266,6 +266,10 @@ int GameFunctions::luaGameGetBestiaryList(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.getPlayers
+ * @return Player[]
+ */
 int GameFunctions::luaGameGetPlayers(lua_State* L) {
 	// Game.getPlayers()
 	lua_createtable(L, g_game().getPlayersOnline(), 0);
@@ -663,9 +667,10 @@ int GameFunctions::luaGameCreateNpc(lua_State* L) {
 
 /***
  * @function Game.createTile
- * @param x number|Position
- * @param y? number|boolean
- * @param z? number
+ * @overload fun(position: Position, isDynamic?: boolean): Tile
+ * @param x integer
+ * @param y integer
+ * @param z integer
  * @param isDynamic? boolean
  * @return Tile
  */

@@ -609,7 +609,12 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 	return 1;
 }
 
-// Player
+/***
+ * @class Player
+ * @overload fun(idOrGuid: integer): Player?
+ * @overload fun(name: string): Player?, integer?
+ * @overload fun(player: Player): Player?
+ */
 int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	// Player(id or guid or name or userdata)
 	std::shared_ptr<Player> player;
@@ -2420,6 +2425,15 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:addItemEx
+ * @overload fun(item: Item, canDropOnMap: true, slot?: integer): integer
+ * @param item Item
+ * @param canDropOnMap? false
+ * @param index? integer
+ * @param flags? integer
+ * @return integer|false|nil
+ */
 int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	// player:addItemEx(item[, canDropOnMap = false[, index = INDEX_WHEREEVER[, flags = 0]]])
 	// player:addItemEx(item[, canDropOnMap = true[, slot = CONST_SLOT_WHEREEVER]])
@@ -5397,6 +5411,13 @@ int PlayerFunctions::luaPlayerGetHarmony(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:getHarmonyDamage
+ * @param baseMin integer
+ * @param baseMax integer
+ * @return integer min
+ * @return integer max
+ */
 int PlayerFunctions::luaPlayerGetHarmonyDamage(lua_State* L) {
 	// player:getHarmonyDamage(baseMin, baseMax)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");

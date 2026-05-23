@@ -24,7 +24,7 @@ function Action:checkFloor(value) end
 ---@return boolean
 function Action:id(ids) end
 
----@param callback function
+---@param callback fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean
 ---@return boolean
 function Action:onUse(callback) end
 
@@ -101,10 +101,6 @@ function BatchUpdate.delete() end
 ---@operator eq(Charm):boolean
 Charm = {}
 
----@param other Charm
----@return boolean
-function Charm:__eq(other) end
-
 ---@return boolean|number
 function Charm:castSound() end
 
@@ -148,10 +144,6 @@ function Charm:type() end
 ---@operator eq(Combat):boolean
 Combat = {}
 
----@param other Combat
----@return boolean
-function Combat:__eq(other) end
-
 ---@param condition Condition
 ---@return boolean|nil
 function Combat:addCondition(condition) end
@@ -190,13 +182,6 @@ function Combat:setParameter(key, value) end
 ---@class Condition
 ---@operator eq(Condition):boolean
 Condition = {}
-
----@param other Condition
----@return boolean
-function Condition:__eq(other) end
-
----@return nil
-function Condition:__gc() end
 
 ---@param rounds number
 ---@param time number
@@ -272,10 +257,6 @@ function configManager.getString(key) end
 ---@operator eq(Container):boolean
 Container = {}
 
----@param other Container
----@return boolean
-function Container:__eq(other) end
-
 ---@param itemId string
 ---@param countOrSubType? number
 ---@param index? number
@@ -346,10 +327,6 @@ function Container:removeItemById(itemId, count, subType) end
 ---@class Creature
 ---@operator eq(Creature):boolean
 Creature = {}
-
----@param other Creature
----@return boolean
-function Creature:__eq(other) end
 
 ---@param condition Condition
 ---@return boolean|nil
@@ -807,9 +784,10 @@ function Game.createNpcType(...) end
 ---@return nil|Monster
 function Game.createSoulPitMonster(monsterName, position, stack, extended, force, master) end
 
----@param x number|Position
----@param y? number|boolean
----@param z? number
+---@overload fun(position: Position, isDynamic?: boolean): Tile
+---@param x integer
+---@param y integer
+---@param z integer
 ---@param isDynamic? boolean
 ---@return Tile
 function Game.createTile(x, y, z, isDynamic) end
@@ -909,7 +887,7 @@ function Game.getOfflinePlayer(nameOrId) end
 ---@return number
 function Game.getPlayerCount() end
 
----@return table
+---@return Player[]
 function Game.getPlayers() end
 
 ---@return table
@@ -1042,10 +1020,6 @@ function GlobalEvent:type(callback) end
 ---@operator eq(Group):boolean
 Group = {}
 
----@param other Group
----@return boolean
-function Group:__eq(other) end
-
 ---@return boolean|nil
 function Group:getAccess() end
 
@@ -1071,10 +1045,6 @@ function Group:hasFlag(flag) end
 ---@class Guild
 ---@operator eq(Guild):boolean
 Guild = {}
-
----@param other Guild
----@return boolean
-function Guild:__eq(other) end
 
 ---@param id number
 ---@param name string
@@ -1116,10 +1086,6 @@ function Guild:setMotd(motd) end
 ---@class House
 ---@operator eq(House):boolean
 House = {}
-
----@param other House
----@return boolean
-function House:__eq(other) end
 
 ---@param listId number
 ---@param player Player
@@ -1216,10 +1182,6 @@ function House:startTrade(player, tradePartner) end
 ---@operator eq(Imbuement):boolean
 Imbuement = {}
 
----@param other Imbuement
----@return boolean
-function Imbuement:__eq(other) end
-
 ---@return table|nil
 function Imbuement:getBase() end
 
@@ -1247,10 +1209,6 @@ function Imbuement:isPremium() end
 ---@class Item
 ---@operator eq(Item):boolean
 Item = {}
-
----@param other Item
----@return boolean
-function Item:__eq(other) end
 
 ---@return boolean
 function Item:actor() end
@@ -1448,10 +1406,6 @@ function Item:transform(itemId, arg2) end
 ---@operator eq(ItemClassification):boolean
 ItemClassification = {}
 
----@param other ItemClassification
----@return boolean
-function ItemClassification:__eq(other) end
-
 ---@param id number
 ---@param core number
 ---@param regularPrice number
@@ -1463,10 +1417,6 @@ function ItemClassification:addTier(id, core, regularPrice, convergenceFusionPri
 ---@class ItemType
 ---@operator eq(ItemType):boolean
 ItemType = {}
-
----@param other ItemType
----@return boolean
-function ItemType:__eq(other) end
 
 ---@return number|nil
 function ItemType:getAmmoType() end
@@ -1796,10 +1746,6 @@ function metrics.addCounter(name, value, attributes) end
 ---@operator eq(ModalWindow):boolean
 ModalWindow = {}
 
----@param other ModalWindow
----@return boolean
-function ModalWindow:__eq(other) end
-
 ---@param id number
 ---@param text string
 ---@return boolean|nil
@@ -1861,10 +1807,6 @@ function ModalWindow:setTitle(text) end
 ---@class Monster: Creature
 ---@operator eq(Monster):boolean
 Monster = {}
-
----@param other Monster
----@return boolean
-function Monster:__eq(other) end
 
 ---@param monsterspell MonsterSpell
 ---@return nil
@@ -2146,10 +2088,6 @@ function MonsterSpell:setType(type) end
 ---@class MonsterType
 ---@operator eq(MonsterType):boolean
 MonsterType = {}
-
----@param other MonsterType
----@return boolean
-function MonsterType:__eq(other) end
 
 ---@param monsterspell MonsterSpell
 ---@return nil
@@ -2488,10 +2426,6 @@ function MonsterType:yellSpeedTicks() end
 ---@operator eq(Mount):boolean
 Mount = {}
 
----@param other Mount
----@return boolean
-function Mount:__eq(other) end
-
 ---@return number|nil
 function Mount:getClientId() end
 
@@ -2573,10 +2507,6 @@ function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 ---@class NetworkMessage
 ---@operator eq(NetworkMessage):boolean
 NetworkMessage = {}
-
----@param other NetworkMessage
----@return boolean
-function NetworkMessage:__eq(other) end
 
 ---@param value number
 ---@return boolean|nil
@@ -2666,10 +2596,6 @@ function NetworkMessage:skipBytes(value) end
 ---@class Npc: Creature
 ---@operator eq(Npc):boolean
 Npc = {}
-
----@param other Npc
----@return boolean
-function Npc:__eq(other) end
 
 ---@param player Player
 ---@return boolean
@@ -2791,10 +2717,6 @@ function Npc:turnToCreature(creature, arg2) end
 ---@class NpcType
 ---@operator eq(NpcType):boolean
 NpcType = {}
-
----@param other NpcType
----@return boolean
-function NpcType:__eq(other) end
 
 ---@param shop Shop
 ---@return boolean|nil
@@ -2937,10 +2859,6 @@ function NpcType:yellSpeedTicks() end
 ---@operator eq(Party):boolean
 Party = {}
 
----@param other Party
----@return boolean
-function Party:__eq(other) end
-
 ---@param player Player
 ---@return boolean|nil
 function Party:addInvite(player) end
@@ -2997,12 +2915,11 @@ function Party:setSharedExperience(active) end
 function Party:shareExperience(experience) end
 
 ---@class Player: Creature
+---@overload fun(idOrGuid: integer): Player?
+---@overload fun(name: string): Player?, integer?
+---@overload fun(player: Player): Player?
 ---@operator eq(Player):boolean
 Player = {}
-
----@param other Player
----@return boolean
-function Player:__eq(other) end
 
 ---@param idOrName number|string
 ---@param sendMessage? boolean
@@ -3077,11 +2994,12 @@ function Player:addItem(itemId, count, canDropOnMap, subType, slot, tier) end
 ---@return number|nil
 function Player:addItemBatchToPaginedContainer(container, itemId, count, tier, flags) end
 
+---@overload fun(item: Item, canDropOnMap: true, slot?: integer): integer
 ---@param item Item
----@param canDropOnMap? boolean
----@param index? number
----@param flags? number
----@return boolean|number|nil
+---@param canDropOnMap? false
+---@param index? integer
+---@param flags? integer
+---@return integer|false|nil
 function Player:addItemEx(item, canDropOnMap, index, flags) end
 
 ---@param itemId number
@@ -3379,9 +3297,10 @@ function Player:getGuildNick() end
 ---@return number
 function Player:getHarmony() end
 
----@param baseMin number
----@param baseMax number
----@return number
+---@param baseMin integer
+---@param baseMax integer
+---@return integer min
+---@return integer max
 function Player:getHarmonyDamage(baseMin, baseMax) end
 
 ---@return boolean|number
@@ -4179,22 +4098,17 @@ function Player:upgradeSpellsWOD(name, add) end
 function Player:wheelUnlockScroll(scrollName) end
 
 ---@class Position
+---@field x integer
+---@field y integer
+---@field z integer
+---@field stackpos integer
+---@overload fun(): Position
+---@overload fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position
+---@overload fun(position: Position): Position
 ---@operator add(Position):Position
 ---@operator eq(Position):boolean
 ---@operator sub(Position):Position
 Position = {}
-
----@param arg2 Position
----@return Position
-function Position:__add(arg2) end
-
----@param arg2 Position
----@return boolean
-function Position:__eq(arg2) end
-
----@param arg2 Position
----@return Position
-function Position:__sub(arg2) end
 
 ---@param positionEx Position
 ---@return number
@@ -4259,7 +4173,7 @@ function Result.free(resultId) end
 
 ---@param resultId number
 ---@param column string
----@return boolean|number
+---@return number|false
 function Result.getNumber(resultId, column) end
 
 ---@param resultId number
@@ -4270,7 +4184,7 @@ function Result.getStream(resultId, column) end
 
 ---@param resultId number
 ---@param column string
----@return boolean|string
+---@return string|false
 function Result.getString(resultId, column) end
 
 ---@param resultId number
@@ -4338,10 +4252,6 @@ function Spdlog.warn(text) end
 ---@class Spell
 ---@operator eq(Spell):boolean
 Spell = {}
-
----@param other Spell
----@return boolean
-function Spell:__eq(other) end
 
 ---@param value? boolean
 ---@return boolean|nil
@@ -4531,10 +4441,6 @@ function TalkAction:setDescription(arg2) end
 ---@operator eq(Teleport):boolean
 Teleport = {}
 
----@param other Teleport
----@return boolean
-function Teleport:__eq(other) end
-
 ---@return nil|Position
 function Teleport:getDestination() end
 
@@ -4545,10 +4451,6 @@ function Teleport:setDestination(position) end
 ---@class Tile
 ---@operator eq(Tile):boolean
 Tile = {}
-
----@param other Tile
----@return boolean
-function Tile:__eq(other) end
 
 ---@param itemId string
 ---@param countOrSubType? number
@@ -4666,10 +4568,6 @@ function Tile:sweep(actor) end
 ---@operator eq(Town):boolean
 Town = {}
 
----@param other Town
----@return boolean
-function Town:__eq(other) end
-
 ---@return number|nil
 function Town:getId() end
 
@@ -4694,10 +4592,6 @@ function Variant:getString() end
 ---@class Vocation
 ---@operator eq(Vocation):boolean
 Vocation = {}
-
----@param other Vocation
----@return boolean
-function Vocation:__eq(other) end
 
 ---@return number|nil
 function Vocation:getAttackSpeed() end
@@ -4911,10 +4805,6 @@ function Webhook.sendMessage(title, message, color, url) end
 ---@class Zone
 ---@operator eq(Zone):boolean
 Zone = {}
-
----@param zone2 Zone
----@return boolean
-function Zone:__eq(zone2) end
 
 ---@param fromPos Position
 ---@param toPos Position

@@ -16,7 +16,7 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ## Manual Signature Hints
 
-C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@function`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.
+C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.
 
 ## Classes
 
@@ -47,7 +47,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/events/action_functions.cpp`
 
-#### `Action:onUse(callback: function)`
+#### `Action:onUse(callback: fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/events/action_functions.cpp`
@@ -123,11 +123,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Charm
 
-#### `Charm:__eq(other: Charm)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
-
 #### `Charm:castSound()`
 
 - Returns: `boolean|number`
@@ -195,11 +190,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Combat
 
-#### `Combat:__eq(other: Combat)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
-
 #### `Combat:addCondition(condition: Condition)`
 
 - Returns: `boolean|nil`
@@ -236,16 +226,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
 
 ### Condition
-
-#### `Condition:__eq(other: Condition)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
-
-#### `Condition:__gc()`
-
-- Returns: `nil`
-- Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
 
 #### `Condition:addDamage(rounds: number, time: number, value: number)`
 
@@ -338,11 +318,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 - Extends: `Item`
 
-#### `Container:__eq(other: Container)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/items/container_functions.cpp`
-
 #### `Container:addItem(itemId: string, countOrSubType?: number, index?: number, flags?: number)`
 
 - Returns: `boolean|nil|Item`
@@ -424,11 +399,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/items/container_functions.cpp`
 
 ### Creature
-
-#### `Creature:__eq(other: Creature)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/creature_functions.cpp`
 
 #### `Creature:addCondition(condition: Condition)`
 
@@ -995,7 +965,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `nil|Monster`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.createTile(x: number|Position, y?: number|boolean, z?: number, isDynamic?: boolean)`
+#### `Game.createTile(x: integer, y: integer, z: integer, isDynamic?: boolean)`
+
+- Overloads:
+  - `fun(position: Position, isDynamic?: boolean): Tile`
 
 - Returns: `Tile`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1137,7 +1110,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Game.getPlayers()`
 
-- Returns: `table`
+- Returns: `Player[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getPublicAchievements()`
@@ -1299,11 +1272,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Group
 
-#### `Group:__eq(other: Group)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/group_functions.cpp`
-
 #### `Group:getAccess()`
 
 - Returns: `boolean|nil`
@@ -1340,11 +1308,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/player/group_functions.cpp`
 
 ### Guild
-
-#### `Guild:__eq(other: Guild)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/guild_functions.cpp`
 
 #### `Guild:addRank(id: number, name: string, level: number)`
 
@@ -1397,11 +1360,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/player/guild_functions.cpp`
 
 ### House
-
-#### `House:__eq(other: House)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/map/house_functions.cpp`
 
 #### `House:canEditAccessList(listId: number, player: Player)`
 
@@ -1530,11 +1488,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Imbuement
 
-#### `Imbuement:__eq(other: Imbuement)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/items/imbuement_functions.cpp`
-
 #### `Imbuement:getBase()`
 
 - Returns: `table|nil`
@@ -1576,11 +1529,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/items/imbuement_functions.cpp`
 
 ### Item
-
-#### `Item:__eq(other: Item)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/items/item_functions.cpp`
 
 #### `Item:actor()`
 
@@ -1854,22 +1802,12 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### ItemClassification
 
-#### `ItemClassification:__eq(other: ItemClassification)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/items/item_classification_functions.cpp`
-
 #### `ItemClassification:addTier(id: number, core: number, regularPrice: number, convergenceFusionPrice: number, convergenceTransferPrice: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_classification_functions.cpp`
 
 ### ItemType
-
-#### `ItemType:__eq(other: ItemType)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/items/item_type_functions.cpp`
 
 #### `ItemType:getAmmoType()`
 
@@ -2328,11 +2266,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### ModalWindow
 
-#### `ModalWindow:__eq(other: ModalWindow)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/game/modal_window_functions.cpp`
-
 #### `ModalWindow:addButton(id: number, text: string)`
 
 - Returns: `boolean|nil`
@@ -2416,11 +2349,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 ### Monster
 
 - Extends: `Creature`
-
-#### `Monster:__eq(other: Monster)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
 #### `Monster:addAttackSpell(monsterspell: MonsterSpell)`
 
@@ -2790,11 +2718,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/monster/monster_spell_functions.cpp`
 
 ### MonsterType
-
-#### `MonsterType:__eq(other: MonsterType)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
 #### `MonsterType:addAttack(monsterspell: MonsterSpell)`
 
@@ -3298,11 +3221,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Mount
 
-#### `Mount:__eq(other: Mount)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/mount_functions.cpp`
-
 #### `Mount:getClientId()`
 
 - Returns: `number|nil`
@@ -3411,11 +3329,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
 ### NetworkMessage
-
-#### `NetworkMessage:__eq(other: NetworkMessage)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/network/network_message_functions.cpp`
 
 #### `NetworkMessage:add16(value: number)`
 
@@ -3535,11 +3448,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 ### Npc
 
 - Extends: `Creature`
-
-#### `Npc:__eq(other: Npc)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
 
 #### `Npc:closeShopWindow(player: Player)`
 
@@ -3677,11 +3585,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
 
 ### NpcType
-
-#### `NpcType:__eq(other: NpcType)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
 #### `NpcType:addShopItem(shop: Shop)`
 
@@ -3880,11 +3783,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Party
 
-#### `Party:__eq(other: Party)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/party_functions.cpp`
-
 #### `Party:addInvite(player: Player)`
 
 - Returns: `boolean|nil`
@@ -3969,10 +3867,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 - Extends: `Creature`
 
-#### `Player:__eq(other: Player)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+- Overloads:
+  - `fun(idOrGuid: integer): Player?`
+  - `fun(name: string): Player?, integer?`
+  - `fun(player: Player): Player?`
 
 #### `Player:addAchievement(idOrName: number|string, sendMessage?: boolean)`
 
@@ -4049,9 +3947,12 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:addItemEx(item: Item, canDropOnMap?: boolean, index?: number, flags?: number)`
+#### `Player:addItemEx(item: Item, canDropOnMap?: false, index?: integer, flags?: integer)`
 
-- Returns: `boolean|number|nil`
+- Overloads:
+  - `fun(item: Item, canDropOnMap: true, slot?: integer): integer`
+
+- Returns: `integer|false|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:addItemStash(itemId: number, count: number)`
@@ -4444,9 +4345,9 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `number`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:getHarmonyDamage(baseMin: number, baseMax: number)`
+#### `Player:getHarmonyDamage(baseMin: integer, baseMax: integer)`
 
-- Returns: `number`
+- Returns: `integer min, integer max`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:getHazardSystemPoints()`
@@ -5476,20 +5377,16 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Position
 
-#### `Position:__add(arg2: Position)`
+- Fields:
+  - `x integer`
+  - `y integer`
+  - `z integer`
+  - `stackpos integer`
 
-- Returns: `Position`
-- Source: `src/lua/functions/map/position_functions.cpp`
-
-#### `Position:__eq(arg2: Position)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/map/position_functions.cpp`
-
-#### `Position:__sub(arg2: Position)`
-
-- Returns: `Position`
-- Source: `src/lua/functions/map/position_functions.cpp`
+- Overloads:
+  - `fun(): Position`
+  - `fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position`
+  - `fun(position: Position): Position`
 
 #### `Position:getDistance(positionEx: Position)`
 
@@ -5643,11 +5540,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/core/libs/logger_functions.cpp`
 
 ### Spell
-
-#### `Spell:__eq(other: Spell)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 #### `Spell:allowFarUse(value?: boolean)`
 
@@ -5885,11 +5777,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 - Extends: `Item`
 
-#### `Teleport:__eq(other: Teleport)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/map/teleport_functions.cpp`
-
 #### `Teleport:getDestination()`
 
 - Returns: `nil|Position`
@@ -5901,11 +5788,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/map/teleport_functions.cpp`
 
 ### Tile
-
-#### `Tile:__eq(other: Tile)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/map/tile_functions.cpp`
 
 #### `Tile:addItem(itemId: string, countOrSubType?: number, flags?: number)`
 
@@ -6059,11 +5941,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### Town
 
-#### `Town:__eq(other: Town)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/map/town_functions.cpp`
-
 #### `Town:getId()`
 
 - Returns: `number|nil`
@@ -6097,11 +5974,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/creatures/combat/variant_functions.cpp`
 
 ### Vocation
-
-#### `Vocation:__eq(other: Vocation)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/creatures/player/vocation_functions.cpp`
 
 #### `Vocation:getAttackSpeed()`
 
@@ -6373,11 +6245,6 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/core/network/webhook_functions.cpp`
 
 ### Zone
-
-#### `Zone:__eq(zone2: Zone)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/game/zone_functions.cpp`
 
 #### `Zone:addArea(fromPos: Position, toPos: Position)`
 

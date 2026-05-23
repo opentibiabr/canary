@@ -36,6 +36,11 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Action:onUse
+ * @param callback fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean
+ * @return boolean
+ */
 int ActionFunctions::luaActionOnUse(lua_State* L) {
 	// action:onUse(callback)
 	const auto &action = Lua::getUserdataShared<Action>(L, 1, "Action");

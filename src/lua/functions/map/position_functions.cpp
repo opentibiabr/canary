@@ -39,6 +39,16 @@ void PositionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Position", "toString", PositionFunctions::luaPositionToString);
 }
 
+/***
+ * @class Position
+ * @field x integer
+ * @field y integer
+ * @field z integer
+ * @field stackpos integer
+ * @overload fun(): Position
+ * @overload fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position
+ * @overload fun(position: Position): Position
+ */
 int PositionFunctions::luaPositionCreate(lua_State* L) {
 	// Position([x = 0[, y = 0[, z = 0[, stackpos = 0]]]])
 	// Position([position])

@@ -47,6 +47,7 @@ struct LuaFunctionInfo {
 	std::vector<std::string> parameters;
 	std::string returnType;
 	std::vector<std::string> returns;
+	std::vector<std::string> overloads;
 	std::string sourceFile;
 	std::string handler;
 	bool hasSelfParameter { false };
@@ -56,6 +57,8 @@ struct LuaFunctionInfo {
 struct LuaClassInfo {
 	std::string name;
 	std::string baseClass;
+	std::vector<std::string> fields;
+	std::vector<std::string> overloads;
 	std::vector<LuaFunctionInfo> methods;
 };
 
@@ -63,6 +66,8 @@ struct LuaScanResult {
 	std::vector<LuaFunctionInfo> functions;
 	LuaStringSet classes;
 	LuaStringMap classBaseClasses;
+	std::map<std::string, std::vector<std::string>, std::less<>> classFields;
+	std::map<std::string, std::vector<std::string>, std::less<>> classOverloads;
 };
 
 class LuaBindingScanner {

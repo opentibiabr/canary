@@ -44,7 +44,7 @@
       {
         "name": "onUse",
         "params": [
-          "callback: function"
+          "callback: fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean"
         ],
         "return": "boolean",
         "source": "src/lua/functions/events/action_functions.cpp"
@@ -169,14 +169,6 @@
     ],
     "Charm": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Charm"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
-      },
-      {
         "name": "castSound",
         "params": [],
         "return": "boolean|number",
@@ -257,14 +249,6 @@
     ],
     "Combat": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Combat"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/combat/combat_functions.cpp"
-      },
-      {
         "name": "addCondition",
         "params": [
           "condition: Condition"
@@ -329,20 +313,6 @@
       }
     ],
     "Condition": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Condition"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/combat/condition_functions.cpp"
-      },
-      {
-        "name": "__gc",
-        "params": [],
-        "return": "nil",
-        "source": "src/lua/functions/creatures/combat/condition_functions.cpp"
-      },
       {
         "name": "addDamage",
         "params": [
@@ -475,14 +445,6 @@
     ],
     "Container": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Container"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/items/container_functions.cpp"
-      },
-      {
         "name": "addItem",
         "params": [
           "itemId: string",
@@ -609,14 +571,6 @@
       }
     ],
     "Creature": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Creature"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/creature_functions.cpp"
-      },
       {
         "name": "addCondition",
         "params": [
@@ -1467,10 +1421,13 @@
       },
       {
         "name": "createTile",
+        "overloads": [
+          "fun(position: Position, isDynamic?: boolean): Tile"
+        ],
         "params": [
-          "x: number|Position",
-          "y?: number|boolean",
-          "z?: number",
+          "x: integer",
+          "y: integer",
+          "z: integer",
           "isDynamic?: boolean"
         ],
         "return": "Tile",
@@ -1668,7 +1625,7 @@
       {
         "name": "getPlayers",
         "params": [],
-        "return": "table",
+        "return": "Player[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1909,14 +1866,6 @@
     ],
     "Group": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Group"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/group_functions.cpp"
-      },
-      {
         "name": "getAccess",
         "params": [],
         "return": "boolean|nil",
@@ -1962,14 +1911,6 @@
       }
     ],
     "Guild": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Guild"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/guild_functions.cpp"
-      },
       {
         "name": "addRank",
         "params": [
@@ -2044,14 +1985,6 @@
       }
     ],
     "House": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: House"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/map/house_functions.cpp"
-      },
       {
         "name": "canEditAccessList",
         "params": [
@@ -2231,14 +2164,6 @@
     ],
     "Imbuement": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Imbuement"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/items/imbuement_functions.cpp"
-      },
-      {
         "name": "getBase",
         "params": [],
         "return": "table|nil",
@@ -2288,14 +2213,6 @@
       }
     ],
     "Item": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Item"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/items/item_functions.cpp"
-      },
       {
         "name": "actor",
         "params": [],
@@ -2675,14 +2592,6 @@
     ],
     "ItemClassification": [
       {
-        "name": "__eq",
-        "params": [
-          "other: ItemClassification"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/items/item_classification_functions.cpp"
-      },
-      {
         "name": "addTier",
         "params": [
           "id: number",
@@ -2696,14 +2605,6 @@
       }
     ],
     "ItemType": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: ItemType"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/items/item_type_functions.cpp"
-      },
       {
         "name": "getAmmoType",
         "params": [],
@@ -3329,14 +3230,6 @@
     ],
     "ModalWindow": [
       {
-        "name": "__eq",
-        "params": [
-          "other: ModalWindow"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/game/modal_window_functions.cpp"
-      },
-      {
         "name": "addButton",
         "params": [
           "id: number",
@@ -3452,14 +3345,6 @@
       }
     ],
     "Monster": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Monster"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
-      },
       {
         "name": "addAttackSpell",
         "params": [
@@ -4003,14 +3888,6 @@
       }
     ],
     "MonsterType": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: MonsterType"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
       {
         "name": "addAttack",
         "params": [
@@ -4670,14 +4547,6 @@
     ],
     "Mount": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Mount"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/mount_functions.cpp"
-      },
-      {
         "name": "getClientId",
         "params": [],
         "return": "number|nil",
@@ -4829,14 +4698,6 @@
       }
     ],
     "NetworkMessage": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: NetworkMessage"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/network/network_message_functions.cpp"
-      },
       {
         "name": "add16",
         "params": [
@@ -5007,14 +4868,6 @@
       }
     ],
     "Npc": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Npc"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/npc/npc_functions.cpp"
-      },
       {
         "name": "closeShopWindow",
         "params": [
@@ -5234,14 +5087,6 @@
       }
     ],
     "NpcType": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: NpcType"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
-      },
       {
         "name": "addShopItem",
         "params": [
@@ -5516,14 +5361,6 @@
     ],
     "Party": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Party"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/party_functions.cpp"
-      },
-      {
         "name": "addInvite",
         "params": [
           "player: Player"
@@ -5635,14 +5472,6 @@
       }
     ],
     "Player": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Player"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/player_functions.cpp"
-      },
       {
         "name": "addAchievement",
         "params": [
@@ -5777,13 +5606,16 @@
       },
       {
         "name": "addItemEx",
+        "overloads": [
+          "fun(item: Item, canDropOnMap: true, slot?: integer): integer"
+        ],
         "params": [
           "item: Item",
-          "canDropOnMap?: boolean",
-          "index?: number",
-          "flags?: number"
+          "canDropOnMap?: false",
+          "index?: integer",
+          "flags?: integer"
         ],
-        "return": "boolean|number|nil",
+        "return": "integer|false|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
@@ -6360,10 +6192,10 @@
       {
         "name": "getHarmonyDamage",
         "params": [
-          "baseMin: number",
-          "baseMax: number"
+          "baseMin: integer",
+          "baseMax: integer"
         ],
-        "return": "number",
+        "return": "integer min, integer max",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
@@ -7906,30 +7738,6 @@
     ],
     "Position": [
       {
-        "name": "__add",
-        "params": [
-          "arg2: Position"
-        ],
-        "return": "Position",
-        "source": "src/lua/functions/map/position_functions.cpp"
-      },
-      {
-        "name": "__eq",
-        "params": [
-          "arg2: Position"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/map/position_functions.cpp"
-      },
-      {
-        "name": "__sub",
-        "params": [
-          "arg2: Position"
-        ],
-        "return": "Position",
-        "source": "src/lua/functions/map/position_functions.cpp"
-      },
-      {
         "name": "getDistance",
         "params": [
           "positionEx: Position"
@@ -8040,7 +7848,7 @@
           "resultId: number",
           "column: string"
         ],
-        "return": "boolean|number",
+        "return": "number|false",
         "source": "src/lua/functions/core/libs/result_functions.cpp"
       },
       {
@@ -8058,7 +7866,7 @@
           "resultId: number",
           "column: string"
         ],
-        "return": "boolean|string",
+        "return": "string|false",
         "source": "src/lua/functions/core/libs/result_functions.cpp"
       },
       {
@@ -8179,14 +7987,6 @@
       }
     ],
     "Spell": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Spell"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
-      },
       {
         "name": "allowFarUse",
         "params": [
@@ -8550,14 +8350,6 @@
     ],
     "Teleport": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Teleport"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/map/teleport_functions.cpp"
-      },
-      {
         "name": "getDestination",
         "params": [],
         "return": "nil|Position",
@@ -8573,14 +8365,6 @@
       }
     ],
     "Tile": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Tile"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/map/tile_functions.cpp"
-      },
       {
         "name": "addItem",
         "params": [
@@ -8801,14 +8585,6 @@
     ],
     "Town": [
       {
-        "name": "__eq",
-        "params": [
-          "other: Town"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/map/town_functions.cpp"
-      },
-      {
         "name": "getId",
         "params": [],
         "return": "number|nil",
@@ -8848,14 +8624,6 @@
       }
     ],
     "Vocation": [
-      {
-        "name": "__eq",
-        "params": [
-          "other: Vocation"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/creatures/player/vocation_functions.cpp"
-      },
       {
         "name": "getAttackSpeed",
         "params": [],
@@ -9258,14 +9026,6 @@
     ],
     "Zone": [
       {
-        "name": "__eq",
-        "params": [
-          "zone2: Zone"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/game/zone_functions.cpp"
-      },
-      {
         "name": "addArea",
         "params": [
           "fromPos: Position",
@@ -9401,6 +9161,26 @@
     "Npc": "Creature",
     "Player": "Creature",
     "Teleport": "Item"
+  },
+  "classFields": {
+    "Position": [
+      "x integer",
+      "y integer",
+      "z integer",
+      "stackpos integer"
+    ]
+  },
+  "classOverloads": {
+    "Player": [
+      "fun(idOrGuid: integer): Player?",
+      "fun(name: string): Player?, integer?",
+      "fun(player: Player): Player?"
+    ],
+    "Position": [
+      "fun(): Position",
+      "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
+      "fun(position: Position): Position"
+    ]
   },
   "globals": []
 }

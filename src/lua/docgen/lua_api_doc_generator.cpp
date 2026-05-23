@@ -65,6 +65,13 @@ namespace {
 		return inserted;
 	}
 
+	void appendUnique(std::vector<std::string> &values, std::string value) {
+		if (value.empty() || std::ranges::find(values, value) != values.end()) {
+			return;
+		}
+		appendValue(values, std::move(value));
+	}
+
 	void incrementIterator(std::filesystem::recursive_directory_iterator &it, std::error_code &ec) {
 		const auto &advanced = it.increment(ec);
 		static_cast<void>(advanced);
@@ -544,6 +551,10 @@ namespace {
 		return found == operatorNames.end() ? "" : found->second;
 	}
 
+	bool isLuaMetaMethod(const LuaFunctionInfo &function) {
+		return function.name.rfind("__", 0) == 0;
+	}
+
 	std::vector<std::string> getLuaReturnAnnotations(const LuaFunctionInfo &function) {
 		if (!function.returns.empty()) {
 			return function.returns;
@@ -585,8 +596,17 @@ namespace {
 		output << ":" << getLuaReturnType(getLuaReturnAnnotations(function).front()) << "\n";
 	}
 
+	void writeLuaOverloadAnnotations(std::ostringstream &output, const std::vector<std::string> &overloads) {
+		for (const auto &overload : overloads) {
+			if (!overload.empty()) {
+				output << "---@overload " << overload << "\n";
+			}
+		}
+	}
+
 	void writeLuaFunctionDefinition(std::ostringstream &output, const std::string &owner, const LuaFunctionInfo &function) {
 		const auto parameters = parseLuaDocParameters(function.parameters, !function.hasExplicitDocumentation);
+		writeLuaOverloadAnnotations(output, function.overloads);
 		for (const auto &parameter : parameters) {
 			if (parameter.variadic) {
 				output << "---@param ... " << parameter.type << "\n";
@@ -1101,6 +1121,8 @@ namespace {
 		std::string functionName;
 		std::vector<std::string> parameters;
 		std::vector<std::string> returns;
+		std::vector<std::string> overloads;
+		std::vector<std::string> fields;
 	};
 
 	std::string cleanLuaDocBlockLine(std::string line) {
@@ -1126,6 +1148,13 @@ namespace {
 		docBlock.hasSelfParameter = symbol[separator] == ':';
 	}
 
+	void parseLuaDocClass(LuaDocBlock &docBlock, const std::string_view symbol) {
+		const auto className = trim(symbol);
+		if (!className.empty()) {
+			docBlock.className = className;
+		}
+	}
+
 	void parseLuaDocParam(LuaDocBlock &docBlock, const std::string_view value) {
 		const auto trimmed = trim(value);
 		if (trimmed.empty()) {
@@ -1147,6 +1176,14 @@ namespace {
 			return;
 		}
 		appendValue(docBlock.parameters, name + std::string(optional ? "?: " : ": ") + type);
+	}
+
+	void parseLuaDocField(LuaDocBlock &docBlock, const std::string_view value) {
+		appendUnique(docBlock.fields, normalizeManualLuaTypeExpression(value));
+	}
+
+	void parseLuaDocOverload(LuaDocBlock &docBlock, const std::string_view value) {
+		appendUnique(docBlock.overloads, normalizeManualLuaTypeExpression(value));
 	}
 
 	LuaDocBlock extractLuaDocBlock(const std::string &content, const std::string &handler) {
@@ -1181,6 +1218,21 @@ namespace {
 			line = cleanLuaDocBlockLine(line);
 			if (line.rfind("@function ", 0) == 0) {
 				parseLuaDocFunction(docBlock, trim(std::string_view(line).substr(10)));
+				docBlock.found = true;
+				continue;
+			}
+			if (line.rfind("@class ", 0) == 0) {
+				parseLuaDocClass(docBlock, std::string_view(line).substr(7));
+				docBlock.found = true;
+				continue;
+			}
+			if (line.rfind("@field ", 0) == 0) {
+				parseLuaDocField(docBlock, std::string_view(line).substr(7));
+				docBlock.found = true;
+				continue;
+			}
+			if (line.rfind("@overload ", 0) == 0) {
+				parseLuaDocOverload(docBlock, std::string_view(line).substr(10));
 				docBlock.found = true;
 				continue;
 			}
@@ -1220,7 +1272,25 @@ namespace {
 			info.returns = docBlock.returns;
 			info.returnType = getLuaReturnType(docBlock.returns.front());
 		}
+		if (!docBlock.overloads.empty()) {
+			info.overloads = docBlock.overloads;
+		}
 		info.hasExplicitDocumentation = true;
+	}
+
+	void applyExplicitLuaClassDoc(LuaScanResult &result, const std::string &className, const std::string &content, const std::string &handler) {
+		const auto docBlock = extractLuaDocBlock(content, handler);
+		if (!docBlock.found) {
+			return;
+		}
+
+		const auto targetClassName = docBlock.className.empty() ? className : docBlock.className;
+		for (const auto &field : docBlock.fields) {
+			appendUnique(result.classFields[targetClassName], field);
+		}
+		for (const auto &overload : docBlock.overloads) {
+			appendUnique(result.classOverloads[targetClassName], overload);
+		}
 	}
 
 	bool extractFunctionBody(const std::string &content, const std::string &handler, std::string &body) {
@@ -1301,6 +1371,12 @@ namespace {
 
 	void writeMarkdownFunctionEntry(std::ostringstream &output, const std::string_view heading, const std::string &signatureName, const LuaFunctionInfo &function) {
 		output << heading << " `" << signatureName << "(" << joinStrings(displayParametersFor(function), ", ") << ")`\n\n";
+		if (!function.overloads.empty()) {
+			output << "- Overloads:\n";
+			for (const auto &overload : function.overloads) {
+				output << "  - `" << overload << "`\n";
+			}
+		}
 		output << "- Returns: `" << joinLuaReturnAnnotations(function) << "`\n";
 		output << "- Source: `" << function.sourceFile << "`\n\n";
 	}
@@ -1326,12 +1402,41 @@ namespace {
 		output << indent << "{\n";
 		output << indent << R"(  "name": ")" << jsonEscape(function.name) << R"(",)"
 			   << "\n";
+		if (!function.overloads.empty()) {
+			writeJsonStringArray(output, indent + "  ", "overloads", function.overloads);
+		}
 		writeJsonStringArray(output, indent + "  ", "params", displayParametersFor(function));
 		output << indent << R"(  "return": ")" << jsonEscape(joinLuaReturnAnnotations(function)) << R"(",)"
 			   << "\n";
 		output << indent << R"(  "source": ")" << jsonEscape(function.sourceFile) << R"(")"
 			   << "\n";
 		output << indent << "}";
+	}
+
+	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::* member) {
+		output << "  \"" << key << "\": {\n";
+		bool firstClass = true;
+		for (const auto &[name, classInfo] : classes) {
+			const auto &values = classInfo.*member;
+			if (values.empty()) {
+				continue;
+			}
+			if (!firstClass) {
+				output << ",\n";
+			}
+			firstClass = false;
+			output << "    \"" << jsonEscape(name) << "\": [\n";
+			for (size_t i = 0; i < values.size(); ++i) {
+				output << "      \"" << jsonEscape(values[i]) << "\"";
+				if (i + 1 < values.size()) {
+					output << ",";
+				}
+				output << "\n";
+			}
+			output << "    ]";
+		}
+		output << "\n";
+		output << "  }";
 	}
 
 	bool writeFileAtomically(const std::filesystem::path &path, const std::string &content, std::string &errorMessage) {
@@ -1476,16 +1581,18 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 
 	std::regex classPattern(
-		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)"\s*,\s*"([^"]*)")regex",
+		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)"\s*,\s*"([^"]*)"(?:\s*,\s*([A-Za-z0-9_:]+))?)regex",
 		std::regex::optimize
 	);
 	for (auto it = std::sregex_iterator(content.begin(), content.end(), classPattern); it != std::sregex_iterator(); ++it) {
 		const auto className = (*it)[1].str();
 		const auto baseClass = (*it)[2].str();
+		const auto constructorHandler = (*it)[3].str();
 		const auto classInserted = addUnique(result.classes, className);
 		if (!baseClass.empty() && (classInserted || !result.classBaseClasses.contains(className))) {
 			result.classBaseClasses[className] = baseClass;
 		}
+		applyExplicitLuaClassDoc(result, className, content, constructorHandler);
 	}
 
 	std::regex methodPattern(
@@ -1836,9 +1943,34 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 				classInfo.baseClass = baseClass->second;
 			}
 		}
+		if (const auto fields = scanResult.classFields.find(function.className); fields != scanResult.classFields.end()) {
+			for (const auto &field : fields->second) {
+				appendUnique(classInfo.fields, field);
+			}
+		}
+		if (const auto overloads = scanResult.classOverloads.find(function.className); overloads != scanResult.classOverloads.end()) {
+			for (const auto &overload : overloads->second) {
+				appendUnique(classInfo.overloads, overload);
+			}
+		}
 		auto &names = classMethodNames[function.className];
 		if (addUnique(names, function.name)) {
 			appendValue(classInfo.methods, function);
+		}
+	}
+
+	for (const auto &[name, fields] : scanResult.classFields) {
+		auto &classInfo = classes[name];
+		classInfo.name = name;
+		for (const auto &field : fields) {
+			appendUnique(classInfo.fields, field);
+		}
+	}
+	for (const auto &[name, overloads] : scanResult.classOverloads) {
+		auto &classInfo = classes[name];
+		classInfo.name = name;
+		for (const auto &overload : overloads) {
+			appendUnique(classInfo.overloads, overload);
 		}
 	}
 
@@ -1865,11 +1997,18 @@ bool LuaApiDocGenerator::exportEmmyLua() const {
 			output << ": " << classInfo.baseClass;
 		}
 		output << "\n";
+		for (const auto &field : classInfo.fields) {
+			output << "---@field " << field << "\n";
+		}
+		writeLuaOverloadAnnotations(output, classInfo.overloads);
 		for (const auto &method : classInfo.methods) {
 			writeLuaOperatorAnnotation(output, name, method);
 		}
 		output << name << " = {}\n\n";
 		for (const auto &method : classInfo.methods) {
+			if (isLuaMetaMethod(method)) {
+				continue;
+			}
 			writeLuaFunctionDefinition(output, name, method);
 		}
 	}
@@ -1909,14 +2048,31 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Manual Signature Hints\n\n";
-	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@function`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
+	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
 	output << "## Classes\n\n";
 	for (const auto &[name, classInfo] : classes) {
 		output << "### " << name << "\n\n";
 		if (!classInfo.baseClass.empty()) {
 			output << "- Extends: `" << classInfo.baseClass << "`\n\n";
 		}
+		if (!classInfo.fields.empty()) {
+			output << "- Fields:\n";
+			for (const auto &field : classInfo.fields) {
+				output << "  - `" << field << "`\n";
+			}
+			output << "\n";
+		}
+		if (!classInfo.overloads.empty()) {
+			output << "- Overloads:\n";
+			for (const auto &overload : classInfo.overloads) {
+				output << "  - `" << overload << "`\n";
+			}
+			output << "\n";
+		}
 		for (const auto &method : classInfo.methods) {
+			if (isLuaMetaMethod(method)) {
+				continue;
+			}
 			writeMarkdownFunctionEntry(output, "####", name + (method.hasSelfParameter ? ":" : ".") + method.name, method);
 		}
 	}
@@ -1949,10 +2105,16 @@ bool LuaApiDocGenerator::exportJson() const {
 		}
 		firstClass = false;
 		output << "    \"" << jsonEscape(name) << "\": [\n";
-		for (size_t i = 0; i < classInfo.methods.size(); ++i) {
-			const auto &method = classInfo.methods[i];
+		std::vector<const LuaFunctionInfo*> publicMethods;
+		for (const auto &method : classInfo.methods) {
+			if (!isLuaMetaMethod(method)) {
+				appendValue(publicMethods, &method);
+			}
+		}
+		for (size_t i = 0; i < publicMethods.size(); ++i) {
+			const auto &method = *publicMethods[i];
 			writeJsonFunctionObject(output, method, "      ");
-			if (i + 1 < classInfo.methods.size()) {
+			if (i + 1 < publicMethods.size()) {
 				output << ",";
 			}
 			output << "\n";
@@ -1976,6 +2138,10 @@ bool LuaApiDocGenerator::exportJson() const {
 	}
 	output << "\n";
 	output << "  },\n";
+	writeJsonClassStringArrayMap(output, classes, "classFields", &LuaClassInfo::fields);
+	output << ",\n";
+	writeJsonClassStringArrayMap(output, classes, "classOverloads", &LuaClassInfo::overloads);
+	output << ",\n";
 	if (globals.empty()) {
 		output << "  \"globals\": []\n";
 	} else {

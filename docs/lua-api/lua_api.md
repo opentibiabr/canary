@@ -14,6 +14,10 @@ Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua
 
 Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.
 
+## Manual Signature Hints
+
+C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@function`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.
+
 ## Classes
 
 ### Action
@@ -331,6 +335,8 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 - Source: `src/lua/functions/core/game/config_functions.cpp`
 
 ### Container
+
+- Extends: `Item`
 
 #### `Container:__eq(other: Container)`
 
@@ -858,12 +864,12 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ### db
 
-#### `db.asyncQuery(query: string, callback?: function)`
+#### `db.asyncQuery(query: string, callback?: fun(success: boolean))`
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/db_functions.cpp`
 
-#### `db.asyncStoreQuery(query: string, callback?: function)`
+#### `db.asyncStoreQuery(query: string, callback?: fun(resultId: number|boolean))`
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/db_functions.cpp`
@@ -956,7 +962,7 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 #### `Game.createItem(itemIdOrName: number|string, count?: number, position?: Position)`
 
-- Returns: `table|nil|Item`
+- Returns: `Item|Item[]|nil`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.createItemClassification(id: number)`
@@ -2409,6 +2415,8 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ### Monster
 
+- Extends: `Creature`
+
 #### `Monster:__eq(other: Monster)`
 
 - Returns: `boolean`
@@ -3526,6 +3534,8 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ### Npc
 
+- Extends: `Creature`
+
 #### `Npc:__eq(other: Npc)`
 
 - Returns: `boolean`
@@ -3957,6 +3967,8 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ### Player
 
+- Extends: `Creature`
+
 #### `Player:__eq(other: Player)`
 
 - Returns: `boolean`
@@ -4027,9 +4039,9 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:addItem(itemId: number|string, count: number, canDropOnMap: boolean, subType: number, slot: any, tier: number)`
+#### `Player:addItem(itemId: number|string, count?: number, canDropOnMap?: boolean, subType?: number, slot?: number, tier?: number)`
 
-- Returns: `table|nil|Item`
+- Returns: `Item|Item[]|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:addItemBatchToPaginedContainer(container: Container, itemId: number, count: number, tier: number, flags: number)`
@@ -5548,7 +5560,7 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 #### `Result.getStream(resultId: number, column: string)`
 
-- Returns: `boolean|number`
+- Returns: `string|boolean stream, number? length`
 - Source: `src/lua/functions/core/libs/result_functions.cpp`
 
 #### `Result.getString(resultId: number, column: string)`
@@ -5870,6 +5882,8 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 - Source: `src/lua/functions/events/talk_action_functions.cpp`
 
 ### Teleport
+
+- Extends: `Item`
 
 #### `Teleport:__eq(other: Teleport)`
 
@@ -6459,4 +6473,3 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/zone_functions.cpp`
-

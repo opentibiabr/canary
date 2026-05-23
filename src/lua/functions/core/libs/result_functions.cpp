@@ -45,6 +45,13 @@ int ResultFunctions::luaResultGetString(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Result.getStream
+ * @param resultId number
+ * @param column string
+ * @return string|boolean stream
+ * @return number? length
+ */
 int ResultFunctions::luaResultGetStream(lua_State* L) {
 	// Result.getStream(resultId, column)
 	const auto &res = ScriptEnvironment::getResultByID(Lua::getNumber<uint32_t>(L, 1));

@@ -268,7 +268,7 @@ function configManager.getNumber(key) end
 ---@return string
 function configManager.getString(key) end
 
----@class Container
+---@class Container: Item
 ---@operator eq(Container):boolean
 Container = {}
 
@@ -678,12 +678,12 @@ function CreatureEvent:type(callback) end
 db = {}
 
 ---@param query string
----@param callback? function
+---@param callback? fun(success: boolean)
 ---@return nil
 function db.asyncQuery(query, callback) end
 
 ---@param query string
----@param callback? function
+---@param callback? fun(resultId: number|boolean)
 ---@return nil
 function db.asyncStoreQuery(query, callback) end
 
@@ -766,7 +766,7 @@ function Game.createContainer(itemId, size, position) end
 ---@param itemIdOrName number|string
 ---@param count? number
 ---@param position? Position
----@return table|nil|Item
+---@return Item|Item[]|nil
 function Game.createItem(itemIdOrName, count, position) end
 
 ---@param id number
@@ -1858,7 +1858,7 @@ function ModalWindow:setPriority(priority) end
 ---@return boolean|nil
 function ModalWindow:setTitle(text) end
 
----@class Monster
+---@class Monster: Creature
 ---@operator eq(Monster):boolean
 Monster = {}
 
@@ -2663,7 +2663,7 @@ function NetworkMessage:sendToPlayer(player) end
 ---@return boolean|nil
 function NetworkMessage:skipBytes(value) end
 
----@class Npc
+---@class Npc: Creature
 ---@operator eq(Npc):boolean
 Npc = {}
 
@@ -2996,7 +2996,7 @@ function Party:setSharedExperience(active) end
 ---@return boolean|nil
 function Party:shareExperience(experience) end
 
----@class Player
+---@class Player: Creature
 ---@operator eq(Player):boolean
 Player = {}
 
@@ -3061,12 +3061,12 @@ function Player:addForgeDustLevel(amount) end
 function Player:addForgeDusts(amount) end
 
 ---@param itemId number|string
----@param count number
----@param canDropOnMap boolean
----@param subType number
----@param slot any
----@param tier number
----@return table|nil|Item
+---@param count? number
+---@param canDropOnMap? boolean
+---@param subType? number
+---@param slot? number
+---@param tier? number
+---@return Item|Item[]|nil
 function Player:addItem(itemId, count, canDropOnMap, subType, slot, tier) end
 
 ---@param container Container
@@ -4264,7 +4264,8 @@ function Result.getNumber(resultId, column) end
 
 ---@param resultId number
 ---@param column string
----@return boolean|number
+---@return string|boolean stream
+---@return number? length
 function Result.getStream(resultId, column) end
 
 ---@param resultId number
@@ -4526,7 +4527,7 @@ function TalkAction:separator(sep) end
 ---@return boolean
 function TalkAction:setDescription(arg2) end
 
----@class Teleport
+---@class Teleport: Item
 ---@operator eq(Teleport):boolean
 Teleport = {}
 
@@ -4979,4 +4980,3 @@ function Zone:setRemoveDestination(pos) end
 ---@param toPos Position
 ---@return boolean
 function Zone:subtractArea(fromPos, toPos) end
-

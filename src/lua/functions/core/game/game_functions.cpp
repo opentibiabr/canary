@@ -399,6 +399,13 @@ int GameFunctions::luaGameGetReturnMessage(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.createItem
+ * @param itemIdOrName number|string
+ * @param count? number
+ * @param position? Position
+ * @return Item|Item[]|nil
+ */
 int GameFunctions::luaGameCreateItem(lua_State* L) {
 	// Game.createItem(itemId or name[, count[, position]])
 	uint16_t itemId;
@@ -639,6 +646,14 @@ int GameFunctions::luaGameCreateNpc(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.createTile
+ * @param x number|Position
+ * @param y? number|boolean
+ * @param z? number
+ * @param isDynamic? boolean
+ * @return Tile
+ */
 int GameFunctions::luaGameCreateTile(lua_State* L) {
 	// Game.createTile(x, y, z[, isDynamic = false])
 	// Game.createTile(position[, isDynamic = false])

@@ -24,19 +24,23 @@ struct LuaFunctionInfo {
 	std::string className;
 	std::vector<std::string> parameters;
 	std::string returnType;
+	std::vector<std::string> returns;
 	std::string sourceFile;
 	std::string handler;
 	bool hasSelfParameter { false };
+	bool hasExplicitDocumentation { false };
 };
 
 struct LuaClassInfo {
 	std::string name;
+	std::string baseClass;
 	std::vector<LuaFunctionInfo> methods;
 };
 
 struct LuaScanResult {
 	std::vector<LuaFunctionInfo> functions;
 	std::unordered_set<std::string> classes;
+	std::unordered_map<std::string, std::string> classBaseClasses;
 };
 
 class LuaBindingScanner {

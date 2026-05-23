@@ -2319,6 +2319,16 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:addItem
+ * @param itemId number|string
+ * @param count? number
+ * @param canDropOnMap? boolean
+ * @param subType? number
+ * @param slot? number
+ * @param tier? number
+ * @return Item|Item[]|nil
+ */
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");

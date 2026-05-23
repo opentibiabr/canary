@@ -1243,7 +1243,7 @@
         "name": "asyncQuery",
         "params": [
           "query: string",
-          "callback?: function"
+          "callback?: fun(success: boolean)"
         ],
         "return": "nil",
         "source": "src/lua/functions/core/libs/db_functions.cpp"
@@ -1252,7 +1252,7 @@
         "name": "asyncStoreQuery",
         "params": [
           "query: string",
-          "callback?: function"
+          "callback?: fun(resultId: number|boolean)"
         ],
         "return": "nil",
         "source": "src/lua/functions/core/libs/db_functions.cpp"
@@ -1400,7 +1400,7 @@
           "count?: number",
           "position?: Position"
         ],
-        "return": "table|nil|Item",
+        "return": "Item|Item[]|nil",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -5754,13 +5754,13 @@
         "name": "addItem",
         "params": [
           "itemId: number|string",
-          "count: number",
-          "canDropOnMap: boolean",
-          "subType: number",
-          "slot: any",
-          "tier: number"
+          "count?: number",
+          "canDropOnMap?: boolean",
+          "subType?: number",
+          "slot?: number",
+          "tier?: number"
         ],
-        "return": "table|nil|Item",
+        "return": "Item|Item[]|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
@@ -8049,7 +8049,7 @@
           "resultId: number",
           "column: string"
         ],
-        "return": "boolean|number",
+        "return": "string|boolean stream, number? length",
         "source": "src/lua/functions/core/libs/result_functions.cpp"
       },
       {
@@ -9394,6 +9394,13 @@
         "source": "src/lua/functions/core/game/zone_functions.cpp"
       }
     ]
+  },
+  "classParents": {
+    "Container": "Item",
+    "Monster": "Creature",
+    "Npc": "Creature",
+    "Player": "Creature",
+    "Teleport": "Item"
   },
   "globals": []
 }

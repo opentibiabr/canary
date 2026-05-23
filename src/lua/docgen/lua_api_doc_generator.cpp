@@ -54,6 +54,18 @@ namespace {
 		return trim(std::regex_replace(value, std::regex(R"regex(\s+)regex"), " "));
 	}
 
+	std::string escapeRegex(const std::string &value) {
+		std::string escaped;
+		escaped.reserve(value.size() * 2);
+		for (const auto ch : value) {
+			if (std::string(R"(\.^$|()[]{}*+?)").find(ch) != std::string::npos) {
+				escaped.push_back('\\');
+			}
+			escaped.push_back(ch);
+		}
+		return escaped;
+	}
+
 	std::string stripComments(const std::string &value) {
 		auto withoutBlockComments = std::regex_replace(value, std::regex(R"regex(/\*[\s\S]*?\*/)regex"), " ");
 		return std::regex_replace(withoutBlockComments, std::regex(R"regex(//[^\r\n]*)regex"), " ");
@@ -179,6 +191,11 @@ namespace {
 		return output.str();
 	}
 
+	std::string normalizeManualLuaTypeExpression(const std::string &type) {
+		const auto normalized = collapseWhitespace(type);
+		return normalized.empty() ? "any" : normalized;
+	}
+
 	std::string sanitizeParameterName(std::string name, const int index) {
 		name = trim(name);
 		const auto lowerName = toLowerCopy(name);
@@ -234,7 +251,7 @@ namespace {
 		return values;
 	}
 
-	std::vector<LuaDocParameter> parseLuaDocParameters(const std::vector<std::string> &parameters) {
+	std::vector<LuaDocParameter> parseLuaDocParameters(const std::vector<std::string> &parameters, const bool normalizeTypes = true) {
 		std::vector<LuaDocParameter> parsedParameters;
 		int parameterIndex = 1;
 		for (const auto &parameter : parameters) {
@@ -250,7 +267,7 @@ namespace {
 			LuaDocParameter parsedParameter;
 			if (name == "...") {
 				parsedParameter.name = "...";
-				parsedParameter.type = normalizeLuaTypeExpression(type.empty() ? "any" : type);
+				parsedParameter.type = normalizeTypes ? normalizeLuaTypeExpression(type.empty() ? "any" : type) : normalizeManualLuaTypeExpression(type);
 				parsedParameter.variadic = true;
 				parsedParameters.emplace_back(std::move(parsedParameter));
 				continue;
@@ -262,7 +279,7 @@ namespace {
 			}
 
 			parsedParameter.name = sanitizeParameterName(name, parameterIndex);
-			parsedParameter.type = normalizeLuaTypeExpression(type.empty() ? "any" : type);
+			parsedParameter.type = normalizeTypes ? normalizeLuaTypeExpression(type.empty() ? "any" : type) : normalizeManualLuaTypeExpression(type);
 			parsedParameters.emplace_back(std::move(parsedParameter));
 			++parameterIndex;
 		}
@@ -280,9 +297,9 @@ namespace {
 		return parsedParameters;
 	}
 
-	std::vector<std::string> normalizeLuaDocParameters(const std::vector<std::string> &parameters) {
+	std::vector<std::string> normalizeLuaDocParameters(const std::vector<std::string> &parameters, const bool normalizeTypes = true) {
 		std::vector<std::string> normalizedParameters;
-		for (const auto &parameter : parseLuaDocParameters(parameters)) {
+		for (const auto &parameter : parseLuaDocParameters(parameters, normalizeTypes)) {
 			if (parameter.variadic) {
 				normalizedParameters.emplace_back("...: " + parameter.type);
 			} else {
@@ -319,22 +336,49 @@ namespace {
 		return found == operatorNames.end() ? "" : found->second;
 	}
 
+	std::vector<std::string> getLuaReturnAnnotations(const LuaFunctionInfo &function) {
+		if (!function.returns.empty()) {
+			return function.returns;
+		}
+
+		const auto type = function.returnType.empty() ? "any" : function.returnType;
+		return { function.hasExplicitDocumentation ? normalizeManualLuaTypeExpression(type) : normalizeLuaTypeExpression(type) };
+	}
+
+	std::string getLuaReturnType(const std::string &returnAnnotation) {
+		const auto trimmed = trim(returnAnnotation);
+		const auto separator = trimmed.find_first_of(" \t");
+		return separator == std::string::npos ? trimmed : trimmed.substr(0, separator);
+	}
+
+	std::string joinLuaReturnAnnotations(const LuaFunctionInfo &function) {
+		const auto returns = getLuaReturnAnnotations(function);
+		std::ostringstream output;
+		for (size_t i = 0; i < returns.size(); ++i) {
+			if (i > 0) {
+				output << ", ";
+			}
+			output << returns[i];
+		}
+		return output.str();
+	}
+
 	void writeLuaOperatorAnnotation(std::ostringstream &output, const std::string &owner, const LuaFunctionInfo &function) {
 		const auto operatorName = getLuaOperatorName(function.name);
 		if (operatorName.empty()) {
 			return;
 		}
-		const auto parameters = parseLuaDocParameters(function.parameters);
+		const auto parameters = parseLuaDocParameters(function.parameters, !function.hasExplicitDocumentation);
 		const auto operandType = parameters.empty() ? owner : parameters.front().type;
 		output << "---@operator " << operatorName;
 		if (!operandType.empty()) {
 			output << "(" << operandType << ")";
 		}
-		output << ":" << normalizeLuaTypeExpression(function.returnType.empty() ? "any" : function.returnType) << "\n";
+		output << ":" << getLuaReturnType(getLuaReturnAnnotations(function).front()) << "\n";
 	}
 
 	void writeLuaFunctionDefinition(std::ostringstream &output, const std::string &owner, const LuaFunctionInfo &function) {
-		const auto parameters = parseLuaDocParameters(function.parameters);
+		const auto parameters = parseLuaDocParameters(function.parameters, !function.hasExplicitDocumentation);
 		for (const auto &parameter : parameters) {
 			if (parameter.variadic) {
 				output << "---@param ... " << parameter.type << "\n";
@@ -343,9 +387,10 @@ namespace {
 			output << "---@param " << parameter.name << (parameter.optional ? "? " : " ") << parameter.type << "\n";
 		}
 
-		const auto returnType = normalizeLuaTypeExpression(function.returnType.empty() ? "any" : function.returnType);
-		if (!returnType.empty()) {
-			output << "---@return " << returnType << "\n";
+		for (const auto &returnAnnotation : getLuaReturnAnnotations(function)) {
+			if (!returnAnnotation.empty()) {
+				output << "---@return " << returnAnnotation << "\n";
+			}
 		}
 
 		if (owner.empty()) {
@@ -470,6 +515,137 @@ namespace {
 			++parameterIndex;
 		}
 		return hint;
+	}
+
+	struct LuaDocBlock {
+		bool found { false };
+		bool hasSelfParameter { false };
+		std::string className;
+		std::string functionName;
+		std::vector<std::string> parameters;
+		std::vector<std::string> returns;
+	};
+
+	std::string cleanLuaDocBlockLine(std::string line) {
+		line = trim(line);
+		if (!line.empty() && line.front() == '*') {
+			line = trim(line.substr(1));
+		}
+		return line;
+	}
+
+	void parseLuaDocFunction(LuaDocBlock &docBlock, const std::string &symbol) {
+		const auto colon = symbol.find(':');
+		const auto dot = symbol.find('.');
+		const auto separator = colon == std::string::npos ? dot : colon;
+		if (separator == std::string::npos) {
+			docBlock.functionName = symbol;
+			docBlock.hasSelfParameter = false;
+			return;
+		}
+
+		docBlock.className = symbol.substr(0, separator);
+		docBlock.functionName = symbol.substr(separator + 1);
+		docBlock.hasSelfParameter = symbol[separator] == ':';
+	}
+
+	void parseLuaDocParam(LuaDocBlock &docBlock, const std::string &value) {
+		const auto trimmed = trim(value);
+		if (trimmed.empty()) {
+			return;
+		}
+
+		const auto separator = trimmed.find_first_of(" \t");
+		auto name = separator == std::string::npos ? trimmed : trim(trimmed.substr(0, separator));
+		const auto type = separator == std::string::npos ? "any" : normalizeManualLuaTypeExpression(trimmed.substr(separator + 1));
+		bool optional = false;
+		if (!name.empty() && name.back() == '?') {
+			name.pop_back();
+			optional = true;
+		}
+
+		if (name == "...") {
+			docBlock.parameters.emplace_back("...: " + type);
+			return;
+		}
+		docBlock.parameters.emplace_back(name + std::string(optional ? "?: " : ": ") + type);
+	}
+
+	LuaDocBlock extractLuaDocBlock(const std::string &content, const std::string &handler) {
+		LuaDocBlock docBlock;
+		if (handler.empty()) {
+			return docBlock;
+		}
+
+		const std::regex signaturePattern(std::string("\\b") + escapeRegex(handler) + R"regex(\s*\()regex", std::regex::optimize);
+		std::smatch match;
+		if (!std::regex_search(content, match, signaturePattern)) {
+			return docBlock;
+		}
+
+		const auto handlerPosition = static_cast<size_t>(match.position(0));
+		const auto blockEnd = content.rfind("*/", handlerPosition);
+		if (blockEnd == std::string::npos) {
+			return docBlock;
+		}
+
+		const auto blockStart = content.rfind("/***", blockEnd);
+		if (blockStart == std::string::npos) {
+			return docBlock;
+		}
+
+		const auto signaturePrefix = content.substr(blockEnd + 2, handlerPosition - blockEnd - 2);
+		if (!std::regex_match(signaturePrefix, std::regex(R"regex([\sA-Za-z0-9_:<>,\*&]+)regex"))) {
+			return docBlock;
+		}
+
+		const auto block = content.substr(blockStart + 4, blockEnd - blockStart - 4);
+		std::stringstream stream(block);
+		std::string line;
+		while (std::getline(stream, line)) {
+			line = cleanLuaDocBlockLine(line);
+			if (line.rfind("@function ", 0) == 0) {
+				parseLuaDocFunction(docBlock, trim(line.substr(10)));
+				docBlock.found = true;
+				continue;
+			}
+			if (line.rfind("@param ", 0) == 0) {
+				parseLuaDocParam(docBlock, line.substr(7));
+				docBlock.found = true;
+				continue;
+			}
+			if (line.rfind("@return ", 0) == 0) {
+				docBlock.returns.emplace_back(normalizeManualLuaTypeExpression(line.substr(8)));
+				docBlock.found = true;
+			}
+		}
+
+		return docBlock;
+	}
+
+	void applyExplicitLuaDoc(LuaFunctionInfo &info, const std::string &content) {
+		const auto docBlock = extractLuaDocBlock(content, info.handler);
+		if (!docBlock.found) {
+			return;
+		}
+
+		if (!docBlock.className.empty()) {
+			info.className = docBlock.className;
+		}
+		if (!docBlock.functionName.empty()) {
+			info.name = docBlock.functionName;
+		}
+		if (!docBlock.className.empty() || !docBlock.functionName.empty()) {
+			info.hasSelfParameter = docBlock.hasSelfParameter;
+		}
+		if (!docBlock.parameters.empty()) {
+			info.parameters = docBlock.parameters;
+		}
+		if (!docBlock.returns.empty()) {
+			info.returns = docBlock.returns;
+			info.returnType = getLuaReturnType(docBlock.returns.front());
+		}
+		info.hasExplicitDocumentation = true;
 	}
 
 	void applyKnownSignatureFixes(LuaFunctionInfo &info) {
@@ -671,6 +847,7 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 			info.sourceFile = relativePath(filePath);
 			info.parameters = inferParameters(content, info.handler, false);
 			applyKnownSignatureFixes(info);
+			applyExplicitLuaDoc(info, content);
 			result.functions.emplace_back(std::move(info));
 		}
 	}
@@ -679,11 +856,16 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 
 	std::regex classPattern(
-		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)")regex",
+		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)"\s*,\s*"([^"]*)")regex",
 		std::regex::optimize
 	);
 	for (auto it = std::sregex_iterator(content.begin(), content.end(), classPattern); it != std::sregex_iterator(); ++it) {
-		result.classes.insert((*it)[1].str());
+		const auto className = (*it)[1].str();
+		const auto baseClass = (*it)[2].str();
+		result.classes.insert(className);
+		if (!baseClass.empty()) {
+			result.classBaseClasses[className] = baseClass;
+		}
 	}
 
 	std::regex methodPattern(
@@ -700,6 +882,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.parameters = inferParameters(content, info.handler, info.hasSelfParameter);
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -726,6 +909,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		}
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -741,6 +925,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.parameters = inferParameters(content, info.handler, false);
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -754,6 +939,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.returnType = "boolean";
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -767,6 +953,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.returnType = "number";
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 
@@ -780,6 +967,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.returnType = "string";
 		info.sourceFile = relativePath(filePath);
 		applyKnownSignatureFixes(info);
+		applyExplicitLuaDoc(info, content);
 		result.functions.emplace_back(std::move(info));
 	}
 }
@@ -1329,6 +1517,9 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 
 	for (const auto &className : scanResult.classes) {
 		classes[className].name = className;
+		if (const auto baseClass = scanResult.classBaseClasses.find(className); baseClass != scanResult.classBaseClasses.end()) {
+			classes[className].baseClass = baseClass->second;
+		}
 	}
 
 	std::unordered_map<std::string, std::unordered_set<std::string>> classMethodNames;
@@ -1345,6 +1536,11 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 
 		auto &classInfo = classes[function.className];
 		classInfo.name = function.className;
+		if (classInfo.baseClass.empty()) {
+			if (const auto baseClass = scanResult.classBaseClasses.find(function.className); baseClass != scanResult.classBaseClasses.end()) {
+				classInfo.baseClass = baseClass->second;
+			}
+		}
 		auto &names = classMethodNames[function.className];
 		if (names.insert(function.name).second) {
 			classInfo.methods.push_back(function);
@@ -1371,7 +1567,11 @@ bool LuaApiDocGenerator::exportEmmyLua() const {
 	output << "--- Auto-generated Lua API (do not edit manually)\n\n";
 
 	for (const auto &[name, classInfo] : classes) {
-		output << "---@class " << name << "\n";
+		output << "---@class " << name;
+		if (!classInfo.baseClass.empty()) {
+			output << ": " << classInfo.baseClass;
+		}
+		output << "\n";
 		for (const auto &method : classInfo.methods) {
 			writeLuaOperatorAnnotation(output, name, method);
 		}
@@ -1408,11 +1608,16 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "## VSCode IntelliSense\n\n";
 	output << "Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
+	output << "## Manual Signature Hints\n\n";
+	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@function`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
 	output << "## Classes\n\n";
 	for (const auto &[name, classInfo] : classes) {
 		output << "### " << name << "\n\n";
+		if (!classInfo.baseClass.empty()) {
+			output << "- Extends: `" << classInfo.baseClass << "`\n\n";
+		}
 		for (const auto &method : classInfo.methods) {
-			const auto parameters = normalizeLuaDocParameters(method.parameters);
+			const auto parameters = normalizeLuaDocParameters(method.parameters, !method.hasExplicitDocumentation);
 			output << "#### `" << name << (method.hasSelfParameter ? ":" : ".") << method.name << "(";
 			for (size_t i = 0; i < parameters.size(); ++i) {
 				output << parameters[i];
@@ -1421,9 +1626,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 				}
 			}
 			output << ")`\n\n";
-			if (!method.returnType.empty()) {
-				output << "- Returns: `" << normalizeLuaTypeExpression(method.returnType) << "`\n";
-			}
+			output << "- Returns: `" << joinLuaReturnAnnotations(method) << "`\n";
 			output << "- Source: `" << method.sourceFile << "`\n\n";
 		}
 	}
@@ -1431,7 +1634,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	if (!globals.empty()) {
 		output << "## Global\n\n";
 		for (const auto &function : globals) {
-			const auto parameters = normalizeLuaDocParameters(function.parameters);
+			const auto parameters = normalizeLuaDocParameters(function.parameters, !function.hasExplicitDocumentation);
 			output << "### `" << function.name << "(";
 			for (size_t i = 0; i < parameters.size(); ++i) {
 				output << parameters[i];
@@ -1440,9 +1643,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 				}
 			}
 			output << ")`\n\n";
-			if (!function.returnType.empty()) {
-				output << "- Returns: `" << normalizeLuaTypeExpression(function.returnType) << "`\n";
-			}
+			output << "- Returns: `" << joinLuaReturnAnnotations(function) << "`\n";
 			output << "- Source: `" << function.sourceFile << "`\n\n";
 		}
 	}
@@ -1470,7 +1671,7 @@ bool LuaApiDocGenerator::exportJson() const {
 		output << "    \"" << jsonEscape(name) << "\": [\n";
 		for (size_t i = 0; i < classInfo.methods.size(); ++i) {
 			const auto &method = classInfo.methods[i];
-			const auto parameters = normalizeLuaDocParameters(method.parameters);
+			const auto parameters = normalizeLuaDocParameters(method.parameters, !method.hasExplicitDocumentation);
 			output << "      {\n";
 			output << "        \"name\": \"" << jsonEscape(method.name) << "\",\n";
 			if (parameters.empty()) {
@@ -1486,7 +1687,7 @@ bool LuaApiDocGenerator::exportJson() const {
 				}
 				output << "        ],\n";
 			}
-			output << "        \"return\": \"" << jsonEscape(method.returnType.empty() ? "any" : normalizeLuaTypeExpression(method.returnType)) << "\",\n";
+			output << "        \"return\": \"" << jsonEscape(joinLuaReturnAnnotations(method)) << "\",\n";
 			output << "        \"source\": \"" << jsonEscape(method.sourceFile) << "\"\n";
 			output << "      }";
 			if (i + 1 < classInfo.methods.size()) {
@@ -1499,13 +1700,27 @@ bool LuaApiDocGenerator::exportJson() const {
 
 	output << "\n";
 	output << "  },\n";
+	output << "  \"classParents\": {\n";
+	bool firstParent = true;
+	for (const auto &[name, classInfo] : classes) {
+		if (classInfo.baseClass.empty()) {
+			continue;
+		}
+		if (!firstParent) {
+			output << ",\n";
+		}
+		firstParent = false;
+		output << "    \"" << jsonEscape(name) << "\": \"" << jsonEscape(classInfo.baseClass) << "\"";
+	}
+	output << "\n";
+	output << "  },\n";
 	if (globals.empty()) {
 		output << "  \"globals\": []\n";
 	} else {
 		output << "  \"globals\": [\n";
 		for (size_t i = 0; i < globals.size(); ++i) {
 			const auto &function = globals[i];
-			const auto parameters = normalizeLuaDocParameters(function.parameters);
+			const auto parameters = normalizeLuaDocParameters(function.parameters, !function.hasExplicitDocumentation);
 			output << "    {\n";
 			output << "      \"name\": \"" << jsonEscape(function.name) << "\",\n";
 			if (parameters.empty()) {
@@ -1521,7 +1736,7 @@ bool LuaApiDocGenerator::exportJson() const {
 				}
 				output << "      ],\n";
 			}
-			output << "      \"return\": \"" << jsonEscape(function.returnType.empty() ? "any" : normalizeLuaTypeExpression(function.returnType)) << "\",\n";
+			output << "      \"return\": \"" << jsonEscape(joinLuaReturnAnnotations(function)) << "\",\n";
 			output << "      \"source\": \"" << jsonEscape(function.sourceFile) << "\"\n";
 			output << "    }";
 			if (i + 1 < globals.size()) {

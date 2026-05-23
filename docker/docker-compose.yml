@@ -36,6 +36,20 @@ services:
       CANARY_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
       CANARY_DATA_PACK: "${CANARY_DATA_PACK:-data-otservbr-global}"
       CANARY_MAP_URL: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
+      # Keep the published runtime image compatible while CANARY_* remains the
+      # public quickstart contract.
+      OT_DB_HOST: "${CANARY_DB_HOST:-db}"
+      OT_DB_PORT: "${CANARY_DB_PORT:-3306}"
+      OT_DB_DATABASE: "${CANARY_DB_NAME:-canary}"
+      OT_DB_USER: "${CANARY_DB_USER:-canary}"
+      OT_DB_PASSWORD: "${CANARY_DB_PASSWORD:-canary}"
+      OT_SERVER_IP: "${CANARY_SERVER_IP:-127.0.0.1}"
+      OT_SERVER_LOGIN_PORT: "${CANARY_LOGIN_PORT:-7171}"
+      OT_SERVER_GAME_PORT: "${CANARY_GAME_PORT:-7172}"
+      OT_SERVER_STATUS_PORT: "${CANARY_STATUS_PORT:-7173}"
+      OT_SERVER_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
+      OT_SERVER_DATA: "${CANARY_DATA_PACK:-data-otservbr-global}"
+      OT_SERVER_MAP: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
     networks:
       - canary-net
     ports:

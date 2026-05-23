@@ -1324,10 +1324,13 @@ namespace {
 
 	void writeJsonFunctionObject(std::ostringstream &output, const LuaFunctionInfo &function, const std::string &indent) {
 		output << indent << "{\n";
-		output << indent << R"(  "name": ")" << jsonEscape(function.name) << R"(",)" << "\n";
+		output << indent << R"(  "name": ")" << jsonEscape(function.name) << R"(",)"
+			   << "\n";
 		writeJsonStringArray(output, indent + "  ", "params", displayParametersFor(function));
-		output << indent << R"(  "return": ")" << jsonEscape(joinLuaReturnAnnotations(function)) << R"(",)" << "\n";
-		output << indent << R"(  "source": ")" << jsonEscape(function.sourceFile) << R"(")" << "\n";
+		output << indent << R"(  "return": ")" << jsonEscape(joinLuaReturnAnnotations(function)) << R"(",)"
+			   << "\n";
+		output << indent << R"(  "source": ")" << jsonEscape(function.sourceFile) << R"(")"
+			   << "\n";
 		output << indent << "}";
 	}
 

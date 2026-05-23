@@ -26,6 +26,9 @@
 #endif
 
 namespace {
+	using LuaClassMap = std::map<std::string, LuaClassInfo, std::less<>>;
+	using LuaClassValuesMap = std::map<std::string, std::vector<std::string>, std::less<>>;
+
 	struct ParameterHint {
 		std::string name;
 		bool optional { false };
@@ -1413,7 +1416,7 @@ namespace {
 		output << indent << "}";
 	}
 
-	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::*member) {
+	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::* member) {
 		output << "  \"" << key << "\": {\n";
 		bool firstClass = true;
 		for (const auto &[name, classInfo] : classes) {
@@ -1437,6 +1440,162 @@ namespace {
 		}
 		output << "\n";
 		output << "  }";
+	}
+
+	void appendClassStringValues(std::vector<std::string> &target, const std::vector<std::string> &values) {
+		for (const auto &value : values) {
+			appendUnique(target, value);
+		}
+	}
+
+	void appendMappedClassStringValues(std::vector<std::string> &target, const LuaClassValuesMap &valuesByClass, const std::string &className) {
+		if (const auto values = valuesByClass.find(className); values != valuesByClass.end()) {
+			appendClassStringValues(target, values->second);
+		}
+	}
+
+	void applyClassBase(LuaClassInfo &classInfo, const LuaStringMap &baseClasses, const std::string &className) {
+		if (!classInfo.baseClass.empty()) {
+			return;
+		}
+
+		if (const auto baseClass = baseClasses.find(className); baseClass != baseClasses.end()) {
+			classInfo.baseClass = baseClass->second;
+		}
+	}
+
+	void applyScannedClassMetadata(LuaClassInfo &classInfo, const LuaScanResult &scanResult, const std::string &className) {
+		classInfo.name = className;
+		applyClassBase(classInfo, scanResult.classBaseClasses, className);
+		appendMappedClassStringValues(classInfo.fields, scanResult.classFields, className);
+		appendMappedClassStringValues(classInfo.overloads, scanResult.classOverloads, className);
+	}
+
+	void applyScannedClassValues(LuaClassMap &classes, const LuaClassValuesMap &valuesByClass, std::vector<std::string> LuaClassInfo::* member) {
+		for (const auto &[name, values] : valuesByClass) {
+			auto &classInfo = classes[name];
+			classInfo.name = name;
+			appendClassStringValues(classInfo.*member, values);
+		}
+	}
+
+	void writeMarkdownStringList(std::ostringstream &output, const std::string_view title, const std::vector<std::string> &values) {
+		if (values.empty()) {
+			return;
+		}
+
+		output << "- " << title << ":\n";
+		for (const auto &value : values) {
+			output << "  - `" << value << "`\n";
+		}
+		output << "\n";
+	}
+
+	void writeMarkdownClassMetadata(std::ostringstream &output, const LuaClassInfo &classInfo) {
+		if (!classInfo.baseClass.empty()) {
+			output << "- Extends: `" << classInfo.baseClass << "`\n\n";
+		}
+		writeMarkdownStringList(output, "Fields", classInfo.fields);
+		writeMarkdownStringList(output, "Overloads", classInfo.overloads);
+	}
+
+	void writeMarkdownClassMethods(std::ostringstream &output, const std::string &name, const LuaClassInfo &classInfo) {
+		for (const auto &method : classInfo.methods) {
+			if (isLuaMetaMethod(method)) {
+				continue;
+			}
+			writeMarkdownFunctionEntry(output, "####", name + (method.hasSelfParameter ? ":" : ".") + method.name, method);
+		}
+	}
+
+	void writeMarkdownClasses(std::ostringstream &output, const LuaClassMap &classes) {
+		for (const auto &[name, classInfo] : classes) {
+			output << "### " << name << "\n\n";
+			writeMarkdownClassMetadata(output, classInfo);
+			writeMarkdownClassMethods(output, name, classInfo);
+		}
+	}
+
+	void writeMarkdownGlobals(std::ostringstream &output, const std::vector<LuaFunctionInfo> &globals) {
+		if (globals.empty()) {
+			return;
+		}
+
+		output << "## Global\n\n";
+		for (const auto &function : globals) {
+			writeMarkdownFunctionEntry(output, "###", function.name, function);
+		}
+	}
+
+	std::vector<const LuaFunctionInfo*> getPublicMethods(const LuaClassInfo &classInfo) {
+		std::vector<const LuaFunctionInfo*> publicMethods;
+		for (const auto &method : classInfo.methods) {
+			if (!isLuaMetaMethod(method)) {
+				appendValue(publicMethods, &method);
+			}
+		}
+		return publicMethods;
+	}
+
+	void writeJsonClassMethods(std::ostringstream &output, const LuaClassInfo &classInfo) {
+		const auto publicMethods = getPublicMethods(classInfo);
+		for (size_t i = 0; i < publicMethods.size(); ++i) {
+			writeJsonFunctionObject(output, *publicMethods[i], "      ");
+			if (i + 1 < publicMethods.size()) {
+				output << ",";
+			}
+			output << "\n";
+		}
+	}
+
+	void writeJsonClasses(std::ostringstream &output, const LuaClassMap &classes) {
+		output << "  \"classes\": {\n";
+		bool firstClass = true;
+		for (const auto &[name, classInfo] : classes) {
+			if (!firstClass) {
+				output << ",\n";
+			}
+			firstClass = false;
+			output << "    \"" << jsonEscape(name) << "\": [\n";
+			writeJsonClassMethods(output, classInfo);
+			output << "    ]";
+		}
+		output << "\n";
+		output << "  },\n";
+	}
+
+	void writeJsonClassParents(std::ostringstream &output, const LuaClassMap &classes) {
+		output << "  \"classParents\": {\n";
+		bool firstParent = true;
+		for (const auto &[name, classInfo] : classes) {
+			if (classInfo.baseClass.empty()) {
+				continue;
+			}
+			if (!firstParent) {
+				output << ",\n";
+			}
+			firstParent = false;
+			output << "    \"" << jsonEscape(name) << "\": \"" << jsonEscape(classInfo.baseClass) << "\"";
+		}
+		output << "\n";
+		output << "  },\n";
+	}
+
+	void writeJsonGlobals(std::ostringstream &output, const std::vector<LuaFunctionInfo> &globals) {
+		if (globals.empty()) {
+			output << "  \"globals\": []\n";
+			return;
+		}
+
+		output << "  \"globals\": [\n";
+		for (size_t i = 0; i < globals.size(); ++i) {
+			writeJsonFunctionObject(output, globals[i], "    ");
+			if (i + 1 < globals.size()) {
+				output << ",";
+			}
+			output << "\n";
+		}
+		output << "  ]\n";
 	}
 
 	bool writeFileAtomically(const std::filesystem::path &path, const std::string &content, std::string &errorMessage) {
@@ -1876,10 +2035,13 @@ bool LuaApiDocGenerator::generate() {
 	} catch (const std::system_error &e) {
 		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
 		return false;
-	} catch (const std::runtime_error &e) {
+	} catch (const std::invalid_argument &e) {
 		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
 		return false;
-	} catch (const std::logic_error &e) {
+	} catch (const std::out_of_range &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::length_error &e) {
 		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
 		return false;
 	}
@@ -1918,10 +2080,7 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 	globals.clear();
 
 	for (const auto &className : scanResult.classes) {
-		classes[className].name = className;
-		if (const auto baseClass = scanResult.classBaseClasses.find(className); baseClass != scanResult.classBaseClasses.end()) {
-			classes[className].baseClass = baseClass->second;
-		}
+		applyScannedClassMetadata(classes[className], scanResult, className);
 	}
 
 	std::unordered_map<std::string, LuaStringSet, TransparentStringHash, std::equal_to<>> classMethodNames;
@@ -1937,42 +2096,15 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 		}
 
 		auto &classInfo = classes[function.className];
-		classInfo.name = function.className;
-		if (classInfo.baseClass.empty()) {
-			if (const auto baseClass = scanResult.classBaseClasses.find(function.className); baseClass != scanResult.classBaseClasses.end()) {
-				classInfo.baseClass = baseClass->second;
-			}
-		}
-		if (const auto fields = scanResult.classFields.find(function.className); fields != scanResult.classFields.end()) {
-			for (const auto &field : fields->second) {
-				appendUnique(classInfo.fields, field);
-			}
-		}
-		if (const auto overloads = scanResult.classOverloads.find(function.className); overloads != scanResult.classOverloads.end()) {
-			for (const auto &overload : overloads->second) {
-				appendUnique(classInfo.overloads, overload);
-			}
-		}
+		applyScannedClassMetadata(classInfo, scanResult, function.className);
 		auto &names = classMethodNames[function.className];
 		if (addUnique(names, function.name)) {
 			appendValue(classInfo.methods, function);
 		}
 	}
 
-	for (const auto &[name, fields] : scanResult.classFields) {
-		auto &classInfo = classes[name];
-		classInfo.name = name;
-		for (const auto &field : fields) {
-			appendUnique(classInfo.fields, field);
-		}
-	}
-	for (const auto &[name, overloads] : scanResult.classOverloads) {
-		auto &classInfo = classes[name];
-		classInfo.name = name;
-		for (const auto &overload : overloads) {
-			appendUnique(classInfo.overloads, overload);
-		}
-	}
+	applyScannedClassValues(classes, scanResult.classFields, &LuaClassInfo::fields);
+	applyScannedClassValues(classes, scanResult.classOverloads, &LuaClassInfo::overloads);
 
 	for (auto &[name, classInfo] : classes) {
 		static_cast<void>(name);
@@ -2050,39 +2182,8 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "## Manual Signature Hints\n\n";
 	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
 	output << "## Classes\n\n";
-	for (const auto &[name, classInfo] : classes) {
-		output << "### " << name << "\n\n";
-		if (!classInfo.baseClass.empty()) {
-			output << "- Extends: `" << classInfo.baseClass << "`\n\n";
-		}
-		if (!classInfo.fields.empty()) {
-			output << "- Fields:\n";
-			for (const auto &field : classInfo.fields) {
-				output << "  - `" << field << "`\n";
-			}
-			output << "\n";
-		}
-		if (!classInfo.overloads.empty()) {
-			output << "- Overloads:\n";
-			for (const auto &overload : classInfo.overloads) {
-				output << "  - `" << overload << "`\n";
-			}
-			output << "\n";
-		}
-		for (const auto &method : classInfo.methods) {
-			if (isLuaMetaMethod(method)) {
-				continue;
-			}
-			writeMarkdownFunctionEntry(output, "####", name + (method.hasSelfParameter ? ":" : ".") + method.name, method);
-		}
-	}
-
-	if (!globals.empty()) {
-		output << "## Global\n\n";
-		for (const auto &function : globals) {
-			writeMarkdownFunctionEntry(output, "###", function.name, function);
-		}
-	}
+	writeMarkdownClasses(output, classes);
+	writeMarkdownGlobals(output, globals);
 
 	std::string errorMessage;
 	if (!writeFileAtomically(path, output.str(), errorMessage)) {
@@ -2097,65 +2198,13 @@ bool LuaApiDocGenerator::exportJson() const {
 	std::ostringstream output;
 
 	output << "{\n";
-	output << "  \"classes\": {\n";
-	bool firstClass = true;
-	for (const auto &[name, classInfo] : classes) {
-		if (!firstClass) {
-			output << ",\n";
-		}
-		firstClass = false;
-		output << "    \"" << jsonEscape(name) << "\": [\n";
-		std::vector<const LuaFunctionInfo*> publicMethods;
-		for (const auto &method : classInfo.methods) {
-			if (!isLuaMetaMethod(method)) {
-				appendValue(publicMethods, &method);
-			}
-		}
-		for (size_t i = 0; i < publicMethods.size(); ++i) {
-			const auto &method = *publicMethods[i];
-			writeJsonFunctionObject(output, method, "      ");
-			if (i + 1 < publicMethods.size()) {
-				output << ",";
-			}
-			output << "\n";
-		}
-		output << "    ]";
-	}
-
-	output << "\n";
-	output << "  },\n";
-	output << "  \"classParents\": {\n";
-	bool firstParent = true;
-	for (const auto &[name, classInfo] : classes) {
-		if (classInfo.baseClass.empty()) {
-			continue;
-		}
-		if (!firstParent) {
-			output << ",\n";
-		}
-		firstParent = false;
-		output << "    \"" << jsonEscape(name) << "\": \"" << jsonEscape(classInfo.baseClass) << "\"";
-	}
-	output << "\n";
-	output << "  },\n";
+	writeJsonClasses(output, classes);
+	writeJsonClassParents(output, classes);
 	writeJsonClassStringArrayMap(output, classes, "classFields", &LuaClassInfo::fields);
 	output << ",\n";
 	writeJsonClassStringArrayMap(output, classes, "classOverloads", &LuaClassInfo::overloads);
 	output << ",\n";
-	if (globals.empty()) {
-		output << "  \"globals\": []\n";
-	} else {
-		output << "  \"globals\": [\n";
-		for (size_t i = 0; i < globals.size(); ++i) {
-			const auto &function = globals[i];
-			writeJsonFunctionObject(output, function, "    ");
-			if (i + 1 < globals.size()) {
-				output << ",";
-			}
-			output << "\n";
-		}
-		output << "  ]\n";
-	}
+	writeJsonGlobals(output, globals);
 	output << "}\n";
 
 	std::string errorMessage;

@@ -71,17 +71,25 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
-	bool closeNpcShopIfOutOfRange(const std::shared_ptr<Player> &player, const std::shared_ptr<Npc> &merchant) {
-		if (!player || !merchant) {
-			return true;
+	std::shared_ptr<Npc> getInteractableShopOwner(const std::shared_ptr<Player> &player) {
+		if (!player) {
+			return nullptr;
+		}
+
+		auto merchant = player->getShopOwner();
+		if (!merchant) {
+			return nullptr;
 		}
 
 		if (merchant->canInteract(player->getPosition())) {
-			return false;
+			return merchant;
 		}
 
-		player->closeShopWindow();
-		return true;
+		if (!player->closeShopWindow()) {
+			return nullptr;
+		}
+
+		return nullptr;
 	}
 }
 
@@ -5746,12 +5754,8 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
-		return;
-	}
-
-	if (closeNpcShopIfOutOfRange(player, merchant)) {
 		return;
 	}
 
@@ -5806,12 +5810,8 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
-		return;
-	}
-
-	if (closeNpcShopIfOutOfRange(player, merchant)) {
 		return;
 	}
 
@@ -5849,12 +5849,8 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
-		return;
-	}
-
-	if (closeNpcShopIfOutOfRange(player, merchant)) {
 		return;
 	}
 

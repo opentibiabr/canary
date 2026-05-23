@@ -1120,7 +1120,8 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 
 		if (std::ranges::find_if(parts, [](const std::string &type) {
 				return type != "nil" && type != "any" && type != "boolean" && type != "string" && type != "number" && type != "integer" && type != "function" && type != "table" && type != "thread" && type != "userdata" && type != "lightuserdata";
-			}) != parts.end()) {
+			})
+		    != parts.end()) {
 			std::erase(parts, std::string("userdata"));
 		}
 

@@ -13,6 +13,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
+	#include <array>
 	#include <cctype>
 	#include <fstream>
 	#include <initializer_list>
@@ -1527,15 +1528,16 @@ namespace {
 		}
 	}
 
-	const std::vector<std::pair<std::string_view, std::string_view>> &getLuaTypeAliases() {
-		static const std::vector<std::pair<std::string_view, std::string_view>> aliases = {
+	using LuaTypeAlias = std::pair<std::string_view, std::string_view>;
+
+	constexpr std::array<LuaTypeAlias, 5> getLuaTypeAliases() {
+		return { {
 			{ "CombatType", "integer" },
 			{ "DistanceEffect", "integer" },
 			{ "MagicEffect", "integer" },
 			{ "ReturnValue", "integer" },
 			{ "TileState", "integer" },
-		};
-		return aliases;
+		} };
 	}
 
 	void writeLuaTypeAliases(std::ostringstream &output) {

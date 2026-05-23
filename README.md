@@ -19,7 +19,7 @@ Canary is a free and open-source MMORPG server emulator for the OpenTibia commun
 ## Documentation
 
 - [System documentation](docs/systems/README.md).
-- [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md).
+- [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md). Canary generates these files from the C++ Lua bindings during startup when `generateLuaApiDocs` is enabled. For VSCode autocomplete, add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua Language Server workspace library.
 
 ---
 

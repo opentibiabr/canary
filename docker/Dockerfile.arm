@@ -102,7 +102,7 @@ WORKDIR /canary
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client libluajit-5.1-dev libluajit-5.1-common wget curl tzdata \
+	mariadb-client libluajit-5.1-dev libluajit-5.1-common wget curl ca-certificates tzdata \
 	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
 	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \

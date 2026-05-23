@@ -19,6 +19,21 @@ escape_lua() {
 	printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
 }
 
+require_uint() {
+	local name="$1"
+	local value="$2"
+	if [[ ! "$value" =~ ^[0-9]+$ ]]; then
+		echo "Invalid ${name}: '${value}'. Use only unsigned integer values." >&2
+		exit 1
+	fi
+}
+
+require_uint "CANARY_DB_PORT" "$CANARY_DB_PORT"
+require_uint "CANARY_LOGIN_PORT" "$CANARY_LOGIN_PORT"
+require_uint "CANARY_GAME_PORT" "$CANARY_GAME_PORT"
+require_uint "CANARY_STATUS_PORT" "$CANARY_STATUS_PORT"
+require_uint "CANARY_STATUS_TIMEOUT" "$CANARY_STATUS_TIMEOUT"
+
 mkdir -p /canary/data/XML
 cat > /canary/config.lua <<EOF
 serverName = "$(escape_lua "$CANARY_SERVER_NAME")"

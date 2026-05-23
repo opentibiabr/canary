@@ -73,6 +73,87 @@ function wait_for_canary_schema(PDO $pdo): void
 	throw new RuntimeException('Canary schema was not created before MyAAC setup.');
 }
 
+function execute_sql_script(PDO $pdo, string $sql): void
+{
+	$statement = '';
+	$quote = null;
+	$escaped = false;
+	$lineComment = false;
+	$blockComment = false;
+	$length = strlen($sql);
+
+	for ($index = 0; $index < $length; ++$index) {
+		$char = $sql[$index];
+		$next = $index + 1 < $length ? $sql[$index + 1] : '';
+
+		if ($lineComment) {
+			if ($char === "\n") {
+				$lineComment = false;
+			}
+			continue;
+		}
+
+		if ($blockComment) {
+			if ($char === '*' && $next === '/') {
+				$blockComment = false;
+				++$index;
+			}
+			continue;
+		}
+
+		if ($quote !== null) {
+			$statement .= $char;
+			if ($escaped) {
+				$escaped = false;
+			} elseif ($char === '\\') {
+				$escaped = true;
+			} elseif ($char === $quote) {
+				$quote = null;
+			}
+			continue;
+		}
+
+		if ($char === '-' && $next === '-' && ($index + 2 >= $length || ctype_space($sql[$index + 2]))) {
+			$lineComment = true;
+			++$index;
+			continue;
+		}
+
+		if ($char === '#') {
+			$lineComment = true;
+			continue;
+		}
+
+		if ($char === '/' && $next === '*') {
+			$blockComment = true;
+			++$index;
+			continue;
+		}
+
+		if ($char === "'" || $char === '"' || $char === '`') {
+			$quote = $char;
+			$statement .= $char;
+			continue;
+		}
+
+		if ($char === ';') {
+			$trimmed = trim($statement);
+			if ($trimmed !== '') {
+				$pdo->exec($trimmed);
+			}
+			$statement = '';
+			continue;
+		}
+
+		$statement .= $char;
+	}
+
+	$trimmed = trim($statement);
+	if ($trimmed !== '') {
+		$pdo->exec($trimmed);
+	}
+}
+
 function write_myaac_config(): void
 {
 	$serverPath = env_value('MYAAC_SERVER_PATH', '/canary/');
@@ -104,7 +185,9 @@ function write_myaac_config(): void
 		$content .= "\$config['{$key}'] = " . var_export($value, true) . ";\n";
 	}
 
-	file_put_contents('/var/www/html/config.local.php', $content);
+	if (file_put_contents('/var/www/html/config.local.php', $content) === false) {
+		throw new RuntimeException('Could not write /var/www/html/config.local.php.');
+	}
 }
 
 function import_myaac_schema(PDO $pdo): void
@@ -120,7 +203,7 @@ function import_myaac_schema(PDO $pdo): void
 		throw new RuntimeException('Could not read MyAAC schema.sql.');
 	}
 
-	$pdo->exec($schema);
+	execute_sql_script($pdo, $schema);
 }
 
 function myaac_database_version(): int
@@ -140,6 +223,17 @@ function set_myaac_database_version(PDO $pdo): void
 		'INSERT INTO myaac_config (`name`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)'
 	);
 	$statement->execute(['database_version', $version]);
+}
+
+function myaac_quickstart_installed(PDO $pdo): bool
+{
+	if (!table_exists($pdo, 'myaac_config')) {
+		return false;
+	}
+
+	$statement = $pdo->prepare('SELECT `value` FROM myaac_config WHERE `name` = ? LIMIT 1');
+	$statement->execute(['docker_quickstart_installed']);
+	return $statement->fetchColumn() !== false;
 }
 
 function ensure_canary_myaac_columns(PDO $pdo): void
@@ -175,6 +269,11 @@ function ensure_canary_myaac_columns(PDO $pdo): void
 function finish_myaac_install(PDO $pdo): void
 {
 	global $cache, $config, $db, $eloquentConnection, $hooks, $locale, $ots, $twig;
+
+	if (myaac_quickstart_installed($pdo)) {
+		echo "MyAAC quickstart already installed.\n";
+		return;
+	}
 
 	require_once '/var/www/html/common.php';
 	require_once SYSTEM . 'functions.php';

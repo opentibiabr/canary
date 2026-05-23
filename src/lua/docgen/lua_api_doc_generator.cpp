@@ -1530,7 +1530,7 @@ namespace {
 
 	using LuaTypeAlias = std::pair<std::string_view, std::string_view>;
 
-	constexpr std::array<LuaTypeAlias, 5> getLuaTypeAliases() {
+	[[nodiscard]] constexpr std::array<LuaTypeAlias, 5> getLuaTypeAliases() {
 		return { {
 			{ "CombatType", "integer" },
 			{ "DistanceEffect", "integer" },

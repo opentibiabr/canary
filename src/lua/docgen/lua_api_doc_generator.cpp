@@ -16,6 +16,7 @@
 	#include <cctype>
 	#include <fstream>
 	#include <initializer_list>
+	#include <stdexcept>
 	#include <regex>
 	#include <set>
 	#include <sstream>
@@ -35,6 +36,8 @@ namespace {
 		bool hasSelfParameter { false };
 		std::vector<ParameterHint> parameters;
 	};
+
+	LuaSignatureHint extractLuaSignatureHint(const std::string &body);
 
 	struct LuaDocParameter {
 		std::string name;
@@ -849,11 +852,12 @@ namespace {
 
 	using RegexFlags = std::regex_constants::syntax_option_type;
 	using ParameterMap = std::map<int, ParameterInfo>;
+	using StringViewRegexIterator = std::regex_iterator<std::string_view::const_iterator>;
 
-	std::set<int> collectOptionalThresholds(const std::string &body, const RegexFlags flags) {
+	std::set<int> collectOptionalThresholds(const std::string_view body, const RegexFlags flags) {
 		std::set<int> optionalThresholds;
 		std::regex topPattern(R"regex(lua_gettop\s*\(\s*L\s*\)\s*([<>!=]=?|==)\s*(\d+))regex", flags);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), topPattern); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), topPattern); it != StringViewRegexIterator(); ++it) {
 			const auto op = (*it)[1].str();
 			const int threshold = std::stoi((*it)[2].str());
 			int optionalStart = 0;
@@ -871,16 +875,16 @@ namespace {
 		return optionalThresholds;
 	}
 
-	void collectGetterMatches(ParameterMap &parameterMap, const std::string &body, const std::vector<std::pair<std::regex, std::string>> &getters, const bool optional, const bool skipSelfParameter) {
+	void collectGetterMatches(ParameterMap &parameterMap, const std::string_view body, const std::vector<std::pair<std::regex, std::string>> &getters, const bool optional, const bool skipSelfParameter) {
 		for (const auto &[pattern, type] : getters) {
-			for (auto it = std::sregex_iterator(body.begin(), body.end(), pattern); it != std::sregex_iterator(); ++it) {
+			for (auto it = StringViewRegexIterator(body.begin(), body.end(), pattern); it != StringViewRegexIterator(); ++it) {
 				const auto index = std::stoi((*it)[1].str());
 				addInferredParameter(parameterMap, index, type, "", optional, skipSelfParameter);
 			}
 		}
 	}
 
-	void collectSimpleGetterParameters(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectSimpleGetterParameters(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		const std::vector<std::pair<std::regex, std::string>> simpleGetters = {
 			{ std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_tonumber\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 			{ std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_tointeger\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
@@ -899,7 +903,7 @@ namespace {
 		collectGetterMatches(parameterMap, body, simpleGetters, false, skipSelfParameter);
 	}
 
-	void collectOptionalGetterParameters(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectOptionalGetterParameters(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		const std::vector<std::pair<std::regex, std::string>> optionalGetters = {
 			{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_opt(?:number|integer)\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 			{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_optstring\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "string" }
@@ -907,12 +911,12 @@ namespace {
 		collectGetterMatches(parameterMap, body, optionalGetters, true, skipSelfParameter);
 	}
 
-	void collectTypedGetterAssignments(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectTypedGetterAssignments(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		std::regex assignmentWithType(
 			R"regex((?:const\s+)?([A-Za-z_][A-Za-z0-9_:<>, \*&]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(-?\d+)(?:\s*,[^)]*)?\))regex",
 			flags
 		);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), assignmentWithType); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), assignmentWithType); it != StringViewRegexIterator(); ++it) {
 			const auto declaredTypeRaw = trim((*it)[1].str());
 			const auto declaredType = normalizeLuaTypeExpression(declaredTypeRaw);
 			const auto getter = (*it)[3].str();
@@ -922,43 +926,43 @@ namespace {
 		}
 	}
 
-	void collectAutoGetterAssignments(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectAutoGetterAssignments(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		std::regex assignmentAuto(
 			R"regex((?:const\s+)?auto\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(-?\d+)(?:\s*,[^)]*)?\))regex",
 			flags
 		);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), assignmentAuto); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), assignmentAuto); it != StringViewRegexIterator(); ++it) {
 			addInferredParameter(parameterMap, std::stoi((*it)[4].str()), deduceLuaTypeFromGetter((*it)[2].str(), trim((*it)[3].str())), (*it)[1].str(), false, skipSelfParameter);
 		}
 	}
 
-	void collectDirectGetterParameters(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectDirectGetterParameters(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		std::regex directGetter(
 			R"regex((?:[A-Za-z_][A-Za-z0-9_:]*::)?(?:Lua::)?get([A-Za-z0-9_]+)\s*(?:<([^>]+)>)?\s*\(\s*L\s*,\s*(-?\d+)(?:\s*,[^)]*)?\))regex",
 			flags
 		);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), directGetter); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), directGetter); it != StringViewRegexIterator(); ++it) {
 			addInferredParameter(parameterMap, std::stoi((*it)[3].str()), deduceLuaTypeFromGetter((*it)[1].str(), trim((*it)[2].str())), "", false, skipSelfParameter);
 		}
 	}
 
-	void collectNamedLuaHelperParameters(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectNamedLuaHelperParameters(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		std::regex namedLuaHelpers(
 			R"regex((?:const\s+)?(?:auto|[A-Za-z_][A-Za-z0-9_:<>\s\*&]+)\s*&?\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(lua_[a-z]+|luaL_check[a-z]+|luaL_opt[a-z]+)\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex",
 			flags
 		);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), namedLuaHelpers); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), namedLuaHelpers); it != StringViewRegexIterator(); ++it) {
 			const auto helper = (*it)[2].str();
 			addInferredParameter(parameterMap, std::stoi((*it)[3].str()), luaHelperType(helper), (*it)[1].str(), helper.rfind("luaL_opt", 0) == 0, skipSelfParameter);
 		}
 	}
 
-	void collectExplicitLuaAssignments(ParameterMap &parameterMap, const std::string &body, const RegexFlags flags, const bool skipSelfParameter) {
+	void collectExplicitLuaAssignments(ParameterMap &parameterMap, const std::string_view body, const RegexFlags flags, const bool skipSelfParameter) {
 		std::regex explicitTypeAssignment(
 			R"regex((?:const\s+)?([A-Za-z_][A-Za-z0-9_:<>, \*&]+?)\s+([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(?:lua_[a-z]+|luaL_[a-z]+)\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex",
 			flags
 		);
-		for (auto it = std::sregex_iterator(body.begin(), body.end(), explicitTypeAssignment); it != std::sregex_iterator(); ++it) {
+		for (auto it = StringViewRegexIterator(body.begin(), body.end(), explicitTypeAssignment); it != StringViewRegexIterator(); ++it) {
 			addInferredParameter(parameterMap, std::stoi((*it)[3].str()), normalizeLuaTypeExpression((*it)[1].str()), (*it)[2].str(), false, skipSelfParameter);
 		}
 	}
@@ -1320,10 +1324,10 @@ namespace {
 
 	void writeJsonFunctionObject(std::ostringstream &output, const LuaFunctionInfo &function, const std::string &indent) {
 		output << indent << "{\n";
-		output << indent << "  \"name\": \"" << jsonEscape(function.name) << "\",\n";
+		output << indent << R"(  "name": ")" << jsonEscape(function.name) << R"(",)" << "\n";
 		writeJsonStringArray(output, indent + "  ", "params", displayParametersFor(function));
-		output << indent << "  \"return\": \"" << jsonEscape(joinLuaReturnAnnotations(function)) << "\",\n";
-		output << indent << "  \"source\": \"" << jsonEscape(function.sourceFile) << "\"\n";
+		output << indent << R"(  "return": ")" << jsonEscape(joinLuaReturnAnnotations(function)) << R"(",)" << "\n";
+		output << indent << R"(  "source": ")" << jsonEscape(function.sourceFile) << R"(")" << "\n";
 		output << indent << "}";
 	}
 
@@ -1750,7 +1754,22 @@ bool LuaApiDocGenerator::generate() {
 			return false;
 		}
 		return true;
-	} catch (const std::exception &e) {
+	} catch (const std::filesystem::filesystem_error &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::regex_error &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::ios_base::failure &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::system_error &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::runtime_error &e) {
+		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
+		return false;
+	} catch (const std::logic_error &e) {
 		logger.warn(fmt::format("Failed to generate Lua API documentation: {}", e.what()));
 		return false;
 	}
@@ -1822,14 +1841,12 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 
 	for (auto &[name, classInfo] : classes) {
 		static_cast<void>(name);
-		std::sort(classInfo.methods.begin(), classInfo.methods.end(), [](const LuaFunctionInfo &lhs, const LuaFunctionInfo &rhs) {
-			return lhs.name < rhs.name;
-		});
+		const auto sortedMethodsEnd = std::ranges::sort(classInfo.methods, {}, &LuaFunctionInfo::name);
+		static_cast<void>(sortedMethodsEnd);
 	}
 
-	std::sort(globals.begin(), globals.end(), [](const LuaFunctionInfo &lhs, const LuaFunctionInfo &rhs) {
-		return lhs.name < rhs.name;
-	});
+	const auto sortedGlobalsEnd = std::ranges::sort(globals, {}, &LuaFunctionInfo::name);
+	static_cast<void>(sortedGlobalsEnd);
 }
 
 bool LuaApiDocGenerator::exportEmmyLua() const {

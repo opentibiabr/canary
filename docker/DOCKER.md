@@ -56,8 +56,9 @@ With the default `.env` values:
 - Client login webservice: `http://localhost:8088/login`
 - MyAAC admin panel: `http://localhost:8080/admin`
 - Login-server HTTP port: `8088`
-- Game port: `7172`
-- Canary login/status port: `7171`
+- Canary login protocol port: `7171`
+- Canary game protocol port: `7172`
+- Canary status protocol port: `7173`
 - Test login: `@test1`
 - Test password: `test`
 - MyAAC admin login: `myaacadmin`
@@ -120,13 +121,14 @@ CANARY_SERVER_IP=127.0.0.1
 CANARY_SERVER_LOCATION=BRA
 CANARY_LOGIN_PORT=7171
 CANARY_GAME_PORT=7172
+CANARY_STATUS_PORT=7173
 CANARY_STATUS_TIMEOUT=5000
 ```
 
-The quickstart keeps `statusProtocolPort` equal to `CANARY_LOGIN_PORT`, so the
-default login/status socket is exposed through one host port. If you need a
-separate status port, use a Compose override that sets and publishes
-`CANARY_STATUS_PORT` explicitly.
+The quickstart publishes `CANARY_LOGIN_PORT`, `CANARY_GAME_PORT`, and
+`CANARY_STATUS_PORT` to the host using the same port values configured in
+`.env`. Keep these values distinct unless you intentionally add a Compose
+override for custom port mappings.
 
 `CANARY_SERVER_IP` is the address sent to the client in the world list. It is not
 the Docker service name.

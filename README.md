@@ -16,6 +16,32 @@ Canary is a free and open-source MMORPG server emulator for the OpenTibia commun
 
 ---
 
+## Docker Quickstart
+
+Canary includes a lightweight Docker quickstart for running a local test server
+without compiling Canary locally. The stack starts MariaDB, the published Canary
+runtime image, MyAAC as the website/admin AAC, and `opentibiabr/login-server` as
+the client login webservice.
+
+Run from the `docker` directory:
+
+```bash
+cp .env.dist .env
+docker compose up -d --build
+```
+
+Default local endpoints:
+
+- Website/admin: `http://localhost:8080`
+- Client login webservice: `http://localhost:8088/login`
+- Game port: `7172`
+
+MyAAC's `login.php` is intentionally removed from the quickstart image. Clients
+should use `login-server` only. See [docker/DOCKER.md](docker/DOCKER.md) for the
+full setup, environment variables, test account, and troubleshooting guide.
+
+---
+
 ## Documentation
 
 - [System documentation](docs/systems/README.md).

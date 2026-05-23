@@ -45,6 +45,19 @@ cmake --build --preset windows-release --target canary
 - If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
 - Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
 
+## Docker Quickstart Policy
+
+- The Docker quickstart is intended for non-expert users to run a local Canary stack with minimal setup.
+- Keep CI/build Docker, local development Docker, and user-facing quickstart Docker as separate responsibilities unless a change explicitly documents why they must overlap.
+- `docker/docker-compose.yml` must keep `login-server` as the default client login webservice.
+- Do not point clients to MyAAC `login.php`.
+- The MyAAC quickstart image must not include or expose `login.php`; MyAAC is used only as the website/admin AAC.
+- The default client login URL is `http://localhost:8088/login`.
+- The default web/admin URL is `http://localhost:8080`.
+- MyAAC must build from the `slawkens/myaac` `develop` branch unless a compatibility reason is documented.
+- Public Docker env vars for Canary should use the `CANARY_*` prefix. Avoid adding new public `MYSQL_*`, `OT_*`, or raw Lua config variable names.
+- The quickstart must not require compiling Canary locally; use the published Canary runtime image.
+
 ## PR Communication Policy
 
 - Do not post any PR comments/reviews automatically.

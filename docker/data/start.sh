@@ -18,8 +18,8 @@ CANARY_MAP_URL="${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases
 validate_identifier() {
 	local name="$1"
 	local value="$2"
-	if [[ -z "$value" || "$value" == *[!A-Za-z0-9_]* ]]; then
-		echo "Invalid ${name}: '${value}'. Use only letters, numbers, and underscores." >&2
+	if [[ ! "$value" =~ ^[A-Za-z0-9_][A-Za-z0-9_-]*$ ]]; then
+		echo "Invalid ${name}: '${value}'. Use only letters, numbers, underscores, and hyphens." >&2
 		exit 1
 	fi
 }

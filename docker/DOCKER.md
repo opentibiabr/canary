@@ -120,9 +120,13 @@ CANARY_SERVER_IP=127.0.0.1
 CANARY_SERVER_LOCATION=BRA
 CANARY_LOGIN_PORT=7171
 CANARY_GAME_PORT=7172
-CANARY_STATUS_PORT=7171
 CANARY_STATUS_TIMEOUT=5000
 ```
+
+The quickstart keeps `statusProtocolPort` equal to `CANARY_LOGIN_PORT`, so the
+default login/status socket is exposed through one host port. If you need a
+separate status port, use a Compose override that sets and publishes
+`CANARY_STATUS_PORT` explicitly.
 
 `CANARY_SERVER_IP` is the address sent to the client in the world list. It is not
 the Docker service name.

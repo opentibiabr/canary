@@ -39,6 +39,7 @@
     <ClInclude Include="..\src\creatures\players\grouping\party.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\team_finder.hpp" />
     <ClInclude Include="..\src\creatures\players\imbuements\imbuements.hpp" />
+    <ClInclude Include="..\src\creatures\players\livestream\livestream.hpp" />
     <ClInclude Include="..\src\creatures\players\management\ban.hpp" />
     <ClInclude Include="..\src\creatures\players\management\waitlist.hpp" />
     <ClInclude Include="..\src\creatures\players\storages\storages.hpp" />
@@ -55,6 +56,7 @@
     <ClInclude Include="..\src\creatures\players\components\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_vip.hpp" />
     <ClInclude Include="..\src\creatures\players\components\wheel\player_wheel.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\weapon_proficiency.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
     <ClInclude Include="..\src\database\database.hpp" />
     <ClInclude Include="..\src\database\databasemanager.hpp" />
@@ -140,6 +142,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\batch_update_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\zone_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\lua_enums.hpp" />
@@ -205,6 +208,7 @@
     <ClInclude Include="..\src\map\house\house.hpp" />
     <ClInclude Include="..\src\map\house\housetile.hpp" />
     <ClInclude Include="..\src\map\map.hpp" />
+    <ClInclude Include="..\src\map\map_download.hpp" />
     <ClInclude Include="..\src\map\mapcache.hpp" />
     <ClInclude Include="..\src\map\map_const.hpp" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
@@ -226,6 +230,7 @@
     <ClInclude Include="..\src\server\server_definitions.hpp" />
     <ClInclude Include="..\src\server\signals.hpp" />
     <ClInclude Include="..\src\utils\arraylist.hpp" />
+    <ClInclude Include="..\src\utils\batch_update.hpp" />
     <ClInclude Include="..\src\utils\benchmark.hpp" />
     <ClInclude Include="..\src\utils\const.hpp" />
     <ClInclude Include="..\src\utils\definitions.hpp" />
@@ -262,6 +267,7 @@
     <ClCompile Include="..\src\creatures\players\grouping\guild.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\party.cpp" />
     <ClCompile Include="..\src\creatures\players\imbuements\imbuements.cpp" />
+    <ClCompile Include="..\src\creatures\players\livestream\livestream.cpp" />
     <ClCompile Include="..\src\creatures\players\management\ban.cpp" />
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
     <ClCompile Include="..\src\creatures\players\storages\storages.cpp" />
@@ -278,6 +284,7 @@
     <ClCompile Include="..\src\creatures\players\components\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_vip.cpp" />
     <ClCompile Include="..\src\creatures\players\components\wheel\player_wheel.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\weapon_proficiency.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />
     <ClCompile Include="..\src\database\databasemanager.cpp" />
     <ClCompile Include="..\src\database\databasetasks.cpp" />
@@ -342,6 +349,7 @@
     <ClCompile Include="..\src\lua\creature\movement.cpp" />
     <ClCompile Include="..\src\lua\creature\raids.cpp" />
     <ClCompile Include="..\src\lua\creature\talkaction.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\batch_update_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
@@ -407,6 +415,7 @@
     <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
     <ClCompile Include="..\src\map\utils\mapsector.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
+    <ClCompile Include="..\src\map\map_download.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
@@ -423,6 +432,7 @@
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />
+    <ClCompile Include="..\src\utils\batch_update.cpp" />
     <ClCompile Include="..\src\utils\benchmark.cpp" />
     <ClCompile Include="..\src\utils\counter_pointer.cpp" />
     <ClCompile Include="..\src\utils\pugicast.cpp" />
@@ -492,11 +502,17 @@
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)-sln-dbg</TargetName>
+    <LocalDebuggerCommand>$(ProjectDir)..\$(TargetName)$(TargetExt)</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)-sln</TargetName>
+    <LocalDebuggerCommand>$(ProjectDir)..\$(TargetName)$(TargetExt)</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgRoot Condition="'$(VcpkgRoot)'=='' and '$(VCPKG_ROOT)'!=''">$(VCPKG_ROOT)</VcpkgRoot>

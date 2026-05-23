@@ -94,8 +94,15 @@ public:
 	 * \param creature Creature to place on the map
 	 * \param extendedPos If true, the creature will in first-hand be placed 2 tiles away
 	 * \param forceLogin If true, placing the creature will not fail becase of obstacles (creatures/chests)
+	 * \param centerTile Optional tile already resolved for centerPos
 	 */
-	bool placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos = false, bool forceLogin = false);
+	bool placeCreature(
+		const Position &centerPos,
+		const std::shared_ptr<Creature> &creature,
+		bool extendedPos = false,
+		bool forceLogin = false,
+		const std::shared_ptr<Tile> &centerTile = nullptr
+	);
 
 	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
 

@@ -17,6 +17,7 @@
 #include "io/iomap.hpp"
 #include "io/iomapserialize.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/map_download.hpp"
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
 
@@ -35,6 +36,10 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			g_logger().warn("Map download URL in config.lua is empty, download disabled");
+		}
+
+		if (!mapDownloadUrl.empty()) {
+			MapDownload::warnIfOutdatedMapDownloadUrl(mapDownloadUrl);
 		}
 
 		if (CURL* curl = curl_easy_init(); curl && !mapDownloadUrl.empty()) {
@@ -226,7 +231,13 @@ void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile>
 	}
 }
 
-bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creature> &creature, bool extendedPos /* = false*/, bool forceLogin /* = false*/) {
+bool Map::placeCreature(
+	const Position &centerPos,
+	const std::shared_ptr<Creature> &creature,
+	bool extendedPos /* = false*/,
+	bool forceLogin /* = false*/,
+	const std::shared_ptr<Tile> &centerTile /* = nullptr */
+) {
 	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
@@ -235,7 +246,7 @@ bool Map::placeCreature(const Position &centerPos, const std::shared_ptr<Creatur
 	bool foundTile;
 	bool placeInPZ;
 
-	auto tile = getTile(centerPos.x, centerPos.y, centerPos.z);
+	auto tile = centerTile ? centerTile : getTile(centerPos.x, centerPos.y, centerPos.z);
 	if (tile) {
 		placeInPZ = tile->hasFlag(TILESTATE_PROTECTIONZONE);
 		ReturnValue ret = tile->queryAdd(0, creature, 1, FLAG_IGNOREBLOCKITEM | FLAG_IGNOREFIELDDAMAGE);

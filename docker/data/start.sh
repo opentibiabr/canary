@@ -11,7 +11,7 @@ OT_SERVER_GAME_PORT="${OT_SERVER_GAME_PORT:-7172}"
 OT_SERVER_STATUS_PORT="${OT_SERVER_STATUS_PORT:-7171}"
 OT_SERVER_TEST_ACCOUNTS="${OT_SERVER_TEST_ACCOUNTS:-false}"
 OT_SERVER_DATA="${OT_SERVER_DATA:-data-otservbr-global}"
-OT_SERVER_MAP="${OT_SERVER_MAP:-https://github.com/opentibiabr/canary/releases/download/v3.1.0/otservbr.otbm}"
+OT_SERVER_MAP="${OT_SERVER_MAP:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
 
 echo ""
 echo "===== Print Variables ====="

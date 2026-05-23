@@ -99,9 +99,6 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "VCPKG_TARGET_TRIPLET": "x64-linux",
-        "VCPKG_HOST_TRIPLET": "x64-linux",
-        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF"
       },
@@ -227,6 +224,17 @@
         "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-osx-metrics",
         "VCPKG_MANIFEST_FEATURES": "metrics"
       }
+    },
+    {
+      "name": "windows-release-link-audit",
+      "inherits": "windows-release",
+      "displayName": "Windows - Release Link Audit",
+      "description": "Windows Release build with link diagnostics (/VERBOSE:LIB, /MAP, compile_commands)",
+      "binaryDir": "${sourceDir}/build/windows-release-link-audit",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO": "/VERBOSE:LIB /MAP:\"${sourceDir}/build/${presetName}/canary-link-audit.map\""
+      }
     }
   ],
   "buildPresets": [
@@ -277,6 +285,10 @@
     {
       "name": "macos-release-metrics",
       "configurePreset": "macos-release-metrics"
+    },
+    {
+      "name": "windows-release-link-audit",
+      "configurePreset": "windows-release-link-audit"
     }
   ],
   "testPresets": [

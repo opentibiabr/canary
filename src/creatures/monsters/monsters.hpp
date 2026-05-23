@@ -20,12 +20,15 @@ class ConditionDamage;
 class Loot {
 public:
 	Loot() = default;
+	explicit Loot(std::string monsterName) :
+		monsterName(std::move(monsterName)) { }
 
 	// non-copyable
 	Loot(const Loot &) = delete;
 	Loot &operator=(const Loot &) = delete;
 
 	LootBlock lootBlock;
+	std::string monsterName;
 };
 
 class BaseSpell;

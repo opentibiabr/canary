@@ -456,6 +456,11 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 	if (monsterTypes.empty()) {
 		return nullptr;
 	}
+
+	if (monsterTypes.size() == 1) {
+		return monsterTypes.begin()->first;
+	}
+
 	uint32_t totalWeight = 0;
 	for (const auto &[mType, weight] : monsterTypes) {
 		if (!mType) {
@@ -469,12 +474,24 @@ std::shared_ptr<MonsterType> spawnBlock_t::getMonsterType() const {
 		}
 		totalWeight += weight;
 	}
+	if (totalWeight == 0) {
+		return nullptr;
+	}
+
 	uint32_t randomWeight = uniform_random(0, totalWeight - 1);
-	// order monsters by weight DESC
-	std::vector<std::pair<std::shared_ptr<MonsterType>, uint32_t>> orderedMonsterTypes(monsterTypes.begin(), monsterTypes.end());
-	std::ranges::sort(orderedMonsterTypes, [](const auto &a, const auto &b) {
-		return a.second > b.second;
+	std::vector<std::pair<std::shared_ptr<MonsterType>, uint32_t>> orderedMonsterTypes;
+	orderedMonsterTypes.reserve(monsterTypes.size());
+	for (const auto &[mType, weight] : monsterTypes) {
+		if (!mType) {
+			continue;
+		}
+		orderedMonsterTypes.emplace_back(mType, weight);
+	}
+
+	[[maybe_unused]] const auto sortedEnd = std::ranges::sort(orderedMonsterTypes, [](const auto &lhs, const auto &rhs) {
+		return lhs.second > rhs.second;
 	});
+
 	for (const auto &[mType, weight] : orderedMonsterTypes) {
 		if (randomWeight < weight) {
 			return mType;

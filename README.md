@@ -6,13 +6,19 @@
 ![Repository size](https://img.shields.io/github/repo-size/opentibiabr/canary)
 [![License](https://img.shields.io/github/license/opentibiabr/canary.svg)](https://github.com/opentibiabr/canary/blob/main/LICENSE)
 
-Canary is a free and open-source MMORPG server emulator for the OpenTibia community, written in C++20 and Lua. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. The repository includes the server core, datapacks, Lua scripts, database schema, build presets, automated tests, and development tooling used by the project.
+Canary is a free and open-source MMORPG server emulator for the OpenTibia community, written in C++20 and Lua. It is a fork of the [OTServBR-Global](https://github.com/opentibiabr/otservbr-global) project. The repository includes the server core, datapacks, Lua scripts, database schema, build presets, automated tests and development tooling used by the project.
 
 ---
 
 ## Getting Started
 
 - [Wiki](https://github.com/opentibiabr/canary/wiki).
+
+---
+
+## Documentation
+
+- [System documentation](docs/systems/README.md).
 
 ---
 
@@ -57,7 +63,7 @@ For detailed testing information including adding tests and framework usage, see
 
 For real-time support, join the [OpenTibiaBR Discord](https://discord.gg/gvTj5sh9Mp).
 
-The GitHub issue tracker should be used for bugs, improvements, and technical project tasks. It is not a support forum.
+The GitHub issue tracker should be used for bugs, improvements and technical project tasks. It is not a support forum.
 
 ---
 
@@ -68,7 +74,7 @@ Contributions are welcome. You can help in several ways:
 - Report bugs through the [Issue Tracker](https://github.com/opentibiabr/canary/issues/new/choose).
 - Submit improvements through [Pull Requests](https://github.com/opentibiabr/canary/pulls).
 - Improve tests, documentation, scripts, datapacks, or C++ code.
-- Validate releases, nightly builds, and recent changes.
+- Validate releases, nightly builds and recent changes.
 
 Before contributing, read the [Code of Conduct](https://github.com/opentibiabr/canary/blob/main/CODE_OF_CONDUCT.md) and the project [Contributing](https://github.com/opentibiabr/canary/blob/main/CONTRIBUTING.md) guide.
 

@@ -25,6 +25,7 @@
 #include "creatures/players/grouping/team_finder.hpp"
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
+#include "creatures/players/livestream/livestream.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
@@ -55,6 +56,7 @@
 #include "enums/player_blessings.hpp"
 #include "enums/player_cyclopedia.hpp"
 #include "enums/container_type.hpp"
+#include "enums/imbuement.hpp"
 
 /*
  * NOTE: This namespace is used so that we can add functions without having to declare them in the ".hpp/.hpp" file
@@ -65,6 +67,20 @@
 // Very useful to send the total amount in certain bytes in the ProtocolGame class
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
+	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+
+	size_t getUnreadBytes(const NetworkMessage &msg) {
+		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
+		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
+	}
+
+	std::string getMarketDetailImbuementEffect(uint16_t itemId) {
+		if (const auto* imbuement = g_imbuements().getImbuementByScrollID(itemId); imbuement != nullptr) {
+			return imbuement->getDescription();
+		}
+
+		return {};
+	}
 
 	template <typename T>
 	uint16_t getVectorIterationIncreaseCount(T &vector) {
@@ -301,13 +317,8 @@ namespace {
 	 * @param[in] msg The network message to which the calculated skill values will be added.
 	 * @param[in] skill The specific skill to calculate (e.g., Life Leech, Mana Leech, Critical Hit Damage, etc.).
 	 */
-	void addCyclopediaSkills(std::shared_ptr<Player> &player, NetworkMessage &msg, skills_t skill) {
+	void addCyclopediaSkills(std::shared_ptr<Player> &player, NetworkMessage &msg, skills_t skill, const SkillsEquipment &skillEquipment) {
 		const auto skillTotal = player->getSkillLevel(skill);
-		const auto &playerItem = player->getInventoryItem(CONST_SLOT_LEFT);
-		double skillEquipment = 0.0;
-		if (playerItem) {
-			skillEquipment = playerItem->getSkill(skill);
-		}
 
 		double skillWheel = 0.0;
 		const auto &playerWheel = player->wheel();
@@ -322,13 +333,34 @@ namespace {
 			skillWheel += playerWheel.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
 		}
 
-		double skillImbuement = skillTotal - skillEquipment - skillWheel;
+		double skillEquipmentValue = skillEquipment.equipment + (player->weaponProficiency().getSkillBonus(skill) / 10000.);
+		double skillEvent = 0.0;
 
 		msg.addDouble(skillTotal / 10000.);
-		msg.addDouble(skillEquipment / 10000.);
-		msg.addDouble(skillImbuement / 10000.);
+		msg.addDouble(skillEquipmentValue);
+		msg.addDouble(skillEquipment.imbuement);
 		msg.addDouble(skillWheel / 10000.);
-		msg.addDouble(0.00);
+		msg.addDouble(skillEvent);
+	}
+
+	void addCyclopediaCriticalSkill(std::shared_ptr<Player> &player, NetworkMessage &msg, skills_t skill, const SkillsEquipment &skillEquipment) {
+		const auto &playerBaseCritical = player->getBaseCritical();
+
+		double concoctionCritical = 0.0;
+		double baseCritical = skill == SKILL_CRITICAL_HIT_CHANCE ? playerBaseCritical.chance : playerBaseCritical.damage;
+		double wheelCritical = player->wheel().getStat(skill == SKILL_CRITICAL_HIT_CHANCE ? WheelStat_t::CRITICAL_CHANCE : WheelStat_t::CRITICAL_DAMAGE) / 10000.0;
+
+		const auto &proficiencyCritical = player->weaponProficiency().getGeneralCritical();
+		double proficiencyCriticalValue = skill == SKILL_CRITICAL_HIT_CHANCE ? proficiencyCritical.chance : proficiencyCritical.damage;
+		double skillEquipmentValue = skillEquipment.equipment + proficiencyCriticalValue;
+		const auto totalCritical = baseCritical + skillEquipmentValue + wheelCritical + skillEquipment.imbuement + concoctionCritical;
+
+		msg.addDouble(totalCritical);
+		msg.addDouble(baseCritical);
+		msg.addDouble(skillEquipmentValue);
+		msg.addDouble(skillEquipment.imbuement);
+		msg.addDouble(wheelCritical);
+		msg.addDouble(concoctionCritical);
 	}
 } // namespace
 
@@ -546,7 +578,11 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 void ProtocolGame::release() {
 	// dispatcher thread
-	if (player && player->client == shared_from_this()) {
+	if (m_isLivestreamViewer) {
+		g_livestream().removeViewer(getThis());
+		player = nullptr;
+	} else if (player && player->client == shared_from_this()) {
+		g_livestream().stopBroadcast(player, true);
 		player->client.reset();
 		player = nullptr;
 	}
@@ -556,23 +592,7 @@ void ProtocolGame::release() {
 }
 
 void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingSystem_t operatingSystem) {
-	// OTCV8 features
-	if (otclientV8 > 0) {
-		sendFeatures();
-	}
-
-	// Extended opcodes
-	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
-		isOTC = true;
-		if (isOTC && otclientV8 == 0) {
-			sendOTCRFeatures();
-		}
-		NetworkMessage opcodeMessage;
-		opcodeMessage.addByte(0x32);
-		opcodeMessage.addByte(0x00);
-		opcodeMessage.add<uint16_t>(0x00);
-		writeToOutputBuffer(opcodeMessage);
-	}
+	sendClientLoginPreamble(operatingSystem);
 
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
 
@@ -758,6 +778,11 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 		return;
 	}
 
+	if (m_isLivestreamViewer) {
+		sendSessionEndInformation(SESSION_END_LOGOUT);
+		return;
+	}
+
 	bool removePlayer = !player->isRemoved() && !forced;
 	auto tile = player->getTile();
 	if (removePlayer && !player->isAccessPlayer()) {
@@ -876,7 +901,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	const auto &onlinePlayer = g_game().getPlayerByName(characterName);
 	const auto &foundPlayer = !onlinePlayer ? g_game().getDeadPlayer(characterName) : onlinePlayer;
-	if (foundPlayer && foundPlayer->client) {
+	if (foundPlayer && foundPlayer->client && accountDescriptor != "@livestream") {
 		if (foundPlayer->isDead()) {
 			disconnectClient("You are already logged in.");
 			return;
@@ -934,6 +959,14 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		ss << "Your IP has been banned until " << formatDateShort(banInfo.expiresAt) << " by " << banInfo.bannedBy << ".\n\nReason specified:\n"
 		   << banInfo.reason;
 		disconnectClient(ss.str());
+		return;
+	}
+
+	if (accountDescriptor == "@livestream") {
+		g_dispatcher().addEvent([self = getThis(), characterName, password, operatingSystem] {
+			self->castViewerLogin(characterName, password, operatingSystem);
+		},
+		                        "ProtocolGame::castViewerLogin");
 		return;
 	}
 
@@ -996,13 +1029,17 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 }
 
 void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
+	auto writeMessage = [self = getThis(), msg]() mutable {
+		self->getOutputBuffer(msg.getLength())->append(msg);
+		if (self->m_isLivestreamBroadcaster && self->player && !self->m_isLivestreamViewer) {
+			g_livestream().broadcastPacket(self->player, self, msg);
+		}
+	};
+
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([self = getThis(), msg] {
-			self->getOutputBuffer(msg.getLength())->append(msg);
-		},
-		                        __FUNCTION__);
+		g_dispatcher().addEvent(std::move(writeMessage), __FUNCTION__);
 	} else {
-		getOutputBuffer(msg.getLength())->append(msg);
+		writeMessage();
 	}
 }
 
@@ -1022,6 +1059,11 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 		if (recvbyte == 0x0F) {
 			disconnect();
 		}
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		parsePacketFromDispatcher(msg, recvbyte);
 		return;
 	}
 
@@ -1090,6 +1132,40 @@ void ProtocolGame::addBless() {
 
 void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte) {
 	if (!acceptPackets || g_game().getGameState() == GAME_STATE_SHUTDOWN) {
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		switch (recvbyte) {
+			case 0x14:
+				logout(true, false);
+				break;
+			case 0x1D:
+				break;
+			case 0x1E:
+				sendPingBack();
+				break;
+			case 0x96:
+				parseSay(msg);
+				break;
+			case 0xCA:
+				if (getUnreadBytes(msg) == UPDATE_CONTAINER_PAYLOAD_SIZE) {
+					resendLivestreamViewerContainer(msg);
+				}
+				break;
+			case 0xA1:
+				sendCancelTarget();
+				break;
+			case 0xFA:
+			case 0xFB:
+			case 0xFC:
+			case 0xFD:
+			case 0xFE:
+				break;
+			default:
+				sendCancelWalk();
+				break;
+		}
 		return;
 	}
 
@@ -1348,6 +1424,12 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			break;
 		case 0xB1:
 			parseHighscores(msg);
+			break;
+		case 0xB2:
+			parseImbuementAction(msg);
+			break;
+		case 0xB3:
+			parseWeaponProficiency(msg);
 			break;
 		case 0xBA:
 			parseTaskHuntingAction(msg);
@@ -1851,9 +1933,8 @@ void ProtocolGame::parseToggleMount(NetworkMessage &msg) {
 
 void ProtocolGame::parseApplyImbuement(NetworkMessage &msg) {
 	uint8_t slot = msg.getByte();
-	auto imbuementId = msg.get<uint32_t>();
-	bool protectionCharm = msg.getByte(true) != 0x00;
-	g_game().playerApplyImbuement(player->getID(), imbuementId, slot, protectionCharm);
+	auto imbuementId = msg.get<uint16_t>();
+	g_game().playerApplyImbuement(player->getID(), imbuementId, slot);
 }
 
 void ProtocolGame::parseClearImbuement(NetworkMessage &msg) {
@@ -2045,6 +2126,16 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 		return;
 	}
 
+	if (channelId == CHANNEL_LIVESTREAM) {
+		g_livestream().handleChat(getThis(), text);
+		return;
+	}
+
+	if (m_isLivestreamViewer) {
+		sendTextMessage(TextMessage(MESSAGE_LOOK, "You only can talk in the Livestream channel."));
+		return;
+	}
+
 	g_game().playerSay(player->getID(), channelId, type, receiver, text);
 }
 
@@ -2211,6 +2302,10 @@ void ProtocolGame::parseInspectionObject(NetworkMessage &msg) {
 		auto itemId = msg.get<uint16_t>();
 		uint16_t itemCount = msg.getByte();
 		g_game().playerInspectItem(player, itemId, static_cast<int8_t>(itemCount), (inspectionType == INSPECT_CYCLOPEDIA));
+	} else if (inspectionType == INSPECT_PROFICIENCY) {
+		const auto itemId = msg.get<uint16_t>();
+		msg.getByte(); // Unknown byte
+		sendWeaponProficiencyWindow(itemId);
 	}
 }
 
@@ -2301,6 +2396,96 @@ void ProtocolGame::parseHighscores(NetworkMessage &msg) {
 	}
 	uint8_t entriesPerPage = std::min<uint8_t>(30, std::max<uint8_t>(5, msg.getByte()));
 	g_game().playerHighscores(player, type, category, vocation, worldName, page, entriesPerPage);
+}
+
+void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
+	if (oldProtocol) {
+		return;
+	}
+
+	auto action = static_cast<ImbuementAction>(msg.getByte()); // 0x01 - pick item, 0x02 - scroll imbuement
+
+	std::shared_ptr<Item> item = nullptr;
+
+	if (action == ImbuementAction::PickItem) {
+		msg.skipBytes(2); // Unknown bytes
+		auto slotId = msg.getByte();
+		msg.skipBytes(1); // Unknown byte
+		msg.skipBytes(1); // Unknown byte
+		auto itemId = msg.get<uint16_t>();
+		auto slotIndex = msg.getByte();
+
+		const bool isContainerItem = slotId >= 0x40;
+		if (isContainerItem) {
+			// Padding to not conflict with inventory slot
+			// the client sends with this padding
+			slotId -= 0x40;
+			const auto &container = player->getContainerByID(slotId);
+			item = container ? container->getItemByIndex(slotIndex) : nullptr;
+		} else {
+			item = player->getInventoryItem(static_cast<Slots_t>(slotId));
+		}
+
+		if (!item || item->getID() != itemId) {
+			return;
+		}
+
+		if (item->getImbuementSlot() <= 0) {
+			if (isContainerItem) {
+				player->sendImbuementResult("This item is not imbuable.");
+			}
+			return;
+		}
+	}
+
+	openImbuementWindow(action, item);
+}
+
+void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
+	if (oldProtocol) {
+		return;
+	}
+
+	auto action = msg.getByte();
+
+	if (action == 0x01) {
+		for (const auto weaponId : player->weaponProficiency().getTrackedWeaponIds()) {
+			sendWeaponProficiencyWindow(weaponId);
+		}
+		return;
+	}
+
+	auto weaponId = msg.get<uint16_t>();
+	const auto equippedWeaponId = player->getWeaponId(true);
+	const bool isEquippedWeapon = equippedWeaponId != 0 && weaponId == equippedWeaponId;
+
+	if (action == 0x03) {
+		if (isEquippedWeapon) {
+			player->weaponProficiency().clearAllStats();
+		}
+		player->weaponProficiency().clearSelectedPerks(weaponId);
+
+		auto slots = msg.getByte();
+		for (uint8_t slot = 0; slot < slots; slot++) {
+			auto level = msg.getByte();
+			auto perkIndex = msg.getByte();
+
+			player->weaponProficiency().setSelectedPerk(level, perkIndex, weaponId);
+		}
+
+		if (isEquippedWeapon) {
+			player->weaponProficiency().applyPerks(weaponId);
+		}
+	} else if (action == 0x02) {
+		if (isEquippedWeapon) {
+			player->weaponProficiency().clearAllStats();
+			player->sendSkills();
+		}
+		player->weaponProficiency().clearSelectedPerks(weaponId);
+	}
+
+	sendWeaponProficiencyWindow(weaponId);
+	sendWeaponProficiency(weaponId);
 }
 
 void ProtocolGame::parseTaskHuntingAction(NetworkMessage &msg) {
@@ -4244,32 +4429,33 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_OFFENCESTATS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	msg.addDouble(player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10000.); // Crit Chance Total
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
-	msg.addDouble(0.00);
+	const auto &skilsEquipment = player->getSkillsEquipment();
 
-	addCyclopediaSkills(player, msg, SKILL_CRITICAL_HIT_DAMAGE);
-	addCyclopediaSkills(player, msg, SKILL_LIFE_LEECH_AMOUNT);
-	addCyclopediaSkills(player, msg, SKILL_MANA_LEECH_AMOUNT);
+	addCyclopediaCriticalSkill(player, msg, SKILL_CRITICAL_HIT_CHANCE, skilsEquipment[SKILL_CRITICAL_HIT_CHANCE]);
+	addCyclopediaCriticalSkill(player, msg, SKILL_CRITICAL_HIT_DAMAGE, skilsEquipment[SKILL_CRITICAL_HIT_DAMAGE]);
 
-	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEFT)); // Onslaught Total
-	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEFT, false));
-	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEFT) - getForgeSkillStat(CONST_SLOT_LEFT, false));
-	msg.addDouble(0.00);
+	addCyclopediaSkills(player, msg, SKILL_LIFE_LEECH_AMOUNT, skilsEquipment[SKILL_LIFE_LEECH_AMOUNT]);
+	addCyclopediaSkills(player, msg, SKILL_MANA_LEECH_AMOUNT, skilsEquipment[SKILL_MANA_LEECH_AMOUNT]);
+
+	const double onslaughtTotal = getForgeSkillStat(CONST_SLOT_LEFT);
+	const double onslaughtEquipment = getForgeSkillStat(CONST_SLOT_LEFT, false);
+	msg.addDouble(onslaughtTotal); // Onslaught Total
+	msg.addDouble(onslaughtEquipment);
+	msg.addDouble(onslaughtTotal - onslaughtEquipment);
+	msg.addDouble(0.0); // NOTHING
 
 	msg.addDouble(player->getCleavePercent() / 100.);
 
 	// Perfect shot range (12.70)
-	for (uint8_t range = 1; range <= 5; range++) {
+	for (uint8_t range = 1; range <= 7; range++) {
 		msg.add<uint16_t>(static_cast<uint16_t>(player->getPerfectShotDamage(range)));
 	}
 
 	const auto flatBonus = player->calculateFlatDamageHealing();
+	uint16_t flatDamageHealingUnknown = 0;
 	msg.add<uint16_t>(flatBonus); // Flat Damage and Healing Total
 	msg.add<uint16_t>(flatBonus);
-	msg.add<uint16_t>(0x00);
+	msg.add<uint16_t>(flatDamageHealingUnknown);
 
 	const auto &weapon = player->getWeapon();
 	if (weapon) {
@@ -4287,6 +4473,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 			msg.addByte(0x00);
 		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);
@@ -4333,6 +4520,7 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 			}
 		} else {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);
@@ -4383,6 +4571,97 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 		msg.addDouble(0.0);
 		msg.addByte(0x00);
 		msg.addByte(0x00);
+	}
+
+	msg.addDouble(player->weaponProficiency().getPowerfulFoeDamage()); // Influenced/Bosses damage
+
+	const auto &runesCritical = player->weaponProficiency().getRunesCritical();
+	const auto &autoAttackCritical = player->weaponProficiency().getAutoAttackCritical();
+
+	const auto &bestiariesDamage = player->weaponProficiency().getActiveBestiariesDamage();
+	msg.add<uint16_t>(bestiariesDamage.size()); // Bestiary Damage size
+	for (const auto &[name, amount] : bestiariesDamage) {
+		msg.addString(name); // Bestiary category name
+		msg.addDouble(amount); // Amount
+	}
+
+	const auto &elementalCriticalChanceOpt = player->weaponProficiency().getActiveElementalCriticalType(WeaponProficiencyBonus_t::ELEMENTAL_HIT_CHANCE);
+	msg.addByte(elementalCriticalChanceOpt.has_value()); // Has Element Critical Chance
+	if (elementalCriticalChanceOpt.has_value()) {
+		msg.addByte(elementalCriticalChanceOpt.value().first); // Element Critical Chance Element ID
+		msg.addDouble(elementalCriticalChanceOpt.value().second); // Applied Element Critical Chance Value
+	}
+
+	msg.addDouble(runesCritical.chance); // Offensive Runes Critical Chance
+	msg.addDouble(autoAttackCritical.chance); // Auto Attack Critical Chance
+
+	const auto &elementalCriticalDamageOpt = player->weaponProficiency().getActiveElementalCriticalType(WeaponProficiencyBonus_t::ELEMENTAL_CRITICAL_EXTRA_DAMAGE);
+	msg.addByte(elementalCriticalDamageOpt.has_value()); // Has Element Critical Damage
+	if (elementalCriticalDamageOpt.has_value()) {
+		msg.addByte(elementalCriticalDamageOpt.value().first); // Element Critical Damage Element ID
+		msg.addDouble(elementalCriticalDamageOpt.value().second); // Applied Element Critical Damage Value
+	}
+
+	msg.addDouble(runesCritical.damage); // Offensive Runes Critical Damage
+	msg.addDouble(autoAttackCritical.damage); // Auto Attack Critical Damage
+
+	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::LIFE_GAIN_ON_HIT)); // Life Gain on Hit
+	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::MANA_GAIN_ON_HIT)); // Mana Gain on Hit
+	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::LIFE_GAIN_ON_KILL)); // Life Gain on Kill
+	msg.add<uint16_t>(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::MANA_GAIN_ON_KILL)); // Mana Gain on Kill
+
+	skills_t skill = SKILL_NONE;
+	if (weapon) {
+		switch (Item::items[weapon->getID()].type) {
+			case ITEM_TYPE_SWORD:
+				skill = SKILL_SWORD;
+				break;
+			case ITEM_TYPE_AXE:
+				skill = SKILL_AXE;
+				break;
+			case ITEM_TYPE_CLUB:
+				skill = SKILL_CLUB;
+				break;
+			case ITEM_TYPE_WAND:
+				skill = SKILL_MAGLEVEL;
+				break;
+			case ITEM_TYPE_DISTANCE:
+				skill = SKILL_DISTANCE;
+				break;
+			default:
+				break;
+		}
+	}
+
+	const auto &skillPercentage = player->weaponProficiency().getSkillPercentage(skill);
+
+	double playerSkill = 0.0;
+	if (skillPercentage.skill != SKILL_NONE) {
+		playerSkill = skillPercentage.skill == SKILL_MAGLEVEL ? player->getMagicLevel() : player->getSkillLevel(skillPercentage.skill);
+	}
+
+	bool hasAutoAttackSkill = skillPercentage.skill != SKILL_NONE && skillPercentage.autoAttack;
+	msg.addByte(hasAutoAttackSkill); // Has Auto Attack Skill
+	if (hasAutoAttackSkill) {
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Auto Attack Skill ID
+		msg.addDouble(skillPercentage.autoAttack); // Percent Auto Attack Skill
+		msg.addDouble(std::round(playerSkill * skillPercentage.autoAttack)); // Applied Auto Attack Value
+	}
+
+	bool hasSpellDamage = skillPercentage.skill != SKILL_NONE && skillPercentage.spellDamage;
+	msg.addByte(hasSpellDamage); // Has Spell Damage
+	if (hasSpellDamage) {
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Spell Damage Skill ID
+		msg.addDouble(skillPercentage.spellDamage); // Percent Spell Damage
+		msg.addDouble(std::round(playerSkill * skillPercentage.spellDamage)); // Applied Spell Damage Value
+	}
+
+	bool hasSpellHealing = skillPercentage.skill != SKILL_NONE && skillPercentage.spellHealing;
+	msg.addByte(hasSpellHealing); // Has Spell Healing
+	if (hasSpellHealing) {
+		msg.addByte(static_cast<uint8_t>(getCipbiaSkill(skillPercentage.skill))); // Spell Healing Skill ID
+		msg.addDouble(skillPercentage.spellHealing); // Percent Spell Healing Skill
+		msg.addDouble(std::round(playerSkill * skillPercentage.spellHealing)); // Applied Spell Healing Value
 	}
 
 	writeToOutputBuffer(msg);
@@ -4514,6 +4793,30 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 		msg.addByte(0x00);
 		msg.addByte(0x00);
 		msg.add<uint32_t>(duration);
+	}
+
+	const auto &weaponProficiencyAugments = player->weaponProficiency().getActiveAugments();
+	msg.addByte(weaponProficiencyAugments.size());
+	for (const auto &[key, value] : weaponProficiencyAugments) {
+		msg.add<uint16_t>(key.first); // Spell ID
+		msg.addByte(key.second); // Augment Type
+		msg.addDouble(value); // Spell Augment Value
+	}
+
+	const auto &wheelAugments = player->wheel().getActiveAugments();
+	msg.addByte(wheelAugments.size());
+	for (const auto &[key, value] : wheelAugments) {
+		msg.add<uint16_t>(key.first); // Spell ID
+		msg.addByte(key.second); // Augment Type
+		msg.addDouble(value); // Spell Augment Value
+	}
+
+	const auto &equippedAugments = player->getEquippedAugments();
+	msg.addByte(equippedAugments.size());
+	for (const auto &[key, value] : equippedAugments) {
+		msg.add<uint16_t>(key.first); // Spell ID
+		msg.addByte(key.second); // Augment Type
+		msg.addDouble(value); // Spell Augment Value
 	}
 
 	writeToOutputBuffer(msg);
@@ -5213,6 +5516,10 @@ void ProtocolGame::sendGameNews() {
 }
 
 void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*= 0*/, uint64_t preyCards /*= 0*/, uint64_t taskHunting /*= 0*/, uint64_t forgeDust /*= 0*/, uint64_t forgeSliver /*= 0*/, uint64_t forgeCores /*= 0*/) {
+	if (m_isLivestreamViewer) {
+		return;
+	}
+
 	sendResourceBalance(RESOURCE_BANK, bank);
 	sendResourceBalance(RESOURCE_INVENTORY_MONEY, money);
 	sendResourceBalance(RESOURCE_PREY_CARDS, preyCards);
@@ -6432,6 +6739,10 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 			msg.add<uint16_t>(0x00);
 		}
 
+		if (clientVersion >= 1510) {
+			msg.addString(getMarketDetailImbuementEffect(itemId));
+		}
+
 		if (it.upgradeClassification > 0 && tier > 0) {
 			std::ostringstream ss;
 
@@ -7029,10 +7340,12 @@ void ProtocolGame::sendUpdateTileItem(const Position &pos, uint32_t stackpos, co
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendRemoveTileThing(const Position &pos, uint32_t stackpos) {
+void ProtocolGame::sendRemoveTileThing(const Position &pos, uint32_t stackpos, std::source_location location) {
 	if (!canSee(pos)) {
 		return;
 	}
+
+	g_logger().trace("Removing tile thing at position {}, stackpos {} from protocol game, location: {}, called from: {} {}", pos.toString(), stackpos, location.function_name(), location.file_name(), location.line());
 
 	NetworkMessage msg;
 	RemoveTileThing(msg, pos, stackpos);
@@ -7201,6 +7514,12 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		sendInventoryItem(static_cast<Slots_t>(i), player->getInventoryItem(static_cast<Slots_t>(i)));
 	}
 
+	player->weaponProficiency().clearAllStats();
+	if (const auto equippedWeaponId = player->getWeaponId(true); equippedWeaponId != 0) {
+		player->weaponProficiency().applyPerks(equippedWeaponId, false);
+	}
+
+	player->sendWeaponProficiency();
 	sendStats();
 	sendSkills();
 	sendBlessStatus();
@@ -8328,6 +8647,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 			msg.addByte(0x00);
 		} else if (it.weaponType == WEAPON_DISTANCE || it.weaponType == WEAPON_AMMO || it.weaponType == WEAPON_MISSILE) {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);
@@ -8359,6 +8679,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 			}
 		} else {
 			int32_t physicalAttack = std::max<int32_t>(0, weapon->getAttack());
+			physicalAttack += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 			int32_t elementalAttack = 0;
 			if (it.abilities && it.abilities->elementType != COMBAT_NONE) {
 				elementalAttack = std::max<int32_t>(0, it.abilities->elementDamage);
@@ -8454,91 +8775,118 @@ void ProtocolGame::AddOutfit(NetworkMessage &msg, const Outfit_t &outfit, bool a
 	}
 }
 
-void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const {
-	Imbuement* imbuement = g_imbuements().getImbuement(imbuementId);
+void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction /* = false */) const {
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementID);
 	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
-	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
 
-	msg.add<uint32_t>(imbuementId);
-	msg.addString(baseImbuement->name + " " + imbuement->getName());
+	msg.add<uint32_t>(imbuement->getID());
+	msg.addString(fmt::format("{} {}", baseImbuement->name, imbuement->getName()));
 	msg.addString(imbuement->getDescription());
-	msg.addString(categoryImbuement->name + imbuement->getSubGroup());
+
+	msg.addByte(imbuement->getBaseID() - 1);
 
 	msg.add<uint16_t>(imbuement->getIconID());
 	msg.add<uint32_t>(baseImbuement->duration);
 
-	msg.addByte(imbuement->isPremium() ? 0x01 : 0x00);
-
-	const auto items = imbuement->getItems();
+	auto items = imbuement->getItems();
+	if (isScrollAction) {
+		(void)items.emplace_back(std::make_pair(ITEM_EMPTY_IMBUEMENT_SCROLL, 1));
+	}
 	msg.addByte(items.size());
 
-	for (const auto &itm : items) {
-		const ItemType &it = Item::items[itm.first];
-		msg.add<uint16_t>(itm.first);
+	for (const auto &[id, amount] : items) {
+		const ItemType &it = Item::items[id];
+		msg.add<uint16_t>(id);
 		msg.addString(it.name);
-		msg.add<uint16_t>(itm.second);
+		msg.add<uint16_t>(amount);
 	}
 
 	msg.add<uint32_t>(baseImbuement->price);
-	msg.addByte(baseImbuement->percent);
-	msg.add<uint32_t>(baseImbuement->protectionPrice);
 }
 
-void ProtocolGame::openImbuementWindow(const std::shared_ptr<Item> &item) {
-	if (!item || item->isRemoved()) {
-		return;
-	}
-
-	player->setImbuingItem(item);
-
-	NetworkMessage msg;
-	msg.addByte(0xEB);
-	msg.add<uint16_t>(item->getID());
-	if (!oldProtocol && item->getClassification() > 0) {
-		msg.addByte(0);
-	}
-	msg.addByte(item->getImbuementSlot());
-
-	// Send imbuement time
-	for (auto slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
-		ImbuementInfo imbuementInfo;
-		if (!item->getImbuementInfo(slotid, &imbuementInfo)) {
-			msg.addByte(0x00);
-			continue;
-		}
-
-		msg.addByte(0x01);
-		addImbuementInfo(msg, imbuementInfo.imbuement->getID());
-		msg.add<uint32_t>(imbuementInfo.duration);
-		msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
-	}
-
-	std::vector<Imbuement*> imbuements = g_imbuements().getImbuements(player, item);
-	phmap::flat_hash_map<uint16_t, uint16_t> needItems;
-
+void ProtocolGame::addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction /* = false */) const {
+	std::vector<Imbuement*> imbuements = g_imbuements().getImbuements(player, item, isScrollAction);
 	msg.add<uint16_t>(imbuements.size());
 	for (const Imbuement* imbuement : imbuements) {
-		addImbuementInfo(msg, imbuement->getID());
+		addImbuementInfo(msg, imbuement->getID(), isScrollAction);
 
-		const auto items = imbuement->getItems();
-		for (const auto &itm : items) {
-			if (!needItems.count(itm.first)) {
-				needItems[itm.first] = player->getItemTypeCount(itm.first);
-				uint32_t stashCount = player->getStashItemCount(Item::items[itm.first].id);
-				if (stashCount > 0) {
-					needItems[itm.first] += stashCount;
-				}
+		const auto &imbuementItems = imbuement->getItems();
+		for (const auto &[id, _] : imbuementItems) {
+			if (!neededItems.count(id)) {
+				const uint32_t invCount = player->getItemTypeCount(id);
+				const uint32_t stashCount = player->getStashItemCount(id);
+				const uint32_t total = invCount + stashCount;
+				neededItems[id] = static_cast<uint16_t>(std::min<uint32_t>(total, std::numeric_limits<uint16_t>::max()));
 			}
 		}
 	}
 
-	msg.add<uint32_t>(needItems.size());
-	for (const auto &itm : needItems) {
-		msg.add<uint16_t>(itm.first);
-		msg.add<uint16_t>(itm.second);
+	if (isScrollAction) {
+		if (!neededItems.count(ITEM_EMPTY_IMBUEMENT_SCROLL)) {
+			const uint32_t invCount = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+			const uint32_t stashCount = player->getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+			const uint32_t total = invCount + stashCount;
+			neededItems[ITEM_EMPTY_IMBUEMENT_SCROLL] = static_cast<uint16_t>(std::min<uint32_t>(total, std::numeric_limits<uint16_t>::max()));
+		}
+	}
+}
+
+void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item) {
+	if (!item && action == ImbuementAction::PickItem) {
+		return;
 	}
 
-	sendResourcesBalance(player->getMoney(), player->getBankBalance(), player->getPreyCards(), player->getTaskHuntingPoints());
+	NetworkMessage msg;
+	msg.addByte(0xEB);
+
+	phmap::flat_hash_map<uint16_t, uint16_t> neededItems;
+
+	msg.addByte(static_cast<uint8_t>(action));
+	const auto emptyImbuementScrolls = player->getItemTypeCount(ITEM_EMPTY_IMBUEMENT_SCROLL) + player->getStashItemCount(ITEM_EMPTY_IMBUEMENT_SCROLL);
+	msg.addByte(emptyImbuementScrolls > 0 ? 0x01 : 0x00);
+	if (action == ImbuementAction::Open) {
+		msg.add<uint16_t>(0);
+	} else if (action == ImbuementAction::PickItem) {
+		player->setImbuingItem(item);
+		msg.add<uint16_t>(item->getID());
+		if (item->getClassification() > 0) {
+			msg.addByte(item->getTier());
+		}
+
+		msg.addByte(item->getImbuementSlot());
+
+		// Imbuements applied
+		for (uint8_t slotID = 0; slotID < item->getImbuementSlot(); slotID++) {
+			ImbuementInfo imbuementInfo;
+			if (!item->getImbuementInfo(slotID, &imbuementInfo)) {
+				msg.addByte(0x00);
+				continue;
+			}
+
+			msg.addByte(0x01);
+			addImbuementInfo(msg, imbuementInfo.imbuement->getID());
+			msg.add<uint32_t>(imbuementInfo.duration);
+			msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
+		}
+
+		addAvailableImbuementsInfo(msg, item, neededItems);
+
+	} else if (action == ImbuementAction::Scroll) {
+		const auto freeSlots = player->getFreeBackpackSlots();
+		msg.addByte(freeSlots > 0 ? 0x01 : 0x00);
+		msg.addByte(0); // Unknown Byte
+
+		addAvailableImbuementsInfo(msg, nullptr, neededItems, true);
+	}
+
+	msg.add<uint32_t>(neededItems.size());
+	for (const auto &[id, amount] : neededItems) {
+		msg.add<uint16_t>(id);
+		msg.add<uint16_t>(amount);
+	}
+
+	sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
+	sendResourceBalance(RESOURCE_INVENTORY_MONEY, player->getMoney());
 
 	writeToOutputBuffer(msg);
 }
@@ -10407,4 +10755,155 @@ void ProtocolGame::sendExivaRestrictions(
 	}
 
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendWeaponProficiency(uint16_t weaponId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
+	}
+
+	NetworkMessage msg;
+
+	msg.addByte(0x5C);
+
+	msg.add<uint16_t>(weaponId);
+	msg.add<uint32_t>(weaponId > 0 ? player->weaponProficiency().getExperience(weaponId) : 0);
+	msg.addByte(weaponId > 0 && player->weaponProficiency().isUpgradeAvailable(weaponId) ? 0x01 : 0x00);
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	if (weaponId == 0) {
+		weaponId = player->getWeaponId(true);
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xC4);
+
+	msg.add<uint16_t>(weaponId);
+	msg.add<uint32_t>(player->weaponProficiency().getExperience(weaponId));
+
+	const auto &selectedPerks = player->weaponProficiency().getSelectedPerks(weaponId);
+
+	const auto perkCount = static_cast<uint8_t>(std::min<size_t>(selectedPerks.size(), std::numeric_limits<uint8_t>::max()));
+	msg.addByte(perkCount);
+	for (size_t i = 0; i < perkCount; ++i) {
+		const auto &perk = selectedPerks[i];
+		msg.addByte(perk.level);
+		msg.addByte(perk.index);
+	}
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendClientLoginPreamble(OperatingSystem_t operatingSystem) {
+	if (otclientV8 > 0) {
+		sendFeatures();
+	}
+
+	if (operatingSystem >= CLIENTOS_OTCLIENT_LINUX) {
+		isOTC = true;
+		if (otclientV8 == 0) {
+			sendOTCRFeatures();
+		}
+
+		NetworkMessage opcodeMessage;
+		opcodeMessage.addByte(0x32);
+		opcodeMessage.addByte(0x00);
+		opcodeMessage.add<uint16_t>(0x00);
+		writeToOutputBuffer(opcodeMessage);
+	}
+}
+
+void ProtocolGame::castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem) {
+	sendClientLoginPreamble(operatingSystem);
+
+	const auto &foundPlayer = g_game().getPlayerByName(name);
+	if (!canWatchLivestream(foundPlayer, password)) {
+		return;
+	}
+
+	m_isLivestreamViewer = true;
+	player = foundPlayer;
+	acceptPackets = true;
+	sendLivestreamViewerAppear(foundPlayer);
+	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
+}
+
+bool ProtocolGame::canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password) {
+	std::string reason;
+	if (!g_livestream().canWatch(foundPlayer, getThis(), password, reason)) {
+		disconnectClient(reason);
+		return false;
+	}
+
+	return true;
+}
+
+void ProtocolGame::sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer) {
+	if (!foundPlayer) {
+		return;
+	}
+
+	player = foundPlayer;
+	const auto ownerClient = foundPlayer->client;
+	foundPlayer->client = getThis();
+	sendAddCreature(player, player->getPosition(), 0, true);
+	foundPlayer->client = ownerClient;
+
+	syncLivestreamViewerOpenContainers(player);
+	g_livestream().addViewer(player, getThis());
+
+	const auto viewerCount = g_livestream().getViewerCount(player);
+	sendTextMessage(TextMessage(MESSAGE_LOOK, fmt::format("{} is broadcasting for {} people.\nLivestream time: {}", player->getName(), viewerCount, g_livestream().getBroadcastTimeString(player))));
+
+	const auto description = g_livestream().getDescription(player);
+	if (!description.empty()) {
+		sendCreatureSay(player, TALKTYPE_SAY, description);
+	}
+
+	if (!oldProtocol) {
+		const std::unordered_set<PlayerIcon> iconSet { PlayerIcon::Rooted };
+		sendIcons(iconSet, IconBakragore::None);
+	}
+
+	sendChannel(CHANNEL_LIVESTREAM, "Livestream", nullptr, nullptr);
+	sendTextMessage(TextMessage(MESSAGE_EVENT_ADVANCE, "Available commands: \n/name newname\n/show"));
+}
+
+void ProtocolGame::syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer) {
+	if (!foundPlayer) {
+		return;
+	}
+
+	for (const auto &[cid, openContainer] : foundPlayer->getOpenContainers()) {
+		if (openContainer.container) {
+			sendContainer(cid, openContainer.container, openContainer.container->hasParent(), openContainer.index);
+		}
+	}
+}
+
+void ProtocolGame::resendLivestreamViewerContainer(NetworkMessage &msg) {
+	if (!player) {
+		return;
+	}
+
+	const uint8_t cid = msg.getByte();
+	const auto &openContainers = player->getOpenContainers();
+	const auto it = openContainers.find(cid);
+	if (it == openContainers.end() || !it->second.container) {
+		sendCloseContainer(cid);
+		return;
+	}
+
+	sendContainer(cid, it->second.container, it->second.container->hasParent(), it->second.index);
 }

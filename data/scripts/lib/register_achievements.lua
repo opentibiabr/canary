@@ -559,6 +559,14 @@ ACHIEVEMENTS = {
 	[560] = { name = "Umbral Redeemer", grade = 2, points = 6, description = "You managed to create, improve and transform your katar into a master state and have proven yourself worthy in a nightmarish world." },
 	[561] = { name = "Hell Rider", grade = 1, points = 2, description = "Pray it never finds its way back to its original stable with you still riding." },
 	[562] = { name = "Alpha Rider", grade = 1, points = 2, description = "You never can tell, who's boss here." },
+	-- [563] = Unknown/non-existent
+	[564] = { name = "The First of Many", grade = 1, points = 3, description = "The first step to greatness has been done." },
+	[565] = { name = "A Well-Honed Arsenal", grade = 2, points = 5, description = "Your expertise in weaponry reaches new heights." },
+	[566] = { name = "Arsenal of War", grade = 3, points = 7, description = "Feared by your enemies, admired by many - your reputation in weapon mastery precedes you." },
+	-- [567] = Unknown/non-existent
+	[568] = { name = "Bat Person", grade = 1, points = 3, description = "No matter your command, this beast is all ears!" },
+	[569] = { name = "Illuminator", grade = 1, points = 3, description = "Joran and Yvette have brought the colours back to the world, and you have freed it from the monsters of this story. The world of books is now yours." },
+	[570] = { name = "Power of Words", grade = 2, points = 5, description = "The pen is mightier than the sword. In a way, yes, you have had this experience. You have seen with your own eyes what the power of words can do, the written word, to be precise." },
 }
 
 --[[

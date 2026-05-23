@@ -1,0 +1,24 @@
+name: Reusable Docker Quickstart Smoke
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Quickstart Smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Show Docker versions
+        run: |
+          docker version
+          docker compose version
+
+      - name: Run Docker quickstart smoke
+        run: bash .github/scripts/docker-quickstart-smoke.sh

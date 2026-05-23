@@ -2,6 +2,7 @@ text eol=lf
 
 .gitattributes text eol=lf
 .dockerignore text eol=lf
+.github/**/*.sh text eol=lf
 .github/**/*.yml text eol=lf
 .github/**/*.yaml text eol=lf
 docker/Dockerfile.* text eol=lf

@@ -52,6 +52,7 @@ jobs:
       run_canary_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' }}
       run_global_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
       docker: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.docker }}
+      docker_quickstart: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.docker_quickstart }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -93,6 +94,15 @@ jobs:
               - ".github/workflows/ci.yml"
               - ".github/workflows/reusable-build-docker.yml"
               - ".github/scripts/**"
+            docker_quickstart:
+              - "docker/docker-compose.yml"
+              - "docker/.env.dist"
+              - "docker/quickstart/**"
+              - "docker/data/01-test_account.sql"
+              - "docker/data/02-test_account_players.sql"
+              - ".github/scripts/docker-quickstart-smoke.sh"
+              - ".github/workflows/ci.yml"
+              - ".github/workflows/reusable-docker-quickstart-smoke.yml"
 
   # --- Fast Checks ---
 
@@ -162,3 +172,11 @@ jobs:
       packages: write
     uses: ./.github/workflows/reusable-build-docker.yml
     secrets: inherit
+
+  docker-quickstart-smoke:
+    name: Docker Quickstart Smoke
+    needs: [changes, checks, tests-lua]
+    if: needs.changes.outputs.docker_quickstart == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft)
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-docker-quickstart-smoke.yml

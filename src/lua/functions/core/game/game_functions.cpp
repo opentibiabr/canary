@@ -584,8 +584,17 @@ int GameFunctions::luaGameCreateMonster(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.createSoulPitMonster
+ * @param monsterName string
+ * @param position Position
+ * @param stack? number
+ * @param extended? boolean
+ * @param force? boolean
+ * @param master? Creature
+ * @return nil|Monster
+ */
 int GameFunctions::luaGameCreateSoulPitMonster(lua_State* L) {
-	// Game.createSoulPitMonster(monsterName, position[, stack = 1[, extended = false[, force = false[, master = nil]]]])
 	const auto &monster = Monster::createMonster(Lua::getString(L, 1));
 	if (!monster) {
 		lua_pushnil(L);

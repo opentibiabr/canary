@@ -63,7 +63,7 @@ namespace {
 	}
 
 	void incrementIterator(std::filesystem::recursive_directory_iterator &it, std::error_code &ec) {
-		auto &advanced = it.increment(ec);
+		const auto &advanced = it.increment(ec);
 		static_cast<void>(advanced);
 	}
 
@@ -76,8 +76,8 @@ namespace {
 		return std::string(value.substr(start, end - start + 1));
 	}
 
-	std::string collapseWhitespace(const std::string &value) {
-		return trim(std::regex_replace(value, std::regex(R"regex(\s+)regex"), " "));
+	std::string collapseWhitespace(const std::string_view value) {
+		return trim(std::regex_replace(std::string(value), std::regex(R"regex(\s+)regex"), " "));
 	}
 
 	bool startsWithPair(const std::string &value, const size_t position, const char first, const char second) {
@@ -184,18 +184,22 @@ namespace {
 		}
 
 		DelimiterScanState state;
-		for (size_t i = openPosition; i < content.size(); ++i) {
+		size_t i = openPosition;
+		while (i < content.size()) {
 			const auto ch = content[i];
 			const auto next = i + 1 < content.size() ? content[i + 1] : '\0';
 
 			if (consumeDelimiterScanState(state, ch, next, i)) {
+				++i;
 				continue;
 			}
 			if (enterDelimiterScanState(state, ch, next, i)) {
+				++i;
 				continue;
 			}
 			if (ch == open) {
 				++state.depth;
+				++i;
 				continue;
 			}
 			if (ch == close) {
@@ -204,12 +208,13 @@ namespace {
 					return i;
 				}
 			}
+			++i;
 		}
 
 		return std::string::npos;
 	}
 
-	size_t findHandlerSignature(const std::string &content, const std::string &handler) {
+	size_t findHandlerSignature(const std::string &content, const std::string_view handler) {
 		size_t searchPosition = 0;
 		while ((searchPosition = content.find(handler, searchPosition)) != std::string::npos) {
 			if (searchPosition > 0 && (isIdentifierCharacter(content[searchPosition - 1]) || content[searchPosition - 1] == ':')) {
@@ -248,9 +253,10 @@ namespace {
 	std::string getReturnTypeBeforeHandler(const std::string &content, const size_t handlerPosition) {
 		const auto lineStart = content.rfind('\n', handlerPosition);
 		const auto start = lineStart == std::string::npos ? 0 : lineStart + 1;
-		auto prefix = trim(content.substr(start, handlerPosition - start));
+		const auto contentView = std::string_view(content);
+		auto prefix = trim(contentView.substr(start, handlerPosition - start));
 		if (prefix.rfind("static ", 0) == 0) {
-			prefix = trim(prefix.substr(7));
+			prefix = trim(std::string_view(prefix).substr(7));
 		}
 		return prefix;
 	}
@@ -278,7 +284,7 @@ namespace {
 		if (type.rfind(prefix, 0) != 0 || type.back() != '>') {
 			return type;
 		}
-		return trim(type.substr(prefix.size(), type.size() - prefix.size() - 1));
+		return trim(std::string_view(type).substr(prefix.size(), type.size() - prefix.size() - 1));
 	}
 
 	std::string normalizeLuaType(std::string type) {
@@ -381,15 +387,15 @@ namespace {
 		return output.str();
 	}
 
-	std::string normalizeManualLuaTypeExpression(const std::string &type) {
+	std::string normalizeManualLuaTypeExpression(const std::string_view type) {
 		const auto normalized = collapseWhitespace(type);
 		return normalized.empty() ? "any" : normalized;
 	}
 
-	std::string normalizeDocParameterType(const std::string &type, const bool normalizeTypes) {
-		const auto fallbackType = type.empty() ? "any" : type;
+	std::string normalizeDocParameterType(const std::string_view type, const bool normalizeTypes) {
+		const auto fallbackType = type.empty() ? std::string_view("any") : type;
 		if (normalizeTypes) {
-			return normalizeLuaTypeExpression(fallbackType);
+			return normalizeLuaTypeExpression(std::string(fallbackType));
 		}
 		return normalizeManualLuaTypeExpression(fallbackType);
 	}
@@ -459,8 +465,9 @@ namespace {
 			}
 
 			const auto separator = trimmed.find(':');
-			auto name = separator == std::string::npos ? trimmed : trim(trimmed.substr(0, separator));
-			auto type = separator == std::string::npos ? "any" : trim(trimmed.substr(separator + 1));
+			const auto trimmedView = std::string_view(trimmed);
+			auto name = separator == std::string::npos ? trimmed : trim(trimmedView.substr(0, separator));
+			auto type = separator == std::string::npos ? "any" : trim(trimmedView.substr(separator + 1));
 
 			LuaDocParameter parsedParameter;
 			if (name == "...") {
@@ -793,7 +800,7 @@ namespace {
 			return "any";
 		}
 
-		if (std::ranges::find_if(parts, [](const std::string &type) {
+		if (std::ranges::find_if(parts, [](const auto &type) {
 				return type != "nil" && type != "any" && type != "boolean" && type != "string" && type != "number" && type != "integer" && type != "function" && type != "table" && type != "thread" && type != "userdata" && type != "lightuserdata";
 			})
 		    != parts.end()) {
@@ -827,7 +834,7 @@ namespace {
 		param.optional = param.optional || optional;
 	}
 
-	std::string luaHelperType(const std::string &helper) {
+	std::string luaHelperType(const std::string_view helper) {
 		if (helper.find("string") != std::string::npos) {
 			return "string";
 		}
@@ -856,7 +863,9 @@ namespace {
 				optionalStart = threshold + 1;
 			}
 			if (optionalStart > 0) {
-				addUnique(optionalThresholds, optionalStart);
+				const auto [_, inserted] = optionalThresholds.insert(optionalStart);
+				static_cast<void>(_);
+				static_cast<void>(inserted);
 			}
 		}
 		return optionalThresholds;
@@ -964,6 +973,71 @@ namespace {
 		}
 	}
 
+	std::vector<std::string> varargFallbackParameters(const bool skipSelfParameter) {
+		std::vector<std::string> parameters;
+		if (!skipSelfParameter) {
+			appendValue(parameters, "...");
+		}
+		return parameters;
+	}
+
+	std::vector<std::string> parametersFromSignatureHint(const LuaSignatureHint &signatureHint, const ParameterMap &parameterMap, const bool skipSelfParameter) {
+		std::vector<std::string> parameters;
+		for (size_t i = 0; i < signatureHint.parameters.size(); ++i) {
+			const auto &hint = signatureHint.parameters[i];
+			const auto stackIndex = static_cast<int>(i + 1 + (skipSelfParameter ? 1 : 0));
+			const auto found = parameterMap.find(stackIndex);
+			const auto type = found != parameterMap.end() && !found->second.type.empty() ? found->second.type : inferTypeFromParameterName(hint.name);
+			auto name = sanitizeParameterName(hint.name, stackIndex);
+			if (hint.optional || (found != parameterMap.end() && found->second.optional)) {
+				name.push_back('?');
+			}
+			appendValue(parameters, name + ": " + normalizeLuaTypeExpression(type));
+		}
+		return parameters;
+	}
+
+	std::vector<std::string> parametersFromMap(const ParameterMap &parameterMap) {
+		std::vector<std::string> parameters;
+		for (const auto &[index, info] : parameterMap) {
+			std::string name = sanitizeParameterName(info.name, index);
+			if (info.optional) {
+				name.push_back('?');
+			}
+			const auto type = info.type.empty() ? "any" : normalizeLuaTypeExpression(info.type);
+			appendValue(parameters, name + ": " + type);
+		}
+		return parameters;
+	}
+
+	std::vector<std::string> inferParametersFromBody(const std::string &rawBody, const bool skipSelfParameter) {
+		try {
+			const auto signatureHint = extractLuaSignatureHint(rawBody);
+			const auto body = stripComments(rawBody);
+			const auto flags = std::regex::optimize | std::regex::icase;
+
+			ParameterMap parameterMap;
+			const auto optionalThresholds = collectOptionalThresholds(body, flags);
+			collectSimpleGetterParameters(parameterMap, body, flags, skipSelfParameter);
+			collectOptionalGetterParameters(parameterMap, body, flags, skipSelfParameter);
+			collectTypedGetterAssignments(parameterMap, body, flags, skipSelfParameter);
+			collectAutoGetterAssignments(parameterMap, body, flags, skipSelfParameter);
+			collectDirectGetterParameters(parameterMap, body, flags, skipSelfParameter);
+			collectNamedLuaHelperParameters(parameterMap, body, flags, skipSelfParameter);
+			collectExplicitLuaAssignments(parameterMap, body, flags, skipSelfParameter);
+			applyOptionalThresholds(parameterMap, optionalThresholds);
+
+			if (signatureHint.found && !signatureHint.parameters.empty()) {
+				return parametersFromSignatureHint(signatureHint, parameterMap, skipSelfParameter);
+			}
+
+			auto parameters = parametersFromMap(parameterMap);
+			return parameters.empty() ? varargFallbackParameters(skipSelfParameter) : parameters;
+		} catch (const std::regex_error &) {
+			return varargFallbackParameters(skipSelfParameter);
+		}
+	}
+
 	bool containsAny(const std::string_view value, const std::initializer_list<std::string_view> needles) {
 		return std::ranges::any_of(needles, [value](const std::string_view needle) {
 			return value.find(needle) != std::string_view::npos;
@@ -1028,35 +1102,36 @@ namespace {
 	std::string cleanLuaDocBlockLine(std::string line) {
 		line = trim(line);
 		if (!line.empty() && line.front() == '*') {
-			line = trim(line.substr(1));
+			line = trim(std::string_view(line).substr(1));
 		}
 		return line;
 	}
 
-	void parseLuaDocFunction(LuaDocBlock &docBlock, const std::string &symbol) {
+	void parseLuaDocFunction(LuaDocBlock &docBlock, const std::string_view symbol) {
 		const auto colon = symbol.find(':');
 		const auto dot = symbol.find('.');
 		const auto separator = colon == std::string::npos ? dot : colon;
 		if (separator == std::string::npos) {
-			docBlock.functionName = symbol;
+			docBlock.functionName = std::string(symbol);
 			docBlock.hasSelfParameter = false;
 			return;
 		}
 
-		docBlock.className = symbol.substr(0, separator);
-		docBlock.functionName = symbol.substr(separator + 1);
+		docBlock.className = std::string(symbol.substr(0, separator));
+		docBlock.functionName = std::string(symbol.substr(separator + 1));
 		docBlock.hasSelfParameter = symbol[separator] == ':';
 	}
 
-	void parseLuaDocParam(LuaDocBlock &docBlock, const std::string &value) {
+	void parseLuaDocParam(LuaDocBlock &docBlock, const std::string_view value) {
 		const auto trimmed = trim(value);
 		if (trimmed.empty()) {
 			return;
 		}
 
 		const auto separator = trimmed.find_first_of(" \t");
-		auto name = separator == std::string::npos ? trimmed : trim(trimmed.substr(0, separator));
-		const auto type = separator == std::string::npos ? "any" : normalizeManualLuaTypeExpression(trimmed.substr(separator + 1));
+		const auto trimmedView = std::string_view(trimmed);
+		auto name = separator == std::string::npos ? trimmed : trim(trimmedView.substr(0, separator));
+		const auto type = separator == std::string::npos ? "any" : normalizeManualLuaTypeExpression(trimmedView.substr(separator + 1));
 		bool optional = false;
 		if (!name.empty() && name.back() == '?') {
 			name.pop_back();
@@ -1101,17 +1176,17 @@ namespace {
 		while (std::getline(stream, line)) {
 			line = cleanLuaDocBlockLine(line);
 			if (line.rfind("@function ", 0) == 0) {
-				parseLuaDocFunction(docBlock, trim(line.substr(10)));
+				parseLuaDocFunction(docBlock, trim(std::string_view(line).substr(10)));
 				docBlock.found = true;
 				continue;
 			}
 			if (line.rfind("@param ", 0) == 0) {
-				parseLuaDocParam(docBlock, line.substr(7));
+				parseLuaDocParam(docBlock, std::string_view(line).substr(7));
 				docBlock.found = true;
 				continue;
 			}
 			if (line.rfind("@return ", 0) == 0) {
-				appendValue(docBlock.returns, normalizeManualLuaTypeExpression(line.substr(8)));
+				appendValue(docBlock.returns, normalizeManualLuaTypeExpression(std::string_view(line).substr(8)));
 				docBlock.found = true;
 			}
 		}
@@ -1179,23 +1254,23 @@ namespace {
 		for (const auto ch : value) {
 			switch (ch) {
 				case '\\':
-					stream << "\\\\";
+					stream << R"(\\)";
 					break;
 				case '"':
-					stream << "\\\"";
+					stream << R"(\")";
 					break;
 				case '\n':
-					stream << "\\n";
+					stream << R"(\n)";
 					break;
 				case '\r':
-					stream << "\\r";
+					stream << R"(\r)";
 					break;
 				case '\t':
-					stream << "\\t";
+					stream << R"(\t)";
 					break;
 				default:
 					if (static_cast<unsigned char>(ch) < 0x20) {
-						stream << fmt::format("\\u{:04X}", static_cast<int>(static_cast<unsigned char>(ch)));
+						stream << fmt::format(R"(\u{:04X})", static_cast<int>(static_cast<unsigned char>(ch)));
 					} else {
 						stream << ch;
 					}
@@ -1400,8 +1475,8 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 	for (auto it = std::sregex_iterator(content.begin(), content.end(), classPattern); it != std::sregex_iterator(); ++it) {
 		const auto className = (*it)[1].str();
 		const auto baseClass = (*it)[2].str();
-		addUnique(result.classes, className);
-		if (!baseClass.empty()) {
+		const auto classInserted = addUnique(result.classes, className);
+		if (!baseClass.empty() && (classInserted || !result.classBaseClasses.contains(className))) {
 			result.classBaseClasses[className] = baseClass;
 		}
 	}
@@ -1516,60 +1591,7 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		return parameters;
 	}
 
-	try {
-		const auto signatureHint = extractLuaSignatureHint(rawBody);
-		const auto body = stripComments(rawBody);
-		const auto flags = std::regex::optimize | std::regex::icase;
-
-		ParameterMap parameterMap;
-		const auto optionalThresholds = collectOptionalThresholds(body, flags);
-		collectSimpleGetterParameters(parameterMap, body, flags, skipSelfParameter);
-		collectOptionalGetterParameters(parameterMap, body, flags, skipSelfParameter);
-		collectTypedGetterAssignments(parameterMap, body, flags, skipSelfParameter);
-		collectAutoGetterAssignments(parameterMap, body, flags, skipSelfParameter);
-		collectDirectGetterParameters(parameterMap, body, flags, skipSelfParameter);
-		collectNamedLuaHelperParameters(parameterMap, body, flags, skipSelfParameter);
-		collectExplicitLuaAssignments(parameterMap, body, flags, skipSelfParameter);
-		applyOptionalThresholds(parameterMap, optionalThresholds);
-
-		if (signatureHint.found && !signatureHint.parameters.empty()) {
-			for (size_t i = 0; i < signatureHint.parameters.size(); ++i) {
-				const auto &hint = signatureHint.parameters[i];
-				const auto stackIndex = static_cast<int>(i + 1 + (skipSelfParameter ? 1 : 0));
-				const auto found = parameterMap.find(stackIndex);
-				const auto type = found != parameterMap.end() && !found->second.type.empty() ? found->second.type : inferTypeFromParameterName(hint.name);
-				auto name = sanitizeParameterName(hint.name, stackIndex);
-				if (hint.optional || (found != parameterMap.end() && found->second.optional)) {
-					name.push_back('?');
-				}
-				appendValue(parameters, name + ": " + normalizeLuaTypeExpression(type));
-			}
-			return parameters;
-		}
-
-		for (const auto &[index, info] : parameterMap) {
-			std::string name = sanitizeParameterName(info.name, index);
-			if (info.optional) {
-				name.push_back('?');
-			}
-			const auto type = info.type.empty() ? "any" : normalizeLuaTypeExpression(info.type);
-			appendValue(parameters, name + ": " + type);
-		}
-
-		if (parameters.empty()) {
-			if (!skipSelfParameter) {
-				appendValue(parameters, "...");
-			}
-		}
-
-		return parameters;
-	} catch (const std::regex_error &) {
-		parameters.clear();
-		if (!skipSelfParameter) {
-			appendValue(parameters, "...");
-		}
-		return parameters;
-	}
+	return inferParametersFromBody(rawBody, skipSelfParameter);
 }
 
 std::vector<std::string> LuaBindingScanner::splitParameters(const std::string &parameters) const {
@@ -1800,10 +1822,14 @@ void LuaApiDocGenerator::buildModel(const LuaScanResult &scanResult) {
 
 	for (auto &[name, classInfo] : classes) {
 		static_cast<void>(name);
-		std::ranges::sort(classInfo.methods, {}, &LuaFunctionInfo::name);
+		std::sort(classInfo.methods.begin(), classInfo.methods.end(), [](const LuaFunctionInfo &lhs, const LuaFunctionInfo &rhs) {
+			return lhs.name < rhs.name;
+		});
 	}
 
-	std::ranges::sort(globals, {}, &LuaFunctionInfo::name);
+	std::sort(globals.begin(), globals.end(), [](const LuaFunctionInfo &lhs, const LuaFunctionInfo &rhs) {
+		return lhs.name < rhs.name;
+	});
 }
 
 bool LuaApiDocGenerator::exportEmmyLua() const {

@@ -46,6 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
     outputs:
       linux: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
       full_matrix: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' }}

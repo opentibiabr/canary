@@ -2327,7 +2327,7 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
  * @param subType? number
  * @param slot? number
  * @param tier? number
- * @return Item|Item[]|nil
+ * @return Item|Item[]|nil|false
  */
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)

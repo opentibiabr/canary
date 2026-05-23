@@ -1252,7 +1252,7 @@
         "name": "asyncStoreQuery",
         "params": [
           "query: string",
-          "callback?: fun(resultId: number|boolean)"
+          "callback?: fun(resultId: number|false)"
         ],
         "return": "nil",
         "source": "src/lua/functions/core/libs/db_functions.cpp"
@@ -1386,11 +1386,11 @@
       {
         "name": "createContainer",
         "params": [
-          "itemId: string",
+          "itemIdOrName: number|string",
           "size: number",
           "position?: Position"
         ],
-        "return": "nil|Container",
+        "return": "Container|nil",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -5760,7 +5760,7 @@
           "slot?: number",
           "tier?: number"
         ],
-        "return": "Item|Item[]|nil",
+        "return": "Item|Item[]|nil|false",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
@@ -8049,7 +8049,7 @@
           "resultId: number",
           "column: string"
         ],
-        "return": "string|boolean stream, number? length",
+        "return": "string|false stream, number? length",
         "source": "src/lua/functions/core/libs/result_functions.cpp"
       },
       {

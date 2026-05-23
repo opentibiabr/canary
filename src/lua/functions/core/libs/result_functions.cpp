@@ -49,7 +49,7 @@ int ResultFunctions::luaResultGetString(lua_State* L) {
  * @function Result.getStream
  * @param resultId number
  * @param column string
- * @return string|boolean stream
+ * @return string|false stream
  * @return number? length
  */
 int ResultFunctions::luaResultGetStream(lua_State* L) {

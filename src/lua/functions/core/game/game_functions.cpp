@@ -497,6 +497,13 @@ int GameFunctions::luaGameCreateItem(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Game.createContainer
+ * @param itemIdOrName number|string
+ * @param size number
+ * @param position? Position
+ * @return Container|nil
+ */
 int GameFunctions::luaGameCreateContainer(lua_State* L) {
 	// Game.createContainer(itemId, size[, position])
 	const uint16_t size = Lua::getNumber<uint16_t>(L, 2);

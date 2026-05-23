@@ -81,7 +81,7 @@ int DBFunctions::luaDatabaseStoreQuery(lua_State* L) {
 /***
  * @function db.asyncStoreQuery
  * @param query string
- * @param callback? fun(resultId: number|boolean)
+ * @param callback? fun(resultId: number|false)
  * @return nil
  */
 int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {

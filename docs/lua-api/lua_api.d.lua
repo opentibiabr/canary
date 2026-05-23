@@ -683,7 +683,7 @@ db = {}
 function db.asyncQuery(query, callback) end
 
 ---@param query string
----@param callback? fun(resultId: number|boolean)
+---@param callback? fun(resultId: number|false)
 ---@return nil
 function db.asyncStoreQuery(query, callback) end
 
@@ -757,11 +757,11 @@ function Game.addInfluencedMonster(monster, stack) end
 ---@return nil|Charm
 function Game.createBestiaryCharm(id) end
 
----@param itemId string
+---@param itemIdOrName number|string
 ---@param size number
 ---@param position? Position
----@return nil|Container
-function Game.createContainer(itemId, size, position) end
+---@return Container|nil
+function Game.createContainer(itemIdOrName, size, position) end
 
 ---@param itemIdOrName number|string
 ---@param count? number
@@ -3066,7 +3066,7 @@ function Player:addForgeDusts(amount) end
 ---@param subType? number
 ---@param slot? number
 ---@param tier? number
----@return Item|Item[]|nil
+---@return Item|Item[]|nil|false
 function Player:addItem(itemId, count, canDropOnMap, subType, slot, tier) end
 
 ---@param container Container
@@ -4264,7 +4264,7 @@ function Result.getNumber(resultId, column) end
 
 ---@param resultId number
 ---@param column string
----@return string|boolean stream
+---@return string|false stream
 ---@return number? length
 function Result.getStream(resultId, column) end
 

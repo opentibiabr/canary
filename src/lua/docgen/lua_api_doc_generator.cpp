@@ -1144,17 +1144,6 @@ namespace {
 		info.hasExplicitDocumentation = true;
 	}
 
-	void applyKnownSignatureFixes(LuaFunctionInfo &info) {
-		if (info.className == "Game" && info.name == "createTile") {
-			info.parameters = {
-				"x: number|Position",
-				"y?: number|boolean",
-				"z?: number",
-				"isDynamic?: boolean",
-			};
-		}
-	}
-
 	bool extractFunctionBody(const std::string &content, const std::string &handler, std::string &body) {
 		const auto handlerPosition = findHandlerSignature(content, handler);
 		if (handlerPosition == std::string::npos) {
@@ -1396,7 +1385,6 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 			info.returnType = normalizeReturnType(content, info.handler);
 			info.sourceFile = relativePath(filePath);
 			info.parameters = inferParameters(content, info.handler, false);
-			applyKnownSignatureFixes(info);
 			applyExplicitLuaDoc(info, content);
 			appendValue(result.functions, std::move(info));
 		}
@@ -1431,7 +1419,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.hasSelfParameter = usesSelfParameter(content, info.handler);
 		info.parameters = inferParameters(content, info.handler, info.hasSelfParameter);
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}
@@ -1458,7 +1445,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 			appendValue(info.parameters, "other: " + info.className);
 		}
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}
@@ -1474,7 +1460,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.returnType = normalizeReturnType(content, info.handler);
 		info.parameters = inferParameters(content, info.handler, false);
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}
@@ -1488,7 +1473,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "boolean";
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}
@@ -1502,7 +1486,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "number";
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}
@@ -1516,7 +1499,6 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "string";
 		info.sourceFile = relativePath(filePath);
-		applyKnownSignatureFixes(info);
 		applyExplicitLuaDoc(info, content);
 		appendValue(result.functions, std::move(info));
 	}

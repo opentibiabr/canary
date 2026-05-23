@@ -869,7 +869,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/db_functions.cpp`
 
-#### `db.asyncStoreQuery(query: string, callback?: fun(resultId: number|boolean))`
+#### `db.asyncStoreQuery(query: string, callback?: fun(resultId: number|false))`
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/db_functions.cpp`
@@ -955,9 +955,9 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `nil|Charm`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.createContainer(itemId: string, size: number, position?: Position)`
+#### `Game.createContainer(itemIdOrName: number|string, size: number, position?: Position)`
 
-- Returns: `nil|Container`
+- Returns: `Container|nil`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.createItem(itemIdOrName: number|string, count?: number, position?: Position)`
@@ -4041,7 +4041,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Player:addItem(itemId: number|string, count?: number, canDropOnMap?: boolean, subType?: number, slot?: number, tier?: number)`
 
-- Returns: `Item|Item[]|nil`
+- Returns: `Item|Item[]|nil|false`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:addItemBatchToPaginedContainer(container: Container, itemId: number, count: number, tier: number, flags: number)`
@@ -5560,7 +5560,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 #### `Result.getStream(resultId: number, column: string)`
 
-- Returns: `string|boolean stream, number? length`
+- Returns: `string|false stream, number? length`
 - Source: `src/lua/functions/core/libs/result_functions.cpp`
 
 #### `Result.getString(resultId: number, column: string)`

@@ -1180,8 +1180,6 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checknumber\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checkinteger\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_checkstring\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "string" },
-		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_opt(?:number|integer)\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
-		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_optstring\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "string" },
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isnumber\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isinteger\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
 		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])lua_isstring\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "string" },
@@ -1194,6 +1192,18 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		for (auto it = std::sregex_iterator(body.begin(), body.end(), pattern); it != std::sregex_iterator(); ++it) {
 			const auto index = std::stoi((*it)[1].str());
 			addParameter(index, type, "", false);
+		}
+	}
+
+	std::vector<std::pair<std::regex, std::string>> optionalGetters = {
+		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_opt(?:number|integer)\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "number" },
+		{ std::regex(R"regex((?:^|[^A-Za-z0-9_])luaL_optstring\s*\(\s*L\s*,\s*(-?\d+)\s*\))regex", flags), "string" }
+	};
+
+	for (const auto &[pattern, type] : optionalGetters) {
+		for (auto it = std::sregex_iterator(body.begin(), body.end(), pattern); it != std::sregex_iterator(); ++it) {
+			const auto index = std::stoi((*it)[1].str());
+			addParameter(index, type, "", true);
 		}
 	}
 
@@ -1251,7 +1261,7 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 		} else if (helper.find("boolean") != std::string::npos || helper.find("bool") != std::string::npos) {
 			helperType = "boolean";
 		}
-		addParameter(index, helperType, name, false);
+		addParameter(index, helperType, name, helper.rfind("luaL_opt", 0) == 0);
 	}
 
 	std::regex explicitTypeAssignment(

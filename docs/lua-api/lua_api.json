@@ -4822,7 +4822,7 @@
         "params": [
           "vocName: string",
           "showInDescription?: boolean",
-          "lastVoc: boolean"
+          "lastVoc?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/events/move_event_functions.cpp"
@@ -7417,10 +7417,10 @@
           "type: any",
           "text: string",
           "position?: Position",
-          "primaryValue: number",
-          "primaryColor: any",
+          "primaryValue?: number",
+          "primaryColor?: any",
           "secondaryValue?: number",
-          "secondaryColor: any"
+          "secondaryColor?: any"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
@@ -9229,7 +9229,7 @@
         "params": [
           "vocName: string",
           "showInDescription?: boolean",
-          "lastVoc: boolean"
+          "lastVoc?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/items/weapon_functions.cpp"

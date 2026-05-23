@@ -266,7 +266,30 @@ namespace {
 			parsedParameters.emplace_back(std::move(parsedParameter));
 			++parameterIndex;
 		}
+
+		bool hasOptionalParameter = false;
+		for (auto &parameter : parsedParameters) {
+			if (parameter.variadic) {
+				continue;
+			}
+			if (hasOptionalParameter) {
+				parameter.optional = true;
+			}
+			hasOptionalParameter = hasOptionalParameter || parameter.optional;
+		}
 		return parsedParameters;
+	}
+
+	std::vector<std::string> normalizeLuaDocParameters(const std::vector<std::string> &parameters) {
+		std::vector<std::string> normalizedParameters;
+		for (const auto &parameter : parseLuaDocParameters(parameters)) {
+			if (parameter.variadic) {
+				normalizedParameters.emplace_back("...: " + parameter.type);
+			} else {
+				normalizedParameters.emplace_back(parameter.name + std::string(parameter.optional ? "?: " : ": ") + parameter.type);
+			}
+		}
+		return normalizedParameters;
 	}
 
 	std::string getLuaOperatorName(const std::string &methodName) {
@@ -529,6 +552,18 @@ namespace {
 			return false;
 		}
 
+		if (std::filesystem::exists(path, ec) && !ec) {
+			std::ifstream existing(path, std::ios::binary);
+			if (existing.is_open()) {
+				std::stringstream buffer;
+				buffer << existing.rdbuf();
+				if (buffer.str() == content) {
+					return true;
+				}
+			}
+		}
+		ec.clear();
+
 		const auto tempPath = path.string() + ".tmp";
 		{
 			std::ofstream output(tempPath, std::ios::binary | std::ios::trunc);
@@ -614,11 +649,11 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 	// Canary does NOT use luaL_Reg, but kept in case there is some legacy code
 	std::regex luaRegPattern(
 		R"regex(luaL_Reg\s+([A-Za-z0-9_]+)\s*\[\]\s*=\s*\{((?:[^\{\}]|\{[^\{\}]*\})*?)\}\s*;)regex",
-		std::regex::optimize | std::regex::icase | std::regex::multiline
+		std::regex::optimize | std::regex::icase
 	);
 	std::regex entryPattern(
 		R"regex(\{\s*"([^"]+)"\s*,\s*([A-Za-z0-9_:]+)\s*\}\s*,?)regex",
-		std::regex::optimize | std::regex::icase | std::regex::multiline
+		std::regex::optimize | std::regex::icase
 	);
 
 	for (auto regIt = std::sregex_iterator(content.begin(), content.end(), luaRegPattern); regIt != std::sregex_iterator(); ++regIt) {
@@ -763,7 +798,7 @@ std::vector<std::string> LuaBindingScanner::inferParameters(const std::string &c
 
 	const auto signatureHint = extractLuaSignatureHint(rawBody);
 	const auto body = stripComments(rawBody);
-	const auto flags = std::regex::optimize | std::regex::icase | std::regex::multiline;
+	const auto flags = std::regex::optimize | std::regex::icase;
 
 	struct ParameterInfo {
 		std::string type;
@@ -1111,7 +1146,7 @@ bool LuaBindingScanner::usesSelfParameter(const std::string &content, const std:
 	}
 
 	const auto strippedBody = stripComments(body);
-	const auto flags = std::regex::optimize | std::regex::icase | std::regex::multiline;
+	const auto flags = std::regex::optimize | std::regex::icase;
 	return std::regex_search(strippedBody, std::regex(R"regex((?:Lua::)?get(?:Raw)?UserData(?:Shared)?\s*(?:<[^>]+>)?\s*\(\s*L\s*,\s*1\b)regex", flags));
 }
 
@@ -1225,7 +1260,7 @@ std::string LuaBindingScanner::inferReturnByBody(const std::string &body) const 
 
 std::string LuaBindingScanner::relativePath(const std::filesystem::path &path) const {
 	const auto relative = path.lexically_relative(root);
-	if (!relative.empty() && relative.native().find("..") != 0) {
+	if (!relative.empty() && relative.generic_string().find("..") != 0) {
 		return relative.generic_string();
 	}
 	return path.filename().generic_string();
@@ -1372,14 +1407,16 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "- `docs/lua-api/lua_api.json`: structured API metadata for tooling.\n\n";
 	output << "## VSCode IntelliSense\n\n";
 	output << "Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
+	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Classes\n\n";
 	for (const auto &[name, classInfo] : classes) {
 		output << "### " << name << "\n\n";
 		for (const auto &method : classInfo.methods) {
+			const auto parameters = normalizeLuaDocParameters(method.parameters);
 			output << "#### `" << name << (method.hasSelfParameter ? ":" : ".") << method.name << "(";
-			for (size_t i = 0; i < method.parameters.size(); ++i) {
-				output << method.parameters[i];
-				if (i + 1 < method.parameters.size()) {
+			for (size_t i = 0; i < parameters.size(); ++i) {
+				output << parameters[i];
+				if (i + 1 < parameters.size()) {
 					output << ", ";
 				}
 			}
@@ -1394,10 +1431,11 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	if (!globals.empty()) {
 		output << "## Global\n\n";
 		for (const auto &function : globals) {
+			const auto parameters = normalizeLuaDocParameters(function.parameters);
 			output << "### `" << function.name << "(";
-			for (size_t i = 0; i < function.parameters.size(); ++i) {
-				output << function.parameters[i];
-				if (i + 1 < function.parameters.size()) {
+			for (size_t i = 0; i < parameters.size(); ++i) {
+				output << parameters[i];
+				if (i + 1 < parameters.size()) {
 					output << ", ";
 				}
 			}
@@ -1432,15 +1470,16 @@ bool LuaApiDocGenerator::exportJson() const {
 		output << "    \"" << jsonEscape(name) << "\": [\n";
 		for (size_t i = 0; i < classInfo.methods.size(); ++i) {
 			const auto &method = classInfo.methods[i];
+			const auto parameters = normalizeLuaDocParameters(method.parameters);
 			output << "      {\n";
 			output << "        \"name\": \"" << jsonEscape(method.name) << "\",\n";
-			if (method.parameters.empty()) {
+			if (parameters.empty()) {
 				output << "        \"params\": [],\n";
 			} else {
 				output << "        \"params\": [\n";
-				for (size_t p = 0; p < method.parameters.size(); ++p) {
-					output << "          \"" << jsonEscape(method.parameters[p]) << "\"";
-					if (p + 1 < method.parameters.size()) {
+				for (size_t p = 0; p < parameters.size(); ++p) {
+					output << "          \"" << jsonEscape(parameters[p]) << "\"";
+					if (p + 1 < parameters.size()) {
 						output << ",";
 					}
 					output << "\n";
@@ -1466,15 +1505,16 @@ bool LuaApiDocGenerator::exportJson() const {
 		output << "  \"globals\": [\n";
 		for (size_t i = 0; i < globals.size(); ++i) {
 			const auto &function = globals[i];
+			const auto parameters = normalizeLuaDocParameters(function.parameters);
 			output << "    {\n";
 			output << "      \"name\": \"" << jsonEscape(function.name) << "\",\n";
-			if (function.parameters.empty()) {
+			if (parameters.empty()) {
 				output << "      \"params\": [],\n";
 			} else {
 				output << "      \"params\": [\n";
-				for (size_t p = 0; p < function.parameters.size(); ++p) {
-					output << "        \"" << jsonEscape(function.parameters[p]) << "\"";
-					if (p + 1 < function.parameters.size()) {
+				for (size_t p = 0; p < parameters.size(); ++p) {
+					output << "        \"" << jsonEscape(parameters[p]) << "\"";
+					if (p + 1 < parameters.size()) {
 						output << ",";
 					}
 					output << "\n";

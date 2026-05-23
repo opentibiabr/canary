@@ -2566,7 +2566,7 @@ function MoveEvent:uid(ids) end
 
 ---@param vocName string
 ---@param showInDescription? boolean
----@param lastVoc boolean
+---@param lastVoc? boolean
 ---@return boolean|nil
 function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 
@@ -3924,10 +3924,10 @@ function Player:sendSpellGroupCooldown(groupId, time) end
 ---@param type any
 ---@param text string
 ---@param position? Position
----@param primaryValue number
----@param primaryColor any
+---@param primaryValue? number
+---@param primaryColor? any
 ---@param secondaryValue? number
----@param secondaryColor any
+---@param secondaryColor? any
 ---@return boolean|nil
 function Player:sendTextMessage(type, text, position, primaryValue, primaryColor, secondaryValue, secondaryColor) end
 
@@ -4889,7 +4889,7 @@ function Weapon:transformEquipTo(itemId) end
 
 ---@param vocName string
 ---@param showInDescription? boolean
----@param lastVoc boolean
+---@param lastVoc? boolean
 ---@return boolean|nil
 function Weapon:vocation(vocName, showInDescription, lastVoc) end
 

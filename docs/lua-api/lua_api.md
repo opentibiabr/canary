@@ -12,6 +12,8 @@ This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manua
 
 Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.
 
+Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.
+
 ## Classes
 
 ### Action
@@ -3395,7 +3397,7 @@ Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:vocation(vocName: string, showInDescription?: boolean, lastVoc: boolean)`
+#### `MoveEvent:vocation(vocName: string, showInDescription?: boolean, lastVoc?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
@@ -5160,7 +5162,7 @@ Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:sendTextMessage(type: any, text: string, position?: Position, primaryValue: number, primaryColor: any, secondaryValue?: number, secondaryColor: any)`
+#### `Player:sendTextMessage(type: any, text: string, position?: Position, primaryValue?: number, primaryColor?: any, secondaryValue?: number, secondaryColor?: any)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -6339,7 +6341,7 @@ Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/weapon_functions.cpp`
 
-#### `Weapon:vocation(vocName: string, showInDescription?: boolean, lastVoc: boolean)`
+#### `Weapon:vocation(vocName: string, showInDescription?: boolean, lastVoc?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/weapon_functions.cpp`

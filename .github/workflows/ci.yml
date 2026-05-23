@@ -178,7 +178,7 @@ jobs:
   docker-quickstart-smoke:
     name: Docker Quickstart Smoke
     needs: [changes, checks, tests-lua, build-docker]
-    if: needs.changes.outputs.docker_quickstart == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && needs.build-docker.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft)
+    if: (needs.changes.outputs.docker == 'true' || needs.changes.outputs.docker_quickstart == 'true') && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && needs.build-docker.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft)
     permissions:
       contents: read
     uses: ./.github/workflows/reusable-docker-quickstart-smoke.yml

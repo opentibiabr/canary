@@ -10,11 +10,11 @@ export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-otbr-smoke}"
 cd "${DOCKER_DIR}"
 cp .env.dist "${ENV_FILE}"
 
-if [ -n "${CANARY_IMAGE:-}" ]; then
+if [[ -n "${CANARY_IMAGE:-}" ]]; then
 	sed -i "s|^CANARY_IMAGE=.*|CANARY_IMAGE=${CANARY_IMAGE}|" "${ENV_FILE}"
 fi
 
-if [ -n "${CANARY_IMAGE_TAR:-}" ]; then
+if [[ -n "${CANARY_IMAGE_TAR:-}" ]]; then
 	docker load --input "${REPO_ROOT}/${CANARY_IMAGE_TAR}"
 fi
 
@@ -37,7 +37,7 @@ cleanup() {
 on_exit() {
 	local status=$?
 
-	if [ "${status}" -ne 0 ]; then
+	if [[ "${status}" -ne 0 ]]; then
 		dump_debug
 	fi
 
@@ -57,7 +57,7 @@ wait_for_http_status() {
 		local status
 		status="$(curl -sS -o "${body_file}" -w "%{http_code}" "${url}" || true)"
 
-		if [ "${status}" = "${expected_status}" ]; then
+		if [[ "${status}" == "${expected_status}" ]]; then
 			echo "${name} returned HTTP ${expected_status}"
 			rm -f "${body_file}"
 			return 0
@@ -87,7 +87,7 @@ wait_for_login_server() {
 				http://localhost:8088/login || true
 		)"
 
-		if [ "${status}" = "200" ] &&
+		if [[ "${status}" == "200" ]] &&
 			grep -q '"worlds"' "${response_file}" &&
 			grep -q 'Rook Noob 1' "${response_file}"; then
 			echo "login-server returned the seeded test account"
@@ -110,7 +110,7 @@ trap on_exit EXIT
 cleanup
 
 "${COMPOSE[@]}" config >/tmp/canary-docker-compose.yml
-if [ -n "${CANARY_IMAGE_TAR:-}" ]; then
+if [[ -n "${CANARY_IMAGE_TAR:-}" ]]; then
 	"${COMPOSE[@]}" pull db login-server
 else
 	"${COMPOSE[@]}" pull db server login-server

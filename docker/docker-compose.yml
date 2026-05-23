@@ -19,7 +19,7 @@ services:
       retries: 10
 
   server:
-    image: ghcr.io/opentibiabr/canary:latest
+    image: "${CANARY_IMAGE:-ghcr.io/opentibiabr/canary:latest}"
     restart: unless-stopped
     environment:
       CANARY_DB_HOST: "${CANARY_DB_HOST:-db}"

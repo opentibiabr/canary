@@ -10,6 +10,14 @@ export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-otbr-smoke}"
 cd "${DOCKER_DIR}"
 cp .env.dist "${ENV_FILE}"
 
+if [ -n "${CANARY_IMAGE:-}" ]; then
+	sed -i "s|^CANARY_IMAGE=.*|CANARY_IMAGE=${CANARY_IMAGE}|" "${ENV_FILE}"
+fi
+
+if [ -n "${CANARY_IMAGE_TAR:-}" ]; then
+	docker load --input "${REPO_ROOT}/${CANARY_IMAGE_TAR}"
+fi
+
 COMPOSE=(docker compose --env-file "${ENV_FILE}")
 
 dump_debug() {
@@ -102,7 +110,11 @@ trap on_exit EXIT
 cleanup
 
 "${COMPOSE[@]}" config >/tmp/canary-docker-compose.yml
-"${COMPOSE[@]}" pull db server login-server
+if [ -n "${CANARY_IMAGE_TAR:-}" ]; then
+	"${COMPOSE[@]}" pull db login-server
+else
+	"${COMPOSE[@]}" pull db server login-server
+fi
 "${COMPOSE[@]}" up -d --build
 
 wait_for_http_status "MyAAC home" "http://localhost:8080/" "200"

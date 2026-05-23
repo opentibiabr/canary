@@ -20,5 +20,22 @@ jobs:
           docker version
           docker compose version
 
-      - name: Run Docker quickstart smoke
+      - name: Download Docker image artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: actions/download-artifact@v7
+        with:
+          name: docker-canary-image
+          path: artifacts/docker-image
+
+      - name: Run Docker quickstart smoke (PR image)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        env:
+          CANARY_IMAGE: ghcr.io/${{ github.repository }}:pr
+          CANARY_IMAGE_TAR: artifacts/docker-image/canary-pr.tar
+        run: bash .github/scripts/docker-quickstart-smoke.sh
+
+      - name: Run Docker quickstart smoke (latest image)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        env:
+          CANARY_IMAGE: ghcr.io/opentibiabr/canary:latest
         run: bash .github/scripts/docker-quickstart-smoke.sh

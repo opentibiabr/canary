@@ -113,9 +113,10 @@ CANARY_DB_ROOT_PASSWORD=root
 `CANARY_DB_HOST` should usually stay as `db` inside Docker Compose. MariaDB runs
 on port `3306` inside the Docker network.
 
-### Server Identity And Ports
+### Server Image, Identity, And Ports
 
 ```env
+CANARY_IMAGE=ghcr.io/opentibiabr/canary:latest
 CANARY_SERVER_NAME=OpenTibiaBR Canary
 CANARY_SERVER_IP=127.0.0.1
 CANARY_SERVER_LOCATION=BRA
@@ -232,15 +233,19 @@ This keeps the Canary service lightweight for users. Local Canary compilation
 should live in a separate development compose file that uses
 `docker/Dockerfile.dev` and the required vcpkg cache credentials.
 
+Use `CANARY_IMAGE` only when testing another published or locally loaded Canary
+runtime image. The default quickstart should stay on the official image.
+
 The MyAAC image is built locally from `slawkens/myaac` because the quickstart
 tracks `MYAAC_REF=develop` by default. This build installs PHP dependencies with
 Composer, but it does not compile Canary.
 
 ## CI Coverage
 
-The GitHub Actions job `Docker Quickstart Smoke` validates the user-facing
-quickstart whenever the Compose file, quickstart MyAAC image, seed SQL files, or
-the smoke workflow changes.
+The GitHub Actions job `Docker Quickstart Smoke` runs after `Build - Docker` and
+validates the user-facing quickstart with the Docker image produced by the same
+CI run whenever the Compose file, quickstart MyAAC image, seed SQL files, or the
+smoke workflow changes.
 
 The smoke test starts the stack from a clean database, checks that MyAAC answers
 on `http://localhost:8080`, verifies that MyAAC's `login.php` webservice is not

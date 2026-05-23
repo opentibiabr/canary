@@ -12066,6 +12066,10 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 		updateCreatureWalk();
 	}
 
+	if (shopOwner && (creature == shopOwner || creature.get() == this) && !shopOwner->canInteract(getPosition())) {
+		closeShopWindow();
+	}
+
 	if (creature != getPlayer()) {
 		return;
 	}
@@ -12083,10 +12087,6 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 		if (tradePartner && !Position::areInRange<2, 2, 0>(tradePartner->getPosition(), getPosition())) {
 			g_game().internalCloseTrade(getPlayer());
 		}
-	}
-
-	if (shopOwner && !shopOwner->canInteract(getPosition())) {
-		closeShopWindow();
 	}
 
 	// close modal windows

@@ -72,6 +72,10 @@ std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
 	bool closeNpcShopIfOutOfRange(const std::shared_ptr<Player> &player, const std::shared_ptr<Npc> &merchant) {
+		if (!player || !merchant) {
+			return true;
+		}
+
 		if (merchant->canInteract(player->getPosition())) {
 			return false;
 		}

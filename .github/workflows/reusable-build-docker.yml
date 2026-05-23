@@ -81,6 +81,27 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Validate Docker rootfs (PR)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -x artifacts/docker-rootfs/bin/canary
+          test -x artifacts/docker-rootfs/canary/start.sh
+          test -f artifacts/docker-rootfs/canary/schema.sql
+          test -f artifacts/docker-rootfs/canary/config.lua
+          test -f artifacts/docker-rootfs/canary/01-test_account.sql
+          test -f artifacts/docker-rootfs/canary/02-test_account_players.sql
+          test -d artifacts/docker-rootfs/canary/data
+          test -d artifacts/docker-rootfs/canary/data-canary
+          test -d artifacts/docker-rootfs/canary/data-otservbr-global/world
+
+          if [ -f artifacts/docker-rootfs/canary/data-otservbr-global/world/otservbr.otbm ]; then
+            echo "The runtime image must not embed data-otservbr-global/world/otservbr.otbm. It is downloaded at first start through CANARY_MAP_URL." >&2
+            exit 1
+          fi
+
       - name: Upload docker artifact
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7

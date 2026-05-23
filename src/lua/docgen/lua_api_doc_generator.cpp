@@ -179,7 +179,7 @@ namespace {
 			return "any";
 		}
 		if (std::ranges::find(normalizedTypes, "any") != normalizedTypes.end()) {
-			return normalizedTypes.size() == 1 ? "any" : "any";
+			return "any";
 		}
 		std::ostringstream output;
 		for (size_t i = 0; i < normalizedTypes.size(); ++i) {
@@ -1489,12 +1489,15 @@ bool LuaApiDocGenerator::generate() {
 
 std::filesystem::path LuaApiDocGenerator::findProjectRoot(const std::filesystem::path &start) const {
 	auto current = start;
-	std::error_code ec;
+	const auto existsWithoutError = [](const std::filesystem::path &path) {
+		std::error_code ec;
+		return std::filesystem::exists(path, ec) && !ec;
+	};
+
 	while (!current.empty()) {
-		if (std::filesystem::exists(current / "src", ec) && !ec && std::filesystem::exists(current / "config.lua.dist", ec) && !ec) {
+		if (existsWithoutError(current / "src") && existsWithoutError(current / "config.lua.dist")) {
 			return current;
 		}
-		ec.clear();
 		auto parent = current.parent_path();
 		if (parent == current) {
 			break;
@@ -1599,15 +1602,22 @@ bool LuaApiDocGenerator::exportEmmyLua() const {
 bool LuaApiDocGenerator::exportMarkdown() const {
 	auto path = docsDirectory / "lua_api.md";
 	std::ostringstream output;
+	auto docsDirectoryPath = docsDirectory.lexically_relative(projectRoot).generic_string();
+	if (docsDirectoryPath.empty() || docsDirectoryPath.find("..") == 0) {
+		docsDirectoryPath = docsDirectory.filename().generic_string();
+	}
+	const auto docsFilePath = [&docsDirectoryPath](const std::string &fileName) {
+		return (std::filesystem::path(docsDirectoryPath) / fileName).generic_string();
+	};
 
 	output << "# Lua API\n\n";
 	output << "This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manually.\n\n";
 	output << "## Generated Files\n\n";
-	output << "- `docs/lua-api/lua_api.d.lua`: Lua Language Server definition file for IntelliSense.\n";
-	output << "- `docs/lua-api/lua_api.md`: human-readable API reference.\n";
-	output << "- `docs/lua-api/lua_api.json`: structured API metadata for tooling.\n\n";
+	output << "- `" << docsFilePath("lua_api.d.lua") << "`: Lua Language Server definition file for IntelliSense.\n";
+	output << "- `" << docsFilePath("lua_api.md") << "`: human-readable API reference.\n";
+	output << "- `" << docsFilePath("lua_api.json") << "`: structured API metadata for tooling.\n\n";
 	output << "## VSCode IntelliSense\n\n";
-	output << "Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
+	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Manual Signature Hints\n\n";
 	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@function`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";

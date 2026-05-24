@@ -231,7 +231,9 @@ namespace {
 	size_t findHandlerSignature(const std::string &content, const std::string_view handler) {
 		size_t searchPosition = 0;
 		while ((searchPosition = content.find(handler, searchPosition)) != std::string::npos) {
-			if (searchPosition > 0 && (isIdentifierCharacter(content[searchPosition - 1]) || content[searchPosition - 1] == ':')) {
+			const auto hasScopeOperatorPrefix = searchPosition >= 2 && content[searchPosition - 1] == ':' && content[searchPosition - 2] == ':';
+			const auto isScopedHandlerDefinition = hasScopeOperatorPrefix && handler.find("::") == std::string_view::npos;
+			if (searchPosition > 0 && (isIdentifierCharacter(content[searchPosition - 1]) || (content[searchPosition - 1] == ':' && !isScopedHandlerDefinition))) {
 				searchPosition += handler.size();
 				continue;
 			}

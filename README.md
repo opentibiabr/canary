@@ -30,6 +30,17 @@ cp .env.dist .env
 docker compose up -d --build
 ```
 
+The `docker` directory also provides guarded start scripts that start the stack
+and clean safe Docker leftovers without removing database volumes:
+
+```powershell
+.\up.ps1
+```
+
+```bash
+sh ./up.sh
+```
+
 Default local endpoints:
 
 - Website/admin: `http://localhost:8080`

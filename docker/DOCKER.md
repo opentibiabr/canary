@@ -28,6 +28,28 @@ cp .env.dist .env
 docker compose up -d --build
 ```
 
+On Windows PowerShell, you can use the guarded start script:
+
+```powershell
+.\up.ps1
+```
+
+On Linux or macOS, you can use:
+
+```bash
+sh ./up.sh
+```
+
+These scripts run Compose with `--remove-orphans` and then perform a safe
+cleanup. They remove stopped containers and dangling images that belong to this
+Compose project, then remove unused Docker build cache older than seven days.
+They do not remove Docker volumes, so the MariaDB database and Canary runtime
+data are preserved.
+
+Docker build cache is Docker-wide, so the start scripts only prune cache older
+than seven days. This keeps cleanup data-safe while avoiding aggressive cache
+removal that would make every rebuild slow.
+
 Watch the logs:
 
 ```bash
@@ -46,6 +68,42 @@ Remove persisted database and server data:
 
 ```bash
 docker compose down -v
+```
+
+## Safe Docker Cleanup
+
+Docker can accumulate old build cache and unused layers after repeated builds.
+The quickstart start scripts keep this under control without deleting user data:
+
+- `docker container prune --filter label=com.docker.compose.project=otbr`
+- `docker image prune --filter label=com.docker.compose.project=otbr`
+- `docker builder prune --filter until=168h`
+
+Avoid using `docker system prune -a --volumes` for routine cleanup. It can remove
+images, volumes, and data from unrelated Docker projects.
+
+The build-cache cleanup is Docker-wide because Docker does not expose a reliable
+Compose-project label for build cache entries. The age filter keeps this safe for
+routine quickstart usage.
+
+To start without cleanup:
+
+```powershell
+.\up.ps1 -SkipCleanup
+```
+
+```bash
+SKIP_CLEANUP=true sh ./up.sh
+```
+
+To keep a different build cache window, set the age filter:
+
+```powershell
+.\up.ps1 -CleanupUntil 72h
+```
+
+```bash
+CLEANUP_UNTIL=72h sh ./up.sh
 ```
 
 ## Default URLs And Ports

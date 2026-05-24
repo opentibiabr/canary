@@ -13,6 +13,8 @@
 
 #include <appearances.pb.h>
 
+#include "../../shared/mounts/mounts_test_fixture.hpp"
+
 namespace {
 	void addOutfitFrameGroup(Canary::protobuf::appearances::Appearance &appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP fixedFrameGroup, uint32_t patternDepth) {
 		auto &frameGroup = *appearance.add_frame_group();
@@ -21,14 +23,19 @@ namespace {
 	}
 }
 
-TEST(RandomMountOutfitRegressionTest, InvalidRandomMountIdResolvesToNoMount) {
+// Fixture for tests that touch `Player` paths reading config (canWear,
+// isSuppress, isPremium, etc.). Without `g_configManager().reload()`,
+// those reads emit "invalid or wrong type index" warnings.
+class RandomMountOutfitRegressionTest : public test::mounts::MountsTestBase { };
+
+TEST_F(RandomMountOutfitRegressionTest, InvalidRandomMountIdResolvesToNoMount) {
 	Mounts mounts;
 	constexpr uint8_t nonExistentRandomMountId = 42;
 
 	EXPECT_EQ(0, Game::resolveRandomMountClientId(mounts, nonExistentRandomMountId));
 }
 
-TEST(RandomMountOutfitRegressionTest, PlayerChangeOutfitWithoutMountClearsMountedAndRandomState) {
+TEST_F(RandomMountOutfitRegressionTest, PlayerChangeOutfitWithoutMountClearsMountedAndRandomState) {
 	auto player = std::make_shared<Player>();
 
 	Outfit_t currentOutfit;
@@ -46,7 +53,7 @@ TEST(RandomMountOutfitRegressionTest, PlayerChangeOutfitWithoutMountClearsMounte
 	EXPECT_EQ(0, player->isRandomMounted());
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 1);
@@ -55,7 +62,7 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithoutMountedPatternDepthRejectsMou
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithMountedPatternDepthAllowsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithMountedPatternDepthAllowsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	// pattern_depth == 2 encodes the mounted/unmounted sprite-variant axis.
@@ -65,7 +72,7 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithMountedPatternDepthAllowsMount) 
 	EXPECT_TRUE(Game::outfitAppearanceSupportsMount(appearance));
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleMountedPatternDepthRejectsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleMountedPatternDepthRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	// Both outfit frame groups need the mounted/unmounted sprite-variant axis.
@@ -75,7 +82,7 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleMountedPatternDepthRejec
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingMountedPatternDepthRejectsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingMountedPatternDepthRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	// Both outfit frame groups need the mounted/unmounted sprite-variant axis.
@@ -85,7 +92,7 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingMountedPatternDepthRej
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleFrameGroupRejectsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleFrameGroupRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_IDLE, 2);
@@ -93,7 +100,7 @@ TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyIdleFrameGroupRejectsMount) 
 	EXPECT_FALSE(Game::outfitAppearanceSupportsMount(appearance));
 }
 
-TEST(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingFrameGroupRejectsMount) {
+TEST_F(RandomMountOutfitRegressionTest, OutfitWithOnlyMovingFrameGroupRejectsMount) {
 	Canary::protobuf::appearances::Appearance appearance;
 
 	addOutfitFrameGroup(appearance, Canary::protobuf::appearances::FIXED_FRAME_GROUP_OUTFIT_MOVING, 2);

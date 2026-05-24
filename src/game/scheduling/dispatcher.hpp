@@ -239,6 +239,9 @@ private:
 	bool shuttingDown = false;
 
 	friend class CanaryServer;
+	// Tests need to drive a real tick loop to validate the end-of-tick
+	// QSBR drain integration (see tests/unit/game/dispatcher_qsbr_test.cpp).
+	friend class DispatcherQsbrIntegrationTest;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

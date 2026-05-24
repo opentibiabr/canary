@@ -19,6 +19,9 @@ removed from the quickstart image, so clients should use `login-server`.
 - Docker with Docker Compose v2
 - Network access to pull the published Canary image and build the MyAAC image
 
+For a step-by-step beginner guide, see
+[`docs/docker/quickstart-for-beginners.md`](../docs/docker/quickstart-for-beginners.md).
+
 ## Start The Server
 
 Run these commands from the `docker` directory:
@@ -34,10 +37,22 @@ On Windows PowerShell, you can use the guarded start script:
 .\up.ps1
 ```
 
+To configure `docker/.env` automatically for other PCs on your LAN:
+
+```powershell
+.\up.ps1 -Lan
+```
+
 On Linux or macOS, you can use:
 
 ```bash
 sh ./up.sh
+```
+
+To configure `docker/.env` automatically for other PCs on your LAN:
+
+```bash
+LAN=true sh ./up.sh
 ```
 
 These scripts run Compose with `--remove-orphans` and then perform a safe

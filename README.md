@@ -48,13 +48,15 @@ Default local endpoints:
 - Game port: `7172`
 
 MyAAC's `login.php` is intentionally removed from the quickstart image. Clients
-should use `login-server` only. See [docker/DOCKER.md](docker/DOCKER.md) for the
-full setup, environment variables, test account, and troubleshooting guide.
+should use `login-server` only. See [docs/docker/quickstart-for-beginners.md](docs/docker/quickstart-for-beginners.md)
+for a beginner guide and [docker/DOCKER.md](docker/DOCKER.md) for the full setup,
+environment variables, test account, and troubleshooting guide.
 
 ---
 
 ## Documentation
 
+- [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
 - [System documentation](docs/systems/README.md).
 
 ---

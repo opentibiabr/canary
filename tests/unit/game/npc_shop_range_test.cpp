@@ -31,7 +31,7 @@ namespace {
 	}
 
 	std::shared_ptr<Player> createRegisteredPlayer(Game &game) {
-		auto player = std::make_shared<Player>(nullptr);
+		auto player = std::make_shared<Player>();
 		player->setGUID(kPlayerGuid);
 		player->setName(kPlayerName);
 		player->setID();

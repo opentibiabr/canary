@@ -73,14 +73,23 @@ bool CanaryServer::generateLuaApiDocs() const {
 }
 
 int CanaryServer::generateLuaApiDocsOnly() {
+	const auto shutdownDocgenRuntime = [] {
+		g_dispatcher().shutdown();
+		g_threadPool().shutdown();
+	};
+
 	try {
 		loadConfigLua();
-		return generateLuaApiDocs() ? EXIT_SUCCESS : EXIT_FAILURE;
+		const auto generated = generateLuaApiDocs();
+		shutdownDocgenRuntime();
+		return generated ? EXIT_SUCCESS : EXIT_FAILURE;
 	} catch (const FailedToInitializeCanary &err) {
 		logger.error(err.what());
+		shutdownDocgenRuntime();
 		return EXIT_FAILURE;
 	} catch (const std::exception &err) {
 		logger.error("Failed to generate Lua API documentation: {}", err.what());
+		shutdownDocgenRuntime();
 		return EXIT_FAILURE;
 	}
 }

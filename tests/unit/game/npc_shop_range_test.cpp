@@ -93,7 +93,7 @@ namespace {
 		void expectShopClosedWithoutTransaction() const {
 			EXPECT_EQ(nullptr, player->getShopOwner());
 			EXPECT_EQ(startBankBalance, player->getBankBalance());
-			EXPECT_EQ(startItemCount, player->getItemTypeCount(kShopItemId));
+			EXPECT_EQ(startHasShopItem, player->hasItemCountById(kShopItemId, 1, false));
 		}
 
 	private:
@@ -101,14 +101,14 @@ namespace {
 			player = createRegisteredPlayer(game);
 			npc = createOutOfRangeShopNpc();
 			startBankBalance = player->getBankBalance();
-			startItemCount = player->getItemTypeCount(kShopItemId);
+			startHasShopItem = player->hasItemCountById(kShopItemId, 1, false);
 		}
 
 		Game game;
 		std::shared_ptr<Player> player;
 		std::shared_ptr<Npc> npc;
 		uint64_t startBankBalance = 0;
-		uint32_t startItemCount = 0;
+		bool startHasShopItem = false;
 
 		inline static di::extension::injector<> injector {};
 		inline static di::extension::injector<>* previousTestContainer = nullptr;

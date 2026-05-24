@@ -149,7 +149,7 @@ int PositionFunctions::luaPositionIsSightClear(lua_State* L) {
 int PositionFunctions::luaPositionGetTile(lua_State* L) {
 	// position:getTile()
 	const Position &position = Lua::getPosition(L, 1);
-	Lua::pushUserdata(L, g_game().map.getTile(position));
+	Lua::pushUserdataPoly<Tile>(L, g_game().map.getTile(position));
 	return 1;
 }
 

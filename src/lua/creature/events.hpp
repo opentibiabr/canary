@@ -92,7 +92,7 @@ public:
 
 	// Creature
 	bool eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit);
-	ReturnValue eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, bool aggressive);
+	ReturnValue eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile, bool aggressive);
 	ReturnValue eventCreatureOnTargetCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target);
 	void eventCreatureOnDrainHealth(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &attacker, CombatType_t &typePrimary, int32_t &damagePrimary, CombatType_t &typeSecondary, int32_t &damageSecondary, TextColor_t &colorPrimary, TextColor_t &colorSecondary);
 

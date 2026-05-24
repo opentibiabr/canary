@@ -159,7 +159,7 @@ public:
 	 *
 	 * @note This function will return nullptr if the newContainer could not be created or if the tile pointer is null.
 	 */
-	static std::shared_ptr<Container> createBrowseField(const std::shared_ptr<Tile> &type);
+	static std::shared_ptr<Container> createBrowseField(PolyPtr<Tile>::Borrowed type);
 
 	// non-copyable
 	Container(const Container &) = delete;

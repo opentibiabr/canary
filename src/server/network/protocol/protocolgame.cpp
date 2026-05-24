@@ -42,6 +42,7 @@
 #include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
+#include "items/tile.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
@@ -1589,7 +1590,7 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg) {
 	g_game().playerEquipItem(player->getID(), itemId, hasTier, tier);
 }
 
-void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg) {
+void ProtocolGame::GetTileDescription(PolyPtr<Tile>::Borrowed tile, NetworkMessage &msg) {
 	if (oldProtocol) {
 		msg.add<uint16_t>(0x00); // Env effects
 	}
@@ -7369,7 +7370,7 @@ void ProtocolGame::sendUpdateTileCreature(const Position &pos, uint32_t stackpos
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos) {
+void ProtocolGame::sendUpdateTile(PolyPtr<Tile>::Borrowed tile, const Position &pos) {
 	if (!canSee(pos)) {
 		return;
 	}
@@ -9379,7 +9380,7 @@ void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_p
 			msg.add<uint16_t>(imbuement->getIconID());
 			msg.add<uint32_t>(imbuementInfo.duration);
 
-			std::shared_ptr<Tile> playerTile = player->getTile();
+			PolyPtr<Tile>::Borrowed playerTile = player->getTile();
 			// Check if the player is in a protection zone
 			bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 			// Check if the player is in fight mode

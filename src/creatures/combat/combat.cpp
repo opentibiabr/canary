@@ -27,7 +27,6 @@
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
 #include "map/spectators.hpp"
-#include "creatures/players/player.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
@@ -128,7 +127,7 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 	return damage;
 }
 
-void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::vector<std::shared_ptr<Tile>> &list) {
+void Combat::getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::vector<PolyPtr<Tile>::Borrowed> &list) {
 	if (targetPos.z >= MAP_MAX_LAYERS) {
 		return;
 	}
@@ -264,7 +263,7 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 	return canDoCombat(player, target, true);
 }
 
-ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive) {
+ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, PolyPtr<Tile>::Borrowed tile, bool aggressive) {
 	if (!aggressive || !tile) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -344,7 +343,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 
 	const auto &targetPlayer = target ? target->getPlayer() : nullptr;
 	if (target) {
-		const std::shared_ptr<Tile> &tile = target->getTile();
+		PolyPtr<Tile>::Borrowed tile = target->getTile();
 		if (tile->hasProperty(CONST_PROP_BLOCKPROJECTILE)) {
 			return RETURNVALUE_NOTENOUGHROOM;
 		}
@@ -1046,7 +1045,7 @@ void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Pos
 	g_game().addMagicEffect(position, effect);
 }
 
-void Combat::combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params) {
+void Combat::combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, PolyPtr<Tile>::Borrowed tile, const CombatParams &params) {
 	if (params.itemId != 0) {
 		uint16_t itemId = params.itemId;
 		switch (itemId) {
@@ -1378,7 +1377,7 @@ bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &p
 }
 
 void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &toPos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data) {
-	std::vector<std::shared_ptr<Tile>> tileList;
+	std::vector<PolyPtr<Tile>::Borrowed> tileList;
 
 	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
 
@@ -1922,7 +1921,7 @@ void ValueCallback::getMinMaxValues(const std::shared_ptr<Player> &player, Comba
 
 //**********************************************************//
 
-void TileCallback::onTileCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) const {
+void TileCallback::onTileCombat(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile) const {
 	// onTileCombat(creature, pos)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[TileCallback::onTileCombat - Creature {} type {} on tile x: {} y: {} z: {}] "
@@ -2136,7 +2135,7 @@ AreaCombat::~AreaCombat() {
 	clear();
 }
 
-void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const {
+void AreaCombat::getList(const Position &centerPos, const Position &targetPos, std::vector<PolyPtr<Tile>::Borrowed> &list, const Direction dir) const {
 	auto casterPos = getNextPosition(dir, targetPos);
 
 	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
@@ -2157,7 +2156,7 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	for (uint32_t y = 0; y < rows; ++y) {
 		for (uint32_t x = 0; x < cols; ++x) {
 			if (area->getValue(y, x) != 0) {
-				std::shared_ptr<Tile> tile = g_game().map.getTile(tmpPos);
+				PolyPtr<Tile>::Borrowed tile = g_game().map.getTile(tmpPos);
 				if (tile && tile->hasFlag(TILESTATE_FLOORCHANGE)) {
 					++tmpPos.x;
 					continue;

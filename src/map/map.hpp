@@ -11,6 +11,7 @@
 
 #include "mapcache.hpp"
 #include "map/town.hpp"
+#include "utils/worldpointer.hpp"
 #include "map/house/house.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
 #include "creatures/npcs/spawns/spawn_npc.hpp"
@@ -71,10 +72,10 @@ public:
 
 	/**
 	 * Get a single tile.
-	 * \returns A pointer to that tile.
+	 * \returns A non-owning Borrowed handle valid for the current tick.
 	 */
-	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y, uint8_t z);
-	std::shared_ptr<Tile> getTile(const Position &pos) {
+	PolyPtr<Tile>::Borrowed getTile(uint16_t x, uint16_t y, uint8_t z);
+	PolyPtr<Tile>::Borrowed getTile(const Position &pos) {
 		return getTile(pos.x, pos.y, pos.z);
 	}
 
@@ -83,8 +84,8 @@ public:
 		refreshZones(pos.x, pos.y, pos.z);
 	}
 
-	std::shared_ptr<Tile> getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
-	std::shared_ptr<Tile> getOrCreateTile(const Position &pos, bool isDynamic = false) {
+	PolyPtr<Tile>::Borrowed getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic = false);
+	PolyPtr<Tile>::Borrowed getOrCreateTile(const Position &pos, bool isDynamic = false) {
 		return getOrCreateTile(pos.x, pos.y, pos.z, isDynamic);
 	}
 
@@ -101,10 +102,10 @@ public:
 		const std::shared_ptr<Creature> &creature,
 		bool extendedPos = false,
 		bool forceLogin = false,
-		const std::shared_ptr<Tile> &centerTile = nullptr
+		PolyPtr<Tile>::Borrowed centerTile = {}
 	);
 
-	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
+	void moveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, bool forceTeleport = false);
 
 	/**
 	 * Checks if you can throw an object to that position
@@ -127,7 +128,7 @@ public:
 	bool isSightClear(const Position &fromPos, const Position &toPos, bool floorCheck);
 	bool checkSightLine(Position start, Position destination);
 
-	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
+	PolyPtr<Tile>::Borrowed canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
 	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
@@ -154,11 +155,11 @@ private:
 	/**
 	 * Set a single tile.
 	 */
-	void setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile);
-	void setTile(const Position &pos, const std::shared_ptr<Tile> &newTile) {
-		setTile(pos.x, pos.y, pos.z, newTile);
+	void setTile(uint16_t x, uint16_t y, uint8_t z, PolyPtr<Tile>::Owning newTile);
+	void setTile(const Position &pos, PolyPtr<Tile>::Owning newTile) {
+		setTile(pos.x, pos.y, pos.z, std::move(newTile));
 	}
-	std::shared_ptr<Tile> getLoadedTile(uint16_t x, uint16_t y, uint8_t z);
+	PolyPtr<Tile>::Borrowed getLoadedTile(uint16_t x, uint16_t y, uint8_t z);
 
 	std::filesystem::path path;
 	std::string monsterfile;

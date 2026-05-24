@@ -938,11 +938,11 @@ public:
 	// send methods
 	// tile
 	// send methods
-	void sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Position &pos, const std::shared_ptr<Item> &item);
-	void sendUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &item);
+	void sendAddTileItem(PolyPtr<Tile>::Borrowed itemTile, const Position &pos, const std::shared_ptr<Item> &item);
+	void sendUpdateTileItem(PolyPtr<Tile>::Borrowed updateTile, const Position &pos, const std::shared_ptr<Item> &item);
 	void sendRemoveTileThing(const Position &pos, int32_t stackpos) const;
 	void sendUpdateTileCreature(const std::shared_ptr<Creature> &creature);
-	void sendUpdateTile(const std::shared_ptr<Tile> &updateTile, const Position &pos) const;
+	void sendUpdateTile(PolyPtr<Tile>::Borrowed updateTile, const Position &pos) const;
 
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) const;
 	void sendChannelEvent(uint16_t channelId, const std::string &playerName, ChannelEvent_t channelEvent) const;
@@ -1007,12 +1007,12 @@ public:
 	SoundEffect_t getHitSoundEffect() const;
 
 	// event methods
-	void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) override;
-	void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) override;
+	void onUpdateTileItem(PolyPtr<Tile>::Borrowed tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) override;
+	void onRemoveTileItem(PolyPtr<Tile>::Borrowed tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) override;
 
 	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
 	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
-	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) override;
 
 	void onEquipInventory();
 	void onDeEquipInventory();

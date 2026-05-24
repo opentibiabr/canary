@@ -23,9 +23,25 @@
 House::House(uint32_t houseId) :
 	id(houseId) { }
 
-void House::addTile(const std::shared_ptr<HouseTile> &tile) {
-	tile->setFlag(TILESTATE_PROTECTIONZONE);
-	houseTiles.push_back(tile);
+void House::addTile(PolyPtr<Tile>::Borrowed tile) {
+	if (!tile) {
+		return;
+	}
+	// RTTI-checked downcast — `static_pointer_cast_poly` only validates
+	// non-null source; a Tile that happens to not be a HouseTile would
+	// silently produce a misaligned pointer. `dynamic_pointer_cast_poly`
+	// returns null on mismatch so we can reject and log.
+	auto typedShared = dynamic_pointer_cast_poly<HouseTile, Tile>(tile.share());
+	if (!typedShared) {
+		g_logger().error(
+			"[{}] non-HouseTile passed at {}",
+			std::source_location::current().function_name(),
+			tile->getPosition().toString()
+		);
+		return;
+	}
+	typedShared->setFlag(TILESTATE_PROTECTIONZONE);
+	houseTiles.push_back(std::move(typedShared));
 	updateDoorDescription();
 }
 
@@ -214,7 +230,7 @@ bool House::kickPlayer(const std::shared_ptr<Player> &player, const std::shared_
 		return false;
 	}
 
-	const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(target->getTile());
+	auto* houseTile = dynamic_cast<HouseTile*>(target->getTile().get());
 	if (!houseTile || houseTile->getHouse() != static_self_cast<House>()) {
 		return false;
 	}
@@ -250,7 +266,7 @@ void House::setAccessList(uint32_t listId, const std::string &textlist) {
 	}
 
 	// kick uninvited players
-	for (const std::shared_ptr<HouseTile> &tile : houseTiles) {
+	for (const auto &tile : houseTiles) {
 		if (const CreatureVector* creatures = tile->getCreatures()) {
 			for (int32_t i = creatures->size(); --i >= 0;) {
 				const auto &player = (*creatures)[i]->getPlayer();
@@ -291,8 +307,10 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player) const {
 	totalItemsFound = 0;
 	totalItemsMoved = 0;
 
+	// `houseTiles` is now `list<PolyPtr<HouseTile>::Shared>` — `tile.get()`
+	// is already a `HouseTile*`. No dynamic_cast needed.
 	for (const auto &tile : houseTiles) {
-		if (!transferToDepot(player, tile)) {
+		if (!transferToDepot(player, tile.get())) {
 			return false;
 		}
 	}
@@ -304,8 +322,8 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player) const {
 	return true;
 }
 
-bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &tile) const {
-	if (townId == 0 || !player) {
+bool House::transferToDepot(const std::shared_ptr<Player> &player, HouseTile* tile) const {
+	if (townId == 0 || !player || !tile) {
 		return false;
 	}
 	if (tile->getHouse().get() != this) {
@@ -436,7 +454,7 @@ void House::setNewOwnership() {
 	hasNewOwnerOnStartup = true;
 }
 
-void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const {
+void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, HouseTile* houseTile) const {
 	if (!item || !houseTile) {
 		return;
 	}
@@ -455,7 +473,7 @@ void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Ite
 	moveItemList.push_back(newItem);
 }
 
-void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const {
+void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, HouseTile* houseTile) const {
 	if (!container) {
 		return;
 	}

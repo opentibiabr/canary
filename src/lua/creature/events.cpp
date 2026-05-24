@@ -176,7 +176,7 @@ bool Events::eventCreatureOnChangeOutfit(const std::shared_ptr<Creature> &creatu
 	return scriptInterface.callFunction(2);
 }
 
-ReturnValue Events::eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, bool aggressive) {
+ReturnValue Events::eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile, bool aggressive) {
 	// Creature:onAreaCombat(tile, aggressive) or Creature.onAreaCombat(self, tile, aggressive)
 	if (info.creatureOnAreaCombat == -1) {
 		return RETURNVALUE_NOERROR;
@@ -203,7 +203,7 @@ ReturnValue Events::eventCreatureOnAreaCombat(const std::shared_ptr<Creature> &c
 		lua_pushnil(L);
 	}
 
-	LuaScriptInterface::pushUserdata<Tile>(L, tile);
+	LuaScriptInterface::pushUserdataPoly<Tile>(L, tile);
 	LuaScriptInterface::setMetatable(L, -1, "Tile");
 
 	LuaScriptInterface::pushBoolean(L, aggressive);

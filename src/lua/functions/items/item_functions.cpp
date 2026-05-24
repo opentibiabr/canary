@@ -418,9 +418,9 @@ int ItemFunctions::luaItemGetTile(lua_State* L) {
 		return 1;
 	}
 
-	const auto &tile = item->getTile();
+	const auto tile = item->getTile();
 	if (tile) {
-		Lua::pushUserdata<Tile>(L, tile);
+		Lua::pushUserdataPoly<Tile>(L, tile);
 		Lua::setMetatable(L, -1, "Tile");
 	} else {
 		lua_pushnil(L);
@@ -710,14 +710,19 @@ int ItemFunctions::luaItemMoveTo(lua_State* L) {
 				toCylinder = Lua::getUserdataShared<Player>(L, 2, "Player");
 				break;
 			case LuaData_t::Tile:
-				toCylinder = Lua::getUserdataShared<Tile>(L, 2, "Tile");
+				if (auto* tilePtr = Lua::getUserdataPoly<Tile>(L, 2, "Tile")) {
+					toCylinder = tilePtr->getCylinder();
+				}
 				break;
 			default:
 				toCylinder = nullptr;
 				break;
 		}
 	} else {
-		toCylinder = g_game().map.getTile(Lua::getPosition(L, 2));
+		auto borrowedTile = g_game().map.getTile(Lua::getPosition(L, 2));
+		if (borrowedTile) {
+			toCylinder = borrowedTile->getCylinder();
+		}
 	}
 
 	if (!toCylinder) {

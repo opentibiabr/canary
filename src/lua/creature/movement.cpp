@@ -276,7 +276,7 @@ bool MoveEvents::registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, cons
 	}
 }
 
-std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
+std::shared_ptr<MoveEvent> MoveEvents::getEvent(PolyPtr<Tile>::Borrowed tile, MoveEvent_t eventType) {
 	if (const auto it = positionsMap.find(tile->getPosition());
 	    it != positionsMap.end()) {
 		std::list<std::shared_ptr<MoveEvent>> &moveEventList = it->second.moveEvent[eventType];
@@ -287,7 +287,7 @@ std::shared_ptr<MoveEvent> MoveEvents::getEvent(const std::shared_ptr<Tile> &til
 	return nullptr;
 }
 
-uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType) {
+uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile, MoveEvent_t eventType) {
 	const Position &pos = tile->getPosition();
 
 	uint32_t ret = 1;
@@ -341,7 +341,7 @@ uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, cons
 	return moveEvent->fireEquip(player, item, slot, false);
 }
 
-uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile, bool isAdd) {
+uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed tile, bool isAdd) {
 	MoveEvent_t eventType1, eventType2;
 	if (isAdd) {
 		eventType1 = MOVE_EVENT_ADD_ITEM;

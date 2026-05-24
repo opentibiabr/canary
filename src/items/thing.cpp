@@ -12,9 +12,10 @@
 #include "items/tile.hpp"
 
 const Position &Thing::getPosition() {
-	const auto &tile = getTile();
+	const auto tile = getTile();
 	if (!tile) {
-		return Tile::nullptr_tile->getPosition();
+		static const Position emptyPosition { 0xFFFF, 0xFFFF, 0xFF };
+		return emptyPosition;
 	}
 	return tile->getPosition();
 }
@@ -22,7 +23,11 @@ const Position &Thing::getPosition() {
 const Position &Thing::getPosition() const {
 	const auto &tile = getTile();
 	if (!tile) {
-		return Tile::nullptr_tile->getPosition();
+		// Same sentinel coordinates as the non-const overload above. The
+		// legacy `Tile::nullptr_tile` static was removed in the PolyPtr
+		// migration; the const overload was missed.
+		static const Position emptyPosition { 0xFFFF, 0xFFFF, 0xFF };
+		return emptyPosition;
 	}
 	return tile->getPosition();
 }

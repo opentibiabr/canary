@@ -81,7 +81,11 @@ private:
 	friend class House;
 };
 
-using HouseTileList = std::list<std::shared_ptr<HouseTile>>;
+// Tiles are pinned as `PolyPtr<HouseTile>::Shared` — typed at insertion via
+// `static_pointer_cast_poly<HouseTile>(...)` from `PolyPtr<Tile>::Shared`.
+// Storing the typed form lets us iterate without per-element `dynamic_cast`.
+// Element layout is identical to `PolyPtr<Tile>::Shared` (16 bytes).
+using HouseTileList = std::list<PolyPtr<HouseTile>::Shared>;
 using HouseBedItemList = std::list<std::shared_ptr<BedItem>>;
 
 class HouseTransferItem final : public Item {
@@ -104,7 +108,7 @@ class House final : public SharedObject {
 public:
 	explicit House(uint32_t houseId);
 
-	void addTile(const std::shared_ptr<HouseTile> &tile);
+	void addTile(PolyPtr<Tile>::Borrowed tile);
 	void updateDoorDescription() const;
 
 	bool canEditAccessList(uint32_t listId, const std::shared_ptr<Player> &player) const;
@@ -230,7 +234,7 @@ public:
 	}
 
 	bool transferToDepot(const std::shared_ptr<Player> &player) const;
-	bool transferToDepot(const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &tile) const;
+	bool transferToDepot(const std::shared_ptr<Player> &player, HouseTile* tile) const;
 
 	bool hasItemOnTile() const;
 	bool hasNewOwnership() const;
@@ -363,8 +367,8 @@ private:
 	bool isLoaded = false;
 
 	void handleContainer(ItemList &moveItemList, const std::shared_ptr<Item> &item) const;
-	void handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const;
-	void collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, const std::shared_ptr<HouseTile> &houseTile) const;
+	void handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, HouseTile* houseTile) const;
+	void collectMovableItemsFromContainer(ItemList &moveItemList, const std::shared_ptr<Container> &container, const std::shared_ptr<Player> &player, HouseTile* houseTile) const;
 
 	mutable std::vector<std::string> failedItemTransfers;
 	mutable std::vector<std::string> movedItemsLog;

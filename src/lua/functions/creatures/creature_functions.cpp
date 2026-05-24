@@ -518,9 +518,9 @@ int CreatureFunctions::luaCreatureGetTile(lua_State* L) {
 		return 1;
 	}
 
-	const auto &tile = creature->getTile();
+	const auto tile = creature->getTile();
 	if (tile) {
-		Lua::pushUserdata<Tile>(L, tile);
+		Lua::pushUserdataPoly<Tile>(L, tile);
 		Lua::setMetatable(L, -1, "Tile");
 	} else {
 		lua_pushnil(L);
@@ -1057,12 +1057,12 @@ int CreatureFunctions::luaCreatureMove(lua_State* L) {
 		}
 		lua_pushnumber(L, g_game().internalMoveCreature(creature, direction, FLAG_NOLIMIT));
 	} else {
-		const auto &tile = Lua::getUserdataShared<Tile>(L, 2, "Tile");
+		const auto &tile = Lua::getUserdataPoly<Tile>(L, 2, "Tile");
 		if (!tile) {
 			lua_pushnil(L);
 			return 1;
 		}
-		lua_pushnumber(L, g_game().internalMoveCreature(creature, tile, Lua::getNumber<uint32_t>(L, 3)));
+		lua_pushnumber(L, g_game().internalMoveCreature(creature, tile->borrowedFromThis(), Lua::getNumber<uint32_t>(L, 3)));
 	}
 	return 1;
 }

@@ -43,7 +43,7 @@ private:
 
 class TileCallback final : public CallBack {
 public:
-	void onTileCombat(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) const;
+	void onTileCombat(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile) const;
 
 protected:
 	formulaType_t type {};
@@ -155,7 +155,7 @@ public:
 	// non-assignable
 	AreaCombat &operator=(const AreaCombat &) = delete;
 
-	void getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const;
+	void getList(const Position &centerPos, const Position &targetPos, std::vector<PolyPtr<Tile>::Borrowed> &list, const Direction dir) const;
 
 	void setupArea(const std::list<uint32_t> &list, uint32_t rows);
 	void setupArea(int32_t length, int32_t spread);
@@ -197,7 +197,7 @@ public:
 	static void doCombatDispel(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params);
 	static void doCombatDispel(const std::shared_ptr<Creature> &caster, const Position &position, const std::unique_ptr<AreaCombat> &area, const CombatParams &params);
 
-	static void getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::vector<std::shared_ptr<Tile>> &list);
+	static void getCombatArea(const Position &centerPos, const Position &targetPos, const std::unique_ptr<AreaCombat> &area, std::vector<PolyPtr<Tile>::Borrowed> &list);
 
 	static bool isInPvpZone(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target);
 	static bool isProtected(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Player> &target);
@@ -205,7 +205,7 @@ public:
 	static CombatType_t ConditionToDamageType(ConditionType_t type);
 	static ConditionType_t DamageToConditionType(CombatType_t type);
 	static ReturnValue canTargetCreature(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Creature> &target);
-	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive);
+	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &caster, PolyPtr<Tile>::Borrowed tile, bool aggressive);
 	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool aggressive);
 	static void postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const CombatParams &params);
 
@@ -328,7 +328,7 @@ private:
 	 */
 	static void sendCombatEffect(const std::shared_ptr<Creature> &caster, const Position &position, uint16_t effect);
 
-	static void combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params);
+	static void combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, PolyPtr<Tile>::Borrowed tile, const CombatParams &params);
 
 	/**
 	 * @brief Calculate the level formula for combat.

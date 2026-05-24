@@ -215,7 +215,7 @@ public:
 
 protected:
 	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent = 0) const;
-	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const;
+	void internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed tile) const;
 
 private:
 	int32_t m_scriptId {};
@@ -246,7 +246,7 @@ private:
 	bool m_isDisabledChain = false;
 	std::string vocationString;
 
-	void onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &destTile) const;
+	void onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed destTile) const;
 
 	static void decrementItemCount(const std::shared_ptr<Item> &item);
 

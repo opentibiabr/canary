@@ -15,6 +15,7 @@
 #include "items/thing.hpp"
 #include "map/map_const.hpp"
 #include "utils/utils_definitions.hpp"
+#include "utils/worldpointer.hpp"
 
 class CreatureEvent;
 class Condition;
@@ -507,9 +508,9 @@ public:
 
 	virtual void turnToCreature(const std::shared_ptr<Creature> &creature);
 
-	void onAddTileItem(const std::shared_ptr<Tile> & /*tile*/, const Position & /*pos*/) const { }
-	virtual void onUpdateTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
-	virtual void onRemoveTileItem(const std::shared_ptr<Tile> &tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
+	void onAddTileItem(PolyPtr<Tile>::Borrowed /*tile*/, const Position & /*pos*/) const { }
+	virtual void onUpdateTileItem(PolyPtr<Tile>::Borrowed tile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) { }
+	virtual void onRemoveTileItem(PolyPtr<Tile>::Borrowed tile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) { }
 
 	virtual void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin);
 	virtual void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout);
@@ -523,7 +524,7 @@ public:
 	 * @return false
 	 */
 	void checkSummonMove(const Position &newPos, bool teleportSummon = false);
-	virtual void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport);
+	virtual void onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport);
 
 	virtual void onAttackedCreatureDisappear(bool) { }
 	virtual void onFollowCreatureDisappear(bool) { }
@@ -569,8 +570,12 @@ public:
 
 	std::shared_ptr<Cylinder> getParent() final;
 
-	void setParent(std::weak_ptr<Cylinder> cylinder) final;
+protected:
+	// NVI override — Thing's public `setParent(weak_ptr)` /
+	// `setParent(Borrowed)` overloads route here through `ParentRef`.
+	void setParentImpl(ParentRef parent) final;
 
+public:
 	const Position &getPosition() final {
 		return position;
 	}
@@ -579,12 +584,12 @@ public:
 		return position;
 	}
 
-	std::shared_ptr<Tile> getTile() final {
-		return m_tile.lock();
+	PolyPtr<Tile>::Borrowed getTile() final {
+		return m_tile.borrowIfAlive();
 	}
 
-	std::shared_ptr<Tile> getTile() const final {
-		return m_tile.lock();
+	PolyPtr<Tile>::Borrowed getTile() const final {
+		return m_tile.borrowIfAlive();
 	}
 
 	const Position &getLastPosition() const {
@@ -753,7 +758,12 @@ protected:
 
 	std::vector<Direction> listWalkDir;
 
-	std::weak_ptr<Tile> m_tile;
+	// Weak (non-pinning) reference to the Tile the creature is currently
+	// on. Doesn't extend Tile lifetime — Tile is owned by Floor. When
+	// Creature moves, m_tile is re-assigned (weak refcount swap). When
+	// Tile is destroyed (Floor::setTile + QSBR drain), m_tile reports
+	// expired via borrowIfAlive().
+	PolyPtr<Tile>::Weak m_tile;
 	std::weak_ptr<Creature> m_attackedCreature;
 	std::weak_ptr<Creature> m_master;
 	std::weak_ptr<Creature> m_followCreature;

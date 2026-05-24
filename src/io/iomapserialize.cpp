@@ -35,7 +35,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 			continue;
 		}
 
-		std::shared_ptr<Tile> tile = map->getTile(x, y, z);
+		PolyPtr<Tile>::Borrowed tile = map->getTile(x, y, z);
 		if (!tile) {
 			continue;
 		}
@@ -46,7 +46,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 		}
 
 		while (item_count--) {
-			if (auto houseTile = std::dynamic_pointer_cast<HouseTile>(tile)) {
+			if (auto* houseTile = dynamic_cast<HouseTile*>(tile.get())) {
 				const auto &house = houseTile->getHouse();
 				auto isTransferOnRestart = g_configManager().getBoolean(TOGGLE_HOUSE_TRANSFER_ON_SERVER_RESTART);
 				if (!isTransferOnRestart && house->getOwner() == 0) {
@@ -56,7 +56,7 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 				}
 			}
 
-			loadItem(propStream, tile, true);
+			loadItem(propStream, tile->getCylinder(), true);
 		}
 	} while (result->next());
 
@@ -106,7 +106,12 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
 		for (const auto &tile : house->getTiles()) {
-			saveTile(stream, tile);
+			// `tile` is a `PolyPtr<HouseTile>::Shared`; saveTile takes a
+			// `PolyPtr<Tile>::Borrowed`. Two implicit conversions
+			// (Shared→Borrowed AND HouseTile→Tile upcast) chained aren't
+			// allowed, so step through Borrowed explicitly — the cross-type
+			// Borrowed ctor then upcasts implicitly to Tile::Borrowed.
+			saveTile(stream, tile.borrow());
 
 			size_t attributesSize;
 			const char* attributes = stream.getStream(attributesSize);
@@ -150,7 +155,7 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 		return false;
 	}
 
-	std::shared_ptr<Tile> tile = nullptr;
+	PolyPtr<Tile>::Borrowed tile = {};
 	if (parent->getParent() == nullptr) {
 		tile = parent->getTile();
 	}
@@ -258,7 +263,7 @@ void IOMapSerialize::saveItem(PropWriteStream &stream, const std::shared_ptr<Ite
 	stream.write<uint8_t>(0x00); // attr end
 }
 
-void IOMapSerialize::saveTile(PropWriteStream &stream, const std::shared_ptr<Tile> &tile) {
+void IOMapSerialize::saveTile(PropWriteStream &stream, PolyPtr<Tile>::Borrowed tile) {
 	const TileItemVector* tileItems = tile->getItemList();
 	if (!tileItems) {
 		return;

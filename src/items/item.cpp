@@ -843,6 +843,22 @@ bool Item::isOwner(uint32_t ownerId) const {
 	return false;
 }
 
+std::shared_ptr<Cylinder> Item::getParent() {
+	// Legacy shared_ptr-managed parent (Container, Player, …).
+	if (auto* legacyParent = std::get_if<std::weak_ptr<Cylinder>>(&m_parent)) {
+		return legacyParent->lock();
+	}
+	// Tile parent (PolyPtr-managed). Use borrowIfAlive (1 atomic load) to
+	// check if the Tile is still alive — returns null facade if it expired
+	// (Floor::setTile replaced the slot AND quiescent state drained it).
+	if (auto* tileWeak = std::get_if<PolyPtr<Tile>::Weak>(&m_parent)) {
+		if (auto borrowed = tileWeak->borrowIfAlive()) {
+			return borrowed->getCylinder();
+		}
+	}
+	return nullptr;
+}
+
 std::shared_ptr<Cylinder> Item::getTopParent() {
 	auto aux = getParent();
 	auto prevaux = std::dynamic_pointer_cast<Cylinder>(shared_from_this());
@@ -861,13 +877,25 @@ std::shared_ptr<Cylinder> Item::getTopParent() {
 	return aux;
 }
 
-std::shared_ptr<Tile> Item::getTile() {
+PolyPtr<Tile>::Borrowed Item::getTile() {
+	// Fast path: parent variant directly holds a Tile (Weak). 1 atomic
+	// LOAD via borrowIfAlive — null if Tile already destroyed.
+	if (auto* tileWeak = std::get_if<PolyPtr<Tile>::Weak>(&m_parent)) {
+		if (auto borrowed = tileWeak->borrowIfAlive()) {
+			return borrowed;
+		}
+	}
+	// Otherwise walk up the legacy shared_ptr<Cylinder> chain to find a Tile.
 	auto cylinder = getTopParent();
-	// get root cylinder
 	if (cylinder && cylinder->getParent()) {
 		cylinder = cylinder->getParent();
 	}
-	return std::dynamic_pointer_cast<Tile>(cylinder);
+	if (cylinder) {
+		if (auto* tile = dynamic_cast<Tile*>(cylinder.get())) {
+			return tile->borrowedFromThis();
+		}
+	}
+	return {};
 }
 
 bool Item::isRemoved() {
@@ -3519,11 +3547,12 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 		return nullptr;
 	}
 
-	const auto &fromTile = cylinder->getTile();
+	const auto fromTile = cylinder->getTile();
 	if (fromTile) {
+		// Transparent lookup — no `.share()` atomic.
 		const auto it = g_game().browseFields.find(fromTile);
 		if (it != g_game().browseFields.end() && it->second.lock() == cylinder) {
-			cylinder = fromTile;
+			cylinder = fromTile->getCylinder();
 		}
 	}
 

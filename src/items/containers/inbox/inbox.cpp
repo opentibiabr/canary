@@ -69,7 +69,7 @@ void Inbox::postRemoveNotification(const std::shared_ptr<Thing> &thing, const st
 }
 
 std::shared_ptr<Cylinder> Inbox::getParent() {
-	const auto &parentLocked = m_parent.lock();
+	const auto parentLocked = Item::getParent();
 	if (parentLocked) {
 		return parentLocked->getParent();
 	}

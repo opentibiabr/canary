@@ -149,7 +149,7 @@ namespace InternalGame {
 			return false;
 		}
 
-		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(itemTile)) {
+		if (auto* houseTile = dynamic_cast<HouseTile*>(itemTile.get())) {
 			const auto &house = houseTile->getHouse();
 			if (!house || !house->isInvited(player)) {
 				return false;
@@ -188,7 +188,7 @@ namespace InternalGame {
 		}
 
 		if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-			if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(itemTile)) {
+			if (auto* houseTile = dynamic_cast<HouseTile*>(itemTile.get())) {
 				const auto &house = houseTile->getHouse();
 				std::shared_ptr<Thing> targetThing = g_game().internalGetThing(player, toPos, toStackPos, toItemId, STACKPOS_FIND_THING);
 				auto targetItem = targetThing ? targetThing->getItem() : nullptr;
@@ -783,7 +783,8 @@ void Game::loadMap(const std::string &path, const Position &pos) {
 
 std::shared_ptr<Cylinder> Game::internalGetCylinder(const std::shared_ptr<Player> &player, const Position &pos) {
 	if (pos.x != 0xFFFF) {
-		return map.getTile(pos);
+		auto tile = map.getTile(pos);
+		return tile ? tile->getCylinder() : nullptr;
 	}
 
 	// container
@@ -798,7 +799,7 @@ std::shared_ptr<Cylinder> Game::internalGetCylinder(const std::shared_ptr<Player
 
 std::shared_ptr<Thing> Game::internalGetThing(const std::shared_ptr<Player> &player, const Position &pos, int32_t index, uint32_t itemId, StackPosType_t type) {
 	if (pos.x != 0xFFFF) {
-		std::shared_ptr<Tile> tile = map.getTile(pos);
+		PolyPtr<Tile>::Borrowed tile = map.getTile(pos);
 		if (!tile) {
 			return nullptr;
 		}
@@ -883,7 +884,7 @@ std::shared_ptr<Thing> Game::internalGetThing(const std::shared_ptr<Player> &pla
 		}
 
 		if (parentContainer->getID() == ITEM_BROWSEFIELD) {
-			const std::shared_ptr<Tile> &tile = parentContainer->getTile();
+			PolyPtr<Tile>::Borrowed tile = parentContainer->getTile();
 			if (tile && tile->hasFlag(TILESTATE_SUPPORTS_HANGABLE)) {
 				if (tile->hasProperty(CONST_PROP_ISVERTICAL)) {
 					if (player->getPosition().x + 1 == tile->getPosition().x) {
@@ -955,7 +956,7 @@ void Game::internalGetPosition(const std::shared_ptr<Item> &item, Position &pos,
 				pos.y = player->getThingIndex(item);
 				stackpos = pos.y;
 			}
-		} else if (const std::shared_ptr<Tile> &tile = topParent->getTile()) {
+		} else if (PolyPtr<Tile>::Borrowed tile = topParent->getTile()) {
 			pos = tile->getPosition();
 			stackpos = tile->getThingIndex(item);
 		}
@@ -1223,7 +1224,7 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 		return false;
 	}
 
-	std::shared_ptr<Tile> tile = creature->getTile();
+	PolyPtr<Tile>::Borrowed tile = creature->getTile();
 	if (!tile) {
 		g_logger().error("[{}] tile on position '{}' for creature '{}' not exist", __FUNCTION__, creature->getPosition().toString(), creature->getName());
 	}
@@ -1410,17 +1411,22 @@ void Game::playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t 
 	}
 
 	if (const std::shared_ptr<Creature> &movingCreature = thing->getCreature()) {
-		const std::shared_ptr<Tile> &tile = map.getTile(toPos);
+		PolyPtr<Tile>::Borrowed tile = map.getTile(toPos);
 		if (!tile) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
 		}
 
+		// Snapshot the position now — capturing `tile` (Borrowed) into a
+		// deferred player task would let it observe a retired tile by the
+		// time the delay fires.
+		const Position targetPos = tile->getPosition();
+
 		if (Position::areInRange<1, 1, 0>(movingCreature->getPosition(), player->getPosition())) {
 			const auto &task = createPlayerTask(
 				g_configManager().getNumber(PUSH_DELAY),
-				[this, player, movingCreature, tile] {
-					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreature->getPosition(), tile->getPosition());
+				[this, player, movingCreature, targetPos] {
+					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreature->getPosition(), targetPos);
 				},
 				__FUNCTION__
 			);
@@ -1450,7 +1456,7 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 		return;
 	}
 
-	std::shared_ptr<Tile> toTile = map.getTile(toPos);
+	PolyPtr<Tile>::Borrowed toTile = map.getTile(toPos);
 	if (!toTile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -1459,15 +1465,30 @@ void Game::playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, 
 	playerMoveCreature(player, movingCreature, movingCreatureOrigPos, toTile);
 }
 
-void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &movingCreature, const Position &movingCreatureOrigPos, const std::shared_ptr<Tile> &toTile) {
+void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &movingCreature, const Position &movingCreatureOrigPos, PolyPtr<Tile>::Borrowed toTile) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 
-	g_dispatcher().addWalkEvent([=, this] {
+	// Snapshot the destination once on entry. Both the outer walk-event
+	// lambda and the inner deferred player tasks reach across the dispatcher
+	// boundary, so capturing `toTile` (Borrowed) would let them observe a
+	// tile retired by an intervening setTile/QSBR drain.
+	const Position toPos = toTile->getPosition();
+
+	g_dispatcher().addWalkEvent([this, player, movingCreature, movingCreatureOrigPos, toPos] {
+		// Re-resolve the destination from the snapshot — the walk event
+		// runs after the current iteration's QSBR drain, so a `toTile`
+		// captured by value could already be retired by now.
+		auto toTile = map.getTile(toPos);
+		if (!toTile) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
+
 		if (!player->canDoAction()) {
 			const auto &task = createPlayerTask(
 				600,
-				[this, player, movingCreature, toTile, movingCreatureOrigPos] {
-					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition());
+				[this, player, movingCreature, toPos, movingCreatureOrigPos] {
+					playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toPos);
 				},
 				__FUNCTION__
 			);
@@ -1485,8 +1506,8 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 				g_dispatcher().addEvent([this, playerId = player->getID(), listDir] { playerAutoWalk(playerId, listDir); }, __FUNCTION__);
 				const auto &task = createPlayerTask(
 					600,
-					[this, player, movingCreature, toTile, movingCreatureOrigPos] {
-						playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toTile->getPosition());
+					[this, player, movingCreature, toPos, movingCreatureOrigPos] {
+						playerMoveCreatureByID(player->getID(), movingCreature->getID(), movingCreatureOrigPos, toPos);
 					},
 					__FUNCTION__
 				);
@@ -1512,7 +1533,6 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 
 		// check throw distance
 		const Position &movingCreaturePos = movingCreature->getPosition();
-		const Position &toPos = toTile->getPosition();
 		if ((Position::getDistanceX(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceY(movingCreaturePos, toPos) > movingCreature->getThrowRange()) || (Position::getDistanceZ(movingCreaturePos, toPos) * 4 > movingCreature->getThrowRange())) {
 			player->sendCancelMessage(RETURNVALUE_DESTINATIONOUTOFREACH);
 			return;
@@ -1585,7 +1605,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		// try go up
 		auto tile = creature->getTile();
 		if (currentPos.z != 8 && tile && tile->hasHeight(3)) {
-			std::shared_ptr<Tile> tmpTile = map.getTile(currentPos.x, currentPos.y, currentPos.getZ() - 1);
+			PolyPtr<Tile>::Borrowed tmpTile = map.getTile(currentPos.x, currentPos.y, currentPos.getZ() - 1);
 			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				tmpTile = map.getTile(destPos.x, destPos.y, destPos.getZ() - 1);
 				if (tmpTile && tmpTile->getGround() && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID)) {
@@ -1601,7 +1621,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 
 		// try go down
 		if (currentPos.z != 7 && currentPos.z == destPos.z) {
-			std::shared_ptr<Tile> tmpTile = map.getTile(destPos.x, destPos.y, destPos.z);
+			PolyPtr<Tile>::Borrowed tmpTile = map.getTile(destPos.x, destPos.y, destPos.z);
 			if (tmpTile == nullptr || (tmpTile->getGround() == nullptr && !tmpTile->hasFlag(TILESTATE_BLOCKSOLID))) {
 				tmpTile = map.getTile(destPos.x, destPos.y, destPos.z + 1);
 				if (tmpTile && tmpTile->hasHeight(3)) {
@@ -1613,14 +1633,14 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		}
 	}
 
-	std::shared_ptr<Tile> toTile = map.getTile(destPos);
+	PolyPtr<Tile>::Borrowed toTile = map.getTile(destPos);
 	if (!toTile) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 	return internalMoveCreature(creature, toTile, flags);
 }
 
-ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags /*= 0*/) {
+ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed toTile, uint32_t flags /*= 0*/) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (creature->hasCondition(CONDITION_ROOTED)) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -1640,27 +1660,27 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 	}
 
 	map.moveCreature(creature, toTile);
-	if (creature->getParent() != toTile) {
+	if (creature->getParent().get() != toTile.get()) {
 		return RETURNVALUE_NOERROR;
 	}
 
 	int32_t index = 0;
 	std::shared_ptr<Item> toItem = nullptr;
-	std::shared_ptr<Tile> subCylinder = nullptr;
-	std::shared_ptr<Tile> toCylinder = toTile;
-	std::shared_ptr<Tile> fromCylinder = nullptr;
+	PolyPtr<Tile>::Borrowed subCylinder;
+	PolyPtr<Tile>::Borrowed toCylinder = toTile;
+	PolyPtr<Tile>::Borrowed fromCylinder;
 	uint32_t n = 0;
 
 	while ((subCylinder = toCylinder->queryDestination(index, creature, toItem, flags)->getTile()) != toCylinder) {
-		if (subCylinder == nullptr) {
+		if (!subCylinder) {
 			break;
 		}
 
 		map.moveCreature(creature, subCylinder);
 
-		if (creature->getParent() != subCylinder) {
+		if (creature->getParent().get() != subCylinder.get()) {
 			// could happen if a script move the creature
-			fromCylinder = nullptr;
+			fromCylinder = {};
 			break;
 		}
 
@@ -1897,8 +1917,8 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 	}
 
 	if (item->isWrapable() || item->isStoreItem() || (item->hasOwner() && !item->isOwner(player))) {
-		const auto toHouseTile = toCylinderTile ? toCylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
-		const auto fromHouseTile = cylinderTile ? cylinderTile->dynamic_self_cast<HouseTile>() : nullptr;
+		auto* toHouseTile = toCylinderTile ? dynamic_cast<HouseTile*>(toCylinderTile.get()) : nullptr;
+		auto* fromHouseTile = cylinderTile ? dynamic_cast<HouseTile*>(cylinderTile.get()) : nullptr;
 
 		if (fromHouseTile) {
 			const auto fromHouse = fromHouseTile->getHouse();
@@ -2094,9 +2114,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	}
 
 	if (checkTile) {
-		if (const std::shared_ptr<Tile> &fromTile = fromCylinder->getTile()) {
-			if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == fromCylinder) {
-				fromCylinder = fromTile;
+		if (auto fromTile = fromCylinder->getTile()) {
+			// Transparent lookup — `find` accepts a Borrowed without `.share()`.
+			if (auto it = browseFields.find(fromTile); it != browseFields.end() && it->second.lock() == fromCylinder) {
+				fromCylinder = fromTile->getCylinder();
 			}
 		}
 	}
@@ -2443,10 +2464,10 @@ ReturnValue Game::internalRemoveItem(const std::shared_ptr<Item> &items, int32_t
 		g_logger().debug("{} - Cylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	const auto &fromTile = cylinder->getTile();
+	const auto fromTile = cylinder->getTile();
 	if (fromTile) {
-		if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == cylinder) {
-			cylinder = fromTile;
+		if (auto it = browseFields.find(fromTile); it != browseFields.end() && it->second.lock() == cylinder) {
+			cylinder = fromTile->getCylinder();
 		}
 	}
 	if (count == -1) {
@@ -2908,7 +2929,10 @@ namespace {
 			return outcome.ret != RETURNVALUE_NOERROR ? outcome.ret : RETURNVALUE_NOTENOUGHROOM;
 		}
 
-		auto dropOutcome = addItemToCylinder(game, cylinder->getTile(), itemId, dropCount, FLAG_NOLIMIT);
+		// Bridge: `cylinder->getTile()` returns `PolyPtr<Tile>::Borrowed`;
+		// addItemToCylinder takes the legacy `shared_ptr<Cylinder>` facade.
+		// Non-null guaranteed by the FLAG_DROPONMAP check above.
+		auto dropOutcome = addItemToCylinder(game, cylinder->getTile()->getCylinder(), itemId, dropCount, FLAG_NOLIMIT);
 		if (dropOutcome.placed > 0) {
 			totalAdded += static_cast<uint64_t>(dropOutcome.placed) * unitValue;
 		}
@@ -3058,9 +3082,11 @@ std::shared_ptr<Item> Game::transformItem(std::shared_ptr<Item> item, uint16_t n
 		return nullptr;
 	}
 
-	std::shared_ptr<Tile> fromTile = cylinder->getTile();
-	if (fromTile && browseFields.contains(fromTile) && browseFields[fromTile].lock() == cylinder) {
-		cylinder = fromTile;
+	auto fromTile = cylinder->getTile();
+	if (fromTile) {
+		if (auto it = browseFields.find(fromTile); it != browseFields.end() && it->second.lock() == cylinder) {
+			cylinder = fromTile->getCylinder();
+		}
 	}
 
 	int32_t itemIndex = cylinder->getThingIndex(item);
@@ -3199,7 +3225,7 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	std::shared_ptr<Tile> toTile = map.getTile(newPos);
+	PolyPtr<Tile>::Borrowed toTile = map.getTile(newPos);
 	if (!toTile) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -4575,7 +4601,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 
 	std::shared_ptr<Container> parentContainer = std::dynamic_pointer_cast<Container>(container->getRealParent());
 	if (!parentContainer) {
-		std::shared_ptr<Tile> tile = container->getTile();
+		PolyPtr<Tile>::Borrowed tile = container->getTile();
 		if (!tile) {
 			return;
 		}
@@ -4774,7 +4800,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 		return;
 	}
 
-	const auto &tile = item->getParent() ? item->getParent()->getTile() : nullptr;
+	const auto tile = item->getParent() ? item->getParent()->getTile() : PolyPtr<Tile>::Borrowed {};
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;
@@ -4903,7 +4929,7 @@ void Game::playerWrapableItem(uint32_t playerId, const Position &pos, uint8_t st
 		return;
 	}
 
-	const auto houseTile = tile->dynamic_self_cast<HouseTile>();
+	auto* houseTile = dynamic_cast<HouseTile*>(tile.get());
 	if (!tile->hasFlag(TILESTATE_PROTECTIONZONE) || !houseTile) {
 		player->sendCancelMessage("You may construct this only inside a house.");
 		return;
@@ -5145,7 +5171,7 @@ void Game::playerBrowseField(uint32_t playerId, const Position &pos) {
 		return;
 	}
 
-	std::shared_ptr<Tile> tile = map.getTile(pos);
+	PolyPtr<Tile>::Borrowed tile = map.getTile(pos);
 	if (!tile) {
 		return;
 	}
@@ -5363,7 +5389,8 @@ void Game::playerRequestTrade(uint32_t playerId, const Position &pos, uint8_t st
 	}
 
 	if (g_configManager().getBoolean(ONLY_INVITED_CAN_MOVE_HOUSE_ITEMS)) {
-		if (std::shared_ptr<HouseTile> houseTile = std::dynamic_pointer_cast<HouseTile>(tradeItem->getTile())) {
+		auto tradeTile = tradeItem->getTile();
+		if (auto* houseTile = tradeTile ? dynamic_cast<HouseTile*>(tradeTile.get()) : nullptr) {
 			const auto &house = houseTile->getHouse();
 			if (house && tradeItem->getRealParent() != player && (!house->isInvited(player) || house->getHouseAccessLevel(player) == HOUSE_GUEST)) {
 				player->sendCancelMessage(RETURNVALUE_NOTMOVABLE);
@@ -5785,7 +5812,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 			return;
 		}
 
-		std::shared_ptr<Tile> tile = player->getTile();
+		PolyPtr<Tile>::Borrowed tile = player->getTile();
 		if (tile && tile->getItemCount() >= 20) {
 			player->sendCancelMessage(RETURNVALUE_CONTAINERISFULL);
 			return;
@@ -6088,7 +6115,7 @@ void Game::playerQuickLoot(uint32_t playerId, const Position &pos, uint16_t item
 void Game::playerLootAllCorpses(const std::shared_ptr<Player> &player, const Position &pos, bool lootAllCorpses) {
 	if (lootAllCorpses) {
 		const auto maxQuickLootCorpses = static_cast<uint16_t>(std::max<int32_t>(1, g_configManager().getNumber(QUICK_LOOT_MAX_CORPSES)));
-		std::shared_ptr<Tile> tile = g_game().map.getTile(pos.x, pos.y, pos.z);
+		PolyPtr<Tile>::Borrowed tile = g_game().map.getTile(pos.x, pos.y, pos.z);
 		if (!tile) {
 			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 			return;
@@ -6787,7 +6814,7 @@ void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t ou
 			return;
 		}
 
-		std::shared_ptr<Tile> playerTile = player->getTile();
+		PolyPtr<Tile>::Borrowed playerTile = player->getTile();
 		if (!playerTile) {
 			return;
 		}
@@ -7565,7 +7592,7 @@ void Game::combatGetTypeInfo(CombatType_t combatType, const std::shared_ptr<Crea
 				case RACE_BLOOD:
 					color = TEXTCOLOR_RED;
 					effect = CONST_ME_DRAWBLOOD;
-					if (std::shared_ptr<Tile> tile = target->getTile()) {
+					if (PolyPtr<Tile>::Borrowed tile = target->getTile()) {
 						if (!tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
 							splash = Item::CreateItem(ITEM_SMALLSPLASH, FLUID_BLOOD);
 						}
@@ -10757,7 +10784,7 @@ void Game::playerSetMonsterPodium(uint32_t playerId, uint32_t monsterRaceId, con
 		return;
 	}
 
-	const auto &tile = item->getParent() ? item->getParent()->getTile() : nullptr;
+	const auto tile = item->getParent() ? item->getParent()->getTile() : PolyPtr<Tile>::Borrowed {};
 	if (!tile) {
 		player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
 		return;

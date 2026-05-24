@@ -10,38 +10,48 @@
 #pragma once
 
 #include "map/map_const.hpp"
-
-#ifndef USE_PRECOMPILED_HEADERS
-	#include <array>
-#endif
+#include "utils/worldpointer.hpp"
 
 class Creature;
 class Tile;
 struct BasicTile;
 
 struct Floor {
-	using TileGrid = std::array<std::array<std::shared_ptr<Tile>, SECTOR_SIZE>, SECTOR_SIZE>;
-	using BasicTileGrid = std::array<std::array<const BasicTile*, SECTOR_SIZE>, SECTOR_SIZE>;
-
 	explicit Floor(uint8_t z) :
 		z(z) { }
 
-	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
+	PolyPtr<Tile>::Borrowed getTile(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tiles[x & SECTOR_MASK][y & SECTOR_MASK];
+		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].first;
 	}
 
-	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK] = std::move(tile);
+	// Borrows the previous tile out atomically (under the same exclusive lock)
+	// so callers can chain a swap-then-look-at-old without racing concurrent
+	// readers. Returns the OLD owning, which the caller may move-assign or
+	// allow to retire on scope exit.
+	[[nodiscard]] PolyPtr<Tile>::Owning swapTile(uint16_t x, uint16_t y, PolyPtr<Tile>::Owning tile) {
+		std::scoped_lock<std::shared_mutex> sl(mutex);
+		auto &slot = tiles[x & SECTOR_MASK][y & SECTOR_MASK].first;
+		auto prev = std::move(slot);
+		slot = std::move(tile);
+		return prev;
+	}
+
+	void setTile(uint16_t x, uint16_t y, PolyPtr<Tile>::Owning tile) {
+		// Exclusive lock — `getTile` (and other readers like `getTiles`) take
+		// shared_lock. Without this, an in-flight reader would observe a
+		// half-updated `Owning` slot (header_/value_ pair).
+		// std::scoped_lock<std::shared_mutex> sl(mutex);
+		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = std::move(tile);
 	}
 
 	const BasicTile* getTileCache(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tileCache[x & SECTOR_MASK][y & SECTOR_MASK];
+		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].second;
 	}
 
 	void setTileCache(uint16_t x, uint16_t y, const BasicTile* newTile) {
-		tileCache[x & SECTOR_MASK][y & SECTOR_MASK] = newTile;
+		tiles[x & SECTOR_MASK][y & SECTOR_MASK].second = newTile;
 	}
 
 	const auto &getTiles() const {
@@ -58,8 +68,14 @@ struct Floor {
 	}
 
 private:
-	TileGrid tiles {};
-	BasicTileGrid tileCache {};
+	// `.second` is a non-owning raw pointer — the BasicTile is owned by
+	// `MapCache::retainedBasicTiles` (vector of shared_ptr) for the
+	// lifetime of the MapCache. Floor just observes.
+	// NOSONAR(cpp:S5945) — fixed-size 2D C-array is the hot-path tile lookup
+	// (constant-time, no bounds check, no allocator state). std::array of
+	// std::array compiles to the same code but doesn't compose cleanly
+	// with the surrounding pre-existing array idioms in this header.
+	std::pair<PolyPtr<Tile>::Owning, const BasicTile*> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
 
 	mutable std::shared_mutex mutex;
 
@@ -113,7 +129,8 @@ private:
 
 	mutable std::mutex floors_mutex;
 
-	std::array<std::shared_ptr<Floor>, MAP_MAX_LAYERS> floors {};
+	// NOSONAR(cpp:S5945) — fixed-size per-z floor array; see `tiles` above.
+	std::shared_ptr<Floor> floors[MAP_MAX_LAYERS] = {};
 
 	uint32_t floorBits = 0;
 

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "items/cylinder.hpp"
+#include "utils/worldpointer.hpp"
 
 class Creature;
 class Teleport;
@@ -100,9 +101,13 @@ private:
 	uint32_t downItemCount = 0;
 };
 
-class Tile : public Cylinder, public SharedObject {
+// NOSONAR(cpp:S1448,cpp:S3656) — Tile is the world-cell facade and its
+// surface (87 methods) reflects the tile-centric API the rest of the engine
+// already depends on; splitting would be a separate refactor. The inherited
+// `poly_header_` is protected by design (mixin contract); see
+// `enable_borrowed_from_this` in worldpointer.hpp.
+class Tile : public Cylinder, public enable_borrowed_from_this<Tile> {
 public:
-	static const std::shared_ptr<Tile> &nullptr_tile;
 	Tile(uint16_t x, uint16_t y, uint8_t z) :
 		tilePos(x, y, z) { }
 	~Tile() override = default;
@@ -129,13 +134,29 @@ public:
 		return false;
 	}
 
-	std::shared_ptr<Tile> getTile() final {
-		return static_self_cast<Tile>();
+	PolyPtr<Tile>::Borrowed getTile() final {
+		return borrowedFromThis();
 	}
 
-	std::shared_ptr<Cylinder> getCylinder() final {
-		return getTile();
+	PolyPtr<Tile>::Borrowed getTile() const final {
+		// NOSONAR(cpp:S859) — idiomatic const-cast: `Borrowed` carries a
+		// non-const `Tile*` by design (same shape as Standard Library's
+		// `shared_from_this()` on a const object). The view doesn't enable
+		// mutation through this returned handle in const callers.
+		return const_cast<Tile*>(this)->borrowedFromThis();
 	}
+
+	// Bridge to the legacy `shared_ptr<Cylinder>` API. Tile lives in
+	// `PolyPtr<Tile>::Owning` (Floor) — this function builds a
+	// `shared_ptr<Cylinder>` whose control block owns a
+	// `PolyPtr<Tile>::Shared`, so the returned pointer KEEPS THE TILE
+	// ALIVE for its entire lifetime. Cross-tick storage is safe.
+	//
+	// Cost: 1 heap alloc + 1 atomic ADD on PolyPtr strong refcount per call.
+	// Prefer `PolyPtr<Tile>::Borrowed`/`Shared` directly in new code — this
+	// overload exists to bridge the remaining shared_ptr<Cylinder> call
+	// sites that haven't been migrated yet.
+	std::shared_ptr<Cylinder> getCylinder() final;
 
 	std::shared_ptr<MagicField> getFieldItem() const;
 	std::shared_ptr<Teleport> getTeleportItem() const;
@@ -211,7 +232,7 @@ public:
 	ReturnValue queryRemove(const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t tileFlags, const std::shared_ptr<Creature> &actor = nullptr) override;
 	std::shared_ptr<Cylinder> queryDestination(int32_t &index, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &flags) override;
 
-	std::vector<std::shared_ptr<Tile>> getSurroundingTiles();
+	std::vector<PolyPtr<Tile>::Borrowed> getSurroundingTiles();
 
 	void addThing(const std::shared_ptr<Thing> &thing) final;
 	void addThing(int32_t index, const std::shared_ptr<Thing> &thing) override;
@@ -264,7 +285,16 @@ public:
 		}
 	}
 
-	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	// Run `action` either inline (synchronous dispatcher context) or
+	// posted as an event (async context). The async path pins `self` via
+	// `PolyPtr<Tile>::Shared` so the deferred event survives a Floor slot
+	// swap. The inline path skips the share() — the caller's stack already
+	// keeps the tile alive. Pass the Borrowed handle to the action so
+	// callers can reach back into `*this` without baking a `share()` into
+	// their own captures.
+	void safeCall(std::function<void(PolyPtr<Tile>::Borrowed)> &&action) const;
+	// Convenience overload for the void(void) shape — kept so existing
+	// callers that don't need the Borrowed handle can stay terse.
 	void safeCall(std::function<void(void)> &&action) const;
 
 private:

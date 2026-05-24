@@ -1472,8 +1472,8 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) const {
 		const auto &playerTile = player->getTile();
 		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
 	} else if (npc) {
-		const auto &tile = npc->getTile();
-		const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);
+		const auto tile = npc->getTile();
+		auto* houseTile = tile ? dynamic_cast<HouseTile*>(tile.get()) : nullptr;
 		return (houseTile != nullptr);
 	} else {
 		return false;
@@ -6904,7 +6904,7 @@ bool Player::canExiva(const std::string &spellParam) const {
 // tile
 // send methods
 
-void Player::sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Position &pos, const std::shared_ptr<Item> &item) {
+void Player::sendAddTileItem(PolyPtr<Tile>::Borrowed itemTile, const Position &pos, const std::shared_ptr<Item> &item) {
 	if (client) {
 		int32_t stackpos = itemTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -6913,7 +6913,7 @@ void Player::sendAddTileItem(const std::shared_ptr<Tile> &itemTile, const Positi
 	}
 }
 
-void Player::sendUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &item) {
+void Player::sendUpdateTileItem(PolyPtr<Tile>::Borrowed updateTile, const Position &pos, const std::shared_ptr<Item> &item) {
 	if (client) {
 		int32_t stackpos = updateTile->getStackposOfItem(static_self_cast<Player>(), item);
 		if (stackpos != -1) {
@@ -8585,7 +8585,7 @@ void Player::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 	}
 }
 
-void Player::sendUpdateTile(const std::shared_ptr<Tile> &updateTile, const Position &pos) const {
+void Player::sendUpdateTile(PolyPtr<Tile>::Borrowed updateTile, const Position &pos) const {
 	if (client) {
 		client->sendUpdateTile(updateTile, pos);
 	}
@@ -11902,7 +11902,7 @@ SoundEffect_t Player::getHitSoundEffect() const {
 
 // event methods
 
-void Player::onUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) {
+void Player::onUpdateTileItem(PolyPtr<Tile>::Borrowed updateTile, const Position &pos, const std::shared_ptr<Item> &oldItem, const ItemType &oldType, const std::shared_ptr<Item> &newItem, const ItemType &newType) {
 	Creature::onUpdateTileItem(updateTile, pos, oldItem, oldType, newItem, newType);
 
 	if (oldItem != newItem) {
@@ -11916,7 +11916,7 @@ void Player::onUpdateTileItem(const std::shared_ptr<Tile> &updateTile, const Pos
 	}
 }
 
-void Player::onRemoveTileItem(const std::shared_ptr<Tile> &fromTile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) {
+void Player::onRemoveTileItem(PolyPtr<Tile>::Borrowed fromTile, const Position &pos, const ItemType &iType, const std::shared_ptr<Item> &item) {
 	Creature::onRemoveTileItem(fromTile, pos, iType, item);
 
 	if (tradeState != TRADE_TRANSFER) {
@@ -12057,7 +12057,7 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 	}
 }
 
-void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
+void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	const auto &followCreature = getFollowCreature();

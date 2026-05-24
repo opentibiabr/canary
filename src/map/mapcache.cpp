@@ -287,8 +287,8 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 	return item;
 }
 
-std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto* cachedTile = floor->getTileCache(x, y);
+PolyPtr<Tile>::Borrowed MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
+	const auto &cachedTile = floor->getTileCache(x, y);
 	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
 		return oldTile;
@@ -308,27 +308,36 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 		}
 	}
 
-	std::shared_ptr<Tile> tile = nullptr;
+	PolyPtr<Tile>::Owning tile;
 
 	auto pos = Position(x, y, z);
 
 	if (cachedTile->isHouse()) {
 		if (const auto &house = map->houses.getHouse(cachedTile->houseId)) {
-			tile = std::make_shared<HouseTile>(pos, house);
-			tile->safeCall([tile] {
-				tile->getHouse()->addTile(tile->static_self_cast<HouseTile>());
+			tile = make_poly<HouseTile>(pos, house);
+			// safeCall passes a Borrowed to the lambda. When sync, no
+			// share() atomic is paid; when async, safeCall internally
+			// pins via Shared and forwards the Borrowed view.
+			tile.borrow()->safeCall([](PolyPtr<Tile>::Borrowed self) {
+				self->getHouse()->addTile(self);
 			});
 		} else {
+			// Bad houseId is recoverable — clear the cache entry and bail
+			// out before the code below dereferences an empty `tile`.
 			g_logger().error("[{}] house not found for houseId {}", std::source_location::current().function_name(), cachedTile->houseId);
+			floor->setTileCache(x, y, nullptr);
+			return oldTile;
 		}
 	} else if (cachedTile->isStatic) {
-		tile = std::make_shared<StaticTile>(pos);
+		tile = make_poly<StaticTile>(pos);
 	} else {
-		tile = std::make_shared<DynamicTile>(pos);
+		tile = make_poly<DynamicTile>(pos);
 	}
 
+	auto borrowed = tile.borrow();
+
 	if (cachedTile->ground != nullptr) {
-		tile->internalAddThing(createItem(cachedTile->ground, pos));
+		borrowed->internalAddThing(createItem(cachedTile->ground, pos));
 	}
 
 	if (!cachedTile->items.empty()) {
@@ -336,27 +345,27 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	}
 
 	for (const auto &BasicItemd : cachedTile->items) {
-		tile->internalAddThing(createItem(BasicItemd, pos));
+		borrowed->internalAddThing(createItem(BasicItemd, pos));
 	}
 
-	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
+	borrowed->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+	borrowed->safeCall([pos, movedOldCreatureList = std::move(oldCreatureList)](PolyPtr<Tile>::Borrowed self) {
 		for (const auto &creature : movedOldCreatureList) {
-			tile->internalAddThing(creature);
+			self->internalAddThing(creature);
 		}
 
 		for (const auto &zone : Zone::getZones(pos)) {
-			tile->addZone(zone);
+			self->addZone(zone);
 		}
 	});
 
-	floor->setTile(x, y, tile);
+	floor->setTile(x, y, std::move(tile));
 
 	// Remove Tile from cache
 	floor->setTileCache(x, y, nullptr);
 
-	return tile;
+	return borrowed;
 }
 
 void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &newTile) {

@@ -168,9 +168,9 @@ void EventCallback::pushArgument(lua_State* L, const std::shared_ptr<Zone> &zone
 	}
 }
 
-void EventCallback::pushArgument(lua_State* L, const std::shared_ptr<Tile> &tile) {
+void EventCallback::pushArgument(lua_State* L, PolyPtr<Tile>::Borrowed tile) {
 	if (tile) {
-		Lua::pushUserdata<Tile>(L, tile);
+		Lua::pushUserdataPoly<Tile>(L, tile);
 		Lua::setMetatable(L, -1, "Tile");
 	} else {
 		lua_pushnil(L);

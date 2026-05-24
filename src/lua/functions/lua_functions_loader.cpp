@@ -223,8 +223,8 @@ void Lua::pushCylinder(lua_State* L, const std::shared_ptr<Cylinder> &cylinder) 
 	} else if (const auto &parentItem = cylinder->getItem()) {
 		pushUserdata<Item>(L, parentItem);
 		setItemMetatable(L, -1, parentItem);
-	} else if (const auto &tile = cylinder->getTile()) {
-		pushUserdata<Tile>(L, tile);
+	} else if (const auto tile = cylinder->getTile()) {
+		pushUserdataPoly<Tile>(L, tile);
 		setMetatable(L, -1, "Tile");
 	} else if (cylinder == VirtualCylinder::virtualCylinder) {
 		pushBoolean(L, true);

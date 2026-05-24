@@ -276,7 +276,7 @@ int_fast32_t AStarNodes::getMapWalkCost(const AStarNode* node, const Position &n
 	return (((std::abs(node->x - neighborPos.x) + std::abs(node->y - neighborPos.y)) - 1) * MAP_DIAGONALWALKCOST) + MAP_NORMALWALKCOST;
 }
 
-int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile) {
+int_fast32_t AStarNodes::getTileWalkCost(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile) {
 	int_fast32_t cost = 0;
 
 	if (creature && tile) {

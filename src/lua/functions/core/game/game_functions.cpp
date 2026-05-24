@@ -654,7 +654,7 @@ int GameFunctions::luaGameCreateTile(lua_State* L) {
 		isDynamic = Lua::getBoolean(L, 4, false);
 	}
 
-	Lua::pushUserdata(L, g_game().map.getOrCreateTile(position, isDynamic));
+	Lua::pushUserdataPoly<Tile>(L, g_game().map.getOrCreateTile(position, isDynamic));
 	Lua::setMetatable(L, -1, "Tile");
 	return 1;
 }

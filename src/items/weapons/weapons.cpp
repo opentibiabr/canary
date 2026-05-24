@@ -318,7 +318,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 	onUsedWeapon(player, item, target->getTile());
 }
 
-void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile) const {
+void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed tile) const {
 	if (isLoadedScriptId()) {
 		LuaVariant var;
 		var.type = VARIANT_TARGETPOSITION;
@@ -332,7 +332,7 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 	onUsedWeapon(player, item, tile);
 }
 
-void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &destTile) const {
+void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed destTile) const {
 	if (!player->hasFlag(PlayerFlags_t::NotGainSkill)) {
 		skills_t skillType;
 		uint32_t skillPoint;

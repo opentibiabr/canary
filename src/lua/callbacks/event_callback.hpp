@@ -91,7 +91,7 @@ private:
 	static void pushArgument(lua_State* L, const std::shared_ptr<Monster> &monster);
 	static void pushArgument(lua_State* L, const std::shared_ptr<Container> &container);
 	static void pushArgument(lua_State* L, const std::shared_ptr<Zone> &zone);
-	static void pushArgument(lua_State* L, const std::shared_ptr<Tile> &tile);
+	static void pushArgument(lua_State* L, PolyPtr<Tile>::Borrowed tile);
 	static void pushArgument(lua_State* L, const std::shared_ptr<Thing> &thing);
 	static void pushArgument(lua_State* L, const std::shared_ptr<Cylinder> &cylinder);
 	static void pushArgument(lua_State* L, const ItemType* itemType);

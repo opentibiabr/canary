@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "utils/worldpointer.hpp"
 #include "creatures/appearance/outfit/outfit.hpp"
 #include "creatures/players/components/player_badge.hpp"
 #include "creatures/players/components/player_title.hpp"
@@ -207,21 +208,43 @@ public:
 	bool gameIsDay();
 
 	ReturnValue internalMoveCreature(const std::shared_ptr<Creature> &creature, Direction direction, uint32_t flags = 0);
-	ReturnValue internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags = 0);
+	ReturnValue internalMoveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed toTile, uint32_t flags = 0);
 
 	ReturnValue checkMoveItemToCylinder(const std::shared_ptr<Player> &player, const std::shared_ptr<Cylinder> &fromCylinder, const std::shared_ptr<Cylinder> &toCylinder, const std::shared_ptr<Item> &item, Position toPos);
 	ReturnValue internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::shared_ptr<Cylinder> toCylinder, int32_t index, const std::shared_ptr<Item> &item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, const std::shared_ptr<Creature> &actor = nullptr, const std::shared_ptr<Item> &tradeItem = nullptr, bool checkTile = true);
+	// Overloads for Tile (PolyPtr) cylinders — promote internally to a
+	// shared_ptr<Cylinder> facade (Tile::getCylinder returns one with a
+	// null-deleter).
+	ReturnValue internalMoveItem(PolyPtr<Tile>::Borrowed fromTile, std::shared_ptr<Cylinder> toCylinder, int32_t index, const std::shared_ptr<Item> &item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, const std::shared_ptr<Creature> &actor = nullptr, const std::shared_ptr<Item> &tradeItem = nullptr, bool checkTile = true) {
+		return internalMoveItem(fromTile ? fromTile->getCylinder() : nullptr, toCylinder, index, item, count, movedItem, flags, actor, tradeItem, checkTile);
+	}
+	ReturnValue internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, PolyPtr<Tile>::Borrowed toTile, int32_t index, const std::shared_ptr<Item> &item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, const std::shared_ptr<Creature> &actor = nullptr, const std::shared_ptr<Item> &tradeItem = nullptr, bool checkTile = true) {
+		return internalMoveItem(fromCylinder, toTile ? toTile->getCylinder() : nullptr, index, item, count, movedItem, flags, actor, tradeItem, checkTile);
+	}
+	ReturnValue internalMoveItem(PolyPtr<Tile>::Borrowed fromTile, PolyPtr<Tile>::Borrowed toTile, int32_t index, const std::shared_ptr<Item> &item, uint32_t count, std::shared_ptr<Item>* movedItem, uint32_t flags = 0, const std::shared_ptr<Creature> &actor = nullptr, const std::shared_ptr<Item> &tradeItem = nullptr, bool checkTile = true) {
+		return internalMoveItem(fromTile ? fromTile->getCylinder() : nullptr, toTile ? toTile->getCylinder() : nullptr, index, item, count, movedItem, flags, actor, tradeItem, checkTile);
+	}
 
 	std::tuple<ReturnValue, uint32_t, uint32_t> addItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::shared_ptr<Item>> &items, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
 	std::tuple<ReturnValue, uint32_t, uint32_t> createItemBatch(const std::shared_ptr<Cylinder> &toCylinder, const std::vector<std::tuple<uint16_t, uint32_t, uint16_t>> &itemCounts, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
 	std::tuple<ReturnValue, uint32_t, uint32_t> createItem(const std::shared_ptr<Cylinder> &toCylinder, uint16_t itemId, uint32_t count, uint16_t subType, uint32_t flags = 0, bool dropOnMap = true, uint32_t autoContainerId = 0);
 	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, const std::shared_ptr<Item> &item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false);
 	ReturnValue internalAddItem(std::shared_ptr<Cylinder> toCylinder, const std::shared_ptr<Item> &item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount);
+	// Tile (PolyPtr) overloads.
+	ReturnValue internalAddItem(PolyPtr<Tile>::Borrowed toTile, const std::shared_ptr<Item> &item, int32_t index = INDEX_WHEREEVER, uint32_t flags = 0, bool test = false) {
+		return internalAddItem(toTile ? toTile->getCylinder() : nullptr, item, index, flags, test);
+	}
+	ReturnValue internalAddItem(PolyPtr<Tile>::Borrowed toTile, const std::shared_ptr<Item> &item, int32_t index, uint32_t flags, bool test, uint32_t &remainderCount) {
+		return internalAddItem(toTile ? toTile->getCylinder() : nullptr, item, index, flags, test, remainderCount);
+	}
 	ReturnValue internalRemoveItem(const std::shared_ptr<Item> &item, int32_t count = -1, bool test = false, uint32_t flags = 0, bool force = false);
 
 	ReturnValue internalPlayerAddItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, bool dropOnMap = true, Slots_t slot = CONST_SLOT_WHEREEVER);
 
 	std::shared_ptr<Item> findItemOfType(const std::shared_ptr<Cylinder> &cylinder, uint16_t itemId, bool depthSearch = true, int32_t subType = -1) const;
+	std::shared_ptr<Item> findItemOfType(PolyPtr<Tile>::Borrowed tile, uint16_t itemId, bool depthSearch = true, int32_t subType = -1) const {
+		return findItemOfType(tile ? tile->getCylinder() : nullptr, itemId, depthSearch, subType);
+	}
 
 	void createLuaItemsOnMap();
 
@@ -322,7 +345,7 @@ public:
 	void playerTeleport(uint32_t playerId, const Position &pos);
 	void playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
 	void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position &movingCreatureOrigPos, const Position &toPos);
-	void playerMoveCreature(const std::shared_ptr<Player> &playerId, const std::shared_ptr<Creature> &movingCreature, const Position &movingCreatureOrigPos, const std::shared_ptr<Tile> &toTile);
+	void playerMoveCreature(const std::shared_ptr<Player> &playerId, const std::shared_ptr<Creature> &movingCreature, const Position &movingCreatureOrigPos, PolyPtr<Tile>::Borrowed toTile);
 	void playerMoveItemByPlayerID(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
 	void playerMoveItem(const std::shared_ptr<Player> &player, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count, std::shared_ptr<Item> item, std::shared_ptr<Cylinder> toCylinder);
 	void playerEquipItem(uint32_t playerId, uint16_t itemId, bool hasTier = false, uint8_t tier = 0);
@@ -563,7 +586,16 @@ public:
 	void addGuild(const std::shared_ptr<Guild> &guild);
 	void removeGuild(uint32_t guildId);
 
-	phmap::flat_hash_map<std::shared_ptr<Tile>, std::weak_ptr<Container>> browseFields;
+	// Tile keys are pinned via PolyPtr<Tile>::Shared (Tile no longer
+	// participates in shared_ptr). Hash + Equal are TRANSPARENT (heterogeneous
+	// lookup): callers can pass a `Borrowed` directly to `find()` /
+	// `contains()` without paying a `share()` atomic just to query.
+	phmap::flat_hash_map<
+		PolyPtr<Tile>::Shared,
+		std::weak_ptr<Container>,
+		PolyPtrTransparentHash<Tile>,
+		PolyPtrTransparentEqual<Tile>>
+		browseFields;
 
 	void internalRemoveItems(const std::vector<std::shared_ptr<Item>> &itemVector, uint32_t amount, bool stackable);
 
@@ -589,11 +621,27 @@ public:
 	auto getTilesToClean() const {
 		return tilesToClean;
 	}
-	void addTileToClean(const std::shared_ptr<Tile> &tile) {
-		tilesToClean.emplace(tile);
+	void addTileToClean(PolyPtr<Tile>::Borrowed tile) {
+		if (!tile) {
+			return;
+		}
+		// `share()` can return a null Shared if the tile was retired
+		// between the caller obtaining the Borrowed and this call (see
+		// the CAS-loop in worldpointer.hpp). Inserting a null key would
+		// poison `tilesToClean` — `removeTileToClean` bails on null
+		// borrows and could never erase the entry.
+		if (auto shared = tile.share()) {
+			tilesToClean.emplace(std::move(shared));
+		}
 	}
-	void removeTileToClean(const std::shared_ptr<Tile> &tile) {
-		tilesToClean.erase(tile);
+	void removeTileToClean(PolyPtr<Tile>::Borrowed tile) {
+		if (!tile) {
+			return;
+		}
+		// Transparent find — no `share()` atomic needed for the lookup.
+		if (auto it = tilesToClean.find(tile); it != tilesToClean.end()) {
+			tilesToClean.erase(it);
+		}
 	}
 	void clearTilesToClean() {
 		tilesToClean.clear();
@@ -865,7 +913,7 @@ private:
 
 	std::map<uint32_t, std::shared_ptr<BedItem>> bedSleepersMap;
 
-	std::unordered_set<std::shared_ptr<Tile>> tilesToClean;
+	std::unordered_set<PolyPtr<Tile>::Shared, PolyPtrTransparentHash<Tile>, PolyPtrTransparentEqual<Tile>> tilesToClean;
 
 	ModalWindow offlineTrainingWindow { std::numeric_limits<uint32_t>::max(), "Choose a Skill", "Please choose a skill:" };
 

@@ -1437,7 +1437,7 @@ namespace {
 		output << indent << "}";
 	}
 
-	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::*member) {
+	void writeJsonClassStringArrayMap(std::ostringstream &output, const std::map<std::string, LuaClassInfo, std::less<>> &classes, const std::string_view key, const std::vector<std::string> LuaClassInfo::* member) {
 		output << "  \"" << key << "\": {\n";
 		bool firstClass = true;
 		for (const auto &[name, classInfo] : classes) {
@@ -1492,7 +1492,7 @@ namespace {
 		appendMappedClassStringValues(classInfo.overloads, scanResult.classOverloads, className);
 	}
 
-	void applyScannedClassValues(LuaClassMap &classes, const LuaClassValuesMap &valuesByClass, std::vector<std::string> LuaClassInfo::*member) {
+	void applyScannedClassValues(LuaClassMap &classes, const LuaClassValuesMap &valuesByClass, std::vector<std::string> LuaClassInfo::* member) {
 		for (const auto &[name, values] : valuesByClass) {
 			auto &classInfo = classes[name];
 			classInfo.name = name;
@@ -1826,7 +1826,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.className = (*it)[1].str();
 		info.name = (*it)[2].str();
 		info.handler = (*it)[3].str();
-		info.returnType = normalizeReturnType(content, info.handler);
+		info.returnType = info.handler == "Lua::luaGarbageCollection" ? "nil" : normalizeReturnType(content, info.handler);
 		info.hasSelfParameter = usesSelfParameter(content, info.handler);
 		info.parameters = inferParameters(content, info.handler, info.hasSelfParameter);
 		info.sourceFile = relativePath(filePath);

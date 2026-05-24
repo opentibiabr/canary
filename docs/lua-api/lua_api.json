@@ -178,79 +178,105 @@
     "Charm": [
       {
         "name": "castSound",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "category",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "chance",
-        "params": [],
+        "params": [
+          "arg2?: table"
+        ],
         "return": "boolean|table",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "damageType",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "description",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "effect",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "impactSound",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "messageCancel",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "messageServerLog",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "name",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "percentage",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "points",
-        "params": [],
+        "params": [
+          "arg2?: table"
+        ],
         "return": "boolean|table",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       },
       {
         "name": "type",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/charm_functions.cpp"
       }
@@ -314,7 +340,7 @@
         "name": "setParameter",
         "params": [
           "key: any",
-          "value: boolean"
+          "value: boolean|number"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/combat/combat_functions.cpp"
@@ -402,7 +428,7 @@
         "name": "setParameter",
         "params": [
           "key: any",
-          "value: boolean"
+          "value: boolean|number"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/combat/condition_functions.cpp"
@@ -416,46 +442,11 @@
         "source": "src/lua/functions/creatures/combat/condition_functions.cpp"
       }
     ],
-    "configManager": [
-      {
-        "name": "getBoolean",
-        "params": [
-          "key: any"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/game/config_functions.cpp"
-      },
-      {
-        "name": "getFloat",
-        "params": [
-          "key: any",
-          "shouldRound: boolean"
-        ],
-        "return": "number",
-        "source": "src/lua/functions/core/game/config_functions.cpp"
-      },
-      {
-        "name": "getNumber",
-        "params": [
-          "key: any"
-        ],
-        "return": "number",
-        "source": "src/lua/functions/core/game/config_functions.cpp"
-      },
-      {
-        "name": "getString",
-        "params": [
-          "key: any"
-        ],
-        "return": "string",
-        "source": "src/lua/functions/core/game/config_functions.cpp"
-      }
-    ],
     "Container": [
       {
         "name": "addItem",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "countOrSubType?: number",
           "index?: number",
           "flags?: number"
@@ -512,7 +503,7 @@
       {
         "name": "getItemCountById",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "subType?: number"
         ],
         "return": "number|nil",
@@ -570,7 +561,7 @@
       {
         "name": "removeItemById",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "count: number",
           "subType?: number"
         ],
@@ -823,15 +814,15 @@
         "source": "src/lua/functions/creatures/creature_functions.cpp"
       },
       {
-        "name": "getZones",
-        "params": [],
-        "return": "table|nil",
-        "source": "src/lua/functions/creatures/creature_functions.cpp"
-      },
-      {
         "name": "getZoneType",
         "params": [],
         "return": "number|nil",
+        "source": "src/lua/functions/creatures/creature_functions.cpp"
+      },
+      {
+        "name": "getZones",
+        "params": [],
+        "return": "table|nil",
         "source": "src/lua/functions/creatures/creature_functions.cpp"
       },
       {
@@ -1224,73 +1215,6 @@
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       }
     ],
-    "db": [
-      {
-        "name": "asyncQuery",
-        "params": [
-          "query: string",
-          "callback?: fun(success: boolean)"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "asyncStoreQuery",
-        "params": [
-          "query: string",
-          "callback?: fun(resultId: number|false)"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "escapeBlob",
-        "params": [
-          "value: string",
-          "length: number"
-        ],
-        "return": "string",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "escapeString",
-        "params": [
-          "value: string"
-        ],
-        "return": "string",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "lastInsertId",
-        "params": [],
-        "return": "number",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "query",
-        "params": [
-          "query: string"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "storeQuery",
-        "params": [
-          "query: string"
-        ],
-        "return": "boolean|number",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      },
-      {
-        "name": "tableExists",
-        "params": [
-          "tableName: string"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/libs/db_functions.cpp"
-      }
-    ],
     "EventCallback": [
       {
         "name": "register",
@@ -1491,13 +1415,17 @@
       },
       {
         "name": "getAchievements",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getBestiaryCharm",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1511,19 +1439,25 @@
       },
       {
         "name": "getBoostedBoss",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "string",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getBoostedCreature",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "string",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getClientVersion",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1553,38 +1487,66 @@
       },
       {
         "name": "getFiendishMonsters",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getGameState",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "number",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getHouses",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "House[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getInfluencedMonsters",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getLadderIds",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getMonsterCount",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "number",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
+        "name": "getMonsterTypeByName",
+        "params": [
+          "name: string"
+        ],
+        "return": "boolean|MonsterType",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
+        "name": "getMonsterTypes",
+        "params": [
+          "...: any"
+        ],
+        "return": "table<string, MonsterType>",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1601,20 +1563,6 @@
           "race: any"
         ],
         "return": "table",
-        "source": "src/lua/functions/core/game/game_functions.cpp"
-      },
-      {
-        "name": "getMonsterTypeByName",
-        "params": [
-          "name: string"
-        ],
-        "return": "boolean|MonsterType",
-        "source": "src/lua/functions/core/game/game_functions.cpp"
-      },
-      {
-        "name": "getMonsterTypes",
-        "params": [],
-        "return": "table<string, MonsterType>",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -1636,7 +1584,9 @@
       },
       {
         "name": "getNpcCount",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "number",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1650,19 +1600,25 @@
       },
       {
         "name": "getPlayerCount",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "number",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getPlayers",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "Player[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getPublicAchievements",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1676,13 +1632,17 @@
       },
       {
         "name": "getSecretAchievements",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getSoulCoreItems",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1702,19 +1662,25 @@
       },
       {
         "name": "getTalkActions",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getTowns",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "Town[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
         "name": "getWorldType",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "number",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -2261,7 +2227,9 @@
     "Item": [
       {
         "name": "actor",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/items/item_functions.cpp"
       },
@@ -2338,7 +2306,7 @@
       {
         "name": "getCustomAttribute",
         "params": [
-          "key: string"
+          "key: number|string"
         ],
         "return": "nil",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2504,7 +2472,7 @@
       {
         "name": "isOwner",
         "params": [
-          "creatureOrCreatureId: Creature"
+          "creatureOrCreatureId: number|Creature"
         ],
         "return": "boolean",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2512,7 +2480,7 @@
       {
         "name": "moveTo",
         "params": [
-          "positionOrCylinder: any",
+          "positionOrCylinder: Container|Player|Tile|Position",
           "flags?: number"
         ],
         "return": "boolean|nil",
@@ -2546,7 +2514,7 @@
       {
         "name": "removeCustomAttribute",
         "params": [
-          "key: string"
+          "key: number|string"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2569,7 +2537,7 @@
         "name": "setAttribute",
         "params": [
           "key: string",
-          "value: string"
+          "value: string|number"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2577,8 +2545,8 @@
       {
         "name": "setCustomAttribute",
         "params": [
-          "key: string",
-          "value: string"
+          "key: number|string",
+          "value: number|string|boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2597,7 +2565,7 @@
       {
         "name": "setOwner",
         "params": [
-          "creatureOrCreatureId: Creature"
+          "creatureOrCreatureId: number|Creature"
         ],
         "return": "boolean",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2629,8 +2597,8 @@
       {
         "name": "transform",
         "params": [
-          "itemId: string",
-          "arg2?: number"
+          "itemId: number|string",
+          "countOrSubType?: number"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/items/item_functions.cpp"
@@ -2726,12 +2694,6 @@
         "source": "src/lua/functions/items/item_type_functions.cpp"
       },
       {
-        "name": "getElementalBond",
-        "params": [],
-        "return": "number|nil",
-        "source": "src/lua/functions/items/item_type_functions.cpp"
-      },
-      {
         "name": "getElementDamage",
         "params": [],
         "return": "number|nil",
@@ -2739,6 +2701,12 @@
       },
       {
         "name": "getElementType",
+        "params": [],
+        "return": "number|nil",
+        "source": "src/lua/functions/items/item_type_functions.cpp"
+      },
+      {
+        "name": "getElementalBond",
         "params": [],
         "return": "number|nil",
         "source": "src/lua/functions/items/item_type_functions.cpp"
@@ -2986,55 +2954,11 @@
         "source": "src/lua/functions/items/item_type_functions.cpp"
       }
     ],
-    "kv": [
-      {
-        "name": "get",
-        "params": [
-          "key: string",
-          "forceLoad?: boolean"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      },
-      {
-        "name": "keys",
-        "params": [
-          "prefix?: KV"
-        ],
-        "return": "table",
-        "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      },
-      {
-        "name": "remove",
-        "params": [
-          "key: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      },
-      {
-        "name": "scoped",
-        "params": [
-          "key: string"
-        ],
-        "return": "KV",
-        "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      },
-      {
-        "name": "set",
-        "params": [
-          "key: string",
-          "value: number"
-        ],
-        "return": "boolean",
-        "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      }
-    ],
     "KV": [
       {
         "name": "get",
         "params": [
-          "key: string",
+          "key: string|KV|boolean",
           "forceLoad?: boolean"
         ],
         "return": "nil",
@@ -3043,7 +2967,7 @@
       {
         "name": "keys",
         "params": [
-          "prefix?: KV"
+          "prefix?: KV|string"
         ],
         "return": "table",
         "source": "src/lua/functions/core/libs/kv_functions.cpp"
@@ -3051,7 +2975,7 @@
       {
         "name": "remove",
         "params": [
-          "key: string"
+          "key: string|KV"
         ],
         "return": "nil",
         "source": "src/lua/functions/core/libs/kv_functions.cpp"
@@ -3059,7 +2983,7 @@
       {
         "name": "scoped",
         "params": [
-          "key: string"
+          "key: string|KV"
         ],
         "return": "KV",
         "source": "src/lua/functions/core/libs/kv_functions.cpp"
@@ -3067,53 +2991,11 @@
       {
         "name": "set",
         "params": [
-          "key: string",
+          "key: string|KV",
           "value: number"
         ],
         "return": "boolean",
         "source": "src/lua/functions/core/libs/kv_functions.cpp"
-      }
-    ],
-    "logger": [
-      {
-        "name": "debug",
-        "params": [
-          "text: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/logger_functions.cpp"
-      },
-      {
-        "name": "error",
-        "params": [
-          "text: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/logger_functions.cpp"
-      },
-      {
-        "name": "info",
-        "params": [
-          "text: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/logger_functions.cpp"
-      },
-      {
-        "name": "trace",
-        "params": [
-          "text: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/logger_functions.cpp"
-      },
-      {
-        "name": "warn",
-        "params": [
-          "text: string"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/logger_functions.cpp"
       }
     ],
     "Loot": [
@@ -3260,18 +3142,6 @@
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/loot_functions.cpp"
-      }
-    ],
-    "metrics": [
-      {
-        "name": "addCounter",
-        "params": [
-          "name: string",
-          "value: number",
-          "attributes: any"
-        ],
-        "return": "nil",
-        "source": "src/lua/functions/core/libs/metrics_functions.cpp"
       }
     ],
     "ModalWindow": [
@@ -3466,13 +3336,17 @@
       },
       {
         "name": "criticalChance",
-        "params": [],
+        "params": [
+          "critical?: number"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
         "name": "criticalDamage",
-        "params": [],
+        "params": [
+          "damage?: number"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
@@ -3552,31 +3426,41 @@
       },
       {
         "name": "hazard",
-        "params": [],
+        "params": [
+          "hazard?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
         "name": "hazardCrit",
-        "params": [],
+        "params": [
+          "hazardCrit?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
         "name": "hazardDamageBoost",
-        "params": [],
+        "params": [
+          "hazardDamageBoost?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
         "name": "hazardDefenseBoost",
-        "params": [],
+        "params": [
+          "hazardDefenseBoost?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
         "name": "hazardDodge",
-        "params": [],
+        "params": [
+          "hazardDodge?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
@@ -3734,7 +3618,7 @@
       {
         "name": "setType",
         "params": [
-          "nameOrRaceId: string",
+          "nameOrRaceId: number|string",
           "restoreHealth: boolean"
         ],
         "return": "boolean|nil",
@@ -3742,7 +3626,9 @@
       },
       {
         "name": "soulPit",
-        "params": [],
+        "params": [
+          "soulPit?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       }
@@ -3750,13 +3636,17 @@
     "MonsterSpell": [
       {
         "name": "castSound",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_spell_functions.cpp"
       },
       {
         "name": "impactSound",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_spell_functions.cpp"
       },
@@ -3935,6 +3825,78 @@
     ],
     "MonsterType": [
       {
+        "name": "BestiaryCharmsPoints",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiaryFirstUnlock",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiaryLocations",
+        "params": [
+          "arg2?: string"
+        ],
+        "return": "boolean|string|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiaryOccurrence",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiarySecondUnlock",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiaryStars",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "Bestiaryclass",
+        "params": [
+          "arg2?: string"
+        ],
+        "return": "boolean|string|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "Bestiaryrace",
+        "params": [
+          "race?: any"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "BestiarytoKill",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
         "name": "addAttack",
         "params": [
           "monsterspell: MonsterSpell"
@@ -4017,67 +3979,17 @@
       },
       {
         "name": "armor",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "baseSpeed",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiaryCharmsPoints",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "Bestiaryclass",
-        "params": [],
-        "return": "boolean|string|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiaryFirstUnlock",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiaryLocations",
-        "params": [],
-        "return": "boolean|string|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiaryOccurrence",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "Bestiaryrace",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiarySecondUnlock",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiaryStars",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "BestiarytoKill",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4100,13 +4012,17 @@
       },
       {
         "name": "canPushCreatures",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "canPushItems",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4120,73 +4036,97 @@
       },
       {
         "name": "canWalkOnEnergy",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "canWalkOnFire",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "canWalkOnPoison",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "changeTargetChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "changeTargetSpeed",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "combatImmunities",
-        "params": [],
+        "params": [
+          "immunity?: string"
+        ],
         "return": "boolean|table|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "conditionImmunities",
-        "params": [],
+        "params": [
+          "immunity?: string"
+        ],
         "return": "boolean|table|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "corpseId",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "critChance",
-        "params": [],
+        "params": [
+          "arg2: number"
+        ],
         "return": "number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "deathSound",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "defense",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "enemyFactions",
-        "params": [],
+        "params": [
+          "faction?: any"
+        ],
         "return": "boolean|table|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4200,19 +4140,25 @@
       },
       {
         "name": "experience",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "faction",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "familiar",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4294,121 +4240,162 @@
       },
       {
         "name": "health",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isAttackable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isBlockable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isConvinceable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isForgeCreature",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isHealthHidden",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isHostile",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isIllusionable",
-        "params": [],
-        "return": "boolean|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "isPreyable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isPreyExclusive",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
+      },
+      {
+        "name": "isPreyable",
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isPushable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isRewardBoss",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "isSummonable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "light",
-        "params": [],
+        "params": [
+          "arg2?: number",
+          "arg3?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "manaCost",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "maxHealth",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "maxSummons",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "mitigation",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "name",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "nameDescription",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4470,19 +4457,25 @@
       },
       {
         "name": "outfit",
-        "params": [],
+        "params": [
+          "outfit?: any"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "race",
-        "params": [],
+        "params": [
+          "race?: string"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "raceId",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
@@ -4496,97 +4489,121 @@
       },
       {
         "name": "respawnTypeIsUnderground",
-        "params": [],
-        "return": "boolean|number|nil",
-        "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
-      },
-      {
-        "name": "respawnTypePeriod",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "runHealth",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "soundChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "soundSpeedTicks",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "staticAttackChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "strategiesTargetDamage",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "strategiesTargetHealth",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "strategiesTargetNearest",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "strategiesTargetRandom",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "targetDistance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "targetPreferMaster",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "targetPreferPlayer",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "variant",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "yellChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "yellSpeedTicks",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       }
@@ -5001,7 +5018,9 @@
       },
       {
         "name": "isMerchant",
-        "params": [],
+        "params": [
+          "playerGUID: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_functions.cpp"
       },
@@ -5057,7 +5076,9 @@
       },
       {
         "name": "removePlayerInteraction",
-        "params": [],
+        "params": [
+          "creature: Creature"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_functions.cpp"
       },
@@ -5089,7 +5110,9 @@
       },
       {
         "name": "setCurrency",
-        "params": [],
+        "params": [
+          "arg2: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_functions.cpp"
       },
@@ -5174,19 +5197,25 @@
       },
       {
         "name": "baseSpeed",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "canPushCreatures",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "canPushItems",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
@@ -5216,7 +5245,9 @@
       },
       {
         "name": "floorChange",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
@@ -5240,37 +5271,50 @@
       },
       {
         "name": "health",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "isPushable",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "light",
-        "params": [],
+        "params": [
+          "arg2?: number",
+          "arg3?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "maxHealth",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "name",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "nameDescription",
-        "params": [],
+        "params": [
+          "arg2?: string"
+        ],
         "return": "boolean|string|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
@@ -5348,7 +5392,9 @@
       },
       {
         "name": "outfit",
-        "params": [],
+        "params": [
+          "outfit?: any"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
@@ -5362,25 +5408,36 @@
       },
       {
         "name": "respawnTypeIsUnderground",
-        "params": [],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "respawnTypePeriod",
-        "params": [],
+        "overloads": [
+          "fun(name: string): NpcType"
+        ],
+        "params": [
+          "arg2?: any"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "soundChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "soundSpeedTicks",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
@@ -5394,25 +5451,33 @@
       },
       {
         "name": "walkInterval",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "walkRadius",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "yellChance",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "yellSpeedTicks",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       }
@@ -5591,7 +5656,9 @@
       },
       {
         "name": "addCharmPoints",
-        "params": [],
+        "params": [
+          "charms: number"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -5715,7 +5782,9 @@
       },
       {
         "name": "addMinorCharmEchoes",
-        "params": [],
+        "params": [
+          "charms: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -5911,7 +5980,9 @@
       },
       {
         "name": "charmExpansion",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -6296,7 +6367,7 @@
       {
         "name": "getItemById",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "deepSearch: boolean",
           "subType?: number"
         ],
@@ -6306,7 +6377,7 @@
       {
         "name": "getItemCount",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "subType?: number"
         ],
         "return": "number|nil",
@@ -6582,7 +6653,7 @@
       {
         "name": "getStashItemCount",
         "params": [
-          "itemId: string"
+          "itemId: number|string"
         ],
         "return": "number|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
@@ -6837,7 +6908,9 @@
       },
       {
         "name": "isUIExhausted",
-        "params": [],
+        "params": [
+          "time: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -6916,7 +6989,9 @@
       },
       {
         "name": "preyThirdSlot",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -7019,7 +7094,7 @@
       {
         "name": "removeItem",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "count: number",
           "subType?: number",
           "ignoreEquipped?: boolean"
@@ -7097,7 +7172,7 @@
       {
         "name": "removeStashItem",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "count: number"
         ],
         "return": "boolean|nil",
@@ -7151,7 +7226,7 @@
         "name": "revelationStageWOD",
         "params": [
           "name?: string",
-          "set?: boolean"
+          "set?: boolean|number"
         ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
@@ -7307,7 +7382,7 @@
         "params": [
           "type: any",
           "text: string",
-          "position?: Position",
+          "position?: number|Position",
           "primaryValue?: number",
           "primaryColor?: any",
           "secondaryValue?: number",
@@ -7358,7 +7433,9 @@
       },
       {
         "name": "setBossPoints",
-        "params": [],
+        "params": [
+          "arg2: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -7413,7 +7490,9 @@
       },
       {
         "name": "setForgeDusts",
-        "params": [],
+        "params": [
+          "arg2: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -7565,7 +7644,9 @@
       },
       {
         "name": "setRemoveBossTime",
-        "params": [],
+        "params": [
+          "arg2: number"
+        ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -7724,7 +7805,9 @@
       },
       {
         "name": "taskHuntingThirdSlot",
-        "params": [],
+        "params": [
+          "arg2?: boolean"
+        ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
@@ -8072,7 +8155,9 @@
       },
       {
         "name": "castSound",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
@@ -8144,7 +8229,9 @@
       },
       {
         "name": "impactSound",
-        "params": [],
+        "params": [
+          "arg2?: number"
+        ],
         "return": "boolean|number|nil",
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
@@ -8336,7 +8423,7 @@
         "params": [
           "vocation: any"
         ],
-        "return": "boolean|table|nil",
+        "return": "boolean|table|nil|Spell",
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
       {
@@ -8371,7 +8458,7 @@
       {
         "name": "groupType",
         "params": [
-          "groupType: string"
+          "groupType: string|number"
         ],
         "return": "boolean",
         "source": "src/lua/functions/events/talk_action_functions.cpp"
@@ -8427,7 +8514,7 @@
       {
         "name": "addItem",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "countOrSubType?: number",
           "flags?: number"
         ],
@@ -8496,7 +8583,7 @@
       {
         "name": "getItemById",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "subType?: number"
         ],
         "return": "nil|Item",
@@ -8527,7 +8614,7 @@
       {
         "name": "getItemCountById",
         "params": [
-          "itemId: string",
+          "itemId: number|string",
           "subType?: number"
         ],
         "return": "number|nil",
@@ -9095,7 +9182,9 @@
       },
       {
         "name": "getAll",
-        "params": [],
+        "params": [
+          "...: any"
+        ],
         "return": "table",
         "source": "src/lua/functions/core/game/zone_functions.cpp"
       },
@@ -9211,6 +9300,208 @@
         ],
         "return": "boolean",
         "source": "src/lua/functions/core/game/zone_functions.cpp"
+      }
+    ],
+    "configManager": [
+      {
+        "name": "getBoolean",
+        "params": [
+          "key: any"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/config_functions.cpp"
+      },
+      {
+        "name": "getFloat",
+        "params": [
+          "key: any",
+          "shouldRound: boolean"
+        ],
+        "return": "number",
+        "source": "src/lua/functions/core/game/config_functions.cpp"
+      },
+      {
+        "name": "getNumber",
+        "params": [
+          "key: any"
+        ],
+        "return": "number",
+        "source": "src/lua/functions/core/game/config_functions.cpp"
+      },
+      {
+        "name": "getString",
+        "params": [
+          "key: any"
+        ],
+        "return": "string",
+        "source": "src/lua/functions/core/game/config_functions.cpp"
+      }
+    ],
+    "db": [
+      {
+        "name": "asyncQuery",
+        "params": [
+          "query: string",
+          "callback?: fun(success: boolean)"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "asyncStoreQuery",
+        "params": [
+          "query: string",
+          "callback?: fun(resultId: number|false)"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "escapeBlob",
+        "params": [
+          "value: string",
+          "length: number"
+        ],
+        "return": "string",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "escapeString",
+        "params": [
+          "value: string"
+        ],
+        "return": "string",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "lastInsertId",
+        "params": [
+          "...: any"
+        ],
+        "return": "number",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "query",
+        "params": [
+          "query: string"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "storeQuery",
+        "params": [
+          "query: string"
+        ],
+        "return": "boolean|number",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      },
+      {
+        "name": "tableExists",
+        "params": [
+          "tableName: string"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/libs/db_functions.cpp"
+      }
+    ],
+    "kv": [
+      {
+        "name": "get",
+        "params": [
+          "key: string|KV|boolean",
+          "forceLoad?: boolean"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/kv_functions.cpp"
+      },
+      {
+        "name": "keys",
+        "params": [
+          "prefix?: KV|string"
+        ],
+        "return": "table",
+        "source": "src/lua/functions/core/libs/kv_functions.cpp"
+      },
+      {
+        "name": "remove",
+        "params": [
+          "key: string|KV"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/kv_functions.cpp"
+      },
+      {
+        "name": "scoped",
+        "params": [
+          "key: string|KV"
+        ],
+        "return": "KV",
+        "source": "src/lua/functions/core/libs/kv_functions.cpp"
+      },
+      {
+        "name": "set",
+        "params": [
+          "key: string|KV",
+          "value: number"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/libs/kv_functions.cpp"
+      }
+    ],
+    "logger": [
+      {
+        "name": "debug",
+        "params": [
+          "text: string"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/logger_functions.cpp"
+      },
+      {
+        "name": "error",
+        "params": [
+          "text: string"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/logger_functions.cpp"
+      },
+      {
+        "name": "info",
+        "params": [
+          "text: string"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/logger_functions.cpp"
+      },
+      {
+        "name": "trace",
+        "params": [
+          "text: string"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/logger_functions.cpp"
+      },
+      {
+        "name": "warn",
+        "params": [
+          "text: string"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/logger_functions.cpp"
+      }
+    ],
+    "metrics": [
+      {
+        "name": "addCounter",
+        "params": [
+          "name: string",
+          "value: number",
+          "attributes: any"
+        ],
+        "return": "nil",
+        "source": "src/lua/functions/core/libs/metrics_functions.cpp"
       }
     ]
   },

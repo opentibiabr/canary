@@ -109,48 +109,61 @@ function BatchUpdate.delete() end
 ---@operator eq(Charm):boolean
 Charm = {}
 
+---@param arg2? any
 ---@return boolean|number
-function Charm:castSound() end
+function Charm:castSound(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function Charm:category() end
+function Charm:category(arg2) end
 
+---@param arg2? table
 ---@return boolean|table
-function Charm:chance() end
+function Charm:chance(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function Charm:damageType() end
+function Charm:damageType(arg2) end
 
+---@param arg2? string
 ---@return boolean|string
-function Charm:description() end
+function Charm:description(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function Charm:effect() end
+function Charm:effect(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function Charm:impactSound() end
+function Charm:impactSound(arg2) end
 
+---@param arg2? string
 ---@return boolean|string
-function Charm:messageCancel() end
+function Charm:messageCancel(arg2) end
 
+---@param arg2? boolean
 ---@return boolean
-function Charm:messageServerLog() end
+function Charm:messageServerLog(arg2) end
 
+---@param arg2? string
 ---@return boolean|string
-function Charm:name() end
+function Charm:name(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function Charm:percentage() end
+function Charm:percentage(arg2) end
 
+---@param arg2? table
 ---@return boolean|table
-function Charm:points() end
+function Charm:points(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function Charm:type() end
+function Charm:type(arg2) end
 
 ---@class Combat
----@operator eq(Combat):boolean
 ---@overload fun(): Combat
+---@operator eq(Combat):boolean
 Combat = {}
 
 ---@param condition Condition
@@ -184,13 +197,13 @@ function Combat:setFormula(type, mina, minb, maxa, maxb) end
 function Combat:setOrigin(origin) end
 
 ---@param key any
----@param value boolean
+---@param value boolean|number
 ---@return boolean|nil
 function Combat:setParameter(key, value) end
 
 ---@class Condition
----@operator eq(Condition):boolean
 ---@overload fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?
+---@operator eq(Condition):boolean
 Condition = {}
 
 ---@param rounds number
@@ -235,7 +248,7 @@ function Condition:setFormula(mina, minb, maxa, maxb) end
 function Condition:setOutfit(outfit) end
 
 ---@param key any
----@param value boolean
+---@param value boolean|number
 ---@return boolean|nil
 function Condition:setParameter(key, value) end
 
@@ -243,31 +256,11 @@ function Condition:setParameter(key, value) end
 ---@return boolean|nil
 function Condition:setTicks(ticks) end
 
----@class configManager
-configManager = {}
-
----@param key any
----@return boolean
-function configManager.getBoolean(key) end
-
----@param key any
----@param shouldRound boolean
----@return number
-function configManager.getFloat(key, shouldRound) end
-
----@param key any
----@return number
-function configManager.getNumber(key) end
-
----@param key any
----@return string
-function configManager.getString(key) end
-
 ---@class Container: Item
 ---@operator eq(Container):boolean
 Container = {}
 
----@param itemId string
+---@param itemId number|string
 ---@param countOrSubType? number
 ---@param index? number
 ---@param flags? number
@@ -298,7 +291,7 @@ function Container:getEmptySlots(recursive) end
 ---@return nil|Item
 function Container:getItem(index) end
 
----@param itemId string
+---@param itemId number|string
 ---@param subType? number
 ---@return number|nil
 function Container:getItemCountById(itemId, subType) end
@@ -328,7 +321,7 @@ function Container:registerReward() end
 ---@return number|nil
 function Container:removeAllItems(actor, recursive) end
 
----@param itemId string
+---@param itemId number|string
 ---@param count number
 ---@param subType? number
 ---@return boolean|nil
@@ -464,11 +457,11 @@ function Creature:getTile() end
 ---@return string|nil
 function Creature:getTypeName() end
 
----@return table|nil
-function Creature:getZones() end
-
 ---@return number|nil
 function Creature:getZoneType() end
+
+---@return table|nil
+function Creature:getZones() end
 
 ---@return boolean|nil
 function Creature:hasBeenSummoned() end
@@ -619,51 +612,51 @@ function Creature:unregisterEvent(name) end
 ---@overload fun(eventName: string): CreatureEvent
 CreatureEvent = {}
 
----@param callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
+---@param callback fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
 ---@return boolean
 function CreatureEvent:onAdvance(callback) end
 
----@param callback: fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean
+---@param callback fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean
 ---@return boolean
 function CreatureEvent:onDeath(callback) end
 
----@param callback: fun(player: Player, opcode: integer, buffer: string)
+---@param callback fun(player: Player, opcode: integer, buffer: string)
 ---@return boolean
 function CreatureEvent:onExtendedOpcode(callback) end
 
----@param callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+---@param callback fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
 ---@return boolean
 function CreatureEvent:onHealthChange(callback) end
 
----@param callback: fun(creature: Creature, target: Creature, lastHit: boolean)
+---@param callback fun(creature: Creature, target: Creature, lastHit: boolean)
 ---@return boolean
 function CreatureEvent:onKill(callback) end
 
----@param callback: fun(player: Player): boolean
+---@param callback fun(player: Player): boolean
 ---@return boolean
 function CreatureEvent:onLogin(callback) end
 
----@param callback: fun(player: Player): boolean
+---@param callback fun(player: Player): boolean
 ---@return boolean
 function CreatureEvent:onLogout(callback) end
 
----@param callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+---@param callback fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
 ---@return boolean
 function CreatureEvent:onManaChange(callback) end
 
----@param callback: fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer)
+---@param callback fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer)
 ---@return boolean
 function CreatureEvent:onModalWindow(callback) end
 
----@param callback: fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean
+---@param callback fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean
 ---@return boolean
 function CreatureEvent:onPrepareDeath(callback) end
 
----@param callback: fun(player: Player, item: Item, text: string): boolean
+---@param callback fun(player: Player, item: Item, text: string): boolean
 ---@return boolean
 function CreatureEvent:onTextEdit(callback) end
 
----@param callback: fun(creature: Creature, interval: integer): boolean
+---@param callback fun(creature: Creature, interval: integer): boolean
 ---@return boolean
 function CreatureEvent:onThink(callback) end
 
@@ -673,43 +666,6 @@ function CreatureEvent:register() end
 ---@param callback string
 ---@return boolean|nil
 function CreatureEvent:type(callback) end
-
----@class db
-db = {}
-
----@param query string
----@param callback? fun(success: boolean)
----@return nil
-function db.asyncQuery(query, callback) end
-
----@param query string
----@param callback? fun(resultId: number|false)
----@return nil
-function db.asyncStoreQuery(query, callback) end
-
----@param value string
----@param length number
----@return string
-function db.escapeBlob(value, length) end
-
----@param value string
----@return string
-function db.escapeString(value) end
-
----@return number
-function db.lastInsertId() end
-
----@param query string
----@return boolean
-function db.query(query) end
-
----@param query string
----@return boolean|number
-function db.storeQuery(query) end
-
----@param tableName string
----@return boolean
-function db.tableExists(tableName) end
 
 ---@class EventCallback
 EventCallback = {}
@@ -827,24 +783,29 @@ function Game.getAchievementInfoById(id) end
 ---@return table
 function Game.getAchievementInfoByName(name) end
 
+---@param ... any
 ---@return table
-function Game.getAchievements() end
+function Game.getAchievements(...) end
 
+---@param ... any
 ---@return table
-function Game.getBestiaryCharm() end
+function Game.getBestiaryCharm(...) end
 
 ---@param arg1? any
 ---@return number|string|table
 function Game.getBestiaryList(arg1) end
 
+---@param ... any
 ---@return string
-function Game.getBoostedBoss() end
+function Game.getBoostedBoss(...) end
 
+---@param ... any
 ---@return string
-function Game.getBoostedCreature() end
+function Game.getBoostedCreature(...) end
 
+---@param ... any
 ---@return table
-function Game.getClientVersion() end
+function Game.getClientVersion(...) end
 
 ---@param ... any
 ---@return table
@@ -858,23 +819,37 @@ function Game.getEventCallbacks(...) end
 ---@return number
 function Game.getExperienceForLevel(level) end
 
+---@param ... any
 ---@return table
-function Game.getFiendishMonsters() end
+function Game.getFiendishMonsters(...) end
 
+---@param ... any
 ---@return number
-function Game.getGameState() end
+function Game.getGameState(...) end
 
+---@param ... any
 ---@return House[]
-function Game.getHouses() end
+function Game.getHouses(...) end
 
+---@param ... any
 ---@return table
-function Game.getInfluencedMonsters() end
+function Game.getInfluencedMonsters(...) end
 
+---@param ... any
 ---@return table
-function Game.getLadderIds() end
+function Game.getLadderIds(...) end
 
+---@param ... any
 ---@return number
-function Game.getMonsterCount() end
+function Game.getMonsterCount(...) end
+
+---@param name string
+---@return boolean|MonsterType
+function Game.getMonsterTypeByName(name) end
+
+---@param ... any
+---@return table<string, MonsterType>
+function Game.getMonsterTypes(...) end
 
 ---@param stars number
 ---@return table
@@ -885,13 +860,6 @@ function Game.getMonstersByBestiaryStars(stars) end
 function Game.getMonstersByRace(race) end
 
 ---@param name string
----@return boolean|MonsterType
-function Game.getMonsterTypeByName(name) end
-
----@return table<string, MonsterType>
-function Game.getMonsterTypes() end
-
----@param name string
 ---@return string|nil
 function Game.getNormalizedGuildName(name) end
 
@@ -900,31 +868,37 @@ function Game.getNormalizedGuildName(name) end
 ---@return string|nil
 function Game.getNormalizedPlayerName(name, isNewName) end
 
+---@param ... any
 ---@return number
-function Game.getNpcCount() end
+function Game.getNpcCount(...) end
 
 ---@param nameOrId number|string
 ---@return nil|Player
 function Game.getOfflinePlayer(nameOrId) end
 
+---@param ... any
 ---@return number
-function Game.getPlayerCount() end
+function Game.getPlayerCount(...) end
 
+---@param ... any
 ---@return Player[]
-function Game.getPlayers() end
+function Game.getPlayers(...) end
 
+---@param ... any
 ---@return table
-function Game.getPublicAchievements() end
+function Game.getPublicAchievements(...) end
 
 ---@param value any
 ---@return string
 function Game.getReturnMessage(value) end
 
+---@param ... any
 ---@return table
-function Game.getSecretAchievements() end
+function Game.getSecretAchievements(...) end
 
+---@param ... any
 ---@return table
-function Game.getSoulCoreItems() end
+function Game.getSoulCoreItems(...) end
 
 ---@param position Position
 ---@param multifloor? boolean
@@ -936,14 +910,17 @@ function Game.getSoulCoreItems() end
 ---@return Creature[]
 function Game.getSpectators(position, multifloor, onlyPlayer, minRangeX, maxRangeX, minRangeY, maxRangeY) end
 
+---@param ... any
 ---@return table
-function Game.getTalkActions() end
+function Game.getTalkActions(...) end
 
+---@param ... any
 ---@return Town[]
-function Game.getTowns() end
+function Game.getTowns(...) end
 
+---@param ... any
 ---@return number
-function Game.getWorldType() end
+function Game.getWorldType(...) end
 
 ---@param effectId number
 ---@return boolean
@@ -1008,31 +985,31 @@ GlobalEvent = {}
 ---@return boolean|nil
 function GlobalEvent:interval(interval) end
 
----@param callback: fun(lightState: integer, lightLevel: integer): boolean
+---@param callback fun(lightState: integer, lightLevel: integer): boolean
 ---@return boolean
 function GlobalEvent:onPeriodChange(callback) end
 
----@param callback: fun(current: integer, old: integer): boolean
+---@param callback fun(current: integer, old: integer): boolean
 ---@return boolean
 function GlobalEvent:onRecord(callback) end
 
----@param callback: fun(): boolean
+---@param callback fun(): boolean
 ---@return boolean
 function GlobalEvent:onSave(callback) end
 
----@param callback: fun(): boolean
+---@param callback fun(): boolean
 ---@return boolean
 function GlobalEvent:onShutdown(callback) end
 
----@param callback: fun(): boolean
+---@param callback fun(): boolean
 ---@return boolean
 function GlobalEvent:onStartup(callback) end
 
----@param callback: fun(interval: integer): boolean
+---@param callback fun(interval: integer): boolean
 ---@return boolean
 function GlobalEvent:onThink(callback) end
 
----@param callback: fun(interval: integer): boolean
+---@param callback fun(interval: integer): boolean
 ---@return boolean
 function GlobalEvent:onTime(callback) end
 
@@ -1241,8 +1218,9 @@ function Imbuement:isPremium() end
 ---@operator eq(Item):boolean
 Item = {}
 
+---@param arg2? boolean
 ---@return boolean
-function Item:actor() end
+function Item:actor(arg2) end
 
 ---@return boolean|nil
 function Item:canBeMoved() end
@@ -1279,7 +1257,7 @@ function Item:getContainer() end
 ---@return number|nil
 function Item:getCount() end
 
----@param key string
+---@param key number|string
 ---@return nil
 function Item:getCustomAttribute(key) end
 
@@ -1362,11 +1340,11 @@ function Item:isInsideDepot(includeInbox) end
 ---@return boolean
 function Item:isItem() end
 
----@param creatureOrCreatureId Creature
+---@param creatureOrCreatureId number|Creature
 ---@return boolean
 function Item:isOwner(creatureOrCreatureId) end
 
----@param positionOrCylinder any
+---@param positionOrCylinder Container|Player|Tile|Position
 ---@param flags? number
 ---@return boolean|nil
 function Item:moveTo(positionOrCylinder, flags) end
@@ -1384,7 +1362,7 @@ function Item:remove(count) end
 ---@return boolean|nil
 function Item:removeAttribute(key) end
 
----@param key string
+---@param key number|string
 ---@return boolean|nil
 function Item:removeCustomAttribute(key) end
 
@@ -1396,12 +1374,12 @@ function Item:serializeAttributes() end
 function Item:setActionId(actionId) end
 
 ---@param key string
----@param value string
+---@param value string|number
 ---@return boolean|nil
 function Item:setAttribute(key, value) end
 
----@param key string
----@param value string
+---@param key number|string
+---@param value number|string|boolean
 ---@return boolean|nil
 function Item:setCustomAttribute(key, value) end
 
@@ -1412,7 +1390,7 @@ function Item:setCustomAttribute(key, value) end
 ---@return boolean
 function Item:setDuration(minDuration, maxDuration, decayTo, showDuration) end
 
----@param creatureOrCreatureId Creature
+---@param creatureOrCreatureId number|Creature
 ---@return boolean
 function Item:setOwner(creatureOrCreatureId) end
 
@@ -1428,10 +1406,10 @@ function Item:setTier(tier) end
 ---@return nil|Item
 function Item:split(count) end
 
----@param itemId string
----@param arg2? number
+---@param itemId number|string
+---@param countOrSubType? number
 ---@return boolean|nil
-function Item:transform(itemId, arg2) end
+function Item:transform(itemId, countOrSubType) end
 
 ---@class ItemClassification
 ---@operator eq(ItemClassification):boolean
@@ -1487,13 +1465,13 @@ function ItemType:getDescription(count) end
 function ItemType:getDestroyId() end
 
 ---@return number|nil
-function ItemType:getElementalBond() end
-
----@return number|nil
 function ItemType:getElementDamage() end
 
 ---@return number|nil
 function ItemType:getElementType() end
+
+---@return number|nil
+function ItemType:getElementalBond() end
 
 ---@return number|nil
 function ItemType:getExtraDefense() end
@@ -1616,78 +1594,30 @@ function ItemType:isWeapon() end
 ---@return boolean|nil
 function ItemType:isWritable() end
 
----@class kv
-kv = {}
-
----@param key string
----@param forceLoad? boolean
----@return nil
-function kv.get(key, forceLoad) end
-
----@param prefix? KV
----@return table
-function kv.keys(prefix) end
-
----@param key string
----@return nil
-function kv.remove(key) end
-
----@param key string
----@return KV
-function kv.scoped(key) end
-
----@param key string
----@param value number
----@return boolean
-function kv.set(key, value) end
-
 ---@class KV
 KV = {}
 
----@param key string
+---@param key string|KV|boolean
 ---@param forceLoad? boolean
 ---@return nil
 function KV.get(key, forceLoad) end
 
----@param prefix? KV
+---@param prefix? KV|string
 ---@return table
 function KV.keys(prefix) end
 
----@param key string
+---@param key string|KV
 ---@return nil
 function KV.remove(key) end
 
----@param key string
+---@param key string|KV
 ---@return KV
 function KV.scoped(key) end
 
----@param key string
+---@param key string|KV
 ---@param value number
 ---@return boolean
 function KV.set(key, value) end
-
----@class logger
-logger = {}
-
----@param text string
----@return nil
-function logger.debug(text) end
-
----@param text string
----@return nil
-function logger.error(text) end
-
----@param text string
----@return nil
-function logger.info(text) end
-
----@param text string
----@return nil
-function logger.trace(text) end
-
----@param text string
----@return nil
-function logger.warn(text) end
 
 ---@class Loot
 Loot = {}
@@ -1763,15 +1693,6 @@ function Loot.setText(...) end
 ---@param value? boolean
 ---@return boolean|nil
 function Loot:setUnique(value) end
-
----@class metrics
-metrics = {}
-
----@param name string
----@param value number
----@param attributes any
----@return nil
-function metrics.addCounter(name, value, attributes) end
 
 ---@class ModalWindow
 ---@operator eq(ModalWindow):boolean
@@ -1877,11 +1798,13 @@ function Monster:clearFiendishStatus() end
 ---@return boolean
 function Monster:configureForgeSystem(stack) end
 
+---@param critical? number
 ---@return boolean|nil
-function Monster:criticalChance() end
+function Monster:criticalChance(critical) end
 
+---@param damage? number
 ---@return boolean|nil
-function Monster:criticalDamage() end
+function Monster:criticalDamage(damage) end
 
 ---@param defense any
 ---@return boolean|number
@@ -1920,20 +1843,25 @@ function Monster:getTimeToChangeFiendish() end
 ---@return nil|MonsterType
 function Monster:getType() end
 
+---@param hazard? boolean
 ---@return boolean|nil
-function Monster:hazard() end
+function Monster:hazard(hazard) end
 
+---@param hazardCrit? boolean
 ---@return boolean|nil
-function Monster:hazardCrit() end
+function Monster:hazardCrit(hazardCrit) end
 
+---@param hazardDamageBoost? boolean
 ---@return boolean|nil
-function Monster:hazardDamageBoost() end
+function Monster:hazardDamageBoost(hazardDamageBoost) end
 
+---@param hazardDefenseBoost? boolean
 ---@return boolean|nil
-function Monster:hazardDefenseBoost() end
+function Monster:hazardDefenseBoost(hazardDefenseBoost) end
 
+---@param hazardDodge? boolean
 ---@return boolean|nil
-function Monster:hazardDodge() end
+function Monster:hazardDodge(hazardDodge) end
 
 ---@param arg2? boolean
 ---@return boolean
@@ -2011,22 +1939,25 @@ function Monster:setSpawnPosition(interval) end
 ---@return boolean
 function Monster:setTimeToChangeFiendish(endTime) end
 
----@param nameOrRaceId string
+---@param nameOrRaceId number|string
 ---@param restoreHealth boolean
 ---@return boolean|nil
 function Monster:setType(nameOrRaceId, restoreHealth) end
 
+---@param soulPit? boolean
 ---@return boolean|nil
-function Monster:soulPit() end
+function Monster:soulPit(soulPit) end
 
 ---@class MonsterSpell
 MonsterSpell = {}
 
+---@param arg2? any
 ---@return boolean|number
-function MonsterSpell:castSound() end
+function MonsterSpell:castSound(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function MonsterSpell:impactSound() end
+function MonsterSpell:impactSound(arg2) end
 
 ---@param attack number
 ---@param skill number
@@ -2120,6 +2051,42 @@ function MonsterSpell:setType(type) end
 ---@operator eq(MonsterType):boolean
 MonsterType = {}
 
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiaryCharmsPoints(arg2) end
+
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiaryFirstUnlock(arg2) end
+
+---@param arg2? string
+---@return boolean|string|nil
+function MonsterType:BestiaryLocations(arg2) end
+
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiaryOccurrence(arg2) end
+
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiarySecondUnlock(arg2) end
+
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiaryStars(arg2) end
+
+---@param arg2? string
+---@return boolean|string|nil
+function MonsterType:Bestiaryclass(arg2) end
+
+---@param race? any
+---@return boolean|number|nil
+function MonsterType:Bestiaryrace(race) end
+
+---@param arg2? number
+---@return boolean|number|nil
+function MonsterType:BestiarytoKill(arg2) end
+
 ---@param monsterspell MonsterSpell
 ---@return nil
 function MonsterType:addAttack(monsterspell) end
@@ -2165,38 +2132,13 @@ function MonsterType:addSummon(name, interval, chance, count) end
 ---@return boolean|nil
 function MonsterType:addVoice(sentence, interval, chance, yell) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:armor() end
+function MonsterType:armor(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:baseSpeed() end
-
----@return boolean|number|nil
-function MonsterType:BestiaryCharmsPoints() end
-
----@return boolean|string|nil
-function MonsterType:Bestiaryclass() end
-
----@return boolean|number|nil
-function MonsterType:BestiaryFirstUnlock() end
-
----@return boolean|string|nil
-function MonsterType:BestiaryLocations() end
-
----@return boolean|number|nil
-function MonsterType:BestiaryOccurrence() end
-
----@return boolean|number|nil
-function MonsterType:Bestiaryrace() end
-
----@return boolean|number|nil
-function MonsterType:BestiarySecondUnlock() end
-
----@return boolean|number|nil
-function MonsterType:BestiaryStars() end
-
----@return boolean|number|nil
-function MonsterType:BestiarytoKill() end
+function MonsterType:baseSpeed(arg2) end
 
 ---@param raceId? number
 ---@param class? string
@@ -2207,64 +2149,81 @@ function MonsterType:bossRace(raceId, class) end
 ---@return boolean|number
 function MonsterType:bossRaceId(raceId) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:canPushCreatures() end
+function MonsterType:canPushCreatures(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:canPushItems() end
+function MonsterType:canPushItems(arg2) end
 
 ---@param pos Position
 ---@return boolean|nil
 function MonsterType:canSpawn(pos) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:canWalkOnEnergy() end
+function MonsterType:canWalkOnEnergy(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:canWalkOnFire() end
+function MonsterType:canWalkOnFire(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:canWalkOnPoison() end
+function MonsterType:canWalkOnPoison(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:changeTargetChance() end
+function MonsterType:changeTargetChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:changeTargetSpeed() end
+function MonsterType:changeTargetSpeed(arg2) end
 
+---@param immunity? string
 ---@return boolean|table|nil
-function MonsterType:combatImmunities() end
+function MonsterType:combatImmunities(immunity) end
 
+---@param immunity? string
 ---@return boolean|table|nil
-function MonsterType:conditionImmunities() end
+function MonsterType:conditionImmunities(immunity) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:corpseId() end
+function MonsterType:corpseId(arg2) end
 
+---@param arg2 number
 ---@return number|nil
-function MonsterType:critChance() end
+function MonsterType:critChance(arg2) end
 
+---@param arg2? any
 ---@return boolean|number
-function MonsterType:deathSound() end
+function MonsterType:deathSound(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:defense() end
+function MonsterType:defense(arg2) end
 
+---@param faction? any
 ---@return boolean|table|nil
-function MonsterType:enemyFactions() end
+function MonsterType:enemyFactions(faction) end
 
 ---@param event any
 ---@return boolean|nil
 function MonsterType:eventType(event) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:experience() end
+function MonsterType:experience(arg2) end
 
+---@param arg2? any
 ---@return boolean|number|nil
-function MonsterType:faction() end
+function MonsterType:faction(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:familiar() end
+function MonsterType:familiar(arg2) end
 
 ---@return table|nil
 function MonsterType:getAttackList() end
@@ -2304,154 +2263,190 @@ function MonsterType:getTypeName() end
 ---@return table|nil
 function MonsterType:getVoices() end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:health() end
+function MonsterType:health(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isAttackable() end
+function MonsterType:isAttackable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isBlockable() end
+function MonsterType:isBlockable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isConvinceable() end
+function MonsterType:isConvinceable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean
-function MonsterType:isForgeCreature() end
+function MonsterType:isForgeCreature(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isHealthHidden() end
+function MonsterType:isHealthHidden(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isHostile() end
+function MonsterType:isHostile(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isIllusionable() end
+function MonsterType:isIllusionable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isPreyable() end
+function MonsterType:isPreyExclusive(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isPreyExclusive() end
+function MonsterType:isPreyable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isPushable() end
+function MonsterType:isPushable(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isRewardBoss() end
+function MonsterType:isRewardBoss(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:isSummonable() end
+function MonsterType:isSummonable(arg2) end
 
+---@param arg2? number
+---@param arg3? number
 ---@return boolean|number|nil
-function MonsterType:light() end
+function MonsterType:light(arg2, arg3) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:manaCost() end
+function MonsterType:manaCost(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:maxHealth() end
+function MonsterType:maxHealth(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:maxSummons() end
+function MonsterType:maxSummons(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function MonsterType:mitigation() end
+function MonsterType:mitigation(arg2) end
 
+---@param arg2? string
 ---@return boolean|string|nil
-function MonsterType:name() end
+function MonsterType:name(arg2) end
 
+---@param arg2? string
 ---@return boolean|string|nil
-function MonsterType:nameDescription() end
+function MonsterType:nameDescription(arg2) end
 
----@param callback: fun(monster: Monster, creature: Creature): boolean
+---@param callback fun(monster: Monster, creature: Creature): boolean
 ---@return boolean
 function MonsterType:onAppear(callback) end
 
----@param callback: fun(monster: Monster, creature: Creature): boolean
+---@param callback fun(monster: Monster, creature: Creature): boolean
 ---@return boolean
 function MonsterType:onDisappear(callback) end
 
----@param callback: fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+---@param callback fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean
 ---@return boolean
 function MonsterType:onMove(callback) end
 
----@param callback: fun(monster: Monster, attacker: Player): boolean
+---@param callback fun(monster: Monster, attacker: Player): boolean
 ---@return boolean
 function MonsterType:onPlayerAttack(callback) end
 
----@param callback: fun(monster: Monster, creature: Creature, type: integer, message: string): boolean
+---@param callback fun(monster: Monster, creature: Creature, type: integer, message: string): boolean
 ---@return boolean
 function MonsterType:onSay(callback) end
 
----@param callback: fun(monster: Monster, position: Position): boolean
+---@param callback fun(monster: Monster, position: Position): boolean
 ---@return boolean
 function MonsterType:onSpawn(callback) end
 
----@param callback: fun(monster: Monster, interval: integer): boolean
+---@param callback fun(monster: Monster, interval: integer): boolean
 ---@return boolean
 function MonsterType:onThink(callback) end
 
+---@param outfit? any
 ---@return boolean|nil
-function MonsterType:outfit() end
+function MonsterType:outfit(outfit) end
 
+---@param race? string
 ---@return boolean|number|nil
-function MonsterType:race() end
+function MonsterType:race(race) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:raceId() end
+function MonsterType:raceId(arg2) end
 
 ---@param name string
 ---@return boolean|nil
 function MonsterType:registerEvent(name) end
 
+---@param arg2? any
 ---@return boolean|number|nil
-function MonsterType:respawnTypeIsUnderground() end
+function MonsterType:respawnTypeIsUnderground(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:respawnTypePeriod() end
+function MonsterType:runHealth(arg2) end
 
----@return boolean|number|nil
-function MonsterType:runHealth() end
-
+---@param arg2? number
 ---@return boolean|number
-function MonsterType:soundChance() end
+function MonsterType:soundChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function MonsterType:soundSpeedTicks() end
+function MonsterType:soundSpeedTicks(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:staticAttackChance() end
+function MonsterType:staticAttackChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:strategiesTargetDamage() end
+function MonsterType:strategiesTargetDamage(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:strategiesTargetHealth() end
+function MonsterType:strategiesTargetHealth(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:strategiesTargetNearest() end
+function MonsterType:strategiesTargetNearest(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:strategiesTargetRandom() end
+function MonsterType:strategiesTargetRandom(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:targetDistance() end
+function MonsterType:targetDistance(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|number|nil
-function MonsterType:targetPreferMaster() end
+function MonsterType:targetPreferMaster(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function MonsterType:targetPreferPlayer() end
+function MonsterType:targetPreferPlayer(arg2) end
 
+---@param arg2? string
 ---@return boolean|string
-function MonsterType:variant() end
+function MonsterType:variant(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:yellChance() end
+function MonsterType:yellChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function MonsterType:yellSpeedTicks() end
+function MonsterType:yellSpeedTicks(arg2) end
 
 ---@class Mount
 ---@operator eq(Mount):boolean
@@ -2489,27 +2484,27 @@ function MoveEvent:level(lvl) end
 ---@return boolean|nil
 function MoveEvent:magicLevel(lvl) end
 
----@param callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+---@param callback fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
 ---@return boolean
 function MoveEvent:onAddItem(callback) end
 
----@param callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+---@param callback fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
 ---@return boolean
 function MoveEvent:onDeEquip(callback) end
 
----@param callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+---@param callback fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
 ---@return boolean
 function MoveEvent:onEquip(callback) end
 
----@param callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+---@param callback fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
 ---@return boolean
 function MoveEvent:onRemoveItem(callback) end
 
----@param callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+---@param callback fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
 ---@return boolean
 function MoveEvent:onStepIn(callback) end
 
----@param callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+---@param callback fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
 ---@return boolean
 function MoveEvent:onStepOut(callback) end
 
@@ -2543,8 +2538,8 @@ function MoveEvent:uid(ids) end
 function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 
 ---@class NetworkMessage
----@operator eq(NetworkMessage):boolean
 ---@overload fun(): NetworkMessage
+---@operator eq(NetworkMessage):boolean
 NetworkMessage = {}
 
 ---@param value number
@@ -2673,8 +2668,9 @@ function Npc:isInTalkRange(position, range) end
 ---@return boolean|nil
 function Npc:isInteractingWithPlayer(creature) end
 
+---@param playerGUID number
 ---@return boolean
-function Npc:isMerchant() end
+function Npc:isMerchant(playerGUID) end
 
 ---@return boolean
 function Npc:isNpc() end
@@ -2703,8 +2699,9 @@ function Npc:openShopWindowTable(player, items) end
 ---@return nil|Npc
 function Npc:place(position, extended, force) end
 
+---@param creature Creature
 ---@return boolean|nil
-function Npc:removePlayerInteraction() end
+function Npc:removePlayerInteraction(creature) end
 
 ---@param text string
 ---@param type? any
@@ -2724,8 +2721,9 @@ function Npc:say(text, type, ghost, target, position) end
 ---@return boolean
 function Npc:sellItem(player, itemId, amount, subtype, actionId, ignoreCap, inBackpacks) end
 
+---@param arg2 number
 ---@return boolean
-function Npc:setCurrency() end
+function Npc:setCurrency(arg2) end
 
 ---@param pos Position
 ---@return boolean
@@ -2754,8 +2752,8 @@ function Npc:turn(direction) end
 function Npc:turnToCreature(creature, arg2) end
 
 ---@class NpcType
----@operator eq(NpcType):boolean
 ---@overload fun(name: string): NpcType
+---@operator eq(NpcType):boolean
 NpcType = {}
 
 ---@param shop Shop
@@ -2773,14 +2771,17 @@ function NpcType:addSound(soundId) end
 ---@return boolean|nil
 function NpcType:addVoice(sentence, interval, chance, yell) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:baseSpeed() end
+function NpcType:baseSpeed(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function NpcType:canPushCreatures() end
+function NpcType:canPushCreatures(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function NpcType:canPushItems() end
+function NpcType:canPushItems(arg2) end
 
 ---@param pos Position
 ---@return boolean|nil
@@ -2794,8 +2795,9 @@ function NpcType:currency(arg2) end
 ---@return boolean|nil
 function NpcType:eventType(event) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function NpcType:floorChange() end
+function NpcType:floorChange(arg2) end
 
 ---@return table|nil
 function NpcType:getCreatureEvents() end
@@ -2806,94 +2808,111 @@ function NpcType:getSounds() end
 ---@return table|nil
 function NpcType:getVoices() end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:health() end
+function NpcType:health(arg2) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function NpcType:isPushable() end
+function NpcType:isPushable(arg2) end
 
+---@param arg2? number
+---@param arg3? number
 ---@return boolean|number|nil
-function NpcType:light() end
+function NpcType:light(arg2, arg3) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:maxHealth() end
+function NpcType:maxHealth(arg2) end
 
+---@param arg2? string
 ---@return boolean|string|nil
-function NpcType:name() end
+function NpcType:name(arg2) end
 
+---@param arg2? string
 ---@return boolean|string|nil
-function NpcType:nameDescription() end
+function NpcType:nameDescription(arg2) end
 
----@param callback: fun(npc: Npc, creature: Creature): boolean
+---@param callback fun(npc: Npc, creature: Creature): boolean
 ---@return boolean
 function NpcType:onAppear(callback) end
 
----@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean
+---@param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean
 ---@return boolean
 function NpcType:onBuyItem(callback) end
 
----@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean
+---@param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean
 ---@return boolean
 function NpcType:onCheckItem(callback) end
 
----@param callback: fun(npc: Npc, player: Player): boolean
+---@param callback fun(npc: Npc, player: Player): boolean
 ---@return boolean
 function NpcType:onCloseChannel(callback) end
 
----@param callback: fun(npc: Npc, creature: Creature): boolean
+---@param callback fun(npc: Npc, creature: Creature): boolean
 ---@return boolean
 function NpcType:onDisappear(callback) end
 
----@param callback: fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+---@param callback fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean
 ---@return boolean
 function NpcType:onMove(callback) end
 
----@param callback: fun(npc: Npc, creature: Creature, type: integer, message: string): boolean
+---@param callback fun(npc: Npc, creature: Creature, type: integer, message: string): boolean
 ---@return boolean
 function NpcType:onSay(callback) end
 
----@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean
+---@param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean
 ---@return boolean
 function NpcType:onSellItem(callback) end
 
----@param callback: fun(npc: Npc, interval: integer): boolean
+---@param callback fun(npc: Npc, interval: integer): boolean
 ---@return boolean
 function NpcType:onThink(callback) end
 
+---@param outfit? any
 ---@return boolean|nil
-function NpcType:outfit() end
+function NpcType:outfit(outfit) end
 
 ---@param name string
 ---@return boolean|nil
 function NpcType:registerEvent(name) end
 
+---@param arg2? any
 ---@return boolean|number|nil
-function NpcType:respawnTypeIsUnderground() end
+function NpcType:respawnTypeIsUnderground(arg2) end
 
+---@overload fun(name: string): NpcType
+---@param arg2? any
 ---@return boolean|number|nil
-function NpcType:respawnTypePeriod() end
+function NpcType.respawnTypePeriod(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function NpcType:soundChance() end
+function NpcType:soundChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number
-function NpcType:soundSpeedTicks() end
+function NpcType:soundSpeedTicks(arg2) end
 
 ---@param arg2? number
 ---@return boolean|number
 function NpcType:speechBubble(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:walkInterval() end
+function NpcType:walkInterval(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:walkRadius() end
+function NpcType:walkRadius(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:yellChance() end
+function NpcType:yellChance(arg2) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function NpcType:yellSpeedTicks() end
+function NpcType:yellSpeedTicks(arg2) end
 
 ---@class Party
 ---@operator eq(Party):boolean
@@ -2992,8 +3011,9 @@ function Player:addBlessing(blessing) end
 ---@return boolean|nil
 function Player:addBosstiaryKill(name, amount) end
 
+---@param charms number
 ---@return boolean|nil
-function Player:addCharmPoints() end
+function Player:addCharmPoints(charms) end
 
 ---@param type string
 ---@param idOrName number|string
@@ -3063,8 +3083,9 @@ function Player:addManaSpent(amount) end
 ---@return boolean|nil
 function Player:addMapMark(position, type, description) end
 
+---@param charms number
 ---@return boolean
-function Player:addMinorCharmEchoes() end
+function Player:addMinorCharmEchoes(charms) end
 
 ---@param money number
 ---@param flags? number
@@ -3166,8 +3187,9 @@ function Player:changeName(newName) end
 ---@return boolean|nil
 function Player:channelSay(speaker, type, text, channelId) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function Player:charmExpansion() end
+function Player:charmExpansion(arg2) end
 
 ---@param item Item
 ---@return boolean
@@ -3362,13 +3384,13 @@ function Player:getInstantSpells() end
 ---@return number|nil
 function Player:getIp() end
 
----@param itemId string
+---@param itemId number|string
 ---@param deepSearch boolean
 ---@param subType? number
 ---@return nil|Item
 function Player:getItemById(itemId, deepSearch, subType) end
 
----@param itemId string
+---@param itemId number|string
 ---@param subType? number
 ---@return number|nil
 function Player:getItemCount(itemId, subType) end
@@ -3507,7 +3529,7 @@ function Player:getStaminaXpBoost() end
 ---@return number|nil
 function Player:getStashCount() end
 
----@param itemId string
+---@param itemId number|string
 ---@return number|nil
 function Player:getStashItemCount(itemId) end
 
@@ -3636,8 +3658,9 @@ function Player:isPzLocked() end
 ---@return boolean|number
 function Player:isTraining() end
 
+---@param time number
 ---@return boolean
-function Player:isUIExhausted() end
+function Player:isUIExhausted(time) end
 
 ---@return boolean
 function Player:isVip() end
@@ -3676,8 +3699,9 @@ function Player:openStash(isNpc) end
 ---@return boolean|nil
 function Player:popupFYI(message) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function Player:preyThirdSlot() end
+function Player:preyThirdSlot(arg2) end
 
 ---@return boolean|nil
 function Player:reloadData() end
@@ -3728,7 +3752,7 @@ function Player:removeGroupFlag(flag) end
 ---@return boolean|nil
 function Player:removeIconBakragore(iconType) end
 
----@param itemId string
+---@param itemId number|string
 ---@param count number
 ---@param subType? number
 ---@param ignoreEquipped? boolean
@@ -3770,7 +3794,7 @@ function Player:removePreyStamina(amount) end
 ---@return boolean|nil
 function Player:removeReward(rewardId) end
 
----@param itemId string
+---@param itemId number|string
 ---@param count number
 ---@return boolean|nil
 function Player:removeStashItem(itemId, count) end
@@ -3798,7 +3822,7 @@ function Player:resetCharmsBestiary() end
 function Player:resetOldCharms() end
 
 ---@param name? string
----@param set? boolean
+---@param set? boolean|number
 ---@return boolean|number|nil
 function Player:revelationStageWOD(name, set) end
 
@@ -3883,7 +3907,7 @@ function Player:sendSpellGroupCooldown(groupId, time) end
 
 ---@param type any
 ---@param text string
----@param position? Position
+---@param position? number|Position
 ---@param primaryValue? number
 ---@param primaryColor? any
 ---@param secondaryValue? number
@@ -3911,8 +3935,9 @@ function Player:setBankBalance(bankBalance) end
 ---@return boolean|nil
 function Player:setBaseXpGain(value) end
 
+---@param arg2 number
 ---@return boolean
-function Player:setBossPoints() end
+function Player:setBossPoints(arg2) end
 
 ---@param capacity number
 ---@return boolean|nil
@@ -3939,8 +3964,9 @@ function Player:setFaction(factionId) end
 ---@return boolean|nil
 function Player:setFamiliarLooktype(lookType) end
 
+---@param arg2 number
 ---@return boolean
-function Player:setForgeDusts() end
+function Player:setForgeDusts(arg2) end
 
 ---@param enabled boolean
 ---@return boolean|nil
@@ -4016,8 +4042,9 @@ function Player:setOfflineTrainingSkill(skillId) end
 ---@return boolean|nil
 function Player:setPronoun(newPronoun) end
 
+---@param arg2 number
 ---@return boolean
-function Player:setRemoveBossTime() end
+function Player:setRemoveBossTime(arg2) end
 
 ---@param value boolean
 ---@param ticks number
@@ -4100,8 +4127,9 @@ function Player:showTextDialog(idOrNameOrUserdata, text, canWrite, length) end
 ---@return boolean|nil
 function Player:takeScreenshot(screenshotType) end
 
+---@param arg2? boolean
 ---@return boolean|nil
-function Player:taskHuntingThirdSlot() end
+function Player:taskHuntingThirdSlot(arg2) end
 
 ---@return boolean|nil
 function Player:unlockAllCharmRunes() end
@@ -4291,8 +4319,8 @@ function Spdlog.info(text) end
 function Spdlog.warn(text) end
 
 ---@class Spell
----@operator eq(Spell):boolean
 ---@overload fun(nameOrTypeOrId: string|integer): Spell?
+---@operator eq(Spell):boolean
 Spell = {}
 
 ---@param value? boolean
@@ -4307,8 +4335,9 @@ function Spell:allowOnSelf(value) end
 ---@return boolean|nil
 function Spell:blockWalls(value) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function Spell:castSound() end
+function Spell:castSound(arg2) end
 
 ---@param charges? number
 ---@return boolean|number|nil
@@ -4344,8 +4373,9 @@ function Spell:hasPlayerNameParam(value) end
 ---@return boolean|number|nil
 function Spell:id(id) end
 
+---@param arg2? number
 ---@return boolean|number|nil
-function Spell:impactSound() end
+function Spell:impactSound(arg2) end
 
 ---@param value? boolean
 ---@return boolean|nil
@@ -4416,7 +4446,7 @@ function Spell:needTarget(value) end
 ---@return boolean|nil
 function Spell:needWeapon(value) end
 
----@param callback: fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean
+---@param callback fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean
 ---@return boolean
 function Spell:onCastSpell(callback) end
 
@@ -4440,7 +4470,7 @@ function Spell:setPzLocked(value) end
 function Spell:soul(soul) end
 
 ---@param vocation any
----@return boolean|table|nil
+---@return boolean|table|nil|Spell
 function Spell:vocation(vocation) end
 
 ---@param words? string
@@ -4461,11 +4491,11 @@ function TalkAction:getGroupType() end
 ---@return boolean|string
 function TalkAction:getName() end
 
----@param groupType string
+---@param groupType string|number
 ---@return boolean
 function TalkAction:groupType(groupType) end
 
----@param callback: fun(player: Player, words: string, param: string, type: integer): boolean
+---@param callback fun(player: Player, words: string, param: string, type: integer): boolean
 ---@return boolean
 function TalkAction:onSay(callback) end
 
@@ -4495,7 +4525,7 @@ function Teleport:setDestination(position) end
 ---@operator eq(Tile):boolean
 Tile = {}
 
----@param itemId string
+---@param itemId number|string
 ---@param countOrSubType? number
 ---@param flags? number
 ---@return nil|Item
@@ -4531,7 +4561,7 @@ function Tile:getGround() end
 ---@return nil|House
 function Tile:getHouse() end
 
----@param itemId string
+---@param itemId number|string
 ---@param subType? number
 ---@return nil|Item
 function Tile:getItemById(itemId, subType) end
@@ -4547,7 +4577,7 @@ function Tile:getItemByType(itemType) end
 ---@return number|nil
 function Tile:getItemCount() end
 
----@param itemId string
+---@param itemId number|string
 ---@param subType? number
 ---@return number|nil
 function Tile:getItemCountById(itemId, subType) end
@@ -4791,7 +4821,7 @@ function Weapon:manaPercent(percent) end
 ---@return boolean|nil
 function Weapon:maxHitChance(max) end
 
----@param callback: fun(player: Player, variant: Variant): boolean
+---@param callback fun(player: Player, variant: Variant): boolean
 ---@return boolean
 function Weapon:onUseWeapon(callback) end
 
@@ -4855,8 +4885,9 @@ Zone = {}
 ---@return boolean
 function Zone:addArea(fromPos, toPos) end
 
+---@param ... any
 ---@return table
-function Zone.getAll() end
+function Zone.getAll(...) end
 
 ---@param name string
 ---@return nil|Zone
@@ -4914,3 +4945,118 @@ function Zone:setRemoveDestination(pos) end
 ---@param toPos Position
 ---@return boolean
 function Zone:subtractArea(fromPos, toPos) end
+
+---@class configManager
+configManager = {}
+
+---@param key any
+---@return boolean
+function configManager.getBoolean(key) end
+
+---@param key any
+---@param shouldRound boolean
+---@return number
+function configManager.getFloat(key, shouldRound) end
+
+---@param key any
+---@return number
+function configManager.getNumber(key) end
+
+---@param key any
+---@return string
+function configManager.getString(key) end
+
+---@class db
+db = {}
+
+---@param query string
+---@param callback? fun(success: boolean)
+---@return nil
+function db.asyncQuery(query, callback) end
+
+---@param query string
+---@param callback? fun(resultId: number|false)
+---@return nil
+function db.asyncStoreQuery(query, callback) end
+
+---@param value string
+---@param length number
+---@return string
+function db.escapeBlob(value, length) end
+
+---@param value string
+---@return string
+function db.escapeString(value) end
+
+---@param ... any
+---@return number
+function db.lastInsertId(...) end
+
+---@param query string
+---@return boolean
+function db.query(query) end
+
+---@param query string
+---@return boolean|number
+function db.storeQuery(query) end
+
+---@param tableName string
+---@return boolean
+function db.tableExists(tableName) end
+
+---@class kv
+kv = {}
+
+---@param key string|KV|boolean
+---@param forceLoad? boolean
+---@return nil
+function kv.get(key, forceLoad) end
+
+---@param prefix? KV|string
+---@return table
+function kv.keys(prefix) end
+
+---@param key string|KV
+---@return nil
+function kv.remove(key) end
+
+---@param key string|KV
+---@return KV
+function kv.scoped(key) end
+
+---@param key string|KV
+---@param value number
+---@return boolean
+function kv.set(key, value) end
+
+---@class logger
+logger = {}
+
+---@param text string
+---@return nil
+function logger.debug(text) end
+
+---@param text string
+---@return nil
+function logger.error(text) end
+
+---@param text string
+---@return nil
+function logger.info(text) end
+
+---@param text string
+---@return nil
+function logger.trace(text) end
+
+---@param text string
+---@return nil
+function logger.warn(text) end
+
+---@class metrics
+metrics = {}
+
+---@param name string
+---@param value number
+---@param attributes any
+---@return nil
+function metrics.addCounter(name, value, attributes) end

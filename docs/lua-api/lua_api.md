@@ -36,7 +36,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(): Action`
 
-
 #### `Action:aid(aids: number)`
 
 - Returns: `boolean`
@@ -138,67 +137,67 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Charm
 
-#### `Charm:castSound()`
+#### `Charm:castSound(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:category()`
+#### `Charm:category(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:chance()`
+#### `Charm:chance(arg2?: table)`
 
 - Returns: `boolean|table`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:damageType()`
+#### `Charm:damageType(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:description()`
+#### `Charm:description(arg2?: string)`
 
 - Returns: `boolean|string`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:effect()`
+#### `Charm:effect(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:impactSound()`
+#### `Charm:impactSound(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:messageCancel()`
+#### `Charm:messageCancel(arg2?: string)`
 
 - Returns: `boolean|string`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:messageServerLog()`
+#### `Charm:messageServerLog(arg2?: boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:name()`
+#### `Charm:name(arg2?: string)`
 
 - Returns: `boolean|string`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:percentage()`
+#### `Charm:percentage(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:points()`
+#### `Charm:points(arg2?: table)`
 
 - Returns: `boolean|table`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
 
-#### `Charm:type()`
+#### `Charm:type(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/charm_functions.cpp`
@@ -207,7 +206,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(): Combat`
-
 
 #### `Combat:addCondition(condition: Condition)`
 
@@ -239,7 +237,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
 
-#### `Combat:setParameter(key: any, value: boolean)`
+#### `Combat:setParameter(key: any, value: boolean|number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
@@ -248,7 +246,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?`
-
 
 #### `Condition:addDamage(rounds: number, time: number, value: number)`
 
@@ -305,7 +302,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
 
-#### `Condition:setParameter(key: any, value: boolean)`
+#### `Condition:setParameter(key: any, value: boolean|number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
@@ -315,33 +312,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
 
-### configManager
-
-#### `configManager.getBoolean(key: any)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/game/config_functions.cpp`
-
-#### `configManager.getFloat(key: any, shouldRound: boolean)`
-
-- Returns: `number`
-- Source: `src/lua/functions/core/game/config_functions.cpp`
-
-#### `configManager.getNumber(key: any)`
-
-- Returns: `number`
-- Source: `src/lua/functions/core/game/config_functions.cpp`
-
-#### `configManager.getString(key: any)`
-
-- Returns: `string`
-- Source: `src/lua/functions/core/game/config_functions.cpp`
-
 ### Container
 
 - Extends: `Item`
 
-#### `Container:addItem(itemId: string, countOrSubType?: number, index?: number, flags?: number)`
+#### `Container:addItem(itemId: number|string, countOrSubType?: number, index?: number, flags?: number)`
 
 - Returns: `boolean|nil|Item`
 - Source: `src/lua/functions/items/container_functions.cpp`
@@ -376,7 +351,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Item`
 - Source: `src/lua/functions/items/container_functions.cpp`
 
-#### `Container:getItemCountById(itemId: string, subType?: number)`
+#### `Container:getItemCountById(itemId: number|string, subType?: number)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/container_functions.cpp`
@@ -416,7 +391,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/container_functions.cpp`
 
-#### `Container:removeItemById(itemId: string, count: number, subType?: number)`
+#### `Container:removeItemById(itemId: number|string, count: number, subType?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/container_functions.cpp`
@@ -598,14 +573,14 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `string|nil`
 - Source: `src/lua/functions/creatures/creature_functions.cpp`
 
-#### `Creature:getZones()`
-
-- Returns: `table|nil`
-- Source: `src/lua/functions/creatures/creature_functions.cpp`
-
 #### `Creature:getZoneType()`
 
 - Returns: `number|nil`
+- Source: `src/lua/functions/creatures/creature_functions.cpp`
+
+#### `Creature:getZones()`
+
+- Returns: `table|nil`
 - Source: `src/lua/functions/creatures/creature_functions.cpp`
 
 #### `Creature:hasBeenSummoned()`
@@ -788,7 +763,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(eventName: string): CreatureEvent`
 
-
 #### `CreatureEvent:onAdvance(callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean)`
 
 - Returns: `boolean`
@@ -858,48 +832,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
-
-### db
-
-#### `db.asyncQuery(query: string, callback?: fun(success: boolean))`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.asyncStoreQuery(query: string, callback?: fun(resultId: number|false))`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.escapeBlob(value: string, length: number)`
-
-- Returns: `string`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.escapeString(value: string)`
-
-- Returns: `string`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.lastInsertId()`
-
-- Returns: `number`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.query(query: string)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.storeQuery(query: string)`
-
-- Returns: `boolean|number`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
-
-#### `db.tableExists(tableName: string)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/libs/db_functions.cpp`
 
 ### EventCallback
 
@@ -996,7 +928,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(position: Position, isDynamic?: boolean): Tile`
-
 - Returns: `Tile`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
@@ -1015,12 +946,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getAchievements()`
+#### `Game.getAchievements(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getBestiaryCharm()`
+#### `Game.getBestiaryCharm(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1030,17 +961,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|string|table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getBoostedBoss()`
+#### `Game.getBoostedBoss(...: any)`
 
 - Returns: `string`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getBoostedCreature()`
+#### `Game.getBoostedCreature(...: any)`
 
 - Returns: `string`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getClientVersion()`
+#### `Game.getClientVersion(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1060,34 +991,44 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getFiendishMonsters()`
+#### `Game.getFiendishMonsters(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getGameState()`
+#### `Game.getGameState(...: any)`
 
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getHouses()`
+#### `Game.getHouses(...: any)`
 
 - Returns: `House[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getInfluencedMonsters()`
+#### `Game.getInfluencedMonsters(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getLadderIds()`
+#### `Game.getLadderIds(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getMonsterCount()`
+#### `Game.getMonsterCount(...: any)`
 
 - Returns: `number`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
+#### `Game.getMonsterTypeByName(name: string)`
+
+- Returns: `boolean|MonsterType`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
+#### `Game.getMonsterTypes(...: any)`
+
+- Returns: `table<string, MonsterType>`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 #### `Game.getMonstersByBestiaryStars(stars: number)`
@@ -1100,16 +1041,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getMonsterTypeByName(name: string)`
-
-- Returns: `boolean|MonsterType`
-- Source: `src/lua/functions/core/game/game_functions.cpp`
-
-#### `Game.getMonsterTypes()`
-
-- Returns: `table<string, MonsterType>`
-- Source: `src/lua/functions/core/game/game_functions.cpp`
-
 #### `Game.getNormalizedGuildName(name: string)`
 
 - Returns: `string|nil`
@@ -1120,7 +1051,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `string|nil`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getNpcCount()`
+#### `Game.getNpcCount(...: any)`
 
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1130,17 +1061,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Player`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getPlayerCount()`
+#### `Game.getPlayerCount(...: any)`
 
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getPlayers()`
+#### `Game.getPlayers(...: any)`
 
 - Returns: `Player[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getPublicAchievements()`
+#### `Game.getPublicAchievements(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1150,12 +1081,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `string`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getSecretAchievements()`
+#### `Game.getSecretAchievements(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getSoulCoreItems()`
+#### `Game.getSoulCoreItems(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1165,17 +1096,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `Creature[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getTalkActions()`
+#### `Game.getTalkActions(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getTowns()`
+#### `Game.getTowns(...: any)`
 
 - Returns: `Town[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getWorldType()`
+#### `Game.getWorldType(...: any)`
 
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1244,7 +1175,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(name: string): GlobalEvent`
-
 
 #### `GlobalEvent:interval(interval: number)`
 
@@ -1561,7 +1491,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Item
 
-#### `Item:actor()`
+#### `Item:actor(arg2?: boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1621,7 +1551,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:getCustomAttribute(key: string)`
+#### `Item:getCustomAttribute(key: number|string)`
 
 - Returns: `nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1751,12 +1681,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:isOwner(creatureOrCreatureId: Creature)`
+#### `Item:isOwner(creatureOrCreatureId: number|Creature)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:moveTo(positionOrCylinder: any, flags?: number)`
+#### `Item:moveTo(positionOrCylinder: Container|Player|Tile|Position, flags?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1776,7 +1706,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:removeCustomAttribute(key: string)`
+#### `Item:removeCustomAttribute(key: number|string)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1791,12 +1721,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:setAttribute(key: string, value: string)`
+#### `Item:setAttribute(key: string, value: string|number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:setCustomAttribute(key: string, value: string)`
+#### `Item:setCustomAttribute(key: number|string, value: number|string|boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1806,7 +1736,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:setOwner(creatureOrCreatureId: Creature)`
+#### `Item:setOwner(creatureOrCreatureId: number|Creature)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1826,7 +1756,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Item`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
-#### `Item:transform(itemId: string, arg2?: number)`
+#### `Item:transform(itemId: number|string, countOrSubType?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_functions.cpp`
@@ -1900,17 +1830,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/item_type_functions.cpp`
 
-#### `ItemType:getElementalBond()`
-
-- Returns: `number|nil`
-- Source: `src/lua/functions/items/item_type_functions.cpp`
-
 #### `ItemType:getElementDamage()`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/item_type_functions.cpp`
 
 #### `ItemType:getElementType()`
+
+- Returns: `number|nil`
+- Source: `src/lua/functions/items/item_type_functions.cpp`
+
+#### `ItemType:getElementalBond()`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/items/item_type_functions.cpp`
@@ -2115,86 +2045,32 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_type_functions.cpp`
 
-### kv
-
-#### `kv.get(key: string, forceLoad?: boolean)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
-#### `kv.keys(prefix?: KV)`
-
-- Returns: `table`
-- Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
-#### `kv.remove(key: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
-#### `kv.scoped(key: string)`
-
-- Returns: `KV`
-- Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
-#### `kv.set(key: string, value: number)`
-
-- Returns: `boolean`
-- Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
 ### KV
 
-#### `KV.get(key: string, forceLoad?: boolean)`
+#### `KV.get(key: string|KV|boolean, forceLoad?: boolean)`
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/kv_functions.cpp`
 
-#### `KV.keys(prefix?: KV)`
+#### `KV.keys(prefix?: KV|string)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/libs/kv_functions.cpp`
 
-#### `KV.remove(key: string)`
+#### `KV.remove(key: string|KV)`
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/libs/kv_functions.cpp`
 
-#### `KV.scoped(key: string)`
+#### `KV.scoped(key: string|KV)`
 
 - Returns: `KV`
 - Source: `src/lua/functions/core/libs/kv_functions.cpp`
 
-#### `KV.set(key: string, value: number)`
+#### `KV.set(key: string|KV, value: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/core/libs/kv_functions.cpp`
-
-### logger
-
-#### `logger.debug(text: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/logger_functions.cpp`
-
-#### `logger.error(text: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/logger_functions.cpp`
-
-#### `logger.info(text: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/logger_functions.cpp`
-
-#### `logger.trace(text: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/logger_functions.cpp`
-
-#### `logger.warn(text: string)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/logger_functions.cpp`
 
 ### Loot
 
@@ -2287,13 +2163,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/loot_functions.cpp`
-
-### metrics
-
-#### `metrics.addCounter(name: string, value: number, attributes: any)`
-
-- Returns: `nil`
-- Source: `src/lua/functions/core/libs/metrics_functions.cpp`
 
 ### ModalWindow
 
@@ -2426,12 +2295,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:criticalChance()`
+#### `Monster:criticalChance(critical?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:criticalDamage()`
+#### `Monster:criticalDamage(damage?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
@@ -2496,27 +2365,27 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|MonsterType`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:hazard()`
+#### `Monster:hazard(hazard?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:hazardCrit()`
+#### `Monster:hazardCrit(hazardCrit?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:hazardDamageBoost()`
+#### `Monster:hazardDamageBoost(hazardDamageBoost?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:hazardDefenseBoost()`
+#### `Monster:hazardDefenseBoost(hazardDefenseBoost?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:hazardDodge()`
+#### `Monster:hazardDodge(hazardDodge?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
@@ -2621,24 +2490,24 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:setType(nameOrRaceId: string, restoreHealth: boolean)`
+#### `Monster:setType(nameOrRaceId: number|string, restoreHealth: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
-#### `Monster:soulPit()`
+#### `Monster:soulPit(soulPit?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
 ### MonsterSpell
 
-#### `MonsterSpell:castSound()`
+#### `MonsterSpell:castSound(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_spell_functions.cpp`
 
-#### `MonsterSpell:impactSound()`
+#### `MonsterSpell:impactSound(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_spell_functions.cpp`
@@ -2750,6 +2619,51 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### MonsterType
 
+#### `MonsterType:BestiaryCharmsPoints(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiaryFirstUnlock(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiaryLocations(arg2?: string)`
+
+- Returns: `boolean|string|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiaryOccurrence(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiarySecondUnlock(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiaryStars(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:Bestiaryclass(arg2?: string)`
+
+- Returns: `boolean|string|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:Bestiaryrace(race?: any)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
+#### `MonsterType:BestiarytoKill(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
+
 #### `MonsterType:addAttack(monsterspell: MonsterSpell)`
 
 - Returns: `nil`
@@ -2795,57 +2709,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:armor()`
+#### `MonsterType:armor(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:baseSpeed()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiaryCharmsPoints()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:Bestiaryclass()`
-
-- Returns: `boolean|string|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiaryFirstUnlock()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiaryLocations()`
-
-- Returns: `boolean|string|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiaryOccurrence()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:Bestiaryrace()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiarySecondUnlock()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiaryStars()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:BestiarytoKill()`
+#### `MonsterType:baseSpeed(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -2860,12 +2729,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:canPushCreatures()`
+#### `MonsterType:canPushCreatures(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:canPushItems()`
+#### `MonsterType:canPushItems(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -2875,62 +2744,62 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:canWalkOnEnergy()`
+#### `MonsterType:canWalkOnEnergy(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:canWalkOnFire()`
+#### `MonsterType:canWalkOnFire(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:canWalkOnPoison()`
+#### `MonsterType:canWalkOnPoison(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:changeTargetChance()`
+#### `MonsterType:changeTargetChance(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:changeTargetSpeed()`
+#### `MonsterType:changeTargetSpeed(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:combatImmunities()`
+#### `MonsterType:combatImmunities(immunity?: string)`
 
 - Returns: `boolean|table|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:conditionImmunities()`
+#### `MonsterType:conditionImmunities(immunity?: string)`
 
 - Returns: `boolean|table|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:corpseId()`
+#### `MonsterType:corpseId(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:critChance()`
+#### `MonsterType:critChance(arg2: number)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:deathSound()`
+#### `MonsterType:deathSound(arg2?: any)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:defense()`
+#### `MonsterType:defense(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:enemyFactions()`
+#### `MonsterType:enemyFactions(faction?: any)`
 
 - Returns: `boolean|table|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -2940,17 +2809,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:experience()`
+#### `MonsterType:experience(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:faction()`
+#### `MonsterType:faction(arg2?: any)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:familiar()`
+#### `MonsterType:familiar(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -3015,102 +2884,102 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `table|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:health()`
+#### `MonsterType:health(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isAttackable()`
+#### `MonsterType:isAttackable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isBlockable()`
+#### `MonsterType:isBlockable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isConvinceable()`
+#### `MonsterType:isConvinceable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isForgeCreature()`
+#### `MonsterType:isForgeCreature(arg2?: boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isHealthHidden()`
+#### `MonsterType:isHealthHidden(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isHostile()`
+#### `MonsterType:isHostile(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isIllusionable()`
+#### `MonsterType:isIllusionable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isPreyable()`
+#### `MonsterType:isPreyExclusive(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isPreyExclusive()`
+#### `MonsterType:isPreyable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isPushable()`
+#### `MonsterType:isPushable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isRewardBoss()`
+#### `MonsterType:isRewardBoss(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:isSummonable()`
+#### `MonsterType:isSummonable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:light()`
+#### `MonsterType:light(arg2?: number, arg3?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:manaCost()`
+#### `MonsterType:manaCost(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:maxHealth()`
+#### `MonsterType:maxHealth(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:maxSummons()`
+#### `MonsterType:maxSummons(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:mitigation()`
+#### `MonsterType:mitigation(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:name()`
+#### `MonsterType:name(arg2?: string)`
 
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:nameDescription()`
+#### `MonsterType:nameDescription(arg2?: string)`
 
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -3150,17 +3019,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:outfit()`
+#### `MonsterType:outfit(outfit?: any)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:race()`
+#### `MonsterType:race(race?: string)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:raceId()`
+#### `MonsterType:raceId(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -3170,82 +3039,77 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:respawnTypeIsUnderground()`
+#### `MonsterType:respawnTypeIsUnderground(arg2?: any)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:respawnTypePeriod()`
+#### `MonsterType:runHealth(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:runHealth()`
-
-- Returns: `boolean|number|nil`
-- Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
-
-#### `MonsterType:soundChance()`
+#### `MonsterType:soundChance(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:soundSpeedTicks()`
+#### `MonsterType:soundSpeedTicks(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:staticAttackChance()`
+#### `MonsterType:staticAttackChance(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:strategiesTargetDamage()`
+#### `MonsterType:strategiesTargetDamage(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:strategiesTargetHealth()`
+#### `MonsterType:strategiesTargetHealth(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:strategiesTargetNearest()`
+#### `MonsterType:strategiesTargetNearest(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:strategiesTargetRandom()`
+#### `MonsterType:strategiesTargetRandom(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:targetDistance()`
+#### `MonsterType:targetDistance(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:targetPreferMaster()`
+#### `MonsterType:targetPreferMaster(arg2?: boolean)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:targetPreferPlayer()`
+#### `MonsterType:targetPreferPlayer(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:variant()`
+#### `MonsterType:variant(arg2?: string)`
 
 - Returns: `boolean|string`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:yellChance()`
+#### `MonsterType:yellChance(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:yellSpeedTicks()`
+#### `MonsterType:yellSpeedTicks(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -3276,7 +3140,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(): MoveEvent`
-
 
 #### `MoveEvent:aid(ids: number)`
 
@@ -3367,7 +3230,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(): NetworkMessage`
-
 
 #### `NetworkMessage:add16(value: number)`
 
@@ -3538,7 +3400,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
 
-#### `Npc:isMerchant()`
+#### `Npc:isMerchant(playerGUID: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
@@ -3573,7 +3435,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Npc`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
 
-#### `Npc:removePlayerInteraction()`
+#### `Npc:removePlayerInteraction(creature: Creature)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
@@ -3588,7 +3450,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
 
-#### `Npc:setCurrency()`
+#### `Npc:setCurrency(arg2: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_functions.cpp`
@@ -3628,7 +3490,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(name: string): NpcType`
 
-
 #### `NpcType:addShopItem(shop: Shop)`
 
 - Returns: `boolean|nil`
@@ -3644,17 +3505,17 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:baseSpeed()`
+#### `NpcType:baseSpeed(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:canPushCreatures()`
+#### `NpcType:canPushCreatures(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:canPushItems()`
+#### `NpcType:canPushItems(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3674,7 +3535,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:floorChange()`
+#### `NpcType:floorChange(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3694,32 +3555,32 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `table|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:health()`
+#### `NpcType:health(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:isPushable()`
+#### `NpcType:isPushable(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:light()`
+#### `NpcType:light(arg2?: number, arg3?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:maxHealth()`
+#### `NpcType:maxHealth(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:name()`
+#### `NpcType:name(arg2?: string)`
 
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:nameDescription()`
+#### `NpcType:nameDescription(arg2?: string)`
 
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3769,7 +3630,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:outfit()`
+#### `NpcType:outfit(outfit?: any)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3779,22 +3640,24 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:respawnTypeIsUnderground()`
+#### `NpcType:respawnTypeIsUnderground(arg2?: any)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:respawnTypePeriod()`
+#### `NpcType.respawnTypePeriod(arg2?: any)`
 
+- Overloads:
+  - `fun(name: string): NpcType`
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:soundChance()`
+#### `NpcType:soundChance(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:soundSpeedTicks()`
+#### `NpcType:soundSpeedTicks(arg2?: number)`
 
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3804,22 +3667,22 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:walkInterval()`
+#### `NpcType:walkInterval(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:walkRadius()`
+#### `NpcType:walkRadius(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:yellChance()`
+#### `NpcType:yellChance(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:yellSpeedTicks()`
+#### `NpcType:yellSpeedTicks(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3950,7 +3813,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:addCharmPoints()`
+#### `Player:addCharmPoints(charms: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -3995,7 +3858,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil`
   - `fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil`
-
 - Returns: `integer|false|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
@@ -4019,7 +3881,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:addMinorCharmEchoes()`
+#### `Player:addMinorCharmEchoes(charms: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4139,7 +4001,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:charmExpansion()`
+#### `Player:charmExpansion(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4424,12 +4286,12 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:getItemById(itemId: string, deepSearch: boolean, subType?: number)`
+#### `Player:getItemById(itemId: number|string, deepSearch: boolean, subType?: number)`
 
 - Returns: `nil|Item`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:getItemCount(itemId: string, subType?: number)`
+#### `Player:getItemCount(itemId: number|string, subType?: number)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4639,7 +4501,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:getStashItemCount(itemId: string)`
+#### `Player:getStashItemCount(itemId: number|string)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4824,7 +4686,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|number`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:isUIExhausted()`
+#### `Player:isUIExhausted(time: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4879,7 +4741,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:preyThirdSlot()`
+#### `Player:preyThirdSlot(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4944,7 +4806,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:removeItem(itemId: string, count: number, subType?: number, ignoreEquipped?: boolean)`
+#### `Player:removeItem(itemId: number|string, count: number, subType?: number, ignoreEquipped?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4989,7 +4851,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:removeStashItem(itemId: string, count: number)`
+#### `Player:removeStashItem(itemId: number|string, count: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5024,7 +4886,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:revelationStageWOD(name?: string, set?: boolean)`
+#### `Player:revelationStageWOD(name?: string, set?: boolean|number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5119,7 +4981,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:sendTextMessage(type: any, text: string, position?: Position, primaryValue?: number, primaryColor?: any, secondaryValue?: number, secondaryColor?: any)`
+#### `Player:sendTextMessage(type: any, text: string, position?: number|Position, primaryValue?: number, primaryColor?: any, secondaryValue?: number, secondaryColor?: any)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5149,7 +5011,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:setBossPoints()`
+#### `Player:setBossPoints(arg2: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5184,7 +5046,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:setForgeDusts()`
+#### `Player:setForgeDusts(arg2: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5279,7 +5141,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:setRemoveBossTime()`
+#### `Player:setRemoveBossTime(arg2: number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5374,7 +5236,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:taskHuntingThirdSlot()`
+#### `Player:taskHuntingThirdSlot(arg2?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5496,7 +5358,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Result.getNumber(resultId: number, column: string)`
 
-- Returns: `boolean|number`
+- Returns: `number|false`
 - Source: `src/lua/functions/core/libs/result_functions.cpp`
 
 #### `Result.getStream(resultId: number, column: string)`
@@ -5506,7 +5368,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Result.getString(resultId: number, column: string)`
 
-- Returns: `boolean|string`
+- Returns: `string|false`
 - Source: `src/lua/functions/core/libs/result_functions.cpp`
 
 #### `Result.next(resultId: number)`
@@ -5588,7 +5450,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(nameOrTypeOrId: string|integer): Spell?`
 
-
 #### `Spell:allowFarUse(value?: boolean)`
 
 - Returns: `boolean|nil`
@@ -5604,7 +5465,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
-#### `Spell:castSound()`
+#### `Spell:castSound(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
@@ -5649,7 +5510,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
-#### `Spell:impactSound()`
+#### `Spell:impactSound(arg2?: number)`
 
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
@@ -5771,7 +5632,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Spell:vocation(vocation: any)`
 
-- Returns: `boolean|table|nil`
+- Returns: `boolean|table|nil|Spell`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 #### `Spell:words(words?: string, separator?: string)`
@@ -5783,7 +5644,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Overloads:
   - `fun(...: string): TalkAction`
-
 
 #### `TalkAction:getDescription()`
 
@@ -5800,7 +5660,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|string`
 - Source: `src/lua/functions/events/talk_action_functions.cpp`
 
-#### `TalkAction:groupType(groupType: string)`
+#### `TalkAction:groupType(groupType: string|number)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/events/talk_action_functions.cpp`
@@ -5841,7 +5701,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Tile
 
-#### `Tile:addItem(itemId: string, countOrSubType?: number, flags?: number)`
+#### `Tile:addItem(itemId: number|string, countOrSubType?: number, flags?: number)`
 
 - Returns: `nil|Item`
 - Source: `src/lua/functions/map/tile_functions.cpp`
@@ -5891,7 +5751,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|House`
 - Source: `src/lua/functions/map/tile_functions.cpp`
 
-#### `Tile:getItemById(itemId: string, subType?: number)`
+#### `Tile:getItemById(itemId: number|string, subType?: number)`
 
 - Returns: `nil|Item`
 - Source: `src/lua/functions/map/tile_functions.cpp`
@@ -5911,7 +5771,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/map/tile_functions.cpp`
 
-#### `Tile:getItemCountById(itemId: string, subType?: number)`
+#### `Tile:getItemCountById(itemId: number|string, subType?: number)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/map/tile_functions.cpp`
@@ -6137,7 +5997,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Overloads:
   - `fun(type: integer): Weapon?`
 
-
 #### `Weapon:action(callback: string)`
 
 - Returns: `boolean|nil`
@@ -6307,7 +6166,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/zone_functions.cpp`
 
-#### `Zone.getAll()`
+#### `Zone.getAll(...: any)`
 
 - Returns: `table`
 - Source: `src/lua/functions/core/game/zone_functions.cpp`
@@ -6396,3 +6255,128 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/zone_functions.cpp`
+
+### configManager
+
+#### `configManager.getBoolean(key: any)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/config_functions.cpp`
+
+#### `configManager.getFloat(key: any, shouldRound: boolean)`
+
+- Returns: `number`
+- Source: `src/lua/functions/core/game/config_functions.cpp`
+
+#### `configManager.getNumber(key: any)`
+
+- Returns: `number`
+- Source: `src/lua/functions/core/game/config_functions.cpp`
+
+#### `configManager.getString(key: any)`
+
+- Returns: `string`
+- Source: `src/lua/functions/core/game/config_functions.cpp`
+
+### db
+
+#### `db.asyncQuery(query: string, callback?: fun(success: boolean))`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.asyncStoreQuery(query: string, callback?: fun(resultId: number|false))`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.escapeBlob(value: string, length: number)`
+
+- Returns: `string`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.escapeString(value: string)`
+
+- Returns: `string`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.lastInsertId(...: any)`
+
+- Returns: `number`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.query(query: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.storeQuery(query: string)`
+
+- Returns: `boolean|number`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+#### `db.tableExists(tableName: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/libs/db_functions.cpp`
+
+### kv
+
+#### `kv.get(key: string|KV|boolean, forceLoad?: boolean)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/kv_functions.cpp`
+
+#### `kv.keys(prefix?: KV|string)`
+
+- Returns: `table`
+- Source: `src/lua/functions/core/libs/kv_functions.cpp`
+
+#### `kv.remove(key: string|KV)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/kv_functions.cpp`
+
+#### `kv.scoped(key: string|KV)`
+
+- Returns: `KV`
+- Source: `src/lua/functions/core/libs/kv_functions.cpp`
+
+#### `kv.set(key: string|KV, value: number)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/libs/kv_functions.cpp`
+
+### logger
+
+#### `logger.debug(text: string)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/logger_functions.cpp`
+
+#### `logger.error(text: string)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/logger_functions.cpp`
+
+#### `logger.info(text: string)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/logger_functions.cpp`
+
+#### `logger.trace(text: string)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/logger_functions.cpp`
+
+#### `logger.warn(text: string)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/logger_functions.cpp`
+
+### metrics
+
+#### `metrics.addCounter(name: string, value: number, attributes: any)`
+
+- Returns: `nil`
+- Source: `src/lua/functions/core/libs/metrics_functions.cpp`

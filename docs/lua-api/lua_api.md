@@ -21,6 +21,8 @@ This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manua
 
 Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.
 
+On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to update `.vscode/settings.json` automatically.
+
 Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.
 
 ## Manual Signature Hints

@@ -12,6 +12,35 @@ The generator uses a hybrid model. Automatic scanning discovers most bindings,
 while explicit `/*** */` docblocks correct signatures that need LuaLS-specific
 types, overloads, fields, or multiple return values.
 
+## VSCode IntelliSense Setup
+
+Install the `Lua` extension for VSCode, then run this from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/setup_vscode_lua_api.ps1
+```
+
+The script updates the local `.vscode/settings.json` file to include
+`${workspaceFolder}/docs/lua-api` in `Lua.workspace.library`. It also removes
+old Canary Lua API entries that pointed at `docs/lua_api.*`. The settings file
+is ignored by Git, so each developer can run the helper without changing the
+repository.
+
+For manual setup, add this to `.vscode/settings.json`:
+
+```json
+{
+  "Lua.workspace.library": [
+    "${workspaceFolder}/docs/lua-api"
+  ],
+  "Lua.workspace.checkThirdParty": false
+}
+```
+
+The stub used by LuaLS is `docs/lua-api/lua_api.d.lua`. Canary updates the file
+automatically during startup when `generateLuaApiDocs` is enabled, and CI also
+checks that the committed generated docs stay synchronized.
+
 ## Adding Or Updating Bindings
 
 When a C++ Lua binding is added or changed, update the generated docs in the

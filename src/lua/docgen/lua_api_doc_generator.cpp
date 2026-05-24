@@ -2241,6 +2241,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	writeMarkdownTypeAliases(output);
 	output << "## VSCode IntelliSense\n\n";
 	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
+	output << "On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to update `.vscode/settings.json` automatically.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Manual Signature Hints\n\n";
 	output << "C++ Lua binding handlers and registration lines can override inferred signatures with a `/*** */` block immediately before the handler or `Lua::register*` call. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";

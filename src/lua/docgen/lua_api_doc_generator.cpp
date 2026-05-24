@@ -1661,6 +1661,14 @@ namespace {
 		output << "  ]\n";
 	}
 
+	std::string finishGeneratedFile(std::string content) {
+		while (!content.empty() && (content.back() == '\n' || content.back() == '\r')) {
+			content.pop_back();
+		}
+		content.push_back('\n');
+		return content;
+	}
+
 	bool writeFileAtomically(const std::filesystem::path &path, const std::string &content, std::string &errorMessage) {
 		std::error_code ec;
 		const auto createdDirectory = std::filesystem::create_directories(path.parent_path(), ec);
@@ -2216,7 +2224,7 @@ bool LuaApiDocGenerator::exportEmmyLua() const {
 	}
 
 	std::string errorMessage;
-	if (!writeFileAtomically(path, output.str(), errorMessage)) {
+	if (!writeFileAtomically(path, finishGeneratedFile(output.str()), errorMessage)) {
 		logger.warn(fmt::format("Failed to write Lua API EmmyLua documentation: {}", errorMessage));
 		return false;
 	}
@@ -2252,7 +2260,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	writeMarkdownGlobals(output, globals);
 
 	std::string errorMessage;
-	if (!writeFileAtomically(path, output.str(), errorMessage)) {
+	if (!writeFileAtomically(path, finishGeneratedFile(output.str()), errorMessage)) {
 		logger.warn(fmt::format("Failed to write Lua API Markdown documentation: {}", errorMessage));
 		return false;
 	}
@@ -2275,7 +2283,7 @@ bool LuaApiDocGenerator::exportJson() const {
 	output << "}\n";
 
 	std::string errorMessage;
-	if (!writeFileAtomically(path, output.str(), errorMessage)) {
+	if (!writeFileAtomically(path, finishGeneratedFile(output.str()), errorMessage)) {
 		logger.warn(fmt::format("Failed to write Lua API JSON documentation: {}", errorMessage));
 		return false;
 	}

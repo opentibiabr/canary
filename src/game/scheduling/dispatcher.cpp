@@ -11,6 +11,8 @@
 
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "utils/worldpointer.hpp"
 #include "utils/tools.hpp"
 
 thread_local DispatcherContext Dispatcher::dispacherContext;
@@ -36,6 +38,12 @@ void Dispatcher::init() {
 			executeEvents();
 			executeScheduledEvents();
 			mergeEvents();
+
+			// End-of-tick quiescent state: drain every retiree list.
+			//
+			// `WorldPtr<T>` is intrusive — one drain call per (T, Allocator)
+			// pair, so this list grows as new types adopt the affine ptr.
+			WorldPtr<Mount>::quiescentState<Mounts::MountAllocator>();
 
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());

@@ -290,7 +290,7 @@ public:
 	bool toggleMount(bool mount);
 	bool tameMount(uint8_t mountId);
 	bool untameMount(uint8_t mountId);
-	bool hasMount(const std::shared_ptr<Mount> &mount) const;
+	bool hasMount(const Mount* mount) const;
 	bool hasAnyMount() const;
 	uint8_t getRandomMountId() const;
 	void dismount();

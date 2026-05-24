@@ -4088,7 +4088,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	msg.skipBytes(2);
 	for (const auto &mount : g_game().mounts->getMounts()) {
 		const std::string type = mount->type;
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			++mountSize;
 
 			msg.add<uint16_t>(mount->clientId);
@@ -7874,10 +7874,13 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.addByte(outfit.addons);
 		}
 
-		std::vector<std::shared_ptr<Mount>> mounts;
+		// Within a single network send, the player's mount references don't
+		// outlive the tick: we can hold non-owning Borrowed views (each is
+		// just a `Mount*`) instead of paying for refcount-bumped Shareds.
+		std::vector<Mounts::BorrowedMount> mounts;
 		for (const auto &mount : g_game().mounts->getMounts()) {
-			if (player->hasMount(mount)) {
-				mounts.emplace_back(mount);
+			if (player->hasMount(mount.get())) {
+				mounts.emplace_back(mount.borrow());
 			}
 		}
 
@@ -7978,9 +7981,9 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts->getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 			msg.addByte(0x00);
@@ -8101,9 +8104,9 @@ void ProtocolGame::sendPodiumWindow(const std::shared_ptr<Item> &podium, const P
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts->getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 			msg.addByte(0x00);

@@ -4817,7 +4817,7 @@ void Game::playerSetShowOffSocket(uint32_t playerId, Outfit_t &outfit, const Pos
 	}
 
 	const auto mount = mounts->getMountByClientID(outfit.lookMount);
-	if (!mount || !player->hasMount(mount) || player->isWearingSupportOutfit()) {
+	if (!mount || !player->hasMount(mount.get()) || player->isWearingSupportOutfit()) {
 		outfit.lookMount = 0;
 	}
 
@@ -6783,7 +6783,7 @@ void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t ou
 			return;
 		}
 
-		if (!player->hasMount(mount)) {
+		if (!player->hasMount(mount.get())) {
 			return;
 		}
 
@@ -6797,7 +6797,7 @@ void Game::playerChangeOutfit(const std::shared_ptr<Player> &player, Outfit_t ou
 			outfit.lookMount = 0;
 		} else {
 			auto deltaSpeedChange = mount->speed;
-			const auto prevMount = player->isMounted() ? mounts->getMountByID(player->getCurrentMount()) : nullptr;
+			const auto prevMount = player->isMounted() ? mounts->getMountByID(player->getCurrentMount()) : Mounts::BorrowedMount {};
 
 			if (prevMount) {
 				deltaSpeedChange -= prevMount->speed;
@@ -9500,7 +9500,7 @@ void Game::processHighscoreResults(const DBResult_ptr &result, uint32_t playerID
 }
 
 [[nodiscard]] uint16_t Game::resolveRandomMountClientId(const Mounts &mounts, uint8_t randomMountId) {
-	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : nullptr;
+	const auto randomMount = randomMountId != 0 ? mounts.getMountByID(randomMountId) : Mounts::BorrowedMount {};
 	return randomMount ? randomMount->clientId : 0;
 }
 

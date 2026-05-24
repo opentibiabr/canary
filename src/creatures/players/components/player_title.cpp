@@ -187,7 +187,7 @@ bool PlayerTitle::checkGold(uint32_t amount) const {
 bool PlayerTitle::checkMount(uint32_t amount) const {
 	uint8_t total = 0;
 	for (const auto &mount : g_game().mounts->getMounts()) {
-		if (m_player.hasMount(mount)) {
+		if (m_player.hasMount(mount.get())) {
 			total++;
 		}
 	}

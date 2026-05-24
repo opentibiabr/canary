@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "utils/worldpointer.hpp"
+
 struct Mount {
 	Mount(uint8_t initId, uint16_t initClientId, std::string initName, int32_t initSpeed, bool initPremium, std::string initType) :
 		name(std::move(initName)), speed(initSpeed), clientId(initClientId), id(initId), premium(initPremium),
@@ -24,16 +26,29 @@ struct Mount {
 
 class Mounts {
 public:
+	using MountAllocator = WorldPtr<Mount>::DefaultAllocator;
+	using OwningMount = WorldPtr<Mount>::Owning<MountAllocator>;
+	using BorrowedMount = WorldPtr<Mount>::Borrowed<MountAllocator>;
+	using StorageType = phmap::parallel_flat_hash_set<
+		OwningMount,
+		WorldPtrOwningHash<Mount>>;
+
 	bool reload();
 	bool loadFromXml();
-	std::shared_ptr<Mount> getMountByID(uint8_t id) const;
-	std::shared_ptr<Mount> getMountByName(const std::string &name) const;
-	std::shared_ptr<Mount> getMountByClientID(uint16_t clientId) const;
 
-	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Mount>> &getMounts() const {
+	// Storage owns each Mount via an affine WorldPtr<Mount>::Owning; callers
+	// receive a WorldPtr<Mount>::Borrowed (`BorrowedMount`), free to copy
+	// and cheap to pass around. To escape the world (Lua, network), assign
+	// to a WorldPtr<Mount>::Shared — the implicit conversion bumps the
+	// existing block's refcount and pins the Mount past any reload.
+	[[nodiscard]] BorrowedMount getMountByID(uint8_t id) const;
+	[[nodiscard]] BorrowedMount getMountByName(const std::string &name) const;
+	[[nodiscard]] BorrowedMount getMountByClientID(uint16_t clientId) const;
+
+	[[nodiscard]] const StorageType &getMounts() const {
 		return mounts;
 	}
 
 private:
-	phmap::parallel_flat_hash_set<std::shared_ptr<Mount>> mounts;
+	StorageType mounts;
 };

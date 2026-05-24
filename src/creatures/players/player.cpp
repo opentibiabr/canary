@@ -7764,15 +7764,15 @@ void Player::setCurrentMount(uint8_t mount) {
 bool Player::hasAnyMount() const {
 	const auto &mounts = g_game().mounts->getMounts();
 	return std::ranges::any_of(mounts, [&](const auto &mount) {
-		return hasMount(mount);
+		return hasMount(mount.get());
 	});
 }
 
 uint8_t Player::getRandomMountId() const {
 	std::vector<uint8_t> playerMounts;
-	const auto mounts = g_game().mounts->getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
-		if (hasMount(mount)) {
+		if (hasMount(mount.get())) {
 			playerMounts.emplace_back(mount->id);
 		}
 	}
@@ -7835,7 +7835,7 @@ bool Player::toggleMount(bool mount) {
 			return false;
 		}
 
-		if (!hasMount(currentMount)) {
+		if (!hasMount(currentMount.get())) {
 			setCurrentMount(0);
 			kv()->set("last-mount", 0);
 			sendOutfitWindow();
@@ -7920,7 +7920,7 @@ bool Player::untameMount(uint8_t mountId) {
 	return true;
 }
 
-bool Player::hasMount(const std::shared_ptr<Mount> &mount) const {
+bool Player::hasMount(const Mount* mount) const {
 	if (isAccessPlayer()) {
 		return true;
 	}

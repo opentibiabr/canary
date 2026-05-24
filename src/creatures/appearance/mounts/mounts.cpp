@@ -15,6 +15,10 @@
 #include "utils/tools.hpp"
 
 bool Mounts::reload() {
+	// Each OwningMount's destructor retires its Block to the QSBR list.
+	// Borrowed views handed out earlier in the tick remain dereferenceable
+	// until the next quiescentState(), which the dispatcher invokes at
+	// end-of-tick.
 	mounts.clear();
 	return loadFromXml();
 }
@@ -35,32 +39,48 @@ bool Mounts::loadFromXml() {
 			continue;
 		}
 
-		mounts.emplace(std::make_shared<Mount>(static_cast<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value())), lookType, mountNode.attribute("name").as_string(), pugi::cast<int32_t>(mountNode.attribute("speed").value()), mountNode.attribute("premium").as_bool(), mountNode.attribute("type").as_string()));
+		// OwningMount::make allocates a single Block { refcount, next, Mount }
+		// and constructs Mount in-place. The Block address is recoverable
+		// from any Mount* via offsetof, so later boundary materialisations
+		// (Borrowed → Shared, Owning → Shared) only pay one atomic refcount
+		// op — never a heap allocation.
+		mounts.emplace(OwningMount::make(
+			static_cast<uint8_t>(pugi::cast<uint16_t>(mountNode.attribute("id").value())),
+			lookType,
+			mountNode.attribute("name").as_string(),
+			pugi::cast<int32_t>(mountNode.attribute("speed").value()),
+			mountNode.attribute("premium").as_bool(),
+			mountNode.attribute("type").as_string()
+		));
 	}
 	return true;
 }
 
-std::shared_ptr<Mount> Mounts::getMountByID(uint8_t id) const {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const std::shared_ptr<Mount> &mount) {
-		return mount->id == id; // Note the use of -> operator to access the members of the Mount object
+// Getters return a BorrowedMount: a `Mount*` in a trench coat. Zero atomic
+// ops, free to copy. Lifetime is bound by storage's QSBR-deferred drop —
+// any borrow taken inside a tick stays valid until end-of-tick.
+
+Mounts::BorrowedMount Mounts::getMountByID(uint8_t id) const {
+	auto it = std::find_if(mounts.begin(), mounts.end(), [id](const OwningMount &owner) {
+		return owner->id == id;
 	});
 
-	return it != mounts.end() ? *it : nullptr; // Returning the shared_ptr to the Mount object
+	return it != mounts.end() ? it->borrow() : BorrowedMount {};
 }
 
-std::shared_ptr<Mount> Mounts::getMountByName(const std::string &name) const {
+Mounts::BorrowedMount Mounts::getMountByName(const std::string &name) const {
 	auto mountName = name.c_str();
-	auto it = std::find_if(mounts.begin(), mounts.end(), [mountName](const std::shared_ptr<Mount> &mount) {
-		return strcasecmp(mountName, mount->name.c_str()) == 0;
+	auto it = std::find_if(mounts.begin(), mounts.end(), [mountName](const OwningMount &owner) {
+		return strcasecmp(mountName, owner->name.c_str()) == 0;
 	});
 
-	return it != mounts.end() ? *it : nullptr;
+	return it != mounts.end() ? it->borrow() : BorrowedMount {};
 }
 
-std::shared_ptr<Mount> Mounts::getMountByClientID(uint16_t clientId) const {
-	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const std::shared_ptr<Mount> &mount) {
-		return mount->clientId == clientId; // Note the use of -> operator to access the members of the Mount object
+Mounts::BorrowedMount Mounts::getMountByClientID(uint16_t clientId) const {
+	auto it = std::find_if(mounts.begin(), mounts.end(), [clientId](const OwningMount &owner) {
+		return owner->clientId == clientId;
 	});
 
-	return it != mounts.end() ? *it : nullptr; // Returning the shared_ptr to the Mount object
+	return it != mounts.end() ? it->borrow() : BorrowedMount {};
 }

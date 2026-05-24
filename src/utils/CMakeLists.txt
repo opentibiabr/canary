@@ -1,9 +1,10 @@
 target_sources(
     ${CORE_TARGET_NAME}
-    PRIVATE benchmark.cpp
+    PRIVATE batch_update.cpp
+            benchmark.cpp
             counter_pointer.cpp
             pugicast.cpp
             tools.cpp
             wildcardtree.cpp
-            batch_update.cpp
+            worldpointer.cpp
 )

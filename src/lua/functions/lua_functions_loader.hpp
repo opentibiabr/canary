@@ -13,6 +13,7 @@
 #include "lua/scripts/luajit_sync.hpp"
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
+#include "utils/worldpointer.hpp"
 
 class Combat;
 class Creature;
@@ -275,6 +276,137 @@ public:
 		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
 		// Copy constructor, bumps ref count.
 		new (userData) std::shared_ptr<T>(value);
+	}
+
+	// Affine boundary into Lua. The userdata holds a `WorldPtr<T>::Shared`
+	// (8 bytes — just `T*`). Lua keeps it pinned via the type's __gc
+	// metamethod (`luaAffineGarbageCollection<T>`), so the WorldPtr block
+	// is kept alive past the originating Owning's retire-and-drain cycle.
+	template <class T, class Allocator = typename WorldPtr<T>::DefaultAllocator>
+	static void pushUserdataAffine(lua_State* L, typename WorldPtr<T>::template Shared<Allocator> value) noexcept {
+		using SharedT = typename WorldPtr<T>::template Shared<Allocator>;
+		auto userData = static_cast<SharedT*>(lua_newuserdata(L, sizeof(SharedT)));
+		new (userData) SharedT(std::move(value));
+	}
+
+	// Dedicated boundary for PolyPtr-managed objects (Tile, …). Userdata
+	// stores a `PolyPtr<T>::Shared` (16 bytes — header* + value*). Lua pins
+	// the block via Shared, surviving the originating Owning's retire/drain.
+	// Use this from Lua bindings where `getXxx()` accessors return Borrowed.
+	template <class T>
+	static void pushUserdataPoly(lua_State* L, typename PolyPtr<T>::Borrowed value) noexcept {
+		using SharedT = typename PolyPtr<T>::Shared;
+		auto userData = static_cast<SharedT*>(lua_newuserdata(L, sizeof(SharedT)));
+		new (userData) SharedT(value); // Borrowed → Shared bumps refcount
+	}
+
+	template <class T>
+	static void pushUserdataPoly(lua_State* L, typename PolyPtr<T>::Shared value) noexcept {
+		using SharedT = typename PolyPtr<T>::Shared;
+		auto userData = static_cast<SharedT*>(lua_newuserdata(L, sizeof(SharedT)));
+		new (userData) SharedT(std::move(value));
+	}
+
+	// Returns the raw `T*` held by the userdata's `PolyPtr<T>::Shared`.
+	//
+	// LIFETIME: the returned pointer is valid only while the userdata at
+	// `arg` remains on the Lua stack / referenced by Lua state. The Shared
+	// inside the userdata keeps the PolyPtr block alive across ticks; once
+	// Lua collects the userdata (via `luaPolyGarbageCollection`) the Shared
+	// is destroyed and the block becomes eligible for QSBR drain.
+	//
+	// Do NOT store the returned `T*` past the Lua call boundary unless you
+	// also pin the value yourself (e.g. capture a `PolyPtr<T>::Shared` from
+	// `borrowedFromThis().share()`).
+	template <class T>
+	static T* getUserdataPoly(lua_State* L, int32_t arg, const char* expectedMetatableName) noexcept {
+		using SharedT = typename PolyPtr<T>::Shared;
+		auto userdata = static_cast<SharedT*>(luaL_testudata(L, arg, expectedMetatableName));
+		if (!userdata) {
+			if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
+				return nullptr;
+			}
+			userdata = static_cast<SharedT*>(lua_touserdata(L, arg));
+		}
+		if (!userdata || !*userdata) {
+			return nullptr;
+		}
+		return userdata->get();
+	}
+
+	// Retrieve the raw `T*` held by the userdata's Shared. Zero atomic ops
+	// on access — the Shared inside the userdata keeps +1 on the block for
+	// the duration of the Lua-managed lifetime.
+	template <class T, class Allocator = typename WorldPtr<T>::DefaultAllocator>
+	static T* getUserdataAffine(lua_State* L, int32_t arg, const char* expectedMetatableName) noexcept {
+		using SharedT = typename WorldPtr<T>::template Shared<Allocator>;
+		auto userdata = static_cast<SharedT*>(luaL_testudata(L, arg, expectedMetatableName));
+		if (!userdata) {
+			if (!checkMetatableInheritance(L, arg, expectedMetatableName)) {
+				return nullptr;
+			}
+			userdata = static_cast<SharedT*>(lua_touserdata(L, arg));
+		}
+		if (!userdata || !*userdata) {
+			return nullptr;
+		}
+		return userdata->get();
+	}
+
+	// Per-T __gc metamethod for affine userdata. Casts to the right
+	// `Shared<T>*` and runs its destructor once, leaving an empty Shared
+	// so a re-trigger is a no-op.
+	template <class T, class Allocator = typename WorldPtr<T>::DefaultAllocator>
+	static int luaAffineGarbageCollection(lua_State* L) {
+		using SharedT = typename WorldPtr<T>::template Shared<Allocator>;
+		auto objPtr = static_cast<SharedT*>(lua_touserdata(L, 1));
+		if (!objPtr) {
+			return 0;
+		}
+		objPtr->~SharedT();
+		new (objPtr) SharedT();
+		return 0;
+	}
+
+	template <class T, class Allocator = typename WorldPtr<T>::DefaultAllocator>
+	static void registerAffineClass(
+		lua_State* L,
+		const std::string &className,
+		const std::string &baseClass,
+		lua_CFunction newFunction = nullptr
+	) {
+		registerClass(L, className, baseClass, newFunction);
+		registerMetaMethod(L, className, "__gc", &Lua::luaAffineGarbageCollection<T, Allocator>);
+	}
+
+	// Per-T __gc metamethod for PolyPtr-managed userdata. Casts to the right
+	// `PolyPtr<T>::Shared*` and runs its destructor once (decrementing the
+	// block's refcount; if no other Shared/Owning holds it, the block is
+	// retired and drained by the dispatcher's quiescent state).
+	template <class T>
+	static int luaPolyGarbageCollection(lua_State* L) {
+		using SharedT = typename PolyPtr<T>::Shared;
+		auto objPtr = static_cast<SharedT*>(lua_touserdata(L, 1));
+		if (!objPtr) {
+			return 0;
+		}
+		objPtr->~SharedT();
+		new (objPtr) SharedT();
+		return 0;
+	}
+
+	// Equivalent of `registerAffineClass` for PolyPtr-managed types (Tile).
+	// Wires the __gc that releases the Shared inside the userdata so the
+	// PolyPtr block is retired when Lua collects it.
+	template <class T>
+	static void registerPolyClass(
+		lua_State* L,
+		const std::string &className,
+		const std::string &baseClass,
+		lua_CFunction newFunction = nullptr
+	) {
+		registerClass(L, className, baseClass, newFunction);
+		registerMetaMethod(L, className, "__gc", &Lua::luaPolyGarbageCollection<T>);
 	}
 
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);

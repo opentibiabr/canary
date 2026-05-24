@@ -19,6 +19,11 @@ void SpellFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "Spell", "", SpellFunctions::luaSpellCreate);
 	Lua::registerMetaMethod(L, "Spell", "__eq", Lua::luaUserdataCompare);
 
+	/***
+	 * @function Spell:onCastSpell
+	 * @param callback fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "Spell", "onCastSpell", SpellFunctions::luaSpellOnCastSpell);
 	Lua::registerMethod(L, "Spell", "register", SpellFunctions::luaSpellRegister);
 	Lua::registerMethod(L, "Spell", "name", SpellFunctions::luaSpellName);

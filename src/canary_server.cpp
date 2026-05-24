@@ -58,15 +58,30 @@ CanaryServer::CanaryServer(
 #endif
 }
 
-void CanaryServer::generateLuaApiDocs() const {
+bool CanaryServer::generateLuaApiDocs() const {
 	if (!g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
 		logger.debug("Lua API documentation generation is disabled.");
-		return;
+		return true;
 	}
 
 	LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
 	if (apiDocGenerator.generate()) {
 		logger.info("Lua API documentation generated successfully.");
+		return true;
+	}
+	return false;
+}
+
+int CanaryServer::generateLuaApiDocsOnly() {
+	try {
+		loadConfigLua();
+		return generateLuaApiDocs() ? EXIT_SUCCESS : EXIT_FAILURE;
+	} catch (const FailedToInitializeCanary &err) {
+		logger.error(err.what());
+		return EXIT_FAILURE;
+	} catch (const std::exception &err) {
+		logger.error("Failed to generate Lua API documentation: {}", err.what());
+		return EXIT_FAILURE;
 	}
 }
 

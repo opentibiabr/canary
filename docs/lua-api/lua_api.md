@@ -14,6 +14,7 @@ This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manua
 - `DistanceEffect`: `integer`
 - `MagicEffect`: `integer`
 - `ReturnValue`: `integer`
+- `SoundEffect`: `integer`
 - `TileState`: `integer`
 
 ## VSCode IntelliSense
@@ -24,7 +25,7 @@ Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `..
 
 ## Manual Signature Hints
 
-C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.
+C++ Lua binding handlers and registration lines can override inferred signatures with a `/*** */` block immediately before the handler or `Lua::register*` call. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.
 
 ## Classes
 
@@ -786,64 +787,64 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
   - `fun(eventName: string): CreatureEvent`
 
 
-#### `CreatureEvent:onAdvance()`
+#### `CreatureEvent:onAdvance(callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onDeath()`
+#### `CreatureEvent:onDeath(callback: fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onExtendedOpcode()`
+#### `CreatureEvent:onExtendedOpcode(callback: fun(player: Player, opcode: integer, buffer: string))`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onHealthChange()`
+#### `CreatureEvent:onHealthChange(callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onKill()`
+#### `CreatureEvent:onKill(callback: fun(creature: Creature, target: Creature, lastHit: boolean))`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onLogin()`
+#### `CreatureEvent:onLogin(callback: fun(player: Player): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onLogout()`
+#### `CreatureEvent:onLogout(callback: fun(player: Player): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onManaChange()`
+#### `CreatureEvent:onManaChange(callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onModalWindow()`
+#### `CreatureEvent:onModalWindow(callback: fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer))`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onPrepareDeath()`
+#### `CreatureEvent:onPrepareDeath(callback: fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onTextEdit()`
+#### `CreatureEvent:onTextEdit(callback: fun(player: Player, item: Item, text: string): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
-#### `CreatureEvent:onThink()`
+#### `CreatureEvent:onThink(callback: fun(creature: Creature, interval: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/creature_event_functions.cpp`
 
 #### `CreatureEvent:register()`
@@ -1248,39 +1249,39 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onPeriodChange()`
+#### `GlobalEvent:onPeriodChange(callback: fun(lightState: integer, lightLevel: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onRecord()`
+#### `GlobalEvent:onRecord(callback: fun(current: integer, old: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onSave()`
+#### `GlobalEvent:onSave(callback: fun(): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onShutdown()`
+#### `GlobalEvent:onShutdown(callback: fun(): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onStartup()`
+#### `GlobalEvent:onStartup(callback: fun(): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onThink()`
+#### `GlobalEvent:onThink(callback: fun(interval: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
-#### `GlobalEvent:onTime()`
+#### `GlobalEvent:onTime(callback: fun(interval: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/global_event_functions.cpp`
 
 #### `GlobalEvent:register()`
@@ -2777,7 +2778,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:addSound(soundId: any)`
+#### `MonsterType:addSound(soundId: SoundEffect)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
@@ -3112,39 +3113,39 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onAppear(callback: function)`
+#### `MonsterType:onAppear(callback: fun(monster: Monster, creature: Creature): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onDisappear(callback: function)`
+#### `MonsterType:onDisappear(callback: fun(monster: Monster, creature: Creature): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onMove(callback: function)`
+#### `MonsterType:onMove(callback: fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onPlayerAttack(callback: function)`
+#### `MonsterType:onPlayerAttack(callback: fun(monster: Monster, attacker: Player): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onSay(callback: function)`
+#### `MonsterType:onSay(callback: fun(monster: Monster, creature: Creature, type: integer, message: string): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onSpawn(callback: function)`
+#### `MonsterType:onSpawn(callback: fun(monster: Monster, position: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
-#### `MonsterType:onThink(callback: function)`
+#### `MonsterType:onThink(callback: fun(monster: Monster, interval: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_type_functions.cpp`
 
 #### `MonsterType:outfit()`
@@ -3295,34 +3296,34 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onAddItem()`
+#### `MoveEvent:onAddItem(callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onDeEquip()`
+#### `MoveEvent:onDeEquip(callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onEquip()`
+#### `MoveEvent:onEquip(callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onRemoveItem()`
+#### `MoveEvent:onRemoveItem(callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onStepIn()`
+#### `MoveEvent:onStepIn(callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
-#### `MoveEvent:onStepOut()`
+#### `MoveEvent:onStepOut(callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
 #### `MoveEvent:position(positions: Position)`
@@ -3361,6 +3362,10 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
 ### NetworkMessage
+
+- Overloads:
+  - `fun(): NetworkMessage`
+
 
 #### `NetworkMessage:add16(value: number)`
 
@@ -3618,12 +3623,16 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 
 ### NpcType
 
+- Overloads:
+  - `fun(name: string): NpcType`
+
+
 #### `NpcType:addShopItem(shop: Shop)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:addSound(soundId: any)`
+#### `NpcType:addSound(soundId: SoundEffect)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
@@ -3713,49 +3722,49 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|string|nil`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onAppear(callback: function)`
+#### `NpcType:onAppear(callback: fun(npc: Npc, creature: Creature): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onBuyItem(callback: function)`
+#### `NpcType:onBuyItem(callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onCheckItem(callback: function)`
+#### `NpcType:onCheckItem(callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onCloseChannel(callback: function)`
+#### `NpcType:onCloseChannel(callback: fun(npc: Npc, player: Player): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onDisappear(callback: function)`
+#### `NpcType:onDisappear(callback: fun(npc: Npc, creature: Creature): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onMove(callback: function)`
+#### `NpcType:onMove(callback: fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onSay(callback: function)`
+#### `NpcType:onSay(callback: fun(npc: Npc, creature: Creature, type: integer, message: string): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onSellItem(callback: function)`
+#### `NpcType:onSellItem(callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
-#### `NpcType:onThink(callback: function)`
+#### `NpcType:onThink(callback: fun(npc: Npc, interval: integer): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/npc/npc_type_functions.cpp`
 
 #### `NpcType:outfit()`
@@ -5053,7 +5062,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:sendDoubleSoundEffect(mainSoundId: any, secondarySoundId: any, actor?: boolean)`
+#### `Player:sendDoubleSoundEffect(mainSoundId: SoundEffect, secondarySoundId: SoundEffect, actor?: boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5093,7 +5102,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:sendSingleSoundEffect(soundId: any, actor?: boolean)`
+#### `Player:sendSingleSoundEffect(soundId: SoundEffect, actor?: boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5456,7 +5465,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
-#### `Position:sendDoubleSoundEffect(mainSoundId: any, secondarySoundId: any, actor?: Creature)`
+#### `Position:sendDoubleSoundEffect(mainSoundId: SoundEffect, secondarySoundId: SoundEffect, actor?: Creature)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
@@ -5466,7 +5475,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
-#### `Position:sendSingleSoundEffect(soundId: any, actor?: Creature)`
+#### `Position:sendSingleSoundEffect(soundId: SoundEffect, actor?: Creature)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/map/position_functions.cpp`
@@ -5728,9 +5737,9 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
-#### `Spell:onCastSpell(callback: function)`
+#### `Spell:onCastSpell(callback: fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 #### `Spell:range(range?: number)`
@@ -5794,7 +5803,7 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean`
 - Source: `src/lua/functions/events/talk_action_functions.cpp`
 
-#### `TalkAction:onSay(callback: function)`
+#### `TalkAction:onSay(callback: fun(player: Player, words: string, param: string, type: integer): boolean)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/events/talk_action_functions.cpp`
@@ -6227,9 +6236,9 @@ C++ Lua binding handlers can override inferred signatures with a `/*** */` block
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/weapon_functions.cpp`
 
-#### `Weapon:onUseWeapon(callback: function)`
+#### `Weapon:onUseWeapon(callback: fun(player: Player, variant: Variant): boolean)`
 
-- Returns: `boolean|nil`
+- Returns: `boolean`
 - Source: `src/lua/functions/items/weapon_functions.cpp`
 
 #### `Weapon:premium(value: boolean)`

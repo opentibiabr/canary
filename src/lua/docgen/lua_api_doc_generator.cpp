@@ -1190,32 +1190,8 @@ namespace {
 		appendUnique(docBlock.overloads, normalizeManualLuaTypeExpression(value));
 	}
 
-	LuaDocBlock extractLuaDocBlock(const std::string &content, const std::string &handler) {
+	LuaDocBlock parseLuaDocBlock(const std::string &block) {
 		LuaDocBlock docBlock;
-		if (handler.empty()) {
-			return docBlock;
-		}
-
-		const auto handlerPosition = findHandlerSignature(content, handler);
-		if (handlerPosition == std::string::npos) {
-			return docBlock;
-		}
-
-		const auto blockEnd = content.rfind("*/", handlerPosition);
-		if (blockEnd == std::string::npos) {
-			return docBlock;
-		}
-
-		const auto blockStart = content.rfind("/***", blockEnd);
-		if (blockStart == std::string::npos) {
-			return docBlock;
-		}
-
-		if (!isLuaDocSignaturePrefix(content.substr(blockEnd + 2, handlerPosition - blockEnd - 2))) {
-			return docBlock;
-		}
-
-		const auto block = content.substr(blockStart + 4, blockEnd - blockStart - 4);
 		std::stringstream stream(block);
 		std::string line;
 		while (std::getline(stream, line)) {
@@ -1254,8 +1230,37 @@ namespace {
 		return docBlock;
 	}
 
-	void applyExplicitLuaDoc(LuaFunctionInfo &info, const std::string &content) {
-		const auto docBlock = extractLuaDocBlock(content, info.handler);
+	LuaDocBlock extractLuaDocBlockBeforePosition(const std::string &content, const size_t position) {
+		if (position == std::string::npos) {
+			return {};
+		}
+
+		const auto blockEnd = content.rfind("*/", position);
+		if (blockEnd == std::string::npos) {
+			return {};
+		}
+
+		const auto blockStart = content.rfind("/***", blockEnd);
+		if (blockStart == std::string::npos) {
+			return {};
+		}
+
+		if (!isLuaDocSignaturePrefix(content.substr(blockEnd + 2, position - blockEnd - 2))) {
+			return {};
+		}
+
+		return parseLuaDocBlock(content.substr(blockStart + 4, blockEnd - blockStart - 4));
+	}
+
+	LuaDocBlock extractLuaDocBlock(const std::string &content, const std::string &handler) {
+		if (handler.empty()) {
+			return {};
+		}
+
+		return extractLuaDocBlockBeforePosition(content, findHandlerSignature(content, handler));
+	}
+
+	void applyLuaDocBlock(LuaFunctionInfo &info, const LuaDocBlock &docBlock) {
 		if (!docBlock.found) {
 			return;
 		}
@@ -1282,8 +1287,21 @@ namespace {
 		info.hasExplicitDocumentation = true;
 	}
 
-	void applyExplicitLuaClassDoc(LuaScanResult &result, const std::string &className, const std::string &content, const std::string &handler) {
-		const auto docBlock = extractLuaDocBlock(content, handler);
+	void applyExplicitLuaDoc(LuaFunctionInfo &info, const std::string &content, const size_t registrationPosition = std::string::npos) {
+		auto docBlock = extractLuaDocBlockBeforePosition(content, registrationPosition);
+		if (!docBlock.found) {
+			docBlock = extractLuaDocBlock(content, info.handler);
+		}
+
+		applyLuaDocBlock(info, docBlock);
+	}
+
+	void applyExplicitLuaClassDoc(LuaScanResult &result, const std::string &className, const std::string &content, const std::string &handler, const size_t registrationPosition = std::string::npos) {
+		auto docBlock = extractLuaDocBlockBeforePosition(content, registrationPosition);
+		if (!docBlock.found) {
+			docBlock = extractLuaDocBlock(content, handler);
+		}
+
 		if (!docBlock.found) {
 			return;
 		}
@@ -1530,12 +1548,13 @@ namespace {
 
 	using LuaTypeAlias = std::pair<std::string_view, std::string_view>;
 
-	[[nodiscard]] constexpr std::array<LuaTypeAlias, 5> getLuaTypeAliases() {
+	[[nodiscard]] constexpr std::array<LuaTypeAlias, 6> getLuaTypeAliases() {
 		return { {
 			{ "CombatType", "integer" },
 			{ "DistanceEffect", "integer" },
 			{ "MagicEffect", "integer" },
 			{ "ReturnValue", "integer" },
+			{ "SoundEffect", "integer" },
 			{ "TileState", "integer" },
 		} };
 	}
@@ -1793,7 +1812,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		if (!baseClass.empty() && (classInserted || !result.classBaseClasses.contains(className))) {
 			result.classBaseClasses[className] = baseClass;
 		}
-		applyExplicitLuaClassDoc(result, className, content, constructorHandler);
+		applyExplicitLuaClassDoc(result, className, content, constructorHandler, static_cast<size_t>(it->position(0)));
 	}
 
 	std::regex methodPattern(
@@ -1809,7 +1828,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.hasSelfParameter = usesSelfParameter(content, info.handler);
 		info.parameters = inferParameters(content, info.handler, info.hasSelfParameter);
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 
@@ -1835,7 +1854,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 			appendValue(info.parameters, "other: " + info.className);
 		}
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 
@@ -1850,7 +1869,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.returnType = normalizeReturnType(content, info.handler);
 		info.parameters = inferParameters(content, info.handler, false);
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 
@@ -1863,7 +1882,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "boolean";
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 
@@ -1876,7 +1895,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "number";
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 
@@ -1889,7 +1908,7 @@ void LuaBindingScanner::parseRegistrations(const std::string &content, const std
 		info.name = (*it)[1].str();
 		info.returnType = "string";
 		info.sourceFile = relativePath(filePath);
-		applyExplicitLuaDoc(info, content);
+		applyExplicitLuaDoc(info, content, static_cast<size_t>(it->position(0)));
 		appendValue(result.functions, std::move(info));
 	}
 }
@@ -2224,7 +2243,7 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Manual Signature Hints\n\n";
-	output << "C++ Lua binding handlers can override inferred signatures with a `/*** */` block immediately before the handler. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
+	output << "C++ Lua binding handlers and registration lines can override inferred signatures with a `/*** */` block immediately before the handler or `Lua::register*` call. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";
 	output << "## Classes\n\n";
 	writeMarkdownClasses(output, classes);
 	writeMarkdownGlobals(output, globals);

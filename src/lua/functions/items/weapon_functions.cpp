@@ -31,6 +31,11 @@ void WeaponFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Weapon", "premium", WeaponFunctions::luaWeaponPremium);
 	Lua::registerMethod(L, "Weapon", "wieldUnproperly", WeaponFunctions::luaWeaponUnproperly);
 	Lua::registerMethod(L, "Weapon", "vocation", WeaponFunctions::luaWeaponVocation);
+	/***
+	 * @function Weapon:onUseWeapon
+	 * @param callback fun(player: Player, variant: Variant): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "Weapon", "onUseWeapon", WeaponFunctions::luaWeaponOnUseWeapon);
 	Lua::registerMethod(L, "Weapon", "element", WeaponFunctions::luaWeaponElement);
 	Lua::registerMethod(L, "Weapon", "attack", WeaponFunctions::luaWeaponAttack);

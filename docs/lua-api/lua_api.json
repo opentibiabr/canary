@@ -4,6 +4,7 @@
     "DistanceEffect": "integer",
     "MagicEffect": "integer",
     "ReturnValue": "integer",
+    "SoundEffect": "integer",
     "TileState": "integer"
   },
   "classes": {
@@ -1114,74 +1115,98 @@
     "CreatureEvent": [
       {
         "name": "onAdvance",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onDeath",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onExtendedOpcode",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, opcode: integer, buffer: string)"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onHealthChange",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onKill",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, target: Creature, lastHit: boolean)"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onLogin",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onLogout",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onManaChange",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onModalWindow",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer)"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onPrepareDeath",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onTextEdit",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, item: Item, text: string): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
         "name": "onThink",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, interval: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/creature_event_functions.cpp"
       },
       {
@@ -1808,44 +1833,58 @@
       },
       {
         "name": "onPeriodChange",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(lightState: integer, lightLevel: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onRecord",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(current: integer, old: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onSave",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onShutdown",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onStartup",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onThink",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(interval: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
         "name": "onTime",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(interval: integer): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/global_event_functions.cpp"
       },
       {
@@ -3949,7 +3988,7 @@
       {
         "name": "addSound",
         "params": [
-          "soundId: any"
+          "soundId: SoundEffect"
         ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
@@ -4376,57 +4415,57 @@
       {
         "name": "onAppear",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, creature: Creature): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onDisappear",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, creature: Creature): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onMove",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onPlayerAttack",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, attacker: Player): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onSay",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, creature: Creature, type: integer, message: string): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onSpawn",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, position: Position): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
         "name": "onThink",
         "params": [
-          "callback: function"
+          "callback: fun(monster: Monster, interval: integer): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_type_functions.cpp"
       },
       {
@@ -4613,38 +4652,50 @@
       },
       {
         "name": "onAddItem",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
         "name": "onDeEquip",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
         "name": "onEquip",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
         "name": "onRemoveItem",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
         "name": "onStepIn",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
         "name": "onStepOut",
-        "params": [],
-        "return": "boolean|nil",
+        "params": [
+          "callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean"
+        ],
+        "return": "boolean",
         "source": "src/lua/functions/events/move_event_functions.cpp"
       },
       {
@@ -5105,7 +5156,7 @@
       {
         "name": "addSound",
         "params": [
-          "soundId: any"
+          "soundId: SoundEffect"
         ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
@@ -5226,73 +5277,73 @@
       {
         "name": "onAppear",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, creature: Creature): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onBuyItem",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onCheckItem",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onCloseChannel",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, player: Player): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onDisappear",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, creature: Creature): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onMove",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onSay",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, creature: Creature, type: integer, message: string): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onSellItem",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
         "name": "onThink",
         "params": [
-          "callback: function"
+          "callback: fun(npc: Npc, interval: integer): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/npc/npc_type_functions.cpp"
       },
       {
@@ -7161,8 +7212,8 @@
       {
         "name": "sendDoubleSoundEffect",
         "params": [
-          "mainSoundId: any",
-          "secondarySoundId: any",
+          "mainSoundId: SoundEffect",
+          "secondarySoundId: SoundEffect",
           "actor?: boolean"
         ],
         "return": "boolean",
@@ -7227,7 +7278,7 @@
       {
         "name": "sendSingleSoundEffect",
         "params": [
-          "soundId: any",
+          "soundId: SoundEffect",
           "actor?: boolean"
         ],
         "return": "boolean",
@@ -7809,8 +7860,8 @@
       {
         "name": "sendDoubleSoundEffect",
         "params": [
-          "mainSoundId: any",
-          "secondarySoundId: any",
+          "mainSoundId: SoundEffect",
+          "secondarySoundId: SoundEffect",
           "actor?: Creature"
         ],
         "return": "boolean",
@@ -7828,7 +7879,7 @@
       {
         "name": "sendSingleSoundEffect",
         "params": [
-          "soundId: any",
+          "soundId: SoundEffect",
           "actor?: Creature"
         ],
         "return": "boolean",
@@ -8237,9 +8288,9 @@
       {
         "name": "onCastSpell",
         "params": [
-          "callback: function"
+          "callback: fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
       {
@@ -8328,7 +8379,7 @@
       {
         "name": "onSay",
         "params": [
-          "callback: function"
+          "callback: fun(player: Player, words: string, param: string, type: integer): boolean"
         ],
         "return": "boolean",
         "source": "src/lua/functions/events/talk_action_functions.cpp"
@@ -8933,9 +8984,9 @@
       {
         "name": "onUseWeapon",
         "params": [
-          "callback: function"
+          "callback: fun(player: Player, variant: Variant): boolean"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/items/weapon_functions.cpp"
       },
       {
@@ -9179,16 +9230,6 @@
     ]
   },
   "classOverloads": {
-    "Player": [
-      "fun(idOrGuid: integer): Player?",
-      "fun(name: string): Player?, integer?",
-      "fun(player: Player): Player?"
-    ],
-    "Position": [
-      "fun(): Position",
-      "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
-      "fun(position: Position): Position"
-    ],
     "Action": [
       "fun(): Action"
     ],
@@ -9206,6 +9247,22 @@
     ],
     "MoveEvent": [
       "fun(): MoveEvent"
+    ],
+    "NetworkMessage": [
+      "fun(): NetworkMessage"
+    ],
+    "NpcType": [
+      "fun(name: string): NpcType"
+    ],
+    "Player": [
+      "fun(idOrGuid: integer): Player?",
+      "fun(name: string): Player?, integer?",
+      "fun(player: Player): Player?"
+    ],
+    "Position": [
+      "fun(): Position",
+      "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
+      "fun(position: Position): Position"
     ],
     "Spell": [
       "fun(nameOrTypeOrId: string|integer): Spell?"

@@ -5,6 +5,7 @@
 ---@alias DistanceEffect integer
 ---@alias MagicEffect integer
 ---@alias ReturnValue integer
+---@alias SoundEffect integer
 ---@alias TileState integer
 
 ---@class Action
@@ -618,41 +619,53 @@ function Creature:unregisterEvent(name) end
 ---@overload fun(eventName: string): CreatureEvent
 CreatureEvent = {}
 
----@return boolean|nil
-function CreatureEvent:onAdvance() end
+---@param callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
+---@return boolean
+function CreatureEvent:onAdvance(callback) end
 
----@return boolean|nil
-function CreatureEvent:onDeath() end
+---@param callback: fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean
+---@return boolean
+function CreatureEvent:onDeath(callback) end
 
----@return boolean|nil
-function CreatureEvent:onExtendedOpcode() end
+---@param callback: fun(player: Player, opcode: integer, buffer: string)
+---@return boolean
+function CreatureEvent:onExtendedOpcode(callback) end
 
----@return boolean|nil
-function CreatureEvent:onHealthChange() end
+---@param callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+---@return boolean
+function CreatureEvent:onHealthChange(callback) end
 
----@return boolean|nil
-function CreatureEvent:onKill() end
+---@param callback: fun(creature: Creature, target: Creature, lastHit: boolean)
+---@return boolean
+function CreatureEvent:onKill(callback) end
 
----@return boolean|nil
-function CreatureEvent:onLogin() end
+---@param callback: fun(player: Player): boolean
+---@return boolean
+function CreatureEvent:onLogin(callback) end
 
----@return boolean|nil
-function CreatureEvent:onLogout() end
+---@param callback: fun(player: Player): boolean
+---@return boolean
+function CreatureEvent:onLogout(callback) end
 
----@return boolean|nil
-function CreatureEvent:onManaChange() end
+---@param callback: fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+---@return boolean
+function CreatureEvent:onManaChange(callback) end
 
----@return boolean|nil
-function CreatureEvent:onModalWindow() end
+---@param callback: fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer)
+---@return boolean
+function CreatureEvent:onModalWindow(callback) end
 
----@return boolean|nil
-function CreatureEvent:onPrepareDeath() end
+---@param callback: fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean
+---@return boolean
+function CreatureEvent:onPrepareDeath(callback) end
 
----@return boolean|nil
-function CreatureEvent:onTextEdit() end
+---@param callback: fun(player: Player, item: Item, text: string): boolean
+---@return boolean
+function CreatureEvent:onTextEdit(callback) end
 
----@return boolean|nil
-function CreatureEvent:onThink() end
+---@param callback: fun(creature: Creature, interval: integer): boolean
+---@return boolean
+function CreatureEvent:onThink(callback) end
 
 ---@return boolean|nil
 function CreatureEvent:register() end
@@ -995,26 +1008,33 @@ GlobalEvent = {}
 ---@return boolean|nil
 function GlobalEvent:interval(interval) end
 
----@return boolean|nil
-function GlobalEvent:onPeriodChange() end
+---@param callback: fun(lightState: integer, lightLevel: integer): boolean
+---@return boolean
+function GlobalEvent:onPeriodChange(callback) end
 
----@return boolean|nil
-function GlobalEvent:onRecord() end
+---@param callback: fun(current: integer, old: integer): boolean
+---@return boolean
+function GlobalEvent:onRecord(callback) end
 
----@return boolean|nil
-function GlobalEvent:onSave() end
+---@param callback: fun(): boolean
+---@return boolean
+function GlobalEvent:onSave(callback) end
 
----@return boolean|nil
-function GlobalEvent:onShutdown() end
+---@param callback: fun(): boolean
+---@return boolean
+function GlobalEvent:onShutdown(callback) end
 
----@return boolean|nil
-function GlobalEvent:onStartup() end
+---@param callback: fun(): boolean
+---@return boolean
+function GlobalEvent:onStartup(callback) end
 
----@return boolean|nil
-function GlobalEvent:onThink() end
+---@param callback: fun(interval: integer): boolean
+---@return boolean
+function GlobalEvent:onThink(callback) end
 
----@return boolean|nil
-function GlobalEvent:onTime() end
+---@param callback: fun(interval: integer): boolean
+---@return boolean
+function GlobalEvent:onTime(callback) end
 
 ---@return boolean|nil
 function GlobalEvent:register() end
@@ -2127,7 +2147,7 @@ function MonsterType:addLoot(loot) end
 ---@return boolean|nil
 function MonsterType:addReflect(type, percent) end
 
----@param soundId any
+---@param soundId SoundEffect
 ---@return boolean
 function MonsterType:addSound(soundId) end
 
@@ -2344,32 +2364,32 @@ function MonsterType:name() end
 ---@return boolean|string|nil
 function MonsterType:nameDescription() end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, creature: Creature): boolean
+---@return boolean
 function MonsterType:onAppear(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, creature: Creature): boolean
+---@return boolean
 function MonsterType:onDisappear(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+---@return boolean
 function MonsterType:onMove(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, attacker: Player): boolean
+---@return boolean
 function MonsterType:onPlayerAttack(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, creature: Creature, type: integer, message: string): boolean
+---@return boolean
 function MonsterType:onSay(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, position: Position): boolean
+---@return boolean
 function MonsterType:onSpawn(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(monster: Monster, interval: integer): boolean
+---@return boolean
 function MonsterType:onThink(callback) end
 
 ---@return boolean|nil
@@ -2469,23 +2489,29 @@ function MoveEvent:level(lvl) end
 ---@return boolean|nil
 function MoveEvent:magicLevel(lvl) end
 
----@return boolean|nil
-function MoveEvent:onAddItem() end
+---@param callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+---@return boolean
+function MoveEvent:onAddItem(callback) end
 
----@return boolean|nil
-function MoveEvent:onDeEquip() end
+---@param callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+---@return boolean
+function MoveEvent:onDeEquip(callback) end
 
----@return boolean|nil
-function MoveEvent:onEquip() end
+---@param callback: fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+---@return boolean
+function MoveEvent:onEquip(callback) end
 
----@return boolean|nil
-function MoveEvent:onRemoveItem() end
+---@param callback: fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+---@return boolean
+function MoveEvent:onRemoveItem(callback) end
 
----@return boolean|nil
-function MoveEvent:onStepIn() end
+---@param callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+---@return boolean
+function MoveEvent:onStepIn(callback) end
 
----@return boolean|nil
-function MoveEvent:onStepOut() end
+---@param callback: fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+---@return boolean
+function MoveEvent:onStepOut(callback) end
 
 ---@param positions Position
 ---@return boolean|nil
@@ -2518,6 +2544,7 @@ function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 
 ---@class NetworkMessage
 ---@operator eq(NetworkMessage):boolean
+---@overload fun(): NetworkMessage
 NetworkMessage = {}
 
 ---@param value number
@@ -2728,13 +2755,14 @@ function Npc:turnToCreature(creature, arg2) end
 
 ---@class NpcType
 ---@operator eq(NpcType):boolean
+---@overload fun(name: string): NpcType
 NpcType = {}
 
 ---@param shop Shop
 ---@return boolean|nil
 function NpcType:addShopItem(shop) end
 
----@param soundId any
+---@param soundId SoundEffect
 ---@return boolean
 function NpcType:addSound(soundId) end
 
@@ -2796,40 +2824,40 @@ function NpcType:name() end
 ---@return boolean|string|nil
 function NpcType:nameDescription() end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, creature: Creature): boolean
+---@return boolean
 function NpcType:onAppear(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean
+---@return boolean
 function NpcType:onBuyItem(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean
+---@return boolean
 function NpcType:onCheckItem(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, player: Player): boolean
+---@return boolean
 function NpcType:onCloseChannel(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, creature: Creature): boolean
+---@return boolean
 function NpcType:onDisappear(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+---@return boolean
 function NpcType:onMove(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, creature: Creature, type: integer, message: string): boolean
+---@return boolean
 function NpcType:onSay(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean
+---@return boolean
 function NpcType:onSellItem(callback) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(npc: Npc, interval: integer): boolean
+---@return boolean
 function NpcType:onThink(callback) end
 
 ---@return boolean|nil
@@ -3802,8 +3830,8 @@ function Player:sendContainer(container) end
 ---@return boolean
 function Player:sendCreatureAppear(isLogin) end
 
----@param mainSoundId any
----@param secondarySoundId any
+---@param mainSoundId SoundEffect
+---@param secondarySoundId SoundEffect
 ---@param actor? boolean
 ---@return boolean
 function Player:sendDoubleSoundEffect(mainSoundId, secondarySoundId, actor) end
@@ -3838,7 +3866,7 @@ function Player:sendOutfitWindow() end
 ---@return boolean|nil
 function Player:sendPrivateMessage(speaker, text, type) end
 
----@param soundId any
+---@param soundId SoundEffect
 ---@param actor? boolean
 ---@return boolean
 function Player:sendSingleSoundEffect(soundId, actor) end
@@ -4158,8 +4186,8 @@ function Position:removeMagicEffect(magicEffect, player) end
 ---@return boolean
 function Position:sendDistanceEffect(positionEx, distanceEffect, player) end
 
----@param mainSoundId any
----@param secondarySoundId any
+---@param mainSoundId SoundEffect
+---@param secondarySoundId SoundEffect
 ---@param actor? Creature
 ---@return boolean
 function Position:sendDoubleSoundEffect(mainSoundId, secondarySoundId, actor) end
@@ -4169,7 +4197,7 @@ function Position:sendDoubleSoundEffect(mainSoundId, secondarySoundId, actor) en
 ---@return boolean
 function Position:sendMagicEffect(magicEffect, player) end
 
----@param soundId any
+---@param soundId SoundEffect
 ---@param actor? Creature
 ---@return boolean
 function Position:sendSingleSoundEffect(soundId, actor) end
@@ -4388,8 +4416,8 @@ function Spell:needTarget(value) end
 ---@return boolean|nil
 function Spell:needWeapon(value) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(creature: Creature, variant: Variant, isHotkey?: boolean): boolean
+---@return boolean
 function Spell:onCastSpell(callback) end
 
 ---@param range? number
@@ -4437,7 +4465,7 @@ function TalkAction:getName() end
 ---@return boolean
 function TalkAction:groupType(groupType) end
 
----@param callback function
+---@param callback: fun(player: Player, words: string, param: string, type: integer): boolean
 ---@return boolean
 function TalkAction:onSay(callback) end
 
@@ -4763,8 +4791,8 @@ function Weapon:manaPercent(percent) end
 ---@return boolean|nil
 function Weapon:maxHitChance(max) end
 
----@param callback function
----@return boolean|nil
+---@param callback: fun(player: Player, variant: Variant): boolean
+---@return boolean
 function Weapon:onUseWeapon(callback) end
 
 ---@param value boolean

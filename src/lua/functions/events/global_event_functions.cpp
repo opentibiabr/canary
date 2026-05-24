@@ -20,12 +20,47 @@ void GlobalEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "GlobalEvent", "register", GlobalEventFunctions::luaGlobalEventRegister);
 	Lua::registerMethod(L, "GlobalEvent", "time", GlobalEventFunctions::luaGlobalEventTime);
 	Lua::registerMethod(L, "GlobalEvent", "interval", GlobalEventFunctions::luaGlobalEventInterval);
+	/***
+	 * @function GlobalEvent:onThink
+	 * @param callback fun(interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onThink", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onTime
+	 * @param callback fun(interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onTime", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onStartup
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onStartup", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onShutdown
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onShutdown", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onRecord
+	 * @param callback fun(current: integer, old: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onRecord", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onPeriodChange
+	 * @param callback fun(lightState: integer, lightLevel: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onPeriodChange", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onSave
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onSave", GlobalEventFunctions::luaGlobalEventOnCallback);
 }
 

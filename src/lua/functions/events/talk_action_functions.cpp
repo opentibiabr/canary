@@ -19,6 +19,11 @@
 
 void TalkActionFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "TalkAction", "", TalkActionFunctions::luaCreateTalkAction);
+	/***
+	 * @function TalkAction:onSay
+	 * @param callback fun(player: Player, words: string, param: string, type: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "TalkAction", "onSay", TalkActionFunctions::luaTalkActionOnSay);
 	Lua::registerMethod(L, "TalkAction", "groupType", TalkActionFunctions::luaTalkActionGroupType);
 	Lua::registerMethod(L, "TalkAction", "register", TalkActionFunctions::luaTalkActionRegister);

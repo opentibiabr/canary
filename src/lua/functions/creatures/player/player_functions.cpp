@@ -4415,6 +4415,12 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:sendSingleSoundEffect
+ * @param soundId SoundEffect
+ * @param actor? boolean
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
 	// player:sendSingleSoundEffect(soundId[, actor = true])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -4432,6 +4438,13 @@ int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:sendDoubleSoundEffect
+ * @param mainSoundId SoundEffect
+ * @param secondarySoundId SoundEffect
+ * @param actor? boolean
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
 	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");

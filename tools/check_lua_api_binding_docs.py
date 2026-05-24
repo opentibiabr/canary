@@ -14,16 +14,6 @@ WEAK_PARAM_PATTERNS = (
     re.compile(r":\s*any\b"),
     re.compile(r"\barg\d+\b"),
 )
-REGISTER_METHOD_RE = re.compile(
-    r'Lua::registerMethod\s*\(\s*[^,]+,\s*"(?P<class>[^"]+)"\s*,\s*"(?P<method>[^"]+)"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
-)
-REGISTER_GLOBAL_RE = re.compile(
-    r'Lua::registerGlobalMethod\s*\(\s*"(?P<name>[^"]+)"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
-)
-REGISTER_CLASS_RE = re.compile(
-    r'Lua::register(?:Shared)?Class\s*\(\s*[^,]+,\s*"(?P<class>[^"]+)"\s*,\s*"[^"]*"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
-)
-
 
 @dataclass(frozen=True)
 class Binding:
@@ -90,18 +80,92 @@ def parse_added_bindings(base_ref):
     return bindings
 
 
+def split_call_arguments(line, call_name):
+    call_index = line.find(call_name)
+    if call_index < 0:
+        return None
+
+    open_index = line.find("(", call_index + len(call_name))
+    if open_index < 0:
+        return None
+
+    args = []
+    current = []
+    depth = 0
+    in_string = False
+    escape = False
+
+    for char in line[open_index + 1 :]:
+        if in_string:
+            current.append(char)
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                in_string = False
+            continue
+
+        if char == '"':
+            in_string = True
+            current.append(char)
+            continue
+
+        if char in "([{":
+            depth += 1
+            current.append(char)
+            continue
+
+        if char in ")]}":
+            if depth == 0:
+                args.append("".join(current).strip())
+                return args
+            depth -= 1
+            current.append(char)
+            continue
+
+        if char == "," and depth == 0:
+            args.append("".join(current).strip())
+            current = []
+            continue
+
+        current.append(char)
+
+    return None
+
+
+def string_literal_value(value):
+    value = value.strip()
+    if len(value) < 2 or value[0] != '"' or value[-1] != '"':
+        return None
+    return value[1:-1]
+
+
+def handler_name(value):
+    return value.strip().rstrip(";")
+
+
 def parse_registration_line(path, line_number, line):
-    match = REGISTER_METHOD_RE.search(line)
-    if match:
-        return Binding(path, line_number, "method", f"{match.group('class')}:{match.group('method')}", match.group("handler"))
+    args = split_call_arguments(line, "Lua::registerMethod")
+    if args and len(args) >= 4:
+        class_name = string_literal_value(args[1])
+        method_name = string_literal_value(args[2])
+        if class_name and method_name:
+            return Binding(path, line_number, "method", f"{class_name}:{method_name}", handler_name(args[3]))
 
-    match = REGISTER_GLOBAL_RE.search(line)
-    if match:
-        return Binding(path, line_number, "global", match.group("name"), match.group("handler"))
+    args = split_call_arguments(line, "Lua::registerGlobalMethod")
+    if args and len(args) >= 2:
+        name = string_literal_value(args[0])
+        if name:
+            return Binding(path, line_number, "global", name, handler_name(args[1]))
 
-    match = REGISTER_CLASS_RE.search(line)
-    if match and match.group("handler") != "nullptr":
-        return Binding(path, line_number, "class", match.group("class"), match.group("handler"))
+    for call_name in ("Lua::registerSharedClass", "Lua::registerClass"):
+        args = split_call_arguments(line, call_name)
+        if args and len(args) >= 4:
+            class_name = string_literal_value(args[1])
+            handler = handler_name(args[3])
+            if class_name and handler != "nullptr":
+                return Binding(path, line_number, "class", class_name, handler)
 
     return None
 

@@ -44,7 +44,11 @@ namespace {
 		auto npcType = std::make_shared<NpcType>(kNpcName);
 		npcType->name = kNpcName;
 		npcType->nameDescription = kNpcName;
-		npcType->info.shopItemVector.emplace_back(kShopItemId, "gold coin", 0, 1, 1);
+		auto &shopItem = npcType->info.shopItemVector.emplace_back();
+		shopItem.itemId = kShopItemId;
+		shopItem.itemName = "gold coin";
+		shopItem.itemBuyPrice = 1;
+		shopItem.itemSellPrice = 1;
 
 		auto npc = std::make_shared<Npc>(npcType);
 		npc->setID();
@@ -59,7 +63,7 @@ namespace {
 	}
 
 	class NpcShopRangeTest : public ::testing::Test {
-	protected:
+	public:
 		static void SetUpTestSuite() {
 			previousTestContainer = DI::getTestContainer();
 			InMemoryLogger::install(injector);
@@ -70,11 +74,20 @@ namespace {
 			DI::setTestContainer(previousTestContainer);
 		}
 
-		void SetUp() override {
-			player = createRegisteredPlayer(game);
-			npc = createOutOfRangeShopNpc();
-			startBankBalance = player->getBankBalance();
-			startItemCount = player->getItemTypeCount(kShopItemId);
+		void openOutOfRangeShop() const {
+			::openOutOfRangeShop(player, npc);
+		}
+
+		void buyItemFromOutOfRangeNpc() {
+			game.playerBuyItem(player->getID(), kShopItemId, 0, 1);
+		}
+
+		void sellItemToOutOfRangeNpc() {
+			game.playerSellItem(player->getID(), kShopItemId, 0, 1);
+		}
+
+		void lookAtShopItemFromOutOfRangeNpc() {
+			game.playerLookInShop(player->getID(), kShopItemId, 0);
 		}
 
 		void expectShopClosedWithoutTransaction() const {
@@ -83,38 +96,45 @@ namespace {
 			EXPECT_EQ(startItemCount, player->getItemTypeCount(kShopItemId));
 		}
 
+	private:
+		void SetUp() override {
+			player = createRegisteredPlayer(game);
+			npc = createOutOfRangeShopNpc();
+			startBankBalance = player->getBankBalance();
+			startItemCount = player->getItemTypeCount(kShopItemId);
+		}
+
 		Game game;
 		std::shared_ptr<Player> player;
 		std::shared_ptr<Npc> npc;
 		uint64_t startBankBalance = 0;
 		uint32_t startItemCount = 0;
 
-	private:
 		inline static di::extension::injector<> injector {};
 		inline static di::extension::injector<>* previousTestContainer = nullptr;
 	};
 }
 
 TEST_F(NpcShopRangeTest, BuyRequestClosesShopAndShortCircuitsWhenNpcIsOutOfRange) {
-	openOutOfRangeShop(player, npc);
+	openOutOfRangeShop();
 
-	game.playerBuyItem(player->getID(), kShopItemId, 0, 1);
+	buyItemFromOutOfRangeNpc();
 
 	expectShopClosedWithoutTransaction();
 }
 
 TEST_F(NpcShopRangeTest, SellRequestClosesShopAndShortCircuitsWhenNpcIsOutOfRange) {
-	openOutOfRangeShop(player, npc);
+	openOutOfRangeShop();
 
-	game.playerSellItem(player->getID(), kShopItemId, 0, 1);
+	sellItemToOutOfRangeNpc();
 
 	expectShopClosedWithoutTransaction();
 }
 
 TEST_F(NpcShopRangeTest, LookRequestClosesShopAndShortCircuitsWhenNpcIsOutOfRange) {
-	openOutOfRangeShop(player, npc);
+	openOutOfRangeShop();
 
-	game.playerLookInShop(player->getID(), kShopItemId, 0);
+	lookAtShopItemFromOutOfRangeNpc();
 
 	expectShopClosedWithoutTransaction();
 }

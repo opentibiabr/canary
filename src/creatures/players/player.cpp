@@ -6710,7 +6710,7 @@ bool Player::removeOutfitAddon(uint16_t lookType, uint8_t addons) {
 	return false;
 }
 
-bool Player::getOutfitAddons(const std::shared_ptr<Outfit> &outfit, uint8_t &addons) const {
+bool Player::getOutfitAddons(const Outfit* outfit, uint8_t &addons) const {
 	if (group->access) {
 		addons = 3;
 		return true;

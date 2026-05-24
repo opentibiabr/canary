@@ -12,6 +12,7 @@
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/outfit/outfit.hpp"
 #include "utils/worldpointer.hpp"
 #include "utils/tools.hpp"
 
@@ -44,6 +45,7 @@ void Dispatcher::init() {
 			// `WorldPtr<T>` is intrusive — one drain call per (T, Allocator)
 			// pair, so this list grows as new types adopt the affine ptr.
 			WorldPtr<Mount>::quiescentState<Mounts::MountAllocator>();
+			WorldPtr<Outfit>::quiescentState<Outfits::OutfitAllocator>();
 
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());

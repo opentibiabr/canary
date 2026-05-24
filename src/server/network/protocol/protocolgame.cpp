@@ -4051,10 +4051,10 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	auto startOutfits = msg.getBufferPosition();
 	msg.skipBytes(2);
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
+		if (!player->getOutfitAddons(outfit.get(), addons)) {
 			continue;
 		}
 		const std::string from = outfit->from;
@@ -7851,11 +7851,11 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		std::vector<ProtocolOutfit> protocolOutfits;
-		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+		const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
 		for (const auto &outfit : outfits) {
 			uint8_t addons;
-			if (!player->getOutfitAddons(outfit, addons)) {
+			if (!player->getOutfitAddons(outfit.get(), addons)) {
 				continue;
 			}
 
@@ -7931,11 +7931,11 @@ void ProtocolGame::sendOutfitWindow() {
 		++outfitSize;
 	}
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (player->getOutfitAddons(outfit, addons)) {
+		if (player->getOutfitAddons(outfit.get(), addons)) {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name);
 			msg.addByte(addons);
@@ -8078,10 +8078,10 @@ void ProtocolGame::sendPodiumWindow(const std::shared_ptr<Item> &podium, const P
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
+		if (!player->getOutfitAddons(outfit.get(), addons)) {
 			continue;
 		}
 

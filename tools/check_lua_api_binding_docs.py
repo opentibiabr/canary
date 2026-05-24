@@ -1,0 +1,233 @@
+#!/usr/bin/env python3
+import argparse
+import json
+import os
+import re
+import subprocess
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+
+
+DOC_PATH = Path("docs/lua-api/lua_api.json")
+WEAK_PARAM_PATTERNS = (
+    re.compile(r":\s*any\b"),
+    re.compile(r"\barg\d+\b"),
+)
+REGISTER_METHOD_RE = re.compile(
+    r'Lua::registerMethod\s*\(\s*[^,]+,\s*"(?P<class>[^"]+)"\s*,\s*"(?P<method>[^"]+)"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
+)
+REGISTER_GLOBAL_RE = re.compile(
+    r'Lua::registerGlobalMethod\s*\(\s*"(?P<name>[^"]+)"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
+)
+REGISTER_CLASS_RE = re.compile(
+    r'Lua::register(?:Shared)?Class\s*\(\s*[^,]+,\s*"(?P<class>[^"]+)"\s*,\s*"[^"]*"\s*,\s*(?P<handler>[A-Za-z0-9_:]+)'
+)
+
+
+@dataclass(frozen=True)
+class Binding:
+    path: Path
+    line: int
+    kind: str
+    name: str
+    handler: str
+
+
+def run_git(args):
+    completed = subprocess.run(["git", *args], check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return completed.stdout
+
+
+def resolve_base_ref(explicit_base):
+    candidates = []
+    if explicit_base:
+        candidates.append(explicit_base)
+    github_base_ref = os.environ.get("GITHUB_BASE_REF")
+    if github_base_ref:
+        candidates.extend([f"origin/{github_base_ref}", github_base_ref])
+    candidates.extend(["origin/main", "main"])
+
+    for candidate in candidates:
+        try:
+            return run_git(["merge-base", "HEAD", candidate]).strip()
+        except subprocess.CalledProcessError:
+            continue
+
+    raise RuntimeError("could not resolve a base ref for Lua API binding documentation check")
+
+
+def parse_added_bindings(base_ref):
+    diff = run_git(["diff", "--unified=0", "--diff-filter=AM", f"{base_ref}...HEAD", "--", "src/lua"])
+    bindings = []
+    current_path = None
+    new_line = None
+
+    for line in diff.splitlines():
+        if line.startswith("+++ b/"):
+            current_path = Path(line[6:])
+            continue
+        if line.startswith("@@"):
+            match = re.search(r"\+(\d+)", line)
+            new_line = int(match.group(1)) if match else None
+            continue
+        if current_path is None or current_path.suffix != ".cpp":
+            continue
+        if line.startswith("+") and not line.startswith("+++"):
+            source = line[1:]
+            if new_line is None:
+                line_number = 0
+            else:
+                line_number = new_line
+                new_line += 1
+            binding = parse_registration_line(current_path, line_number, source)
+            if binding:
+                bindings.append(binding)
+            continue
+        if not line.startswith("-") and new_line is not None:
+            new_line += 1
+
+    return bindings
+
+
+def parse_registration_line(path, line_number, line):
+    match = REGISTER_METHOD_RE.search(line)
+    if match:
+        return Binding(path, line_number, "method", f"{match.group('class')}:{match.group('method')}", match.group("handler"))
+
+    match = REGISTER_GLOBAL_RE.search(line)
+    if match:
+        return Binding(path, line_number, "global", match.group("name"), match.group("handler"))
+
+    match = REGISTER_CLASS_RE.search(line)
+    if match and match.group("handler") != "nullptr":
+        return Binding(path, line_number, "class", match.group("class"), match.group("handler"))
+
+    return None
+
+
+def load_docs():
+    with DOC_PATH.open("r", encoding="utf-8") as file:
+        return json.load(file)
+
+
+def find_doc_entry(data, binding):
+    if binding.kind == "method":
+        class_name, method_name = binding.name.split(":", 1)
+        for method in data.get("classes", {}).get(class_name, []):
+            if method.get("name") == method_name:
+                return method
+        return None
+    if binding.kind == "global":
+        for function in data.get("globals", []):
+            if function.get("name") == binding.name:
+                return function
+        return None
+    if binding.kind == "class":
+        return {
+            "params": [],
+            "return": "",
+            "overloads": data.get("classOverloads", {}).get(binding.name, []),
+        }
+    return None
+
+
+def weak_reasons(entry):
+    reasons = []
+    for parameter in entry.get("params", []):
+        if parameter.startswith("..."):
+            reasons.append(f"parameter uses vararg placeholder: {parameter}")
+        for pattern in WEAK_PARAM_PATTERNS:
+            if pattern.search(parameter):
+                reasons.append(f"weak parameter: {parameter}")
+                break
+
+    return_type = entry.get("return", "")
+    if return_type in {"any", "table"}:
+        reasons.append(f"weak return type: {return_type}")
+    if "boolean|" in return_type or "|boolean" in return_type:
+        reasons.append(f"broad boolean union return: {return_type}")
+    if entry.get("overloads") == [] and entry.get("return", "") == "" and entry.get("params") == []:
+        reasons.append("callable class has no documented overload")
+    return reasons
+
+
+def has_lua_docblock(binding):
+    if not binding.path.exists():
+        return False
+
+    text = binding.path.read_text(encoding="utf-8", errors="replace")
+    registration_index = find_registration_index(text, binding)
+    handler_index = find_handler_index(text, binding.handler)
+    return has_docblock_before(text, registration_index) or has_docblock_before(text, handler_index)
+
+
+def find_registration_index(text, binding):
+    escaped_name = re.escape(binding.name.split(":", 1)[-1] if binding.kind == "method" else binding.name)
+    escaped_handler = re.escape(binding.handler)
+    pattern = re.compile(rf'Lua::register[A-Za-z]*\s*\([^;]*"{escaped_name}"[^;]*{escaped_handler}', re.DOTALL)
+    match = pattern.search(text)
+    return match.start() if match else -1
+
+
+def find_handler_index(text, handler):
+    if not handler:
+        return -1
+    pattern = re.compile(rf"\b(?:int|void|bool)\s+{re.escape(handler)}\s*\(")
+    match = pattern.search(text)
+    return match.start() if match else -1
+
+
+def has_docblock_before(text, index):
+    if index < 0:
+        return False
+    block_end = text.rfind("*/", 0, index)
+    if block_end < 0:
+        return False
+    block_start = text.rfind("/***", 0, block_end)
+    if block_start < 0:
+        return False
+    between = text[block_end + 2 : index]
+    if between.strip():
+        return False
+    block = text[block_start:block_end]
+    return any(tag in block for tag in ("@function", "@param", "@return", "@class", "@overload"))
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Require explicit Lua API docblocks for new weak Lua bindings.")
+    parser.add_argument("--base", help="base ref or commit to compare against")
+    args = parser.parse_args()
+
+    try:
+        base_ref = resolve_base_ref(args.base)
+        bindings = parse_added_bindings(base_ref)
+        docs = load_docs()
+    except (OSError, RuntimeError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
+        print(f"::error::failed to run Lua API binding documentation check: {error}")
+        return 1
+
+    failed = False
+    for binding in bindings:
+        entry = find_doc_entry(docs, binding)
+        if entry is None:
+            print(f"::error file={binding.path},line={binding.line}::Lua API binding {binding.name} is missing from docs/lua-api/lua_api.json")
+            failed = True
+            continue
+
+        reasons = weak_reasons(entry)
+        if reasons and not has_lua_docblock(binding):
+            print(f"::error file={binding.path},line={binding.line}::Lua API binding {binding.name} has a weak generated signature and needs an explicit /*** */ docblock")
+            for reason in reasons:
+                print(f"  - {reason}")
+            failed = True
+
+    if failed:
+        return 1
+
+    print(f"Lua API binding documentation check passed: {len(bindings)} new binding registration(s) inspected")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

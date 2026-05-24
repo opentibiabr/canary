@@ -11,6 +11,7 @@
 #include "creatures/players/player.hpp"
 #include "items/tile.hpp"
 #include "utils/tools.hpp"
+#include "utils/worldpointer.hpp"
 
 namespace {
 	class TestParalyzeCondition final : public Condition {
@@ -42,17 +43,17 @@ protected:
 		return condition;
 	}
 
-	static std::shared_ptr<Player> createPlayerAt(const std::shared_ptr<Tile> &tile) {
+	static std::shared_ptr<Player> createPlayerAt(PolyPtr<Tile>::Borrowed tile) {
 		auto player = std::make_shared<Player>();
 		player->setParent(tile);
 		return player;
 	}
 
-	static void triggerBaseDiagonalStep(const std::shared_ptr<Player> &player, const std::shared_ptr<Tile> &oldTile, const std::shared_ptr<Tile> &newTile) {
+	static void triggerBaseDiagonalStep(const std::shared_ptr<Player> &player, PolyPtr<Tile>::Borrowed oldTile, PolyPtr<Tile>::Borrowed newTile) {
 		player->Creature::onCreatureMove(player, newTile, newTile->getPosition(), oldTile, oldTile->getPosition(), false);
 	}
 
-	static void triggerPlayerDiagonalStep(const std::shared_ptr<Player> &player, const std::shared_ptr<Tile> &oldTile, const std::shared_ptr<Tile> &newTile) {
+	static void triggerPlayerDiagonalStep(const std::shared_ptr<Player> &player, PolyPtr<Tile>::Borrowed oldTile, PolyPtr<Tile>::Borrowed newTile) {
 		player->onCreatureMove(player, newTile, newTile->getPosition(), oldTile, oldTile->getPosition(), false);
 	}
 
@@ -62,7 +63,7 @@ protected:
 };
 
 TEST_F(PlayerParalyzeWalkExhaustTest, IdleParalyzeDoesNotBlockPlayerActions) {
-	auto oldTile = std::make_shared<DynamicTile>(Position(100, 100, 7));
+	PolyPtr<Tile>::Owning oldTile = make_poly<DynamicTile>(Position(100, 100, 7));
 	auto player = createPlayerAt(oldTile);
 
 	ASSERT_TRUE(player->addCondition(createParalyzeCondition()));
@@ -71,8 +72,8 @@ TEST_F(PlayerParalyzeWalkExhaustTest, IdleParalyzeDoesNotBlockPlayerActions) {
 }
 
 TEST_F(PlayerParalyzeWalkExhaustTest, ParalyzedDiagonalMovementBlocksActionsDuringWalkDelay) {
-	auto oldTile = std::make_shared<DynamicTile>(Position(100, 100, 7));
-	auto newTile = std::make_shared<DynamicTile>(Position(101, 101, 7));
+	PolyPtr<Tile>::Owning oldTile = make_poly<DynamicTile>(Position(100, 100, 7));
+	PolyPtr<Tile>::Owning newTile = make_poly<DynamicTile>(Position(101, 101, 7));
 	auto player = createPlayerAt(oldTile);
 
 	ASSERT_TRUE(player->addCondition(createParalyzeCondition()));
@@ -87,8 +88,8 @@ TEST_F(PlayerParalyzeWalkExhaustTest, ParalyzedDiagonalMovementBlocksActionsDuri
 }
 
 TEST_F(PlayerParalyzeWalkExhaustTest, ParalyzeAppliedDuringActiveStepBlocksActionsDuringWalkDelay) {
-	auto oldTile = std::make_shared<DynamicTile>(Position(100, 100, 7));
-	auto newTile = std::make_shared<DynamicTile>(Position(101, 101, 7));
+	PolyPtr<Tile>::Owning oldTile = make_poly<DynamicTile>(Position(100, 100, 7));
+	PolyPtr<Tile>::Owning newTile = make_poly<DynamicTile>(Position(101, 101, 7));
 	auto player = createPlayerAt(oldTile);
 
 	triggerBaseDiagonalStep(player, oldTile, newTile);
@@ -101,8 +102,8 @@ TEST_F(PlayerParalyzeWalkExhaustTest, ParalyzeAppliedDuringActiveStepBlocksActio
 }
 
 TEST_F(PlayerParalyzeWalkExhaustTest, CombatParalyzeRefreshDuringActiveStepBlocksActionsDuringWalkDelay) {
-	auto oldTile = std::make_shared<DynamicTile>(Position(100, 100, 7));
-	auto newTile = std::make_shared<DynamicTile>(Position(101, 101, 7));
+	PolyPtr<Tile>::Owning oldTile = make_poly<DynamicTile>(Position(100, 100, 7));
+	PolyPtr<Tile>::Owning newTile = make_poly<DynamicTile>(Position(101, 101, 7));
 	auto player = createPlayerAt(oldTile);
 
 	ASSERT_TRUE(player->addCombatCondition(createParalyzeCondition(CONDITIONID_COMBAT)));

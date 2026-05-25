@@ -1,11 +1,11 @@
 local spawnAreaPalomino = {
 	from = Position(32438, 32231, 7),
-	to = Position(32442, 32238, 7)
+	to = Position(32442, 32238, 7),
 }
 
 local spawnAreaAppaloosa = {
 	from = Position(32846, 32114, 7),
-	to = Position(32850, 32120, 7)
+	to = Position(32850, 32120, 7),
 }
 
 local RAID_STORAGE = 120226
@@ -18,9 +18,9 @@ local function spawnPalominoHorses()
 	local horsesToSpawn = {
 		{ name = "Horse", amount = 3 },
 		{ name = "Grey Horse", amount = 1 },
-		{ name = "Brown Horse", amount = 2 }
+		{ name = "Brown Horse", amount = 2 },
 	}
-	
+
 	for _, horseInfo in ipairs(horsesToSpawn) do
 		for i = 1, horseInfo.amount do
 			local x = math.random(spawnAreaPalomino.from.x, spawnAreaPalomino.to.x)
@@ -39,9 +39,9 @@ local function spawnAppaloosaHorses()
 	local horsesToSpawn = {
 		{ name = "Horse", amount = 1 },
 		{ name = "Grey Horse", amount = 1 },
-		{ name = "Brown Horse", amount = 1 }
+		{ name = "Brown Horse", amount = 1 },
 	}
-	
+
 	for _, horseInfo in ipairs(horsesToSpawn) do
 		for i = 1, horseInfo.amount do
 			local x = math.random(spawnAreaAppaloosa.from.x, spawnAreaAppaloosa.to.x)

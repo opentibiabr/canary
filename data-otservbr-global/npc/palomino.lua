@@ -55,17 +55,17 @@ local waveEvent = nil
 
 local raidAreas = {
 	{ from = Position(32456, 32193, 7), to = Position(32491, 32261, 7) },
-	{ from = Position(32431, 32240, 7), to = Position(32464, 32280, 7) }
+	{ from = Position(32431, 32240, 7), to = Position(32464, 32280, 7) },
 }
 
 local stableAreaPalomino = {
 	from = Position(32437, 32230, 7),
-	to = Position(32448, 32239, 7)
+	to = Position(32448, 32239, 7),
 }
 
 local stableAreaAppaloosa = {
 	from = Position(32846, 32114, 7),
-	to = Position(32850, 32120, 7)
+	to = Position(32850, 32120, 7),
 }
 
 local function removeStableHorses()
@@ -77,9 +77,7 @@ local function removeStableHorses()
 				if creatures then
 					for _, creature in ipairs(creatures) do
 						local monster = Monster(creature)
-						if monster and (monster:getName() == "Horse" or 
-									  monster:getName() == "Grey Horse" or 
-									  monster:getName() == "Brown Horse") then
+						if monster and (monster:getName() == "Horse" or monster:getName() == "Grey Horse" or monster:getName() == "Brown Horse") then
 							monster:remove()
 						end
 					end
@@ -96,9 +94,7 @@ local function removeStableHorses()
 				if creatures then
 					for _, creature in ipairs(creatures) do
 						local monster = Monster(creature)
-						if monster and (monster:getName() == "Horse" or 
-									  monster:getName() == "Grey Horse" or 
-									  monster:getName() == "Brown Horse") then
+						if monster and (monster:getName() == "Horse" or monster:getName() == "Grey Horse" or monster:getName() == "Brown Horse") then
 							monster:remove()
 						end
 					end
@@ -118,27 +114,27 @@ local function spawnRaidHorses()
 		end
 		return
 	end
-	
+
 	for _, area in ipairs(raidAreas) do
 		for i = 1, 3 do
 			local x1 = math.random(area.from.x, area.to.x)
 			local y1 = math.random(area.from.y, area.to.y)
 			Game.createMonster("Wild Horse", Position(x1, y1, area.from.z), true, true)
-			
+
 			local x2 = math.random(area.from.x, area.to.x)
 			local y2 = math.random(area.from.y, area.to.y)
 			Game.createMonster("Horse", Position(x2, y2, area.from.z), true, true)
-			
+
 			local x3 = math.random(area.from.x, area.to.x)
 			local y3 = math.random(area.from.y, area.to.y)
 			Game.createMonster("Grey Horse", Position(x3, y3, area.from.z), true, true)
-			
+
 			local x4 = math.random(area.from.x, area.to.x)
 			local y4 = math.random(area.from.y, area.to.y)
 			Game.createMonster("Brown Horse", Position(x4, y4, area.from.z), true, true)
 		end
 	end
-	
+
 	waveEvent = addEvent(function()
 		spawnRaidHorses()
 	end, 3 * 60 * 60 * 1000)
@@ -154,7 +150,6 @@ local function tryStartWildHorsesRaid()
 
 	local random = math.random(10)
 	if random <= 3 then
-
 		if waveEvent then
 			stopEvent(waveEvent)
 			waveEvent = nil
@@ -163,10 +158,10 @@ local function tryStartWildHorsesRaid()
 		Game.setStorageValue(RAID_STORAGE, currentTime + 86400)
 		removeStableHorses()
 		spawnRaidHorses()
-		
+
 		return true
 	end
-	
+
 	return false
 end
 
@@ -192,7 +187,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("Right now our horses are on the loose. As long as not enough horses are chased back into the barn there are no horses to rent.", npc, creature)
 			return true
 		end
-		
+
 		npcHandler:say("Do you want to rent a horse for one day at a price of 500 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "yes") then

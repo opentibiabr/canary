@@ -8,24 +8,24 @@ function rentedMounts.onThink(interval)
 	end
 
 	local player, outfit
-for i = 1, #players do
-    player = players[i]
-    local storage = player:getStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer)
-    if storage > 0 and storage < os.time() then
-        outfit = player:getOutfit()
-        if table.contains(mountIds, outfit.lookMount) then
-            outfit.lookMount = 0
-            player:setOutfit(outfit)
-        end
+	for i = 1, #players do
+		player = players[i]
+		local storage = player:getStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer)
+		if storage > 0 and storage < os.time() then
+			outfit = player:getOutfit()
+			if table.contains(mountIds, outfit.lookMount) then
+				outfit.lookMount = 0
+				player:setOutfit(outfit)
+			end
 
-        for m = 1, #mountIds do
-            player:removeMount(mountIds[m])
-        end
+			for m = 1, #mountIds do
+				player:removeMount(mountIds[m])
+			end
 
-        player:setStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer, -1)
-        player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your contract with your horse expired and it returned back to the horse station.")
-    end
-end
+			player:setStorageValue(Storage.Quest.U9_1.HorseStationWorldChange.Timer, -1)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your contract with your horse expired and it returned back to the horse station.")
+		end
+	end
 	return true
 end
 

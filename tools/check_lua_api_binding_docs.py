@@ -48,8 +48,16 @@ def resolve_base_ref(explicit_base):
 
 
 def parse_added_bindings(base_ref):
-    diff = run_git(["diff", "--unified=0", "--diff-filter=AM", f"{base_ref}...HEAD", "--", "src/lua"])
     bindings = []
+    for path, line_number, source in iter_added_cpp_lines(base_ref):
+        binding = parse_registration_line(path, line_number, source)
+        if binding:
+            bindings.append(binding)
+    return bindings
+
+
+def iter_added_cpp_lines(base_ref):
+    diff = run_git(["diff", "--unified=0", "--diff-filter=AM", f"{base_ref}...HEAD", "--", "src/lua"])
     current_path = None
     new_line = None
 
@@ -58,34 +66,41 @@ def parse_added_bindings(base_ref):
             current_path = Path(line[6:])
             continue
         if line.startswith("@@"):
-            match = re.search(r"\+(\d+)", line)
-            new_line = int(match.group(1)) if match else None
+            new_line = parse_hunk_start(line)
             continue
-        if current_path is None or current_path.suffix != ".cpp":
+        if not is_cpp_source_path(current_path):
             continue
-        if line.startswith("+") and not line.startswith("+++"):
-            source = line[1:]
-            if new_line is None:
-                line_number = 0
-            else:
-                line_number = new_line
-                new_line += 1
-            binding = parse_registration_line(current_path, line_number, source)
-            if binding:
-                bindings.append(binding)
+        if is_added_source_line(line):
+            yield current_path, new_line or 0, line[1:]
+            new_line = next_line_number(new_line)
             continue
-        if not line.startswith("-") and new_line is not None:
-            new_line += 1
+        if is_context_source_line(line):
+            new_line = next_line_number(new_line)
 
-    return bindings
+
+def parse_hunk_start(line):
+    match = re.search(r"\+(\d+)", line)
+    return int(match.group(1)) if match else None
+
+
+def is_cpp_source_path(path):
+    return path is not None and path.suffix == ".cpp"
+
+
+def is_added_source_line(line):
+    return line.startswith("+") and not line.startswith("+++")
+
+
+def is_context_source_line(line):
+    return not line.startswith("-")
+
+
+def next_line_number(line_number):
+    return None if line_number is None else line_number + 1
 
 
 def split_call_arguments(line, call_name):
-    call_index = line.find(call_name)
-    if call_index < 0:
-        return None
-
-    open_index = line.find("(", call_index + len(call_name))
+    open_index = find_call_open_index(line, call_name)
     if open_index < 0:
         return None
 
@@ -97,13 +112,7 @@ def split_call_arguments(line, call_name):
 
     for char in line[open_index + 1 :]:
         if in_string:
-            current.append(char)
-            if escape:
-                escape = False
-            elif char == "\\":
-                escape = True
-            elif char == '"':
-                in_string = False
+            in_string, escape = consume_string_character(current, char, escape)
             continue
 
         if char == '"':
@@ -116,22 +125,49 @@ def split_call_arguments(line, call_name):
             current.append(char)
             continue
 
+        if is_call_close(char, depth):
+            append_current_argument(args, current)
+            return args
+
         if char in ")]}":
-            if depth == 0:
-                args.append("".join(current).strip())
-                return args
             depth -= 1
             current.append(char)
             continue
 
         if char == "," and depth == 0:
-            args.append("".join(current).strip())
-            current = []
+            append_current_argument(args, current)
             continue
 
         current.append(char)
 
     return None
+
+
+def find_call_open_index(line, call_name):
+    call_index = line.find(call_name)
+    if call_index < 0:
+        return -1
+    return line.find("(", call_index + len(call_name))
+
+
+def consume_string_character(current, char, escape):
+    current.append(char)
+    if escape:
+        return True, False
+    if char == "\\":
+        return True, True
+    if char == '"':
+        return False, False
+    return True, False
+
+
+def append_current_argument(args, current):
+    args.append("".join(current).strip())
+    current.clear()
+
+
+def is_call_close(char, depth):
+    return char in ")]}" and depth == 0
 
 
 def string_literal_value(value):
@@ -146,19 +182,33 @@ def handler_name(value):
 
 
 def parse_registration_line(path, line_number, line):
+    for parser in (parse_method_registration, parse_global_registration, parse_class_registration):
+        binding = parser(path, line_number, line)
+        if binding:
+            return binding
+    return None
+
+
+def parse_method_registration(path, line_number, line):
     args = split_call_arguments(line, "Lua::registerMethod")
     if args and len(args) >= 4:
         class_name = string_literal_value(args[1])
         method_name = string_literal_value(args[2])
         if class_name and method_name:
             return Binding(path, line_number, "method", f"{class_name}:{method_name}", handler_name(args[3]))
+    return None
 
+
+def parse_global_registration(path, line_number, line):
     args = split_call_arguments(line, "Lua::registerGlobalMethod")
     if args and len(args) >= 2:
         name = string_literal_value(args[0])
         if name:
             return Binding(path, line_number, "global", name, handler_name(args[1]))
+    return None
 
+
+def parse_class_registration(path, line_number, line):
     for call_name in ("Lua::registerSharedClass", "Lua::registerClass"):
         args = split_call_arguments(line, call_name)
         if args and len(args) >= 4:

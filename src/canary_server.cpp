@@ -99,7 +99,9 @@ int CanaryServer::run() {
 		[this] {
 			try {
 				loadConfigLua();
-				generateLuaApiDocs();
+				if (!generateLuaApiDocs()) {
+					logger.warn("Lua API documentation generation failed; continuing startup.");
+				}
 				validateDatapack();
 
 				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");

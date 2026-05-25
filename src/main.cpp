@@ -11,15 +11,16 @@
 #include "lib/di/container.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <span>
 	#include <string_view>
 #endif
 
 namespace {
 	constexpr std::string_view GenerateLuaApiDocsOnlyArgument = "--generate-lua-api-docs-only";
 
-	bool hasArgument(const int argc, char* argv[], const std::string_view expectedArgument) {
-		for (int index = 1; index < argc; ++index) {
-			if (std::string_view(argv[index]) == expectedArgument) {
+	bool hasArgument(const std::span<char*> arguments, const std::string_view expectedArgument) {
+		for (std::size_t index = 1; index < arguments.size(); ++index) {
+			if (std::string_view(arguments[index]) == expectedArgument) {
 				return true;
 			}
 		}
@@ -29,7 +30,8 @@ namespace {
 
 int main(int argc, char* argv[]) {
 	auto &server = inject<CanaryServer>();
-	if (hasArgument(argc, argv, GenerateLuaApiDocsOnlyArgument)) {
+	const std::span<char*> arguments(argv, static_cast<std::size_t>(argc));
+	if (hasArgument(arguments, GenerateLuaApiDocsOnlyArgument)) {
 		return server.generateLuaApiDocsOnly();
 	}
 

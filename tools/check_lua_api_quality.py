@@ -15,6 +15,14 @@ METRIC_KEYS = (
     "return_any",
     "return_plain_table",
 )
+PARAMETER_METRICS = (
+    ("param_any", re.compile(r":\s*any\b")),
+    ("param_argn", re.compile(r"\barg\d+\b")),
+)
+RETURN_METRICS = {
+    "any": "return_any",
+    "table": "return_plain_table",
+}
 
 
 def iter_functions(data):
@@ -27,30 +35,34 @@ def iter_functions(data):
 
 
 def collect_metrics(data):
-    metrics = {key: 0 for key in METRIC_KEYS}
+    metrics = dict.fromkeys(METRIC_KEYS, 0)
     examples = {key: [] for key in METRIC_KEYS}
 
     for function_name, function in iter_functions(data):
-        for parameter in function.get("params", []):
-            if re.search(r":\s*any\b", parameter):
-                metrics["param_any"] += 1
-                append_example(examples["param_any"], function_name, parameter)
-            if re.search(r"\barg\d+\b", parameter):
-                metrics["param_argn"] += 1
-                append_example(examples["param_argn"], function_name, parameter)
-            if parameter.startswith("..."):
-                metrics["param_vararg"] += 1
-                append_example(examples["param_vararg"], function_name, parameter)
-
-        return_type = function.get("return", "")
-        if return_type == "any":
-            metrics["return_any"] += 1
-            append_example(examples["return_any"], function_name, return_type)
-        if return_type == "table":
-            metrics["return_plain_table"] += 1
-            append_example(examples["return_plain_table"], function_name, return_type)
+        collect_parameter_metrics(function_name, function.get("params", []), metrics, examples)
+        collect_return_metrics(function_name, function.get("return", ""), metrics, examples)
 
     return metrics, examples
+
+
+def collect_parameter_metrics(function_name, parameters, metrics, examples):
+    for parameter in parameters:
+        for metric_key, pattern in PARAMETER_METRICS:
+            if pattern.search(parameter):
+                increment_metric(metric_key, metrics, examples, function_name, parameter)
+        if parameter.startswith("..."):
+            increment_metric("param_vararg", metrics, examples, function_name, parameter)
+
+
+def collect_return_metrics(function_name, return_type, metrics, examples):
+    metric_key = RETURN_METRICS.get(return_type)
+    if metric_key:
+        increment_metric(metric_key, metrics, examples, function_name, return_type)
+
+
+def increment_metric(metric_key, metrics, examples, function_name, value):
+    metrics[metric_key] += 1
+    append_example(examples[metric_key], function_name, value)
 
 
 def append_example(examples, function_name, value):

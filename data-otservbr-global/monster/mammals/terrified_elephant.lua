@@ -13,6 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.events = {
+	"TerrifiedElephantDeath",
+}
+
 monster.raceId = 771
 monster.Bestiary = {
 	class = "Mammal",

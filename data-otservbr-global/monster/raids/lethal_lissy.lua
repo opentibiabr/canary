@@ -13,6 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
+monster.bosstiary = {
+	bossRaceId = 272,
+	bossRace = RARITY_NEMESIS,
+}
+
 monster.health = 1450
 monster.maxHealth = 1450
 monster.race = "blood"
@@ -38,7 +43,7 @@ monster.flags = {
 	hostile = true,
 	convinceable = false,
 	pushable = false,
-	rewardBoss = true,
+	rewardBoss = false,
 	illusionable = false,
 	canPushItems = true,
 	canPushCreatures = false,

@@ -137,6 +137,7 @@
     <ClInclude Include="..\src\lua\creature\movement.hpp" />
     <ClInclude Include="..\src\lua\creature\raids.hpp" />
     <ClInclude Include="..\src\lua\creature\talkaction.hpp" />
+    <ClInclude Include="..\src\lua\docgen\lua_api_doc_generator.hpp" />
     <ClInclude Include="..\src\lua\functions\core\core_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\config_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
@@ -349,6 +350,7 @@
     <ClCompile Include="..\src\lua\creature\movement.cpp" />
     <ClCompile Include="..\src\lua\creature\raids.cpp" />
     <ClCompile Include="..\src\lua\creature\talkaction.cpp" />
+    <ClCompile Include="..\src\lua\docgen\lua_api_doc_generator.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\batch_update_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />

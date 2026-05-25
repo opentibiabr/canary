@@ -25,6 +25,7 @@
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lua/docgen/lua_api_doc_generator.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -57,11 +58,50 @@ CanaryServer::CanaryServer(
 #endif
 }
 
+bool CanaryServer::generateLuaApiDocs(const bool force) const {
+	if (!force && !g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
+		logger.debug("Lua API documentation generation is disabled.");
+		return true;
+	}
+
+	LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
+	if (apiDocGenerator.generate()) {
+		logger.info("Lua API documentation generated successfully.");
+		return true;
+	}
+	return false;
+}
+
+int CanaryServer::generateLuaApiDocsOnly() {
+	const auto shutdownDocgenRuntime = [] {
+		g_dispatcher().shutdown();
+		g_threadPool().shutdown();
+	};
+
+	try {
+		loadConfigLua();
+		const auto generated = generateLuaApiDocs(true);
+		shutdownDocgenRuntime();
+		return generated ? EXIT_SUCCESS : EXIT_FAILURE;
+	} catch (const FailedToInitializeCanary &err) {
+		logger.error(err.what());
+		shutdownDocgenRuntime();
+		return EXIT_FAILURE;
+	} catch (const std::exception &err) {
+		logger.error("Failed to generate Lua API documentation: {}", err.what());
+		shutdownDocgenRuntime();
+		return EXIT_FAILURE;
+	}
+}
+
 int CanaryServer::run() {
 	g_dispatcher().addEvent(
 		[this] {
 			try {
 				loadConfigLua();
+				if (!generateLuaApiDocs()) {
+					logger.warn("Lua API documentation generation failed; continuing startup.");
+				}
 				validateDatapack();
 
 				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");

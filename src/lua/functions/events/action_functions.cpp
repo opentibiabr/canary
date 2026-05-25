@@ -28,6 +28,10 @@ void ActionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
 }
 
+/***
+ * @class Action
+ * @overload fun(): Action
+ */
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	const auto action = std::make_shared<Action>();
@@ -36,6 +40,11 @@ int ActionFunctions::luaCreateAction(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Action:onUse
+ * @param callback fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean
+ * @return boolean
+ */
 int ActionFunctions::luaActionOnUse(lua_State* L) {
 	// action:onUse(callback)
 	const auto &action = Lua::getUserdataShared<Action>(L, 1, "Action");

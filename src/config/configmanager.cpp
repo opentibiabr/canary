@@ -77,6 +77,7 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MYSQL_USER, "mysqlUser", "root");
 	}
 
+	loadBoolConfig(L, ADVANCED_PARTY_PROTECTION, "advancedPartyProtection", true);
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
 	loadBoolConfig(L, ALLOW_LURE_CREATURES, "allowLureCreatures", true);

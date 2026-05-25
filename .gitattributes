@@ -6,6 +6,7 @@ text eol=lf
 *.ps1 text eol=lf
 *.sh text eol=lf
 .github/**/*.sh text eol=lf
+.github/**/*.py text eol=lf
 .github/**/*.yml text eol=lf
 .github/**/*.yaml text eol=lf
 docker/Dockerfile.* text eol=lf

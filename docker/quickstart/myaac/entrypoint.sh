@@ -11,7 +11,7 @@ set -euo pipefail
 : "${CANARY_SERVER_LOCATION:=BRA}"
 : "${CANARY_LOGIN_PORT:=7171}"
 : "${CANARY_GAME_PORT:=7172}"
-: "${CANARY_STATUS_PORT:=7171}"
+: "${CANARY_STATUS_PORT:=7173}"
 : "${CANARY_STATUS_TIMEOUT:=5000}"
 : "${CANARY_DATA_PACK:=data-otservbr-global}"
 

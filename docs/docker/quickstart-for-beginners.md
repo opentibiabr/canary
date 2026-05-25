@@ -24,6 +24,16 @@ running any commands below.
 You also need internet access on the first start. Docker must download images,
 MyAAC source files, and the OTServBR global map.
 
+## Local Use Only
+
+This guide is for local testing and LAN demos. Do not expose this quickstart
+directly to the public Internet with the default settings.
+
+The default setup includes test accounts and simple local credentials so a new
+user can log in quickly. Before using it outside a trusted local network, change
+the passwords in `docker/.env`, set `CANARY_TEST_ACCOUNTS=false`, and review the
+host firewall rules.
+
 ## Start On Your Own PC
 
 Open a terminal in the repository root, then enter the `docker` directory:

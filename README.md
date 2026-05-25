@@ -23,6 +23,9 @@ without compiling Canary locally. The stack starts MariaDB, the published Canary
 runtime image, MyAAC as the website/admin AAC, and `opentibiabr/login-server` as
 the client login webservice.
 
+This quickstart is for local development, testing, and LAN demos. Do not expose
+it directly to the public Internet with the default test accounts and passwords.
+
 Run from the `docker` directory:
 
 ```bash

@@ -14,6 +14,19 @@ The quickstart currently starts:
 MyAAC is used only as the website/AAC. The MyAAC login webservice file is
 removed from the quickstart image, so clients should use `login-server`.
 
+## Local Development Only
+
+This quickstart is for local development, testing, and LAN demos. Do not expose
+it directly to the public Internet or run it as a production deployment with the
+default settings.
+
+Before using it outside a trusted local network:
+
+- Change all default database and MyAAC admin passwords.
+- Disable or remove test accounts by setting `CANARY_TEST_ACCOUNTS=false`.
+- Review firewall rules for the published TCP ports.
+- Pin image tags instead of relying on rolling `latest` tags.
+
 ## Requirements
 
 - Docker with Docker Compose v2
@@ -199,6 +212,11 @@ CANARY_STATUS_PORT=7173
 CANARY_STATUS_TIMEOUT=5000
 ```
 
+`CANARY_IMAGE` defaults to the rolling `latest` tag for a convenient first-run
+experience. That tag can change over time. For reproducible support, demos, or
+shared environments, set `CANARY_IMAGE` to a specific published tag or digest
+when one is available.
+
 The quickstart publishes `CANARY_LOGIN_PORT`, `CANARY_GAME_PORT`, and
 `CANARY_STATUS_PORT` to the host using the same port values configured in
 `.env`. Keep these values distinct unless you intentionally add a Compose
@@ -261,6 +279,7 @@ the web container, and it does not include MyAAC's client login webservice file.
 ### Login Server
 
 ```env
+LOGIN_SERVER_IMAGE=opentibiabr/login-server:latest
 LOGIN_HTTP_PORT=8088
 LOGIN_GRPC_PORT=9090
 LOGIN_RATE_LIMITER_RATE=2
@@ -268,6 +287,8 @@ LOGIN_RATE_LIMITER_BURST=5
 ```
 
 These variables belong to `opentibiabr/login-server`, which starts by default.
+`LOGIN_SERVER_IMAGE` also defaults to a rolling `latest` tag. Pin this image to a
+specific tag or digest when you need reproducible behavior.
 With the default ports, the client login URL is:
 
 ```text

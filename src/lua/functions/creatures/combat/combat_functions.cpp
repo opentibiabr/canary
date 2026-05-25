@@ -37,6 +37,10 @@ void CombatFunctions::init(lua_State* L) {
 	VariantFunctions::init(L);
 }
 
+/***
+ * @class Combat
+ * @overload fun(): Combat
+ */
 int CombatFunctions::luaCombatCreate(lua_State* L) {
 	// Combat()
 	auto combat = std::make_shared<Combat>();

@@ -609,7 +609,12 @@ int PlayerFunctions::luaPlayerUpdateKillTracker(lua_State* L) {
 	return 1;
 }
 
-// Player
+/***
+ * @class Player
+ * @overload fun(idOrGuid: integer): Player?
+ * @overload fun(name: string): Player?, integer?
+ * @overload fun(player: Player): Player?
+ */
 int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	// Player(id or guid or name or userdata)
 	std::shared_ptr<Player> player;
@@ -2319,6 +2324,16 @@ int PlayerFunctions::luaPlayerSetStorageValue(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:addItem
+ * @param itemId number|string
+ * @param count? number
+ * @param canDropOnMap? boolean
+ * @param subType? number
+ * @param slot? number
+ * @param tier? number
+ * @return Item|Item[]|nil|false
+ */
 int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	// player:addItem(itemId, count = 1, canDropOnMap = true, subType = 1, slot = CONST_SLOT_WHEREEVER, tier = 0)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -2410,6 +2425,16 @@ int PlayerFunctions::luaPlayerAddItem(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:addItemEx
+ * @overload fun(item: Item, canDropOnMap?: false, index?: integer, flags?: integer): integer|false|nil
+ * @overload fun(item: Item, canDropOnMap: true, slot?: integer): integer|false|nil
+ * @param item Item
+ * @param canDropOnMap? boolean
+ * @param indexOrSlot? integer
+ * @param flags? integer
+ * @return integer|false|nil
+ */
 int PlayerFunctions::luaPlayerAddItemEx(lua_State* L) {
 	// player:addItemEx(item[, canDropOnMap = false[, index = INDEX_WHEREEVER[, flags = 0]]])
 	// player:addItemEx(item[, canDropOnMap = true[, slot = CONST_SLOT_WHEREEVER]])
@@ -4390,6 +4415,12 @@ int PlayerFunctions::luaPlayerGetBossBonus(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:sendSingleSoundEffect
+ * @param soundId SoundEffect
+ * @param actor? boolean
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
 	// player:sendSingleSoundEffect(soundId[, actor = true])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -4407,6 +4438,13 @@ int PlayerFunctions::luaPlayerSendSingleSoundEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:sendDoubleSoundEffect
+ * @param mainSoundId SoundEffect
+ * @param secondarySoundId SoundEffect
+ * @param actor? boolean
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerSendDoubleSoundEffect(lua_State* L) {
 	// player:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = true])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
@@ -5207,6 +5245,7 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
+	// player:addAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5219,6 +5258,7 @@ int PlayerFunctions::luaPlayerAddAnimusMastery(lua_State* L) {
 	return 1;
 }
 int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
+	// player:removeAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5231,6 +5271,7 @@ int PlayerFunctions::luaPlayerRemoveAnimusMastery(lua_State* L) {
 	return 1;
 }
 int PlayerFunctions::luaPlayerHasAnimusMastery(lua_State* L) {
+	// player:hasAnimusMastery(monsterType)
 	auto player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5384,6 +5425,13 @@ int PlayerFunctions::luaPlayerGetHarmony(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:getHarmonyDamage
+ * @param baseMin integer
+ * @param baseMax integer
+ * @return integer min
+ * @return integer max
+ */
 int PlayerFunctions::luaPlayerGetHarmonyDamage(lua_State* L) {
 	// player:getHarmonyDamage(baseMin, baseMax)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");

@@ -44,13 +44,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v8
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
-
       - name: Get vcpkg baseline
         shell: pwsh
         run: |

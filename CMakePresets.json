@@ -17,7 +17,6 @@
         "BUILD_STATIC_LIBRARY": "ON",
         "SPEED_UP_BUILD_UNITY": "ON",
         "OPTIONS_ENABLE_SCCACHE": "ON",
-        "VCPKG_INSTALL_OPTIONS": "--binarysource=clear;--binarysource=files,$env{VCPKG_ROOT}/binary-cache,readwrite",
         "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         "CANARY_BUILD_TESTS": "OFF"
       }

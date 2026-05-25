@@ -4,11 +4,19 @@ cmake_minimum_required(
 )
 
 if(POLICY CMP0156)
-    cmake_policy(SET CMP0156 NEW)
+    cmake_policy(
+        SET
+        CMP0156
+        NEW
+    )
 endif()
 
 if(POLICY CMP0179)
-    cmake_policy(SET CMP0179 NEW)
+    cmake_policy(
+        SET
+        CMP0179
+        NEW
+    )
 endif()
 
 # VCPKG cmake

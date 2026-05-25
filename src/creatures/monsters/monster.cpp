@@ -2416,6 +2416,10 @@ bool Monster::isInSpawnRange(const Position &pos) const {
 		return true;
 	}
 
+	if (g_configManager().getBoolean(ALLOW_LURE_CREATURES)) {
+		return true;
+	}
+
 	if (Monster::despawnRadius == 0) {
 		return true;
 	}

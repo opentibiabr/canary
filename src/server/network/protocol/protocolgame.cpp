@@ -8927,7 +8927,11 @@ void ProtocolGame::sendSpecialContainersAvailable() {
 	NetworkMessage msg;
 	msg.addByte(0x2A);
 	msg.addByte(player->isStashMenuAvailable() ? 0x01 : 0x00);
-	msg.addByte(player->isMarketMenuAvailable() ? 0x01 : 0x00);
+	if (g_configManager().getBoolean(ENABLE_MARKET)) {
+		msg.addByte(player->isMarketMenuAvailable() ? 0x01 : 0x00);
+	} else {
+		msg.addByte(0x00);
+	}
 	writeToOutputBuffer(msg);
 }
 

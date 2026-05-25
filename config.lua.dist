@@ -297,6 +297,10 @@ onlyPremiumAccount = false
 -- NOTE: if showLootsInBestiary is true, will cause all loots to be shown in the bestiary even if the player has not reached the required number of kills
 -- NOTE: minTownIdToBankTransferFromMain blocks towns less than defined from receiving money transfers
 -- NOTE: enableSupportOutfit enable GODS and GMS to select support outfit (gamemaster, customer support or community manager)
+-- NOTE: allowLureCreatures if true monsters can be lured far from spawn, if false they will despawn
+-- NOTE: blockRespawn if true players block monster respawns on their spot
+-- NOTE: enableOfflineTraining if false will disable offline training from beds only, set false at skill_trainer.lua if you want to completly disable the system
+-- NOTE: walkThroughPlayers if true players can pass through other players, if false they cannot, set allowWalkthrough same as you do here to avoid override or bug
 depotChest = 4
 autoLoot = false
 autoBank = false
@@ -317,6 +321,10 @@ startStreakLevel = 0
 showLootsInBestiary = false
 minTownIdToBankTransferFromMain = 4
 enableSupportOutfit = true
+allowLureCreatures = false
+blockRespawn = false
+enableOfflineTraining = true
+walkThroughPlayers = true
 
 -- NOTE: stashMoving = true, stow an container inside your stash
 -- NOTE: stashManageAmount = max items add/remove from stash at once
@@ -432,6 +440,7 @@ toggleMapCustom = true
 -- Market
 -- NOTE: marketRefreshPricesInterval (in minutes, minimum is 1 minute)
 -- NOTE: set it to 0 for disable, is the time in which the task will run updating the prices of the items that will be sent to the client
+enableMarket = true
 marketOfferDuration = 30 * 24 * 60 * 60
 marketRefreshPricesInterval = 30
 premiumToCreateMarketOffer = true

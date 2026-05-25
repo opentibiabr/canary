@@ -686,6 +686,15 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 		const CreatureVector* creatures = getCreatures();
 		if (const auto &player = creature->getPlayer()) {
 			if (creatures && !creatures->empty() && !hasBitSet(FLAG_IGNOREBLOCKCREATURE, tileFlags) && !player->isAccessPlayer()) {
+
+				if (!g_configManager().getBoolean(WALK_THROUGH_PLAYERS)) {
+					for (const auto &tileCreature : *creatures) {
+						if (tileCreature->getPlayer()) {
+							return RETURNVALUE_NOTENOUGHROOM;
+						}
+					}
+				}
+
 				for (const auto &tileCreature : *creatures) {
 					if (!player->canWalkthrough(tileCreature)) {
 						return RETURNVALUE_NOTPOSSIBLE;

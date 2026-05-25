@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="1000" fromx="32174" fromy="32146" fromz="11" tox="32174" toy="32146" toz="11">
+		<monster name="Rottie The Rotworm" amount="1" />
+	</areaspawn>
+</raid>

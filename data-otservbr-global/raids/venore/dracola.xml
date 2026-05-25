@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Dracola" x="32832" y="32276" z="15"/>
+	<areaspawn delay="1000" fromx="32826" fromy="32261" fromz="15" tox="32837" toy="32288" toz="15">
+		<monster name="Lich" amount="18" />
+	</areaspawn>
+</raid>

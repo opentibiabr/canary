@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <raid>
 	<!--Announcements-->
-	<announce delay="1000" type="event" message="Lizards Sentinels seem to attack Port Hope from Chor." />
-	<announce delay="120000" type="event" message="Lizards are advancing to Port Hope from Chor." />
-	<!--Single Spawns-->
-	<areaspawn delay="1000" fromx="32882" fromy="32804" fromz="7" tox="32818" toy="32764" toz="7">
-		<monster name="Lizard Snakecharmer" amount="5" />
-		<monster name="Lizard Templar" amount="10" />
-		<monster name="Lizard Sentinel" amount="5" />
+	<announce delay="1000" type="event" message="There are some kongras congregating south of Banuta." />
+	<announce delay="300000" type="event" message="More furry primates in Banuta." />
+	<announce delay="840000" type="event" message="More ape and fur flurry south of Banuta!" />
+	<areaspawn delay="1000" fromx="32789" fromy="32593" fromz="7" tox="32841" toy="32611" toz="7">
+		<monster name="Kongra" amount="12" />
 	</areaspawn>
-	<areaspawn delay="120000" fromx="32882" fromy="32804" fromz="7" tox="32818" toy="32764" toz="7">
-		<monster name="Lizard Snakecharmer" amount="10" />
-		<monster name="Lizard Templar" amount="5" />
-		<monster name="Lizard Sentinel" amount="5" />
+	<areaspawn delay="300000" fromx="32789" fromy="32593" fromz="7" tox="32841" toy="32611" toz="7">
+		<monster name="Kongra" amount="24" />
+	</areaspawn>
+	<areaspawn delay="840000" fromx="32789" fromy="32593" fromz="7" tox="32841" toy="32611" toz="7">
+		<monster name="Kongra" amount="32" />
 	</areaspawn>
 </raid>

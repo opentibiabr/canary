@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Insect Swarm" x="33110" y="31463" z="8"/>
+	<singlespawn delay="1000" name="Insect Swarm" x="33112" y="31463" z="8"/>
+	<singlespawn delay="1000" name="Fleabringer" x="33111" y="31463" z="8"/>
+</raid>

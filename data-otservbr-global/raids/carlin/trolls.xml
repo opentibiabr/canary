@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Trolls trolling north-west of Carlin!" />
+	<announce delay="120000" type="event" message="Even more Trolls north-west of Carlin!" />
+	<announce delay="180000" type="event" message="Beware! Troll Champions north-west of Carlin!" />
+	<areaspawn delay="1000" fromx="32261" fromy="31658" fromz="7" tox="32315" toy="31684" toz="7">
+		<monster name="Troll" amount="25" />
+		<monster name="Troll Guard" amount="1" />
+	</areaspawn>
+	<areaspawn delay="120000" fromx="32261" fromy="31658" fromz="7" tox="32315" toy="31684" toz="7">
+		<monster name="Troll" amount="25" />
+		<monster name="Troll Guard" amount="1" />
+	</areaspawn>
+	<areaspawn delay="120000" fromx="32261" fromy="31658" fromz="7" tox="32315" toy="31684" toz="7">
+		<monster name="Troll" amount="25" />
+		<monster name="Troll Guard" amount="1" />
+		<monster name="Troll Champion" amount="25" />
+	</areaspawn>
+</raid>

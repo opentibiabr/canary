@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+    <!--Single Spawns-->
+	<announce delay="1000" type="event" message="There are white deer roaming the region near Ab'Dendriel. Don't slay too many of them, or they will leave the region." />
+    <singlespawn delay="1000" name="White Deer" x="32421" y="31657" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32447" y="31671" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32343" y="31674" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32348" y="31678" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32374" y="31687" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32412" y="31690" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32260" y="31687" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32312" y="31687" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32389" y="31702" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32346" y="31704" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32363" y="31707" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32252" y="31708" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32255" y="31711" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32513" y="31709" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32276" y="31714" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32573" y="31717" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32370" y="31718" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32336" y="31718" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32538" y="31720" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32653" y="31722" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32260" y="31724" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32291" y="31726" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32589" y="31724" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32399" y="31725" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32671" y="31726" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32597" y="31730" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32522" y="31730" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32561" y="31731" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32579" y="31733" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32401" y="31736" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32665" y="31732" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32669" y="31735" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32541" y="31738" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32249" y="31742" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32688" y="31745" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32267" y="31746" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32229" y="31749" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32665" y="31755" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32250" y="31758" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32672" y="31764" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32232" y="31764" z="7"/>
+    <singlespawn delay="1000" name="White Deer" x="32760" y="31913" z="7"/>
+</raid>

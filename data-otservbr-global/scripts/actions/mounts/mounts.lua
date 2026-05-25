@@ -1,5 +1,7 @@
 local ACTION_RUN, ACTION_BREAK, ACTION_NONE, ACTION_ALL = 1, 2, 3, 4
 local TYPE_MONSTER, TYPE_NPC, TYPE_ITEM, TYPE_ACTION, TYPE_UNIQUE = 1, 2, 3, 4, 5
+local TYPE_SINGEING_STEED = 6
+local TYPE_GLOOTH_GLIDER = 7
 
 local config = {
 	[5907] = { NAME = "Bear", ID = 3, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 20, FAIL_MSG = { { 1, "The bear ran away." }, { 2, "Oh no! The slingshot broke." }, { 3, "The bear is trying to hit you with its claws." } }, SUCCESS_MSG = "You have tamed the war bear.", ACHIEV = "Bearbaiting" },
@@ -13,11 +15,29 @@ local config = {
 	[12546] = { NAME = "Dromedary", ID = 20, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 40, FAIL_MSG = { { 1, "Dromedary has run away." } }, SUCCESS_MSG = "You have tamed the dromedary.", ACHIEV = "Fata Morgana" },
 	[12550] = { NAME = "Enraged White Deer", ID = 18, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 40, FAIL_MSG = { { 2, "The cone broke." }, { 3, "The deer has fled in fear." } }, SUCCESS_MSG = "You have tamed the white deer.", ACHIEV = "Friend of Elves" },
 	[28791] = { NAME = "Flying Book", ID = 126, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 20, FAIL_MSG = { { 1, "Flying Book has run away." } }, SUCCESS_MSG = "You have converted your library ticket and receive permission to ride a flying book.", ACHIEV = "Bibliomaniac" },
+	[39548] = { NAME = "Giant Beaver", ID = 201, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 40, FAIL_MSG = { { 1, "The giant beaver ran away." }, { 3, "The giant beaver is ignoring you." } }, SUCCESS_MSG = "You tamed the giant beaver.", ACHIEV = "Beaver Away" },
+	[21897] = {
+		NAME = "Glooth Glider",
+		ID = 71,
+		BREAK = false,
+		TYPE = TYPE_GLOOTH_GLIDER,
+		REQUIRED = {
+			{ id = 21898, name = "roll of covering" },
+			{ id = 21906, name = "glooth glider gear wheel" },
+			{ id = 21902, name = "glooth glider crank" },
+			{ id = 21899, name = "glooth glider tubes and wires" },
+			{ id = 21905, name = "glooth glider hinge" },
+			{ id = 21901, name = "glooth glider casing" },
+			{ id = 21897, name = "glooth glider blueprint" },
+		},
+		SUCCESS_MSG = "You successfully constructed a Glooth Glider!",
+		ACHIEV = "Fabled Construction",
+	},
 	[19136] = { NAME = "Gravedigger", ID = 39, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 40, FAIL_MSG = { { 1, "The gravedigger got scared and ran away." }, { 3, "The gravedigger is trying to nibble." } }, SUCCESS_MSG = "You tamed the hellgrip.", ACHIEV = "Blacknailed" },
 	[31576] = { NAME = "Gryphon", ID = 144, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 1, "Gryphon has run away." } }, SUCCESS_MSG = "You have tamed the gryphon.", ACHIEV = "Gryphon Rider" },
 	[30171] = { NAME = "Hibernal Moth", ID = 131, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 20, FAIL_MSG = { { 2, "The hibernal moth is not interested in your lantern and flies away." }, { 4, "The hibernal moth is not interested in your lantern and flies away." } }, SUCCESS_MSG = "You have tamed a hibernal moth.", ACHIEV = "Moth Whisperer" },
 	[12305] = { NAME = "inoperative tin lizzard", ID = 8, BREAK = true, TYPE = TYPE_ITEM, CHANCE = 40, FAIL_MSG = { { 2, "The key broke inside." } }, SUCCESS_MSG = "You wind up the tin lizzard.", ACHIEV = "Knock on Wood" },
-	[12801] = { NAME = "inoperative uniwheel", ID = 15, BREAK = true, TYPE = TYPE_ITEM, CHANCE = 40, FAIL_MSG = { { 3, "The oil have no effect." }, { 2, "Splosh!" } }, SUCCESS_MSG = "The strange wheel seems to vibrate and slowly starts turning continuously.", ACHIEV = "Stuntman" },
+	[12801] = { NAME = "inoperative uniwheel", ID = 15, BREAK = true, TYPE = TYPE_ITEM, CHANCE = 40, FAIL_MSG = { { 3, "The oil have no effect." }, { 2, "Splosh! It looks like most of the special oil this can was holding was spilt without any effect." } }, SUCCESS_MSG = "Vroooomratatatatatatat. The strange wheel seems to vibrate and slowly starts turning continuously.", ACHIEV = "Stuntman" },
 	[16153] = { NAME = "Ironblight", ID = 29, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 1, "The ironblight managed to run away." }, { 2, "Oh no! The magnet lost its power!" }, { 3, "The ironblight is fighting against the magnetic force." } }, SUCCESS_MSG = "You tamed the ironblight.", ACHIEV = "Magnetised" },
 	[30170] = { NAME = "Lacewing Moth", ID = 130, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 20, FAIL_MSG = { { 2, "The lacewing moth is not interested in your lantern and flies away." }, { 4, "The lacewing moth is not interested in your lantern and flies away." } }, SUCCESS_MSG = "You have tamed a lancewing moth.", ACHIEV = "Lacewing Catcher" },
 	[14143] = { NAME = "Ladybug", ID = 27, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 1, "The ladybug got scared and ran away." }, { 3, "The ladybug is trying to nibble." } }, SUCCESS_MSG = "You tame a lady bug.", ACHIEV = "Lovely Dots" },
@@ -46,9 +66,9 @@ local config = {
 	[12320] = { NAME = "Wailing Widow", ID = 1, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 40, FAIL_MSG = { { 1, "The widow has run away." }, { 2, "The widow has eaten the sweet bait." } }, SUCCESS_MSG = "You have tamed the widow.", ACHIEV = "Spin-Off" },
 	[21186] = { NAME = "Walker", ID = 43, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 2, "This walker is incompatible with your control unit." }, { 4, "This walker is incompatible with your control unit." } }, SUCCESS_MSG = "You tamed the walker.", ACHIEV = "Gear Up" },
 	[17858] = { NAME = "Water Buffalo", ID = 35, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 1, "The water buffalo got scared and ran away." }, { 3, "The water buffalo is trying to nibble." } }, SUCCESS_MSG = "You tamed a water buffalo.", ACHIEV = "Swamp Beast" },
-	[12802] = { NAME = "Wild Horse", ID = 17, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 15, FAIL_MSG = { { 1, "The horse runs away." }, { 2, "The horse ate the oats." } }, SUCCESS_MSG = "You have tamed the horse.", ACHIEV = "Lucky Horseshoe" },
-	[34258] = { NAME = "White Lion", ID = 174, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 50, FAIL_MSG = { { 1, "The White Lion runs away." }, { 2, "The White Lion ate the flower." } }, SUCCESS_MSG = "You have tamed the white lion.", ACHIEV = "Well Roared, Lion!" },
 	[37397] = { NAME = "wind-up loco", ID = 194, BREAK = false, TYPE = TYPE_ITEM, CHANCE = 100, FAIL_MSG = {}, SUCCESS_MSG = "You wind the small locomotive up. It starts to move ... and grows!", ACHIEV = "Engine Driver" },
+	[12802] = { NAME = "Wild Horse", ID = 17, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 7, SUCCESS_MSG = "*snort* The horse eats the sugar oat and accepts you as its new master.", ACHIEV = "Lucky Horseshoe" },
+	[34258] = { NAME = "White Lion", ID = 174, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 50, FAIL_MSG = { { 1, "The White Lion runs away." }, { 2, "The White Lion ate the flower." } }, SUCCESS_MSG = "You have tamed the white lion.", ACHIEV = "Well Roared, Lion!" },
 	[43901] = { NAME = "Foxmouse", ID = 218, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 100, FAIL_MSG = { { 1, "The foxmouse ran away." } }, SUCCESS_MSG = "You have tamed the foxmouse.", ACHIEV = "Like Fox and Mouse" },
 }
 
@@ -81,15 +101,79 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 	local targetNpc = Npc(itemEx.uid)
 	local targetItem = Item(itemEx.uid)
 	local mount = config[item.itemid]
+	local rand = math.random(100)
+
 	if mount == nil or player:hasMount(mount.ID) then
 		return false
 	end
 
-	local rand = math.random(100)
+	-- Glooth Glider
+	if mount.TYPE == TYPE_GLOOTH_GLIDER then
+		if mount.REQUIRED then
+			local missing = {}
+			for _, req in ipairs(mount.REQUIRED) do
+				if player:getItemCount(req.id) < 1 then
+					table.insert(missing, req.name)
+				end
+			end
+
+			if #missing > 0 then
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You require the following items to construct a " .. mount.NAME .. ":\n- " .. table.concat(missing, "\n- "))
+				return true
+			end
+
+			for _, req in ipairs(mount.REQUIRED) do
+				player:removeItem(req.id, 1)
+			end
+
+			if mount.ACHIEV then
+				player:addAchievement(mount.ACHIEV)
+			end
+			player:addAchievement("Natural Born Cowboy")
+			player:addMount(mount.ID)
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, mount.SUCCESS_MSG)
+			toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
+			return true
+		end
+	end
+
 	--Monster Mount
 	if targetMonster ~= nil and mount.TYPE == TYPE_MONSTER then
 		if Creature(itemEx.uid):getMaster() then
-			player:say("You can't tame a summon!", TALKTYPE_MONSTER_SAY)
+			player:sendCancelMessage("You cannot tame a summon.")
+			return true
+		end
+
+		if mount.NAME == "Wild Horse" then
+			if rand <= 3 then
+				if mount.ACHIEV then
+					player:addAchievement(mount.ACHIEV)
+				end
+				player:addAchievement("Natural Born Cowboy")
+				player:addMount(mount.ID)
+				player:say(mount.SUCCESS_MSG, TALKTYPE_MONSTER_SAY)
+				targetMonster:remove()
+				toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
+				Item(item.uid):remove(1)
+				return true
+			end
+
+			local failRoll = math.random(100)
+
+			if failRoll <= 3 then
+				player:say("With its last strength the horse runs to safety.", TALKTYPE_MONSTER_SAY)
+				toPosition:sendMagicEffect(CONST_ME_POFF)
+				targetMonster:remove()
+			else
+				local regularMsgs = {
+					"The wild horse happily munches the sugar oat and runs on.",
+					"Weeeheeeehee.",
+				}
+				player:say(regularMsgs[math.random(#regularMsgs)], TALKTYPE_MONSTER_SAY)
+				toPosition:sendMagicEffect(CONST_ME_POFF)
+			end
+
+			Item(item.uid):remove(1)
 			return true
 		end
 
@@ -112,7 +196,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_GREEN)
 			Item(item.uid):remove(1)
 			return true
-		elseif item.itemid == 12548 and targetMonster:getOutfit().lookType == 387 then
+		elseif item.itemid == 12548 and targetMonster:getOutfit().lookType == 399 then
 			if rand > mount.CHANCE then
 				doFailAction(cid, mount, toPosition, item, itemEx, mount.BREAK)
 				return true
@@ -148,7 +232,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 		--Item Mount
 	elseif targetItem ~= nil and mount.TYPE == TYPE_ITEM then
 		if mount.NAME == targetItem:getName() then
-			if rand > mount.CHANCE then
+			if rand < mount.CHANCE then
 				doFailAction(cid, mount, toPosition, item, itemEx, mount.BREAK)
 				return true
 			end

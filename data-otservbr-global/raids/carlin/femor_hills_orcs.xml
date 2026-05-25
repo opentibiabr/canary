@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<areaspawn delay="1000" fromx="32522" fromy="31766" fromz="6" tox="32551" toy="31776" toz="6">
+		<monster name="Orc" amount="20" />
+		<monster name="Orc Warrior" amount="8" />
+		<monster name="War Wolf" amount="8" />
+		<monster name="Orc Rider" amount="8" />
+		<monster name="Orc Berserker" amount="8" />
+		<monster name="Orc Shaman" amount="8" />
+		<monster name="Orc Warlord" amount="3" />
+	</areaspawn>
+	<areaspawn delay="1000" fromx="32531" fromy="31769" fromz="5" tox="32543" toy="31775" toz="5">
+		<monster name="Orc" amount="6" />
+		<monster name="Orc Warrior" amount="6" />
+		<monster name="War Wolf" amount="6" />
+		<monster name="Orc Rider" amount="6" />
+		<monster name="Orc Berserker" amount="6" />
+		<monster name="Orc Shaman" amount="6" />
+		<monster name="Orc Helmet" amount="1" />
+		<monster name="Orc Shield" amount="1" />
+		<monster name="Orc Armor" amount="1" />
+	</areaspawn>
+</raid>

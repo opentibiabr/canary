@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Dire Penguin" x="32136" y="31104" z="2"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32147" y="31140" z="2"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32142" y="31172" z="2"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32178" y="31161" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32195" y="31209" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32189" y="31245" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32073" y="31083" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="31983" y="31183" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32344" y="31208" z="7"/>
+	<singlespawn delay="1000" name="Dire Penguin" x="32476" y="31162" z="7"/>
+</raid>

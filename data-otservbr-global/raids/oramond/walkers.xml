@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Walker" x="33543" y="31924" z="8"/>
+	<singlespawn delay="1000" name="Walker" x="33564" y="31942" z="8"/>
+	<singlespawn delay="1000" name="Walker" x="33544" y="31984" z="9"/>
+	<singlespawn delay="1000" name="Walker" x="33585" y="32011" z="9"/>
+	<singlespawn delay="1000" name="Walker" x="33572" y="31898" z="10"/>
+	<singlespawn delay="1000" name="Walker" x="33565" y="31944" z="10"/>
+	<singlespawn delay="1000" name="Walker" x="33596" y="32006" z="10"/>
+	<singlespawn delay="1000" name="Walker" x="33520" y="31980" z="12"/>
+	<singlespawn delay="1000" name="Walker" x="33467" y="31982" z="12"/>
+	<singlespawn delay="1000" name="Walker" x="33582" y="32005" z="12"/>
+	<singlespawn delay="1000" name="Walker" x="33542" y="31983" z="13"/>
+	<singlespawn delay="1000" name="Walker" x="33557" y="32012" z="13"/>
+	<singlespawn delay="1000" name="Walker" x="33699" y="31936" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33703" y="31940" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33720" y="31955" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33717" y="31962" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33601" y="31934" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33608" y="31923" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33580" y="31955" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33583" y="31977" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33616" y="31981" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33604" y="31987" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33680" y="31941" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33644" y="31942" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33675" y="31954" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33652" y="31966" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33653" y="31961" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33639" y="31973" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33693" y="31969" z="14"/>
+	<singlespawn delay="1000" name="Walker" x="33693" y="31961" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33721" y="31945" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33707" y="31947" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33641" y="31941" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33660" y="31943" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33684" y="31946" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33679" y="31953" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33650" y="31937" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33653" y="31956" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33674" y="32041" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33638" y="32034" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33638" y="32053" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33628" y="32059" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33653" y="32041" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33653" y="32061" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33639" y="32078" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33615" y="32078" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33624" y="32085" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33673" y="32079" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33657" y="32086" z="15"/>
+	<singlespawn delay="1000" name="Walker" x="33616" y="32096" z="15"/>
+</raid>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="A disturbance in the ether stirs up the undead of the Ghostlands." />
+	<announce delay="7000" type="event" message="The undead are reclaiming the Ghostlands once more!" />
+	<announce delay="15000" type="event" message="The dreaded Banshees and their undead retinue are unleashed in the Ghostland." />
+	<announce delay="20000" type="event" message="Banshees wish to feast on the souls of the living! Fight them in the Ghostlands or abandon all hope!" />
+	<areaspawn delay="20000" fromx="32177" fromy="31790" fromz="7" tox="32219" toy="31857" toz="7">
+		<monster name="Ghoul" amount="8" />
+		<monster name="Stalker" amount="8" />
+		<monster name="Ghost" amount="8" />
+		<monster name="Mummy" amount="8" />
+		<monster name="Demon Skeleton" amount="16" />
+		<monster name="Lich" amount="32" />
+		<monster name="Banshee" amount="32" />
+	</areaspawn>
+</raid>

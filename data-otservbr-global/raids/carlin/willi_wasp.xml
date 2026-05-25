@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+
+<announce delay="1000" type="event" message="Some wasps have been found north of Carlin. There is some loud buzzing in the air." />
+<announce delay="240000" type="event" message="Buzzing madness north of Carlin! Be careful if you're allergic!" />
+<announce delay="300000" type="event" message="Willi Wasp the Wicked has arrived!" />
+	<areaspawn delay="240000" fromx="32290" fromy="31683" fromz="7" tox="32401" toy="31739" toz="7">
+		<monster name="Wasp" amount="25" />
+	</areaspawn>
+	<areaspawn delay="240000" fromx="32290" fromy="31683" fromz="7" tox="32401" toy="31739" toz="7">
+		<monster name="Wasp" amount="25" />
+	</areaspawn>
+	<singlespawn delay="300000" name="Willi Wasp" x="32350" y="31727" z="7"/>
+</raid>

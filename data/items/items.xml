@@ -57771,7 +57771,7 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	<item fromid="31153" toid="31156" name="hanging Sun disk"/>
 	<item id="31157" article="a" name="wall lamp"/>
 	<item id="31158" article="a" name="lit wall lamp"/>
-	<item id="31159" name="RESERVED SPRITE"/>
+	<item id="31159" name="grass" />
 	<item id="31160" article="a" name="cleansed soul splinter">
 		<attribute key="primarytype" value="quest objects"/>
 	</item>

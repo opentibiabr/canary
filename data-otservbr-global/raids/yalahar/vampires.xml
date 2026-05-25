@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<announce delay="1000" type="event" message="Citizens of Yalahar, beware! Harbingers of vampiric blood thirst are appearing in the city. Fight them or take your chance to flee while you still can." />
+	<announce delay="120000" type="event" message="The sky over Yalahar is darkened by many little wings. Whoever isn't ready to fight the greater evil approaching, seek refuge inside the houses." />
+	<announce delay="300000" type="event" message="Vampires have arrived in Yalahar - looking for humans to feed on and quench their blood thirst." />
+	<areaspawn delay="120000" fromx="32752" fromy="31170" fromz="7" tox="32848" toy="31249" toz="7">
+		<monster name="Bat" amount="200" />
+	</areaspawn>
+	<areaspawn delay="300000" fromx="32752" fromy="31170" fromz="7" tox="32848" toy="31249" toz="7">
+		<monster name="Bat" amount="200" />
+		<monster name="Vampire" amount="100" />
+	</areaspawn>
+</raid>

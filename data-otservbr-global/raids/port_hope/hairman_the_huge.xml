@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+	<!--Single Spawns-->
+	<singlespawn delay="1000" name="Hairman The Huge" x="32847" y="32510" z="8" />
+	<singlespawn delay="1000" name="Kongra" x="32846" y="32510" z="8" />
+</raid>

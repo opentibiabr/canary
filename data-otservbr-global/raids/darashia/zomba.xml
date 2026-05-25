@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<raid>
+
+<announce delay="1000" type="event" message="Hungry lions scout the western Darashian desert. Travellers beware!" />
+<announce delay="240000" type="event" message="Packs of hungry lions stalk Darashia's western desert. Be on your guard!" />
+<announce delay="300000" type="event" message="Hear the roar of Zomba, king of the lions, roaming the Darashia desert!" />
+	<areaspawn delay="240000" fromx="33126" fromy="32391" fromz="7" tox="33168" toy="32449" toz="7">
+		<monster name="Lion" amount="25" />
+	</areaspawn>
+	<areaspawn delay="240000" fromx="33126" fromy="32391" fromz="7" tox="33168" toy="32449" toz="7">
+		<monster name="Lion" amount="25" />
+	</areaspawn>
+	<singlespawn delay="300000" name="Zomba" x="33137" y="32397" z="7"/>
+</raid>

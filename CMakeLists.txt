@@ -3,6 +3,22 @@ cmake_minimum_required(
     FATAL_ERROR
 )
 
+if(POLICY CMP0156)
+    cmake_policy(
+        SET
+        CMP0156
+        NEW
+    )
+endif()
+
+if(POLICY CMP0179)
+    cmake_policy(
+        SET
+        CMP0179
+        NEW
+    )
+endif()
+
 # VCPKG cmake
 # -DCMAKE_TOOLCHAIN_FILE=/opt/workspace/vcpkg/scripts/buildsystems/vcpkg.cmake
 # .. Needed libs are in file vcpkg.json Windows required libs: .\vcpkg install

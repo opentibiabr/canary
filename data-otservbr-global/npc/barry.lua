@@ -84,6 +84,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "This is of no importance to me right now." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

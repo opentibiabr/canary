@@ -68,7 +68,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission03, 3) -- StorageValue for Questlog "Mission 03: Death to the Deathbringer"
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus, 1)
 			npcHandler:setTopic(playerId, 0)
-		elseif player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus) == 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 18 then
+		elseif player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.NotesAzerus) >= 1 and player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline) == 18 then
 			npcHandler:say({
 				"I'm mildly impressed by your previous deeds in our service. So I'm willing to grant you some more important {missions}. ...",
 				"If you please us, a life of luxury as an important person in our city is ensured. If you fail, you will be replaced by someone more capable than you. ...",
@@ -266,6 +266,25 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Questline, 50)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.SideDecision, 2)
 			player:setStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.Mission09, 2) -- StorageValue for Questlog "Mission 09: Decision"
+
+			-- achievement
+			local goodSide = player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.GoodSide)
+			local badSide = player:getStorageValue(Storage.Quest.U8_4.InServiceOfYalahar.BadSide)
+
+			if goodSide < 0 then
+				goodSide = 0
+			end
+
+			if badSide < 0 then
+				badSide = 0
+			end
+
+			if badSide > 0 and goodSide == 0 then
+				player:addAchievement("Follower of Azerus")
+			elseif goodSide > 0 and badSide > 0 then
+				player:addAchievement("Turncoat")
+			end
+
 			npcHandler:say("I knew that you were smart enough to make the right decision! Your next mission will be a special one! ", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

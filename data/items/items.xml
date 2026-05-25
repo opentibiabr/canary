@@ -22942,6 +22942,8 @@
 	</item>
 	<item id="8326" article="a" name="vampire lord">
 		<attribute key="primarytype" value="animals"/>
+		<attribute key="duration" value="10" />
+		<attribute key="decayTo" value="8325" />
 	</item>
 	<item fromid="8327" toid="8328" article="a" name="statue"/>
 	<item fromid="8329" toid="8332" name="nails"/>

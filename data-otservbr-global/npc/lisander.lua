@@ -74,6 +74,10 @@ keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHan
 	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 1
 end)
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "No, that's wine I'm drinking." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setMessage(MESSAGE_GREET, "I'd rather be left in {peace}. Keep it short.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

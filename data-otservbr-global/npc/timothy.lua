@@ -79,6 +79,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "Oh yes, I heard about a gem like that. Nowadays they seem incredibly hard to acquire. The explorer's society doesn't own one, else I'd help you." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setMessage(MESSAGE_GREET, "Oh, hello! It's a pleasure to see a visitor from the continent.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)

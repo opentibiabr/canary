@@ -75,6 +75,10 @@ travelNode:addChildKeyword({ "no" }, StdModule.say, { npcHandler = npcHandler, r
 keywordHandler:addKeyword({ "busy" }, StdModule.say, { npcHandler = npcHandler, text = "I have a {job}, you know?" })
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Well, I'm kind of a delivery man I guess. I take on small {transportation} jobs with my boat." })
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "What the heck, stop bothering me with your questions." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setMessage(MESSAGE_GREET, "What do you want, |PLAYERNAME|? I'm a {busy} man.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye then.")

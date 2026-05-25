@@ -88,6 +88,10 @@ keywordHandler:addKeyword({ "alori mort" }, StdModule.say, { npcHandler = npcHan
 	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 1
 end)
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "No, thanks." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setMessage(MESSAGE_GREET, "I hope you have a good reason to step near my {ship}, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Yeah, bye or whatever.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye.")

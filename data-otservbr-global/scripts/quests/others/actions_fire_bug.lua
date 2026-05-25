@@ -28,6 +28,64 @@ local positions = {
 
 local othersFireBug = Action()
 function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	-- Blood Brothers Mission - Boreth
+	if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission07) == 1 then
+
+		if toPosition == Position(32939, 31476, 2) then
+			if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant1) ~= 1 then
+				player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant1, 1)
+				toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
+			end
+		elseif toPosition == Position(32940, 31476, 2) then
+			if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant2) ~= 1 then
+				player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant2, 1)
+				toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
+				local statuePos = Position(32940, 31475, 2)
+				local statue = Tile(statuePos):getItemById(8325)
+				if statue then
+					statue:transform(8326)
+					player:say("WHAT DO YOU THINK YOU ARE DOING TO MY PLANTS INTRUDER? YOU WILL DREADLY REGRET THIS MORTAL.", TALKTYPE_MONSTER_SAY)
+				end
+			end
+
+		elseif toPosition == Position(32941, 31476, 2) then
+			if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant3) ~= 1 then
+				player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant3, 1)
+				toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
+			end
+		end
+		
+		if player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant1) == 1 and
+		   player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant2) == 1 and
+		   player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant3) == 1 then
+
+			local fromPos = Position(32936, 31474, 2)
+			local toPos = Position(32944, 31482, 2)
+			local teleportDestination = Position(32940, 31478, 1)
+			
+			local spectators = Game.getSpectators(fromPos, false, false, 
+				toPos.x - fromPos.x, toPos.x - fromPos.x,
+				toPos.y - fromPos.y, toPos.y - fromPos.y)
+			
+			for _, spectator in ipairs(spectators) do
+				if spectator:isPlayer() then
+					spectator:teleportTo(teleportDestination)
+					spectator:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				end
+			end
+			
+			Game.createMonster("Boreth", Position(32940, 31476, 1))
+			Game.createMonster("plaguethrower", Position(32938, 31476, 1))
+			Game.createMonster("plaguethrower", Position(32942, 31476, 1))
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant1, 0)
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant2, 0)
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Plant3, 0)
+			player:say("I WARNED YOU.", TALKTYPE_MONSTER_SAY)
+		end
+		
+		return true
+	end
+	
 	if target.actionid == 54387 and target.itemid == 22875 then
 		if player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.BasinCounter) >= 8 or player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.BoneFlute) < 1 then
 			return false
@@ -57,9 +115,8 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 		createTeleport:setDestination(Position(32857, 32234, 11))
 		return true
 	elseif target.uid == 2273 then
-		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission2) == 1 and player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven) == 15 then
+		if player:getStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission2) == 1 then
 			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.RaysMission2, 2)
-			player:setStorageValue(Storage.Quest.U7_8.TheShatteredIsles.ReputationInSabrehaven, 16)
 			toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
 			return true
 		else
@@ -91,10 +148,15 @@ function othersFireBug.onUse(player, item, fromPosition, target, toPosition, isH
 			toPosition:sendMagicEffect(CONST_ME_HITBYFIRE)
 			target:transform(2113)
 			return true
-		elseif target.actionid == 12550 or target.actionid == 12551 then -- Secret Service Quest
+		elseif target.position == Position(32893, 32012, 6) then -- Secret Service Quest
 			if player:getStorageValue(Storage.Quest.U8_1.SecretService.TBIMission01) == 1 then
-				Game.createItem(2118, 1, Position(32893, 32012, 6))
+				local fire = Game.createItem(2118, 1, Position(32893, 32012, 6))
 				player:setStorageValue(Storage.Quest.U8_1.SecretService.TBIMission01, 2)
+				addEvent(function()
+					if fire and item:isItem() then
+						item:remove()
+					end
+				end, 7 * 60 * 1000)
 			end
 		end
 		return true

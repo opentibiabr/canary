@@ -50,6 +50,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "Haha, they are not meant to be owned by ordinary humans. Sorry, but no." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
@@ -97,6 +101,7 @@ npcConfig.shop = {
 	{ itemName = "opal", clientId = 22194, sell = 500 },
 	{ itemName = "ornate locket", clientId = 30056, sell = 18000 },
 	{ itemName = "prismatic quartz", clientId = 24962, sell = 450 },
+	{ itemName = "rainbow quartz", clientId = 25737, sell = 500 },
 	{ itemName = "red crystal fragment", clientId = 16126, sell = 800 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },
 	{ itemName = "sage gem", clientId = 44609, sell = 5000 },

@@ -163,6 +163,7 @@ function playerLoginGlobal.onLogin(player)
 	end
 
 	player:initializeLoyaltySystem()
+	player:registerEvent("Castlemania")
 	player:registerEvent("PlayerDeath")
 	player:registerEvent("DropLoot")
 	player:registerEvent("BossParticipation")

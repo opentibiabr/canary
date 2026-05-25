@@ -50,6 +50,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "I agree, that would be a nice decoration object. Unfortunately I don't sell them." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
@@ -68,7 +72,7 @@ npcConfig.shop = {
 	{ itemName = "canopy headboard", clientId = 32481, buy = 40 },
 	{ itemName = "chest", clientId = 2472, buy = 10 },
 	{ itemName = "chimney kit", clientId = 7860, buy = 200 },
-	{ itemName = "coal basin kit", clientId = 3513, buy = 25 },
+	{ itemName = "coal basin kit", clientId = 2806, buy = 25 },
 	{ itemName = "cot footboard", clientId = 32486, buy = 40 },
 	{ itemName = "cot headboard", clientId = 32477, buy = 40 },
 	{ itemName = "crate", clientId = 2471, buy = 10 },

@@ -50,6 +50,10 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "No, I don't sell that, sorry." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
@@ -82,12 +86,14 @@ npcConfig.shop = {
 	{ itemName = "durable exercise club", clientId = 35281, buy = 1250000, count = 1800 },
 	{ itemName = "durable exercise shield", clientId = 44066, buy = 1250000, count = 1800 },
 	{ itemName = "durable exercise sword", clientId = 35279, buy = 1250000, count = 1800 },
+	{ itemName = "durable exercise wraps", clientId = 50294, buy = 1250000, subType = 1800 },
 	{ itemName = "dwarven shield", clientId = 3425, buy = 500, sell = 100 },
 	{ itemName = "exercise axe", clientId = 28553, buy = 347222, count = 500 },
 	{ itemName = "exercise bow", clientId = 28555, buy = 347222, count = 500 },
 	{ itemName = "exercise club", clientId = 28554, buy = 347222, count = 500 },
 	{ itemName = "exercise shield", clientId = 44065, buy = 347222, count = 500 },
 	{ itemName = "exercise sword", clientId = 28552, buy = 347222, count = 500 },
+	{ itemName = "exercise wraps", clientId = 50293, buy = 347222, subType = 500 },
 	{ itemName = "fire sword", clientId = 3280, sell = 1000 },
 	{ itemName = "halberd", clientId = 3269, sell = 400 },
 	{ itemName = "hand axe", clientId = 3268, buy = 8, sell = 4 },
@@ -100,6 +106,7 @@ npcConfig.shop = {
 	{ itemName = "lasting exercise club", clientId = 35287, buy = 10000000, count = 14400 },
 	{ itemName = "lasting exercise shield", clientId = 44067, buy = 10000000, count = 14400 },
 	{ itemName = "lasting exercise sword", clientId = 35285, buy = 10000000, count = 14400 },
+	{ itemName = "lasting exercise wraps", clientId = 50295, buy = 10000000, subType = 14400 },
 	{ itemName = "leather armor", clientId = 3361, buy = 35, sell = 12 },
 	{ itemName = "leather boots", clientId = 3552, buy = 10, sell = 2 },
 	{ itemName = "leather helmet", clientId = 3355, buy = 12, sell = 4 },
@@ -132,6 +139,9 @@ npcConfig.shop = {
 	{ itemName = "viking shield", clientId = 3431, buy = 260 },
 	{ itemName = "war hammer", clientId = 3279, buy = 10000 },
 	{ itemName = "wooden shield", clientId = 3412, buy = 15 },
+	{ itemName = "pair of monk fists", clientId = 50181, buy = 270, sell = 90 },
+	{ itemName = "nunchaku", clientId = 50182, buy = 405, sell = 135 },
+	{ itemName = "sai", clientId = 50183, buy = 540, sell = 180 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

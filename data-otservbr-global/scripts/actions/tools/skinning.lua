@@ -1,4 +1,18 @@
 local CREATURE_SKINNING_CHANCE = 25000 -- 25% probability
+
+local ICE_CONFIG = {
+	[7441] = { chance = 22344, newItem = 7442 },
+	[7442] = { chance = 22344, newItem = 7444 },
+	[7444] = { chance = 22344, newItem = 7445 },
+	[7445] = { chance = 22344, newItem = 7446 },
+}
+
+local MARBLE_CONFIG = {
+	{ value = 10000, newItem = 10429, desc = "This little figurine of Tibiasula was masterfully sculpted by |PLAYERNAME|." },
+	{ value = 26764, newItem = 10428, desc = "This little figurine made by |PLAYERNAME| has some room for improvement." },
+	{ value = 60000, newItem = 10427, desc = "This shoddy work was made by |PLAYERNAME|." },
+}
+
 local config = {
 	[5908] = {
 
@@ -37,7 +51,7 @@ local config = {
 		[4239] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4322 }, -- lizard templar, after being killed
 
 		-- High Class Lizards
-		[10368] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10369 }, -- lizard chosen,
+		[10368] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10369 }, -- lizard chosen
 		[10371] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10369 }, -- lizard chosen, after being killed
 		[10360] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10361 }, -- lizard dragon priest
 		[10363] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10361 }, -- lizard dragon priest, after being killed
@@ -70,9 +84,9 @@ local config = {
 
 		-- The Mutated Pumpkin
 		[12816] = {
-			{ value = 5000, newItem = 8032 }, -- spiderwebs
-			{ value = 5000, newItem = 8178 }, -- toy spider
-			{ value = 5000, newItem = 6491 }, -- bat decoration
+			{ value = 5000,  newItem = 8032 }, -- spiderwebs
+			{ value = 5000,  newItem = 8178 }, -- toy spider
+			{ value = 5000,  newItem = 6491 }, -- bat decoration
 			{ value = 20000, newItem = 6525 }, -- skeleton decoration
 			{ value = 90000, newItem = 8177, amount = 20 }, -- yummy gummy worm
 			{ value = 10000, newItem = 6571 }, -- surprise bag (red)
@@ -82,21 +96,8 @@ local config = {
 			{ value = 45000, newItem = 3594 }, -- pumpkin
 			{ value = 90000, newItem = 3599, amount = 50 }, -- candy cane
 			{ value = 90000, newItem = 6569, amount = 50 }, -- candy
-			{ value = 2000, newItem = 6574, amount = 50 }, -- bar of chocolate
+			{ value = 2000,  newItem = 6574, amount = 50 }, -- bar of chocolate
 		},
-
-		-- Marble
-		[10426] = {
-			{ value = 10000, newItem = 10429, desc = "This little figurine of Tibiasula was masterfully sculpted by |PLAYERNAME|." },
-			{ value = 26764, newItem = 10428, desc = "This little figurine made by |PLAYERNAME| has some room for improvement." },
-			{ value = 60000, newItem = 10427, desc = "This shoddy work was made by |PLAYERNAME|." },
-		},
-
-		-- Ice Cube
-		[7441] = { value = 22344, newItem = 7442 },
-		[7442] = { value = 22344, newItem = 7444 },
-		[7444] = { value = 22344, newItem = 7445 },
-		[7445] = { value = 22344, newItem = 7446 },
 	},
 	[5942] = {
 		-- Demon
@@ -108,8 +109,8 @@ local config = {
 		[6006] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 4138 }, -- vampire, after being killed
 		[8738] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8742 }, -- vampire bride
 		[8744] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8742 }, -- vampire bride, after being killed
-		[8109] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord, after being killed (the count, diblis, etc)
-		[8110] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord (the count, diblis, etc)
+		[8109] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord, after being killed
+		[8110] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8111 }, -- vampire lord
 		[18958] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 18959 }, -- vampire viscount
 		[18961] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 18959 }, -- vampire viscount, after being killed
 	},
@@ -118,6 +119,70 @@ local config = {
 local skinning = Action()
 
 function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+
+	if ICE_CONFIG[target.itemid] then -- ice blocks
+		local ice = ICE_CONFIG[target.itemid]
+		if math.random(1, 100000) <= ice.chance then
+			if ice.newItem == 7446 then
+				player:addAchievement("Ice Sculptor")
+				player:addAchievementProgress("Cold as Ice", 10)
+			end
+			target:remove()
+			Game.createItem(ice.newItem, 1, toPosition)
+			toPosition:sendMagicEffect(CONST_ME_HITAREA)
+		else
+			player:say("The attempt of sculpting failed miserably.", TALKTYPE_MONSTER_SAY)
+			target:remove()
+			toPosition:sendMagicEffect(CONST_ME_HITAREA)
+		end
+		return true
+	end
+
+	if target.itemid == 10426 then -- marble
+		local random = math.random(1, 100000)
+		local added = false
+		for i = 1, #MARBLE_CONFIG do
+			local _skin = MARBLE_CONFIG[i]
+			if random <= _skin.value then
+				local gobletItem = player:addItem(_skin.newItem, 1)
+				if gobletItem then
+					gobletItem:setDescription(_skin.desc:gsub("|PLAYERNAME|", player:getName()))
+				end
+				if _skin.newItem == 10429 then
+					player:addAchievement("Marblelous")
+					player:addAchievementProgress("Marble Madness", 5)
+				end
+				target:remove()
+				toPosition:sendMagicEffect(CONST_ME_HITAREA)
+				added = true
+				break
+			end
+		end
+		if not added then
+			player:say("Your attempt at shaping that marble rock failed miserably.", TALKTYPE_MONSTER_SAY)
+			target:remove()
+			toPosition:sendMagicEffect(CONST_ME_HITAREA)
+		end
+		return true
+	end
+
+	if target.itemid == 8109 and item.itemid == 5942 then -- blood brother quest
+		local missionItems = {
+			[Storage.Quest.U8_4.BloodBrothers.Mission07] = {id = 8717, name = "Boreth",   next = Storage.Quest.U8_4.BloodBrothers.Mission08},
+			[Storage.Quest.U8_4.BloodBrothers.Mission08] = {id = 8718, name = "Lersatio", next = Storage.Quest.U8_4.BloodBrothers.Mission09},
+			[Storage.Quest.U8_4.BloodBrothers.Mission09] = {id = 8719, name = "Marziel",  next = Storage.Quest.U8_4.BloodBrothers.Mission10},
+			[Storage.Quest.U8_4.BloodBrothers.Mission10] = {id = 8720, name = "Arthei",   next = nil}
+		}
+		for storage, info in pairs(missionItems) do
+			if player:getStorageValue(storage) == 1 and (info.next == nil or player:getStorageValue(info.next) < 1) then
+				player:addItem(info.id, 1)
+				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You got some ounces of " .. info.name .. "'s dust. This should be enough proof that you killed him.")
+				target:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+				return true
+			end
+		end
+	end
+
 	local topItem = false
 	local skin = config[item.itemid][target.itemid]
 	local tile = Tile(toPosition)
@@ -144,12 +209,10 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 				player:addItem(33780, 1)
 			end
 			return true
-			-- Wrath of the emperor quest
-		elseif target.itemid == 11339 then
+		elseif target.itemid == 11339 then -- wrath of the emperor quest
 			target:transform(11331)
 			player:say("You carve a solid bowl of the chunk of wood.", TALKTYPE_MONSTER_SAY)
 			return true
-			-- An Interest In Botany Quest
 		elseif target.itemid == 10735 and player:getItemCount(11699) > 0 and player:getStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline) == 1 then
 			player:say("The plant feels cold but dry and very soft. You streak the plant gently with your knife and put a fragment in the almanach.", TALKTYPE_MONSTER_SAY)
 			player:setStorageValue(Storage.Quest.U8_6.AnInterestInBotany.Questline, 2)
@@ -168,8 +231,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:addItem(954, 1)
 			player:setStorageValue(789100, 2)
 			return true
-		-- Rottin Wood and the Married Men Quest
-		elseif target.itemid == 4301 then
+		elseif target.itemid == 4301 then -- rottin wood and the married men quest
 			player:say("You successfully gathered a rabbit's food in excellent condition.", TALKTYPE_MONSTER_SAY)
 			player:addItem(12172, 1)
 			return true
@@ -181,7 +243,6 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 			player:sendCancelMessage("You already used your knife on the corpse.")
 			return true
 		end
-
 		player:setStorageValue(Storage.Quest.U8_2.TheMutatedPumpkin.Skinned, os.time() + 4 * 60 * 60)
 		player:say("Happy Halloween!", TALKTYPE_MONSTER_SAY)
 		player:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
@@ -202,7 +263,7 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		local charmCorpse = charmMType:getCorpseId()
 		if charmCorpse == target.itemid or ItemType(charmCorpse):getDecayId() == target.itemid then
 			local charmChance = player:getCharmChance(CHARM_SCAVENGE)
-			charmChance = (charmChance == 0 and 1 or charmChance) -- Guarantee that the chance will neve be 0
+			charmChance = (charmChance == 0 and 1 or charmChance)
 			chanceRange = chanceRange * charmChance / 100
 		end
 	end
@@ -214,62 +275,28 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 		for i = 1, #skin do
 			_skin = skin[i]
 			if random <= _skin.value then
-				if target.itemid == 10426 then
-					target:getPosition():sendMagicEffect(CONST_ME_HITAREA)
-					local gobletItem = player:addItem(_skin.newItem, _skin.amount or 1)
-					if gobletItem then
-						gobletItem:setDescription(_skin.desc:gsub("|PLAYERNAME|", player:getName()))
-					end
-					if _skin.newItem == 10429 then
-						player:addAchievement("Marblelous")
-						player:addAchievementProgress("Marble Madness", 5)
-					end
-					target:remove()
-					added = true
-				else
-					target:transform(_skin.newItem, _skin.amount or 1)
-					added = true
-				end
+				target:transform(_skin.newItem, _skin.amount or 1)
+				added = true
 				break
 			end
 		end
-
-		if not added and target.itemid == 10426 then
-			effect = CONST_ME_HITAREA
-			player:say("Your attempt at shaping that marble rock failed miserably.", TALKTYPE_MONSTER_SAY)
+		if not added then
 			transform = false
-			target:remove()
 		end
 	elseif random <= skin.value then
-		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
-			if skin.newItem == 7446 then
-				player:addAchievement("Ice Sculptor")
-				player:addAchievementProgress("Cold as Ice", 10)
-			end
-			target:transform(skin.newItem, 1)
-			effect = CONST_ME_HITAREA
-			return true
+		if table.contains({ 5906, 5905 }, skin.newItem) then
+			player:addAchievementProgress("Ashes to Dust", 500)
 		else
-			if table.contains({ 5906, 5905 }, skin.newItem) then
-				player:addAchievementProgress("Ashes to Dust", 500)
-			else
-				player:addAchievementProgress("Skin-Deep", 500)
-			end
-			local container = Container(item:getParent().uid)
-			if fromPosition.x == CONTAINER_POSITION and container:getEmptySlots() ~= 0 then
-				container:addItem(skin.newItem, skin.amount or 1)
-			else
-				player:addItem(skin.newItem, skin.amount or 1)
-			end
+			player:addAchievementProgress("Skin-Deep", 500)
+		end
+		local container = Container(item:getParent().uid)
+		if fromPosition.x == CONTAINER_POSITION and container:getEmptySlots() ~= 0 then
+			container:addItem(skin.newItem, skin.amount or 1)
+		else
+			player:addItem(skin.newItem, skin.amount or 1)
 		end
 	else
-		if isInArray({ 7441, 7442, 7444, 7445 }, target.itemid) then
-			player:say("The attempt of sculpting failed miserably.", TALKTYPE_MONSTER_SAY)
-			effect = CONST_ME_HITAREA
-			target:remove()
-		else
-			effect = CONST_ME_BLOCKHIT
-		end
+		effect = CONST_ME_BLOCKHIT
 	end
 
 	if transform then

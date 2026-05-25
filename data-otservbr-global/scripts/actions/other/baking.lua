@@ -32,6 +32,9 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	elseif item.itemid == 8196 and target.itemid == 3464 then -- baking tray
 		item:transform(item.itemid, item.type - 1)
 		target:transform(8198) -- baking tray with garlic cookie dough on it
+	elseif item.itemid == 3604 and target.itemid == 3464 then -- baking tray
+		item:transform(item.itemid, item.type - 1)
+		target:transform(8020) -- baking tray with cookie dough on it
 	elseif table.contains(oven, target.itemid) then
 		if table.contains({ 6276, 8018 }, item.itemid) then
 			player:addItem(item.itemid + 1, 1) -- cake / chocolate cake
@@ -41,6 +44,9 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			item:transform(item.itemid, item.type - 1)
 		elseif item.itemid == 8198 then -- baking tray with garlic cookie dough on it
 			player:addItem(8199, 12) -- garlic cookies
+			item:transform(3464)
+		elseif item.itemid == 8020 then -- baking tray with cookie dough on it
+			player:addItem(3598, 12) -- cookies
 			item:transform(3464)
 		else
 			item:transform(item.itemid, item.type - 1)
@@ -63,5 +69,5 @@ function baking.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	return true
 end
 
-baking:id(3603, 3604, 3605, 6276, 8018, 8195, 8196, 8198, 30975)
+baking:id(3603, 3604, 3605, 6276, 8018, 8020, 8195, 8196, 8198, 30975)
 baking:register()

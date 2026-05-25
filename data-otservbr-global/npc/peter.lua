@@ -114,6 +114,10 @@ keywordHandler:addKeyword({ "trade quarter" }, StdModule.say, { npcHandler = npc
 keywordHandler:addKeyword({ "quarter" }, StdModule.say, { npcHandler = npcHandler, text = "Count them yourself." })
 keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "You're here. So what?" })
 
+keywordHandler:addKeyword({ "blood crystal" }, StdModule.say, { npcHandler = npcHandler, text = "Listen, I don't get paid enough to chat with citizens. Move on." }, function(player)
+	return player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05) == 1
+end)
+
 npcHandler:setMessage(MESSAGE_FAREWELL, "Goodbye citizen!")
 npcHandler:setMessage(MESSAGE_GREET, "Hello. Unless you have official business here or want to pass the gate, please move on.")
 npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)

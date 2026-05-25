@@ -19,9 +19,11 @@ This file is auto-generated from Canary's C++ Lua bindings. Do not edit it manua
 
 ## VSCode IntelliSense
 
-Install the Lua extension for VSCode and add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.
+Install the Lua extension for VSCode. The repository `.luarc.json` already adds `docs/lua-api` to the Lua workspace library and sets `workspace.preloadFileSize` high enough for `docs/lua-api/lua_api.d.lua`.
 
-On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to update `.vscode/settings.json` automatically.
+On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to also update local `.vscode/settings.json` workspace settings. The helper keeps `.luarc.json` aligned and ignores generated build, cache, Visual Studio, and vcpkg directories through `workspace.ignoreDir`.
+
+For manual setup, add `docs/lua-api` or `docs/lua-api/lua_api.d.lua` to the Lua Language Server workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.
 
 Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.
 

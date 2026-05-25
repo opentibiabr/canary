@@ -2250,8 +2250,12 @@ bool LuaApiDocGenerator::exportMarkdown() const {
 	output << "- `" << docsFilePath("lua_api.json") << "`: structured API metadata for tooling.\n\n";
 	writeMarkdownTypeAliases(output);
 	output << "## VSCode IntelliSense\n\n";
-	output << "Install the Lua extension for VSCode and add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua") << "` to the Lua workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
-	output << "On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to update `.vscode/settings.json` automatically.\n\n";
+	output << "Install the Lua extension for VSCode. The repository `.luarc.json` already adds `" << docsDirectoryPath
+		   << "` to the Lua workspace library and sets `workspace.preloadFileSize` high enough for `" << docsFilePath("lua_api.d.lua") << "`.\n\n";
+	output << "On Windows, run `tools/setup_vscode_lua_api.ps1` from the repository root to also update local `.vscode/settings.json` workspace settings. "
+		   << "The helper keeps `.luarc.json` aligned and ignores generated build, cache, Visual Studio, and vcpkg directories through `workspace.ignoreDir`.\n\n";
+	output << "For manual setup, add `" << docsDirectoryPath << "` or `" << docsFilePath("lua_api.d.lua")
+		   << "` to the Lua Language Server workspace library. Canary updates these files during startup when `generateLuaApiDocs` is enabled in `config.lua`.\n\n";
 	output << "Some signatures are inferred from C++ bindings and may use `any`, `argN`, or `...` until explicit Lua API annotations are added.\n\n";
 	output << "## Manual Signature Hints\n\n";
 	output << "C++ Lua binding handlers and registration lines can override inferred signatures with a `/*** */` block immediately before the handler or `Lua::register*` call. Supported tags are `@class`, `@field`, `@function`, `@overload`, `@param`, and `@return`; functions without docblocks continue to use automatic inference.\n\n";

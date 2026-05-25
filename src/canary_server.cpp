@@ -58,8 +58,8 @@ CanaryServer::CanaryServer(
 #endif
 }
 
-bool CanaryServer::generateLuaApiDocs() const {
-	if (!g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
+bool CanaryServer::generateLuaApiDocs(const bool force) const {
+	if (!force && !g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
 		logger.debug("Lua API documentation generation is disabled.");
 		return true;
 	}
@@ -80,7 +80,7 @@ int CanaryServer::generateLuaApiDocsOnly() {
 
 	try {
 		loadConfigLua();
-		const auto generated = generateLuaApiDocs();
+		const auto generated = generateLuaApiDocs(true);
 		shutdownDocgenRuntime();
 		return generated ? EXIT_SUCCESS : EXIT_FAILURE;
 	} catch (const FailedToInitializeCanary &err) {

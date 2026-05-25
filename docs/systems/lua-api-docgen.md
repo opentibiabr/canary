@@ -22,9 +22,9 @@ powershell -ExecutionPolicy Bypass -File tools/setup_vscode_lua_api.ps1
 
 The script updates the local `.vscode/settings.json` file to include
 `${workspaceFolder}/docs/lua-api` in `Lua.workspace.library`. It also removes
-old Canary Lua API entries that pointed at `docs/lua_api.*`. The settings file
-is ignored by Git, so each developer can run the helper without changing the
-repository.
+old Canary Lua API entries that pointed at the previous root-level generated
+files. The settings file is ignored by Git, so each developer can run the
+helper without changing the repository.
 
 For manual setup, add this to `.vscode/settings.json`:
 
@@ -122,10 +122,12 @@ The Linux release build runs the docgen-only startup mode:
 git diff --exit-code -- docs/lua-api
 ```
 
-This mode loads `config.lua`, runs the Lua API generator, and exits. It must not
-start the game server, validate the datapack, load maps, connect to the
-database, or run runtime smoke tests. The diff check fails if the committed
-files under `docs/lua-api` are stale.
+This mode loads `config.lua`, forces Lua API documentation generation, and
+exits. It still uses `luaApiDocsOutputDirectory`, but it does not skip
+generation if `generateLuaApiDocs` is disabled. It must not start the game
+server, validate the datapack, load maps, connect to the database, or run
+runtime smoke tests. The diff check fails if the committed files under
+`docs/lua-api` are stale.
 
 ### Quality Does Not Regress
 

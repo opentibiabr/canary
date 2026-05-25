@@ -207,11 +207,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 28)
 		elseif stage == 6 then
 			if player:getStorageValue(BB.CastleBook) == 1 and player:getItemCount(28483) >= 1 then
-			npcHandler:say("Ah, you found something! Let me see that book, please?", npc, creature)
-			npcHandler:setTopic(playerId, 28)
-		else
-			npcHandler:say("Have you uncovered more about the dark history of the castle? Keep searching for hidden passages and documents.", npc, creature)
-		end
+				npcHandler:say("Ah, you found something! Let me see that book, please?", npc, creature)
+				npcHandler:setTopic(playerId, 28)
+			else
+				npcHandler:say("Have you uncovered more about the dark history of the castle? Keep searching for hidden passages and documents.", npc, creature)
+			end
 		elseif stage == 7 then
 			npcHandler:say("Impressive. A plant-crazy vampire... didn't think something like that existed. Have you got proof of his death?", npc, creature)
 			npcHandler:setTopic(playerId, 30)
@@ -225,13 +225,11 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:say("You are back! You truly are a hero and a fierce vampire slayer! Have you got proof of Arthei's death?", npc, creature)
 			npcHandler:setTopic(playerId, 33)
 		end
-
 	elseif MsgContains(message, "garlic bread") then
 		if npcHandler:getTopic(playerId) == 2 then
 			npcHandler:say("Well, you need to mix flour with holy water and use that dough on garlic to create a special dough. Bake it like normal bread, but I guarantee that no vampire can eat that. Are you following me?", npc, creature)
 			npcHandler:setTopic(playerId, 3)
 		end
-
 	elseif MsgContains(message, "aaah") then
 		if npcHandler:getTopic(playerId) == 4 then
 			if player:removeItem(8194, 1) then
@@ -242,14 +240,12 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("No, no, you didn't eat it! Vampire Brood! Say '{aaah}' once you have eaten the bread or get out of here instantly!", npc, creature)
 			end
 		end
-
 	elseif message:lower() == "alori mort" then
 		if npcHandler:getTopic(playerId) == 10 then
 			npcHandler:say("Good. Don't play around with the spell, only use it when standing in front of those vampires. Come back and report to me about your progress later.", npc, creature)
 			player:setStorageValue(BB.Mission03, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif MsgContains(message, "armenius") then
 		if npcHandler:getTopic(playerId) == 11 then
 			npcHandler:say("I see... so Armenius is the master, and the spell didn't even cause a scratch on him... Well, that went worse than expected. Let me think for a moment and then ask me about a mission again.", npc, creature)
@@ -307,7 +303,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("Hm. You don't look so sure about that one. You should not report suspects that you did not confirm yourself! Any others?", npc, creature)
 			end
 		end
-
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say("Well, there's one problem. How would I know I can trust you? You might be one of them... hm. Can you think of something really unlikely for a vampire? If you know a way to prove it to me, ask me about your {mission}.", npc, creature)
@@ -517,7 +512,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		end
-
 	elseif message:lower() == "no" then
 		if npcHandler:getTopic(playerId) == 8 then
 			if player:getStorageValue(BB.Cookies.Serafin) == 2 and player:getStorageValue(BB.Cookies.Lisander) == 2 and player:getStorageValue(BB.Cookies.Ortheus) == 2 and player:getStorageValue(BB.Cookies.Maris) == 2 and player:getStorageValue(BB.Cookies.Armenius) == 2 then

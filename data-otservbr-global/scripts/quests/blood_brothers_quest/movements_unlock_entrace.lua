@@ -77,10 +77,18 @@ function crystalSymbols.onStepIn(creature, item, position, fromPosition)
 	local c3 = tile3:getTopCreature()
 	local c4 = tile4:getTopCreature()
 
-	if not c1 or not c1:isPlayer() then return true end
-	if not c2 or not c2:isPlayer() then return true end
-	if not c3 or not c3:isPlayer() then return true end
-	if not c4 or not c4:isPlayer() then return true end
+	if not c1 or not c1:isPlayer() then
+		return true
+	end
+	if not c2 or not c2:isPlayer() then
+		return true
+	end
+	if not c3 or not c3:isPlayer() then
+		return true
+	end
+	if not c4 or not c4:isPlayer() then
+		return true
+	end
 
 	local players = { Player(c1), Player(c2), Player(c3), Player(c4) }
 

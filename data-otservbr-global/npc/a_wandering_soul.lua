@@ -59,7 +59,7 @@ end
 
 local function greetCallback(npc, creature)
 	local player = Player(creature)
-	
+
 	local missionStatus = player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission05)
 	if missionStatus >= 2 and player:getItemCount(8453) >= 1 then
 		npcHandler:setMessage(MESSAGE_GREET, "I saw you... who are you... what do you want from me...?")
@@ -68,7 +68,7 @@ local function greetCallback(npc, creature)
 	else
 		npcHandler:setMessage(MESSAGE_GREET, "Is that you...? No... it's not... she never woke up again... the pain... cursed... to wander... Leave me alone in my mourning...")
 	end
-	
+
 	return true
 end
 
@@ -89,7 +89,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:removeItem(8453, 1)
 				player:addItem(8225, 1)
 				if not player:hasAchievement("Ghostwhisperer") then
-				player:addAchievement("Ghostwhisperer")
+					player:addAchievement("Ghostwhisperer")
 				end
 			else
 				npcHandler:say("You speak of a crystal, but you do not carry one that needs my energy.", npc, creature)

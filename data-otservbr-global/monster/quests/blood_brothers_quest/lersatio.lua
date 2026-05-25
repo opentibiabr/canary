@@ -78,14 +78,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, minCount = 1, maxCount = 100}, -- gold coin
-	{ id = 3035, chance = 9740, minCount = 0, maxCount = 5}, -- platinum coin
-	{ id = 11449, chance = 89580}, -- blood preservation
-	{ id = 236, chance = 23660}, -- strong health potion
-	{ id = 3098, chance = 11000}, -- ring of healing
-	{ id = 3027, chance = 1850}, -- black pearl
-	{ id = 3434, chance = 580}, -- vampire shield
-	{ id = 7419, chance = 490}, -- dreaded cleaver
+	{ id = 3031, chance = 100000, minCount = 1, maxCount = 100 }, -- gold coin
+	{ id = 3035, chance = 9740, minCount = 0, maxCount = 5 }, -- platinum coin
+	{ id = 11449, chance = 89580 }, -- blood preservation
+	{ id = 236, chance = 23660 }, -- strong health potion
+	{ id = 3098, chance = 11000 }, -- ring of healing
+	{ id = 3027, chance = 1850 }, -- black pearl
+	{ id = 3434, chance = 580 }, -- vampire shield
+	{ id = 7419, chance = 490 }, -- dreaded cleaver
 }
 
 monster.attacks = {

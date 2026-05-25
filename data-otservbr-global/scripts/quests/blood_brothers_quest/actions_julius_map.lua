@@ -13,57 +13,55 @@ local locations = {
 	{
 		name = "Black Gap",
 		from = Position(32943, 31517, 7),
-		to   = Position(32951, 31524, 7),
+		to = Position(32951, 31524, 7),
 		markStorage = STORAGE_MARK_BLACKGAP,
 	},
 	{
 		name = "Bone Totems",
 		from = Position(32940, 31492, 7),
-		to   = Position(32944, 31496, 7),
+		to = Position(32944, 31496, 7),
 		markStorage = STORAGE_MARK_BONETOTEMS,
 	},
 	{
 		name = "Haunted Ruins",
 		from = Position(32911, 31487, 7),
-		to   = Position(32916, 31492, 7),
+		to = Position(32916, 31492, 7),
 		markStorage = STORAGE_MARK_HAUNTED,
 	},
 	{
 		name = "Lonely Grave",
 		from = Position(32902, 31468, 7),
-		to   = Position(32906, 31470, 7),
+		to = Position(32906, 31470, 7),
 		markStorage = STORAGE_MARK_LONELYGRAVE,
 	},
 	{
 		name = "Burning Trees",
 		from = Position(32880, 31497, 7),
-		to   = Position(32884, 31502, 7),
+		to = Position(32884, 31502, 7),
 		markStorage = STORAGE_MARK_BURNINGTREES,
 	},
 	{
 		name = "Old Shrine",
 		from = Position(32932, 31561, 4),
-		to   = Position(32934, 31563, 4),
+		to = Position(32934, 31563, 4),
 		markStorage = STORAGE_MARK_OLDSHRINE,
 	},
 	{
 		name = "Castle Garden",
 		from = Position(32963, 31495, 6),
-		to   = Position(32966, 31498, 6),
+		to = Position(32966, 31498, 6),
 		markStorage = STORAGE_MARK_CASTLEGARDEN,
 	},
 	{
 		name = "Castle Entrance",
 		from = Position(32951, 31486, 6),
-		to   = Position(32955, 31488, 6),
+		to = Position(32955, 31488, 6),
 		markStorage = STORAGE_CASTLE_ENTRANCE,
 	},
 }
 
 local function isInsideZone(pos, from, to)
-	return pos.x >= from.x and pos.x <= to.x
-		and pos.y >= from.y and pos.y <= to.y
-		and pos.z == from.z
+	return pos.x >= from.x and pos.x <= to.x and pos.y >= from.y and pos.y <= to.y and pos.z == from.z
 end
 
 local function getLocationForPlayer(playerPos)

@@ -77,7 +77,7 @@ monster.voices = {
 	{ text = "One day I will see my pretty face in a mirror again.", yell = false },
 }
 
-monster.loot = { }
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -400 },

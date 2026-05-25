@@ -69,40 +69,40 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif message:lower() == "alori mort" and player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 1 or player:getStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03) == 2 then
-	if npcHandler:getTopic(playerId) == 0 then
-		npcHandler:say("Stop mumbling and don't bug me.", npc, creature)
-		npcHandler:setTopic(playerId, 2)
-	elseif npcHandler:getTopic(playerId) == 2 then
-		npcHandler:say("There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost.", npc, creature)
-		npcHandler:setTopic(playerId, 3)
-	elseif npcHandler:getTopic(playerId) == 3 then
-		npcHandler:say("Whatever that's supposed to mean.", npc, creature)
-		npcHandler:setTopic(playerId, 4)
-	elseif npcHandler:getTopic(playerId) == 4 then
-		npcHandler:say({
-			"...... ...... ...",
-			"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!",
-		}, npc, creature)
-		npcHandler:setTopic(playerId, 5)
-	elseif npcHandler:getTopic(playerId) == 5 then
-		local rand = math.random(3)
-		if rand == 1 then
-			npcHandler:setMessage(MESSAGE_WALKAWAY, "Oh, the nerve. Go to the rats which raised you.")
-			player:teleportTo(Position(32759, 31241, 9))
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-		elseif rand == 2 then
-			npcHandler:setMessage(MESSAGE_WALKAWAY, "You dare say that again?! I'll send you straight to your grave!")
-			player:teleportTo(Position(32856, 31324, 8))
-			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
-			Game.createMonster("Armenius", Position(32857, 31324, 8))
-			if not player:hasAchievement("His True Face") then
-				player:addAchievement("His True Face")
+		if npcHandler:getTopic(playerId) == 0 then
+			npcHandler:say("Stop mumbling and don't bug me.", npc, creature)
+			npcHandler:setTopic(playerId, 2)
+		elseif npcHandler:getTopic(playerId) == 2 then
+			npcHandler:say("There's something about these words which makes me feel awkward. Or maybe it's you who causes that feeling. You better get lost.", npc, creature)
+			npcHandler:setTopic(playerId, 3)
+		elseif npcHandler:getTopic(playerId) == 3 then
+			npcHandler:say("Whatever that's supposed to mean.", npc, creature)
+			npcHandler:setTopic(playerId, 4)
+		elseif npcHandler:getTopic(playerId) == 4 then
+			npcHandler:say({
+				"...... ...... ...",
+				"HAHAHAHAHA! What the... HAHAHAHA! Come on, say it again, just because it's so funny - and then I'll get rid of you, little mouse!",
+			}, npc, creature)
+			npcHandler:setTopic(playerId, 5)
+		elseif npcHandler:getTopic(playerId) == 5 then
+			local rand = math.random(3)
+			if rand == 1 then
+				npcHandler:setMessage(MESSAGE_WALKAWAY, "Oh, the nerve. Go to the rats which raised you.")
+				player:teleportTo(Position(32759, 31241, 9))
+				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+			elseif rand == 2 then
+				npcHandler:setMessage(MESSAGE_WALKAWAY, "You dare say that again?! I'll send you straight to your grave!")
+				player:teleportTo(Position(32856, 31324, 8))
+				player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+				Game.createMonster("Armenius", Position(32857, 31324, 8))
+				if not player:hasAchievement("His True Face") then
+					player:addAchievement("His True Face")
+				end
+			else
+				npcHandler:say("Oh, the nerve. Sod off.", npc, creature)
 			end
-		else
-			npcHandler:say("Oh, the nerve. Sod off.", npc, creature)
+			player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03, 2)
 		end
-		player:setStorageValue(Storage.Quest.U8_4.BloodBrothers.Mission03, 2)
-	end
 	end
 end
 -- Basic

@@ -84,9 +84,9 @@ local config = {
 
 		-- The Mutated Pumpkin
 		[12816] = {
-			{ value = 5000,  newItem = 8032 }, -- spiderwebs
-			{ value = 5000,  newItem = 8178 }, -- toy spider
-			{ value = 5000,  newItem = 6491 }, -- bat decoration
+			{ value = 5000, newItem = 8032 }, -- spiderwebs
+			{ value = 5000, newItem = 8178 }, -- toy spider
+			{ value = 5000, newItem = 6491 }, -- bat decoration
 			{ value = 20000, newItem = 6525 }, -- skeleton decoration
 			{ value = 90000, newItem = 8177, amount = 20 }, -- yummy gummy worm
 			{ value = 10000, newItem = 6571 }, -- surprise bag (red)
@@ -96,7 +96,7 @@ local config = {
 			{ value = 45000, newItem = 3594 }, -- pumpkin
 			{ value = 90000, newItem = 3599, amount = 50 }, -- candy cane
 			{ value = 90000, newItem = 6569, amount = 50 }, -- candy
-			{ value = 2000,  newItem = 6574, amount = 50 }, -- bar of chocolate
+			{ value = 2000, newItem = 6574, amount = 50 }, -- bar of chocolate
 		},
 	},
 	[5942] = {
@@ -119,7 +119,6 @@ local config = {
 local skinning = Action()
 
 function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-
 	if ICE_CONFIG[target.itemid] then -- ice blocks
 		local ice = ICE_CONFIG[target.itemid]
 		if math.random(1, 100000) <= ice.chance then
@@ -168,10 +167,10 @@ function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey
 
 	if target.itemid == 8109 and item.itemid == 5942 then -- blood brother quest
 		local missionItems = {
-			[Storage.Quest.U8_4.BloodBrothers.Mission07] = {id = 8717, name = "Boreth",   next = Storage.Quest.U8_4.BloodBrothers.Mission08},
-			[Storage.Quest.U8_4.BloodBrothers.Mission08] = {id = 8718, name = "Lersatio", next = Storage.Quest.U8_4.BloodBrothers.Mission09},
-			[Storage.Quest.U8_4.BloodBrothers.Mission09] = {id = 8719, name = "Marziel",  next = Storage.Quest.U8_4.BloodBrothers.Mission10},
-			[Storage.Quest.U8_4.BloodBrothers.Mission10] = {id = 8720, name = "Arthei",   next = nil}
+			[Storage.Quest.U8_4.BloodBrothers.Mission07] = { id = 8717, name = "Boreth", next = Storage.Quest.U8_4.BloodBrothers.Mission08 },
+			[Storage.Quest.U8_4.BloodBrothers.Mission08] = { id = 8718, name = "Lersatio", next = Storage.Quest.U8_4.BloodBrothers.Mission09 },
+			[Storage.Quest.U8_4.BloodBrothers.Mission09] = { id = 8719, name = "Marziel", next = Storage.Quest.U8_4.BloodBrothers.Mission10 },
+			[Storage.Quest.U8_4.BloodBrothers.Mission10] = { id = 8720, name = "Arthei", next = nil },
 		}
 		for storage, info in pairs(missionItems) do
 			if player:getStorageValue(storage) == 1 and (info.next == nil or player:getStorageValue(info.next) < 1) then

@@ -61,7 +61,7 @@ environment variables, test account, and troubleshooting guide.
 
 - [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
 - [System documentation](docs/systems/README.md).
-- [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md). Canary generates these files from the C++ Lua bindings during startup when `generateLuaApiDocs` is enabled. For VSCode autocomplete, run `tools/setup_vscode_lua_api.ps1` or add `docs/lua-api` to the Lua Language Server workspace library.
+- [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md). Canary generates these files from the C++ Lua bindings during startup when `generateLuaApiDocs` is enabled. The repository `.luarc.json` already adds `docs/lua-api` to the Lua Language Server workspace library; for VSCode workspace settings, run `tools/setup_vscode_lua_api.ps1`.
 
 ---
 

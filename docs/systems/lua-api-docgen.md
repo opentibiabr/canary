@@ -20,13 +20,17 @@ Install the `Lua` extension for VSCode, then run this from the repository root:
 powershell -ExecutionPolicy Bypass -File tools/setup_vscode_lua_api.ps1
 ```
 
-The script updates the local `.vscode/settings.json` file to include
-`${workspaceFolder}/docs/lua-api` in `Lua.workspace.library`. It also removes
-old Canary Lua API entries that pointed at the previous root-level generated
-files. The settings file is ignored by Git, so each developer can run the
-helper without changing the repository.
+The repository `.luarc.json` already includes `docs/lua-api` in
+`workspace.library` and sets `workspace.preloadFileSize` high enough for
+`lua_api.d.lua`. The script still updates the local `.vscode/settings.json`
+file to include `${workspaceFolder}/docs/lua-api` in `Lua.workspace.library`.
+If `.luarc.json` exists, it also keeps that project configuration aligned,
+because LuaLS reads `.luarc.json` as project configuration and those settings
+do not use the `Lua.` prefix. The helper also keeps generated build, cache,
+Visual Studio, and vcpkg directories in `workspace.ignoreDir` so LuaLS does not
+scan unrelated LuaJIT/vcpkg files.
 
-For manual setup, add this to `.vscode/settings.json`:
+For manual VSCode workspace setup, add this to `.vscode/settings.json`:
 
 ```json
 {
@@ -34,6 +38,16 @@ For manual setup, add this to `.vscode/settings.json`:
     "${workspaceFolder}/docs/lua-api"
   ],
   "Lua.workspace.checkThirdParty": false
+}
+```
+
+For manual project setup in `.luarc.json`, use unprefixed LuaLS keys:
+
+```json
+{
+  "workspace.library": ["docs/lua-api"],
+  "workspace.preloadFileSize": 1000,
+  "workspace.checkThirdParty": false
 }
 ```
 

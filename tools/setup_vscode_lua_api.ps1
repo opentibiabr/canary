@@ -5,14 +5,33 @@ Configures VSCode Lua Language Server to use Canary's generated Lua API stubs.
 .DESCRIPTION
 Run this script from the repository root. It updates the local
 .vscode/settings.json file so LuaLS reads docs/lua-api/lua_api.d.lua through
-the workspace library. The settings file is ignored by Git, so this affects only
-the current checkout.
+the workspace library. If the repository has a .luarc.json file, the script also
+updates that project configuration because LuaLS gives it priority over VSCode
+settings.
 #>
 
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
     [string]$SettingsPath = ".vscode/settings.json",
-    [string]$LuaApiLibraryPath = '${workspaceFolder}/docs/lua-api'
+    [string]$LuaRcPath = ".luarc.json",
+    [string]$LuaApiLibraryPath = '${workspaceFolder}/docs/lua-api',
+    [string]$LuaRcLibraryPath = "docs/lua-api",
+    [string[]]$LuaRcIgnoreDirectories = @(
+        ".git",
+        ".vs",
+        "artifacts",
+        "build",
+        "cache",
+        "cmake-build-*",
+        "database_backup",
+        "logs",
+        "Release",
+        "RelWithDebInfo",
+        "Testing",
+        "vcproj",
+        "vcpkg_installed"
+    ),
+    [int]$MinimumPreloadFileSizeKb = 1000
 )
 
 Set-StrictMode -Version 2.0
@@ -158,28 +177,111 @@ function Remove-LegacyEntries {
     return ,$result.ToArray()
 }
 
-$repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
-$fullSettingsPath = if ([System.IO.Path]::IsPathRooted($SettingsPath)) {
-    $SettingsPath
-} else {
-    Join-Path $repoRoot $SettingsPath
+function Resolve-RepositoryPath {
+    param(
+        [string]$RepoRoot,
+        [string]$Path
+    )
+
+    if ([System.IO.Path]::IsPathRooted($Path)) {
+        return $Path
+    }
+
+    return Join-Path $RepoRoot $Path
 }
 
+function Read-JsonSettings {
+    param([string]$Path)
+
+    if (-not (Test-Path $Path)) {
+        return [ordered]@{}
+    }
+
+    $rawJson = Get-Content -Raw -Path $Path
+    if ([string]::IsNullOrWhiteSpace($rawJson)) {
+        return [ordered]@{}
+    }
+
+    $json = Remove-JsonComments $rawJson
+    $json = [regex]::Replace($json, ",(\s*[\]}])", '$1')
+    return ConvertTo-OrderedHashtable ($json | ConvertFrom-Json)
+}
+
+function Set-LibrarySetting {
+    param(
+        [System.Collections.IDictionary]$Settings,
+        [string]$Key,
+        [string]$LibraryPath,
+        [string[]]$LegacyPaths
+    )
+
+    $libraryEntries = Remove-LegacyEntries (Get-ArraySetting $Settings $Key) $LegacyPaths
+    $library = [System.Collections.Generic.List[object]]::new()
+    foreach ($entry in $libraryEntries) {
+        $library.Add($entry)
+    }
+
+    Add-UniqueString $library $LibraryPath
+    $Settings[$Key] = @($library)
+}
+
+function Set-MinimumIntegerSetting {
+    param(
+        [System.Collections.IDictionary]$Settings,
+        [string]$Key,
+        [int]$Minimum
+    )
+
+    if (-not $Settings.Contains($Key) -or $null -eq $Settings[$Key]) {
+        $Settings[$Key] = $Minimum
+        return
+    }
+
+    $current = 0
+    if (-not [int]::TryParse([string]$Settings[$Key], [ref]$current) -or $current -lt $Minimum) {
+        $Settings[$Key] = $Minimum
+    }
+}
+
+function Set-StringArraySetting {
+    param(
+        [System.Collections.IDictionary]$Settings,
+        [string]$Key,
+        [string[]]$Values
+    )
+
+    $entries = Get-ArraySetting $Settings $Key
+    $updated = [System.Collections.Generic.List[object]]::new()
+    foreach ($entry in $entries) {
+        $updated.Add($entry)
+    }
+
+    foreach ($value in $Values) {
+        Add-UniqueString $updated $value
+    }
+
+    $Settings[$Key] = @($updated)
+}
+
+function Write-JsonSettings {
+    param(
+        [System.Collections.IDictionary]$Settings,
+        [string]$Path
+    )
+
+    $jsonOutput = ($Settings | ConvertTo-Json -Depth 20)
+    $jsonOutput = $jsonOutput.TrimEnd() + [Environment]::NewLine
+    Set-Content -Path $Path -Value $jsonOutput -Encoding UTF8
+}
+
+$repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..")
+$fullSettingsPath = Resolve-RepositoryPath $repoRoot $SettingsPath
 $settingsDirectory = Split-Path -Parent $fullSettingsPath
 if (-not (Test-Path $settingsDirectory)) {
     New-Item -ItemType Directory -Path $settingsDirectory | Out-Null
 }
 
-$settings = [ordered]@{}
-if (Test-Path $fullSettingsPath) {
-    $rawJson = Get-Content -Raw -Path $fullSettingsPath
-    if (-not [string]::IsNullOrWhiteSpace($rawJson)) {
-        $json = Remove-JsonComments $rawJson
-        $json = [regex]::Replace($json, ",(\s*[\]}])", '$1')
-        $settings = ConvertTo-OrderedHashtable ($json | ConvertFrom-Json)
-    }
-}
-
+$settings = Read-JsonSettings $fullSettingsPath
 $legacyLibraryPaths = @(
     "./docs/lua_api.lua",
     "docs/lua_api.lua",
@@ -189,13 +291,7 @@ $legacyLibraryPaths = @(
     '${workspaceFolder}/docs/lua-api/lua_api.lua'
 )
 
-$libraryEntries = Remove-LegacyEntries (Get-ArraySetting $settings "Lua.workspace.library") $legacyLibraryPaths
-$library = [System.Collections.Generic.List[object]]::new()
-foreach ($entry in $libraryEntries) {
-    $library.Add($entry)
-}
-Add-UniqueString $library $LuaApiLibraryPath
-$settings["Lua.workspace.library"] = @($library)
+Set-LibrarySetting $settings "Lua.workspace.library" $LuaApiLibraryPath $legacyLibraryPaths
 
 $legacyRuntimePluginPaths = @(
     "./docs/lua_api.json",
@@ -219,13 +315,30 @@ if (-not $settings.Contains("Lua.workspace.checkThirdParty")) {
     $settings["Lua.workspace.checkThirdParty"] = $false
 }
 
-$jsonOutput = ($settings | ConvertTo-Json -Depth 20)
-$jsonOutput = $jsonOutput.TrimEnd() + [Environment]::NewLine
-
 if ($PSCmdlet.ShouldProcess($fullSettingsPath, "Update VSCode LuaLS settings")) {
-    Set-Content -Path $fullSettingsPath -Value $jsonOutput -Encoding UTF8
+    Write-JsonSettings $settings $fullSettingsPath
+}
+
+$updatedLuaRc = $false
+$fullLuaRcPath = Resolve-RepositoryPath $repoRoot $LuaRcPath
+if (Test-Path $fullLuaRcPath) {
+    $luaRcSettings = Read-JsonSettings $fullLuaRcPath
+    Set-LibrarySetting $luaRcSettings "workspace.library" $LuaRcLibraryPath $legacyLibraryPaths
+    Set-MinimumIntegerSetting $luaRcSettings "workspace.preloadFileSize" $MinimumPreloadFileSizeKb
+    Set-StringArraySetting $luaRcSettings "workspace.ignoreDir" $LuaRcIgnoreDirectories
+    if (-not $luaRcSettings.Contains("workspace.checkThirdParty")) {
+        $luaRcSettings["workspace.checkThirdParty"] = $false
+    }
+
+    if ($PSCmdlet.ShouldProcess($fullLuaRcPath, "Update LuaLS project settings")) {
+        Write-JsonSettings $luaRcSettings $fullLuaRcPath
+    }
+    $updatedLuaRc = $true
 }
 
 Write-Host "VSCode Lua API library configured: $LuaApiLibraryPath"
 Write-Host "Settings file: $SettingsPath"
+if ($updatedLuaRc) {
+    Write-Host "LuaLS project config updated: $LuaRcPath"
+}
 Write-Host "Install the VSCode Lua extension if it is not installed."

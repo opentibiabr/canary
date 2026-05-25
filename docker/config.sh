@@ -57,6 +57,45 @@ verify_file "$lua_file" "lua"
 while IFS='=' read -r key value; do
   if [[ "$key" != "#"* && "$key" != "" ]]; then
     case $key in
+      CANARY_DB_HOST)
+        substitute_lua_variable "mysqlHost" "$value"
+        ;;
+      CANARY_DB_NAME)
+        substitute_lua_variable "mysqlDatabase" "$value"
+        ;;
+      CANARY_DB_USER)
+        substitute_lua_variable "mysqlUser" "$value"
+        ;;
+      CANARY_DB_PASSWORD)
+        substitute_lua_variable "mysqlPass" "$value"
+        ;;
+      CANARY_DB_PORT)
+        substitute_lua_variable "mysqlPort" "$value"
+        ;;
+      CANARY_SERVER_NAME)
+        substitute_lua_variable "serverName" "$value"
+        ;;
+      CANARY_SERVER_IP)
+        substitute_lua_variable "ip" "$value"
+        ;;
+      CANARY_LOGIN_PORT)
+        substitute_lua_variable "loginProtocolPort" "$value"
+        ;;
+      CANARY_GAME_PORT)
+        substitute_lua_variable "gameProtocolPort" "$value"
+        ;;
+      CANARY_STATUS_PORT)
+        substitute_lua_variable "statusProtocolPort" "$value"
+        ;;
+      CANARY_STATUS_TIMEOUT)
+        substitute_lua_variable "statusTimeout" "$value"
+        ;;
+      CANARY_DATA_PACK)
+        substitute_lua_variable "dataPackDirectory" "$value"
+        ;;
+      CANARY_MAP_URL)
+        substitute_lua_variable "mapDownloadUrl" "$value"
+        ;;
       MYSQL_HOST)
         substitute_lua_variable "mysqlHost" "$value"
         ;;
@@ -88,9 +127,11 @@ done < "$env_file"
 # # Substitutes other variables provided as command line arguments
 args=("$@")
 for ((i=0; i<${#args[@]}; i+=2)); do
-  if [[ "${args[i]}" != "--file" ]]; then
-    variable_name="${args[i]}"
-    new_value="${args[i+1]}"
-    substitute_lua_variable "$variable_name" "$new_value"
+  if [[ "${args[i]}" == "--file" || "${args[i]}" == "--env" ]]; then
+    continue
   fi
+
+  variable_name="${args[i]}"
+  new_value="${args[i+1]}"
+  substitute_lua_variable "$variable_name" "$new_value"
 done

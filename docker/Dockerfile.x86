@@ -120,7 +120,7 @@ WORKDIR /canary
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 	--mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
 	apt-get update && apt-get install -y --no-install-recommends \
-	mariadb-client curl tzdata \
+	mariadb-client curl ca-certificates tzdata \
 	&& ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
 	&& echo "${TZ}" > /etc/timezone \
 	&& apt-get clean \
@@ -128,6 +128,6 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
 
 COPY docker/data/01-test_account.sql 01-test_account.sql
 COPY docker/data/02-test_account_players.sql 02-test_account_players.sql
-COPY docker/data/start.sh start.sh
+COPY --chmod=755 docker/data/start.sh start.sh
 
 ENTRYPOINT ["/canary/start.sh"]

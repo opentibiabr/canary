@@ -1,0 +1,37 @@
+# Git and editor metadata
+.git
+.github
+.vs
+.vscode
+
+# Local build trees and dependency caches
+artifacts/
+build/
+build-*/
+cache/
+Release/
+RelWithDebInfo/
+Testing/
+vcpkg_installed/
+
+# Local runtime output
+database_backup/
+logs/
+*.err.log
+*.out.log
+*.log
+
+# Local/generated binaries from Windows builds
+*.dll
+*.exe
+*.exp
+*.lib
+*.pdb
+
+# Local configuration and scratch files
+config.lua
+apply.patch
+
+# Keep the runtime image lighter. The entrypoint downloads this map on first run
+# through CANARY_MAP_URL when data-otservbr-global is selected.
+data-otservbr-global/world/otservbr.otbm

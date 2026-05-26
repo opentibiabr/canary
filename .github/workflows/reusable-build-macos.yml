@@ -18,17 +18,10 @@ jobs:
     name: Compile (macOS)
     runs-on: macos-latest
     env:
-      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite"
+      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'readwrite' || 'read' }}"
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v8
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Get vcpkg baseline
         shell: bash
@@ -143,6 +136,7 @@ jobs:
 
       - name: Upload runtime smoke logs
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: macos-runtime-smoke-logs
@@ -156,7 +150,7 @@ jobs:
           path: build/macos-release
 
       - name: Verify vcpkg binary cache push
-        if: success() && ((github.event.pull_request != null && github.event.pull_request.head.repo.full_name == github.repository) || (github.event_name == 'push' && github.ref == 'refs/heads/main'))
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail

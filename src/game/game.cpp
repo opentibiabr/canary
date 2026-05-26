@@ -70,6 +70,26 @@
 
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
+namespace {
+	std::shared_ptr<Npc> getInteractableShopOwner(const std::shared_ptr<Player> &player) {
+		if (!player) {
+			return nullptr;
+		}
+
+		auto merchant = player->getShopOwner();
+		if (!merchant) {
+			return nullptr;
+		}
+
+		if (merchant->canInteract(player->getPosition())) {
+			return merchant;
+		}
+
+		[[maybe_unused]] const auto shopClosed = player->closeShopWindow();
+		return nullptr;
+	}
+}
+
 namespace InternalGame {
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
@@ -1154,7 +1174,7 @@ bool Game::internalPlaceCreature(const std::shared_ptr<Creature> &creature, cons
 		return false;
 	}
 
-	if (!map.placeCreature(pos, creature, extendedPos, forced)) {
+	if (!map.placeCreature(pos, creature, extendedPos, forced, tile)) {
 		return false;
 	}
 
@@ -4595,7 +4615,7 @@ void Game::playerMoveUpContainer(uint32_t playerId, uint8_t cid) {
 }
 
 void Game::playerUpdateContainer(uint32_t playerId, uint8_t cid) {
-	const auto &player = getPlayerByGUID(playerId);
+	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
 	}
@@ -5731,7 +5751,7 @@ void Game::playerBuyItem(uint32_t playerId, uint16_t itemId, uint8_t count, uint
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
 		return;
 	}
@@ -5787,7 +5807,7 @@ void Game::playerSellItem(uint32_t playerId, uint16_t itemId, uint8_t count, uin
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
 		return;
 	}
@@ -5826,7 +5846,7 @@ void Game::playerLookInShop(uint32_t playerId, uint16_t itemId, uint8_t count) {
 		return;
 	}
 
-	std::shared_ptr<Npc> merchant = player->getShopOwner();
+	const auto &merchant = getInteractableShopOwner(player);
 	if (!merchant) {
 		return;
 	}

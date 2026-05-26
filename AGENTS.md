@@ -22,6 +22,42 @@
 - Do not mix unrelated changes in the same commit unless the user explicitly asks for a single combined commit.
 - Before amending or rebasing commits that may already be pushed, check the remote state and prefer `--force-with-lease` when a rewrite is explicitly approved.
 
+## Build Policy
+
+- Compile when the change is critical, complex, or likely to break compilation. For small documentation, script, or clearly non-build-affecting changes, avoid builds unless they add real validation value.
+- When compiling, prioritize the correct known workflow below instead of guessing commands or creating new build trees, to avoid wasting time on environment or cache mistakes.
+- Before building on Windows, inspect the repository build entry points instead of guessing:
+  - Check `CMakePresets.json` and `CMakeLists.txt`.
+  - Check whether Visual Studio solutions exist, such as `vcproj/*.sln` or generated `build/**/*.sln`.
+  - Check whether a CMake cache already exists under `build/<preset>`.
+- Prefer the CMake preset workflow over Visual Studio solution builds unless the user explicitly asks for the solution path or the preset is unusable.
+- Prefer the release preset for normal local validation because it uses the intended cache and unity settings. The default Windows server build path is:
+
+```bat
+cmake --preset windows-release
+cmake --build --preset windows-release --target canary
+```
+
+- On Windows, prefer running the CMake commands from the Visual Studio Developer Command Prompt or Developer PowerShell. That environment is the expected reliable build environment because it already prepares the MSVC compiler, Windows SDK, CMake tools, Ninja, and the required environment variables.
+- If the shell is not already a Visual Studio developer environment, initialize it with `VsDevCmd.bat` before configuring or building. `cl.exe` and Ninja must be available in `PATH` before running CMake.
+- If Ninja is not in `PATH`, use the Ninja bundled with the Visual Studio CMake tools instead of changing generators or creating another build tree.
+- Treat these files/directories as signs of an active CMake/Ninja cache: `CMakeCache.txt`, `CMakeFiles/`, `build.ninja`, `.ninja_deps`, `.ninja_log`, `cmake_install.cmake`, `compile_commands.json`, `vcpkg-manifest-install.log`, and `VSInheritEnvironments.txt`.
+- If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
+- Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
+
+## Docker Quickstart Policy
+
+- The Docker quickstart is intended for non-expert users to run a local Canary stack with minimal setup.
+- Keep CI/build Docker, local development Docker, and user-facing quickstart Docker as separate responsibilities unless a change explicitly documents why they must overlap.
+- `docker/docker-compose.yml` must keep `login-server` as the default client login webservice.
+- Do not point clients to MyAAC `login.php`.
+- The MyAAC quickstart image must not include or expose `login.php`; MyAAC is used only as the website/admin AAC.
+- The default client login URL is `http://localhost:8088/login`.
+- The default web/admin URL is `http://localhost:8080`.
+- MyAAC must build from the `slawkens/myaac` `develop` branch unless a compatibility reason is documented.
+- Public Docker env vars for Canary should use the `CANARY_*` prefix. Avoid adding new public `MYSQL_*`, `OT_*`, or raw Lua config variable names.
+- The quickstart must not require compiling Canary locally; use the published Canary runtime image.
+
 ## PR Communication Policy
 
 - Do not post any PR comments/reviews automatically.

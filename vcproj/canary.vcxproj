@@ -39,6 +39,7 @@
     <ClInclude Include="..\src\creatures\players\grouping\party.hpp" />
     <ClInclude Include="..\src\creatures\players\grouping\team_finder.hpp" />
     <ClInclude Include="..\src\creatures\players\imbuements\imbuements.hpp" />
+    <ClInclude Include="..\src\creatures\players\livestream\livestream.hpp" />
     <ClInclude Include="..\src\creatures\players\management\ban.hpp" />
     <ClInclude Include="..\src\creatures\players\management\waitlist.hpp" />
     <ClInclude Include="..\src\creatures\players\storages\storages.hpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="..\src\lua\creature\movement.hpp" />
     <ClInclude Include="..\src\lua\creature\raids.hpp" />
     <ClInclude Include="..\src\lua\creature\talkaction.hpp" />
+    <ClInclude Include="..\src\lua\docgen\lua_api_doc_generator.hpp" />
     <ClInclude Include="..\src\lua\functions\core\core_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\config_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
@@ -207,6 +209,7 @@
     <ClInclude Include="..\src\map\house\house.hpp" />
     <ClInclude Include="..\src\map\house\housetile.hpp" />
     <ClInclude Include="..\src\map\map.hpp" />
+    <ClInclude Include="..\src\map\map_download.hpp" />
     <ClInclude Include="..\src\map\mapcache.hpp" />
     <ClInclude Include="..\src\map\map_const.hpp" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
@@ -265,6 +268,7 @@
     <ClCompile Include="..\src\creatures\players\grouping\guild.cpp" />
     <ClCompile Include="..\src\creatures\players\grouping\party.cpp" />
     <ClCompile Include="..\src\creatures\players\imbuements\imbuements.cpp" />
+    <ClCompile Include="..\src\creatures\players\livestream\livestream.cpp" />
     <ClCompile Include="..\src\creatures\players\management\ban.cpp" />
     <ClCompile Include="..\src\creatures\players\management\waitlist.cpp" />
     <ClCompile Include="..\src\creatures\players\storages\storages.cpp" />
@@ -346,6 +350,7 @@
     <ClCompile Include="..\src\lua\creature\movement.cpp" />
     <ClCompile Include="..\src\lua\creature\raids.cpp" />
     <ClCompile Include="..\src\lua\creature\talkaction.cpp" />
+    <ClCompile Include="..\src\lua\docgen\lua_api_doc_generator.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\batch_update_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
@@ -412,6 +417,7 @@
     <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
     <ClCompile Include="..\src\map\utils\mapsector.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
+    <ClCompile Include="..\src\map\map_download.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
@@ -498,11 +504,17 @@
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)-sln-dbg</TargetName>
+    <LocalDebuggerCommand>$(ProjectDir)..\$(TargetName)$(TargetExt)</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\src;$(IncludePath)</IncludePath>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)-sln</TargetName>
+    <LocalDebuggerCommand>$(ProjectDir)..\$(TargetName)$(TargetExt)</LocalDebuggerCommand>
+    <LocalDebuggerWorkingDirectory>$(ProjectDir)..\</LocalDebuggerWorkingDirectory>
+    <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgRoot Condition="'$(VcpkgRoot)'=='' and '$(VCPKG_ROOT)'!=''">$(VCPKG_ROOT)</VcpkgRoot>

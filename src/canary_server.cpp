@@ -25,6 +25,7 @@
 #include "io/iomarket.hpp"
 #include "io/ioprey.hpp"
 #include "lib/thread/thread_pool.hpp"
+#include "lua/docgen/lua_api_doc_generator.hpp"
 #include "lua/creature/events.hpp"
 #include "lua/modules/modules.hpp"
 #include "lua/scripts/lua_environment.hpp"
@@ -32,8 +33,9 @@
 #include "server/network/protocol/protocollogin.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
-#include "creatures/players/vocations/vocation.hpp"
 #include "creatures/players/components/weapon_proficiency.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "utils/benchmark.hpp"
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -56,11 +58,50 @@ CanaryServer::CanaryServer(
 #endif
 }
 
+bool CanaryServer::generateLuaApiDocs(const bool force) const {
+	if (!force && !g_configManager().getBoolean(GENERATE_LUA_API_DOCS)) {
+		logger.debug("Lua API documentation generation is disabled.");
+		return true;
+	}
+
+	LuaApiDocGenerator apiDocGenerator(std::filesystem::current_path(), g_configManager().getString(LUA_API_DOCS_OUTPUT_DIRECTORY), logger);
+	if (apiDocGenerator.generate()) {
+		logger.info("Lua API documentation generated successfully.");
+		return true;
+	}
+	return false;
+}
+
+int CanaryServer::generateLuaApiDocsOnly() {
+	const auto shutdownDocgenRuntime = [] {
+		g_dispatcher().shutdown();
+		g_threadPool().shutdown();
+	};
+
+	try {
+		loadConfigLua();
+		const auto generated = generateLuaApiDocs(true);
+		shutdownDocgenRuntime();
+		return generated ? EXIT_SUCCESS : EXIT_FAILURE;
+	} catch (const FailedToInitializeCanary &err) {
+		logger.error(err.what());
+		shutdownDocgenRuntime();
+		return EXIT_FAILURE;
+	} catch (const std::exception &err) {
+		logger.error("Failed to generate Lua API documentation: {}", err.what());
+		shutdownDocgenRuntime();
+		return EXIT_FAILURE;
+	}
+}
+
 int CanaryServer::run() {
 	g_dispatcher().addEvent(
 		[this] {
 			try {
 				loadConfigLua();
+				if (!generateLuaApiDocs()) {
+					logger.warn("Lua API documentation generation failed; continuing startup.");
+				}
 				validateDatapack();
 
 				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
@@ -194,7 +235,7 @@ void CanaryServer::setWorldType() {
 		);
 	}
 
-	logger.debug("World type set as {}", asUpperCaseString(worldType));
+	logger.info("World type set as {}", asUpperCaseString(worldType));
 }
 
 void CanaryServer::loadMaps() const {
@@ -232,18 +273,18 @@ void CanaryServer::setupHousesRent() {
 
 void CanaryServer::logInfos() {
 #if defined(GIT_RETRIEVED_STATE) && GIT_RETRIEVED_STATE
-	logger.debug("{} - Version [{}] dated [{}]", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
+	logger.info("{} - Version [{}] dated [{}]", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION, GIT_COMMIT_DATE_ISO8601);
 	#if GIT_IS_DIRTY
-	logger.debug("DIRTY - NOT OFFICIAL RELEASE");
+	logger.info("DIRTY - NOT OFFICIAL RELEASE");
 	#endif
 #else
 	logger.info("{} - Version {}", ProtocolStatus::SERVER_NAME, SERVER_RELEASE_VERSION);
 #endif
 
-	logger.debug("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
+	logger.info("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
 
 #if defined(LUAJIT_VERSION)
-	logger.debug("Linked with {} for Lua support", LUAJIT_VERSION);
+	logger.info("Linked with {} for Lua support", LUAJIT_VERSION);
 #endif
 
 	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
@@ -352,9 +393,9 @@ void CanaryServer::initializeDatabase() {
 	if (!Database::getInstance().connect()) {
 		throw FailedToInitializeCanary("Failed to connect to database!");
 	}
-	logger.debug("MySQL Version: {}", Database::getClientVersion());
+	logger.info("MySQL Version: {}", Database::getClientVersion());
 
-	logger.debug("Running database manager...");
+	logger.info("Running database manager...");
 	if (!DatabaseManager::isDatabaseSetup()) {
 		throw FailedToInitializeCanary(fmt::format("The database you have specified in {} is empty, please import the schema.sql to your database.", g_configManager().getConfigFileLua()));
 	}
@@ -363,63 +404,124 @@ void CanaryServer::initializeDatabase() {
 
 	if (g_configManager().getBoolean(OPTIMIZE_DATABASE)
 	    && !DatabaseManager::optimizeTables()) {
-		logger.debug("No tables were optimized");
+		logger.info("No tables were optimized");
 	}
 	g_logger().info("Database connection established!");
 }
 
 void CanaryServer::loadModules() {
+	Benchmark modulesBenchmark;
 	logger.info("Initializing lua environment...");
 	if (!g_luaEnvironment().getLuaState()) {
 		g_luaEnvironment().initState();
 	}
 
 	logger.info("Loading modules and scripts...");
+	const auto startupLoadTelemetry = g_configManager().getBoolean(LUA_STARTUP_LOAD_TELEMETRY);
+	const auto timedLoad = [this, startupLoadTelemetry](std::string moduleName, const auto &loader) {
+		if (!startupLoadTelemetry) {
+			if (!loader()) {
+				modulesLoadHelper(false, std::move(moduleName));
+			}
+			return;
+		}
+
+		Benchmark benchmark;
+		const bool loaded = loader();
+		const auto duration = benchmark.duration();
+		if (!loaded) {
+			modulesLoadHelper(false, moduleName);
+		}
+
+		logger.info("Loaded {} in {:.3f} ms", moduleName, duration);
+	};
 
 	auto coreFolder = g_configManager().getString(CORE_DIRECTORY);
-	modulesLoadHelper(WeaponProficiency::loadFromJson(), "proficiencies.json");
+	timedLoad("proficiencies.json", [] {
+		return WeaponProficiency::loadFromJson();
+	});
 	// Load appearances.dat first
-	modulesLoadHelper((g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE), "appearances.dat");
+	timedLoad("appearances.dat", [&coreFolder] {
+		return g_game().loadAppearanceProtobuf(coreFolder + "/items/appearances.dat") == ERROR_NONE;
+	});
 
 	// Load XML folder dependencies (order matters)
-	modulesLoadHelper(g_vocations().loadFromXml(), "XML/vocations.xml");
-	modulesLoadHelper(Outfits::getInstance().loadFromXml(), "XML/outfits.xml");
-	modulesLoadHelper(Familiars::getInstance().loadFromXml(), "XML/familiars.xml");
-	modulesLoadHelper(g_imbuements().loadFromXml(), "XML/imbuements.xml");
-	modulesLoadHelper(g_storages().loadFromXML(), "XML/storages.xml");
+	timedLoad("XML/vocations.xml", [] {
+		return g_vocations().loadFromXml();
+	});
+	timedLoad("XML/outfits.xml", [] {
+		return Outfits::getInstance().loadFromXml();
+	});
+	timedLoad("XML/familiars.xml", [] {
+		return Familiars::getInstance().loadFromXml();
+	});
+	timedLoad("XML/imbuements.xml", [] {
+		return g_imbuements().loadFromXml();
+	});
+	timedLoad("XML/storages.xml", [] {
+		return g_storages().loadFromXML();
+	});
 
-	modulesLoadHelper(Item::items.loadFromXml(), "items.xml");
+	timedLoad("items.xml", [] {
+		return Item::items.loadFromXml();
+	});
 
 	const auto datapackFolder = g_configManager().getString(DATA_DIRECTORY);
-	logger.debug("Loading core scripts on folder: {}/", coreFolder);
+	logger.info("Loading core scripts on folder: {}/", coreFolder);
 	// Load first core Lua libs
-	modulesLoadHelper((g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0), "core.lua");
-	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false), coreFolder + "/scripts/libs");
-	modulesLoadHelper(g_scripts().loadScripts(coreFolder + "/scripts", false, false), coreFolder + "/scripts");
-	modulesLoadHelper((g_npcs().load(true, false)), "npclib");
+	timedLoad("core.lua", [&coreFolder] {
+		return g_luaEnvironment().loadFile(coreFolder + "/core.lua", "core.lua") == 0;
+	});
+	timedLoad(coreFolder + "/scripts/libs", [&coreFolder] {
+		return g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+	});
+	timedLoad(coreFolder + "/scripts", [&coreFolder] {
+		return g_scripts().loadScripts(coreFolder + "/scripts", false, false);
+	});
+	timedLoad("npclib", [] {
+		return g_npcs().load(true, false);
+	});
 
-	modulesLoadHelper(g_events().loadFromXml(), "events/events.xml");
-	modulesLoadHelper(g_modules().loadFromXml(), "modules/modules.xml");
+	timedLoad("events/events.xml", [] {
+		return g_events().loadFromXml();
+	});
+	timedLoad("modules/modules.xml", [] {
+		return g_modules().loadFromXml();
+	});
 
-	logger.debug("Loading datapack scripts on folder: {}/", datapackFolder);
-	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false), datapackFolder + "/scripts/libs");
+	logger.info("Loading datapack scripts on folder: {}/", datapackFolder);
+	timedLoad(datapackFolder + "/scripts/libs", [&datapackFolder] {
+		return g_scripts().loadScripts(datapackFolder + "/scripts/lib", true, false);
+	});
 	// Load scripts
-	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/scripts", false, false), datapackFolder + "/scripts");
+	timedLoad(datapackFolder + "/scripts", [&datapackFolder] {
+		return g_scripts().loadScripts(datapackFolder + "/scripts", false, false);
+	});
 	// Load monsters
-	modulesLoadHelper(g_scripts().loadScripts(datapackFolder + "/monster", false, false), datapackFolder + "/monster");
-	modulesLoadHelper((g_npcs().load(false, true)), "npc");
+	timedLoad(datapackFolder + "/monster", [&datapackFolder] {
+		return g_scripts().loadScripts(datapackFolder + "/monster", false, false);
+	});
+	timedLoad("npc", [] {
+		return g_npcs().load(false, true);
+	});
 
 	// It needs to be loaded after the revscript is read in order to use the scripting interface.
-	modulesLoadHelper(g_eventsScheduler().loadScheduleEventFromJson(), "json/eventscheduler/events.json");
+	timedLoad("json/eventscheduler/events.json", [] {
+		return g_eventsScheduler().loadScheduleEventFromJson();
+	});
 
 	g_game().loadBoostedCreature();
 	g_ioBosstiary().loadBoostedBoss();
 	g_ioprey().initializeTaskHuntOptions();
 	g_game().logCyclopediaStats();
+
+	if (startupLoadTelemetry) {
+		logger.info("Loaded modules and scripts in {:.3f} seconds.", modulesBenchmark.duration() / 1000.0);
+	}
 }
 
 void CanaryServer::modulesLoadHelper(bool loaded, std::string_view identifier) {
-	logger.debug("Loading {}", identifier);
+	logger.info("Loading {}", identifier);
 	if (!loaded) {
 		throw FailedToInitializeCanary(fmt::format("Cannot load: {}", identifier));
 	}

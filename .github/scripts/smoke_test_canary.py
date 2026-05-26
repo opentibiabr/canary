@@ -339,7 +339,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--db-name", default="canary_smoke")
     parser.add_argument("--login-port", type=int, default=7171)
     parser.add_argument("--game-port", type=int, default=7172)
-    parser.add_argument("--status-port", type=int, default=7171)
+    parser.add_argument("--status-port", type=int, default=7173)
     parser.add_argument("--startup-timeout-seconds", type=int, default=300)
     parser.add_argument("--fail-on-warnings", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--skip-database-init", action="store_true")

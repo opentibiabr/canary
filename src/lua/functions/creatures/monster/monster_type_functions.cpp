@@ -99,12 +99,47 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "registerEvent", MonsterTypeFunctions::luaMonsterTypeRegisterEvent);
 
 	Lua::registerMethod(L, "MonsterType", "eventType", MonsterTypeFunctions::luaMonsterTypeEventType);
+	/***
+	 * @function MonsterType:onThink
+	 * @param callback fun(monster: Monster, interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onThink", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onAppear
+	 * @param callback fun(monster: Monster, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onAppear", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onDisappear
+	 * @param callback fun(monster: Monster, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onDisappear", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onMove
+	 * @param callback fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onMove", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onSay
+	 * @param callback fun(monster: Monster, creature: Creature, type: integer, message: string): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onSay", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onPlayerAttack
+	 * @param callback fun(monster: Monster, attacker: Player): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onPlayerAttack", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onSpawn
+	 * @param callback fun(monster: Monster, position: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onSpawn", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
 
 	Lua::registerMethod(L, "MonsterType", "getSummonList", MonsterTypeFunctions::luaMonsterTypeGetSummonList);
@@ -1198,10 +1233,12 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	const auto eventName = Lua::getString(L, 2);
 	monsterType->info.scripts.insert(eventName);
 
-	for (const auto &monster : g_game().getMonsters()) {
-		const auto monsterTypeCompare = monster->getMonsterType();
-		if (monsterTypeCompare == monsterType) {
-			monster->registerCreatureEvent(eventName);
+	if (g_game().getGameState() != GAME_STATE_STARTUP) {
+		for (const auto &monster : g_game().getMonsters()) {
+			const auto monsterTypeCompare = monster->getMonsterType();
+			if (monsterTypeCompare == monsterType) {
+				monster->registerCreatureEvent(eventName);
+			}
 		}
 	}
 
@@ -1811,6 +1848,11 @@ int MonsterTypeFunctions::luaMonsterTypeSoundSpeedTicks(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function MonsterType:addSound
+ * @param soundId SoundEffect
+ * @return boolean
+ */
 int MonsterTypeFunctions::luaMonsterTypeAddSound(lua_State* L) {
 	// monsterType:addSound(soundId)
 	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1, "MonsterType");

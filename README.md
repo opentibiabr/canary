@@ -16,6 +16,55 @@ Canary is a free and open-source MMORPG server emulator for the OpenTibia commun
 
 ---
 
+## Docker Quickstart
+
+Canary includes a lightweight Docker quickstart for running a local test server
+without compiling Canary locally. The stack starts MariaDB, the published Canary
+runtime image, MyAAC as the website/admin AAC, and `opentibiabr/login-server` as
+the client login webservice.
+
+This quickstart is for local development, testing, and LAN demos. Do not expose
+it directly to the public Internet with the default test accounts and passwords.
+
+Run from the `docker` directory:
+
+```bash
+cp .env.dist .env
+docker compose up -d --build
+```
+
+The `docker` directory also provides guarded start scripts that start the stack
+and clean safe Docker leftovers without removing database volumes:
+
+```powershell
+.\up.ps1
+```
+
+```bash
+sh ./up.sh
+```
+
+Default local endpoints:
+
+- Website/admin: `http://localhost:8080`
+- Client login webservice: `http://localhost:8088/login`
+- Game port: `7172`
+
+MyAAC's `login.php` is intentionally removed from the quickstart image. Clients
+should use `login-server` only. See [docs/docker/quickstart-for-beginners.md](docs/docker/quickstart-for-beginners.md)
+for a beginner guide and [docker/DOCKER.md](docker/DOCKER.md) for the full setup,
+environment variables, test account, and troubleshooting guide.
+
+---
+
+## Documentation
+
+- [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
+- [System documentation](docs/systems/README.md).
+- [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md). Canary generates these files from the C++ Lua bindings during startup when `generateLuaApiDocs` is enabled. The repository `.luarc.json` already adds `docs/lua-api` to the Lua Language Server workspace library; for VSCode workspace settings, run `tools/setup_vscode_lua_api.ps1`.
+
+---
+
 ## Recommended Tools and Clients
 
 - [Assets Editor](https://github.com/Arch-Mina/Assets-Editor).

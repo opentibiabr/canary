@@ -41,6 +41,7 @@ public:
 	using ItemVector::push_back;
 	using ItemVector::rbegin;
 	using ItemVector::rend;
+	using ItemVector::reserve;
 	using ItemVector::reverse_iterator;
 	using ItemVector::size;
 	using ItemVector::value_type;
@@ -179,11 +180,11 @@ public:
 	void addZone(const std::shared_ptr<Zone> &zone);
 	void clearZones();
 
-	auto getZones() const {
+	[[nodiscard]] const std::unordered_set<std::shared_ptr<Zone>> &getZones() const {
 		return zones;
 	}
 
-	ZoneType_t getZoneType() const {
+	[[nodiscard]] ZoneType_t getZoneType() const {
 		if (hasFlag(TILESTATE_PROTECTIONZONE)) {
 			return ZONE_PROTECTION;
 		} else if (hasFlag(TILESTATE_NOPVPZONE)) {

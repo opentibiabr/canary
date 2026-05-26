@@ -8599,6 +8599,9 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	if (!oldProtocol) {
 		msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
 		msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield
+		if constexpr (CLIENT_VERSION >= 1512 && CLIENT_VERSION < 1520) {
+			msg.addByte(0x00); // 15.12-15.13 client expects one trailing player data byte.
+		}
 	}
 }
 

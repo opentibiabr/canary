@@ -907,6 +907,8 @@ void LuaEnums::initSpeechBubbleEnums(lua_State* L) {
 	registerEnum(L, SPEECHBUBBLE_TRADE);
 	registerEnum(L, SPEECHBUBBLE_QUEST);
 	registerEnum(L, SPEECHBUBBLE_QUESTTRADER);
+	registerEnum(L, SPEECHBUBBLE_SAILOR);
+	registerEnum(L, SPEECHBUBBLE_BANKER);
 	registerEnum(L, SPEECHBUBBLE_HIRELING);
 }
 

@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "banker",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_BANKER
 local itemsTable = {
 	["containers"] = {
 		{ itemName = "backpack", clientId = 2854, buy = 10, count = 1 },

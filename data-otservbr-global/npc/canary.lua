@@ -29,7 +29,9 @@ npcConfig.voices = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 -- Npc shop
 npcConfig.shop = {

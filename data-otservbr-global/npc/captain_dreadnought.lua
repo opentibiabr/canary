@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "banker",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_BANKER
 
 npcConfig.voices = {
 	interval = 15000,
@@ -238,7 +240,7 @@ local function donationHandler(npc, creature, message, keywords, parameters, nod
 				npc,
 				creature
 			)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		else
 			npcHandler:say("Well, har har. Very funny. Come on, pick up the gold you just dropped.", npc, creature)
 		end
@@ -297,7 +299,7 @@ local function townTravelHandler(npc, creature, message, keywords, parameters, n
 			npc,
 			creature
 		)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 		npcHandler:removeInteraction(npc, creature)
 	elseif parameters.decline == true then
 		if player:isPremium() then

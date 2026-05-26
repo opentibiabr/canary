@@ -39,6 +39,16 @@ void PositionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Position", "toString", PositionFunctions::luaPositionToString);
 }
 
+/***
+ * @class Position
+ * @field x integer
+ * @field y integer
+ * @field z integer
+ * @field stackpos integer
+ * @overload fun(): Position
+ * @overload fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position
+ * @overload fun(position: Position): Position
+ */
 int PositionFunctions::luaPositionCreate(lua_State* L) {
 	// Position([x = 0[, y = 0[, z = 0[, stackpos = 0]]]])
 	// Position([position])
@@ -171,6 +181,12 @@ int PositionFunctions::luaPositionGetZones(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendMagicEffect
+ * @param magicEffect MagicEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	// position:sendMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
@@ -202,6 +218,12 @@ int PositionFunctions::luaPositionSendMagicEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:removeMagicEffect
+ * @param magicEffect MagicEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	// position:removeMagicEffect(magicEffect[, player = nullptr])
 	CreatureVector spectators;
@@ -233,6 +255,13 @@ int PositionFunctions::luaPositionRemoveMagicEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendDistanceEffect
+ * @param positionEx Position
+ * @param distanceEffect DistanceEffect
+ * @param player? Player
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	// position:sendDistanceEffect(positionEx, distanceEffect[, player = nullptr])
 	CreatureVector spectators;
@@ -264,6 +293,12 @@ int PositionFunctions::luaPositionSendDistanceEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendSingleSoundEffect
+ * @param soundId SoundEffect
+ * @param actor? Creature
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendSingleSoundEffect(lua_State* L) {
 	// position:sendSingleSoundEffect(soundId[, actor = nullptr])
 	const Position &position = Lua::getPosition(L, 1);
@@ -275,6 +310,13 @@ int PositionFunctions::luaPositionSendSingleSoundEffect(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Position:sendDoubleSoundEffect
+ * @param mainSoundId SoundEffect
+ * @param secondarySoundId SoundEffect
+ * @param actor? Creature
+ * @return boolean
+ */
 int PositionFunctions::luaPositionSendDoubleSoundEffect(lua_State* L) {
 	// position:sendDoubleSoundEffect(mainSoundId, secondarySoundId[, actor = nullptr])
 	const Position &position = Lua::getPosition(L, 1);

@@ -105,6 +105,14 @@ jobs:
           buildPreset: ${{ matrix.buildtype }}
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON','-DOPTIONS_ENABLE_CCACHE=ON','-DOPTIONS_ENABLE_SCCACHE=OFF']"
 
+      - name: Check generated Lua API docs are current
+        if: matrix.buildtype == 'linux-release'
+        shell: bash
+        run: |
+          set -euo pipefail
+          build/${{ matrix.buildtype }}/bin/canary --generate-lua-api-docs-only
+          git diff --exit-code -- docs/lua-api
+
       - name: Smoke test Canary datapack runtime
         if: inputs.run_canary_smoke
         shell: bash

@@ -115,7 +115,25 @@ jobs:
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=cppcheck -filter-mode=added || true
 
       - name: Run yamllint
-        uses: reviewdog/action-yamllint@v1.6.1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
+        shell: bash
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEWDOG_REPORTER: github-pr-check
+        run: |
+          python3 -m pip install yamllint
+
+          REVIEWDOG_DIFF_FLAGS=()
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            git fetch --no-tags --prune origin "+refs/heads/${{ github.base_ref }}:refs/remotes/origin/${{ github.base_ref }}"
+            REVIEWDOG_DIFF_FLAGS=(-diff="git diff --no-ext-diff --relative origin/${{ github.base_ref }}...HEAD")
+          fi
+
+          yamllint --format parsable . |
+            reviewdog \
+              -efm="%f:%l:%c: %m" \
+              -name="yamllint" \
+              -reporter="${REVIEWDOG_REPORTER}" \
+              -level=error \
+              -filter-mode=added \
+              -fail-on-error=false \
+              "${REVIEWDOG_DIFF_FLAGS[@]}"

@@ -1,4 +1,5 @@
-local waterIds = { 622, 4597, 4598, 4599, 4600, 12561, 12563, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 13988, 13989, 12560, 21414 }
+local waterIds = { 622, 4597, 4598, 4599, 4600, 12561, 12563, 4601, 4602, 4609, 4610, 4611, 4612, 4613, 4614, 629, 630, 631, 632, 633, 634, 7236, 9582, 12560, 12561, 12562, 12563, 12558, 12559, 13988, 13989, 21414, 21312 }
+
 local lootTrash = { 3119, 3123, 3264, 3409, 3578 }
 local lootCommon = { 3035, 3051, 3052, 3580, 236, 237 }
 local lootRare = { 3026, 3029, 3032, 7158, 7159 }
@@ -6,6 +7,67 @@ local lootVeryRare = { 281, 282, 9303 }
 local lootVeryRare1 = { 281, 12557 }
 local lootRare1 = { 3026, 12557 }
 local lootCommon1 = { 3035, 237, 12557 }
+
+local fishableWaterIds = {
+	4597,
+	4598,
+	4599,
+	4600,
+	4601,
+	4602,
+	629,
+	630,
+	631,
+	632,
+	633,
+	634,
+	21312,
+}
+
+local nonFishableWaterIds = {
+	4609,
+	4610,
+	4611,
+	4612,
+	4613,
+	4614,
+	4809,
+	4810,
+	4811,
+	4812,
+	4813,
+	4814,
+	21314,
+}
+
+local dirtyWaterFishable = { 12561, 12562, 12563 }
+local dirtyWaterSpent = { 12558, 12559, 12560 }
+
+local dirtyWaterTransform = {
+	[12561] = 12558,
+	[12562] = 12559,
+	[12563] = 12560,
+}
+
+local SHIMMER_COOLDOWN_STORAGE = 20526
+local SHIMMER_COUNT_STORAGE = 20527
+local SHIMMER_COOLDOWN_SECONDS = 20 * 60 * 60
+
+local transformToNonFishable = {
+	[4597] = { to = 4609, decay = true },
+	[4598] = { to = 4610, decay = true },
+	[4599] = { to = 4611, decay = true },
+	[4600] = { to = 4612, decay = true },
+	[4601] = { to = 4613, decay = true },
+	[4602] = { to = 4614, decay = true },
+	[629] = { to = 4809, decay = true },
+	[630] = { to = 4810, decay = true },
+	[631] = { to = 4811, decay = true },
+	[632] = { to = 4812, decay = true },
+	[633] = { to = 4813, decay = true },
+	[634] = { to = 4814, decay = true },
+	[21312] = { to = 21314, decay = true },
+}
 
 local elementals = {
 	chances = {
@@ -27,6 +89,91 @@ local function refreeIceHole(position)
 	end
 end
 
+local function handleDirtyWaterFishing(player, target, toPosition)
+	local targetId = target.itemid
+
+	toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+
+	if player:getItemCount(3492) > 0 then
+		player:addSkillTries(SKILL_FISHING, 1, true)
+	end
+
+	local successChance = math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50)
+	if math.random(100) > successChance then
+		return true
+	end
+
+	if useWorms and not player:removeItem("worm", 1) then
+		return true
+	end
+
+	local newId = dirtyWaterTransform[targetId]
+	if newId then
+		target:transform(newId)
+		target:decay()
+	end
+	local dirtyWaterRoll = math.random(100)
+
+	if dirtyWaterRoll <= 30 then
+		if math.random(100) == 100 then
+			local cooldownExpiry = player:getStorageValue(SHIMMER_COOLDOWN_STORAGE)
+			if cooldownExpiry ~= -1 and os.time() < cooldownExpiry then
+				player:addItem(3111, 1)
+				return true
+			end
+
+			player:addItem(12557, 1)
+			player:setStorageValue(SHIMMER_COOLDOWN_STORAGE, os.time() + SHIMMER_COOLDOWN_SECONDS)
+
+			local currentCount = player:getStorageValue(SHIMMER_COUNT_STORAGE)
+			if currentCount == -1 then
+				currentCount = 0
+			end
+			currentCount = currentCount + 1
+			player:setStorageValue(SHIMMER_COUNT_STORAGE, currentCount)
+
+			if currentCount >= 50 and not player:hasAchievement("Biodegradable") then
+				player:addAchievement("Biodegradable")
+			end
+
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A Shimmer Swimmer! It is said that this creature only appears once each day in the murkiest of waters!")
+		else
+			player:addItem(3111, 1)
+		end
+	end
+
+	return true
+end
+
+local function handleDesertFishing(player, target, toPosition)
+	toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+
+	if player:getItemCount(3492) > 0 then
+		player:addSkillTries(SKILL_FISHING, 1, true)
+	end
+
+	local successChance = math.min(math.max(10 + (player:getEffectiveSkillLevel(SKILL_FISHING) - 10) * 0.597, 10), 50)
+	if math.random(100) > successChance then
+		return true
+	end
+
+	if useWorms and not player:removeItem("worm", 1) then
+		return true
+	end
+
+	target:transform(13988)
+	target:decay()
+
+	if math.random(100) == 1 then
+		player:addItem(13992, 1)
+		if not player:hasAchievement("Desert Fisher") then
+			player:addAchievement("Desert Fisher")
+		end
+	end
+
+	return true
+end
+
 local fishing = Action()
 
 function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
@@ -35,6 +182,30 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	end
 
 	local targetId = target.itemid
+
+	if table.contains(dirtyWaterSpent, targetId) then
+		toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+		return true
+	end
+
+	if table.contains(dirtyWaterFishable, targetId) then
+		return handleDirtyWaterFishing(player, target, toPosition)
+	end
+
+	if targetId == 13989 then
+		return handleDesertFishing(player, target, toPosition)
+	end
+
+	if targetId == 13988 then
+		toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+		return true
+	end
+
+	if table.contains(nonFishableWaterIds, targetId) then
+		toPosition:sendMagicEffect(CONST_ME_LOSEENERGY)
+		return true
+	end
+
 	if targetId == 9582 then
 		local owner = target:getAttribute(ITEM_ATTRIBUTE_CORPSEOWNER)
 		if owner ~= 0 and owner ~= player.uid then
@@ -94,7 +265,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		end
 	end
 
-	if player:getItemCount(3492) > 0 then
+	if player:getItemCount(3492) > 0 and table.contains(fishableWaterIds, targetId) then
 		player:addSkillTries(SKILL_FISHING, 1, true)
 	end
 
@@ -103,15 +274,7 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 			return true
 		end
 
-		if targetId == 13988 then
-			target:transform(targetId + 1)
-			target:decay()
-
-			if math.random(100) >= 97 then
-				player:addItem(13992, 1)
-				return true
-			end
-		elseif targetId == 7236 then
+		if targetId == 7236 then
 			target:transform(7237)
 			local position = target:getPosition()
 			addEvent(refreeIceHole, 1000 * 60 * 15, position)
@@ -130,9 +293,19 @@ function fishing.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 				return true
 			end
 		end
+
+		if transformToNonFishable[targetId] then
+			local transformInfo = transformToNonFishable[targetId]
+			target:transform(transformInfo.to)
+			if transformInfo.decay then
+				target:decay()
+			end
+		end
+
 		player:addItem(3578, 1)
 		player:addAchievementProgress("Here, Fishy Fishy!", 250)
 	end
+
 	return true
 end
 

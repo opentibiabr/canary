@@ -13974,36 +13974,53 @@
 		<attribute key="effect" value="bluebubble"/>
 	</item>
 	<item fromid="4603" toid="4608" name="grass"/>
-	<item fromid="4609" toid="4611" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="description" value="You see the silvery movement of fish."/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="type" value="trashholder"/>
-		<attribute key="effect" value="bluebubble"/>
+	<item id="4609" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4597" />
+	</item>
+	<item id="4610" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4598" />
+	</item>
+	<item id="4611" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4599" />
 	</item>
 	<item id="4612" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="type" value="trashholder"/>
-		<attribute key="effect" value="bluebubble"/>
-		<attribute key="duration" value="1200"/>
-		<attribute key="decayTo" value="4597"/>
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4600" />
 	</item>
 	<item id="4613" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="type" value="trashholder"/>
-		<attribute key="effect" value="bluebubble"/>
-		<attribute key="duration" value="1200"/>
-		<attribute key="decayTo" value="4598"/>
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4601" />
 	</item>
-	<item id="4614" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="type" value="trashholder"/>
-		<attribute key="effect" value="bluebubble"/>
-		<attribute key="duration" value="1200"/>
-		<attribute key="decayTo" value="4599"/>
+		<item id="4614" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="4602" />
 	</item>
 	<item fromid="4621" toid="4632" name="shallow water">
 		<attribute key="primarytype" value="natural tiles"/>
@@ -14038,10 +14055,53 @@
 	</item>
 	<item fromid="4773" toid="4784" name="grass"/>
 	<item fromid="4785" toid="4808" name="dirt"/>
-	<item fromid="4809" toid="4814" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="effect" value="bluebubble"/>
+	<item id="4809" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="629" />	
+	</item>
+	<item id="4810" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="630" />	
+	</item>
+	<item id="4811" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="631" />	
+	</item>
+	<item id="4812" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="632" />	
+	</item>
+	<item id="4813" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="633" />	
+	</item>
+	<item id="4814" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="634" />	
 	</item>
 	<item fromid="4815" toid="4816" article="a" name="mountain">
 		<attribute key="primarytype" value="rocks"/>
@@ -30407,8 +30467,34 @@
 		<attribute key="description" value="This fish, and rare ingredient, can only be found in the dirtiest, murkiest and muddiest of waters"/>
 		<attribute key="weight" value="999"/>
 	</item>
-	<item fromid="12558" toid="12563" name="dirty water">
-		<attribute key="primarytype" value="natural tiles"/>
+	<item id="12558" name="dirty water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="12561" />
+	</item>
+	<item id="12559" name="dirty water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="12562" />
+	</item>
+	<item id="12560" name="dirty water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="12563" />
+	</item>
+	<item fromid="12561" toid="12563" name="dirty water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
 	</item>
 	<item id="12570" article="a" name="fan doll of Queen Eloise">
 		<attribute key="weight" value="1560"/>
@@ -31875,8 +31961,17 @@
 			<attribute key="weaponType" value="club"/>
 		</attribute>
 	</item>
-	<item fromid="13988" toid="13989" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
+	<item id="13988" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="13989" />
+	</item>	
+	<item id="13989" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
 	</item>
 	<item id="13990" article="a" name="necklace of the deep">
 		<attribute key="showCharges" value="1"/>
@@ -42233,10 +42328,25 @@
 		<attribute key="description" value="This printout is nearly unreadable. One column of numbers on it is followed by the word: Doubleday"/>
 		<attribute key="weight" value="50"/>
 	</item>
-	<item fromid="21302" toid="21322" name="shallow water">
-		<attribute key="primarytype" value="natural tiles"/>
-		<attribute key="fluidsource" value="water"/>
-		<attribute key="effect" value="bluebubble"/>
+	<item fromid="21302" toid="21313" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
+	</item>
+	<item id="21314" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
+		<attribute key="duration" value="1200" />
+		<attribute key="decayTo" value="21312" />
+	</item>	
+	<item fromid="21315" toid="21322" name="shallow water">
+		<attribute key="primarytype" value="natural tiles" />
+		<attribute key="fluidsource" value="water" />
+		<attribute key="effect" value="bluebubble" />
+		<attribute key="type" value="trashholder" />
 	</item>
 	<item id="21323" article="an" name="imported water pipe">
 		<attribute key="primarytype" value="utilities"/>

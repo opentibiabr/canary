@@ -170,6 +170,12 @@ public:
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
 	}
+	Player* getPlayerRaw() noexcept override {
+		return this;
+	}
+	const Player* getPlayerRaw() const noexcept override {
+		return this;
+	}
 
 	struct ExivaRestrictions {
 		bool allowAll = false;

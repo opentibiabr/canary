@@ -376,6 +376,10 @@ public:
 	bool isWrapKit = false;
 	bool m_canBeUsedByGuests = false;
 
+	int32_t extraAttack = 0;
+	int32_t extraAttackDelay = 500;
+	int32_t extraAttackChance = 0;
+
 	// Monk
 	bool isDualWielding = false;
 	bool m_isMagicShieldPotion = false;

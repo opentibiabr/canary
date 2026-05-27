@@ -53153,6 +53153,15 @@ hands of its owner. Granted by TibiaRoyal.com"/>
 	</item>
 	<item id="28478" article="an" name="umbral master bow TEST">
 		<attribute key="primarytype" value="distance weapons"/>
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="hitchance" value="5" />
+		<attribute key="range" value="7" />
+		<attribute key="attack" value="6" />
+		<attribute key="weight" value="4000" />
+		<attribute key="extraattack" value="3" /> <!-- x3 rows as extra attacks -->
+		<attribute key="extraattackdelay" value="500" /> <!-- 5ms of delay between attacks -->
+		<attribute key="extraattackchance" value="500" /> <!-- 5% chance to trigger auto attacks -->
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="weaponType" value="distance"/>
 			<attribute key="slot" value="hand"/>

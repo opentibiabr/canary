@@ -308,6 +308,7 @@ private:
 	static void parseHealthAndMana(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseSkills(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseCriticalHit(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseExtraAttack(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseLifeAndManaLeech(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseMaxHitAndManaPoints(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseMagicLevelPoint(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);

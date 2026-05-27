@@ -476,6 +476,18 @@ public:
 		return items[id].mantra;
 	}
 
+	int32_t getExtraAttack() const {
+		return items[id].extraAttack;
+	}
+
+	int32_t getExtraAttackDelay() const {
+		return items[id].extraAttackDelay;
+	}
+
+	int32_t getExtraAttackChance() const {
+		return items[id].extraAttackChance;
+	}
+
 	uint32_t getWorth() const;
 	uint32_t getForgeSlivers() const;
 	uint32_t getForgeCores() const;

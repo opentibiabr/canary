@@ -29,6 +29,7 @@ void ItemParse::initParse(const std::string &stringValue, pugi::xml_node attribu
 	ItemParse::parseDefense(stringValue, valueAttribute, itemType);
 	ItemParse::parseExtraDefense(stringValue, valueAttribute, itemType);
 	ItemParse::parseAttack(stringValue, valueAttribute, itemType);
+	ItemParse::parseExtraAttack(stringValue, valueAttribute, itemType);
 	ItemParse::parseMantra(stringValue, valueAttribute, itemType);
 	ItemParse::parseRotateTo(stringValue, valueAttribute, itemType);
 	ItemParse::parseWrapContainer(stringValue, valueAttribute, itemType);

@@ -1574,6 +1574,146 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 			g_game().sendSingleSoundEffect(target->getPosition(), params.soundCastEffect, caster);
 		}
 	}
+
+	if (canCombat && caster && target && !damage.isExtraAttack) {
+		const auto &attackerPlayer = caster->getPlayer();
+		if (attackerPlayer) {
+			auto weapon = attackerPlayer->getWeapon();
+
+			if (weapon && weapon->getWeaponType() == WEAPON_AMMO) {
+				const auto &bow = attackerPlayer->getWeapon(true);
+				if (bow) {
+					weapon = bow;
+				}
+			}
+
+			if (weapon) {
+				const int32_t extraAttacks = weapon->getExtraAttack();
+				const int32_t extraDelay = weapon->getExtraAttackDelay();
+				const int32_t extraAttackChance = weapon->getExtraAttackChance();
+
+				if (extraAttacks > 0 && extraAttackChance > 0
+				    && uniform_random(1, 10000) <= extraAttackChance) {
+
+					const CombatType_t combatType = params.combatType;
+					const CombatOrigin combatOrigin = params.origin;
+					const uint16_t distEffect = params.distanceEffect != CONST_ANI_NONE
+						? params.distanceEffect
+						: Item::items[weapon->getID()].shootType;
+
+					const uint8_t weaponRange = weapon->getShootRange() > 0
+						? weapon->getShootRange()
+						: Item::items[weapon->getID()].shootRange;
+
+					for (int32_t i = 1; i <= extraAttacks; ++i) {
+						g_dispatcher().scheduleEvent(
+							i * extraDelay,
+							[caster, target, combatType, combatOrigin, distEffect, weaponRange]() {
+								if (!caster || !target || !target->isAlive()) {
+									return;
+								}
+								const auto &player = caster->getPlayer();
+								if (!player) {
+									return;
+								}
+
+								const Position currentCasterPos = caster->getPosition();
+								const Position targetPos = target->getPosition();
+
+								if (currentCasterPos.z != targetPos.z) {
+									return;
+								}
+
+								const uint32_t currentDist = std::max<uint32_t>(
+									Position::getDistanceX(currentCasterPos, targetPos),
+									Position::getDistanceY(currentCasterPos, targetPos)
+								);
+								if (currentDist > weaponRange) {
+									return;
+								}
+
+								if (!g_game().isSightClear(currentCasterPos, targetPos, true)) {
+									return;
+								}
+
+								auto tool = player->getWeapon();
+								if (!tool) {
+									return;
+								}
+								WeaponShared_ptr weaponObj = g_weapons().getWeapon(tool);
+
+								std::shared_ptr<Item> currentAmmo = nullptr;
+
+								if (tool->getWeaponType() == WEAPON_AMMO) {
+									currentAmmo = tool;
+									if (currentAmmo->getItemCount() < 1) {
+										return;
+									}
+
+									const auto &bow = player->getWeapon(true);
+									if (bow) {
+										const auto &bowWeapon = g_weapons().getWeapon(bow);
+										if (bowWeapon) {
+											tool = bow;
+											weaponObj = bowWeapon;
+										}
+									}
+								}
+
+								if (!weaponObj) {
+									return;
+								}
+
+								uint16_t shootEffect = distEffect;
+								if (shootEffect == CONST_ANI_NONE) {
+									const ItemType &toolType = Item::items[tool->getID()];
+									shootEffect = toolType.shootType;
+								}
+								if (shootEffect != CONST_ANI_NONE) {
+									g_game().addDistanceEffect(currentCasterPos, targetPos, shootEffect);
+								}
+
+								CombatParams extraParams;
+								extraParams.combatType = combatType;
+								extraParams.origin = combatOrigin;
+								extraParams.blockedByArmor = true;
+								extraParams.blockedByShield = true;
+								extraParams.aggressive = true;
+
+								CombatDamage extraDamage;
+								extraDamage.primary.type = combatType;
+								extraDamage.primary.value = normal_random(
+									0,
+									static_cast<int32_t>(std::abs(
+										weaponObj->getWeaponDamage(player, target, tool, true)
+									))
+								);
+								extraDamage.secondary.type = weaponObj->getElementType();
+								extraDamage.secondary.value = weaponObj->getElementDamage(
+									player, target, tool
+								);
+								extraDamage.origin = combatOrigin;
+								extraDamage.isExtraAttack = true;
+
+								Combat::doCombatHealth(caster, target, currentCasterPos, extraDamage, extraParams);
+
+								if (currentAmmo && g_configManager().getBoolean(REMOVE_WEAPON_AMMO)) {
+									const uint16_t ammoCount = currentAmmo->getItemCount();
+									if (ammoCount > 1) {
+										g_game().transformItem(currentAmmo, currentAmmo->getID(), ammoCount - 1);
+									} else if (ammoCount == 1) {
+										g_game().internalRemoveItem(currentAmmo);
+									}
+									player->updateSupplyTracker(currentAmmo);
+								}
+							},
+							"Combat::extraAttack"
+						);
+					}
+				}
+			}
+		}
+	}
 }
 
 void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const Position &position, const std::unique_ptr<AreaCombat> &area, CombatDamage &damage, const CombatParams &params) {

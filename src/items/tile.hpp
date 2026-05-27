@@ -204,7 +204,6 @@ public:
 
 	int32_t getClientIndexOfCreature(const Player* player, const std::shared_ptr<Creature> &creature) const;
 	int32_t getClientIndexOfCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature) const;
-	int32_t getStackposOfCreature(const Player* player, const std::shared_ptr<Creature> &creature) const;
 	int32_t getStackposOfCreature(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &creature) const;
 	int32_t getStackposOfItem(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item) const;
 

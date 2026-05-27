@@ -77,15 +77,15 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MYSQL_USER, "mysqlUser", "root");
 	}
 
-	loadBoolConfig(L, ADVANCED_PARTY_PROTECTION, "advancedPartyProtection", true);
+	loadBoolConfig(L, ADVANCED_PARTY_PROTECTION, "advancedPartyProtection", false);
 	loadBoolConfig(L, AIMBOT_HOTKEY_ENABLED, "hotkeyAimbotEnabled", true);
 	loadBoolConfig(L, ALLOW_CHANGEOUTFIT, "allowChangeOutfit", true);
-	loadBoolConfig(L, ALLOW_LURE_CREATURES, "allowLureCreatures", true);
+	loadBoolConfig(L, ALLOW_LURE_CREATURES, "allowLureCreatures", false);
 	loadBoolConfig(L, ALLOW_RELOAD, "allowReload", false);
 	loadBoolConfig(L, AUTOBANK, "autoBank", false);
 	loadBoolConfig(L, AUTOLOOT, "autoLoot", false);
 	loadBoolConfig(L, BOOSTED_BOSS_SLOT, "boostedBossSlot", true);
-	loadBoolConfig(L, BLOCK_RESPAWN, "blockRespawn", true);
+	loadBoolConfig(L, BLOCK_RESPAWN, "blockRespawn", false);
 	loadBoolConfig(L, CLASSIC_ATTACK_SPEED, "classicAttackSpeed", false);
 	loadBoolConfig(L, CLEAN_PROTECTION_ZONES, "cleanProtectionZones", false);
 	loadBoolConfig(L, CONVERT_UNSAFE_SCRIPTS, "convertUnsafeScripts", true);

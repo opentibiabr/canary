@@ -55,6 +55,7 @@
 #include "server/network/protocol/protocolgame.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "server/server.hpp"
+#include "utils/batch_update.hpp"
 #include "utils/tools.hpp"
 #include "utils/wildcardtree.hpp"
 #include "creatures/players/vocations/vocation.hpp"
@@ -9815,11 +9816,31 @@ namespace {
 			}
 		}
 
-		auto [itemVector, totalCount] = player->getLockerItemsAndCountById(depotLocker, tier, itemType.id);
 		if (removeAmount > 0) {
+			auto [itemVector, totalCount] = player->getLockerItemsAndCountById(depotLocker, tier, itemType.id, removeAmount);
 			if (totalCount == 0 || itemVector.empty()) {
 				offerStatus << "Player " << player->getName() << " not have item for create offer";
 				return false;
+			}
+
+			if (totalCount < removeAmount) {
+				g_logger().error("Player {} tried to sell {} items of id {}, but only {} were found", player->getName(), removeAmount, itemType.id, totalCount);
+				offerStatus << "The item you tried to market is not correct. Check the item again.";
+				return false;
+			}
+
+			BatchUpdate batchUpdate(player);
+			for (const auto &item : itemVector) {
+				if (!item) {
+					continue;
+				}
+
+				const auto &parent = item->getParent();
+				if (!parent) {
+					continue;
+				}
+
+				batchUpdate.add(parent->getContainer());
 			}
 
 			uint32_t removedCount = 0;
@@ -9845,8 +9866,6 @@ namespace {
 
 				removedCount += thisRemove;
 			}
-
-			player->updateState();
 
 			if (removedCount < removeAmount) {
 				g_logger().error("Player {} tried to sell an item {} without this item", player->getName(), itemType.id);
@@ -10110,6 +10129,17 @@ namespace {
 		player->setBankBalance(player->getBankBalance() + withdrawnFunds.total());
 	}
 
+	uint32_t getMarketOfferAmountLimit(const ItemType &itemType) {
+		const ConfigKey_t configKey = itemType.stackable ? MAX_MARKET_STACKABLE_ITEMS_PER_OFFER : MAX_MARKET_NON_STACKABLE_ITEMS_PER_OFFER;
+		const int32_t amountLimit = g_configManager().getNumber(configKey);
+		return amountLimit > 0 ? static_cast<uint32_t>(amountLimit) : 0;
+	}
+
+	bool hasInvalidMarketOfferAmount(const ItemType &itemType, uint16_t amount) {
+		const uint32_t amountLimit = getMarketOfferAmountLimit(itemType);
+		return amount == 0 || (amountLimit != 0 && amount > amountLimit);
+	}
+
 } // namespace
 
 bool checkCanInitCreateMarketOffer(const std::shared_ptr<Player> &player, uint8_t type, const ItemType &it, uint16_t amount, uint64_t price, std::ostringstream &offerStatus) {
@@ -10143,20 +10173,21 @@ bool checkCanInitCreateMarketOffer(const std::shared_ptr<Player> &player, uint8_
 		return false;
 	}
 
-	if (player->isUIExhausted(1000)) {
-		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
-		return false;
-	}
-
 	if (it.id == 0 || it.wareId == 0) {
 		offerStatus << "Failed to load offer or item id";
 		return false;
 	}
 
-	if (amount == 0 || (!it.stackable && amount > 2000) || (it.stackable && amount > 64000)) {
+	if (hasInvalidMarketOfferAmount(it, amount)) {
 		offerStatus << "Failed to load amount " << amount << " for player " << player->getName();
 		return false;
 	}
+
+	if (player->isUIExhausted(1000)) {
+		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
+		return false;
+	}
+	player->updateUIExhausted();
 
 	g_logger().debug("{} - Offer amount: {}", __FUNCTION__, amount);
 
@@ -10271,8 +10302,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	const MarketOfferList &sellOffers = IOMarket::getActiveOffers(MARKETACTION_SELL, it.id, tier);
 	player->sendMarketBrowseItem(it.id, buyOffers, sellOffers, tier);
 
-	// Exhausted for create offert in the market
-	player->updateUIExhausted();
 	g_saveManager().savePlayer(player);
 }
 
@@ -10290,6 +10319,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
+	player->updateUIExhausted();
 
 	MarketOfferEx offer = IOMarket::getOfferByCounter(timestamp, counter);
 	if (offer.id == 0 || offer.playerId != player->getGUID()) {
@@ -10299,8 +10329,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	if (offer.type == MARKETACTION_BUY) {
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
 		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
-		// Send market window again for update stats
-		player->sendMarketEnter(player->getLastDepotId());
 	} else {
 		const ItemType &it = Item::items[offer.itemId];
 		if (it.id == 0) {
@@ -10336,8 +10364,6 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	player->sendMarketCancelOffer(offer);
 	// Send market window again for update stats
 	player->sendMarketEnter(player->getLastDepotId());
-	// Exhausted for cancel offer in the market
-	player->updateUIExhausted();
 	g_saveManager().savePlayer(player);
 }
 
@@ -10358,6 +10384,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->sendCancelMessage(RETURNVALUE_YOUAREEXHAUSTED);
 		return;
 	}
+	player->updateUIExhausted();
 
 	MarketOfferEx offer = IOMarket::getOfferByCounter(timestamp, counter);
 	if (offer.id == 0) {
@@ -10375,7 +10402,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	const uint8_t offerTier = it.upgradeClassification > 0 ? std::min<uint8_t>(offer.tier, maxTier) : 0;
 	offer.tier = offerTier;
 
-	if (amount == 0 || (!it.stackable && amount > 2000) || (it.stackable && amount > 64000) || amount > offer.amount) {
+	if (hasInvalidMarketOfferAmount(it, amount) || amount > offer.amount) {
 		offerStatus << "Invalid offer amount " << amount << " for player " << player->getName();
 		return;
 	}
@@ -10566,8 +10593,6 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 
 	offer.timestamp += marketOfferDuration;
 	player->sendMarketAcceptOffer(offer);
-	// Exhausted for accept offer in the market
-	player->updateUIExhausted();
 	g_saveManager().savePlayer(player);
 }
 

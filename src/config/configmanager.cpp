@@ -298,7 +298,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MAX_INBOX_ITEMS, "maxInboxItems", 0);
 	loadIntConfig(L, MAX_DAMAGE_REFLECTION, "maxDamageReflection", 200);
 	loadIntConfig(L, MAX_ELEMENTAL_RESISTANCE, "maxElementalResistance", 200);
+	loadIntConfig(L, MAX_MARKET_NON_STACKABLE_ITEMS_PER_OFFER, "maxMarketNonStackableItemsPerOffer", 400);
 	loadIntConfig(L, MAX_MARKET_OFFERS_AT_A_TIME_PER_PLAYER, "maxMarketOffersAtATimePerPlayer", 100);
+	loadIntConfig(L, MAX_MARKET_STACKABLE_ITEMS_PER_OFFER, "maxMarketStackableItemsPerOffer", 64000);
 	loadIntConfig(L, MAX_MESSAGEBUFFER, "maxMessageBuffer", 4);
 	loadIntConfig(L, MAX_PACKETS_PER_SECOND, "maxPacketsPerSecond", 25);
 	loadIntConfig(L, MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT, "maxPlayersOutsidePZPerAccount", 1);

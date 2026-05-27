@@ -10734,25 +10734,65 @@ std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_
 }
 
 /**
-    This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
+    This function returns matching locker items and their total count from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
     @param depotLocker The instance of DepotLocker from which to retrieve items.
     @param tier The 8-bit byte that specifies the level of the tier to search.
     @param itemId The 16-bit integer that specifies the ID of the item to search for.
-    @return A pair of an array of items and a 16-bit integer, where the array of items is filled with all items from the
-    locker with the specified id and the 16-bit integer is the total items found.
+    @param maxCount Optional early stop once this amount has been found.
+    @return A pair of an array of items and an integer count, where the array of items is filled with matching items from
+    the locker with the specified id and the integer is the total amount found.
     */
 
-std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> Player::getLockerItemsAndCountById(const std::shared_ptr<DepotLocker> &depotLocker, uint8_t tier, uint16_t itemId) const {
+std::pair<std::vector<std::shared_ptr<Item>>, uint32_t> Player::getLockerItemsAndCountById(const std::shared_ptr<DepotLocker> &depotLocker, uint8_t tier, uint16_t itemId, uint32_t maxCount) const {
+	if (!depotLocker) {
+		g_logger().error("{} - Depot locker is nullptr", __FUNCTION__);
+		return {};
+	}
+
 	std::vector<std::shared_ptr<Item>> lockerItems;
-	const auto &[itemVector, itemMap] = requestLockerItems(depotLocker, false, tier);
-	uint16_t totalCount = 0;
-	for (const auto &item : itemVector) {
-		if (!item || item->getID() != itemId) {
+	uint32_t totalCount = 0;
+	std::vector<std::shared_ptr<Container>> containers { depotLocker };
+
+	for (size_t i = 0; i < containers.size(); ++i) {
+		const auto &container = containers[i];
+		if (!container) {
 			continue;
 		}
 
-		totalCount++;
-		lockerItems.emplace_back(item);
+		for (const auto &item : container->getItemList()) {
+			if (!item) {
+				continue;
+			}
+
+			const auto &lockerContainer = item->getContainer();
+			if (lockerContainer && !lockerContainer->empty()) {
+				containers.emplace_back(lockerContainer);
+				continue;
+			}
+
+			if (item->getID() != itemId || item->getTier() != tier) {
+				continue;
+			}
+
+			const ItemType &itemType = Item::items[item->getID()];
+			if (item->isStoreItem() || itemType.wareId == 0) {
+				continue;
+			}
+
+			if (lockerContainer && (!itemType.isContainer() || lockerContainer->capacity() != itemType.maxItems)) {
+				continue;
+			}
+
+			if (!item->hasMarketAttributes()) {
+				continue;
+			}
+
+			totalCount += Item::countByType(item, -1);
+			lockerItems.emplace_back(item);
+			if (maxCount > 0 && totalCount >= maxCount) {
+				return std::make_pair(lockerItems, totalCount);
+			}
+		}
 	}
 
 	return std::make_pair(lockerItems, totalCount);

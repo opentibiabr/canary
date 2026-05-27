@@ -17,6 +17,7 @@
 #include "io/iologindata.hpp"
 #include "items/containers/inbox/inbox.hpp"
 #include "creatures/players/player.hpp"
+#include "utils/tools.hpp"
 
 uint8_t IOMarket::getTierFromDatabaseTable(const std::string &string) {
 	auto tier = static_cast<uint8_t>(std::atoi(string.c_str()));
@@ -175,43 +176,17 @@ void IOMarket::processExpiredOffers(const DBResult_ptr &result, bool) {
 				continue;
 			}
 
-			const auto &playerInbox = player->getInbox();
-
-			if (itemType.stackable) {
-				uint16_t tmpAmount = amount;
-				while (tmpAmount > 0) {
-					uint16_t stackCount = std::min<uint16_t>(100, tmpAmount);
-					const auto &item = Item::CreateItem(itemType.id, stackCount);
-					if (g_game().internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-						g_logger().error("[{}] Ocurred an error to add item with id {} to player {}", __FUNCTION__, itemType.id, player->getName());
-
-						break;
-					}
-
-					if (tier != 0) {
-						item->setTier(tier);
-					}
-
-					tmpAmount -= stackCount;
-				}
-			} else {
-				int32_t subType;
-				if (itemType.charges != 0) {
-					subType = itemType.charges;
-				} else {
-					subType = -1;
-				}
-
-				for (uint16_t i = 0; i < amount; ++i) {
-					const auto &item = Item::CreateItem(itemType.id, subType);
-					if (g_game().internalAddItem(playerInbox, item, INDEX_WHEREEVER, FLAG_NOLIMIT) != RETURNVALUE_NOERROR) {
-						break;
-					}
-
-					if (tier != 0) {
-						item->setTier(tier);
-					}
-				}
+			uint32_t actuallyAdded = 0;
+			const ReturnValue inboxInsertResult = player->addItemBatchToPaginedContainer(
+				player->getInbox(),
+				itemType.id,
+				amount,
+				actuallyAdded,
+				FLAG_NOLIMIT,
+				tier
+			);
+			if (inboxInsertResult != RETURNVALUE_NOERROR || actuallyAdded != amount) {
+				g_logger().error("{} - Failed to return expired offer item {} total amount {} to inbox for player {}, actually added {}, error code: {}", __FUNCTION__, itemType.id, amount, player->getName(), actuallyAdded, getReturnMessage(inboxInsertResult));
 			}
 
 			if (player->isOffline()) {

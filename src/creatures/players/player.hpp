@@ -1356,17 +1356,19 @@ public:
 	std::pair<std::vector<std::shared_ptr<Item>>, std::map<uint16_t, std::map<uint8_t, uint32_t>>> requestLockerItems(const std::shared_ptr<DepotLocker> &depotLocker, bool sendToClient = false, uint8_t tier = 0) const;
 
 	/**
-	This function returns a pair of an array of items and a 16-bit integer from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
+	This function returns matching locker items and their total count from a DepotLocker instance, a 8-bit byte and a 16-bit integer.
 	@param depotLocker The instance of DepotLocker from which to retrieve items.
 	@param tier The 8-bit byte that specifies the level of the tier to search.
 	@param itemId The 16-bit integer that specifies the ID of the item to search for.
-	@return A pair of an array of items and a 16-bit integer, where the array of items is filled with all items from the
-	locker with the specified id and the 16-bit integer is the total items found.
+	@param maxCount Optional early stop once this amount has been found.
+	@return A pair of an array of items and an integer count, where the array of items is filled with matching items from
+	the locker with the specified id and the integer is the total amount found.
 	*/
-	std::pair<std::vector<std::shared_ptr<Item>>, uint16_t> getLockerItemsAndCountById(
+	std::pair<std::vector<std::shared_ptr<Item>>, uint32_t> getLockerItemsAndCountById(
 		const std::shared_ptr<DepotLocker> &depotLocker,
 		uint8_t tier,
-		uint16_t itemId
+		uint16_t itemId,
+		uint32_t maxCount = 0
 	) const;
 
 	bool saySpell(

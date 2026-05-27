@@ -439,6 +439,8 @@ marketRefreshPricesInterval = 30
 premiumToCreateMarketOffer = true
 checkExpiredMarketOffersEachMinutes = 60
 maxMarketOffersAtATimePerPlayer = 100
+maxMarketNonStackableItemsPerOffer = 400
+maxMarketStackableItemsPerOffer = 64000
 
 -- MySQL
 mysqlHost = "127.0.0.1"

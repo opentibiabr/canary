@@ -440,6 +440,46 @@ QuestDoorAction = {
 			{ x = 32780, y = 31208, z = 7 },
 		},
 	},
+	-- Blood Brothers Quest
+	[Storage.Quest.U8_4.BloodBrothers.BloodCrystalDoor] = {
+		itemId = false,
+		itemPos = { { x = 32776, y = 31107, z = 10 } },
+	},
+	[Storage.Quest.U8_4.BloodBrothers.LibraryDoor] = {
+		itemId = 8259,
+		itemPos = {
+			{ x = 32956, y = 31481, z = 6 },
+			{ x = 32948, y = 31465, z = 7 },
+		},
+	},
+	[Storage.Quest.U8_4.BloodBrothers.BorethDoor] = {
+		itemId = 8259,
+		itemPos = {
+			{ x = 32950, y = 31474, z = 6 },
+			{ x = 32958, y = 31465, z = 7 },
+		},
+	},
+	[Storage.Quest.U8_4.BloodBrothers.LersatioDoor] = {
+		itemId = 8259,
+		itemPos = {
+			{ x = 32956, y = 31468, z = 6 },
+			{ x = 32953, y = 31460, z = 7 },
+		},
+	},
+	[Storage.Quest.U8_4.BloodBrothers.Arthei_Marziel_Door] = {
+		itemId = 8259,
+		itemPos = {
+			{ x = 32950, y = 31464, z = 6 },
+			{ x = 32953, y = 31451, z = 4 },
+			{ x = 32956, y = 31446, z = 8 },
+		},
+	},
+	[Storage.Quest.U8_4.BloodBrothers.CastleHiddenEntrance] = {
+		itemId = 8261,
+		itemPos = {
+			{ x = 32953, y = 31469, z = 7 },
+		},
+	},
 	-- Children of the revolution door
 	[Storage.Quest.U8_54.ChildrenOfTheRevolution.Mission03] = {
 		itemId = false,
@@ -889,41 +929,6 @@ QuestDoorAction = {
 		itemId = 8259,
 		itemPos = {
 			{ x = 32953, y = 31460, z = 9 },
-		},
-	},
-	[Storage.Quest.U8_4.BloodBrothers.LibraryDoor] = {
-		itemId = 8259,
-		itemPos = {
-			{ x = 32956, y = 31481, z = 6 },
-			{ x = 32948, y = 31465, z = 7 },
-		},
-	},
-	[Storage.Quest.U8_4.BloodBrothers.BorethDoor] = {
-		itemId = 8259,
-		itemPos = {
-			{ x = 32950, y = 31474, z = 6 },
-			{ x = 32958, y = 31465, z = 7 },
-		},
-	},
-	[Storage.Quest.U8_4.BloodBrothers.LersatioDoor] = {
-		itemId = 8259,
-		itemPos = {
-			{ x = 32956, y = 31468, z = 6 },
-			{ x = 32953, y = 31460, z = 7 },
-		},
-	},
-	[Storage.Quest.U8_4.BloodBrothers.Arthei_Marziel_Door] = {
-		itemId = 8259,
-		itemPos = {
-			{ x = 32950, y = 31464, z = 6 },
-			{ x = 32953, y = 31451, z = 4 },
-			{ x = 32956, y = 31446, z = 8 },
-		},
-	},
-	[Storage.Quest.U8_4.BloodBrothers.CastleHiddenEntrance] = {
-		itemId = 8261,
-		itemPos = {
-			{ x = 32953, y = 31469, z = 7 },
 		},
 	},
 }

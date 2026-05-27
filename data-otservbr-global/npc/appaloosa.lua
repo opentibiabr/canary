@@ -51,6 +51,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local RAID_STORAGE = 120226
+
 local waveEvent = nil
 
 local raidAreas = {
@@ -69,16 +70,24 @@ local stableAreaAppaloosa = {
 }
 
 local function removeStableHorses()
-	for x = stableAreaPalomino.from.x, stableAreaPalomino.to.x do
-		for y = stableAreaPalomino.from.y, stableAreaPalomino.to.y do
-			local tile = Tile(Position(x, y, stableAreaPalomino.from.z))
-			if tile then
-				local creatures = tile:getCreatures()
-				if creatures then
-					for _, creature in ipairs(creatures) do
-						local monster = Monster(creature)
-						if monster and (monster:getName() == "Horse" or monster:getName() == "Grey Horse" or monster:getName() == "Brown Horse") then
-							monster:remove()
+	local horseNames = { "Horse", "Grey Horse", "Brown Horse" }
+	local function clearArea(area)
+		for x = area.from.x, area.to.x do
+			for y = area.from.y, area.to.y do
+				local tile = Tile(Position(x, y, area.from.z))
+				if tile then
+					local creatures = tile:getCreatures()
+					if creatures then
+						for _, creature in ipairs(creatures) do
+							local monster = Monster(creature)
+							if monster then
+								for _, name in ipairs(horseNames) do
+									if monster:getName() == name then
+										monster:remove()
+										break
+									end
+								end
+							end
 						end
 					end
 				end
@@ -86,25 +95,24 @@ local function removeStableHorses()
 		end
 	end
 
-	for x = stableAreaAppaloosa.from.x, stableAreaAppaloosa.to.x do
-		for y = stableAreaAppaloosa.from.y, stableAreaAppaloosa.to.y do
-			local tile = Tile(Position(x, y, stableAreaAppaloosa.from.z))
-			if tile then
-				local creatures = tile:getCreatures()
-				if creatures then
-					for _, creature in ipairs(creatures) do
-						local monster = Monster(creature)
-						if monster and (monster:getName() == "Horse" or monster:getName() == "Grey Horse" or monster:getName() == "Brown Horse") then
-							monster:remove()
-						end
-					end
-				end
-			end
-		end
-	end
+	clearArea(stableAreaPalomino)
+	clearArea(stableAreaAppaloosa)
 end
 
-local function spawnRaidHorses()
+local spawnRaidHorses
+
+local function scheduleNextWave()
+	if waveEvent then
+		stopEvent(waveEvent)
+		waveEvent = nil
+	end
+	waveEvent = addEvent(function()
+		waveEvent = nil
+		spawnRaidHorses()
+	end, 3 * 60 * 60 * 1000)
+end
+
+spawnRaidHorses = function()
 	local raidEndTime = Game.getStorageValue(RAID_STORAGE) or 0
 
 	if raidEndTime <= os.time() then
@@ -115,29 +123,26 @@ local function spawnRaidHorses()
 		return
 	end
 
+	local raidHorseNames = {
+		"Wild Horse",
+		"Horse",
+		"Grey Horse",
+		"Brown Horse",
+	}
+
+	local function getRandomRaidPosition(area)
+		return Position(math.random(area.from.x, area.to.x), math.random(area.from.y, area.to.y), area.from.z)
+	end
+
 	for _, area in ipairs(raidAreas) do
-		for i = 1, 3 do
-			local x1 = math.random(area.from.x, area.to.x)
-			local y1 = math.random(area.from.y, area.to.y)
-			Game.createMonster("Wild Horse", Position(x1, y1, area.from.z), true, true)
-
-			local x2 = math.random(area.from.x, area.to.x)
-			local y2 = math.random(area.from.y, area.to.y)
-			Game.createMonster("Horse", Position(x2, y2, area.from.z), true, true)
-
-			local x3 = math.random(area.from.x, area.to.x)
-			local y3 = math.random(area.from.y, area.to.y)
-			Game.createMonster("Grey Horse", Position(x3, y3, area.from.z), true, true)
-
-			local x4 = math.random(area.from.x, area.to.x)
-			local y4 = math.random(area.from.y, area.to.y)
-			Game.createMonster("Brown Horse", Position(x4, y4, area.from.z), true, true)
+		for _ = 1, 3 do
+			for _, monsterName in ipairs(raidHorseNames) do
+				Game.createMonster(monsterName, getRandomRaidPosition(area), true, true)
+			end
 		end
 	end
 
-	waveEvent = addEvent(function()
-		spawnRaidHorses()
-	end, 3 * 60 * 60 * 1000)
+	scheduleNextWave()
 end
 
 local function tryStartWildHorsesRaid()
@@ -150,15 +155,9 @@ local function tryStartWildHorsesRaid()
 
 	local random = math.random(10)
 	if random <= 3 then
-		if waveEvent then
-			stopEvent(waveEvent)
-			waveEvent = nil
-		end
-
 		Game.setStorageValue(RAID_STORAGE, currentTime + 86400)
 		removeStableHorses()
 		spawnRaidHorses()
-
 		return true
 	end
 
@@ -181,28 +180,24 @@ local function creatureSayCallback(npc, creature, type, message)
 		end
 		npcHandler:say("We can bring you to Thais with one of our coaches for 125 gold. Are you interested?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif table.contains({ "rent", "horses" }, message) then
+	elseif MsgContains(message, "rent") or MsgContains(message, "horses") then
 		local raidEndTime = Game.getStorageValue(RAID_STORAGE) or 0
 		if raidEndTime > os.time() then
 			npcHandler:say("Right now our horses are on the loose. As long as not enough horses are chased back into the barn there are no horses to rent.", npc, creature)
 			return true
 		end
-
 		npcHandler:say("Do you want to rent a horse for one day at a price of 500 gold?", npc, creature)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "yes") then
-		local player = Player(creature)
 		if npcHandler:getTopic(playerId) == 1 then
 			if player:isPzLocked() then
 				npcHandler:say("First get rid of those blood stains!", npc, creature)
 				return true
 			end
-
 			if not player:removeMoneyBank(125) then
 				npcHandler:say("You don't have enough money.", npc, creature)
 				return true
 			end
-
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			local destination = Position(32449, 32226, 7)
 			player:teleportTo(destination)
@@ -213,12 +208,10 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You already have a horse.", npc, creature)
 				return true
 			end
-
 			if not player:removeMoneyBank(500) then
 				npcHandler:say("You do not have enough money to rent a horse!", npc, creature)
 				return true
 			end
-
 			local mountId = { 22, 25, 26 }
 			local selectedMount = mountId[math.random(#mountId)]
 			player:addMount(selectedMount)
@@ -241,3 +234,10 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcType:register(npcConfig)
+
+do
+	local raidEndTime = Game.getStorageValue(RAID_STORAGE) or 0
+	if raidEndTime > os.time() then
+		scheduleNextWave()
+	end
+end

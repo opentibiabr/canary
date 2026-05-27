@@ -67,7 +67,7 @@ local config = {
 	[21186] = { NAME = "Walker", ID = 43, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 2, "This walker is incompatible with your control unit." }, { 4, "This walker is incompatible with your control unit." } }, SUCCESS_MSG = "You tamed the walker.", ACHIEV = "Gear Up" },
 	[17858] = { NAME = "Water Buffalo", ID = 35, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 30, FAIL_MSG = { { 1, "The water buffalo got scared and ran away." }, { 3, "The water buffalo is trying to nibble." } }, SUCCESS_MSG = "You tamed a water buffalo.", ACHIEV = "Swamp Beast" },
 	[37397] = { NAME = "wind-up loco", ID = 194, BREAK = false, TYPE = TYPE_ITEM, CHANCE = 100, FAIL_MSG = {}, SUCCESS_MSG = "You wind the small locomotive up. It starts to move ... and grows!", ACHIEV = "Engine Driver" },
-	[12802] = { NAME = "Wild Horse", ID = 17, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 7, SUCCESS_MSG = "*snort* The horse eats the sugar oat and accepts you as its new master.", ACHIEV = "Lucky Horseshoe" },
+	[12802] = { NAME = "Wild Horse", ID = 17, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 3, FLEE_CHANCE = 3, SUCCESS_MSG = "*snort* The horse eats the sugar oat and accepts you as its new master.", ACHIEV = "Lucky Horseshoe" },
 	[34258] = { NAME = "White Lion", ID = 174, BREAK = true, TYPE = TYPE_MONSTER, CHANCE = 50, FAIL_MSG = { { 1, "The White Lion runs away." }, { 2, "The White Lion ate the flower." } }, SUCCESS_MSG = "You have tamed the white lion.", ACHIEV = "Well Roared, Lion!" },
 	[43901] = { NAME = "Foxmouse", ID = 218, BREAK = false, TYPE = TYPE_MONSTER, CHANCE = 100, FAIL_MSG = { { 1, "The foxmouse ran away." } }, SUCCESS_MSG = "You have tamed the foxmouse.", ACHIEV = "Like Fox and Mouse" },
 }
@@ -137,7 +137,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 		end
 	end
 
-	--Monster Mount
+	-- Monster Mount
 	if targetMonster ~= nil and mount.TYPE == TYPE_MONSTER then
 		if Creature(itemEx.uid):getMaster() then
 			player:sendCancelMessage("You cannot tame a summon.")
@@ -145,7 +145,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 		end
 
 		if mount.NAME == "Wild Horse" then
-			if rand <= 3 then
+			if rand <= mount.CHANCE then
 				if mount.ACHIEV then
 					player:addAchievement(mount.ACHIEV)
 				end
@@ -158,9 +158,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 				return true
 			end
 
-			local failRoll = math.random(100)
-
-			if failRoll <= 3 then
+			if math.random(100) <= mount.FLEE_CHANCE then
 				player:say("With its last strength the horse runs to safety.", TALKTYPE_MONSTER_SAY)
 				toPosition:sendMagicEffect(CONST_ME_POFF)
 				targetMonster:remove()
@@ -212,7 +210,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 			Item(item.uid):remove(1)
 			return true
 		end
-		--NPC Mount
+		-- NPC Mount
 	elseif targetNpc ~= nil and mount.TYPE == TYPE_NPC then
 		if mount.NAME == targetNpc:getName() then
 			if rand > mount.CHANCE then
@@ -229,7 +227,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 			Item(item.uid):remove(1)
 			return true
 		end
-		--Item Mount
+		-- Item Mount
 	elseif targetItem ~= nil and mount.TYPE == TYPE_ITEM then
 		if mount.NAME == targetItem:getName() then
 			if rand < mount.CHANCE then
@@ -249,7 +247,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 			Item(item.uid):remove(1)
 			return true
 		end
-		--Action Mount
+		-- Action Mount
 	elseif itemEx.actionid > 0 and mount.TYPE == TYPE_ACTION then
 		if mount.NAME == itemEx.actionid then
 			if rand > mount.CHANCE then
@@ -266,7 +264,7 @@ function mounts.onUse(cid, item, fromPosition, itemEx, toPosition)
 			Item(item.uid):remove(1)
 			return true
 		end
-		--Unique Mount
+		-- Unique Mount
 	elseif itemEx.uid <= 65535 and mount.TYPE == TYPE_UNIQUE then
 		if mount.NAME == itemEx.uid then
 			if rand > mount.CHANCE then

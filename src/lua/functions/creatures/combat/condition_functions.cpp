@@ -38,6 +38,10 @@ void ConditionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Condition", "addDamage", ConditionFunctions::luaConditionAddDamage);
 }
 
+/***
+ * @class Condition
+ * @overload fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?
+ */
 int ConditionFunctions::luaConditionCreate(lua_State* L) {
 	// Condition(conditionType, conditionId = CONDITIONID_COMBAT, subid = 0, isPersistent = false)
 	const ConditionType_t conditionType = Lua::getNumber<ConditionType_t>(L, 2);

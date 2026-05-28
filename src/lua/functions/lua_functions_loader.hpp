@@ -296,7 +296,9 @@ public:
 	template <class T>
 	static constexpr std::string_view getUserdataMetatableName() {
 		using RawT = std::remove_cv_t<T>;
-		static_assert(requires { LuaUserdataTraits<RawT>::name; }, "LuaUserdataTraits<T>::name must be defined for shared userdata");
+		static_assert(
+			requires { LuaUserdataTraits<RawT>::name; }, "LuaUserdataTraits<T>::name must be defined for shared userdata"
+		);
 		return LuaUserdataTraits<RawT>::name;
 	}
 
@@ -331,12 +333,11 @@ public:
 	static void pushBorrowedSharedUserdata(lua_State* L, T &value) {
 		static_assert(!std::is_const_v<T>, "pushBorrowedSharedUserdata<T> requires a non-const borrowed type");
 		// This only prevents invalid delete and releases the control block; callers must not keep it past the callback.
-		pushSharedUserdata<T>(L, std::shared_ptr<T>(&value, [](T*) { }));
+		pushSharedUserdata<T>(L, std::shared_ptr<T>(&value, [](T*) {}));
 	}
 
 	template <class T>
-	[[deprecated("use pushSharedUserdata<T> or pushBorrowedSharedUserdata<T>")]]
-	static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
+	[[deprecated("use pushSharedUserdata<T> or pushBorrowedSharedUserdata<T>")]] static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
 		// This is basically malloc from C++ point of view.
 		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
 		// Copy constructor, bumps ref count.
@@ -344,8 +345,7 @@ public:
 	}
 
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
-	[[deprecated("use registerSharedClass<T> with LuaUserdataTraits<T>")]]
-	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
+	[[deprecated("use registerSharedClass<T> with LuaUserdataTraits<T>")]] static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 	static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);
 	static void registerTable(lua_State* L, const std::string &tableName);

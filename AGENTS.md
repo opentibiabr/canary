@@ -45,6 +45,20 @@ cmake --build --preset windows-release --target canary
 - If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
 - Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
 
+## Precompiled Header Policy
+
+- The project uses `src/pch.hpp` for common standard/library headers.
+- Do not add unguarded standard/library includes that are already provided by `src/pch.hpp`.
+- If a source or header needs a PCH-provided include for builds without precompiled headers, wrap it like:
+
+```cpp
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
+```
+
+- If a new broadly used standard/library header is required in PCH-enabled builds, add it to `src/pch.hpp` and keep local fallback includes guarded by `#ifndef USE_PRECOMPILED_HEADERS`.
+
 ## Lua Shared Userdata Gate
 
 - Treat Lua bindings that store `std::shared_ptr<T>` in userdata as high-risk ownership code.

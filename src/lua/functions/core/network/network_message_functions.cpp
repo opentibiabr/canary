@@ -9,7 +9,9 @@
 
 #include "lua/functions/core/network/network_message_functions.hpp"
 
-#include <memory>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
 
 #include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/player.hpp"

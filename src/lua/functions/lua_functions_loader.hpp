@@ -14,9 +14,11 @@
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
 
-#include <memory>
-#include <string_view>
-#include <type_traits>
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+	#include <string_view>
+	#include <type_traits>
+#endif
 
 class Combat;
 class Condition;

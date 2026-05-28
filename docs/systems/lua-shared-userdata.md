@@ -112,3 +112,53 @@ cleanup code and reduces the impact of accidental repeated cleanup.
 
 The PR also migrates the critical `KV`, `Condition`, and `NetworkMessage`
 bindings to the typed path.
+
+## Follow-up hardening
+
+After the critical leak fixes, the next risky pattern was the legacy shared
+class registration:
+
+```cpp
+Lua::registerSharedClass(L, "TypeName", "", TypeFunctions::luaCreate);
+```
+
+That overload installs `Lua::luaGarbageCollection`, which treats the userdata as
+`std::shared_ptr<SharedObject>`. This is not correct for userdata that actually
+stores `std::shared_ptr<T>` where `T` does not inherit from `SharedObject`.
+
+The non-`SharedObject` shared userdata bindings were migrated to typed
+finalizers as well:
+
+- `Action`
+- `BatchUpdate`
+- `Charm`
+- `Combat`
+- `CreatureEvent`
+- `EventCallback`
+- `GlobalEvent`
+- `Group`
+- `Guild`
+- `Loot`
+- `ModalWindow`
+- `MonsterSpell`
+- `MonsterType`
+- `Mount`
+- `Shop`
+- `Spell`
+- `TalkAction`
+- `Town`
+- `Vocation`
+- `Weapon`
+- `Zone`
+
+Some legacy `registerSharedClass(L, ...)` calls can still exist for userdata
+whose stored type is part of the `SharedObject` hierarchy, and `Position` is a
+Lua table rather than a shared userdata object. New code should still prefer the
+typed helpers.
+
+Do not mechanically migrate polymorphic core userdata such as `Creature`,
+`Player`, `Monster`, `Npc`, `Item`, `Container`, `Tile`, or `Teleport` without a
+separate audit. Those paths can push a userdata that stores a base
+`std::shared_ptr<T>` and then assign a more specific Lua metatable. A typed
+finalizer is only correct when the finalizer type matches the actual
+`std::shared_ptr<T>` object stored in the userdata slot.

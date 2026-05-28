@@ -9,7 +9,6 @@
 ---@alias TileState integer
 
 ---@class Action
----@overload fun(): Action
 Action = {}
 
 ---@param aids number
@@ -162,7 +161,6 @@ function Charm:points(arg2) end
 function Charm:type(arg2) end
 
 ---@class Combat
----@overload fun(): Combat
 ---@operator eq(Combat):boolean
 Combat = {}
 
@@ -202,7 +200,6 @@ function Combat:setOrigin(origin) end
 function Combat:setParameter(key, value) end
 
 ---@class Condition
----@overload fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?
 ---@operator eq(Condition):boolean
 Condition = {}
 
@@ -215,8 +212,8 @@ function Condition:addDamage(rounds, time, value) end
 ---@return nil|Condition
 function Condition:clone() end
 
----@return nil
-function Condition:delete() end
+---@return any
+function Condition.delete() end
 
 ---@return number|nil
 function Condition:getEndTime() end
@@ -609,7 +606,6 @@ function Creature:teleportTo(position, pushMovement) end
 function Creature:unregisterEvent(name) end
 
 ---@class CreatureEvent
----@overload fun(eventName: string): CreatureEvent
 CreatureEvent = {}
 
 ---@param callback fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
@@ -978,7 +974,6 @@ function Game.setWorldType(type) end
 function Game.startRaid(raidName) end
 
 ---@class GlobalEvent
----@overload fun(name: string): GlobalEvent
 GlobalEvent = {}
 
 ---@param interval number
@@ -2538,7 +2533,6 @@ function MoveEvent:uid(ids) end
 function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 
 ---@class NetworkMessage
----@overload fun(): NetworkMessage
 ---@operator eq(NetworkMessage):boolean
 NetworkMessage = {}
 
@@ -2592,7 +2586,7 @@ function NetworkMessage:addU32(value) end
 ---@return boolean|nil
 function NetworkMessage:addU64(value) end
 
----@return nil
+---@return any
 function NetworkMessage.delete() end
 
 ---@return number|nil
@@ -4195,7 +4189,7 @@ function Position:getPathTo(pos, minTargetDist, maxTargetDist, fullPathSearch, c
 ---@return nil|Tile
 function Position:getTile() end
 
----@return nil
+---@return table|nil
 function Position:getZones() end
 
 ---@param positionEx Position
@@ -4319,7 +4313,6 @@ function Spdlog.info(text) end
 function Spdlog.warn(text) end
 
 ---@class Spell
----@overload fun(nameOrTypeOrId: string|integer): Spell?
 ---@operator eq(Spell):boolean
 Spell = {}
 
@@ -4479,7 +4472,6 @@ function Spell:vocation(vocation) end
 function Spell:words(words, separator) end
 
 ---@class TalkAction
----@overload fun(...: string): TalkAction
 TalkAction = {}
 
 ---@return boolean|string
@@ -4733,7 +4725,6 @@ function Vocation:getRequiredSkillTries(skillType, skillLevel) end
 function Vocation:getSoulGainTicks() end
 
 ---@class Weapon
----@overload fun(type: integer): Weapon?
 Weapon = {}
 
 ---@param callback string

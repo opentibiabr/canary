@@ -758,8 +758,7 @@ int CreatureFunctions::luaCreatureGetCondition(lua_State* L) {
 
 	const auto &condition = creature->getCondition(conditionType, conditionId, subId);
 	if (condition) {
-		Lua::pushUserdata<const Condition>(L, condition);
-		Lua::setWeakMetatable(L, -1, "Condition");
+		Lua::pushSharedUserdata<Condition>(L, condition);
 	} else {
 		lua_pushnil(L);
 	}

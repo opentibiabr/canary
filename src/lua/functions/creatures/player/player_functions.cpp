@@ -4967,8 +4967,7 @@ int PlayerFunctions::luaPlayerKV(lua_State* L) {
 		return 1;
 	}
 
-	Lua::pushUserdata<KV>(L, player->kv());
-	Lua::setMetatable(L, -1, "KV");
+	Lua::pushSharedUserdata<KV>(L, player->kv());
 	return 1;
 }
 

@@ -14,7 +14,12 @@
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
 
+#include <memory>
+#include <string_view>
+#include <type_traits>
+
 class Combat;
+class Condition;
 class Creature;
 class Cylinder;
 class Game;
@@ -25,10 +30,29 @@ class Thing;
 class Guild;
 class Zone;
 class KV;
+class NetworkMessage;
 
 using lua_Number = double;
 
 struct LuaVariant;
+
+template <typename T>
+struct LuaUserdataTraits;
+
+template <>
+struct LuaUserdataTraits<KV> {
+	static constexpr std::string_view name = "KV";
+};
+
+template <>
+struct LuaUserdataTraits<NetworkMessage> {
+	static constexpr std::string_view name = "NetworkMessage";
+};
+
+template <>
+struct LuaUserdataTraits<Condition> {
+	static constexpr std::string_view name = "Condition";
+};
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -270,6 +294,48 @@ public:
 	}
 
 	template <class T>
+	static constexpr std::string_view getUserdataMetatableName() {
+		using RawT = std::remove_cv_t<T>;
+		static_assert(requires { LuaUserdataTraits<RawT>::name; }, "LuaUserdataTraits<T>::name must be defined for shared userdata");
+		return LuaUserdataTraits<RawT>::name;
+	}
+
+	template <class T>
+	static int luaSharedPtrGarbageCollection(lua_State* L) {
+		auto objPtr = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, 1));
+		if (!objPtr) {
+			return 0;
+		}
+
+		std::destroy_at(objPtr);
+		std::construct_at(objPtr);
+		return 0;
+	}
+
+	template <class T>
+	static void registerSharedClass(lua_State* L, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
+		const std::string className(getUserdataMetatableName<T>());
+		registerClass(L, className, baseClass, newFunction);
+		registerMetaMethod(L, className, "__gc", luaSharedPtrGarbageCollection<T>);
+	}
+
+	template <class T>
+	static void pushSharedUserdata(lua_State* L, std::shared_ptr<T> value) {
+		static_assert(!std::is_const_v<T>, "pushSharedUserdata<T> requires a non-const shared_ptr type");
+		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
+		new (userData) std::shared_ptr<T>(std::move(value));
+		setMetatable(L, -1, std::string(getUserdataMetatableName<T>()));
+	}
+
+	template <class T>
+	static void pushBorrowedSharedUserdata(lua_State* L, T &value) {
+		static_assert(!std::is_const_v<T>, "pushBorrowedSharedUserdata<T> requires a non-const borrowed type");
+		// This only prevents invalid delete and releases the control block; callers must not keep it past the callback.
+		pushSharedUserdata<T>(L, std::shared_ptr<T>(&value, [](T*) { }));
+	}
+
+	template <class T>
+	[[deprecated("use pushSharedUserdata<T> or pushBorrowedSharedUserdata<T>")]]
 	static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
 		// This is basically malloc from C++ point of view.
 		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
@@ -278,6 +344,7 @@ public:
 	}
 
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
+	[[deprecated("use registerSharedClass<T> with LuaUserdataTraits<T>")]]
 	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 	static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);

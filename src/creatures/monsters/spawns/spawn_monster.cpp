@@ -298,10 +298,11 @@ void SpawnMonster::checkSpawnMonster() {
 			spawnBlockedByPlayer = mType->info.isBlockable && findPlayer(sb.pos);
 		}
 
-		if (!mType->canSpawn(sb.pos) || (mType->info.isBlockable && findPlayer(sb.pos))) {
+		if (!mType->canSpawn(sb.pos) || spawnBlockedByPlayer) {
 			sb.lastSpawn = OTSYS_TIME();
 			continue;
 		}
+
 		if (OTSYS_TIME() < sb.lastSpawn + sb.interval) {
 			continue;
 		}

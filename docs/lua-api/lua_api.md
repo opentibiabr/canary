@@ -35,9 +35,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Action
 
-- Overloads:
-  - `fun(): Action`
-
 #### `Action:aid(aids: number)`
 
 - Returns: `boolean`
@@ -206,9 +203,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Combat
 
-- Overloads:
-  - `fun(): Combat`
-
 #### `Combat:addCondition(condition: Condition)`
 
 - Returns: `boolean|nil`
@@ -246,9 +240,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Condition
 
-- Overloads:
-  - `fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?`
-
 #### `Condition:addDamage(rounds: number, time: number, value: number)`
 
 - Returns: `boolean|nil`
@@ -259,7 +250,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Condition`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
 
-#### `Condition:delete()`
+#### `Condition.delete()`
 
 - Returns: `nil`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
@@ -762,9 +753,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### CreatureEvent
 
-- Overloads:
-  - `fun(eventName: string): CreatureEvent`
-
 #### `CreatureEvent:onAdvance(callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean)`
 
 - Returns: `boolean`
@@ -1174,9 +1162,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 ### GlobalEvent
-
-- Overloads:
-  - `fun(name: string): GlobalEvent`
 
 #### `GlobalEvent:interval(interval: number)`
 
@@ -3229,9 +3214,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
 ### NetworkMessage
-
-- Overloads:
-  - `fun(): NetworkMessage`
 
 #### `NetworkMessage:add16(value: number)`
 
@@ -5313,7 +5295,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Position:getZones()`
 
-- Returns: `nil`
+- Returns: `table|nil`
 - Source: `src/lua/functions/map/position_functions.cpp`
 
 #### `Position:isSightClear(positionEx: Position, sameFloor?: boolean)`
@@ -5448,9 +5430,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/core/libs/logger_functions.cpp`
 
 ### Spell
-
-- Overloads:
-  - `fun(nameOrTypeOrId: string|integer): Spell?`
 
 #### `Spell:allowFarUse(value?: boolean)`
 
@@ -5643,9 +5622,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 ### TalkAction
-
-- Overloads:
-  - `fun(...: string): TalkAction`
 
 #### `TalkAction:getDescription()`
 
@@ -5995,9 +5971,6 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/player/vocation_functions.cpp`
 
 ### Weapon
-
-- Overloads:
-  - `fun(type: integer): Weapon?`
 
 #### `Weapon:action(callback: string)`
 

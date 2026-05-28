@@ -20,7 +20,7 @@ on:
         default: true
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -108,9 +108,33 @@ jobs:
       - name: Check generated Lua API docs are current
         if: matrix.buildtype == 'linux-release'
         shell: bash
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          CURRENT_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           build/${{ matrix.buildtype }}/bin/canary --generate-lua-api-docs-only
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "$PR_HEAD_REPO" == "$CURRENT_REPO" ]]; then
+            if [[ ! "$PR_HEAD_REF" =~ ^[-A-Za-z0-9_./]+$ ]]; then
+              echo "Unsafe pull request branch name: $PR_HEAD_REF" >&2
+              exit 1
+            fi
+            if ! git diff --quiet -- docs/lua-api; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add docs/lua-api
+              git commit -m "ci(lua-docs): regenerate lua api docs"
+              if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                echo "Initial docs push failed, retrying after fetch/rebase..."
+                git fetch origin "$PR_HEAD_REF"
+                git rebase "origin/$PR_HEAD_REF"
+                if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                  echo "Docs push still failed after retry (likely concurrent push). Continuing without failing this step."
+                fi
+              fi
+            fi
+          fi
           git diff --exit-code -- docs/lua-api
 
       - name: Smoke test Canary datapack runtime

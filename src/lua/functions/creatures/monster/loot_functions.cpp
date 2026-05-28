@@ -15,7 +15,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void LootFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Loot", "", LootFunctions::luaCreateLoot);
+	Lua::registerSharedClass<Loot>(L, "", LootFunctions::luaCreateLoot);
 
 	Lua::registerMethod(L, "Loot", "setId", LootFunctions::luaLootSetId);
 	Lua::registerMethod(L, "Loot", "setIdFromName", LootFunctions::luaLootSetIdFromName);
@@ -53,8 +53,7 @@ int LootFunctions::luaCreateLoot(lua_State* L) {
 		loot = std::make_shared<Loot>(monsterName);
 	}
 
-	Lua::pushUserdata<Loot>(L, loot);
-	Lua::setMetatable(L, -1, "Loot");
+	Lua::pushSharedUserdata<Loot>(L, loot);
 	return 1;
 }
 

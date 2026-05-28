@@ -45,6 +45,21 @@ cmake --build --preset windows-release --target canary
 - If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
 - Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
 
+## Lua Shared Userdata Gate
+
+- Treat Lua bindings that store `std::shared_ptr<T>` in userdata as high-risk ownership code.
+- Before changing shared userdata bindings, read `docs/systems/lua-shared-userdata.md`.
+- New shared userdata types must define `LuaUserdataTraits<T>::name` and use `Lua::registerSharedClass<T>`, `Lua::pushSharedUserdata<T>`, or `Lua::pushBorrowedSharedUserdata<T>`.
+- Do not add new uses of `Lua::pushUserdata<T>(..., std::shared_ptr<T>)` followed by manual `Lua::setMetatable`.
+- Do not use `Lua::setWeakMetatable` for userdata that stores `std::shared_ptr<T>`; it removes `__gc` and can leak the stored C++ object.
+- Do not wrap borrowed objects as `std::shared_ptr<T>(&object)` without a no-op deleter. Prefer `Lua::pushBorrowedSharedUserdata<T>`.
+- When reviewing or validating Lua binding changes, run these checks from the repository root and investigate every match:
+
+```sh
+rg -n "pushUserdata<.*std::shared_ptr|setWeakMetatable|std::shared_ptr<[^>]+>\\(&" src/lua
+rg -n "registerSharedClass\\(L," src/lua
+```
+
 ## Docker Quickstart Policy
 
 - The Docker quickstart is intended for non-expert users to run a local Canary stack with minimal setup.

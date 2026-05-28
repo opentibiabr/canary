@@ -14,7 +14,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void GroupFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Group", "", GroupFunctions::luaGroupCreate);
+	Lua::registerSharedClass<Group>(L, "", GroupFunctions::luaGroupCreate);
 	Lua::registerMetaMethod(L, "Group", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "Group", "getId", GroupFunctions::luaGroupGetId);
@@ -32,8 +32,7 @@ int GroupFunctions::luaGroupCreate(lua_State* L) {
 
 	const auto &group = g_game().groups.getGroup(id);
 	if (group) {
-		Lua::pushUserdata<Group>(L, group);
-		Lua::setMetatable(L, -1, "Group");
+		Lua::pushSharedUserdata<Group>(L, group);
 	} else {
 		lua_pushnil(L);
 	}

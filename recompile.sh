@@ -144,9 +144,9 @@ setup_canary() {
 
 move_executable() {
 	local executable_name="canary"
-	if [[ -e "$executable_name" ]]; then
+	if [[ -f "$executable_name" ]]; then
 		info "Saving previous build as ${executable_name}.old"
-		mv "$executable_name" "${executable_name}.old"
+		mv -f "$executable_name" "${executable_name}.old"
 	fi
 }
 

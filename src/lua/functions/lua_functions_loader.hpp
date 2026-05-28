@@ -33,6 +33,24 @@ class Guild;
 class Zone;
 class KV;
 class NetworkMessage;
+class Action;
+class TalkAction;
+class CreatureEvent;
+class GlobalEvent;
+class EventCallback;
+class Town;
+class Vocation;
+class Shop;
+class Loot;
+class MonsterSpell;
+class MonsterType;
+class Weapon;
+class Spell;
+class Charm;
+class BatchUpdate;
+struct ModalWindow;
+struct Group;
+struct Mount;
 
 using lua_Number = double;
 
@@ -54,6 +72,111 @@ struct LuaUserdataTraits<NetworkMessage> {
 template <>
 struct LuaUserdataTraits<Condition> {
 	static constexpr std::string_view name = "Condition";
+};
+
+template <>
+struct LuaUserdataTraits<Action> {
+	static constexpr std::string_view name = "Action";
+};
+
+template <>
+struct LuaUserdataTraits<BatchUpdate> {
+	static constexpr std::string_view name = "BatchUpdate";
+};
+
+template <>
+struct LuaUserdataTraits<Charm> {
+	static constexpr std::string_view name = "Charm";
+};
+
+template <>
+struct LuaUserdataTraits<Combat> {
+	static constexpr std::string_view name = "Combat";
+};
+
+template <>
+struct LuaUserdataTraits<CreatureEvent> {
+	static constexpr std::string_view name = "CreatureEvent";
+};
+
+template <>
+struct LuaUserdataTraits<EventCallback> {
+	static constexpr std::string_view name = "EventCallback";
+};
+
+template <>
+struct LuaUserdataTraits<GlobalEvent> {
+	static constexpr std::string_view name = "GlobalEvent";
+};
+
+template <>
+struct LuaUserdataTraits<Group> {
+	static constexpr std::string_view name = "Group";
+};
+
+template <>
+struct LuaUserdataTraits<Guild> {
+	static constexpr std::string_view name = "Guild";
+};
+
+template <>
+struct LuaUserdataTraits<Loot> {
+	static constexpr std::string_view name = "Loot";
+};
+
+template <>
+struct LuaUserdataTraits<ModalWindow> {
+	static constexpr std::string_view name = "ModalWindow";
+};
+
+template <>
+struct LuaUserdataTraits<MonsterSpell> {
+	static constexpr std::string_view name = "MonsterSpell";
+};
+
+template <>
+struct LuaUserdataTraits<MonsterType> {
+	static constexpr std::string_view name = "MonsterType";
+};
+
+template <>
+struct LuaUserdataTraits<Mount> {
+	static constexpr std::string_view name = "Mount";
+};
+
+template <>
+struct LuaUserdataTraits<Shop> {
+	static constexpr std::string_view name = "Shop";
+};
+
+template <>
+struct LuaUserdataTraits<Spell> {
+	static constexpr std::string_view name = "Spell";
+};
+
+template <>
+struct LuaUserdataTraits<TalkAction> {
+	static constexpr std::string_view name = "TalkAction";
+};
+
+template <>
+struct LuaUserdataTraits<Town> {
+	static constexpr std::string_view name = "Town";
+};
+
+template <>
+struct LuaUserdataTraits<Vocation> {
+	static constexpr std::string_view name = "Vocation";
+};
+
+template <>
+struct LuaUserdataTraits<Weapon> {
+	static constexpr std::string_view name = "Weapon";
+};
+
+template <>
+struct LuaUserdataTraits<Zone> {
+	static constexpr std::string_view name = "Zone";
 };
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)

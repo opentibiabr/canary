@@ -910,8 +910,7 @@ int PlayerFunctions::luaPlayergetCharmMonsterType(lua_State* L) {
 		if (raceid > 0) {
 			const auto &mtype = g_monsters().getMonsterTypeByRaceId(raceid);
 			if (mtype) {
-				Lua::pushUserdata<MonsterType>(L, mtype);
-				Lua::setMetatable(L, -1, "MonsterType");
+				Lua::pushSharedUserdata<MonsterType>(L, mtype);
 			} else {
 				lua_pushnil(L);
 			}
@@ -1924,8 +1923,7 @@ int PlayerFunctions::luaPlayerGetVocation(lua_State* L) {
 	// player:getVocation()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		Lua::pushUserdata<Vocation>(L, player->getVocation());
-		Lua::setMetatable(L, -1, "Vocation");
+		Lua::pushSharedUserdata<Vocation>(L, player->getVocation());
 	} else {
 		lua_pushnil(L);
 	}
@@ -2029,8 +2027,7 @@ int PlayerFunctions::luaPlayerGetTown(lua_State* L) {
 	// player:getTown()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		Lua::pushUserdata<Town>(L, player->getTown());
-		Lua::setMetatable(L, -1, "Town");
+		Lua::pushSharedUserdata<Town>(L, player->getTown());
 	} else {
 		lua_pushnil(L);
 	}
@@ -2069,8 +2066,7 @@ int PlayerFunctions::luaPlayerGetGuild(lua_State* L) {
 		return 1;
 	}
 
-	Lua::pushUserdata<Guild>(L, guild);
-	Lua::setMetatable(L, -1, "Guild");
+	Lua::pushSharedUserdata<Guild>(L, guild);
 	return 1;
 }
 
@@ -2148,8 +2144,7 @@ int PlayerFunctions::luaPlayerGetGroup(lua_State* L) {
 	// player:getGroup()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		Lua::pushUserdata<Group>(L, player->getGroup());
-		Lua::setMetatable(L, -1, "Group");
+		Lua::pushSharedUserdata<Group>(L, player->getGroup());
 	} else {
 		lua_pushnil(L);
 	}

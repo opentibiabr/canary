@@ -48,7 +48,7 @@ void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
 	} else if (c->getMonsterRaw()) {
 		iter = std::ranges::find(monster_list, c);
 		if (iter == monster_list.end()) {
-			g_logger().error("[{}]: Monster not found in player_list!", __FUNCTION__);
+			g_logger().error("[{}]: Monster not found in monster_list!", __FUNCTION__);
 			return;
 		}
 
@@ -58,7 +58,7 @@ void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
 	} else if (c->getNpcRaw()) {
 		iter = std::ranges::find(npc_list, c);
 		if (iter == npc_list.end()) {
-			g_logger().error("[{}]: NPC not found in player_list!", __FUNCTION__);
+			g_logger().error("[{}]: NPC not found in npc_list!", __FUNCTION__);
 			return;
 		}
 

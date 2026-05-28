@@ -126,9 +126,8 @@ int WeaponFunctions::luaWeaponAction(lua_State* L) {
 
 int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	// weapon:register()
-	const WeaponShared_ptr* weaponPtr = Lua::getRawUserDataShared<Weapon>(L, 1);
-	if (weaponPtr && *weaponPtr) {
-		WeaponShared_ptr weapon = *weaponPtr;
+	WeaponShared_ptr weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
+	if (weapon) {
 		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
 			weapon = std::dynamic_pointer_cast<WeaponDistance>(weapon);
 		} else if (weapon->weaponType == WEAPON_WAND) {

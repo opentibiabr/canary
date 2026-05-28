@@ -171,8 +171,12 @@ int PositionFunctions::luaPositionGetZones(lua_State* L) {
 		lua_pushnil(L);
 		return 1;
 	}
+
+	const auto &zones = tile->getZones();
+	lua_createtable(L, static_cast<int>(zones.size()), 0);
+
 	int index = 0;
-	for (const auto &zone : tile->getZones()) {
+	for (const auto &zone : zones) {
 		index++;
 		Lua::pushSharedUserdata<Zone>(L, zone);
 		lua_rawseti(L, -2, index);

@@ -1384,6 +1384,10 @@ int32_t Tile::getThingIndex(const std::shared_ptr<Thing> &thing) const {
 }
 
 int32_t Tile::getClientIndexOfCreature(const Player* player, const std::shared_ptr<Creature> &creature) const {
+	if (!player) {
+		return -1;
+	}
+
 	int32_t n;
 	if (ground) {
 		n = 1;

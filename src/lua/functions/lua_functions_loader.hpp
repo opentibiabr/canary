@@ -429,7 +429,15 @@ public:
 
 	template <class T>
 	static int luaSharedPtrGarbageCollection(lua_State* L) {
-		auto objPtr = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, 1));
+		const std::string metatableName(getUserdataMetatableName<T>());
+		auto objPtr = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, 1, metatableName.c_str()));
+		if (!objPtr) {
+			if (!checkMetatableInheritance(L, 1, metatableName.c_str())) {
+				return 0;
+			}
+
+			objPtr = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, 1));
+		}
 		if (!objPtr) {
 			return 0;
 		}
@@ -441,6 +449,11 @@ public:
 
 	template <class T>
 	static void registerSharedClass(lua_State* L, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
+		if (!baseClass.empty()) {
+			luaL_error(L, "typed shared userdata does not support baseClass inheritance");
+			return;
+		}
+
 		const std::string className(getUserdataMetatableName<T>());
 		registerClass(L, className, baseClass, newFunction);
 		registerMetaMethod(L, className, "__gc", luaSharedPtrGarbageCollection<T>);

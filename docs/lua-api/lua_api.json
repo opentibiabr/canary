@@ -366,7 +366,7 @@
       {
         "name": "delete",
         "params": [],
-        "return": "any",
+        "return": "nil",
         "source": "src/lua/functions/creatures/combat/condition_functions.cpp"
       },
       {
@@ -4874,7 +4874,7 @@
       {
         "name": "delete",
         "params": [],
-        "return": "any",
+        "return": "nil",
         "source": "src/lua/functions/core/network/network_message_functions.cpp"
       },
       {

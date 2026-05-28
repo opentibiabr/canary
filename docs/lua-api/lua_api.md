@@ -252,7 +252,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Condition.delete()`
 
-- Returns: `any`
+- Returns: `nil`
 - Source: `src/lua/functions/creatures/combat/condition_functions.cpp`
 
 #### `Condition:getEndTime()`
@@ -3277,7 +3277,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `NetworkMessage.delete()`
 
-- Returns: `any`
+- Returns: `nil`
 - Source: `src/lua/functions/core/network/network_message_functions.cpp`
 
 #### `NetworkMessage:getByte()`

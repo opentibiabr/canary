@@ -212,7 +212,7 @@ function Condition:addDamage(rounds, time, value) end
 ---@return nil|Condition
 function Condition:clone() end
 
----@return any
+---@return nil
 function Condition.delete() end
 
 ---@return number|nil
@@ -2586,7 +2586,7 @@ function NetworkMessage:addU32(value) end
 ---@return boolean|nil
 function NetworkMessage:addU64(value) end
 
----@return any
+---@return nil
 function NetworkMessage.delete() end
 
 ---@return number|nil

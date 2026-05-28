@@ -17,6 +17,10 @@
 void ConditionFunctions::init(lua_State* L) {
 	Lua::registerSharedClass<Condition>(L, "", ConditionFunctions::luaConditionCreate);
 	Lua::registerMetaMethod(L, "Condition", "__eq", Lua::luaUserdataCompare);
+	/***
+	 * @function Condition.delete
+	 * @return nil
+	 */
 	Lua::registerMethod(L, "Condition", "delete", Lua::luaSharedPtrGarbageCollection<Condition>);
 
 	Lua::registerMethod(L, "Condition", "getId", ConditionFunctions::luaConditionGetId);

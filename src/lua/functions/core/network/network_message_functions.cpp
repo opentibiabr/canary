@@ -21,6 +21,10 @@
 void NetworkMessageFunctions::init(lua_State* L) {
 	Lua::registerSharedClass<NetworkMessage>(L, "", NetworkMessageFunctions::luaNetworkMessageCreate);
 	Lua::registerMetaMethod(L, "NetworkMessage", "__eq", Lua::luaUserdataCompare);
+	/***
+	 * @function NetworkMessage.delete
+	 * @return nil
+	 */
 	Lua::registerMethod(L, "NetworkMessage", "delete", Lua::luaSharedPtrGarbageCollection<NetworkMessage>);
 
 	Lua::registerMethod(L, "NetworkMessage", "getByte", NetworkMessageFunctions::luaNetworkMessageGetByte);

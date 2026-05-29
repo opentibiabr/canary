@@ -93,7 +93,7 @@ spell:blockWalls(true)
 spell:needDirection(true)
 spell:cooldown(8 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:monkSpellType(MonkSpell_Spender)
 spell:vocation("monk;true", "exalted monk;true")
 spell:register()

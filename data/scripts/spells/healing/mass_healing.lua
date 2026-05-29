@@ -60,6 +60,6 @@ spell:level(36)
 spell:mana(150)
 spell:isPremium(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_MASS_HEALING)
 spell:register()

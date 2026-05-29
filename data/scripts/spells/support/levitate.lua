@@ -44,5 +44,5 @@ spell:mana(50)
 spell:hasParams(true)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

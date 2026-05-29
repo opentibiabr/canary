@@ -14,7 +14,7 @@ spell:level(200)
 spell:mana(3000)
 spell:cooldown(0) -- calculated in CreateFamiliarSpell
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:isAggressive(false)
 spell:vocation("druid;true", "elder druid;true")
 spell:register()

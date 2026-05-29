@@ -73,5 +73,5 @@ spell:isPremium(true)
 spell:cooldown(16 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:vocation("paladin;true", "royal paladin;true")
-spell:needLearn(false)
+
 spell:register()

@@ -15,7 +15,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void ActionFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Action", "", ActionFunctions::luaCreateAction);
+	Lua::registerSharedClass<Action>(L, "", ActionFunctions::luaCreateAction);
 	Lua::registerMethod(L, "Action", "onUse", ActionFunctions::luaActionOnUse);
 	Lua::registerMethod(L, "Action", "register", ActionFunctions::luaActionRegister);
 	Lua::registerMethod(L, "Action", "id", ActionFunctions::luaActionItemId);
@@ -28,14 +28,22 @@ void ActionFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Action", "position", ActionFunctions::luaActionPosition);
 }
 
+/***
+ * @class Action
+ * @overload fun(): Action
+ */
 int ActionFunctions::luaCreateAction(lua_State* L) {
 	// Action()
 	const auto action = std::make_shared<Action>();
-	Lua::pushUserdata<Action>(L, action);
-	Lua::setMetatable(L, -1, "Action");
+	Lua::pushSharedUserdata<Action>(L, action);
 	return 1;
 }
 
+/***
+ * @function Action:onUse
+ * @param callback fun(player: Player, item: Item, fromPosition: Position, target: Creature|Item, toPosition: Position, isHotkey: boolean): boolean
+ * @return boolean
+ */
 int ActionFunctions::luaActionOnUse(lua_State* L) {
 	// action:onUse(callback)
 	const auto &action = Lua::getUserdataShared<Action>(L, 1, "Action");

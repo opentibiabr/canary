@@ -127,6 +127,8 @@ static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
+	using Thing::getDepotChest;
+
 	class PlayerLock {
 	public:
 		explicit PlayerLock(const std::shared_ptr<Player> &p) :
@@ -167,6 +169,12 @@ public:
 	}
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
+	}
+	Player* getPlayerRaw() noexcept override {
+		return this;
+	}
+	const Player* getPlayerRaw() const noexcept override {
+		return this;
 	}
 
 	struct ExivaRestrictions {
@@ -386,6 +394,7 @@ public:
 	bool isOldProtocol() const;
 
 	uint32_t getProtocolVersion() const;
+	std::shared_ptr<ProtocolGame> getClient() const;
 
 	bool hasSecureMode() const;
 

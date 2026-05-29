@@ -9,15 +9,23 @@
 
 #include "lua/functions/core/network/network_message_functions.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
+
 #include "server/network/protocol/protocolgame.hpp"
 #include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
 void NetworkMessageFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "NetworkMessage", "", NetworkMessageFunctions::luaNetworkMessageCreate);
+	Lua::registerSharedClass<NetworkMessage>(L, "", NetworkMessageFunctions::luaNetworkMessageCreate);
 	Lua::registerMetaMethod(L, "NetworkMessage", "__eq", Lua::luaUserdataCompare);
-	Lua::registerMethod(L, "NetworkMessage", "delete", Lua::luaGarbageCollection);
+	/***
+	 * @function NetworkMessage.delete
+	 * @return nil
+	 */
+	Lua::registerMethod(L, "NetworkMessage", "delete", Lua::luaSharedPtrGarbageCollection<NetworkMessage>);
 
 	Lua::registerMethod(L, "NetworkMessage", "getByte", NetworkMessageFunctions::luaNetworkMessageGetByte);
 	Lua::registerMethod(L, "NetworkMessage", "getU16", NetworkMessageFunctions::luaNetworkMessageGetU16);
@@ -45,10 +53,13 @@ void NetworkMessageFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "NetworkMessage", "sendToPlayer", NetworkMessageFunctions::luaNetworkMessageSendToPlayer);
 }
 
+/***
+ * @class NetworkMessage
+ * @overload fun(): NetworkMessage
+ */
 int NetworkMessageFunctions::luaNetworkMessageCreate(lua_State* L) {
 	// NetworkMessage()
-	Lua::pushUserdata<NetworkMessage>(L, std::make_shared<NetworkMessage>());
-	Lua::setMetatable(L, -1, "NetworkMessage");
+	Lua::pushSharedUserdata<NetworkMessage>(L, std::make_shared<NetworkMessage>());
 	return 1;
 }
 

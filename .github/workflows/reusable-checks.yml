@@ -97,6 +97,12 @@ jobs:
           echo "::error::Formatting changes are required. The autofix.ci workflow should push a formatter commit automatically; if it cannot, apply the formatting.patch artifact or run the formatters locally and push the result."
           exit 1
 
+      - name: Check Lua API documentation quality
+        run: python3 tools/check_lua_api_quality.py
+
+      - name: Check new Lua API binding documentation
+        run: python3 tools/check_lua_api_binding_docs.py
+
       - name: Run Analysis (Reviewdog)
         if: github.event_name == 'pull_request'
         env:

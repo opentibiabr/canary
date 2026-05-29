@@ -12,6 +12,9 @@ on:
       - "data-otservbr-global/**"
       - "cmake/**"
       - "docker/**"
+      - "docs/lua-api/**"
+      - "docs/systems/**"
+      - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
       - "CMakeLists.txt"
@@ -29,6 +32,9 @@ on:
       - "data-otservbr-global/**"
       - "cmake/**"
       - "docker/**"
+      - "docs/lua-api/**"
+      - "docs/systems/**"
+      - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
       - "CMakeLists.txt"
@@ -46,12 +52,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
     outputs:
       linux: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
       full_matrix: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' }}
       run_canary_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.canary_datapack == 'true' }}
       run_global_smoke: ${{ github.event_name == 'workflow_dispatch' || github.event_name == 'push' || steps.filter.outputs.engine == 'true' || steps.filter.outputs.shared_datapack == 'true' || steps.filter.outputs.global_datapack == 'true' }}
       docker: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.docker }}
+      docker_quickstart: ${{ github.event_name == 'workflow_dispatch' && 'true' || steps.filter.outputs.docker_quickstart }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -92,7 +100,17 @@ jobs:
               - "CMakePresets.json"
               - ".github/workflows/ci.yml"
               - ".github/workflows/reusable-build-docker.yml"
+              - ".github/workflows/reusable-docker-quickstart-smoke.yml"
               - ".github/scripts/**"
+            docker_quickstart:
+              - "docker/docker-compose.yml"
+              - "docker/.env.dist"
+              - "docker/quickstart/**"
+              - "docker/data/01-test_account.sql"
+              - "docker/data/02-test_account_players.sql"
+              - ".github/scripts/docker-quickstart-smoke.sh"
+              - ".github/workflows/ci.yml"
+              - ".github/workflows/reusable-docker-quickstart-smoke.yml"
 
   # --- Fast Checks ---
 
@@ -120,7 +138,7 @@ jobs:
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.linux == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     permissions:
-      contents: read
+      contents: write
       packages: write
     uses: ./.github/workflows/reusable-build-linux.yml
     with:
@@ -162,3 +180,11 @@ jobs:
       packages: write
     uses: ./.github/workflows/reusable-build-docker.yml
     secrets: inherit
+
+  docker-quickstart-smoke:
+    name: Docker Quickstart Smoke
+    needs: [changes, checks, tests-lua, build-docker]
+    if: (needs.changes.outputs.docker == 'true' || needs.changes.outputs.docker_quickstart == 'true') && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && needs.build-docker.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || !github.event.pull_request.draft)
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-docker-quickstart-smoke.yml

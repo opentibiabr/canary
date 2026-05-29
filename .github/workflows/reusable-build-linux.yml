@@ -20,7 +20,7 @@ on:
         default: true
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
     env:
       CC: gcc-13
       CXX: g++-13
-      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,readwrite;nugettimeout,600"
+      VCPKG_BINARY_SOURCES: "clear;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'readwrite' || 'read' }};nugettimeout,600"
       VCPKG_NUGET_API_KEY: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
 
     services:
@@ -50,13 +50,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v8
-        with:
-          script: |
-              core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-              core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Get vcpkg baseline
         id: vcpkg-baseline
@@ -111,6 +104,38 @@ jobs:
           configurePreset: ${{ matrix.buildtype }}
           buildPreset: ${{ matrix.buildtype }}
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON','-DOPTIONS_ENABLE_CCACHE=ON','-DOPTIONS_ENABLE_SCCACHE=OFF']"
+
+      - name: Check generated Lua API docs are current
+        if: matrix.buildtype == 'linux-release'
+        shell: bash
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          CURRENT_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          build/${{ matrix.buildtype }}/bin/canary --generate-lua-api-docs-only
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "$PR_HEAD_REPO" == "$CURRENT_REPO" ]]; then
+            if [[ ! "$PR_HEAD_REF" =~ ^[-A-Za-z0-9_./]+$ ]]; then
+              echo "Unsafe pull request branch name: $PR_HEAD_REF" >&2
+              exit 1
+            fi
+            if ! git diff --quiet -- docs/lua-api; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add docs/lua-api
+              git commit -m "ci(lua-docs): regenerate lua api docs"
+              if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                echo "Initial docs push failed, retrying after fetch/rebase..."
+                git fetch origin "$PR_HEAD_REF"
+                git rebase "origin/$PR_HEAD_REF"
+                if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                  echo "Docs push still failed after retry (likely concurrent push). Continuing without failing this step."
+                fi
+              fi
+            fi
+          fi
+          git diff --exit-code -- docs/lua-api
 
       - name: Smoke test Canary datapack runtime
         if: inputs.run_canary_smoke
@@ -277,6 +302,7 @@ jobs:
 
       - name: Upload runtime smoke logs
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: linux-${{ matrix.buildtype }}-runtime-smoke-logs
@@ -290,7 +316,7 @@ jobs:
           path: build/${{ matrix.buildtype }}/bin/
 
       - name: Verify vcpkg binary cache push
-        if: success() && github.event.pull_request.head.repo.full_name == github.repository
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
         shell: bash
         run: |
           set -euo pipefail

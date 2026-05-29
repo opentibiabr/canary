@@ -415,13 +415,19 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>:
 		spectators.find<Creature>(newPos, true, 0, 0, 0, 0, false);
 	}
 
-	const auto playersSpectators = spectators.filter<Player>();
+	std::vector<Player*> playerSpectators;
+	playerSpectators.reserve(spectators.size());
+	for (const auto &spectator : spectators) {
+		if (auto* player = spectator->getPlayerRaw()) {
+			playerSpectators.emplace_back(player);
+		}
+	}
 
 	std::vector<int32_t> oldStackPosVector;
-	oldStackPosVector.reserve(playersSpectators.size());
-	for (const auto &spec : playersSpectators) {
-		if (spec->canSeeCreature(creature)) {
-			oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(spec->getPlayer(), creature));
+	oldStackPosVector.reserve(playerSpectators.size());
+	for (const auto* player : playerSpectators) {
+		if (player->canSeeCreature(creature)) {
+			oldStackPosVector.push_back(oldTile->getClientIndexOfCreature(player, creature));
 		} else {
 			oldStackPosVector.push_back(-1);
 		}
@@ -458,11 +464,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>:
 
 	// send to client
 	size_t i = 0;
-	for (const auto &spectator : playersSpectators) {
+	for (const auto* player : playerSpectators) {
 		// Use the correct stackpos
 		const int32_t stackpos = oldStackPosVector[i++];
 		if (stackpos != -1) {
-			const auto &player = spectator->getPlayer();
 			player->sendCreatureMove(creature, newPos, newTile->getClientIndexOfCreature(player, creature), oldPos, stackpos, teleport);
 		}
 	}

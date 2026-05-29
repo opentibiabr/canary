@@ -36,6 +36,12 @@ public:
 
 	std::shared_ptr<Npc> getNpc() override;
 	std::shared_ptr<const Npc> getNpc() const override;
+	Npc* getNpcRaw() noexcept override {
+		return this;
+	}
+	const Npc* getNpcRaw() const noexcept override {
+		return this;
+	}
 
 	void setID() override;
 

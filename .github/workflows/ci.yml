@@ -12,6 +12,9 @@ on:
       - "data-otservbr-global/**"
       - "cmake/**"
       - "docker/**"
+      - "docs/lua-api/**"
+      - "docs/systems/**"
+      - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
       - "CMakeLists.txt"
@@ -29,6 +32,9 @@ on:
       - "data-otservbr-global/**"
       - "cmake/**"
       - "docker/**"
+      - "docs/lua-api/**"
+      - "docs/systems/**"
+      - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
       - "CMakeLists.txt"
@@ -132,7 +138,7 @@ jobs:
     needs: [changes, checks, tests-lua]
     if: needs.changes.outputs.linux == 'true' && needs.checks.result == 'success' && needs.tests-lua.result == 'success' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event.pull_request.draft == false)
     permissions:
-      contents: read
+      contents: write
       packages: write
     uses: ./.github/workflows/reusable-build-linux.yml
     with:

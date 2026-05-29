@@ -29,11 +29,15 @@
 #include <bitset>
 #include <charconv>
 #include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
+#include <functional>
 #include <list>
 #include <map>
+#include <memory>
+#include <unordered_map>
 #include <unordered_set>
 #include <queue>
 #include <random>
@@ -53,6 +57,8 @@
 #include <span>
 #include <compare>
 #include <string>
+#include <string_view>
+#include <type_traits>
 #include <iostream>
 
 // --------------------

@@ -96,16 +96,34 @@ public:
 	virtual std::shared_ptr<const Player> getPlayer() const {
 		return nullptr;
 	}
+	virtual Player* getPlayerRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Player* getPlayerRaw() const noexcept {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Npc> getNpc() {
 		return nullptr;
 	}
 	virtual std::shared_ptr<const Npc> getNpc() const {
 		return nullptr;
 	}
+	virtual Npc* getNpcRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Npc* getNpcRaw() const noexcept {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Monster> getMonster() {
 		return nullptr;
 	}
 	virtual std::shared_ptr<const Monster> getMonster() const {
+		return nullptr;
+	}
+	virtual Monster* getMonsterRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Monster* getMonsterRaw() const noexcept {
 		return nullptr;
 	}
 

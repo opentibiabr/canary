@@ -541,12 +541,12 @@ void Monster::onSpawn(const Position &position) {
 }
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
-	if (creature == getMonster()) {
+	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
 		return;
 	}
 
-	assert(creature != getMonster());
+	assert(creature.get() != this);
 	friendList.try_emplace(creature->getID(), creature);
 }
 
@@ -558,12 +558,12 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	if (creature == getMonster()) {
+	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
 		return false;
 	}
 
-	assert(creature != getMonster());
+	assert(creature.get() != this);
 
 	auto it = getTargetIterator(creature);
 	if (it != targetList.end()) {
@@ -756,7 +756,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
 	// the same unreachable creature as "nearest".
 	const auto &currentAttacked = getAttackedCreature();
-	const bool skipCurrentUnreachable = currentAttacked && static_self_cast<Monster>()->targetDistance <= 1 && !hasFollowPath;
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
 
 	for (const auto &cref : targetList) {
 		const auto &creature = cref.lock();
@@ -764,7 +764,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			if (skipCurrentUnreachable && creature == currentAttacked) {
 				continue;
 			}
-			if ((static_self_cast<Monster>()->targetDistance == 1) || canUseAttack(myPos, creature)) {
+			if ((targetDistance == 1) || canUseAttack(myPos, creature)) {
 				resultList.emplace_back(creature);
 			}
 		}

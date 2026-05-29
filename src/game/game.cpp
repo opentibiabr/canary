@@ -1231,14 +1231,19 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 	auto fromZones = creature->getZones();
 
 	if (tile) {
-		std::vector<int32_t> oldStackPosVector;
 		auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
-		auto playersSpectators = spectators.filter<Player>();
-
-		for (const auto &spectator : playersSpectators) {
-			if (const auto &player = spectator->getPlayer()) {
-				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
+		std::vector<Player*> playerSpectators;
+		playerSpectators.reserve(spectators.size());
+		for (const auto &spectator : spectators) {
+			if (auto* player = spectator->getPlayerRaw()) {
+				playerSpectators.emplace_back(player);
 			}
+		}
+
+		std::vector<int32_t> oldStackPosVector;
+		oldStackPosVector.reserve(playerSpectators.size());
+		for (const auto* player : playerSpectators) {
+			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
 		}
 
 		tile->removeCreature(creature);
@@ -1247,10 +1252,8 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 
 		// Send to client
 		size_t i = 0;
-		for (const auto &spectator : playersSpectators) {
-			if (const auto &player = spectator->getPlayer()) {
-				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
-			}
+		for (const auto* player : playerSpectators) {
+			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}
 
 		// event method

@@ -121,8 +121,7 @@ int MonsterFunctions::luaMonsterGetType(lua_State* L) {
 	// monster:getType()
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (monster) {
-		Lua::pushUserdata<MonsterType>(L, monster->m_monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monster->m_monsterType);
 	} else {
 		lua_pushnil(L);
 	}

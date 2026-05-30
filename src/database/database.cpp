@@ -22,6 +22,9 @@ namespace {
 	// Calls mysql_thread_end() when a thread that opened a connection exits, so
 	// libmysqlclient's thread-local state is released (no per-thread TLS leak).
 	struct ThreadCleanup {
+		ThreadCleanup() = default;
+		ThreadCleanup(const ThreadCleanup &) = delete;
+		ThreadCleanup &operator=(const ThreadCleanup &) = delete;
 		~ThreadCleanup() {
 			mysql_thread_end();
 		}

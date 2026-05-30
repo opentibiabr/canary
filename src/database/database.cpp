@@ -18,6 +18,14 @@ namespace {
 	// Per-thread query capture buffer. When non-null, executeQuery records into
 	// it instead of executing. See Database::beginQueryCapture.
 	thread_local std::vector<std::string>* tlsQueryCapture = nullptr;
+
+	// Calls mysql_thread_end() when a thread that opened a connection exits, so
+	// libmysqlclient's thread-local state is released (no per-thread TLS leak).
+	struct ThreadCleanup {
+		~ThreadCleanup() {
+			mysql_thread_end();
+		}
+	};
 }
 
 Database::ConnectionContext::~ConnectionContext() {
@@ -89,8 +97,11 @@ bool Database::establishConnection(ConnectionContext &ctx) const {
 		return false;
 	}
 
-	// Each thread must initialize the MySQL client library's thread-local state.
+	// Each thread must initialize the MySQL client library's thread-local state,
+	// and release it when the thread exits (the thread_local destructor runs on
+	// this very thread, which is where mysql_thread_end() must be called).
 	mysql_thread_init();
+	static thread_local ThreadCleanup threadCleanup;
 
 	ctx.handle = mysql_init(nullptr);
 	if (!ctx.handle) {
@@ -378,7 +389,12 @@ retry:
 }
 
 uint64_t Database::getLastInsertId() const {
-	return static_cast<uint64_t>(mysql_insert_id(getContext().handle));
+	auto &ctx = getContext();
+	if (!ctx.handle) {
+		g_logger().error("Database connection not established, cannot get last insert id!");
+		return 0;
+	}
+	return static_cast<uint64_t>(mysql_insert_id(ctx.handle));
 }
 
 uint64_t Database::getMaxPacketSize() const {
@@ -397,6 +413,10 @@ std::string Database::escapeString(const std::string &s) const {
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
 	auto &ctx = getContext();
+	if (!ctx.handle) {
+		g_logger().error("Database connection not established, cannot escape blob!");
+		return "''";
+	}
 
 	size_t maxLength = (length * 2) + 1;
 

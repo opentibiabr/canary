@@ -176,15 +176,6 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 
 	const uint32_t guid = playerToSave->getGUID();
 
-	// If a flush for this player is already running on a pool thread, do not build
-	// and dispatch a second one: two concurrent flushes could apply out of order
-	// and let an older one overwrite newer data. Mark it to be rebuilt once the
-	// in-flight flush finishes (onPlayerFlushed).
-	if (m_flushInFlight.contains(guid)) {
-		m_resavePending.insert(guid);
-		return;
-	}
-
 	// Build the save here, on the dispatcher — the owner of the player state — so
 	// the read is consistent. No PlayerLock needed: the dispatcher is serial, so
 	// nothing mutates the player during the build. This produces only SQL strings
@@ -192,6 +183,17 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 	auto queries = IOLoginData::buildPlayerSave(playerToSave);
 	if (!queries) {
 		logger.error("Failed to build save for player {}.", playerToSave->getName());
+		return;
+	}
+
+	// If a flush for this player is already running on a pool thread, queue the
+	// freshly-built save to run after it finishes — running two concurrently
+	// could let an older one overwrite newer data. We store the built SQL (not
+	// just the guid) so the queued save survives even if the player object is
+	// destroyed before the in-flight flush completes (e.g. logout). Overwriting a
+	// previous pending entry is correct: only the latest state matters.
+	if (m_flushInFlight.contains(guid)) {
+		m_pendingFlushes[guid] = std::make_pair(playerToSave->getName(), std::move(*queries));
 		return;
 	}
 
@@ -207,15 +209,23 @@ void SaveManager::schedulePlayer(std::weak_ptr<Player> playerPtr) {
 }
 
 void SaveManager::onPlayerFlushed(uint32_t guid) {
-	// Dispatcher thread.
-	m_flushInFlight.erase(guid);
-	if (m_resavePending.erase(guid) > 0) {
-		// A save was requested while the previous flush was in flight; rebuild
-		// from the current (newer) player state.
-		if (const auto &player = g_game().getPlayerByID(guid)) {
-			schedulePlayer(player);
-		}
+	// Dispatcher thread. If a save was queued while this flush ran, dispatch the
+	// already-built queries directly — no player lookup, so the final save is
+	// never dropped. The guid stays in m_flushInFlight until nothing is pending.
+	auto it = m_pendingFlushes.find(guid);
+	if (it == m_pendingFlushes.end()) {
+		m_flushInFlight.erase(guid);
+		return;
 	}
+
+	auto [name, queries] = std::move(it->second);
+	m_pendingFlushes.erase(it);
+	threadPool.detach_task([this, guid, name, q = std::move(queries)]() {
+		if (!IOLoginData::flushPlayerSave(q)) {
+			logger.error("Failed to save player {}.", name);
+		}
+		g_dispatcher().addEvent([this, guid]() { onPlayerFlushed(guid); }, "SaveManager::onPlayerFlushed");
+	});
 }
 
 bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {

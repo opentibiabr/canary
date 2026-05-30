@@ -54,12 +54,14 @@ private:
 
 	std::atomic<std::chrono::steady_clock::time_point> m_scheduledAt;
 	// Per-player async-save coordination (dispatcher-only, no lock): guids whose
-	// flush is currently running on a pool thread, and guids that were asked to
-	// save again while a flush was in flight (rebuilt once the flush completes).
-	// This keeps same-player flushes serial and ordered so an older flush can
-	// never overwrite a newer one.
+	// flush is currently running on a pool thread, and the already-built (name,
+	// SQL) of a save queued while a flush was in flight. Keeping same-player
+	// flushes serial and ordered means an older flush can never overwrite a newer
+	// one; storing the built SQL (instead of a guid to re-look-up) means the final
+	// save (e.g. on logout) is never dropped even if the player object is already
+	// gone when the in-flight flush completes.
 	phmap::flat_hash_set<uint32_t> m_flushInFlight;
-	phmap::flat_hash_set<uint32_t> m_resavePending;
+	phmap::flat_hash_map<uint32_t, std::pair<std::string, std::vector<std::string>>> m_pendingFlushes;
 
 	ThreadPool &threadPool;
 	KVStore &kv;

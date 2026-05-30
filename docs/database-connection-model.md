@@ -129,7 +129,9 @@ connection. We therefore call `mysql_library_init()` explicitly via
 startup), removing the race.
 
 Each per-thread connection also calls `mysql_thread_init()` when it is
-established (required by libmysqlclient for thread-local state).
+established (required by libmysqlclient for thread-local state), and a
+`thread_local` cleanup object calls `mysql_thread_end()` when the thread exits
+(on that same thread, as libmysqlclient requires).
 
 ## 6. Query capture (record-replay) — used by saves
 
@@ -224,9 +226,9 @@ spotting whether the new bottleneck is the thread pool or the MySQL server.
 - **More real TCP connections to MySQL** — one per worker thread. Validate against
   the server's `max_connections` (default 151). With a ~12-thread pool this is a
   non-issue.
-- **`mysql_thread_end()` is not called per thread.** Pool threads are long-lived
-  and the process exits shortly after shutdown, so the tiny per-thread TLS leak is
-  negligible.
+- **`mysql_thread_end()`** is called via a `thread_local` cleanup object when a
+  thread that opened a connection exits, releasing libmysqlclient's per-thread
+  TLS.
 - **`thread_local` assumes a single `Database` instance** (true in production via
   DI). Test harnesses that create/destroy multiple `Database` instances on the
   same thread should be aware of this.

@@ -229,7 +229,10 @@ std::optional<std::vector<std::string>> IOLoginData::buildPlayerSave(const std::
 }
 
 bool IOLoginData::flushPlayerSave(const std::vector<std::string> &queries) {
-	return DBTransaction::executeWithinTransaction([&queries]() {
+	// RollbackOnFailure (not executeWithinTransaction): a failing query must roll
+	// the whole transaction back — otherwise a partial save would be committed —
+	// and the rollback is what lets the deadlock retry kick in.
+	return DBTransaction::executeWithinTransactionRollbackOnFailure([&queries]() {
 		Database &db = Database::getInstance();
 		for (const auto &query : queries) {
 			if (!db.executeQuery(query)) {

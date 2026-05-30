@@ -27,7 +27,7 @@ public:
 	static void loadPlayerSkullSystem(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerSkill(const std::shared_ptr<Player> &player, const DBResult_ptr &result);
 	static void loadPlayerKills(const std::shared_ptr<Player> &player, DBResult_ptr result);
-	static void loadPlayerGuild(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static void loadPlayerGuild(const std::shared_ptr<Player> &player);
 	static void loadPlayerStashItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerBestiaryCharms(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInstantSpellList(const std::shared_ptr<Player> &player, DBResult_ptr result);

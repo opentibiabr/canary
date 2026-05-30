@@ -144,6 +144,9 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	}
 	player->setGroup(group);
 
+	// Cache the `save` flag so the save path does not need a SELECT round-trip.
+	player->setSaveFlag(result->getNumber<uint16_t>("save") != 0);
+
 	player->setBankBalance(result->getNumber<uint64_t>("balance"));
 	player->quickLootFallbackToMainContainer = result->getNumber<bool>("quickloot_fallback");
 	player->setSex(static_cast<PlayerSex_t>(result->getNumber<uint16_t>("sex")));
@@ -390,15 +393,16 @@ void IOLoginDataLoad::loadPlayerKills(const std::shared_ptr<Player> &player, DBR
 	}
 }
 
-void IOLoginDataLoad::loadPlayerGuild(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
+void IOLoginDataLoad::loadPlayerGuild(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		g_logger().warn("[{}] - Player nullptr", __FUNCTION__);
 		return;
 	}
 
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT `guild_id`, `rank_id`, `nick` FROM `guild_membership` WHERE `player_id` = " << player->getGUID();
+	DBResult_ptr result;
 	if ((result = db.storeQuery(query.str()))) {
 		auto guildId = result->getNumber<uint32_t>("guild_id");
 		auto playerRankId = result->getNumber<uint32_t>("rank_id");

@@ -175,6 +175,14 @@ public:
 
 	std::vector<std::shared_ptr<Player>> getPlayersByAccount(const std::shared_ptr<Account> &acc, bool allowOffline = false);
 
+	// Logins in flight: a character whose data is being loaded on a pool thread
+	// but is not yet placed in the world. Used to reject a second concurrent
+	// login of the same character. MUST be called only from the dispatcher
+	// thread — it is serial there, so the set needs no lock.
+	bool reserveLogin(uint32_t guid);
+	void releaseLogin(uint32_t guid);
+	bool isLoginPending(uint32_t guid) const;
+
 	bool internalPlaceCreature(const std::shared_ptr<Creature> &creature, const Position &pos, bool extendedPos = false, bool forced = false, bool creatureCheck = false);
 
 	bool placeCreature(const std::shared_ptr<Creature> &creature, const Position &pos, bool extendedPos = false, bool force = false);
@@ -817,6 +825,8 @@ private:
 	phmap::flat_hash_map<std::string, HighscoreCacheEntry> highscoreCache;
 
 	std::unordered_map<std::string, std::weak_ptr<Player>> m_deadPlayers;
+	// Characters currently being loaded asynchronously (dispatcher-only, no lock).
+	phmap::flat_hash_set<uint32_t> m_pendingLogins;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Player>> players;
 	phmap::flat_hash_map<std::string, std::weak_ptr<Player>> mappedPlayerNames;
 	phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Guild>> guilds;

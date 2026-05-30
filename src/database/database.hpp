@@ -13,8 +13,11 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
+	#include <memory>
 	#include <mutex>
+	#include <optional>
 	#include <utility>
+	#include <vector>
 #endif
 
 class DBResult;
@@ -63,17 +66,25 @@ public:
 
 	std::string escapeBlob(const char* s, uint32_t length) const;
 
-	uint64_t getLastInsertId() const {
-		return static_cast<uint64_t>(mysql_insert_id(handle));
-	}
+	uint64_t getLastInsertId() const;
 
 	static const char* getClientVersion() {
 		return mysql_get_client_info();
 	}
 
-	uint64_t getMaxPacketSize() const {
-		return maxPacketSize;
-	}
+	uint64_t getMaxPacketSize() const;
+
+	// True when the calling thread's last failed query was an InnoDB deadlock or
+	// lock-wait timeout — i.e. a transient error worth retrying the transaction.
+	[[nodiscard]] bool lastQueryWasDeadlock() const;
+
+	// Query capture (record-replay). While active on the calling thread,
+	// executeQuery() appends its SQL to `buffer` and returns true WITHOUT
+	// executing. This lets a player save be serialized on the dispatcher (reading
+	// the live Player consistently) and replayed on a pool thread. storeQuery()
+	// is never captured. Not reentrant per thread. Use QueryCaptureScope (below).
+	void beginQueryCapture(std::vector<std::string>* buffer);
+	void endQueryCapture();
 
 private:
 	bool beginTransaction();
@@ -82,14 +93,63 @@ private:
 
 	static bool isRecoverableError(unsigned int error);
 
-	MYSQL* handle = nullptr;
-	mutable std::recursive_mutex databaseLock;
-	uint64_t maxPacketSize = 1048576;
+	// State that must be private to each MySQL connection. A context belongs to a
+	// single thread (reached only through that thread's thread_local cache), so
+	// all queries from a given thread — and therefore a whole player load or
+	// transaction — share the same handle: getLastInsertId and BEGIN/COMMIT keep
+	// connection affinity for free, and the handle needs no lock because no other
+	// thread can ever touch it.
+	struct ConnectionContext {
+		MYSQL* handle = nullptr;
+		uint64_t maxPacketSize = 1048576;
+		// Error code of the last failed query on this connection. Kept here (not
+		// read via mysql_errno) so it survives an intervening rollback and can be
+		// inspected by the transaction retry logic.
+		unsigned int lastErrno = 0;
+
+		~ConnectionContext();
+	};
+
+	// Returns the calling thread's connection, establishing it lazily on first
+	// use from the parameters captured by connect(). Fast path is a thread_local
+	// pointer lookup with no locking.
+	ConnectionContext &getContext() const;
+	bool establishConnection(ConnectionContext &ctx) const;
+
+	// Connection parameters captured on the first connect(), reused to spin up a
+	// fresh connection for every thread that touches the database.
+	struct ConnectionParams {
+		std::string host;
+		std::string user;
+		std::string password;
+		std::string database;
+		std::string sock;
+		uint32_t port = 0;
+	};
+
+	mutable std::optional<ConnectionParams> connectionParams;
+	mutable std::mutex connectionsMutex;
+	mutable std::vector<std::unique_ptr<ConnectionContext>> connections;
 
 	friend class DBTransaction;
 };
 
 constexpr auto g_database = Database::getInstance;
+
+// RAII wrapper for Database query capture. While in scope, executeQuery() on the
+// calling thread records into `buffer` instead of executing.
+class QueryCaptureScope {
+public:
+	explicit QueryCaptureScope(std::vector<std::string> &buffer) {
+		Database::getInstance().beginQueryCapture(&buffer);
+	}
+	~QueryCaptureScope() {
+		Database::getInstance().endQueryCapture();
+	}
+
+	QueryCaptureScope(const QueryCaptureScope &) = delete;
+	QueryCaptureScope &operator=(const QueryCaptureScope &) = delete;
+};
 
 class DBResult {
 public:
@@ -230,53 +290,75 @@ public:
 	DBTransaction(const DBTransaction &&) = delete;
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
+	// Number of times a transaction is retried when it fails with a transient
+	// InnoDB deadlock / lock-wait timeout before giving up.
+	static constexpr uint8_t TRANSACTION_MAX_ATTEMPTS = 3;
+
 	template <typename Func>
 	static bool executeWithinTransaction(const Func &callback)
 		requires std::invocable<Func>
 	{
-		DBTransaction transaction;
-		try {
-			if (!transaction.begin()) {
-				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
+		for (uint8_t attempt = 1; attempt <= TRANSACTION_MAX_ATTEMPTS; ++attempt) {
+			DBTransaction transaction;
+			try {
+				if (!transaction.begin()) {
+					g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
+					return false;
+				}
+
+				const bool result = callback();
+
+				if (!transaction.commit()) {
+					return false;
+				}
+
+				return result;
+			} catch (const std::exception &exception) {
+				transaction.rollback();
+				if (Database::getInstance().lastQueryWasDeadlock() && attempt < TRANSACTION_MAX_ATTEMPTS) {
+					g_logger().warn("[{}] Transaction hit a deadlock/lock timeout, retrying ({}/{})", __FUNCTION__, attempt, TRANSACTION_MAX_ATTEMPTS);
+					continue;
+				}
+				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}
-
-			const bool result = callback();
-
-			if (!transaction.commit()) {
-				return false;
-			}
-
-			return result;
-		} catch (const std::exception &exception) {
-			transaction.rollback();
-			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-			return false;
 		}
+		return false;
 	}
 
 	template <typename Func>
 	static bool executeWithinTransactionRollbackOnFailure(const Func &callback)
 		requires std::invocable<Func>
 	{
-		DBTransaction transaction;
-		try {
-			if (!transaction.begin()) {
-				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
-				return false;
-			}
+		for (uint8_t attempt = 1; attempt <= TRANSACTION_MAX_ATTEMPTS; ++attempt) {
+			DBTransaction transaction;
+			try {
+				if (!transaction.begin()) {
+					g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
+					return false;
+				}
 
-			if (!callback()) {
+				if (!callback()) {
+					transaction.rollback();
+					if (Database::getInstance().lastQueryWasDeadlock() && attempt < TRANSACTION_MAX_ATTEMPTS) {
+						g_logger().warn("[{}] Transaction hit a deadlock/lock timeout, retrying ({}/{})", __FUNCTION__, attempt, TRANSACTION_MAX_ATTEMPTS);
+						continue;
+					}
+					return false;
+				}
+
+				return transaction.commit();
+			} catch (const std::exception &exception) {
 				transaction.rollback();
+				if (Database::getInstance().lastQueryWasDeadlock() && attempt < TRANSACTION_MAX_ATTEMPTS) {
+					g_logger().warn("[{}] Transaction hit a deadlock/lock timeout, retrying ({}/{})", __FUNCTION__, attempt, TRANSACTION_MAX_ATTEMPTS);
+					continue;
+				}
+				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
 				return false;
 			}
-
-			return transaction.commit();
-		} catch (const std::exception &exception) {
-			transaction.rollback();
-			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
-			return false;
 		}
+		return false;
 	}
 
 private:

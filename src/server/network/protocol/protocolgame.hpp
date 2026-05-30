@@ -108,6 +108,9 @@ public:
 	explicit ProtocolGame(const Connection_ptr &initConnection);
 
 	void login(const std::string &name, uint32_t accnumber, OperatingSystem_t operatingSystem);
+	// Dispatcher-thread continuation of login() after the heavy character load
+	// has run on a pool thread. `loaded` is the result of loadPlayerById.
+	void finishLogin(bool loaded, OperatingSystem_t operatingSystem);
 	void logout(bool displayEffect, bool forced);
 
 	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);

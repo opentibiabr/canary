@@ -100,7 +100,7 @@ bool Database::establishConnection(ConnectionContext &ctx) const {
 	// Each thread must initialize the MySQL client library's thread-local state,
 	// and release it when the thread exits (the thread_local destructor runs on
 	// this very thread, which is where mysql_thread_end() must be called).
-	mysql_thread_init();
+	(void)mysql_thread_init();
 	static thread_local ThreadCleanup threadCleanup;
 
 	ctx.handle = mysql_init(nullptr);
@@ -111,11 +111,11 @@ bool Database::establishConnection(ConnectionContext &ctx) const {
 
 	// automatic reconnect
 	bool reconnect = true;
-	mysql_options(ctx.handle, MYSQL_OPT_RECONNECT, &reconnect);
+	(void)mysql_options(ctx.handle, MYSQL_OPT_RECONNECT, &reconnect);
 
 	// Remove ssl verification
 	bool ssl_enabled = false;
-	mysql_options(ctx.handle, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_enabled);
+	(void)mysql_options(ctx.handle, MYSQL_OPT_SSL_VERIFY_SERVER_CERT, &ssl_enabled);
 
 	const auto &p = *connectionParams;
 	if (!mysql_real_connect(ctx.handle, p.host.c_str(), p.user.c_str(), p.password.c_str(), p.database.c_str(), p.port, p.sock.empty() ? nullptr : p.sock.c_str(), 0)) {
@@ -150,7 +150,7 @@ Database::ConnectionContext &Database::getContext() const {
 	size_t connectionNumber = 0;
 	{
 		std::scoped_lock lock { connectionsMutex };
-		connections.emplace_back(std::move(context));
+		connections.push_back(std::move(context));
 		connectionNumber = connections.size();
 	}
 
@@ -335,7 +335,7 @@ bool Database::executeQuery(std::string_view query) {
 	// Record-replay: during a capture (player save build on the dispatcher), defer
 	// the write by recording it; it will be replayed on a pool thread.
 	if (tlsQueryCapture != nullptr) {
-		tlsQueryCapture->emplace_back(query);
+		tlsQueryCapture->push_back(std::string(query));
 		return true;
 	}
 
@@ -394,7 +394,7 @@ uint64_t Database::getLastInsertId() const {
 		g_logger().error("Database connection not established, cannot get last insert id!");
 		return 0;
 	}
-	return static_cast<uint64_t>(mysql_insert_id(ctx.handle));
+	return mysql_insert_id(ctx.handle);
 }
 
 uint64_t Database::getMaxPacketSize() const {

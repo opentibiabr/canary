@@ -107,6 +107,11 @@ private:
 		// inspected by the transaction retry logic.
 		unsigned int lastErrno = 0;
 
+		ConnectionContext() = default;
+		// Owns the raw MYSQL* handle, so it is non-copyable/non-movable (always
+		// held inside a unique_ptr in the registry).
+		ConnectionContext(const ConnectionContext &) = delete;
+		ConnectionContext &operator=(const ConnectionContext &) = delete;
 		~ConnectionContext();
 	};
 

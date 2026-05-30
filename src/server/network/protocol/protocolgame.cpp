@@ -689,12 +689,18 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		g_threadPool().detach_task([self = getThis(), operatingSystem]() {
-			// pool thread — populates only self->player (not yet in the world, and
-			// protected from a concurrent login by the reservation above). The two
-			// load steps that touch shared global state are deferred to finishLogin.
-			const bool loaded = IOLoginData::loadPlayerById(self->player, self->player->getGUID(), false, true);
-			g_dispatcher().addEvent([self, loaded, operatingSystem]() { self->finishLogin(loaded, operatingSystem); }, "ProtocolGame::finishLogin");
+		// Capture the reserved guid and a local shared_ptr to the player here: if
+		// the client disconnects mid-load, release() may clear the `player` member,
+		// which would null-deref on the pool thread and lose the reserved guid.
+		const uint32_t reservedGuid = player->getGUID();
+		const auto loginPlayer = player;
+		g_threadPool().detach_task([self = getThis(), loginPlayer, reservedGuid, operatingSystem]() {
+			// pool thread — populates only loginPlayer (kept alive by this capture,
+			// not yet in the world, and protected from a concurrent login by the
+			// reservation above). The two load steps that touch shared global state
+			// are deferred to finishLogin.
+			const bool loaded = IOLoginData::loadPlayerById(loginPlayer, reservedGuid, false, true);
+			g_dispatcher().addEvent([self, reservedGuid, loaded, operatingSystem]() { self->finishLogin(reservedGuid, loaded, operatingSystem); }, "ProtocolGame::finishLogin");
 		});
 		return;
 	} else {
@@ -721,19 +727,20 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	}
 }
 
-void ProtocolGame::finishLogin(bool loaded, OperatingSystem_t operatingSystem) {
-	// dispatcher thread — continuation after loadPlayerById ran on the pool.
-	const uint32_t guid = player ? player->getGUID() : 0;
+void ProtocolGame::finishLogin(uint32_t reservedGuid, bool loaded, OperatingSystem_t operatingSystem) {
+	// dispatcher thread — continuation after loadPlayerById ran on the pool. Use
+	// the captured reservedGuid (not player->getGUID()) so the reservation is
+	// always released even if the player member was cleared by a disconnect.
 
 	// The client may have dropped while we were loading; nothing was placed in
 	// the world yet, so just release the reservation and bail.
 	if (!player || isConnectionExpired()) {
-		g_game().releaseLogin(guid);
+		g_game().releaseLogin(reservedGuid);
 		return;
 	}
 
 	if (!loaded) {
-		g_game().releaseLogin(guid);
+		g_game().releaseLogin(reservedGuid);
 		disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 		return;
 	}
@@ -757,14 +764,14 @@ void ProtocolGame::finishLogin(bool loaded, OperatingSystem_t operatingSystem) {
 			}
 		}
 		if (countOutsizePZ >= maxOutsizePZ) {
-			g_game().releaseLogin(guid);
+			g_game().releaseLogin(reservedGuid);
 			disconnectClient(fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""));
 			return;
 		}
 	}
 
 	if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
-		g_game().releaseLogin(guid);
+		g_game().releaseLogin(reservedGuid);
 		disconnectClient("Temple position is wrong. Please, contact the administrator.");
 		g_logger().warn("Player {} temple position is wrong", player->getName());
 		return;
@@ -775,7 +782,7 @@ void ProtocolGame::finishLogin(bool loaded, OperatingSystem_t operatingSystem) {
 	player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
 	acceptPackets = true;
 
-	g_game().releaseLogin(guid);
+	g_game().releaseLogin(reservedGuid);
 
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();

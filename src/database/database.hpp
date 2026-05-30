@@ -13,6 +13,8 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
+	#include <atomic>
+	#include <cassert>
 	#include <memory>
 	#include <mutex>
 	#include <optional>

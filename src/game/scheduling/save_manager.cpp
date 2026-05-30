@@ -133,27 +133,31 @@ void SaveManager::scheduleAll() {
 		return;
 	}
 
-	// Build every player's save on the dispatcher (consistent, CPU-only read),
-	// then flush them plus guilds/map/kv on a pool thread so the save I/O does
-	// not block the game loop.
-	auto built = buildAllPlayers();
+	// Route every online player through the per-player save path (schedulePlayer):
+	// it builds on the dispatcher and serializes flushes per guid via
+	// m_flushInFlight/m_pendingFlushes. This stops a full save from racing — and
+	// overwriting with an older snapshot — a concurrent per-player save of the
+	// same character, which a standalone batch flush would not coordinate with.
+	logger.info("Saving server...");
+	const auto &players = game.getPlayers();
+	logger.info("Saving {} players...", players.size());
+	for (const auto &[_, player] : players) {
+		if (player->isDead()) {
+			player->loginPosition = player->getTemplePosition();
+		} else if (player->loginPosition != player->getTemplePosition()) {
+			player->loginPosition = player->getPosition();
+		}
+		schedulePlayer(player);
+	}
 
-	threadPool.detach_task([this, scheduledAt, built = std::move(built)]() mutable {
+	// Guilds/map/kv don't participate in per-player ordering; flush them on a pool
+	// thread. m_scheduledAt dedups overlapping full saves.
+	threadPool.detach_task([this, scheduledAt]() {
 		if (m_scheduledAt.load() != scheduledAt) {
-			logger.warn("Skipping save for server because another save has been scheduled.");
+			logger.warn("Skipping guild/map/kv save because another save has been scheduled.");
 			return;
 		}
-		Benchmark bm_saveAll;
-		logger.info("Saving server...");
-		flushBuiltPlayers(built);
 		saveGuildsMapAndKV();
-
-		double duration_saveAll = bm_saveAll.duration();
-		if (duration_saveAll > 1000.0) {
-			logger.info("Server saved in {:.2f} seconds.", duration_saveAll / 1000.0);
-		} else {
-			logger.info("Server saved in {} milliseconds.", duration_saveAll);
-		}
 	});
 }
 

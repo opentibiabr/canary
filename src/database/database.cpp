@@ -19,6 +19,10 @@ namespace {
 	// it instead of executing. See Database::beginQueryCapture.
 	thread_local std::vector<std::string>* tlsQueryCapture = nullptr;
 
+	// Set once mysql_library_init() succeeds, so the matching mysql_library_end()
+	// runs exactly once on shutdown (and only if init actually happened).
+	std::atomic<bool> g_mysqlLibraryInitialized { false };
+
 	// Calls mysql_thread_end() when a thread that opened a connection exits, so
 	// libmysqlclient's thread-local state is released (no per-thread TLS leak).
 	struct ThreadCleanup {
@@ -38,10 +42,13 @@ Database::ConnectionContext::~ConnectionContext() {
 }
 
 void Database::beginQueryCapture(std::vector<std::string>* buffer) {
+	// Not reentrant: a nested capture would silently steal the outer buffer.
+	assert(tlsQueryCapture == nullptr && "nested query capture is not supported");
 	tlsQueryCapture = buffer;
 }
 
 void Database::endQueryCapture() {
+	assert(tlsQueryCapture != nullptr && "endQueryCapture without a matching begin");
 	tlsQueryCapture = nullptr;
 }
 
@@ -50,11 +57,21 @@ Database::~Database() {
 	// mysql_close. The pool threads are already joined by this point (the thread
 	// pool shuts down before the Database singleton is torn down), so no other
 	// thread can be using a context while we clear them.
-	std::scoped_lock lock { connectionsMutex };
-	if (!connections.empty()) {
-		g_logger().info("Database: closing {} MySQL connection(s).", connections.size());
+	{
+		std::scoped_lock lock { connectionsMutex };
+		if (!connections.empty()) {
+			g_logger().info("Database: closing {} MySQL connection(s).", connections.size());
+		}
+		connections.clear();
 	}
-	connections.clear();
+
+	// Pair mysql_library_init(): release the client library after every per-thread
+	// connection is closed (and each thread's mysql_thread_end() has run). The
+	// compare_exchange guarantees it runs at most once.
+	bool wasInitialized = true;
+	if (g_mysqlLibraryInitialized.compare_exchange_strong(wasInitialized, false)) {
+		mysql_library_end();
+	}
 }
 
 Database &Database::getInstance() {
@@ -75,6 +92,7 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 		if (mysql_library_init(0, nullptr, nullptr) != 0) {
 			g_logger().error("Failed to initialize the MySQL client library.");
 		} else {
+			g_mysqlLibraryInitialized.store(true);
 			g_logger().info("Database running in per-thread connection mode (one MySQL connection per worker thread).");
 		}
 	});
@@ -157,10 +175,12 @@ Database::ConnectionContext &Database::getContext() const {
 		connectionNumber = connections.size();
 	}
 
-	// Publish to the thread_local cache before establishing so the nested
-	// max_allowed_packet query reuses this very context.
-	tlsContext = contextPtr;
 	if (establishConnection(*contextPtr)) {
+		// Cache in the thread_local only on success: a failed open is not cached,
+		// so the next query on this thread retries with a fresh connection (e.g.
+		// if MySQL was briefly unreachable) instead of being stuck with a null
+		// handle forever.
+		tlsContext = contextPtr;
 		g_logger().info("Database: opened MySQL connection #{} (new worker thread reached the database).", connectionNumber);
 	} else {
 		g_logger().error("Database: failed to open MySQL connection #{} for a worker thread.", connectionNumber);

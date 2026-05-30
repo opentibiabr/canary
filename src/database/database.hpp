@@ -13,7 +13,6 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <mysql/mysql.h>
-	#include <atomic>
 	#include <cassert>
 	#include <memory>
 	#include <mutex>
@@ -137,6 +136,10 @@ private:
 	mutable std::optional<ConnectionParams> connectionParams;
 	mutable std::mutex connectionsMutex;
 	mutable std::vector<std::unique_ptr<ConnectionContext>> connections;
+	// Set when this instance initialized the MySQL client library, so its
+	// destructor pairs the single mysql_library_end(). Set/read single-threaded
+	// (startup / shutdown), so no atomic is needed.
+	bool m_libraryInitialized = false;
 
 	friend class DBTransaction;
 };

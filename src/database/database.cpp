@@ -19,10 +19,6 @@ namespace {
 	// it instead of executing. See Database::beginQueryCapture.
 	thread_local std::vector<std::string>* tlsQueryCapture = nullptr;
 
-	// Set once mysql_library_init() succeeds, so the matching mysql_library_end()
-	// runs exactly once on shutdown (and only if init actually happened).
-	std::atomic<bool> g_mysqlLibraryInitialized { false };
-
 	// Calls mysql_thread_end() when a thread that opened a connection exits, so
 	// libmysqlclient's thread-local state is released (no per-thread TLS leak).
 	struct ThreadCleanup {
@@ -66,10 +62,10 @@ Database::~Database() {
 	}
 
 	// Pair mysql_library_init(): release the client library after every per-thread
-	// connection is closed (and each thread's mysql_thread_end() has run). The
-	// compare_exchange guarantees it runs at most once.
-	bool wasInitialized = true;
-	if (g_mysqlLibraryInitialized.compare_exchange_strong(wasInitialized, false)) {
+	// connection is closed (and each thread's mysql_thread_end() has run). Only the
+	// instance that initialized the library (single-threaded at startup) does this.
+	if (m_libraryInitialized) {
+		m_libraryInitialized = false;
 		mysql_library_end();
 	}
 }
@@ -88,11 +84,11 @@ bool Database::connect(const std::string* host, const std::string* user, const s
 	// implicitly, but that implicit init is not thread-safe if two threads race
 	// to open their first connection — doing it here up front removes that risk.
 	static std::once_flag libraryInitFlag;
-	std::call_once(libraryInitFlag, []() {
+	std::call_once(libraryInitFlag, [this]() {
 		if (mysql_library_init(0, nullptr, nullptr) != 0) {
 			g_logger().error("Failed to initialize the MySQL client library.");
 		} else {
-			g_mysqlLibraryInitialized.store(true);
+			m_libraryInitialized = true;
 			g_logger().info("Database running in per-thread connection mode (one MySQL connection per worker thread).");
 		}
 	});

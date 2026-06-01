@@ -20,6 +20,6 @@ spell:isAggressive(false)
 spell:isSelfTarget(true)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("druid;true", "sorcerer;true", "elder druid;true", "master sorcerer;true")
 spell:register()

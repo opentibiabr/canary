@@ -161,8 +161,7 @@ void EventCallback::pushArgument(lua_State* L, const std::shared_ptr<Container> 
 
 void EventCallback::pushArgument(lua_State* L, const std::shared_ptr<Zone> &zone) {
 	if (zone) {
-		Lua::pushUserdata<Zone>(L, zone);
-		Lua::setMetatable(L, -1, "Zone");
+		Lua::pushSharedUserdata<Zone>(L, zone);
 	} else {
 		lua_pushnil(L);
 	}

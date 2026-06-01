@@ -14,7 +14,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void TownFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Town", "", TownFunctions::luaTownCreate);
+	Lua::registerSharedClass<Town>(L, "", TownFunctions::luaTownCreate);
 	Lua::registerMetaMethod(L, "Town", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "Town", "getId", TownFunctions::luaTownGetId);
@@ -34,8 +34,7 @@ int TownFunctions::luaTownCreate(lua_State* L) {
 	}
 
 	if (town) {
-		Lua::pushUserdata<Town>(L, town);
-		Lua::setMetatable(L, -1, "Town");
+		Lua::pushSharedUserdata<Town>(L, town);
 	} else {
 		lua_pushnil(L);
 	}

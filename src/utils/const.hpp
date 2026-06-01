@@ -19,6 +19,7 @@ static constexpr int32_t INPUTMESSAGE_MAXSIZE = 4096;
 
 static constexpr int32_t CHANNEL_GUILD = 0x00;
 static constexpr int32_t CHANNEL_PARTY = 0x01;
+static constexpr int32_t CHANNEL_LIVESTREAM = 0xFFFE;
 static constexpr int32_t CHANNEL_PRIVATE = 0xFFFF;
 
 // This is in miliseconds
@@ -34,6 +35,7 @@ static constexpr int32_t STORAGEVALUE_HAZARDCOUNT = 112550;
 
 // Wheel of destiny
 static constexpr int32_t STORAGEVALUE_GIFT_OF_LIFE_COOLDOWN_WOD = 43200;
+static constexpr int32_t STORAGEVALUE_WAY_OF_THE_MONK_SHRINES_COUNT = 49102;
 
 constexpr double SCALING_BASE = 10.0;
 

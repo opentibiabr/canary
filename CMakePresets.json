@@ -27,8 +27,10 @@
       "displayName": "Windows - Release",
       "description": "Windows Release Build",
       "cacheVariables": {
-        "VCPKG_TARGET_TRIPLET": "x64-windows-static",
-        "VCPKG_HOST_TRIPLET": "x64-windows-static",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-static-release",
+        "VCPKG_HOST_TRIPLET": "x64-windows",
+        "VCPKG_OVERLAY_TRIPLETS": "${sourceDir}/cmake/triplets",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-static-release",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF",
         "VCPKG_PLATFORM_TOOLSET": "v145",
@@ -46,6 +48,8 @@
       "displayName": "Windows - Release (Enabled Tests)",
       "description": "Release build with CANARY_BUILD_TESTS enabled",
       "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-static-release-tests",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -58,8 +62,10 @@
         "ASAN_ENABLED": "ON",
         "DEBUG_LOG": "ON",
         "BUILD_STATIC_LIBRARY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-test-release",
         "VCPKG_HOST_TRIPLET": "x64-windows",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test-release",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -74,8 +80,10 @@
         "ASAN_ENABLED": "OFF",
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
-        "VCPKG_TARGET_TRIPLET": "x64-windows",
+        "VCPKG_TARGET_TRIPLET": "x64-windows-test-debug",
         "VCPKG_HOST_TRIPLET": "x64-windows",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-test-debug",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "VCPKG_BUILD_TYPE": "debug",
         "CANARY_BUILD_TESTS": "ON"
       }
@@ -90,7 +98,6 @@
           "value": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
           "type": "FILEPATH"
         },
-        "VCPKG_HOST_TRIPLET": "x64-linux",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF"
       },
@@ -106,6 +113,8 @@
       "displayName": "Linux - Release (Enabled Tests)",
       "description": "Release build with CANARY_BUILD_TESTS enabled",
       "cacheVariables": {
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-release",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -120,7 +129,9 @@
         "DEBUG_LOG": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_HOST_TRIPLET": "x64-linux",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-debug",
         "VCPKG_BUILD_TYPE": "debug",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -135,7 +146,9 @@
         "ASAN_ENABLED": "ON",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_HOST_TRIPLET": "x64-linux",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-tests-debug",
         "VCPKG_BUILD_TYPE": "debug",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -150,6 +163,7 @@
         "DEBUG_LOG": "ON",
         "VCPKG_TARGET_TRIPLET": "arm64-osx",
         "VCPKG_HOST_TRIPLET": "arm64-osx",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-osx",
         "VCPKG_BUILD_TYPE": "release",
         "CANARY_BUILD_TESTS": "OFF"
       },
@@ -171,7 +185,9 @@
         "BUILD_STATIC_LIBRARY": "OFF",
         "SPEED_UP_BUILD_UNITY": "OFF",
         "VCPKG_HOST_TRIPLET": "arm64-osx",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-osx-tests",
         "VCPKG_BUILD_TYPE": "debug",
+        "VCPKG_MANIFEST_FEATURES": "tests",
         "CANARY_BUILD_TESTS": "ON"
       }
     },
@@ -182,6 +198,7 @@
       "description": "Windows Release Build with metrics enabled",
       "cacheVariables": {
         "FEATURE_METRICS": "ON",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-windows-static-release-metrics",
         "VCPKG_MANIFEST_FEATURES": "metrics"
       }
     },
@@ -192,6 +209,7 @@
       "description": "Linux Release Build with metrics enabled",
       "cacheVariables": {
         "FEATURE_METRICS": "ON",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/x64-linux-metrics",
         "VCPKG_MANIFEST_FEATURES": "metrics"
       }
     },
@@ -202,7 +220,19 @@
       "description": "macOS Release Build with metrics enabled",
       "cacheVariables": {
         "FEATURE_METRICS": "ON",
+        "VCPKG_INSTALLED_DIR": "${sourceDir}/vcpkg_installed/arm64-osx-metrics",
         "VCPKG_MANIFEST_FEATURES": "metrics"
+      }
+    },
+    {
+      "name": "windows-release-link-audit",
+      "inherits": "windows-release",
+      "displayName": "Windows - Release Link Audit",
+      "description": "Windows Release build with link diagnostics (/VERBOSE:LIB, /MAP, compile_commands)",
+      "binaryDir": "${sourceDir}/build/windows-release-link-audit",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO": "/VERBOSE:LIB /MAP:\"${sourceDir}/build/${presetName}/canary-link-audit.map\""
       }
     }
   ],
@@ -254,6 +284,10 @@
     {
       "name": "macos-release-metrics",
       "configurePreset": "macos-release-metrics"
+    },
+    {
+      "name": "windows-release-link-audit",
+      "configurePreset": "windows-release-link-audit"
     }
   ],
   "testPresets": [

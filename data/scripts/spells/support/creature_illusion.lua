@@ -36,5 +36,5 @@ spell:level(23)
 spell:mana(100)
 spell:hasParams(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

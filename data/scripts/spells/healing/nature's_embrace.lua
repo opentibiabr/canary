@@ -40,5 +40,5 @@ spell:isBlockingWalls(true)
 spell:hasParams(true)
 spell:hasPlayerNameParam(true)
 spell:vocation("druid;true", "elder druid;true")
-spell:needLearn(false)
+
 spell:register()

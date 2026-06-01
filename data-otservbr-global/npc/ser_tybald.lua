@@ -50,265 +50,185 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
--- spells for knight and paladin
-keywordHandler:addSpellKeyword({ "findperson" }, {
+local woundNode = keywordHandler:addKeyword({ "wound cleansing" }, StdModule.say, {
 	npcHandler = npcHandler,
-	spellName = "Find Person",
-	price = 80,
-	level = 8,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
+	onlyFocus = true,
+	text = "Would you like to learn {wound cleansing} magic spell for free?",
 })
-keywordHandler:addSpellKeyword({ "light" }, {
+woundNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
-	spellName = "Light",
+	premium = false,
+	spellName = "wound cleansing",
+	vocation = { 4, 8 },
 	price = 0,
 	level = 8,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
 })
-keywordHandler:addSpellKeyword({ "magicrope" }, {
+
+local brutalNode = keywordHandler:addKeyword({ "brutal strike" }, StdModule.say, {
 	npcHandler = npcHandler,
-	spellName = "Magic Rope",
-	price = 200,
-	level = 9,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
+	onlyFocus = true,
+	text = "Would you like to learn {brutal strike} magic spell for 1000 gold?",
 })
-keywordHandler:addSpellKeyword({ "curepoison" }, {
+brutalNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
-	spellName = "Cure Poison",
-	price = 150,
-	level = 10,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
-})
-keywordHandler:addSpellKeyword({ "levitate" }, {
-	npcHandler = npcHandler,
-	spellName = "Levitate",
-	price = 500,
-	level = 12,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
-})
-keywordHandler:addSpellKeyword({ "haste" }, {
-	npcHandler = npcHandler,
-	spellName = "Haste",
-	price = 600,
-	level = 14,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
-})
-keywordHandler:addSpellKeyword({ "greatlight" }, {
-	npcHandler = npcHandler,
-	spellName = "Great Light",
-	price = 500,
-	level = 13,
-	vocation = {
-		VOCATION.BASE_ID.PALADIN,
-		VOCATION.BASE_ID.KNIGHT,
-	},
-})
---spells for paladin
-keywordHandler:addSpellKeyword({ "conjurebolt" }, {
-	npcHandler = npcHandler,
-	spellName = "Conjure Bolt",
-	price = 750,
-	level = 17,
-	vocation = VOCATION.BASE_ID.PALADIN,
-})
-keywordHandler:addSpellKeyword({ "conjurepoisonedarrow" }, {
-	npcHandler = npcHandler,
-	spellName = "Conjure Poisoned Arrow",
-	price = 700,
-	level = 16,
-	vocation = VOCATION.BASE_ID.PALADIN,
-})
-keywordHandler:addSpellKeyword({ "conjurearrow" }, {
-	npcHandler = npcHandler,
-	spellName = "Conjure Arrow",
-	price = 450,
-	level = 13,
-	vocation = VOCATION.BASE_ID.PALADIN,
-})
-keywordHandler:addSpellKeyword({ "lighthealing" }, {
-	npcHandler = npcHandler,
-	spellName = "Light Healing",
-	price = 0,
-	level = 8,
-	vocation = VOCATION.BASE_ID.PALADIN,
-})
--- spells for knight
-keywordHandler:addSpellKeyword({ "brutalstrike" }, {
-	npcHandler = npcHandler,
-	spellName = "Brutal Strike",
+	premium = false,
+	spellName = "brutal strike",
+	vocation = { 4, 8 },
 	price = 1000,
 	level = 16,
-	vocation = VOCATION.BASE_ID.KNIGHT,
 })
-keywordHandler:addSpellKeyword({ "woundcleansing" }, {
+
+local cureNode = keywordHandler:addKeyword({ "cure poison" }, StdModule.say, {
 	npcHandler = npcHandler,
-	spellName = "Wound Cleansing",
+	onlyFocus = true,
+	text = "Would you like to learn {cure poison} magic spell for 150 gold?",
+})
+cureNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "cure poison",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 150,
+	level = 10,
+})
+
+local greatLightNode = keywordHandler:addKeyword({ "great light" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {great light} magic spell for 500 gold?",
+})
+greatLightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "great light",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 500,
+	level = 13,
+})
+
+local findPersonNode = keywordHandler:addKeyword({ "find person" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {find person} magic spell for 80 gold?",
+})
+findPersonNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "find person",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 80,
+	level = 8,
+})
+
+local magicRopeNode = keywordHandler:addKeyword({ "magic rope" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {magic rope} magic spell for 200 gold?",
+})
+magicRopeNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "magic rope",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 200,
+	level = 9,
+})
+
+local lightHealingNode = keywordHandler:addKeyword({ "light healing" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {light healing} magic spell for free?",
+})
+lightHealingNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "light healing",
+	vocation = { 1, 2, 3, 5, 6, 7, 9, 10 },
 	price = 0,
 	level = 8,
-	vocation = VOCATION.BASE_ID.KNIGHT,
 })
 
-keywordHandler:addKeyword({ "healing spells" }, StdModule.say, {
+local conjureArrowNode = keywordHandler:addKeyword({ "conjure arrow" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "In this category I have '{Lighthealing}', '{Healfriend}', and '{Curepoison}'.",
+	onlyFocus = true,
+	text = "Would you like to learn {conjure arrow} magic spell for 450 gold?",
 })
-keywordHandler:addKeyword({ "support spells" }, StdModule.say, {
+conjureArrowNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
-	text = "In this category I have '{Findperson}', '{Magicrope}', '{Levitate}', '{Light}', \z
-		'{Greatlight}', '{Haste}', '{Poisonfield}', '{Firefield}', '{Lightmagicmissile}' and '{Energyfield}'.",
-})
-keywordHandler:addKeyword({ "attack spells" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "In this category I have '{Deathstrike}', '{Firewave}', '{Apprenticesstrike}', \z
-		'{Energystrike}', '{Terrastrike}', '{Flamestrike}', '{Icestrike}', '{Physicalstrike}', '{Icewave}'.",
-})
-keywordHandler:addKeyword({ "spells" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "I can teach you {healing spells}, {support spells} and {attack spells}. \z
-		What kind of spell do you wish to learn?",
+	premium = false,
+	spellName = "conjure arrow",
+	vocation = { 3, 7 },
+	price = 450,
+	level = 13,
 })
 
-keywordHandler:addKeyword({ "name" }, StdModule.say, {
+local levitateNode = keywordHandler:addKeyword({ "levitate" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I am Garamond Starstream.",
+	onlyFocus = true,
+	text = "Would you like to learn {levitate} magic spell for 500 gold?",
 })
-keywordHandler:addKeyword({ "job" }, StdModule.say, {
+levitateNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
-	text = "Did you not listen? I am the teacher of druid and sorcerer spells for level 8 to 18. \z
-		I teach young adventurers spells they can use once they have the proper vocation - druid or sorcerer.",
-})
-keywordHandler:addKeyword({ "rookgaard" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "I have an old friend there. Haven't heard from him in a while.",
-})
-keywordHandler:addKeyword({ "dawnport" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Oh, it's not too bad here, believe me. At least I always get young and enthusiast disciples! \z
-		Though I must confess I miss the vastness of the Tibian plains. <sighs>",
-})
-keywordHandler:addKeyword({ "inigo" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A kind old hunter. He loves to see young life around, taking on the ways and lays of the land. \z
-		If you have any question, ask Inigo for help.",
-})
-keywordHandler:addKeyword({ "coltrayne" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Roughened and toughened by life's tragedies. A good man, but somber.",
-})
-keywordHandler:addKeyword({ "garamond" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Yes, child. If you wish to learn a spell, tell me.",
-})
-keywordHandler:addKeyword({ "hamish" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A very headstrong young man, though I appreciate his devotion to the craft of potion-making. \z
-		No respect for senior authority or age at all! Except maybe for a little soft spot for Mr Morris.",
-})
-keywordHandler:addKeyword({ "mr morris" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A strange young man. He seems driven, to my mind. By what force, I do not know. \z
-		I take it the world needs adventurers such as him.",
-})
-keywordHandler:addKeyword({ "plunderpurse" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Redeeming one's soul by becoming a clerk? Not very likely. Once a pirate, always a pirate. \z
-		But he's a charming old rogue.",
-})
-keywordHandler:addKeyword({ "richard" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Not a half bad cook, truly. Must have been that squirrel diet, \z
-		it seems to have lead him to discover a new cuisine - everything to forget the bad taste of squirrels, he said.",
-})
-keywordHandler:addKeyword({ "ser tybald" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "He is proficient in the martial arts. A very skilled teacher of spells for knights and paladins. \z
-		If that is your vocation, you should talk to Ser Tybald.",
-})
-keywordHandler:addKeyword({ "wentworth" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Ah, yes. Travelled with Plunderpurse a lot as I recall. Captain Plunderpurse, then. \z
-			Got his head full of numbers and statistics, that boy.",
+	premium = false,
+	spellName = "levitate",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 500,
+	level = 12,
 })
 
-local function creatureSayCallback(npc, creature, type, message)
-	local player = Player(creature)
-	local playerId = player:getId()
+local hasteNode = keywordHandler:addKeyword({ "haste" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {haste} magic spell for 600 gold?",
+})
+hasteNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "haste",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 600,
+	level = 14,
+})
 
-	if not npcHandler:checkInteraction(npc, creature) then
-		return false
-	end
+local lightNode = keywordHandler:addKeyword({ "light" }, StdModule.say, {
+	npcHandler = npcHandler,
+	onlyFocus = true,
+	text = "Would you like to learn {light} magic spell for free?",
+})
+lightNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
+	npcHandler = npcHandler,
+	premium = false,
+	spellName = "light",
+	vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 },
+	price = 0,
+	level = 8,
+})
 
-	if MsgContains(message, "magic") then
-		npcHandler:say({
-			"Spells are very useful in combat - not only for mages, though of course we particularly \z
-			rely on them for much of our damage output. ...",
-			"There's a broad variety of what spells can do, as you will see as you progress further. \z
-			The next spells you can buy with level 8 and on. ...",
-			"Some attack spells can be directed at a single target while others affect an area, having an \z
-			effect either over time or instantaneous. Even other spells protect you, or can be used to create runes. ...",
-			"Each vocation has its own individual spells that none of the other vocations can use. \z
-			You can only learn spells at a spell trainer of your vocation. ...",
-			"The spells here on Dawnport are for trying out only, and you will forget them once \z
-			you choose your definite vocation and leave for the Mainland. ...",
-			"There, you can go to a spell teacher in a city to permanently learn a spell.",
-		}, creature)
-	elseif MsgContains(message, "mainland") then
-		npcHandler:say({
-			"The Mainland offers many more adventures, dangers and quests than this small isle, \z
-			and also has spell teachers where you can permanently learn a spell for your vocation. ...",
-			"Once you reach level 8 you may choose your definite vocation and leave for Main. \z
-			Go to a city and seek out the spell trainer of your vocation to learn a spell. \z
-			And make sure you have enough gold! ...",
-			"The art of spell teaching is complex and dangerous, and we will only impart our \z
-			valuable knowledge of a spell to a novice if they can pay the price.",
-		}, creature)
-	elseif MsgContains(message, "tibian") then
-		npcHandler:say({
-			"Ah, the beauty of our world! It is vast and extraordinarily diverse. Strange islands, \z
-			beautiful cities and fierce monsters that roam the wildernesses. \z
-			Mysteries, adventures, danger around every corner. ...",
-			"Once you have reached level 8, you are ready to choose a vocation and go to the Tibian Mainland.",
-		}, creature)
-	elseif MsgContains(message, "vocation") then
-		npcHandler:say({
-			"Your choice of vocation will determine your life in Tibia, and the skills and fighting techniques you may use. ...",
-			"There are four vocation: knight, druid, paladin and sorcerer. \z
-			If you want to know more about them, talk to Oressa in the temple. ...",
-			"I myself teach try-out spells for both the magical classes, \z
-			whereas Tybald in the next room specialises in knight and paladin spells.",
-		}, creature)
-	elseif MsgContains(message, "oressa") then
-		npcHandler:say({
-			"A very intelligent girl. Prefers to listen to wild animals' noises instead of humans', \z
-			which is quite understandable when you think about it. ...",
-			"However, she's also a very apt healer and can give you advice on your choice of vocation.",
-		}, creature)
-	end
-end
+keywordHandler:addKeyword({ "healing" }, StdModule.say, { npcHandler = npcHandler, text = "In this category I have '{Light healing}', '{Wound cleansing}', and '{Cure poison}'." })
+keywordHandler:addKeyword({ "support" }, StdModule.say, { npcHandler = npcHandler, text = "In this category I have '{Find person}', '{Magic Rope}', '{Levitate}', '{Light}', '{Great Light}', and '{Haste}'." })
+keywordHandler:addKeyword({ "attack" }, StdModule.say, { npcHandler = npcHandler, text = "In this category I have '{Brutal strike}' for knights." })
+keywordHandler:addKeyword({ "conjure" }, StdModule.say, { npcHandler = npcHandler, text = "In this category I have '{Conjure Arrow}' for paladins." })
+keywordHandler:addKeyword({ "spell" }, StdModule.say, { npcHandler = npcHandler, text = "I can teach you {healing spells}, {support spells}, {conjure spells} and {attack spells}. What kind of spell do you wish to learn?" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Ser Tybald. <bows courteously>." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm just an adventurer looking for action. Learn from the best! Just ask me about knight and paladin {spells}." })
+keywordHandler:addKeyword({ "dawnport" }, StdModule.say, { npcHandler = npcHandler, text = "From afar, the island glowed at midnight as if dawn was at hand. A fierce magical light, beckoning, calling out, promising power past redemption - but I am sure {Garamond} has a better idea as to the exact nature of that magical power." })
+keywordHandler:addKeyword({ "inigo" }, StdModule.say, { npcHandler = npcHandler, text = "He's a mentor to all young adventurers. If you have a question as to what you should or could do, and how this world works, talk to Inigo, he will be happy to help." })
+keywordHandler:addKeyword({ "coltrayne" }, StdModule.say, { npcHandler = npcHandler, text = "Now there is someone who has had his share of grief. No wonder he came to {Dawnport} to assist raising new heroes for the {Tibian} lands." })
+keywordHandler:addKeyword({ "garamond" }, StdModule.say, { npcHandler = npcHandler, text = "Is that old man still teaching magic spells?" })
+keywordHandler:addKeyword({ "mr morris" }, StdModule.say, { npcHandler = npcHandler, text = "We know each other from old, yes. Will we talk about it? No." })
+keywordHandler:addKeyword({ "plunderpurse" }, StdModule.say, { npcHandler = npcHandler, text = "That old pirate has settled down now it seems." })
+keywordHandler:addKeyword({ "richard" }, StdModule.say, { npcHandler = npcHandler, text = "He's quite a good cook, which helps improve the mood on bad days. He's a carpenter by trade. Did a good job reinforcing this outpost, too." })
+keywordHandler:addKeyword({ "ser tybald" }, StdModule.say, { npcHandler = npcHandler, text = "It used to be a kind of title in other times, but it serves nicely as a first name here." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "Each vocation has their own unique spells to enhance their fighting or defense, which none of the other vocations can use, and which you can only learn at a spell trainer of your vocation." })
+keywordHandler:addKeyword({ "main" }, StdModule.say, { npcHandler = npcHandler, text = "Most of the major cities are on the Tibian mainland, such as the rich merchant city of Venore, for example. You will find spell teachers for your vocation in almost every major city." })
+keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Tibia is the world we live in. Rookgaard is not far off from the Tibian {mainland}, though it's a tricky passage with contrary winds. On the mainland, you will find more adventure, mystery and monsters and can prove yourself a hero or villain." })
+keywordHandler:addKeyword({ "oressa" }, StdModule.say, { npcHandler = npcHandler, text = "What a beautiful lady. Do you know the Lay of the White Lady Illadria? ... 'Calm and slender like a birch, soft and white like snow, yet strong and warm like the sun she is.' Well, it fits perfectly. I am her sworn protector." })
+keywordHandler:addKeyword({ "menesto" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, still so young and naive about the gods and demons... Still, I envy him his unspoilt beliefs. If I could turn back time... but never mind my ramblings." })
+keywordHandler:addKeyword({ "key" }, StdModule.say, { npcHandler = npcHandler, text = "Mr Morris has much on his mind and may have been somewhat distracted with regard to that key. He probably just misplaced it, somewhere on top of all those archeological findings he stores." })
 
-npcHandler:setMessage(
-	MESSAGE_GREET,
-	"Welcome, child. Have you come to learn about {magic}? \z
-	Then you are in the right place. I can teach you many useful {spells}."
-)
+npcHandler:setMessage(MESSAGE_GREET, "Be greeted, young adventurer.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Always stay upwind, |PLAYERNAME|.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "A go-getter. I like that.")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

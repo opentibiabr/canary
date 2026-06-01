@@ -13,6 +13,8 @@
 #include "server/network/message/outputmessage.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
+#include "creatures/players/livestream/livestream.hpp"
+#include "creatures/players/player.hpp"
 #include "io/iologindata.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
@@ -169,6 +171,24 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	std::string password = msg.getString();
+	if (accountDescriptor == "@livestream") {
+		if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
+			disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			return;
+		} else if (!oldProtocol) {
+			disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			return;
+		}
+
+		g_dispatcher().addEvent(
+			[self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), password] {
+				self->getLivestreamCharacterList(password);
+			},
+			"ProtocolLogin::getLivestreamCharacterList"
+		);
+		return;
+	}
+
 	if (password.empty()) {
 		disconnectClient("Invalid password.");
 		return;
@@ -180,4 +200,42 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		},
 		__FUNCTION__
 	);
+}
+
+void ProtocolLogin::getLivestreamCharacterList(const std::string &password) const {
+	const auto casters = g_livestream().getBroadcastingCasters(password);
+	if (casters.empty()) {
+		disconnectClient("There are no players with the livestream on.");
+		return;
+	}
+
+	auto output = OutputMessagePool::getOutputMessage();
+	output->addByte(0x14);
+	output->addString("Welcome to Livestream System!");
+
+	output->addByte(0x28);
+	output->addString(fmt::format("@livestream\n{}", password));
+
+	output->addByte(0x64);
+	output->addByte(0x01); // worlds
+	output->addByte(0x00);
+	output->addString(g_configManager().getString(SERVER_NAME));
+	output->addString(g_configManager().getString(IP));
+	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
+	output->addByte(0x00);
+
+	const auto casterCount = static_cast<uint8_t>(std::min<size_t>(std::numeric_limits<uint8_t>::max(), casters.size()));
+	output->addByte(casterCount);
+	for (size_t index = 0; index < casterCount; ++index) {
+		const auto &caster = casters[index];
+		output->addByte(0x00);
+		output->addString(caster->getName());
+	}
+
+	output->addByte(0x00);
+	output->addByte(0x00);
+	output->add<uint32_t>(0x00);
+
+	send(output);
+	disconnect();
 }

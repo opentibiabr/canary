@@ -1,1 +1,19 @@
 text eol=lf
+
+.gitattributes text eol=lf
+.dockerignore text eol=lf
+*.md text eol=lf
+*.ps1 text eol=lf
+*.sh text eol=lf
+.github/**/*.sh text eol=lf
+.github/**/*.py text eol=lf
+.github/**/*.yml text eol=lf
+.github/**/*.yaml text eol=lf
+docker/Dockerfile.* text eol=lf
+docker/**/Dockerfile text eol=lf
+docker/**/*.sh text eol=lf
+docker/**/*.php text eol=lf
+docker/**/*.yml text eol=lf
+docker/**/*.yaml text eol=lf
+docker/**/*.md text eol=lf
+docker/**/*.dist text eol=lf

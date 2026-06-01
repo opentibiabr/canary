@@ -13,6 +13,10 @@
 #include "game/game.hpp"
 #include "io/filestream.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <utility>
+#endif
+
 /*
     OTBM_ROOTV1
     |
@@ -36,6 +40,10 @@
     |
     |--- OTBM_ITEM_DEF (not implemented)
 */
+
+namespace {
+	constexpr size_t kInitialParsedTileItemReserve = 2;
+}
 
 void IOMap::loadMap(Map* map, const Position &pos) {
 	Benchmark bm_mapLoad;
@@ -65,6 +73,8 @@ void IOMap::loadMap(Map* map, const Position &pos) {
 	if (majorVersionItems < 3) {
 		throw IOMapException("This map need to be upgraded by using the latest map editor version to be able to load correctly.");
 	}
+
+	map->reserveForMap(map->width, map->height, fileByte.size());
 
 	if (stream.startNode(OTBM_MAP_DATA)) {
 		parseMapDataAttributes(stream, map);
@@ -121,6 +131,15 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 		const uint16_t base_x = stream.getU16();
 		const uint16_t base_y = stream.getU16();
 		const uint8_t base_z = stream.getU8();
+		MapCacheFloorCursor floorCursor;
+		BasicTile tile;
+		auto addTileItem = [&tile](std::shared_ptr<BasicItem> item) {
+			if (tile.items.size() == 1 && tile.items.capacity() < kInitialParsedTileItemReserve) {
+				tile.items.reserve(kInitialParsedTileItemReserve);
+			}
+
+			tile.items.push_back(std::move(item));
+		};
 
 		while (stream.startNode()) {
 			const uint8_t tileType = stream.getU8();
@@ -128,8 +147,7 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				throw IOMapException("Could not read tile type node.");
 			}
 
-			const auto tile = std::make_shared<BasicTile>();
-
+			tile.reset();
 			const uint8_t tileCoordsX = stream.getU8();
 			const uint8_t tileCoordsY = stream.getU8();
 
@@ -138,24 +156,24 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 			const auto z = static_cast<uint8_t>(base_z + pos.z);
 
 			if (tileType == OTBM_HOUSETILE) {
-				tile->houseId = stream.getU32();
-				if (!map.houses.addHouse(tile->houseId)) {
-					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not create house id: {}", x, y, z, tile->houseId));
+				tile.houseId = stream.getU32();
+				if (!map.houses.addHouse(tile.houseId)) {
+					throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not create house id: {}", x, y, z, tile.houseId));
 				}
 			}
 
 			if (stream.isProp(OTBM_ATTR_TILE_FLAGS)) {
 				const uint32_t flags = stream.getU32();
 				if ((flags & OTBM_TILEFLAG_PROTECTIONZONE) != 0) {
-					tile->flags |= TILESTATE_PROTECTIONZONE;
+					tile.flags |= TILESTATE_PROTECTIONZONE;
 				} else if ((flags & OTBM_TILEFLAG_NOPVPZONE) != 0) {
-					tile->flags |= TILESTATE_NOPVPZONE;
+					tile.flags |= TILESTATE_NOPVPZONE;
 				} else if ((flags & OTBM_TILEFLAG_PVPZONE) != 0) {
-					tile->flags |= TILESTATE_PVPZONE;
+					tile.flags |= TILESTATE_PVPZONE;
 				}
 
 				if ((flags & OTBM_TILEFLAG_NOLOGOUT) != 0) {
-					tile->flags |= TILESTATE_NOLOGOUT;
+					tile.flags |= TILESTATE_NOLOGOUT;
 				}
 			}
 
@@ -163,19 +181,16 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				const uint16_t id = stream.getU16();
 				const auto &iType = Item::items[id];
 
-				if (!tile->isHouse() || !iType.isBed()) {
-					const auto item = std::make_shared<BasicItem>();
-					item->id = id;
-
-					if (tile->isHouse() && iType.movable) {
+				if (!tile.isHouse() || !iType.isBed()) {
+					if (tile.isHouse() && iType.movable) {
 						g_logger().warn("[IOMap::loadMap] - "
 						                "Movable item with ID: {}, in house: {}, "
 						                "at position: x {}, y {}, z {}",
-						                id, tile->houseId, x, y, z);
+						                id, tile.houseId, x, y, z);
 					} else if (iType.isGroundTile()) {
-						tile->ground = map.tryReplaceItemFromCache(item);
+						tile.ground = map.getBasicItemFromCache(id);
 					} else {
-						tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+						addTileItem(map.getBasicItemFromCache(id));
 					}
 				}
 			}
@@ -193,17 +208,19 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 							throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item {}, Node Type.", x, y, z, id));
 						}
 
-						if (tile->isHouse() && (iType.isBed() || iType.isTrashHolder())) {
+						if (tile.isHouse() && (iType.isBed() || iType.isTrashHolder())) {
 							// nothing
-						} else if (tile->isHouse() && iType.movable) {
+						} else if (tile.isHouse() && iType.movable) {
 							g_logger().warn("[IOMap::loadMap] - "
 							                "Movable item with ID: {}, in house: {}, "
 							                "at position: x {}, y {}, z {}",
-							                id, tile->houseId, x, y, z);
+							                id, tile.houseId, x, y, z);
 						} else if (iType.isGroundTile()) {
-							tile->ground = map.tryReplaceItemFromCache(item);
+							auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							tile.ground = std::move(cachedItem);
 						} else {
-							tile->items.emplace_back(map.tryReplaceItemFromCache(item));
+							auto cachedItem = item->isSimple() ? map.getBasicItemFromCache(id) : map.tryReplaceItemFromCache(item);
+							addTileItem(std::move(cachedItem));
 						}
 					} break;
 					case OTBM_TILE_ZONE: {
@@ -230,11 +247,11 @@ void IOMap::parseTileArea(FileStream &stream, Map &map, const Position &pos) {
 				throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));
 			}
 
-			if (tile->isEmpty(true)) {
+			if (tile.isEmpty(true)) {
 				continue;
 			}
 
-			map.setBasicTile(x, y, z, tile);
+			map.setBasicTile(x, y, z, tile, floorCursor);
 		}
 
 		if (!stream.endNode()) {

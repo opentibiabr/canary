@@ -23,7 +23,7 @@ void KVFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "kv", "keys", KVFunctions::luaKVKeys);
 	Lua::registerMethod(L, "kv", "remove", KVFunctions::luaKVRemove);
 
-	Lua::registerClass(L, "KV", "");
+	Lua::registerSharedClass<KV>(L, "");
 	Lua::registerMethod(L, "KV", "scoped", KVFunctions::luaKVScoped);
 	Lua::registerMethod(L, "KV", "set", KVFunctions::luaKVSet);
 	Lua::registerMethod(L, "KV", "get", KVFunctions::luaKVGet);
@@ -38,14 +38,12 @@ int KVFunctions::luaKVScoped(lua_State* L) {
 	if (Lua::isUserdata(L, 1)) {
 		const auto &scopedKV = Lua::getUserdataShared<KV>(L, 1, "KV");
 		const auto &newScope = scopedKV->scoped(key);
-		Lua::pushUserdata<KV>(L, newScope);
-		Lua::setMetatable(L, -1, "KV");
+		Lua::pushSharedUserdata<KV>(L, newScope);
 		return 1;
 	}
 
 	const auto &scopedKV = g_kv().scoped(key);
-	Lua::pushUserdata<KV>(L, scopedKV);
-	Lua::setMetatable(L, -1, "KV");
+	Lua::pushSharedUserdata<KV>(L, scopedKV);
 	return 1;
 }
 

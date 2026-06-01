@@ -46,10 +46,15 @@ std::shared_ptr<Player> Party::getMantraHolder() const {
 
 std::vector<std::shared_ptr<Player>> Party::getPlayers() const {
 	std::vector<std::shared_ptr<Player>> players;
-	for (auto &member : memberList) {
-		players.push_back(member);
+	players.reserve(memberList.size() + 1);
+	for (const auto &member : memberList) {
+		if (member) {
+			players.push_back(member);
+		}
 	}
-	players.push_back(getLeader());
+	if (const auto &leader = getLeader()) {
+		players.push_back(leader);
+	}
 	return players;
 }
 
@@ -98,29 +103,38 @@ void Party::disband() {
 	}
 
 	const auto &currentLeader = getLeader();
-	if (!currentLeader) {
-		return;
-	}
 
 	m_leader.reset();
 	m_mantraHolder.reset();
 
-	currentLeader->resetBuff(BUFF_MANTRA);
-	currentLeader->setParty(nullptr);
-	currentLeader->sendClosePrivate(CHANNEL_PARTY);
-	g_game().updatePlayerShield(currentLeader);
-	g_game().updatePlayerHelpers(currentLeader);
-	currentLeader->sendCreatureSkull(currentLeader);
-	currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
+	if (currentLeader) {
+		currentLeader->resetBuff(BUFF_MANTRA);
+		currentLeader->setParty(nullptr);
+		currentLeader->sendClosePrivate(CHANNEL_PARTY);
+		g_game().updatePlayerShield(currentLeader);
+		g_game().updatePlayerHelpers(currentLeader);
+		currentLeader->sendCreatureSkull(currentLeader);
+		currentLeader->sendTextMessage(MESSAGE_PARTY_MANAGEMENT, "Your party has been disbanded.");
+	}
 
 	for (const auto &invitee : getInvitees()) {
+		if (!invitee) {
+			continue;
+		}
+
 		invitee->removePartyInvitation(getParty());
-		currentLeader->sendCreatureShield(invitee);
+		if (currentLeader) {
+			currentLeader->sendCreatureShield(invitee);
+		}
 	}
 	inviteList.clear();
 
 	const auto &members = getMembers();
 	for (const auto &member : members) {
+		if (!member) {
+			continue;
+		}
+
 		member->resetBuff(BUFF_MANTRA);
 		member->setParty(nullptr);
 		member->sendClosePrivate(CHANNEL_PARTY);
@@ -128,14 +142,24 @@ void Party::disband() {
 	}
 
 	for (const auto &member : members) {
+		if (!member) {
+			continue;
+		}
+
 		g_game().updatePlayerShield(member);
 
 		for (const auto &otherMember : members) {
+			if (!otherMember) {
+				continue;
+			}
+
 			otherMember->sendCreatureSkull(member);
 		}
 
-		member->sendCreatureSkull(currentLeader);
-		currentLeader->sendCreatureSkull(member);
+		if (currentLeader) {
+			member->sendCreatureSkull(currentLeader);
+			currentLeader->sendCreatureSkull(member);
+		}
 		g_game().updatePlayerHelpers(member);
 	}
 	memberList.clear();

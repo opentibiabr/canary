@@ -41,14 +41,59 @@ void NpcTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "NpcType", "registerEvent", NpcTypeFunctions::luaNpcTypeRegisterEvent);
 
 	Lua::registerMethod(L, "NpcType", "eventType", NpcTypeFunctions::luaNpcTypeEventType);
+	/***
+	 * @function NpcType:onThink
+	 * @param callback fun(npc: Npc, interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onThink", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onAppear
+	 * @param callback fun(npc: Npc, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onAppear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onDisappear
+	 * @param callback fun(npc: Npc, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onDisappear", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onMove
+	 * @param callback fun(npc: Npc, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onMove", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onSay
+	 * @param callback fun(npc: Npc, creature: Creature, type: integer, message: string): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onSay", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onCloseChannel
+	 * @param callback fun(npc: Npc, player: Player): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onCloseChannel", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onBuyItem
+	 * @param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, inBackpacks: boolean, totalCost: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onBuyItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onSellItem
+	 * @param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer, amount: integer, ignore: boolean, itemName: string, totalCost: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onSellItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
+	/***
+	 * @function NpcType:onCheckItem
+	 * @param callback fun(npc: Npc, player: Player, itemId: integer, subType: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "NpcType", "onCheckItem", NpcTypeFunctions::luaNpcTypeEventOnCallback);
 
 	Lua::registerMethod(L, "NpcType", "outfit", NpcTypeFunctions::luaNpcTypeOutfit);
@@ -94,6 +139,10 @@ void NpcTypeFunctions::createNpcTypeShopLuaTable(lua_State* L, const std::vector
 	}
 }
 
+/***
+ * @class NpcType
+ * @overload fun(name: string): NpcType
+ */
 int NpcTypeFunctions::luaNpcTypeCreate(lua_State* L) {
 	// NpcType(name)
 	const auto &npcType = g_npcs().getNpcType(Lua::getString(L, 1), true);
@@ -596,6 +645,11 @@ int NpcTypeFunctions::luaNpcTypeSoundSpeedTicks(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function NpcType:addSound
+ * @param soundId SoundEffect
+ * @return boolean
+ */
 int NpcTypeFunctions::luaNpcTypeAddSound(lua_State* L) {
 	// npcType:addSound(soundId)
 	const auto &npcType = Lua::getUserdataShared<NpcType>(L, 1, "NpcType");

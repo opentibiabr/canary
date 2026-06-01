@@ -28,6 +28,6 @@ spell:isSelfTarget(true)
 spell:isPremium(true)
 spell:cooldown(40 * 1000)
 spell:groupCooldown(4 * 1000, 40 * 1000)
-spell:needLearn(false)
+
 spell:vocation("sorcerer;true", "master sorcerer;true")
 spell:register()

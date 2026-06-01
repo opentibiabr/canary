@@ -11,30 +11,37 @@
 
 #include "map/map_const.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+#endif
+
 class Creature;
 class Tile;
 struct BasicTile;
 
 struct Floor {
+	using TileGrid = std::array<std::array<std::shared_ptr<Tile>, SECTOR_SIZE>, SECTOR_SIZE>;
+	using BasicTileGrid = std::array<std::array<const BasicTile*, SECTOR_SIZE>, SECTOR_SIZE>;
+
 	explicit Floor(uint8_t z) :
 		z(z) { }
 
 	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].first;
+		return tiles[x & SECTOR_MASK][y & SECTOR_MASK];
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK].first = std::move(tile);
+		tiles[x & SECTOR_MASK][y & SECTOR_MASK] = std::move(tile);
 	}
 
-	std::shared_ptr<BasicTile> getTileCache(uint16_t x, uint16_t y) const {
+	const BasicTile* getTileCache(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
-		return tiles[x & SECTOR_MASK][y & SECTOR_MASK].second;
+		return tileCache[x & SECTOR_MASK][y & SECTOR_MASK];
 	}
 
-	void setTileCache(uint16_t x, uint16_t y, const std::shared_ptr<BasicTile> &newTile) {
-		tiles[x & SECTOR_MASK][y & SECTOR_MASK].second = newTile;
+	void setTileCache(uint16_t x, uint16_t y, const BasicTile* newTile) {
+		tileCache[x & SECTOR_MASK][y & SECTOR_MASK] = newTile;
 	}
 
 	const auto &getTiles() const {
@@ -51,7 +58,8 @@ struct Floor {
 	}
 
 private:
-	std::pair<std::shared_ptr<Tile>, std::shared_ptr<BasicTile>> tiles[SECTOR_SIZE][SECTOR_SIZE] = {};
+	TileGrid tiles {};
+	BasicTileGrid tileCache {};
 
 	mutable std::shared_mutex mutex;
 
@@ -105,7 +113,7 @@ private:
 
 	mutable std::mutex floors_mutex;
 
-	std::shared_ptr<Floor> floors[MAP_MAX_LAYERS] = {};
+	std::array<std::shared_ptr<Floor>, MAP_MAX_LAYERS> floors {};
 
 	uint32_t floorBits = 0;
 

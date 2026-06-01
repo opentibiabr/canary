@@ -14,7 +14,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void ModalWindowFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "ModalWindow", "", ModalWindowFunctions::luaModalWindowCreate);
+	Lua::registerSharedClass<ModalWindow>(L, "", ModalWindowFunctions::luaModalWindowCreate);
 	Lua::registerMetaMethod(L, "ModalWindow", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "ModalWindow", "getId", ModalWindowFunctions::luaModalWindowGetId);
@@ -49,8 +49,7 @@ int ModalWindowFunctions::luaModalWindowCreate(lua_State* L) {
 	const std::string &title = Lua::getString(L, 3);
 	uint32_t id = Lua::getNumber<uint32_t>(L, 2);
 
-	Lua::pushUserdata<ModalWindow>(L, std::make_shared<ModalWindow>(id, title, message));
-	Lua::setMetatable(L, -1, "ModalWindow");
+	Lua::pushSharedUserdata<ModalWindow>(L, std::make_shared<ModalWindow>(id, title, message));
 	return 1;
 }
 

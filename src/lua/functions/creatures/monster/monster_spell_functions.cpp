@@ -13,7 +13,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void MonsterSpellFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "MonsterSpell", "", MonsterSpellFunctions::luaCreateMonsterSpell);
+	Lua::registerSharedClass<MonsterSpell>(L, "", MonsterSpellFunctions::luaCreateMonsterSpell);
 
 	Lua::registerMethod(L, "MonsterSpell", "setType", MonsterSpellFunctions::luaMonsterSpellSetType);
 	Lua::registerMethod(L, "MonsterSpell", "setScriptName", MonsterSpellFunctions::luaMonsterSpellSetScriptName);
@@ -42,8 +42,7 @@ void MonsterSpellFunctions::init(lua_State* L) {
 
 int MonsterSpellFunctions::luaCreateMonsterSpell(lua_State* L) {
 	const auto spell = std::make_shared<MonsterSpell>();
-	Lua::pushUserdata<MonsterSpell>(L, spell);
-	Lua::setMetatable(L, -1, "MonsterSpell");
+	Lua::pushSharedUserdata<MonsterSpell>(L, spell);
 	return 1;
 }
 

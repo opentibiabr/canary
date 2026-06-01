@@ -269,10 +269,13 @@ keywordHandler:addKeyword({ "godbreaker" }, StdModule.say, {
 		"Yet the creation and operation of the godbreaker is just the kind of forbidden {knowledge} Zathroth values most, so it was compiled and stored.",
 	},
 })
-keywordHandler:addKeyword({ "knowledge" }, StdModule.say, { npcHandler = npcHandler, text = {
-	"Of course the dangers of such knowledge were obvious. It was hidden in a sacred place devoted to Zathroth and dangerous knowledge. ...",
-	"The hidden library, the forbidden hoard, the shrouded trove of knowledge or the veiled hoard of forbidden knowledge, the place has many names in many {myths}.",
-} })
+keywordHandler:addKeyword({ "knowledge" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = {
+		"Of course the dangers of such knowledge were obvious. It was hidden in a sacred place devoted to Zathroth and dangerous knowledge. ...",
+		"The hidden library, the forbidden hoard, the shrouded trove of knowledge or the veiled hoard of forbidden knowledge, the place has many names in many {myths}.",
+	},
+})
 keywordHandler:addKeyword({ "myths" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {

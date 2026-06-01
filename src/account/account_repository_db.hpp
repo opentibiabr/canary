@@ -20,7 +20,7 @@ public:
 
 	bool loadByID(const uint32_t &id, std::unique_ptr<AccountInfo> &acc) override;
 	bool loadByEmailOrName(bool oldProtocol, const std::string &emailOrName, std::unique_ptr<AccountInfo> &acc) override;
-	bool loadBySession(const std::string &esseionKey, std::unique_ptr<AccountInfo> &acc) override;
+	bool loadBySession(const std::string &sessionKey, std::unique_ptr<AccountInfo> &acc) override;
 	bool save(const std::unique_ptr<AccountInfo> &accInfo) override;
 
 	bool getCharacterByAccountIdAndName(const uint32_t &id, const std::string &name) override;
@@ -29,6 +29,15 @@ public:
 
 	bool getCoins(const uint32_t &id, CoinType coinType, uint32_t &coins) override;
 	bool setCoins(const uint32_t &id, CoinType coinType, const uint32_t &amount) override;
+	AccountErrors_t removeCoins(
+		const uint32_t &id,
+		CoinType primaryType,
+		CoinType secondaryType,
+		const uint32_t &amount,
+		const std::string &detail,
+		uint32_t &primaryCoinsRemoved,
+		uint32_t &secondaryCoinsRemoved
+	) override;
 	bool registerCoinsTransaction(
 		const uint32_t &id,
 		CoinTransactionType type,

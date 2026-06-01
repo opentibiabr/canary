@@ -27,6 +27,6 @@ spell:needTarget(true)
 spell:blockWalls(true)
 spell:cooldown(40 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("paladin;true", "royal paladin;true")
 spell:register()

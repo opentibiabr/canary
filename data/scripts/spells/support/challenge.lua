@@ -26,5 +26,5 @@ spell:level(20)
 spell:mana(30)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

@@ -14,29 +14,92 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void CreatureEventFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
+	Lua::registerSharedClass<CreatureEvent>(L, "", CreatureEventFunctions::luaCreateCreatureEvent);
 	Lua::registerMethod(L, "CreatureEvent", "type", CreatureEventFunctions::luaCreatureEventType);
 	Lua::registerMethod(L, "CreatureEvent", "register", CreatureEventFunctions::luaCreatureEventRegister);
+	/***
+	 * @function CreatureEvent:onLogin
+	 * @param callback fun(player: Player): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onLogin", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onLogout
+	 * @param callback fun(player: Player): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onLogout", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onThink
+	 * @param callback fun(creature: Creature, interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onThink", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onPrepareDeath
+	 * @param callback fun(creature: Creature, killer: Creature|nil, realDamage: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onPrepareDeath", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onDeath
+	 * @param callback fun(creature: Creature, corpse: Item, lastHitKiller: Creature|nil, mostDamageKiller: Creature|nil, lastHitUnjustified: boolean, mostDamageUnjustified: boolean): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onDeath", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onKill
+	 * @param callback fun(creature: Creature, target: Creature, lastHit: boolean)
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onKill", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onAdvance
+	 * @param callback fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onAdvance", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onModalWindow
+	 * @param callback fun(player: Player, modalWindowId: integer, buttonId: integer, choiceId: integer)
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onModalWindow", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onTextEdit
+	 * @param callback fun(player: Player, item: Item, text: string): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onTextEdit", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onHealthChange
+	 * @param callback fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onHealthChange", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onManaChange
+	 * @param callback fun(creature: Creature, attacker: Creature|nil, primaryDamage: integer, primaryType: CombatType, secondaryDamage: integer, secondaryType: CombatType, origin: integer): integer, CombatType, integer, CombatType
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onManaChange", CreatureEventFunctions::luaCreatureEventOnCallback);
+	/***
+	 * @function CreatureEvent:onExtendedOpcode
+	 * @param callback fun(player: Player, opcode: integer, buffer: string)
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "CreatureEvent", "onExtendedOpcode", CreatureEventFunctions::luaCreatureEventOnCallback);
 }
 
+/***
+ * @class CreatureEvent
+ * @overload fun(eventName: string): CreatureEvent
+ */
 int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	const auto creatureEvent = std::make_shared<CreatureEvent>();
 	creatureEvent->setName(Lua::getString(L, 2));
-	Lua::pushUserdata<CreatureEvent>(L, creatureEvent);
-	Lua::setMetatable(L, -1, "CreatureEvent");
+	Lua::pushSharedUserdata<CreatureEvent>(L, creatureEvent);
 	return 1;
 }
 

@@ -18,6 +18,10 @@ set(CANARY_CORE_TARGETS
 if(CANARY_BUILD_TESTS)
     # Split Mode: Core is a Static Lib
     add_library(canary_core STATIC)
+    target_compile_definitions(
+        canary_core
+        PRIVATE BUILD_TESTS
+    )
     set(CORE_TARGET_NAME
         canary_core
     )

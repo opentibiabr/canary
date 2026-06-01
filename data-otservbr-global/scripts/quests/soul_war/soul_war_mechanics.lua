@@ -65,7 +65,7 @@ soulCageDeath:register()
 local fourthTaintBossesDeath = CreatureEvent("FourthTaintBossesPrepareDeath")
 
 function fourthTaintBossesDeath.onPrepareDeath(creature, killer, realDamage)
-	if not creature or not killer:getPlayer() then
+	if not creature or not killer or not killer:getPlayer() then
 		return true
 	end
 

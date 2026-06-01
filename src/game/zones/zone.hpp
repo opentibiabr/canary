@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
+
 #include "game/movement/position.hpp"
 #include "items/item.hpp"
 #include "creatures/creature.hpp"
@@ -141,7 +145,7 @@ namespace weak {
 	}
 }
 
-class Zone {
+class Zone : public std::enable_shared_from_this<Zone> {
 public:
 	explicit Zone(std::string name, uint32_t id = 0) :
 		name(std::move(name)), id(id) { }
@@ -157,12 +161,8 @@ public:
 	}
 	void addArea(Area area);
 	void subtractArea(Area area);
-	void addPosition(const Position &position) {
-		positions.emplace(position);
-	}
-	void removePosition(const Position &position) {
-		positions.erase(position);
-	}
+	void addPosition(const Position &position);
+	void removePosition(const Position &position);
 	Position getRemoveDestination(const std::shared_ptr<Creature> &creature = nullptr) const;
 	void setRemoveDestination(const Position &position) {
 		removeDestination = position;
@@ -212,6 +212,10 @@ public:
 
 protected:
 	bool contains(const Position &position) const;
+	void indexPosition(const Position &position);
+	void indexPositions();
+	void unindexPosition(const Position &position);
+	void unindexPositions();
 
 	Position removeDestination = Position();
 	std::string name;
@@ -227,4 +231,5 @@ protected:
 
 	static phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> zones;
 	static phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> zonesByID;
+	static phmap::parallel_flat_hash_map<Position, std::vector<std::shared_ptr<Zone>>> zonesByPosition;
 };

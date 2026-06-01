@@ -29,6 +29,6 @@ spell:isPremium(false)
 spell:needDirection(true)
 spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("sorcerer;true", "master sorcerer;true")
 spell:register()

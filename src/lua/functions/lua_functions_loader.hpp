@@ -14,7 +14,14 @@
 #include "game/movement/position.hpp"
 #include "lua/scripts/script_environment.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+	#include <string_view>
+	#include <type_traits>
+#endif
+
 class Combat;
+class Condition;
 class Creature;
 class Cylinder;
 class Game;
@@ -25,10 +32,152 @@ class Thing;
 class Guild;
 class Zone;
 class KV;
+class NetworkMessage;
+class Action;
+class TalkAction;
+class CreatureEvent;
+class GlobalEvent;
+class EventCallback;
+class Town;
+class Vocation;
+class Shop;
+class Loot;
+class MonsterSpell;
+class MonsterType;
+class Weapon;
+class Spell;
+class Charm;
+class BatchUpdate;
+struct ModalWindow;
+struct Group;
+struct Mount;
 
 using lua_Number = double;
 
 struct LuaVariant;
+
+template <typename T>
+struct LuaUserdataTraits;
+
+template <>
+struct LuaUserdataTraits<KV> {
+	static constexpr std::string_view name = "KV";
+};
+
+template <>
+struct LuaUserdataTraits<NetworkMessage> {
+	static constexpr std::string_view name = "NetworkMessage";
+};
+
+template <>
+struct LuaUserdataTraits<Condition> {
+	static constexpr std::string_view name = "Condition";
+};
+
+template <>
+struct LuaUserdataTraits<Action> {
+	static constexpr std::string_view name = "Action";
+};
+
+template <>
+struct LuaUserdataTraits<BatchUpdate> {
+	static constexpr std::string_view name = "BatchUpdate";
+};
+
+template <>
+struct LuaUserdataTraits<Charm> {
+	static constexpr std::string_view name = "Charm";
+};
+
+template <>
+struct LuaUserdataTraits<Combat> {
+	static constexpr std::string_view name = "Combat";
+};
+
+template <>
+struct LuaUserdataTraits<CreatureEvent> {
+	static constexpr std::string_view name = "CreatureEvent";
+};
+
+template <>
+struct LuaUserdataTraits<EventCallback> {
+	static constexpr std::string_view name = "EventCallback";
+};
+
+template <>
+struct LuaUserdataTraits<GlobalEvent> {
+	static constexpr std::string_view name = "GlobalEvent";
+};
+
+template <>
+struct LuaUserdataTraits<Group> {
+	static constexpr std::string_view name = "Group";
+};
+
+template <>
+struct LuaUserdataTraits<Guild> {
+	static constexpr std::string_view name = "Guild";
+};
+
+template <>
+struct LuaUserdataTraits<Loot> {
+	static constexpr std::string_view name = "Loot";
+};
+
+template <>
+struct LuaUserdataTraits<ModalWindow> {
+	static constexpr std::string_view name = "ModalWindow";
+};
+
+template <>
+struct LuaUserdataTraits<MonsterSpell> {
+	static constexpr std::string_view name = "MonsterSpell";
+};
+
+template <>
+struct LuaUserdataTraits<MonsterType> {
+	static constexpr std::string_view name = "MonsterType";
+};
+
+template <>
+struct LuaUserdataTraits<Mount> {
+	static constexpr std::string_view name = "Mount";
+};
+
+template <>
+struct LuaUserdataTraits<Shop> {
+	static constexpr std::string_view name = "Shop";
+};
+
+template <>
+struct LuaUserdataTraits<Spell> {
+	static constexpr std::string_view name = "Spell";
+};
+
+template <>
+struct LuaUserdataTraits<TalkAction> {
+	static constexpr std::string_view name = "TalkAction";
+};
+
+template <>
+struct LuaUserdataTraits<Town> {
+	static constexpr std::string_view name = "Town";
+};
+
+template <>
+struct LuaUserdataTraits<Vocation> {
+	static constexpr std::string_view name = "Vocation";
+};
+
+template <>
+struct LuaUserdataTraits<Weapon> {
+	static constexpr std::string_view name = "Weapon";
+};
+
+template <>
+struct LuaUserdataTraits<Zone> {
+	static constexpr std::string_view name = "Zone";
+};
 
 #define reportErrorFunc(a) reportError(__FUNCTION__, a, true)
 
@@ -270,7 +419,63 @@ public:
 	}
 
 	template <class T>
-	static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
+	static constexpr std::string_view getUserdataMetatableName() {
+		using RawT = std::remove_cv_t<T>;
+		static_assert(
+			requires { LuaUserdataTraits<RawT>::name; }, "LuaUserdataTraits<T>::name must be defined for shared userdata"
+		);
+		return LuaUserdataTraits<RawT>::name;
+	}
+
+	template <class T>
+	static int luaSharedPtrGarbageCollection(lua_State* L) {
+		const std::string metatableName(getUserdataMetatableName<T>());
+		auto objPtr = static_cast<std::shared_ptr<T>*>(luaL_testudata(L, 1, metatableName.c_str()));
+		if (!objPtr) {
+			if (!checkMetatableInheritance(L, 1, metatableName.c_str())) {
+				return 0;
+			}
+
+			objPtr = static_cast<std::shared_ptr<T>*>(lua_touserdata(L, 1));
+		}
+		if (!objPtr) {
+			return 0;
+		}
+
+		std::destroy_at(objPtr);
+		std::construct_at(objPtr);
+		return 0;
+	}
+
+	template <class T>
+	static void registerSharedClass(lua_State* L, const std::string &baseClass, lua_CFunction newFunction = nullptr) {
+		if (!baseClass.empty()) {
+			luaL_error(L, "typed shared userdata does not support baseClass inheritance");
+			return;
+		}
+
+		const std::string className(getUserdataMetatableName<T>());
+		registerClass(L, className, baseClass, newFunction);
+		registerMetaMethod(L, className, "__gc", luaSharedPtrGarbageCollection<T>);
+	}
+
+	template <class T>
+	static void pushSharedUserdata(lua_State* L, std::shared_ptr<T> value) {
+		static_assert(!std::is_const_v<T>, "pushSharedUserdata<T> requires a non-const shared_ptr type");
+		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
+		new (userData) std::shared_ptr<T>(std::move(value));
+		setMetatable(L, -1, std::string(getUserdataMetatableName<T>()));
+	}
+
+	template <class T>
+	static void pushBorrowedSharedUserdata(lua_State* L, T &value) {
+		static_assert(!std::is_const_v<T>, "pushBorrowedSharedUserdata<T> requires a non-const borrowed type");
+		// This only prevents invalid delete and releases the control block; callers must not keep it past the callback.
+		pushSharedUserdata<T>(L, std::shared_ptr<T>(&value, [](T*) {}));
+	}
+
+	template <class T>
+	[[deprecated("use pushSharedUserdata<T> or pushBorrowedSharedUserdata<T>")]] static void pushUserdata(lua_State* L, std::shared_ptr<T> value) {
 		// This is basically malloc from C++ point of view.
 		auto userData = static_cast<std::shared_ptr<T>*>(lua_newuserdata(L, sizeof(std::shared_ptr<T>)));
 		// Copy constructor, bumps ref count.
@@ -278,7 +483,7 @@ public:
 	}
 
 	static void registerClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
-	static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
+	[[deprecated("use registerSharedClass<T> with LuaUserdataTraits<T>")]] static void registerSharedClass(lua_State* L, const std::string &className, const std::string &baseClass, lua_CFunction newFunction = nullptr);
 	static void registerMethod(lua_State* L, const std::string &globalName, const std::string &methodName, lua_CFunction func);
 	static void registerMetaMethod(lua_State* L, const std::string &className, const std::string &methodName, lua_CFunction func);
 	static void registerTable(lua_State* L, const std::string &tableName);

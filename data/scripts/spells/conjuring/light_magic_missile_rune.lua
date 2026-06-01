@@ -14,5 +14,5 @@ spell:level(15)
 spell:mana(120)
 spell:soul(1)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

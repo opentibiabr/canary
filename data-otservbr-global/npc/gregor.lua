@@ -206,143 +206,81 @@ local function creatureSayCallback(npc, creature, type, message)
 	return true
 end
 
-keywordHandler:addSpellKeyword({ "find", "person" }, {
-	npcHandler = npcHandler,
-	spellName = "Find Person",
-	price = 80,
-	level = 8,
-	vocation = VOCATION.BASE_ID.KNIGHT,
-})
-keywordHandler:addSpellKeyword({ "light" }, {
-	npcHandler = npcHandler,
-	spellName = "Light",
-	price = 0,
-	level = 8,
-	vocation = VOCATION.BASE_ID.KNIGHT,
-})
-keywordHandler:addSpellKeyword({ "cure", "poison" }, {
-	npcHandler = npcHandler,
-	spellName = "Cure Poison",
-	price = 150,
-	level = 10,
-	vocation = VOCATION.BASE_ID.KNIGHT,
-})
-keywordHandler:addSpellKeyword({ "wound", "cleansing" }, {
-	npcHandler = npcHandler,
-	spellName = "Wound Cleansing",
-	price = 0,
-	level = 8,
-	vocation = VOCATION.BASE_ID.KNIGHT,
-})
-keywordHandler:addSpellKeyword({ "great", "light" }, {
-	npcHandler = npcHandler,
-	spellName = "Great Light",
-	price = 500,
-	level = 13,
-	vocation = VOCATION.BASE_ID.KNIGHT,
-})
+local node1 = keywordHandler:addKeyword({ "lesser front sweep" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {lesser front sweep} magic spell for free?" })
+node1:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "lesser front sweep", vocation = { 4, 8 }, price = 0, level = 1 })
 
-keywordHandler:addKeyword({ "healing", "spells" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "In this category I have '{Wound Cleansing}' and '{Cure Poison}'.",
-})
-keywordHandler:addKeyword({ "support", "spells" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "In this category I have '{Light}', '{Find Person}' and '{Great Light}'.",
-})
+local node2 = keywordHandler:addKeyword({ "great light" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {great light} magic spell for 500 gold?" })
+node2:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "great light", vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, price = 500, level = 13 })
+
+local node3 = keywordHandler:addKeyword({ "bruise bane" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {bruise bane} magic spell for free?" })
+node3:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "bruise bane", vocation = { 4, 8 }, price = 0, level = 1 })
+
+local node4 = keywordHandler:addKeyword({ "wound cleansing" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {wound cleansing} magic spell for free?" })
+node4:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "wound cleansing", vocation = { 4, 8 }, price = 0, level = 8 })
+
+local node5 = keywordHandler:addKeyword({ "cure poison" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {cure poison} magic spell for 150 gold?" })
+node5:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "cure poison", vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, price = 150, level = 10 })
+
+local node6 = keywordHandler:addKeyword({ "find fiend" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {find fiend} magic spell for 1000 gold?" })
+node6:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "find fiend", vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, price = 1000, level = 25 })
+
+local node7 = keywordHandler:addKeyword({ "find person" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {find person} magic spell for 80 gold?" })
+node7:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "find person", vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, price = 80, level = 8 })
+
+local node8 = keywordHandler:addKeyword({ "light" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {light} magic spell for free?" })
+node8:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "light", vocation = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }, price = 0, level = 8 })
+
 keywordHandler:addKeyword({ "spells" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I can teach you {healing spells} and {support spells}. What kind of spell do you wish to learn? You can also tell me for which level you would like to learn a spell, if you prefer that.",
+	text = "I can teach you {healing} spells and {support} spells. What kind of spell do you wish to learn? I can also tell you which spells are available at your {level}.",
 })
 
-keywordHandler:addKeyword({ "job" }, StdModule.say, {
+keywordHandler:addKeyword({ "healing" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "I am the first knight. I trained some of the greatest heroes of Tibia.",
+	onlyFocus = true,
+	text = "My healing spells are: {Bruise Bane}, {Cure Poison} and {Wound Cleansing}.",
 })
-keywordHandler:addKeyword({ "heroes" }, StdModule.say, {
+
+keywordHandler:addKeyword({ "support" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Of course, you heard of them. Knights are the best fighters in Tibia.",
+	onlyFocus = true,
+	text = "My support spells are: {Find Fiend}, {Find Person}, {Great Light}, {Lesser Front Sweep} and {Light}.",
 })
-keywordHandler:addKeyword({ "king" }, StdModule.say, {
+
+local nodeLevels = keywordHandler:addKeyword({ "level" }, StdModule.say, {
 	npcHandler = npcHandler,
-	text = "Hail to our King!",
+	onlyFocus = true,
+	text = "I have spells for level {1}, {8}, {10}, {13} and {25}.",
 })
-keywordHandler:addKeyword({ "name" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "You are joking, eh? Of course, you know me. I am Gregor, the first knight.",
-})
-keywordHandler:addKeyword({ "gregor" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A great name, isn't it?",
-})
-keywordHandler:addKeyword({ "tibia" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Beautiful Tibia. And with our help everyone is save.",
-})
-keywordHandler:addKeyword({ "time" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "It is time to join the Knights!",
-})
-keywordHandler:addKeyword({ "knights" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Knights are the warriors of Tibia. Without us, no one would be safe. Every brave and strong man or woman can join us.",
-})
-keywordHandler:addKeyword({ "bozo" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Some day someone will make something happen to him...",
-})
-keywordHandler:addKeyword({ "elane" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A bow might be a fine weapon for someone not strong enough to wield a REAL weapon.",
-})
-keywordHandler:addKeyword({ "frodo" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "I and my students often share a cask of beer or wine at Frodo's hut.",
-})
-keywordHandler:addKeyword({ "gorn" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Always concerned with his profit. What a loss! He was adventuring with baxter in the old days.",
-})
-keywordHandler:addKeyword({ "baxter" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "He was an adventurer once.",
-})
-keywordHandler:addKeyword({ "lynda" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Before she became a priest she won the Miss Tibia contest three times in a row.",
-})
-keywordHandler:addKeyword({ "mcronald" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Peaceful farmers.",
-})
-keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "A fine game to hunt. But be careful, he cheats!",
-})
-keywordHandler:addKeyword({ "muriel" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Bah, go away with these sorcerer tricks. Only cowards use tricks.",
-})
-keywordHandler:addKeyword({ "oswald" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "What an idiot.",
-})
-keywordHandler:addKeyword({ "quentin" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "I will never understand this peaceful monks and priests.",
-})
-keywordHandler:addKeyword({ "sam" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "He has the muscles, but lacks the guts.",
-})
-keywordHandler:addKeyword({ "tibianus" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Hail to our King!",
-})
-keywordHandler:addKeyword({ "outfit" }, StdModule.say, {
-	npcHandler = npcHandler,
-	text = "Only the bravest warriors may wear adorned helmets. They are traditionally awarded after having completed a difficult task for our guild.",
-})
+
+nodeLevels:addChildKeyword({ "25" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "For level 25 I have {Find Fiend} for 1000 gold." })
+nodeLevels:addChildKeyword({ "13" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "For level 13 I have {Great Light} for 500 gold." })
+nodeLevels:addChildKeyword({ "10" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "For level 10 I have {Cure Poison} for 150 gold." })
+nodeLevels:addChildKeyword({ "8" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "For level 8 I have {Find Person} for 80 gold, {Light} for free and {Wound Cleansing} for free." })
+nodeLevels:addChildKeyword({ "1" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "For level 1 I have {Bruise Bane} for free and {Lesser Front Sweep} for free." })
+
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the first knight. I trained some of the greatest heroes of Tibia." })
+keywordHandler:addKeyword({ "heroes" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, you heard of them. Knights are the best fighters in Tibia." })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "Hail to our King!" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "You are joking, eh? Of course, you know me. I am Gregor, the first knight." })
+keywordHandler:addKeyword({ "gregor" }, StdModule.say, { npcHandler = npcHandler, text = "A great name, isn't it?" })
+keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Beautiful Tibia. And with our help everyone is save." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "It is time to join the Knights!" })
+keywordHandler:addKeyword({ "knights" }, StdModule.say, { npcHandler = npcHandler, text = "Knights are the warriors of Tibia. Without us, no one would be safe. Every brave and strong man or woman can join us." })
+keywordHandler:addKeyword({ "bozo" }, StdModule.say, { npcHandler = npcHandler, text = "Some day someone will make something happen to him..." })
+keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler, text = "A bow might be a fine weapon for someone not strong enough to wield a REAL weapon." })
+keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "I and my students often share a cask of beer or wine at Frodo's hut." })
+keywordHandler:addKeyword({ "gorn" }, StdModule.say, { npcHandler = npcHandler, text = "Always concerned with his profit. What a loss! He was adventuring with baxter in the old days." })
+keywordHandler:addKeyword({ "baxter" }, StdModule.say, { npcHandler = npcHandler, text = "He was an adventurer once." })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "Before she became a priest she won the Miss Tibia contest three times in a row." })
+keywordHandler:addKeyword({ "mcronald" }, StdModule.say, { npcHandler = npcHandler, text = "Peaceful farmers." })
+keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "A fine game to hunt. But be careful, he cheats!" })
+keywordHandler:addKeyword({ "muriel" }, StdModule.say, { npcHandler = npcHandler, text = "Bah, go away with these sorcerer tricks. Only cowards use tricks." })
+keywordHandler:addKeyword({ "oswald" }, StdModule.say, { npcHandler = npcHandler, text = "What an idiot." })
+keywordHandler:addKeyword({ "quentin" }, StdModule.say, { npcHandler = npcHandler, text = "I will never understand this peaceful monks and priests." })
+keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "He has the muscles, but lacks the guts." })
+keywordHandler:addKeyword({ "tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "Hail to our King!" })
+keywordHandler:addKeyword({ "outfit" }, StdModule.say, { npcHandler = npcHandler, text = "Only the bravest warriors may wear adorned helmets. They are traditionally awarded after having completed a difficult task for our guild." })
 
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|. What do you want?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Be careful on your journeys.")

@@ -15,7 +15,6 @@ public:
 
 private:
 	static int luaConditionCreate(lua_State* L);
-	static int luaConditionDelete(lua_State* L);
 
 	static int luaConditionGetId(lua_State* L);
 	static int luaConditionGetSubId(lua_State* L);

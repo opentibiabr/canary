@@ -40,6 +40,6 @@ spell:mana(100)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_CHARGE)
 spell:register()

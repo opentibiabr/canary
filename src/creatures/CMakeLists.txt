@@ -20,6 +20,7 @@ target_sources(
             players/grouping/guild.cpp
             players/grouping/party.cpp
             players/imbuements/imbuements.cpp
+            players/livestream/livestream.cpp
             players/management/ban.cpp
             players/management/waitlist.cpp
             players/storages/storages.cpp
@@ -34,5 +35,6 @@ target_sources(
             players/components/wheel/player_wheel.cpp
             players/components/player_vip.cpp
             players/components/wheel/wheel_gems.cpp
+            players/components/weapon_proficiency.cpp
             players/vocations/vocation.cpp
 )

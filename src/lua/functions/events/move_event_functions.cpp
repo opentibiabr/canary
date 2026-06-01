@@ -27,14 +27,48 @@ void MoveEventFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MoveEvent", "position", MoveEventFunctions::luaMoveEventPosition);
 	Lua::registerMethod(L, "MoveEvent", "premium", MoveEventFunctions::luaMoveEventPremium);
 	Lua::registerMethod(L, "MoveEvent", "vocation", MoveEventFunctions::luaMoveEventVocation);
+	/***
+	 * @function MoveEvent:onEquip
+	 * @param callback fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onEquip", MoveEventFunctions::luaMoveEventOnCallback);
+	/***
+	 * @function MoveEvent:onDeEquip
+	 * @param callback fun(player: Player, item: Item, slot: integer, isCheck: boolean): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onDeEquip", MoveEventFunctions::luaMoveEventOnCallback);
+	/***
+	 * @function MoveEvent:onStepIn
+	 * @param callback fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onStepIn", MoveEventFunctions::luaMoveEventOnCallback);
+	/***
+	 * @function MoveEvent:onStepOut
+	 * @param callback fun(creature: Creature, item: Item|nil, position: Position, fromPosition: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onStepOut", MoveEventFunctions::luaMoveEventOnCallback);
+	/***
+	 * @function MoveEvent:onAddItem
+	 * @param callback fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onAddItem", MoveEventFunctions::luaMoveEventOnCallback);
+	/***
+	 * @function MoveEvent:onRemoveItem
+	 * @param callback fun(moveItem: Item, tileItemOrPosition: Item|Position, position?: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MoveEvent", "onRemoveItem", MoveEventFunctions::luaMoveEventOnCallback);
 }
 
+/***
+ * @class MoveEvent
+ * @overload fun(): MoveEvent
+ */
 int MoveEventFunctions::luaCreateMoveEvent(lua_State* L) {
 	// MoveEvent()
 	const auto moveevent = std::make_shared<MoveEvent>();

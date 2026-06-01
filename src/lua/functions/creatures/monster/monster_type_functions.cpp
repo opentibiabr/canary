@@ -20,7 +20,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void MonsterTypeFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "MonsterType", "", MonsterTypeFunctions::luaMonsterTypeCreate);
+	Lua::registerSharedClass<MonsterType>(L, "", MonsterTypeFunctions::luaMonsterTypeCreate);
 	Lua::registerMetaMethod(L, "MonsterType", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "MonsterType", "isAttackable", MonsterTypeFunctions::luaMonsterTypeIsAttackable);
@@ -99,12 +99,47 @@ void MonsterTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "MonsterType", "registerEvent", MonsterTypeFunctions::luaMonsterTypeRegisterEvent);
 
 	Lua::registerMethod(L, "MonsterType", "eventType", MonsterTypeFunctions::luaMonsterTypeEventType);
+	/***
+	 * @function MonsterType:onThink
+	 * @param callback fun(monster: Monster, interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onThink", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onAppear
+	 * @param callback fun(monster: Monster, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onAppear", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onDisappear
+	 * @param callback fun(monster: Monster, creature: Creature): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onDisappear", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onMove
+	 * @param callback fun(monster: Monster, creature: Creature, oldPosition: Position, newPosition: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onMove", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onSay
+	 * @param callback fun(monster: Monster, creature: Creature, type: integer, message: string): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onSay", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onPlayerAttack
+	 * @param callback fun(monster: Monster, attacker: Player): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onPlayerAttack", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
+	/***
+	 * @function MonsterType:onSpawn
+	 * @param callback fun(monster: Monster, position: Position): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "MonsterType", "onSpawn", MonsterTypeFunctions::luaMonsterTypeEventOnCallback);
 
 	Lua::registerMethod(L, "MonsterType", "getSummonList", MonsterTypeFunctions::luaMonsterTypeGetSummonList);
@@ -189,8 +224,7 @@ int MonsterTypeFunctions::luaMonsterTypeCreate(lua_State* L) {
 	}
 
 	if (monsterType) {
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 	} else {
 		lua_pushnil(L);
 	}
@@ -1198,10 +1232,12 @@ int MonsterTypeFunctions::luaMonsterTypeRegisterEvent(lua_State* L) {
 	const auto eventName = Lua::getString(L, 2);
 	monsterType->info.scripts.insert(eventName);
 
-	for (const auto &monster : g_game().getMonsters()) {
-		const auto monsterTypeCompare = monster->getMonsterType();
-		if (monsterTypeCompare == monsterType) {
-			monster->registerCreatureEvent(eventName);
+	if (g_game().getGameState() != GAME_STATE_STARTUP) {
+		for (const auto &monster : g_game().getMonsters()) {
+			const auto monsterTypeCompare = monster->getMonsterType();
+			if (monsterTypeCompare == monsterType) {
+				monster->registerCreatureEvent(eventName);
+			}
 		}
 	}
 
@@ -1811,6 +1847,11 @@ int MonsterTypeFunctions::luaMonsterTypeSoundSpeedTicks(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function MonsterType:addSound
+ * @param soundId SoundEffect
+ * @return boolean
+ */
 int MonsterTypeFunctions::luaMonsterTypeAddSound(lua_State* L) {
 	// monsterType:addSound(soundId)
 	const auto &monsterType = Lua::getUserdataShared<MonsterType>(L, 1, "MonsterType");
@@ -1890,8 +1931,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByRace(lua_State* L) {
 	lua_createtable(L, monstersByRace.size(), 0);
 	int index = 0;
 	for (const auto &monsterType : monstersByRace) {
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -1905,8 +1945,7 @@ int MonsterTypeFunctions::luaMonsterTypeGetMonstersByBestiaryStars(lua_State* L)
 	lua_createtable(L, monstersByStars.size(), 0);
 	int index = 0;
 	for (const auto &monsterType : monstersByStars) {
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

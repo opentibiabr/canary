@@ -26,9 +26,9 @@ class Mounts {
 public:
 	bool reload();
 	bool loadFromXml();
-	std::shared_ptr<Mount> getMountByID(uint8_t id);
-	std::shared_ptr<Mount> getMountByName(const std::string &name);
-	std::shared_ptr<Mount> getMountByClientID(uint16_t clientId);
+	std::shared_ptr<Mount> getMountByID(uint8_t id) const;
+	std::shared_ptr<Mount> getMountByName(const std::string &name) const;
+	std::shared_ptr<Mount> getMountByClientID(uint16_t clientId) const;
 
 	[[nodiscard]] const phmap::parallel_flat_hash_set<std::shared_ptr<Mount>> &getMounts() const {
 		return mounts;

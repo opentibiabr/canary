@@ -9,6 +9,16 @@
 
 #include "map/mapcache.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+	#include <array>
+	#include <limits>
+#endif
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <utility>
+#endif
+
 #include "game/movement/teleport.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
@@ -19,20 +29,198 @@
 #include "map/map.hpp"
 #include "utils/hash.hpp"
 
+namespace {
+	constexpr size_t kMaxItemCacheReserve = 131072;
+	constexpr size_t kMaxGenericTileCacheReserve = 262144;
+	constexpr size_t kMaxFlaggedTileCacheReserve = 65536;
+	constexpr size_t kMaxGroundAndItemTileCacheReserve = 262144;
+	constexpr size_t kMaxMapSectorReserve = 1048576;
+	constexpr size_t kMaxRetainedBasicTileReserve = 2097152;
+	constexpr size_t kInitialParsedContainerItemReserve = 2;
+
+	[[nodiscard]] size_t estimateCacheReserve(size_t fileSize, size_t bytesPerEntry, size_t maxReserve) {
+		if (fileSize == 0 || bytesPerEntry == 0) {
+			return 0;
+		}
+
+		return std::min(fileSize / bytesPerEntry + 1, maxReserve);
+	}
+
+	[[nodiscard]] size_t estimateSectorReserve(uint16_t width, uint16_t height) {
+		const auto sectorColumns = (static_cast<size_t>(width) + SECTOR_SIZE - 1) / SECTOR_SIZE;
+		const auto sectorRows = (static_cast<size_t>(height) + SECTOR_SIZE - 1) / SECTOR_SIZE;
+		return std::min(sectorColumns * sectorRows, kMaxMapSectorReserve);
+	}
+
+	[[nodiscard]] uint64_t makeFlagsAndIdKey(uint32_t flags, uint16_t id) {
+		return (static_cast<uint64_t>(flags) << 16) | id;
+	}
+
+	[[nodiscard]] uint64_t makeGroundAndItemKey(uint32_t flags, uint16_t groundId, uint16_t itemId) {
+		return (static_cast<uint64_t>(flags) << 32) | (static_cast<uint64_t>(groundId) << 16) | itemId;
+	}
+
+}
+
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicItem>> items;
 static phmap::flat_hash_map<size_t, std::shared_ptr<BasicTile>> tiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> flaggedGroundTiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> flaggedItemTiles;
+static phmap::flat_hash_map<uint64_t, std::shared_ptr<BasicTile>> groundAndItemTiles;
+static std::array<std::shared_ptr<BasicItem>, std::numeric_limits<uint16_t>::max() + 1> simpleItems;
+static std::array<std::shared_ptr<BasicTile>, std::numeric_limits<uint16_t>::max() + 1> groundOnlyTiles;
+static std::array<std::shared_ptr<BasicTile>, std::numeric_limits<uint16_t>::max() + 1> itemOnlyTiles;
 
 std::shared_ptr<BasicItem> static_tryGetItemFromCache(const std::shared_ptr<BasicItem> &ref) {
 	return ref ? items.try_emplace(ref->hash(), ref).first->second : nullptr;
 }
 
-std::shared_ptr<BasicTile> static_tryGetTileFromCache(const std::shared_ptr<BasicTile> &ref) {
-	return ref ? tiles.try_emplace(ref->hash(), ref).first->second : nullptr;
+std::shared_ptr<BasicItem> static_getBasicItemFromCache(uint16_t id) {
+	auto &cachedItem = simpleItems[id];
+	if (!cachedItem) {
+		cachedItem = std::make_shared<BasicItem>();
+		cachedItem->id = id;
+	}
+
+	return cachedItem;
+}
+
+const BasicTile* MapCache::getOrCreateBasicTileFromCache(const BasicTile &ref) {
+	if (!ref.isHouse() && ref.type == TILESTATE_NONE && !ref.isStatic) {
+		if (ref.ground && ref.ground->isSimple() && ref.items.empty()) {
+			if (ref.flags == 0) {
+				auto &cachedTile = groundOnlyTiles[ref.ground->id];
+				if (!cachedTile) {
+					cachedTile = std::make_shared<BasicTile>(ref);
+					return retainBasicTile(cachedTile);
+				}
+
+				return cachedTile.get();
+			}
+
+			const auto key = makeFlagsAndIdKey(ref.flags, ref.ground->id);
+			if (lastFlaggedGroundTile && lastFlaggedGroundTileKey == key) {
+				return lastFlaggedGroundTile;
+			}
+
+			if (const auto it = flaggedGroundTiles.find(key); it != flaggedGroundTiles.end()) {
+				lastFlaggedGroundTileKey = key;
+				lastFlaggedGroundTile = it->second.get();
+				return lastFlaggedGroundTile;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			lastFlaggedGroundTileKey = key;
+			lastFlaggedGroundTile = retainBasicTile(flaggedGroundTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastFlaggedGroundTile;
+		}
+
+		if (!ref.ground && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
+			const auto itemId = ref.items.front()->id;
+			if (ref.flags == 0) {
+				auto &cachedTile = itemOnlyTiles[itemId];
+				if (!cachedTile) {
+					cachedTile = std::make_shared<BasicTile>(ref);
+					return retainBasicTile(cachedTile);
+				}
+
+				return cachedTile.get();
+			}
+
+			const auto key = makeFlagsAndIdKey(ref.flags, itemId);
+			if (lastFlaggedItemTile && lastFlaggedItemTileKey == key) {
+				return lastFlaggedItemTile;
+			}
+
+			if (const auto it = flaggedItemTiles.find(key); it != flaggedItemTiles.end()) {
+				lastFlaggedItemTileKey = key;
+				lastFlaggedItemTile = it->second.get();
+				return lastFlaggedItemTile;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			lastFlaggedItemTileKey = key;
+			lastFlaggedItemTile = retainBasicTile(flaggedItemTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastFlaggedItemTile;
+		}
+
+		if (ref.ground && ref.ground->isSimple() && ref.items.size() == 1 && ref.items.front() && ref.items.front()->isSimple()) {
+			const auto key = makeGroundAndItemKey(ref.flags, ref.ground->id, ref.items.front()->id);
+			if (lastGroundAndItemTile && lastGroundAndItemTileKey == key) {
+				return lastGroundAndItemTile;
+			}
+
+			if (const auto it = groundAndItemTiles.find(key); it != groundAndItemTiles.end()) {
+				lastGroundAndItemTileKey = key;
+				lastGroundAndItemTile = it->second.get();
+				return lastGroundAndItemTile;
+			}
+
+			auto tile = std::make_shared<BasicTile>(ref);
+			lastGroundAndItemTileKey = key;
+			lastGroundAndItemTile = retainBasicTile(groundAndItemTiles.try_emplace(key, std::move(tile)).first->second);
+			return lastGroundAndItemTile;
+		}
+	}
+
+	if (!ref.isCacheShareable()) {
+		return retainBasicTile(std::make_shared<BasicTile>(ref));
+	}
+
+	const auto hash = ref.hash();
+	if (const auto it = tiles.find(hash); it != tiles.end()) {
+		return it->second.get();
+	}
+
+	auto tile = std::make_shared<BasicTile>(ref);
+	return retainBasicTile(tiles.try_emplace(hash, std::move(tile)).first->second);
+}
+
+void MapCache::reserveForMap(uint16_t width, uint16_t height, size_t fileSize) {
+	items.reserve(estimateCacheReserve(fileSize, 512, kMaxItemCacheReserve));
+	tiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGenericTileCacheReserve));
+	flaggedGroundTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
+	flaggedItemTiles.reserve(estimateCacheReserve(fileSize, 4096, kMaxFlaggedTileCacheReserve));
+	groundAndItemTiles.reserve(estimateCacheReserve(fileSize, 192, kMaxGroundAndItemTileCacheReserve));
+	const auto retainedTileReserve = estimateCacheReserve(fileSize, 64, kMaxRetainedBasicTileReserve);
+	retainedBasicTiles.reserve(retainedTileReserve);
+	mapSectors.reserve(estimateSectorReserve(width, height));
 }
 
 void MapCache::flush() const {
 	items.clear();
 	tiles.clear();
+	flaggedGroundTiles.clear();
+	flaggedItemTiles.clear();
+	groundAndItemTiles.clear();
+	resetBasicTileLookupCache();
+	for (auto &item : simpleItems) {
+		item.reset();
+	}
+	for (auto &tile : groundOnlyTiles) {
+		tile.reset();
+	}
+	for (auto &tile : itemOnlyTiles) {
+		tile.reset();
+	}
+}
+
+void MapCache::resetBasicTileLookupCache() const {
+	lastFlaggedGroundTileKey = 0;
+	lastFlaggedGroundTile = nullptr;
+	lastFlaggedItemTileKey = 0;
+	lastFlaggedItemTile = nullptr;
+	lastGroundAndItemTileKey = 0;
+	lastGroundAndItemTile = nullptr;
+}
+
+const BasicTile* MapCache::retainBasicTile(const std::shared_ptr<BasicTile> &tile) {
+	if (tile && tile->retainedByMapCacheOwner != this) {
+		tile->retainedByMapCacheOwner = this;
+		retainedBasicTiles.emplace_back(tile);
+	}
+
+	return tile.get();
 }
 
 void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const {
@@ -100,7 +288,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 }
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto &cachedTile = floor->getTileCache(x, y);
+	const auto* cachedTile = floor->getTileCache(x, y);
 	const auto oldTile = floor->getTile(x, y);
 	if (!cachedTile) {
 		return oldTile;
@@ -143,6 +331,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 		tile->internalAddThing(createItem(cachedTile->ground, pos));
 	}
 
+	if (!cachedTile->items.empty()) {
+		tile->makeItemList()->reserve(cachedTile->items.size());
+	}
+
 	for (const auto &BasicItemd : cachedTile->items) {
 		tile->internalAddThing(createItem(BasicItemd, pos));
 	}
@@ -167,22 +359,51 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	return tile;
 }
 
-void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<BasicTile> &newTile) {
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &newTile) {
+	MapCacheFloorCursor floorCursor;
+	setBasicTile(x, y, z, newTile, floorCursor);
+}
+
+void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &newTile, MapCacheFloorCursor &floorCursor) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
-	const auto &tile = static_tryGetTileFromCache(newTile);
-	if (const auto sector = getMapSector(x, y)) {
-		sector->createFloor(z)->setTileCache(x, y, tile);
-	} else {
-		getBestMapSector(x, y)->createFloor(z)->setTileCache(x, y, tile);
+	const auto* tile = getOrCreateBasicTileFromCache(newTile);
+	const auto sectorIndex = static_cast<uint32_t>(x / SECTOR_SIZE) | (static_cast<uint32_t>(y / SECTOR_SIZE) << 16);
+	Floor* floor = nullptr;
+
+	if (floorCursor.valid && floorCursor.sectorIndex == sectorIndex && floorCursor.z == z) {
+		floor = floorCursor.floor.get();
+	}
+
+	if (!floor) {
+		std::shared_ptr<Floor> cachedFloor;
+		if (const auto sector = getMapSector(x, y)) {
+			cachedFloor = sector->createFloor(z);
+		} else {
+			cachedFloor = getBestMapSector(x, y)->createFloor(z);
+		}
+
+		floorCursor.valid = true;
+		floorCursor.sectorIndex = sectorIndex;
+		floorCursor.z = z;
+		floorCursor.floor = std::move(cachedFloor);
+		floor = floorCursor.floor.get();
+	}
+
+	if (floor) {
+		floor->setTileCache(x, y, tile);
 	}
 }
 
 std::shared_ptr<BasicItem> MapCache::tryReplaceItemFromCache(const std::shared_ptr<BasicItem> &ref) const {
 	return static_tryGetItemFromCache(ref);
+}
+
+std::shared_ptr<BasicItem> MapCache::getBasicItemFromCache(uint16_t id) const {
+	return static_getBasicItemFromCache(id);
 }
 
 MapSector* MapCache::createMapSector(const uint32_t x, const uint32_t y) {
@@ -234,13 +455,13 @@ void BasicTile::hash(size_t &h) const {
 	}
 
 	if (ground != nullptr) {
-		ground->hash(h);
+		stdext::hash_combine(h, ground->hash());
 	}
 
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
 		for (const auto &item : items) {
-			item->hash(h);
+			stdext::hash_combine(h, item->hash());
 		}
 	}
 }
@@ -260,7 +481,7 @@ void BasicItem::hash(size_t &h) const {
 	if (!items.empty()) {
 		stdext::hash_combine(h, items.size());
 		for (const auto &item : items) {
-			item->hash(h);
+			stdext::hash_combine(h, item->hash());
 		}
 	}
 }
@@ -287,7 +508,12 @@ bool BasicItem::unserializeItemNode(FileStream &stream, uint16_t x, uint16_t y, 
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Failed to load item.", x, y, z));
 		}
 
-		items.emplace_back(static_tryGetItemFromCache(item));
+		if (items.size() == 1 && items.capacity() < kInitialParsedContainerItemReserve) {
+			items.reserve(kInitialParsedContainerItemReserve);
+		}
+
+		auto cachedItem = item->isSimple() ? static_getBasicItemFromCache(streamId) : static_tryGetItemFromCache(item);
+		items.emplace_back(std::move(cachedItem));
 
 		if (!stream.endNode()) {
 			throw IOMapException(fmt::format("[x:{}, y:{}, z:{}] Could not end node.", x, y, z));

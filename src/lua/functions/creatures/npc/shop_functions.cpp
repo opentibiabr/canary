@@ -16,7 +16,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void ShopFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Shop", "", ShopFunctions::luaCreateShop);
+	Lua::registerSharedClass<Shop>(L, "", ShopFunctions::luaCreateShop);
 	Lua::registerMethod(L, "Shop", "setId", ShopFunctions::luaShopSetId);
 	Lua::registerMethod(L, "Shop", "setIdFromName", ShopFunctions::luaShopSetIdFromName);
 	Lua::registerMethod(L, "Shop", "setNameItem", ShopFunctions::luaShopSetNameItem);
@@ -30,8 +30,7 @@ void ShopFunctions::init(lua_State* L) {
 
 int ShopFunctions::luaCreateShop(lua_State* L) {
 	// Shop() will create a new shop item
-	Lua::pushUserdata<Shop>(L, std::make_shared<Shop>());
-	Lua::setMetatable(L, -1, "Shop");
+	Lua::pushSharedUserdata<Shop>(L, std::make_shared<Shop>());
 	return 1;
 }
 

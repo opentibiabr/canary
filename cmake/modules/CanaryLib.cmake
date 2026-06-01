@@ -109,14 +109,18 @@ foreach(
                fmt::fmt
                magic_enum::magic_enum
                mio::mio
-               protobuf::libprotobuf
+               protobuf::libprotobuf-lite
                pugixml::pugixml
                spdlog::spdlog
                unofficial::argon2::libargon2
                unofficial::libmariadb
                nlohmann_json::nlohmann_json
                protobuf
-               OpenSSL::SSL
+    )
+
+    target_link_libraries(
+        ${core_target}
+        PRIVATE MbedTLS::mbedcrypto
     )
 
     if(FEATURE_METRICS)

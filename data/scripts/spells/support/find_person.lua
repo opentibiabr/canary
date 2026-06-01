@@ -88,5 +88,5 @@ spell:mana(20)
 spell:hasParams(true)
 spell:hasPlayerNameParam(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

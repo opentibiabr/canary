@@ -34,6 +34,12 @@ public:
 
 	std::shared_ptr<Monster> getMonster() override;
 	std::shared_ptr<const Monster> getMonster() const override;
+	Monster* getMonsterRaw() noexcept override {
+		return this;
+	}
+	const Monster* getMonsterRaw() const noexcept override {
+		return this;
+	}
 
 	void setID() override;
 
@@ -194,7 +200,7 @@ public:
 
 	void applyStacks();
 
-	void configureForgeSystem();
+	void configureForgeSystem(uint16_t stack = 0);
 
 	bool canBeForgeMonster() const;
 
@@ -266,7 +272,7 @@ private:
 	std::string nameDescription;
 
 	std::shared_ptr<MonsterType> m_monsterType;
-	std::shared_ptr<SpawnMonster> spawnMonster = nullptr;
+	std::weak_ptr<SpawnMonster> spawnMonster;
 
 	int64_t lastMeleeAttack = 0;
 

@@ -27,11 +27,19 @@ void DBFunctions::init(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseExecute(lua_State* L) {
+	// db.query(query)
 	Lua::pushBoolean(L, Database::getInstance().executeQuery(Lua::getString(L, -1)));
 	return 1;
 }
 
+/***
+ * @function db.asyncQuery
+ * @param query string
+ * @param callback? fun(success: boolean)
+ * @return nil
+ */
 int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
+	// db.asyncQuery(query[, callback])
 	std::function<void(DBResult_ptr, bool)> callback;
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -61,6 +69,7 @@ int DBFunctions::luaDatabaseAsyncExecute(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseStoreQuery(lua_State* L) {
+	// db.storeQuery(query)
 	if (const DBResult_ptr &res = Database::getInstance().storeQuery(Lua::getString(L, -1))) {
 		lua_pushnumber(L, ScriptEnvironment::addResult(res));
 	} else {
@@ -69,7 +78,14 @@ int DBFunctions::luaDatabaseStoreQuery(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function db.asyncStoreQuery
+ * @param query string
+ * @param callback? fun(resultId: number|false)
+ * @return nil
+ */
 int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
+	// db.asyncStoreQuery(query[, callback])
 	std::function<void(DBResult_ptr, bool)> callback;
 	if (lua_gettop(L) > 1) {
 		int32_t ref = luaL_ref(L, LUA_REGISTRYINDEX);
@@ -103,22 +119,26 @@ int DBFunctions::luaDatabaseAsyncStoreQuery(lua_State* L) {
 }
 
 int DBFunctions::luaDatabaseEscapeString(lua_State* L) {
+	// db.escapeString(value)
 	Lua::pushString(L, Database::getInstance().escapeString(Lua::getString(L, -1)));
 	return 1;
 }
 
 int DBFunctions::luaDatabaseEscapeBlob(lua_State* L) {
+	// db.escapeBlob(value, length)
 	const uint32_t length = Lua::getNumber<uint32_t>(L, 2);
 	Lua::pushString(L, Database::getInstance().escapeBlob(Lua::getString(L, 1).c_str(), length));
 	return 1;
 }
 
 int DBFunctions::luaDatabaseLastInsertId(lua_State* L) {
+	// db.lastInsertId()
 	lua_pushnumber(L, Database::getInstance().getLastInsertId());
 	return 1;
 }
 
 int DBFunctions::luaDatabaseTableExists(lua_State* L) {
+	// db.tableExists(tableName)
 	Lua::pushBoolean(L, DatabaseManager::tableExists(Lua::getString(L, -1)));
 	return 1;
 }

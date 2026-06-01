@@ -461,6 +461,9 @@ function Player.selectDailyReward(self, msg)
 		end
 
 		local description = ""
+		local batchUpdate = BatchUpdate(self)
+		batchUpdate:add(inbox)
+
 		for k, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
@@ -475,6 +478,7 @@ function Player.selectDailyReward(self, msg)
 			end
 			description = description .. "" .. rewardCount .. "x " .. ItemType(v.itemId):getName() .. (k ~= columnsPicked and ", " or ".")
 		end
+		batchUpdate:delete()
 		dailyRewardMessage = "Picked items: " .. description
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
 		local rewardCountReviewed = rewardCount

@@ -15,11 +15,11 @@ bool MapSector::newSector = false;
 
 void MapSector::addCreature(const std::shared_ptr<Creature> &c) {
 	creature_list.emplace_back(c);
-	if (c->getPlayer()) {
+	if (c->getPlayerRaw()) {
 		player_list.emplace_back(c);
-	} else if (c->getMonster()) {
+	} else if (c->getMonsterRaw()) {
 		monster_list.emplace_back(c);
-	} else if (c->getNpc()) {
+	} else if (c->getNpcRaw()) {
 		npc_list.emplace_back(c);
 	}
 }
@@ -35,7 +35,7 @@ void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
 	*iter = creature_list.back();
 	creature_list.pop_back();
 
-	if (c->getPlayer()) {
+	if (c->getPlayerRaw()) {
 		iter = std::ranges::find(player_list, c);
 		if (iter == player_list.end()) {
 			g_logger().error("[{}]: Player not found in player_list!", __FUNCTION__);
@@ -45,20 +45,20 @@ void MapSector::removeCreature(const std::shared_ptr<Creature> &c) {
 		assert(iter != player_list.end());
 		*iter = player_list.back();
 		player_list.pop_back();
-	} else if (c->getMonster()) {
+	} else if (c->getMonsterRaw()) {
 		iter = std::ranges::find(monster_list, c);
 		if (iter == monster_list.end()) {
-			g_logger().error("[{}]: Monster not found in player_list!", __FUNCTION__);
+			g_logger().error("[{}]: Monster not found in monster_list!", __FUNCTION__);
 			return;
 		}
 
 		assert(iter != monster_list.end());
 		*iter = monster_list.back();
 		monster_list.pop_back();
-	} else if (c->getNpc()) {
+	} else if (c->getNpcRaw()) {
 		iter = std::ranges::find(npc_list, c);
 		if (iter == npc_list.end()) {
-			g_logger().error("[{}]: NPC not found in player_list!", __FUNCTION__);
+			g_logger().error("[{}]: NPC not found in npc_list!", __FUNCTION__);
 			return;
 		}
 

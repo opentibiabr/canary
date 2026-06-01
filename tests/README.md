@@ -23,6 +23,25 @@ ctest --preset linux-debug -VV
 
 Replace `linux-debug` with `macos-debug` or `windows-debug` for other platforms.
 
+On Windows, the release test preset can also be used when validating the same build style used by the Windows release test configuration:
+
+```powershell
+cmake --preset windows-release-enabled-tests
+cmake --build --preset windows-release-enabled-tests
+.\build\windows-release-enabled-tests\tests\unit\canary_ut.exe
+.\build\windows-release-enabled-tests\tests\integration\canary_it.exe
+```
+
+### Integration test database
+
+Integration tests use the database configured by `tests/test.env` unless `TEST_ENV_FILE` points to another env file. The default database is `canary_test`, which is intended to be disposable.
+
+When `TEST_DB_ALLOW_RESET=1`, the integration test executable checks schema sentinel columns before connecting. If a sentinel differs from the expected `schema.sql` shape, it drops and recreates the test database, then imports `schema.sql` using the `mysql` client. This reset is only allowed for database names that look like test databases.
+
+Set `TEST_DB_SCHEMA` if the test executable cannot find `schema.sql` through the CMake-provided default path.
+
+Persistent databases are updated through numbered Lua migrations under `data-otservbr-global/migrations`; the test reset path is only for disposable integration databases.
+
 #### Direct executable access
 
 You can also run test executables directly if needed:
@@ -50,82 +69,14 @@ As much as possible, tests should be added in the same folder as the code they a
         - bar_test.cpp
 ```
 
-### Boost::ut
+### GoogleTest
 
-Tests are written using the Boost::ut framework. We've chosen this framework because it is simple, macro-free, intuitive, and easy to use.
-In this section, we will go over the basics of the framework, but you can find more information in the [Boost::ut documentation](https://boost-ext.github.io/ut/).
-There are many ways to write tests, and we encourage you to read the documentation to find the way that works best for you.
+Tests are written using GoogleTest. Add new unit test files under `tests/unit` and register them in the nearest `CMakeLists.txt` with `target_sources`.
 
-#### Suites
-
-Tests needs to be encapsulated by suites, which are defined using `suite<>` structure.
+Basic test example:
 
 ```cpp
-suite<"foo"> test_foo = [] {
-    // Tests go here
-};
-```
-
-This puts all tests within test_foo under the suite "foo".
-You can use declare multiple suites with the same name, and they will be merged together.
-This allows you to declare suites in different files, and they will be merged together, keeping test files clean.
-
-Avoid creating tests directly in the main function, as this will put them in the `global` suite, which is not recommended.
-
-#### Tests
-
-Tests can be defined using the `test()` lambda or the `_test` operator:
-
-```cpp
-suite<"foo"> test_foo = [] {
-    "test 1"_test = [] {
-        // Test 1
-    };
-
-    test("test 2") = [] {
-        // Test 2
-    };
-};
-```
-
-#### Assertions
-
-Both are equivalent, the received argument is the description of the test.
-The description is used to identify the test in the output, and should be unique within a suite.
-
-Assertions are done using the `expect()` function:
-
-```cpp
-suite<"foo"> test_foo = [] {
-    "test 1"_test = [] {
-        expect(eq(1_i, 1_i));
-    };
-};
-```
-
-It's always preferable to use comparison operators (eq, neq, etc.), as they provide better error messages.
-
-#### Testing against injected dependencies
-
-Testing against injected dependencies is done using the `di::extension::injector<>` class.
-This class is used to create the dependency injection container, and can be used to set up the container for testing.
-For example, to test the `RSA` class, we need to inject a `Logger` class, otherwise it will use the default SpdLog implementation.
-
-```cpp
-suite<"security"> rsaTest = [] {
-	test("RSA::start logs error for missing .pem file") = [] {
-		di::extension::injector<> injector{};
-		DI::setTestContainer(&InMemoryLogger::install(injector));
-
-		DI::create<RSA &>().start();
-
-		auto &logger = dynamic_cast<InMemoryLogger &>(injector.create<Logger &>());
-
-        expect(eq(1, logger.logs.size()) >> fatal);
-		expect(
-			eq(std::string{"error"}, logger.logs[0].level) and
-			eq(std::string{"File key.pem not found or have problem on loading... Setting standard rsa key\n"}, logger.logs[0].message)
-        );
-	};
-};
+TEST(FooTest, DoesBar) {
+	EXPECT_TRUE(true);
+}
 ```

@@ -184,6 +184,10 @@ keywordHandler:addKeyword({ "richard" }, StdModule.say, {
 	text = "Richard came here as a shipwrecked carpenter, and now sells {tools} and {food} to all adventurers. \z
 		If you need a {rope} or {shovel}, {fishing rod} or some provisions for a hunt, you should trade with him!",
 })
+keywordHandler:addKeyword({ "menesto" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Hasn't been with us for very long. Very interested in all things mystical.",
+})
 keywordHandler:addKeyword({ "knight" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Knights are close combat fighters, the toughest vocation of all. \z
@@ -220,6 +224,12 @@ keywordHandler:addKeyword({ "fishing rod" }, StdModule.say, {
 	text = "Use a fishing rod on a patch of water to see if you can catch fish! \z
 		Eating is essential in {Tibia} - if you don't eat when you're hungry, you won't regenerate health or mana. \z
 		So you should aways have some {food} with you.",
+})
+keywordHandler:addKeyword({ "key" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I've seen that goblin Woblin sneaking around the place, and more than once he was eyeing the key suspiciously. ... \z
+		Woblin sometimes visits the outpost for a trade. Something of a loner, not like your usual goblin. ... \z
+		He lives in a cave somewhere to the west of the isle. On a map, that would be on the left-hand side.",
 })
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -614,6 +624,8 @@ local function creatureSayCallback(npc, creature, type, message)
 end
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good hunting!")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye!")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

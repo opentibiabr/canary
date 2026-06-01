@@ -31,5 +31,5 @@ spell:cooldown(1000)
 spell:groupCooldown(1000)
 spell:isAggressive(false)
 spell:vocation("knight;true", "elite knight;true")
-spell:needLearn(false)
+
 spell:register()

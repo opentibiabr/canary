@@ -125,6 +125,8 @@
 	<outfit type="0" looktype="1808" name="Fiend Slayer" premium="no" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="0" looktype="1832" name="Winged Druid" premium="no" unlocked="no" enabled="yes" from="store" />
 	<outfit type="0" looktype="1825" name="Monk" premium="no" unlocked="yes" enabled="yes" />
+	<outfit type="0" looktype="1838" name="Martial Artist" premium="no" unlocked="no" from="store" enabled="yes" />
+	<outfit type="0" looktype="1861" name="Illuminator" premium="yes" unlocked="no" from="quest" enabled="yes" />
 
 	<!-- Male -->
 	<outfit type="1" looktype="128" name="Citizen" premium="no" unlocked="yes" enabled="yes" />
@@ -251,4 +253,6 @@
 	<outfit type="1" looktype="1809" name="Fiend Slayer" premium="no" unlocked="no" enabled="yes" from="quest" />
 	<outfit type="1" looktype="1831" name="Winged Druid" premium="no" unlocked="no" enabled="yes" from="store" />
 	<outfit type="1" looktype="1824" name="Monk" premium="no" unlocked="yes" enabled="yes" />
+	<outfit type="1" looktype="1837" name="Martial Artist" premium="no" unlocked="no" from="store" enabled="yes" />
+	<outfit type="0" looktype="1860" name="Illuminator" premium="yes" unlocked="no" from="quest" enabled="yes" />
 </outfits>

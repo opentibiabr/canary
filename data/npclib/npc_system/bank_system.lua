@@ -225,14 +225,14 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		-- Transfer
 	elseif MsgContains(message, "transfer") then
 		count[playerId] = getMoneyCount(message)
-		transfer[playerId] = string.match(message, "[^transfer %d+ to ].+")
+		transfer[playerId] = string.match(message, "[Tt][Oo]%s+(.+)$")
 		if string.match(message, "%d+") then
 			if player:getBankBalance() < count[playerId] then
 				npcHandler:say("There is not enough gold on your account.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				return false
 			end
-			if MsgContains(message, "to") then
+			if transfer[playerId] then
 				if player:getName():lower() == transfer[playerId]:lower() then
 					npcHandler:say("Fill in this field with person who receives your gold!", npc, creature)
 					npcHandler:setTopic(playerId, 0)

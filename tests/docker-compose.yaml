@@ -8,9 +8,9 @@ services:
       dockerfile: ./tests/Dockerfile.database
     restart: unless-stopped
     environment:
-      - MYSQL_DATABASE=otserver
+      - MYSQL_DATABASE=canary_test
       - MYSQL_USER=otserver
       - MYSQL_PASSWORD=otserver
-      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_ROOT_PASSWORD=root
     ports:
       - "3306:3306"

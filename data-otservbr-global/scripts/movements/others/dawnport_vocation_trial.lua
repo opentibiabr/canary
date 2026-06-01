@@ -7,7 +7,7 @@ local vocationTrials = {
 	-- Sorcerer trial
 	[44640] = {
 		tutorialId = 5,
-		effectPosition = { x = 32064, y = 31905, z = 5 },
+		effectPosition = { x = 32063, y = 31881, z = 5 },
 		storage = Storage.Dawnport.Sorcerer,
 		message = "As a sorcerer, you can use the following spells: Magic Patch, Buzz, Scorch.",
 		vocation = {
@@ -37,7 +37,7 @@ local vocationTrials = {
 	-- Druid trial
 	[44641] = {
 		tutorialId = 6,
-		effectPosition = { x = 32064, y = 31876, z = 5 },
+		effectPosition = { x = 32074, y = 31889, z = 5 },
 		storage = Storage.Dawnport.Druid,
 		message = "As a druid, you can use these spells: Mud Attack, Chill Out, Magic Patch.",
 		vocation = {
@@ -67,7 +67,7 @@ local vocationTrials = {
 	-- Paladin trial
 	[44639] = {
 		tutorialId = 4,
-		effectPosition = { x = 32050, y = 31891, z = 5 },
+		effectPosition = { x = 32063, y = 31900, z = 5 },
 		storage = Storage.Dawnport.Paladin,
 		message = "As a paladin, you can use the following spells: Magic Patch, Arrow Call.",
 		vocation = {
@@ -98,7 +98,7 @@ local vocationTrials = {
 	-- Knight trial
 	[44638] = {
 		tutorialId = 3,
-		effectPosition = { x = 32078, y = 31891, z = 5 },
+		effectPosition = { x = 32055, y = 31889, z = 5 },
 		storage = Storage.Dawnport.Knight,
 		message = "As a knight, you can use the following spells: Bruise Bane.",
 		vocation = {

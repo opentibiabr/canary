@@ -25,6 +25,18 @@ enum SpawnType_t : uint8_t {
 	RESPAWN_IN_NIGHT_CAVE = 4,
 };
 
+enum class CipbiaSkills_t : uint8_t {
+	None = 0,
+	MagicLevel = 1,
+	Shield = 6,
+	Distance = 7,
+	Sword = 8,
+	Club = 9,
+	Axe = 10,
+	Fist = 11,
+	Fishing = 13,
+};
+
 enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_PHYSICAL = 0,
 	CIPBIA_ELEMENTAL_FIRE = 1,
@@ -39,6 +51,8 @@ enum Cipbia_Elementals_t : uint8_t {
 	CIPBIA_ELEMENTAL_MANADRAIN = 10,
 	CIPBIA_ELEMENTAL_AGONY = 11,
 	CIPBIA_ELEMENTAL_UNDEFINED = 12,
+
+	CIPBIA_ELEMENTAL_HEALING_2 = 18,
 };
 
 enum MagicEffectClasses : uint16_t {
@@ -242,7 +256,17 @@ enum MagicEffectClasses : uint16_t {
 
 	CONST_ME_OUTBURST_WHITE = 289,
 	CONST_ME_OUTBURST_GREEN = 290,
-	CONST_ME_OUTBURST_PINK = 291,
+	CONST_ME_OUTBURST_YELLOW = 291,
+
+	CONST_ME_INK_EXPLOSION = 292,
+	CONST_ME_PAPER_PLANE = 293,
+	CONST_ME_WOODEN_STAKES = 294,
+	CONST_ME_FIRE_SPARKLES = 295,
+	CONST_ME_OPENING_MAGIC_BOOK = 296,
+
+	CONST_ME_GRAY_ELECTRIC_SPARK = 301,
+	CONST_ME_GREEN_ELECTRIC_SPARK = 302,
+	CONST_ME_PURPLE_ELECTRIC_SPARK = 303,
 
 	CONST_ME_LAST
 };
@@ -678,6 +702,8 @@ enum ItemID_t : uint16_t {
 	ITEM_GREATER_FRAGMENT = 46626,
 
 	ITEM_SANCTUARY = 49890,
+
+	ITEM_EMPTY_IMBUEMENT_SCROLL = 51442,
 
 	ITEM_NONE = 0
 };

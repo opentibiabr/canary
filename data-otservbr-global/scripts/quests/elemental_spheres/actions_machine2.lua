@@ -14,7 +14,7 @@ function elementalSpheresMachine2.onUse(player, item, fromPosition, target, toPo
 		player:say("ON", TALKTYPE_MONSTER_SAY, false, player, toPosition)
 	else
 		toPosition.y = toPosition.y + (item.itemid == 848 and 1 or -1)
-		local machineItem = Tile(toPosition):getItemById(item.itemid == 848 and 845 or 849)
+		local machineItem = Tile(toPosition):getItemById(item.itemid == 848 and 849 or 848)
 		if machineItem then
 			machineItem:transform(machineItem.itemid - 4)
 		end

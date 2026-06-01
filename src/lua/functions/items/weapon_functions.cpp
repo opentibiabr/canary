@@ -16,7 +16,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void WeaponFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Weapon", "", WeaponFunctions::luaCreateWeapon);
+	Lua::registerSharedClass<Weapon>(L, "", WeaponFunctions::luaCreateWeapon);
 	Lua::registerMethod(L, "Weapon", "action", WeaponFunctions::luaWeaponAction);
 	Lua::registerMethod(L, "Weapon", "register", WeaponFunctions::luaWeaponRegister);
 	Lua::registerMethod(L, "Weapon", "id", WeaponFunctions::luaWeaponId);
@@ -31,6 +31,11 @@ void WeaponFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Weapon", "premium", WeaponFunctions::luaWeaponPremium);
 	Lua::registerMethod(L, "Weapon", "wieldUnproperly", WeaponFunctions::luaWeaponUnproperly);
 	Lua::registerMethod(L, "Weapon", "vocation", WeaponFunctions::luaWeaponVocation);
+	/***
+	 * @function Weapon:onUseWeapon
+	 * @param callback fun(player: Player, variant: Variant): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "Weapon", "onUseWeapon", WeaponFunctions::luaWeaponOnUseWeapon);
 	Lua::registerMethod(L, "Weapon", "element", WeaponFunctions::luaWeaponElement);
 	Lua::registerMethod(L, "Weapon", "attack", WeaponFunctions::luaWeaponAttack);
@@ -56,6 +61,10 @@ void WeaponFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Weapon", "shootType", WeaponFunctions::luaWeaponShootType);
 }
 
+/***
+ * @class Weapon
+ * @overload fun(type: integer): Weapon?
+ */
 int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 	// Weapon(type)
 	const WeaponType_t type = Lua::getNumber<WeaponType_t>(L, 2);
@@ -64,8 +73,7 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_AXE:
 		case WEAPON_CLUB: {
 			auto weaponPtr = std::make_shared<WeaponMelee>();
-			Lua::pushUserdata<WeaponMelee>(L, weaponPtr);
-			Lua::setMetatable(L, -1, "Weapon");
+			Lua::pushSharedUserdata<Weapon>(L, weaponPtr);
 			weaponPtr->weaponType = type;
 			break;
 		}
@@ -73,15 +81,13 @@ int WeaponFunctions::luaCreateWeapon(lua_State* L) {
 		case WEAPON_DISTANCE:
 		case WEAPON_AMMO: {
 			auto weaponPtr = std::make_shared<WeaponDistance>();
-			Lua::pushUserdata<WeaponDistance>(L, weaponPtr);
-			Lua::setMetatable(L, -1, "Weapon");
+			Lua::pushSharedUserdata<Weapon>(L, weaponPtr);
 			weaponPtr->weaponType = type;
 			break;
 		}
 		case WEAPON_WAND: {
 			auto weaponPtr = std::make_shared<WeaponWand>();
-			Lua::pushUserdata<WeaponWand>(L, weaponPtr);
-			Lua::setMetatable(L, -1, "Weapon");
+			Lua::pushSharedUserdata<Weapon>(L, weaponPtr);
 			weaponPtr->weaponType = type;
 			break;
 		}
@@ -120,15 +126,19 @@ int WeaponFunctions::luaWeaponAction(lua_State* L) {
 
 int WeaponFunctions::luaWeaponRegister(lua_State* L) {
 	// weapon:register()
-	const WeaponShared_ptr* weaponPtr = Lua::getRawUserDataShared<Weapon>(L, 1);
-	if (weaponPtr && *weaponPtr) {
-		WeaponShared_ptr weapon = *weaponPtr;
+	WeaponShared_ptr weapon = Lua::getUserdataShared<Weapon>(L, 1, "Weapon");
+	if (weapon) {
 		if (weapon->weaponType == WEAPON_DISTANCE || weapon->weaponType == WEAPON_AMMO || weapon->weaponType == WEAPON_MISSILE) {
-			weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
+			weapon = std::dynamic_pointer_cast<WeaponDistance>(weapon);
 		} else if (weapon->weaponType == WEAPON_WAND) {
-			weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
+			weapon = std::dynamic_pointer_cast<WeaponWand>(weapon);
 		} else {
-			weapon = Lua::getUserdataShared<WeaponMelee>(L, 1, "Weapon");
+			weapon = std::dynamic_pointer_cast<WeaponMelee>(weapon);
+		}
+
+		if (!weapon) {
+			lua_pushnil(L);
+			return 1;
 		}
 
 		const uint16_t id = weapon->getID();
@@ -279,7 +289,7 @@ int WeaponFunctions::luaWeaponBreakChance(lua_State* L) {
 
 int WeaponFunctions::luaWeaponWandDamage(lua_State* L) {
 	// weapon:damage(damage[min, max]) only use this if the weapon is a wand!
-	const auto &weapon = Lua::getUserdataShared<WeaponWand>(L, 1, "Weapon");
+	const auto weapon = std::dynamic_pointer_cast<WeaponWand>(Lua::getUserdataShared<Weapon>(L, 1, "Weapon"));
 	if (weapon) {
 		weapon->setMinChange(Lua::getNumber<uint32_t>(L, 2));
 		if (lua_gettop(L) > 2) {
@@ -557,7 +567,7 @@ int WeaponFunctions::luaWeaponSlotType(lua_State* L) {
 
 int WeaponFunctions::luaWeaponAmmoType(lua_State* L) {
 	// weapon:ammoType(type)
-	const auto &weapon = Lua::getUserdataShared<WeaponDistance>(L, 1, "Weapon");
+	const auto weapon = std::dynamic_pointer_cast<WeaponDistance>(Lua::getUserdataShared<Weapon>(L, 1, "Weapon"));
 	if (weapon) {
 		const uint16_t id = weapon->getID();
 		ItemType &it = Item::items.getItemType(id);

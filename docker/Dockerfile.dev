@@ -80,7 +80,7 @@ COPY recompile.sh CMakeLists.txt CMakePresets.json vcpkg.json ./
 # Copy the vcpkg_installed directory from dependencies stage
 COPY --from=dependencies /opt/vcpkg_installed ./vcpkg_installed
 
-RUN export VCPKG_MANIFEST_INSTALL=OFF && export VCPKG_INSTALLED_DIR=/srv/build/vcpkg_installed && ./recompile.sh "/opt"
+RUN ./recompile.sh "/opt" linux-release -DVCPKG_MANIFEST_INSTALL=OFF -DVCPKG_INSTALLED_DIR=/srv/build/vcpkg_installed
 
 
 # Stage 3: execute

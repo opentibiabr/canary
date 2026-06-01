@@ -726,6 +726,7 @@ public:
 	}
 	bool hasImbuementCategoryId(uint16_t categoryId) const;
 	bool hasImbuementAttribute(const std::string &attributeSlot) const;
+	int8_t getFreeImbuementSlot() const;
 	bool hasImbuements() const {
 		for (uint8_t slotid = 0; slotid < getImbuementSlot(); slotid++) {
 			ImbuementInfo imbuementInfo;

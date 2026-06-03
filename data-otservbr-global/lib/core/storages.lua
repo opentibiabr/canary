@@ -2807,6 +2807,9 @@ Storage = {
 				CobraBastion = {
 					Questline = 46891,
 				},
+				CobraBastion = {
+					Access = 46927,
+				},
 			},
 			HandOfTheInquisitionOutfits = {
 				Outfits = 46892,
@@ -2895,9 +2898,24 @@ Storage = {
 		U12_40 = { -- update 12.40 - Reserved Storages 47201 - 47500
 			RevenantOutfits = {},
 			TheOrderOfTheLion = {
-				QuestLine = 47401,
+				Evrard = 47401,
 				AccessEastSide = 47402,
 				AccessSouthernSide = 47403,
+				Parchment = 47404,
+				MapStorage = 47405,
+				BounacTrust = 47406,
+				WesTask = 47407,
+				JehanTask = 47408,
+				OnfroiKills = 47409,
+				OnfroiTask = 47410,
+				DalTask = 47411,
+				DalKills = 47412,
+				FralTask = 47413,
+				KesarSiegeTimer = 47414,
+				KesarMission = 47415,
+				FugueSpawnTime = 47416,
+				FugueSpawned = 47417,
+				AugustinDoor = 47418,
 			},
 			SoulWar = {
 				GoshnarMaliceKilled = 47211,

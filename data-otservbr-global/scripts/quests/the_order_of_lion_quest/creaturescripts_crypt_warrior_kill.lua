@@ -1,5 +1,5 @@
 local cryptWarriorKill = CreatureEvent("CryptWarriorKill")
- 
+
 function cryptWarriorKill.onDeath(creature, corpse, lastHitKiller, mostDamageKiller)
 	onDeathForParty(creature, mostDamageKiller, function(creature, player)
 		local kills = player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.OnfroiKills)
@@ -9,5 +9,5 @@ function cryptWarriorKill.onDeath(creature, corpse, lastHitKiller, mostDamageKil
 	end)
 	return true
 end
- 
+
 cryptWarriorKill:register()

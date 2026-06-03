@@ -1,5 +1,5 @@
 local reward = {
-	[47404] = 635,  -- parchment
+	[47404] = 635, -- parchment
 	[47405] = 2822, -- map
 }
 
@@ -14,7 +14,7 @@ Cheese - 5 wheels       *Who needs so much cheese...? -Belethor
 Longswords - 47 pieces
 Longbows - 35 pieces
 Boots - 27 pairs]],
-	[2822] = "A map of several known as well as completely exotic locations."
+	[2822] = "A map of several known as well as completely exotic locations.",
 }
 
 local evrardItems = Action()

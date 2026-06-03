@@ -67,10 +67,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Will you hand those over to me?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
-
 	elseif MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide) >= 1 and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.FralTask) < 1 then
 		npcHandler:say("If you want to prove trustworthy to me, I need you to bring me some raw ham, about 20 chunks if you can. Then we'll see.", npc, creature)
-
 	elseif message:lower() == "yes" and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.FralTask) < 1 then
 		if npcHandler:getTopic(playerId) == 1 and player:removeItem(3582, 20) then
 			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.FralTask, 1)

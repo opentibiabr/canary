@@ -3058,6 +3058,7 @@ GlobalStorage = {
 			DarashiaNorth = 60192,
 			DarashiaWest = 60193,
 		},
+		ThawingMiniWorldChange = 67000,
 	},
 	FuryGates = 65000,
 	Yakchal = 65001,

@@ -25,6 +25,10 @@ local communicates = {
 		storageValue = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest,
 		communicate = "A sandstorm travels through Darama, leading to isles full of deadly creatures inside a nightmare. Avoid the river near Drefia!",
 	},
+	[6] = {
+		storageValue = GlobalStorage.WorldBoard.ThawingMiniWorldChange,
+		communicate = "Judging by the unnerved mammoths in Svargrond, enough snow has melted away to reveal some very special flora.",
+	},
 }
 
 function worldBoard.onUse(player, item, fromPosition, target, toPosition, isHotkey)

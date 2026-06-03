@@ -37,6 +37,7 @@ local worldChanges = {
 	{ text = "Near Drefia's mountains, a storm has revealed the entry to a nightmare that can't be sealed. Horrible creatures there spell instant death to all young adventurers who dare take a breath!", storage = GlobalStorage.WorldBoard.NightmareIsle.DarashiaWest },
 	{ text = "Hear ye! Hear ye! What a lucky and beautiful day! Visit Carlin, Ankrahmun, or Liberty Bay. Yasir, the oriental trader might be there. Gather your creature products, for this chance is rare.", storage = GlobalStorage.Yasir },
 	{ text = "Hear ye! Hear ye! A fiery gate has opened, threatening a city! Guard the people frightened, their death would be a pity!", storage = GlobalStorage.FuryGates },
+	{ text = "Hear ye! Hear ye! Mammoths silently watch as the snow melts away. It reveals special flowers which are not meant to stay. Grow their seeds to brighten up your day!", storage = GlobalStorage.WorldBoard.ThawingMiniWorldChange },
 }
 
 for i = 1, #worldChanges do

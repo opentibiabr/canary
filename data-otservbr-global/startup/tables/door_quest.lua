@@ -809,17 +809,29 @@ QuestDoorAction = {
 		itemId = false,
 		itemPos = { { x = 33793, y = 31388, z = 6 } },
 	},
-	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide] = {
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32429, y = 32461, z = 7 },
 			{ x = 32430, y = 32461, z = 8 },
+			{ x = 32447, y = 32494, z = 7 },
 		},
 	},
 	[Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide] = {
 		itemId = false,
 		itemPos = {
 			{ x = 32422, y = 32499, z = 8 },
+			{ x = 32441, y = 32469, z = 7 },
+			{ x = 32385, y = 32457, z = 7 },
+			{ x = 32391, y = 32456, z = 7 },
+			{ x = 32400, y = 32457, z = 7 },
+			{ x = 32368, y = 32482, z = 6 },
+		},
+	},
+	[Storage.Quest.U12_40.TheOrderOfTheLion.AugustinDoor] = {
+		itemId = false,
+		itemPos = {
+			{ x = 32395, y = 32475, z = 4 },
 		},
 	},
 	[Storage.Quest.U13_10.CradleOfMonsters.Access.LowerIngol] = {

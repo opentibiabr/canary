@@ -69,6 +69,8 @@ KeyDoorTable = {
 	{ lockedDoor = 28366, closedDoor = 28367, openDoor = 28369 },
 	{ lockedDoor = 30772, closedDoor = 30773, openDoor = 30776 },
 	{ lockedDoor = 30774, closedDoor = 30775, openDoor = 30777 },
+	{ lockedDoor = 33633, closedDoor = 33632, openDoor = 33636 },
+	{ lockedDoor = 33635, closedDoor = 33634, openDoor = 33637 },
 	{ lockedDoor = 37982, closedDoor = 37981, openDoor = 37985 },
 	{ lockedDoor = 37984, closedDoor = 37983, openDoor = 37986 },
 	{ lockedDoor = 44914, closedDoor = 44913, openDoor = 44917 },
@@ -156,8 +158,6 @@ CustomDoorTable = {
 	--{ closedDoor = 33336}, -- it's probably door of a quest
 	--{ closedDoor = 33632}, -- it's probably door of a quest
 	--{ closedDoor = 33634}, -- it's probably door of a quest
-	{ closedDoor = 33633, openDoor = 33636 },
-	{ closedDoor = 33635, openDoor = 33637 },
 	{ closedDoor = 34221, openDoor = 34222 },
 	{ closedDoor = 34223, openDoor = 34224 },
 	{ closedDoor = 15890, openDoor = 15891 },

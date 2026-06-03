@@ -19,6 +19,108 @@ local npcSpawns = {
 		despawnPeriod = LIGHT_STATE_SUNSET,
 		position = Position(33504, 32222, 7),
 	},
+	{
+		name = "Evrard the Miller",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32422, 32464, 7),
+	},
+	{
+		name = "Evrard",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32404, 32493, 6),
+	},
+	{
+		name = "Wes the Blacksmith (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32423, 32481, 5),
+	},
+	{
+		name = "Wes the Blacksmith (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32374, 32467, 6),
+	},
+	{
+		name = "Onfroi (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32428, 32489, 5),
+	},
+	{
+		name = "Onfroi (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32429, 32487, 2),
+	},
+	{
+		name = "Dal the Huntress (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32436, 32492, 5),
+	},
+	{
+		name = "Dal the Huntress (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32436, 32494, 4),
+	},
+	{
+		name = "Jehan The Baker (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32421, 32481, 4),
+	},
+	{
+		name = "Jehan The Baker (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32391, 32458, 6),
+	},
+	{
+		name = "Fral the Butcher (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32445, 32480, 4),
+	},
+	{
+		name = "Fral the Butcher (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32399, 32496, 6),
+	},
+	{
+		name = "Fitzmaurice",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32411, 32486, 7),
+	},
+	{
+		name = "Kesar the Younger (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32365, 32478, 2),
+	},
+	{
+		name = "Kesar the Younger (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32368, 32473, 3),
+	},
+	{
+		name = "Kesar's Valet (Day)",
+		spawnPeriod = LIGHT_STATE_SUNRISE,
+		despawnPeriod = LIGHT_STATE_SUNSET,
+		position = Position(32367, 32476, 2),
+	},
+	{
+		name = "Kesar's Valet (Night)",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32372, 32473, 3),
+	},
 }
 
 local spawnsNpcByTime = GlobalEvent("SpawnsNpcByTime")

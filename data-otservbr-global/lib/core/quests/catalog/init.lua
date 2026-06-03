@@ -50,6 +50,7 @@ local questModules = {
 	"049_the_secret_library",
 	"050_the_dream_courts",
 	"051_the_way_of_the_monk",
+	"052_the_order_of_the_lion_quest",
 }
 
 local catalog = dofile(CORE_DIRECTORY .. "/lib/core/quests/catalog.lua")

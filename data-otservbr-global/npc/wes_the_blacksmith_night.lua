@@ -71,7 +71,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Just ask any of us the passphrase and we will see what we can do for you.",
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.WesTask, 1)
-
 		elseif npcHandler:getTopic(playerId) == 1 then
 			npcHandler:say({
 				"Alright then, let's see if you are really trustworthy. I need more material to forge better equipment for our men. ...",
@@ -79,14 +78,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
-
 	elseif MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.WesTask) == 1 then
 		npcHandler:say({
 			"Alright then, let's see if you are really trustworthy. You have about 20 broken longbows there, this is exactly what I need to fulfill my next order from the king. ...",
 			"Are you willing to hand them over to me?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 1)
-
 	elseif message:lower() == "yes" and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.WesTask) == 1 then
 		if npcHandler:getTopic(playerId) == 1 and player:removeItem(34161, 20) then
 			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.WesTask, 2)

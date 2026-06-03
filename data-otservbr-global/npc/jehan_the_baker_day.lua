@@ -64,10 +64,8 @@ local function creatureSayCallback(npc, creature, type, message)
 	if MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide) >= 1 and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.JehanTask) < 1 and player:getItemCount(3600) >= 10 then
 		npcHandler:say("Ten loafs of bread! Colour me impressed. Will you hand those over to me?", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-
 	elseif MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide) >= 1 and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.JehanTask) < 1 then
 		npcHandler:say("To prove trustworthy to me... hm, well, you could... oh, yes! Of course, we have a severe shortage of bread! If I knew someone who could organise about ten loafs of bread, I'd be saved for today!", npc, creature)
-
 	elseif message:lower() == "yes" and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.JehanTask) < 1 then
 		if npcHandler:getTopic(playerId) == 1 and player:removeItem(3600, 10) then
 			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.JehanTask, 1)

@@ -50,7 +50,7 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local destinationIn  = Position(32397, 32480, 4)
+local destinationIn = Position(32397, 32480, 4)
 local destinationOut = Position(32401, 32480, 4)
 
 local function grantAccess(player, npc, creature)

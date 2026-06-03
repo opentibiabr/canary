@@ -65,7 +65,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.OnfroiTask, 2)
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.BounacTrust, player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.BounacTrust) + 1)
 		npcHandler:say("You did it, excellent! Most respectable, you did great! That took a load of my mind. And you've earned my trust!", npc, creature)
-
 	elseif MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide) >= 1 and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.OnfroiTask) < 1 then
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.OnfroiTask, 1)
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.OnfroiKills, 0)

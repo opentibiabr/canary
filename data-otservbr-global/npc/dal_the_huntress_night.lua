@@ -68,7 +68,6 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Twenty deer! You have done our forest a great service, traveller. ...",
 			"The hunting grounds will be in much better shape now. You have earned my trust and my respect. Well done!",
 		}, npc, creature)
-
 	elseif MsgContains(message, "yselda") and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide) >= 1 and player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.DalTask) < 1 then
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.DalTask, 1)
 		player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.DalKills, 0)

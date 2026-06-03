@@ -70,7 +70,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("The night is restless, traveller. Let us speak of this when the sun rises.", npc, creature)
 		end
-
 	elseif message:lower() == "yes" and npcHandler:getTopic(playerId) == 1 then
 		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.KesarMission) == 4 then
 			npcHandler:say("Alright, let us go then. And thank you.", npc, creature)

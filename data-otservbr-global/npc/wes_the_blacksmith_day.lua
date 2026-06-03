@@ -143,7 +143,7 @@ npcConfig.shop = {
 	{ itemName = "plate shield", clientId = 3410, buy = 125, sell = 45 },
 	{ itemName = "rapier", clientId = 3272, buy = 15, sell = 5 },
 	{ itemName = "sabre", clientId = 3273, buy = 35, sell = 12 },
-	{ itemName = "sai", clientId = 10389, buy = 540, sell = 180 },
+	{ itemName = "sai", clientId = 50183, buy = 540, sell = 180 },
 	{ itemName = "scale armor", clientId = 3377, buy = 260, sell = 75 },
 	{ itemName = "short sword", clientId = 3294, buy = 26, sell = 10 },
 	{ itemName = "sickle", clientId = 3293, buy = 7, sell = 3 },

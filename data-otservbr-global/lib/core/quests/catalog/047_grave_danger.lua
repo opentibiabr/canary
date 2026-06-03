@@ -164,7 +164,7 @@ local quest = {
 		},
 		[14] = {
 			name = "The Order of the Cobra",
-			storageId = Storage.Quest.U12_20.GraveDanger.CobraBastion.Access,
+			storageId = Storage.Quest.U12_20.GraveDanger.Cobra,
 			missionId = 10450,
 			startValue = 1,
 			endValue = 2,

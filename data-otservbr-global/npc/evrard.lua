@@ -72,7 +72,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 1)
 		elseif npcHandler:getTopic(playerId) == 1 then
 			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.Evrard, 1)
-			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide, 1)
+			player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide, 1)
 			npcHandler:say("Good, now go. Remember: be like a light summer breeze - quick, almost unnoticeable and most importantly QUIET!", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end

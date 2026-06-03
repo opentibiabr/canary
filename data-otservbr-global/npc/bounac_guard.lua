@@ -54,7 +54,7 @@ local destinationIn = Position(32397, 32480, 4)
 local destinationOut = Position(32401, 32480, 4)
 
 local function grantAccess(player, npc, creature)
-	player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide, 1)
+	player:setStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide, 1)
 	player:teleportTo(destinationIn)
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 	npcHandler:say("The citizens have spoken in your favour. You may enter. Stay out of trouble.", npc, creature)
@@ -65,7 +65,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	local playerId = player:getId()
 
 	if MsgContains(message, "pass") or MsgContains(message, "in") then
-		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide) >= 1 then
+		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide) >= 1 then
 			player:teleportTo(destinationIn)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:say("Right this way.", npc, creature)
@@ -81,7 +81,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "out") then
-		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide) >= 1 then
+		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide) >= 1 then
 			player:teleportTo(destinationOut)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			npcHandler:say("Safe travels, traveller.", npc, creature)

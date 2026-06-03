@@ -304,7 +304,7 @@ local questTable = {
 	{ storageName = "KilmareshQuest.Sixth.MirrorMask", storage = Storage.Quest.U12_20.KilmareshQuest.Sixth.MirrorMask, storageValue = 1 },
 	{ storageName = "KilmareshQuest.Sixth.IvoryMask", storage = Storage.Quest.U12_20.KilmareshQuest.Sixth.IvoryMask, storageValue = 1 },
 	{ storageName = "KilmareshQuest.Sixth.SilverMask", storage = Storage.Quest.U12_20.KilmareshQuest.Sixth.SilverMask, storageValue = 1 },
-	{ storageName = "TheOrderOfTheLion.AccessEastSide", storage = Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide, storageValue = 1 },
+	{ storageName = "TheOrderOfTheLion.AccessEasternSide", storage = Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide, storageValue = 1 },
 	{ storageName = "TheOrderOfTheLion.AccessSouthernSide", storage = Storage.Quest.U12_40.TheOrderOfTheLion.AccessSouthernSide, storageValue = 1 },
 	{ storageName = "APiratesTail.TentuglyDoor", storage = Storage.Quest.U12_60.APiratesTail.TentuglyDoor, storageValue = 1 },
 	{ storageName = "APiratesTail.RascacoonShortcut", storage = Storage.Quest.U12_60.APiratesTail.RascacoonShortcut, storageValue = 1 },

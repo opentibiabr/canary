@@ -26,7 +26,7 @@ function bounacCheckpoint.onStepIn(creature, item, position, fromPosition)
 	end
 
 	if teleport.entering then
-		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEastSide) >= 1 then
+		if player:getStorageValue(Storage.Quest.U12_40.TheOrderOfTheLion.AccessEasternSide) >= 1 then
 			player:teleportTo(teleport.newPosition)
 			fromPosition:sendMagicEffect(CONST_ME_TELEPORT)
 			teleport.newPosition:sendMagicEffect(CONST_ME_TELEPORT)

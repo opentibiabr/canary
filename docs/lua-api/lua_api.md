@@ -131,7 +131,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `BatchUpdate.delete()`
 
-- Returns: `nil`
+- Returns: `any`
 - Source: `src/lua/functions/core/game/batch_update_functions.cpp`
 
 ### Charm

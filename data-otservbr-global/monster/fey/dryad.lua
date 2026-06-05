@@ -30,7 +30,7 @@ monster.Bestiary = {
 monster.health = 310
 monster.maxHealth = 310
 monster.race = "blood"
-monster.corpse = 18042
+monster.corpse = 18106
 monster.speed = 115
 monster.manaCost = 0
 
@@ -80,18 +80,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 40000, maxCount = 20 },
+	{ name = "gold coin", chance = 40000, maxCount = 30 },
+	{ name = "white mushroom", chance = 55000, maxCount = 2 },
+	{ name = "orange mushroom", chance = 840, maxCount = 2 },
+	{ name = "seeds", chance = 4400, maxCount = 2 },
+	{ name = "leaf legs", chance = 1100 },
+	{ name = "coconut shoes", chance = 1100 },
+	{ name = "flower wreath", chance = 1000 },
+	{ name = "flower dress", chance = 1000 },
+	{ name = "carrot on a stick", chance = 190 },
+	{ name = "small amethyst", chance = 88 },
 }
 
 monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -150 },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_PHYSICALDAMAGE, minDamage = 0, maxDamage = -40, range = 7, shootEffect = CONST_ANI_THROWINGKNIFE, target = false },
+	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
+	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = 20, maxDamage = -40, range = 7, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_CARNIPHILA, target = true },
+	{ name = "speed", interval = 2000, chance = 15, speedChange = -800, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false, duration = 30000 },
+	{ name = "drunk", interval = 2000, chance = 25, range = 7, shootEffect = CONST_ANI_BURSTARROW, spread = 2,  effect = CONST_ME_HEARTS, target = false, duration = 5000 },
 }
 
 monster.defenses = {
 	defense = 10,
 	armor = 15,
 	mitigation = 1.26,
+	{ name = "invisible", interval = 2000, chance = 25, effect = CONST_ME_MAGIC_BLUE },
+	{ name = "combat", interval = 2000, chance = 40, type = COMBAT_HEALING, minDamage = 40, maxDamage = 80, effect = CONST_ME_MAGIC_BLUE, target = false },
 }
 
 monster.elements = {

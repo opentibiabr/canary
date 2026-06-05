@@ -108,6 +108,10 @@ keywordHandler:addKeyword({ "hamish" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "He lives only for his experiments and potions",
 })
+keywordHandler:addKeyword({ "menesto" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "He is injured? Then I should see to his wounds. I will pack some herbs and be off presently. Thank you.",
+})
 keywordHandler:addKeyword({ "dawnport" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = {
@@ -119,6 +123,10 @@ keywordHandler:addKeyword({ "dawnport" }, StdModule.say, {
 keywordHandler:addKeyword({ "rookgaard" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "I have heard of it, yes.",
+})
+keywordHandler:addKeyword({ "key" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I believe it has been lost. You should ask Mr Morris or some of the others about it.",
 })
 
 --From topic of vocation to topic of the "yes" message (choosing vocation)
@@ -148,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	local vocationDefaultMessages = {
 		"A vocation is your profession and destiny, determining your skills and way of fighting. \z
-			There are four vocations in Tibia: {knight}, {sorcerer}, {paladin} or {druid}. \z
+			There are five vocations in Tibia: {knight}, {sorcerer}, {paladin}, {druid} or {monk}. \z
 			Each one has its unique special abilities. ... ",
 		"When you leave the outpost through one of the four gates upstairs, you will be equipped with \z
 			training gear of a specific vocation in order to defend yourself against the monsters outside. ... ",
@@ -336,7 +344,9 @@ local function creatureSayCallback(npc, creature, type, message)
 			"If you want to be a tough melee fighter who can resist much longer than anyone else, \z
 				you should consider choosing the knight vocation.",
 		}
-
+	elseif MsgContains(message, "monk") and npcHandler:getTopic(playerId) == 0 then
+		npcHandler:say("If you are interested in becoming a monk, please speak to Ambassador Manop.", npc, creature)
+		npcHandler:setTopic(playerId, 0)
 		if player:getLevel() >= 8 then
 			table.insert(message, "DO YOU WISH TO BECOME A VALIANT KNIGHT? Answer with a proud {YES} if that is your choice!")
 			npcHandler:setTopic(playerId, 5)
@@ -357,6 +367,7 @@ local function creatureSayCallback(npc, creature, type, message)
 							local position = vocationRoomPositions[index]
 							player:teleportTo(Position(position.x, position.y, position.z))
 							player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
+							player:addItem(3035, 10)
 						end
 					else
 						npcHandler:setTopic(playerId, 0)
@@ -412,6 +423,7 @@ end
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, child.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 

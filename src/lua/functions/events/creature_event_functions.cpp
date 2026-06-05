@@ -14,7 +14,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void CreatureEventFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "CreatureEvent", "", CreatureEventFunctions::luaCreateCreatureEvent);
+	Lua::registerSharedClass<CreatureEvent>(L, "", CreatureEventFunctions::luaCreateCreatureEvent);
 	Lua::registerMethod(L, "CreatureEvent", "type", CreatureEventFunctions::luaCreatureEventType);
 	Lua::registerMethod(L, "CreatureEvent", "register", CreatureEventFunctions::luaCreatureEventRegister);
 	/***
@@ -99,8 +99,7 @@ int CreatureEventFunctions::luaCreateCreatureEvent(lua_State* L) {
 	// CreatureEvent(eventName)
 	const auto creatureEvent = std::make_shared<CreatureEvent>();
 	creatureEvent->setName(Lua::getString(L, 2));
-	Lua::pushUserdata<CreatureEvent>(L, creatureEvent);
-	Lua::setMetatable(L, -1, "CreatureEvent");
+	Lua::pushSharedUserdata<CreatureEvent>(L, creatureEvent);
 	return 1;
 }
 

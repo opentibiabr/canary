@@ -1,4 +1,4 @@
-local SPELL_BASE_POWER = 62
+local SPELL_BASE_POWER = 44
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
@@ -26,19 +26,19 @@ function spell.onCastSpell(creature, var)
 end
 
 spell:group("attack")
-spell:id(293)
-spell:name("Devastating Knockout")
-spell:words("exori gran nia")
+spell:id(292)
+spell:name("Greater Tiger Clash")
+spell:words("exori nia")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_BRUTAL_STRIKE)
-spell:level(125)
-spell:mana(210)
+spell:level(18)
+spell:mana(50)
 spell:isPremium(true)
 spell:range(1)
 spell:needTarget(true)
 spell:blockWalls(true)
-spell:cooldown(24 * 1000)
+spell:cooldown(8 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:monkSpellType(MonkSpell_Spender)
 spell:vocation("monk;true", "exalted monk;true")
 spell:register()

@@ -74,5 +74,5 @@ spell:isPremium(true)
 spell:cooldown(2 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:vocation("knight;true", "elite knight;true")
-spell:needLearn(false)
+
 spell:register()

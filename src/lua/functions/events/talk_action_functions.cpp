@@ -18,7 +18,7 @@
 #include "lua/scripts/luascript.hpp"
 
 void TalkActionFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "TalkAction", "", TalkActionFunctions::luaCreateTalkAction);
+	Lua::registerSharedClass<TalkAction>(L, "", TalkActionFunctions::luaCreateTalkAction);
 	/***
 	 * @function TalkAction:onSay
 	 * @param callback fun(player: Player, words: string, param: string, type: integer): boolean
@@ -47,8 +47,7 @@ int TalkActionFunctions::luaCreateTalkAction(lua_State* L) {
 
 	const auto talkactionSharedPtr = std::make_shared<TalkAction>();
 	talkactionSharedPtr->setWords(wordsVector);
-	Lua::pushUserdata<TalkAction>(L, talkactionSharedPtr);
-	Lua::setMetatable(L, -1, "TalkAction");
+	Lua::pushSharedUserdata<TalkAction>(L, talkactionSharedPtr);
 	return 1;
 }
 

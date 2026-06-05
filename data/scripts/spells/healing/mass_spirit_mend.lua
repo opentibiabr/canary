@@ -62,7 +62,7 @@ spell:level(150)
 spell:mana(250)
 spell:isPremium(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:monkSpellType(MonkSpell_Spender)
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_MASS_HEALING)
 spell:register()

@@ -55,5 +55,5 @@ spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
 spell:monkSpellType(MonkSpell_Builder)
 spell:vocation("monk;true", "exalted monk;true")
-spell:needLearn(false)
+
 spell:register()

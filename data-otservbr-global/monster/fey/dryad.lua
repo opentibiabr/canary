@@ -96,7 +96,7 @@ monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -90 },
 	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_EARTHDAMAGE, minDamage = 20, maxDamage = -40, range = 7, radius = 4, shootEffect = CONST_ANI_SMALLEARTH, effect = CONST_ME_CARNIPHILA, target = true },
 	{ name = "speed", interval = 2000, chance = 15, speedChange = -800, range = 7, shootEffect = CONST_ANI_POISON, effect = CONST_ME_GREEN_RINGS, target = false, duration = 30000 },
-	{ name = "drunk", interval = 2000, chance = 25, range = 7, shootEffect = CONST_ANI_BURSTARROW, spread = 2,  effect = CONST_ME_HEARTS, target = false, duration = 5000 },
+	{ name = "drunk", interval = 2000, chance = 25, range = 7, shootEffect = CONST_ANI_BURSTARROW, spread = 2, effect = CONST_ME_HEARTS, target = false, duration = 5000 },
 }
 
 monster.defenses = {

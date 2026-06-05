@@ -101,7 +101,7 @@ BatchUpdate = {}
 ---@return boolean
 function BatchUpdate:add(container) end
 
----@return any
+---@return nil
 function BatchUpdate.delete() end
 
 ---@class Charm

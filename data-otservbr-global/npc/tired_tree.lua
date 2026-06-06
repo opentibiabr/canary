@@ -62,8 +62,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "mission") then
-		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.TiredTree) < 1
-		and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.ToothFairy) == 2 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.TiredTree) < 1 and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.ToothFairy) == 2 then
 			npcHandler:say("My siblings and I, we are so tired. We'd love to sleep and dream but there are strange and wicked disturbances that trouble nature itself. Thus, it is very hard to fall asleep. Would you help us?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end

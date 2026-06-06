@@ -73,11 +73,13 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 1)
 			end
 		elseif player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.GrumpyStone) == 1 then
-			if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone1) == 1
-			and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone2) == 1
-			and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone3) == 1
-			and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone4) == 1
-			and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone5) == 1 then
+			if
+				player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone1) == 1
+				and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone2) == 1
+				and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone3) == 1
+				and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone4) == 1
+				and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone5) == 1
+			then
 				npcHandler:say({
 					"Thank You! Their lamentation lapsed into silence. Thus, I assume you brought them some relief. Here, take this map part in return. I'm not interested in this treasure anymore. I just want to return to our hidden realm. ...",
 					"Search for the last part somewhere in the Fields of Glory. It's hidden in a big fly agaric.",
@@ -89,7 +91,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You haven't tended to all the suffering stones yet.", npc, creature)
 			end
 		end
-
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say("No, this won't work. Your hands are too smooth. I guess you have to search for an apropiate tool. But no metal please! The sound of metal on stone is gruesome!", npc, creature)
 		player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.GrumpyStone, 1)

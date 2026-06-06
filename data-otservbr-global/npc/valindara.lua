@@ -71,14 +71,13 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-
 	if MsgContains(message, "cloak") or MsgContains(message, "swan") then
 		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission03.AnUnlikelyCouple) < 4 then
 			npcHandler:say("We can talk about this later if you help Maelyrra first.", npc, creature)
 		end
 		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission03.AnUnlikelyCouple) == 4 then
 			npcHandler:say("You did us a great favour, mortal being! Well, as I promised I will craft you a feathery cloak. Bring me one hundred swan feathers and I will make them into a beautiful robe. Do you have enough feathers yet?", npc, creature)
-			player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission05.SwanFeatherCloak, 1)			
+			player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission05.SwanFeatherCloak, 1)
 			npcHandler:setTopic(playerId, 1)
 		else
 			return false

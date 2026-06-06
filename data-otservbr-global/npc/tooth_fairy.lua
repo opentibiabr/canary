@@ -94,7 +94,6 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("You need to bring me 3 milk teeth.", npc, creature)
 			end
 		end
-
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say({
 			"Thank you very much, human being! You have to find three children: Quero's daughter in Thais, Allen's son in Venore and Rowenna's daughter in Carlin. Go to their bedrooms and find their milk teeth. ...",

@@ -11,17 +11,16 @@ local triggerTiles = {
 local TWENTY_HOURS = 20 * 60 * 60
 
 local function fugueAlreadyExists()
-	for x = spawnAreaMin.x, spawnAreaMax.x do
-		for y = spawnAreaMin.y, spawnAreaMax.y do
-			local pos = Position(x, y, spawnAreaMin.z)
-			local tile = Tile(pos)
-			if tile then
-				for _, creature in ipairs(tile:getCreatures()) do
-					if creature:getName():lower() == "fugue" then
-						return true
-					end
-				end
-			end
+	local centerX = math.floor((spawnAreaMin.x + spawnAreaMax.x) / 2)
+	local centerY = math.floor((spawnAreaMin.y + spawnAreaMax.y) / 2)
+	local centerPos = Position(centerX, centerY, spawnAreaMin.z)
+	local rangeX = math.floor((spawnAreaMax.x - spawnAreaMin.x) / 2)
+	local rangeY = math.floor((spawnAreaMax.y - spawnAreaMin.y) / 2)
+
+	local spectators = Game.getSpectators(centerPos, false, false, rangeX, rangeX, rangeY, rangeY)
+	for _, creature in ipairs(spectators) do
+		if creature:getName():lower() == "fugue" then
+			return true
 		end
 	end
 	return false

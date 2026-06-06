@@ -74,7 +74,7 @@ local quest = {
 				end,
 			},
 		},
-		[6] = {
+		[7] = {
 			name = "Mission: Provisions for the Butcher",
 			storageId = Storage.Quest.U12_40.TheOrderOfTheLion.FralTask,
 			missionId = 10479,

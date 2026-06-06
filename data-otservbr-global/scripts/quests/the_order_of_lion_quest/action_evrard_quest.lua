@@ -20,12 +20,24 @@ Boots - 27 pairs]],
 local evrardItems = Action()
 function evrardItems.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	if player:getStorageValue(item.uid) ~= 1 then
-		local newItem = player:addItem(reward[item.uid], 1)
-		if newItem and parchmentText[reward[item.uid]] then
-			newItem:setAttribute(ITEM_ATTRIBUTE_TEXT, parchmentText[reward[item.uid]])
+		local rewardId = reward[item.uid]
+		local itemWeight = ItemType(rewardId):getWeight()
+		if player:getFreeCapacity() < itemWeight then
+			player:sendCancelMessage("You do not have enough capacity.")
+			return true
+		end
+
+		local newItem = player:addItem(rewardId, 1)
+		if not newItem then
+			player:sendCancelMessage("You have no room to take it.")
+			return true
+		end
+
+		if parchmentText[rewardId] then
+			newItem:setAttribute(ITEM_ATTRIBUTE_TEXT, parchmentText[rewardId])
 		end
 		player:setStorageValue(item.uid, 1)
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. ItemType(reward[item.uid]):getName() .. ".")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have found a " .. ItemType(rewardId):getName() .. ".")
 	else
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The chest is empty.")
 	end

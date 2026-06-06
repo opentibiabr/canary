@@ -33,7 +33,10 @@ function usurperCommanderDeath.onPrepareDeath(creature)
 	if totalCommanders > 0 then
 		Game.setStorageValue(GlobalStorage.TheOrderOfTheLion.Drume.TotalUsurperCommanders, totalCommanders - 1)
 		if totalCommanders == 1 then
-			Game.createMonster("Kesar", Position(32444, 32515, 7), false, true)
+			local kesar = Game.createMonster("Kesar", Position(32444, 32515, 7), false, true)
+			if kesar then
+				kesar:registerEvent("KesarImmortal")
+			end
 			Game.createMonster("Drume", Position(32444, 32516, 7), false, true)
 		end
 	end

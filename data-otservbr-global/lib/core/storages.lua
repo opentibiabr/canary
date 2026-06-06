@@ -2804,10 +2804,10 @@ Storage = {
 						Room = 46890,
 					},
 				},
-					CobraBastion = {
-						Questline = 46891,
-						Access = 46927,
-					},
+				CobraBastion = {
+					Questline = 46891,
+					Access = 46927,
+				},
 			},
 			HandOfTheInquisitionOutfits = {
 				Outfits = 46892,

@@ -98,10 +98,9 @@ TerebanConfig = {
 			no = "Oh please, search for Glitterscale. It should not be too hard to find it in those caves north of Thais.",
 			done = "Only someone as daring as you could slay the beast to get the necessary scales.",
 		},
-		itemId = 11550, -- Flexibe dragon scale
+		itemId = 11550, -- Flexible dragon scale
 	},
 }
-local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 
 function ClearTerebanMessages(npc, creature)
 	local player = Player(creature)
@@ -114,7 +113,7 @@ function ParseTerebanSay(npc, creature, message, npcHandler)
 	local playerId = player:getId()
 	if npcHandler:getTopic(playerId) == 0 then
 		if MsgContains(message, "cloak") then
-			if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 12 then
+			if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals) == 12 then
 				npcHandler:say({
 					"I met this troll when he was hanging around near the town. He carried something I would consider rather uncharacteristic for a troll: a stunningly beautiful cloak entirely made of white feathers. I was curious and asked him if he would sell it. ...",
 					"He seemed to be more interested in some of my coins and a piece of meat than in this unusual garment. Therefore, we made a trade: He got some meat and coins and I got the cloak. ...",
@@ -124,8 +123,8 @@ function ParseTerebanSay(npc, creature, message, npcHandler)
 					"But the actual storm began when we were in the air above the Darama. The feathers are now scattered all over the desert I guess. Rather futile to look out for them but if you really want to try: ...",
 					"The magic carpet made a beeline from Edron to Darashia. You should search along this line on the ground. Good luck!",
 				}, npc, creature)
-				player:setStorageValue(ThreatenedDreams.Mission01[1], 13)
-				player:setStorageValue(ThreatenedDreams.Mission01.FeathersCount, 0) -- Start Mission 'Tattered Swan Feathers'
+				player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals, 13)
+				player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.FeathersCount, 0)
 			else
 				npcHandler:say("You are not on that mission.", npc, creature)
 				npcHandler:setTopic(playerId, 0)

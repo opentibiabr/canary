@@ -54,7 +54,7 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local mission = Storage.Quest.U8_2.TrollSabotageQuest
-local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
+
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -64,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	if MsgContains(message, "cloak") or MsgContains(message, "feather") or MsgContains(message, "swan") or MsgContains(message, "maiden") then
-		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 12 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals) == 12 then
 			npcHandler:say("Hahaha! Grarkharok take cloak from pretty girl. Then ... girl is swan. Grarkharok wants eat but flies away. Grarkharok not understand. Not need cloak, too many feathers. Give cloak to To ... Ta ... Tereban in Edron. Getting shiny coins and meat.", npc, creature)
 		else
 			npcHandler:say("Grarkharok already say everything! Not want talk! Go away!", npc, creature)
@@ -125,6 +125,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 	return true
 end
+
 -- basic
 keywordHandler:addKeyword({ "tribe" }, StdModule.say, { npcHandler = npcHandler, text = "Me tribe in production! Only need troll lady!" })
 keywordHandler:addAliasKeyword({ "troll" })
@@ -135,26 +136,33 @@ keywordHandler:addAliasKeyword({ "crystal" })
 keywordHandler:addAliasKeyword({ "platinum" })
 keywordHandler:addAliasKeyword({ "money" })
 keywordHandler:addAliasKeyword({ "pay" })
+
 keywordHandler:addKeyword({ "boom" }, StdModule.say, { npcHandler = npcHandler, text = "Grarkharok like BOOM, BOOM sound! Go mountain, push rock and BOOM!" })
 keywordHandler:addKeyword({ "bottom" }, StdModule.say, { npcHandler = npcHandler, text = "Like it?? Hope troll lady also like it!" })
 keywordHandler:addAliasKeyword({ "butt" })
+
 keywordHandler:addKeyword({ "human" }, StdModule.say, { npcHandler = npcHandler, text = "Me no like human. Need quiet to make tribe! Only need troll lady!" })
 keywordHandler:addKeyword({ "chief" }, StdModule.say, { npcHandler = npcHandler, text = "Yeye, me stole chief club from Fragratosh, hrhrhrh! Now make me own tribe!" })
 keywordHandler:addKeyword({ "fragratosh" }, StdModule.say, { npcHandler = npcHandler, text = "Fragratosh stupid. He chief of me old tribe. No frogs, no snakes, no smashing humans withrocks. Booooooring tribe! Now me make own tribe!!" })
+
 keywordHandler:addKeyword({ "necklace" }, StdModule.say, { npcHandler = npcHandler, text = "Grarkharok no listen to talk of stinky human! Lalalalalala! Like song? Grarkharok made!" })
 keywordHandler:addAliasKeyword({ "do" })
 keywordHandler:addAliasKeyword({ "reason" })
 keywordHandler:addAliasKeyword({ "why" })
+
 keywordHandler:addKeyword({ "destroy" }, StdModule.say, { npcHandler = npcHandler, text = "You have what want! Go go, find lady so be Grarkharok tribe!!" })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Me be Grarkharok!!" })
 keywordHandler:addAliasKeyword({ "grarkharok" })
+
 keywordHandler:addKeyword({ "gurak cha rak" }, StdModule.say, { npcHandler = npcHandler, text = "You say troll speak!! Hmmm, sound like south tribe! You know Ingortrak ?? He chief of big tribe in jungle! Good chief he is!" })
 keywordHandler:addKeyword({ "item" }, StdModule.say, { npcHandler = npcHandler, text = "I Tem?!?!? No know! Maybe YOU Tem?" })
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Me be Grarkharok. No me name Job!" })
 keywordHandler:addAliasKeyword({ "nothing" })
+
 keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Tribe Grarkharok will rules Tibia! Me only need troll lady, then start tribe!" })
 keywordHandler:addKeyword({ "mission" }, StdModule.say, { npcHandler = npcHandler, text = "Grarkharok destroy human cave down hill! Human away, my mission done,hrhrhrhrhr!" })
 keywordHandler:addAliasKeyword({ "quest" })
+
 npcHandler:setMessage(MESSAGE_GREET, "Me Chief Grarkharok! No do {nothing}!")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Grarkharok be {chief}!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Grarkharok be {chief}!")

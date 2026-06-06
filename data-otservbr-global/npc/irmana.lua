@@ -200,14 +200,13 @@ local function creatureSayCallbackMale(npc, creature, type, message)
 	return true
 end
 
-local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 	local playerSex = player:getSex()
 
 	if MsgContains(message, "fur") then
-		if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 7 and player:getStorageValue(ThreatenedDreams.Mission01.PoacherNotes) == 1 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals) == 7 and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.PoacherNotes) == 1 then
 			npcHandler:say({
 				"A wolf whelp fur? Well, some months ago a hunter came here - a rather scruffy, smelly guy. I would have thrown him out instantly, but he had to offer some fine pelts. One of them was the fur of a very young wolf. ...",
 				"I was not delighted that he obviously killed such a young animal. When I confronted him, he said he wanted to raise it as a companion but it unfortunately died. A sad story. In the end, I bought some of his pelts, among them the whelp fur. ...",
@@ -250,7 +249,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:removeMoney(1000)
 			player:addItem(25238, 1) -- Fur of a Wolf Whelp
 			npcHandler:say("Alright. Here is the fur.", npc, creature)
-			player:setStorageValue(ThreatenedDreams.Mission01[1], 8)
+			player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals, 8)
 			npcHandler:setTopic(playerId, 0)
 		else
 			npcHandler:say("Are you trying to mess with me?!", npc, creature)
@@ -269,6 +268,7 @@ local function creatureSayCallback(npc, creature, type, message)
 	else
 		return creatureSayCallbackFemale(npc, creature, type, message)
 	end
+
 	return true
 end
 
@@ -322,6 +322,7 @@ npcConfig.shop = {
 	{ itemName = "wool", clientId = 10319, sell = 15 },
 	{ itemName = "yellow piece of cloth", clientId = 5914, sell = 150 },
 }
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)

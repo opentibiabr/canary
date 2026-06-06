@@ -51,12 +51,12 @@ local quest = {
 			endValue = 8,
 			states = {
 				[1] = function(player)
-					return string.format(
-						"The fae queen asked for your help: Feyrist is threatened by intruders from Roshamuul. Kill 200 nightmare \z
-						monsters and Kroazur. - You killed %d weakened frazzlemaws and %d efeebled silencers.",
-						(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.FrazzlemawsCount), 0)),
-						(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.EnfeebledCount), 0))
-					)
+			return string.format(
+				"The fae queen asked for your help: Feyrist is threatened by intruders from Roshamuul. Kill 200 nightmare \z
+				monsters and Kroazur. - You killed %d weakened frazzlemaws and %d efeebled silencers.",
+				(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.FrazzlemawsCount), 0)),
+				(math.max(player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.EnfeebledCount), 0))
+			)
 				end,
 				[2] = "You killed 200 of the nightmare monsters that are invading Feyrist. Maelyrra was very happy but it seems \z
 				she still has other problems. She may need your help once more.",
@@ -89,6 +89,80 @@ local quest = {
 				home and thus must be able to breath under water. Therefore he needs the rare raven herb.",
 				[4] = "You found the rare raven herb and gave it to Taegen. Now he will create a sun catcher for you. \z
 				You may also ask Aurita for the starlight vial now.",
+			},
+		},
+		[4] = {
+			name = "The Fairy Treasure",
+			storageId = Storage.Quest.U11_40.ThreatenedDreams.Mission04.ToothFairy,
+			missionId = 10432,
+			startValue = 1,
+			endValue = 2,
+			states = {
+				[1] = "The Tooth Fairy asked you to deliver presents to three children who recently lost a milk tooth. \z
+				Visit Quero's daughter's room in Thais, Allen's son's room in Venore and Rowenna's daughter's room in Carlin. \z
+				Place a present on each bed and collect the milk tooth from under the pillow. \z
+				Return to the Tooth Fairy with the three milk teeth.",
+				[2] = "You delivered the presents and collected the milk teeth. \z
+				The Tooth Fairy rewarded you with the first part of an old map. \z
+				Now find the Tired Tree north of the Fields of Glory and ask it for a mission.",
+			},
+		},
+		[5] = {
+			name = "Tired Trees",
+			storageId = Storage.Quest.U11_40.ThreatenedDreams.Mission04.TiredTree,
+			missionId = 10481,
+			startValue = 1,
+			endValue = 2,
+			states = {
+				[1] = "The Tired Tree north of the Fields of Glory asked for a bedtime story about Dryads. \z
+				Find the book 'The Seeds of Life' and recite its name to the tree.",
+				[2] = "You told the Tired Tree the story of 'The Seeds of Life' and received the second part of the old map. \z
+				Now find the Grumpy Stone between Kazordoon and Femor Hills and ask it for a mission.",
+			},
+		},
+		[6] = {
+			name = "Beset Stones",
+			storageId = Storage.Quest.U11_40.ThreatenedDreams.Mission04.GrumpyStone,
+			missionId = 10482,
+			startValue = 1,
+			endValue = 5,
+			states = {
+				[1] = "The Grumpy Stone between Kazordoon and Femor Hills asked you to scratch the backs of its five siblings. \z
+				Use a rake (no metal!) on all five sentient stones around it, then report back.",
+				[2] = "You scratched the backs of all five stones and received the third part of the old map. \z
+				The Grumpy Stone told you the fourth part is hidden in a Big Fly Agaric in the Fields of Glory, \z
+				south of the Tired Tree.",
+				[3] = "You found the fourth map part hidden between the gills of the Big Fly Agaric in the Fields of Glory. \z
+				Use any of the four map parts to combine them into the complete Old Map.",
+				[4] = "You assembled the Old Map. It tells you to search for a stone sun mosaic in the very south of Thais.",
+				[5] = "You discovered the fairy treasure hidden beneath the stones of the sun mosaic: \z
+				a Butterfly Ring, 5 Rainbow Quartz and 5 Ancient Coins.",
+			},
+		},
+		[7] = {
+			name = "Tooth Collection",
+			storageId = Storage.Quest.U11_40.ThreatenedDreams.Mission04.TeethCollection,
+			missionId = 10483,
+			startValue = 1,
+			endValue = 2,
+			states = {
+				[1] = "The Tooth Fairy asked you to complete her collection. Bring her: an Orc Tooth, Shark Teeth, \z
+				Vampire Teeth, a Perfect Behemoth Fang, a Carrion Worm Fang and Werewolf Fangs.",
+				[2] = "You delivered all the teeth for the Tooth Fairy's collection and received \z
+				the Toothfairy Assistant achievement.",
+			},
+		},
+		[8] = {
+			name = "The Swan Feather Cloak",
+			storageId = Storage.Quest.U11_40.ThreatenedDreams.Mission05.SwanFeatherCloak,
+			missionId = 10484,
+			startValue = 1,
+			endValue = 2,
+			states = {
+				[1] = "Valindara agreed to craft a Swan Feather Cloak for you. \z
+				Collect 100 Swan Feathers from the eight spots around Feyrist near the swans \z
+				Once you have them all, return to Valindara.",
+				[2] = "You delivered 100 Swan Feathers to Valindara and received your Swan Feather Cloak.",
 			},
 		},
 	},

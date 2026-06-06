@@ -22,7 +22,8 @@ npcConfig.outfit = {
 npcConfig.flags = {
 	floorchange = false,
 }
-npcConfig.shop = { -- Sellable items
+
+npcConfig.shop = {
 	{ itemName = "basket", clientId = 2855, buy = 6 },
 	{ itemName = "bottle", clientId = 2875, buy = 3 },
 	{ itemName = "bucket", clientId = 2873, buy = 4 },
@@ -95,7 +96,6 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
-local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 local function creatureSayCallback(npc, creature, type, message)
 	local player = Player(creature)
 	local playerId = player:getId()
@@ -158,17 +158,17 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:setTopic(playerId, 0)
 			end
 		elseif npcHandler:getTopic(playerId) == 5 then
-			if player:getStorageValue(ThreatenedDreams.Mission01[1]) == 1 and player:getStorageValue(ThreatenedDreams.Mission01.PoacherChest) == 1 then
+			if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals) == 1 and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.PoacherChest) == 1 then
 				if player:getItemCount(25235) >= 1 and player:getMoney() >= 5000 then
 					player:removeMoney(5000)
 					npcHandler:say({
 						"Well then. Here, take the book, I added the story. Oh, just a piece of advice: Not to inflame prejudice but poachers are of rather simple disposition. I doubt they are ardent readers. ...",
 						"So if you want to make sure they read this anytime soon, perhaps don't hide the book in a shelf or chest. Make sure to place it somewhere where they will find it easily, like very obviously on a table or something.",
 					}, npc, creature)
-					player:setStorageValue(ThreatenedDreams.Mission01[1], 2)
+					player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission01.TroubledAnimals, 2)
 					npcHandler:setTopic(playerId, 0)
 				else
-					npcHandler:say("You need 5000 gps and book with ancient legends.", npc, creature)
+					npcHandler:say("You need 5000 gold and the book with ancient legends.", npc, creature)
 				end
 			else
 				npcHandler:say("You are not in this mission.", npc, creature)

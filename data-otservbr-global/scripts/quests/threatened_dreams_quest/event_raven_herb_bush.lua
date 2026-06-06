@@ -5,7 +5,6 @@ local config = {
 	pos = Position(33497, 32196, 7),
 	herbId = 5953,
 	herbWeight = 1,
-	storage = Storage.Quest.U11_40.ThreatenedDreams.Mission03.RavenHerbTimer,
 }
 
 local createRavenHerb = GlobalEvent("createRavenHerb")
@@ -44,13 +43,13 @@ function ravenHerb.onUse(player, item, fromPosition, target, toPosition, isHotke
 		return true
 	end
 
-	if player:getStorageValue(config.storage) > os.time() then
+	if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission03.RavenHerbTimer) > os.time() then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The raven herb cannot be collected right now.")
 		return true
 	end
 
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
-	player:setStorageValue(config.storage, os.time() + 60 * 30 * 1000)
+	player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission03.RavenHerbTimer, os.time() + 60 * 30 * 1000)
 	player:addItem(config.herbId, 1)
 	return true
 end

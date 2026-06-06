@@ -2341,7 +2341,7 @@ Storage = {
 			ThreatenedDreams = { -- 45751 - 45850
 				QuestLine = 45751,
 				Mission01 = {
-					45752, -- Troubled Animals
+					TroubledAnimals = 45752,
 					PoacherChest = 45753,
 					PoacherNotes = 45754,
 					FeathersCount = 45755,
@@ -2352,7 +2352,7 @@ Storage = {
 					Feathers5 = 45760,
 				},
 				Mission02 = {
-					45761, -- Nightmare Intruders
+					NightmareIntruders = 45761,
 					FrazzlemawsCount = 45762,
 					EnfeebledCount = 45763,
 					KroazurAccess = 45764,
@@ -2385,7 +2385,7 @@ Storage = {
 					StarlightPos05 = 45791,
 				},
 				Mission03 = {
-					45792, -- An Unlikely Couple
+					AnUnlikelyCouple = 45792,
 					UnlikelyCouple = 45793,
 					PanpipesTimer = 45794,
 					RavenHerbTimer = 45795,
@@ -2393,9 +2393,31 @@ Storage = {
 					EmptyStarlightVial = 45797,
 				},
 				Mission04 = {
-					45798,
+					ToothFairy = 45798,
+					PresentsPlaced = 45799,
+					TeethCollection = 45800,
+					BedThais = 45801,
+					BedVenore = 45802,
+					BedCarlin = 45803,
+					TiredTree = 45804,
+					GrumpyStone = 45805,
+					Stone1 = 45806,
+					Stone2 = 45807,
+					Stone3 = 45808,
+					Stone4 = 45809,
+					Stone5 = 45810,
 				},
-				Mission05 = 45799,
+				Mission05 = {
+					SwanFeatherCloak = 45811,
+					SwanFeatherCooldown01 = 45812,
+					SwanFeatherCooldown02 = 45813,
+					SwanFeatherCooldown03 = 45814,
+					SwanFeatherCooldown04 = 45815,
+					SwanFeatherCooldown05 = 45816,
+					SwanFeatherCooldown06 = 45817,
+					SwanFeatherCooldown07 = 45818,
+					SwanFeatherCooldown08 = 45819,
+			},
 			},
 		},
 		U11_50 = { -- update 11.50 - Reserved Storages 45851 - 46000

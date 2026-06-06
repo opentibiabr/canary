@@ -1,4 +1,3 @@
-local ThreatenedDreams = Storage.Quest.U11_40.ThreatenedDreams
 local config = {
 	[25733] = {
 		fromPos = Position(33508, 32163, 7),
@@ -21,13 +20,13 @@ local config = {
 			"As soon as you're placing the sun catcher on the stone the pattern the mosaic is infused with sunlight. The barrier strengthens.",
 			"As soon as you're placing the sun catcher on the stone the pattern the mosaic is infused with sunlight. This was the last mosaic.",
 		},
-		storageCounter = ThreatenedDreams.Mission02.ChargedSunCatcher,
+		storageCounter = Storage.Quest.U11_40.ThreatenedDreams.Mission02.ChargedSunCatcher,
 		storagePos = {
-			ThreatenedDreams.Mission02.SunCatcherPos01,
-			ThreatenedDreams.Mission02.SunCatcherPos02,
-			ThreatenedDreams.Mission02.SunCatcherPos03,
-			ThreatenedDreams.Mission02.SunCatcherPos04,
-			ThreatenedDreams.Mission02.SunCatcherPos05,
+			Storage.Quest.U11_40.ThreatenedDreams.Mission02.SunCatcherPos01,
+			Storage.Quest.U11_40.ThreatenedDreams.Mission02.SunCatcherPos02,
+			Storage.Quest.U11_40.ThreatenedDreams.Mission02.SunCatcherPos03,
+			Storage.Quest.U11_40.ThreatenedDreams.Mission02.SunCatcherPos04,
+			Storage.Quest.U11_40.ThreatenedDreams.Mission02.SunCatcherPos05,
 		},
 	},
 }
@@ -36,27 +35,23 @@ local sunCatcher = Action()
 function sunCatcher.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 	local tool = config[item.itemid]
 	local currentPeriod = getTibiaTimerDayOrNight(getFormattedWorldTime(time))
-
 	if item.itemid == 25733 then
 		if tool.usablePeriod ~= currentPeriod then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
-
 		if not player:getPosition():isInRange(tool.fromPos, tool.toPos) then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
-
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 6 and player:getStorageValue(ThreatenedDreams.Mission02[1]) ~= 8 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.NightmareIntruders) ~= 6 and player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.NightmareIntruders) ~= 8 then
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
-
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) == 6 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.NightmareIntruders) == 6 then
 			item:transform(25734)
-			player:setStorageValue(ThreatenedDreams.Mission02.ChargedSunCatcher, 5)
-		elseif player:getStorageValue(ThreatenedDreams.Mission02[1]) == 8 then
+			player:setStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.ChargedSunCatcher, 5)
+		elseif player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.NightmareIntruders) == 8 then
 			item:transform(25977)
 		end
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.successMessage)
@@ -72,8 +67,7 @@ function sunCatcher.onUse(player, item, fromPosition, target, toPosition, isHotk
 			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, tool.failMessage)
 			return true
 		end
-
-		if player:getStorageValue(ThreatenedDreams.Mission02[1]) == 7 then
+		if player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission02.NightmareIntruders) == 7 then
 			local counter = player:getStorageValue(tool.storageCounter)
 			for i = 1, 5 do
 				if toPosition == tool.targetPos[i] and player:getStorageValue(tool.storagePos[i]) < 1 then

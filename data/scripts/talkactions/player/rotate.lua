@@ -6,7 +6,7 @@ local function onSayRotate(player, words, param)
 	return true
 end
 
-local talkAction = TalkAction("!r", "!rotate")
+local talkAction = TalkAction("!r")
 talkAction:onSay(onSayRotate)
 talkAction:groupType("normal")
 talkAction:register()

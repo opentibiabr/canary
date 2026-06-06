@@ -23,6 +23,12 @@ npcConfig.flags = {
 	floorchange = false,
 }
 
+npcConfig.voices = {
+	interval = 15000,
+	chance = 50,
+	{ text = "Hey, need some furniture for your house? Come to the Plank and Treasurechest Market!" },
+}
+
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
 
@@ -81,6 +87,9 @@ npcConfig.shop = {
 	{ itemName = "yellow footboard", clientId = 32485, buy = 40 },
 	{ itemName = "yellow headboard", clientId = 32476, buy = 40 },
 }
+
+keywordHandler:addKeyword({ "child" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I have a child. My son, my wife and me, we're living upstairs." })
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -91,5 +100,19 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
+
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Allen Richardson. I'm the owner of this market." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I run this market and sell furniture." })
+keywordHandler:addKeyword({ "furniture" }, StdModule.say, { npcHandler = npcHandler, text = "Well, as you can see, we sell furniture. Ask me for a {trade} if you're interested." })
+keywordHandler:addKeyword({ "venore" }, StdModule.say, { npcHandler = npcHandler, text = "This is the best city in the whole world! We don't care about greedy kings or ambitious priests and the like ... One fine day our {leaders} will declare Venore's independence!" })
+keywordHandler:addKeyword({ "leaders" }, StdModule.say, { npcHandler = npcHandler, text = "{Venore}'s wealth is based on wise decisions and transactions made by the traders union. They know what people actually want and need, unlike some magistrates or civil servants." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "It is |TIME|. Too bad we run out of cuckoo clocks." })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "This city is somewhat outdated." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "This bunch of scheming women proves {Thais}'s weakness best." })
+
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just take at the finest furniture of Venore.")
+npcHandler:setMessage(MESSAGE_GREET, "Welcome to the Plank and Treasurechest Market, |PLAYERNAME|! Best trades in town!.")
 
 npcType:register(npcConfig)

@@ -58,6 +58,9 @@ npcConfig.shop = {
 	{ itemName = "lyre", clientId = 2949, buy = 120 },
 	{ itemName = "simple fanfare", clientId = 2954, buy = 150 },
 }
+
+keywordHandler:addKeyword({ "child" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, I have a small daughter. Her room is upstairs." })
+
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)
 	npc:sellItem(player, itemId, amount, subType, 0, ignore, inBackpacks)
@@ -68,5 +71,18 @@ npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end
+
+keywordHandler:addKeyword({ "instrument", "buy", "sell", "offer" }, StdModule.say, { npcHandler = npcHandler, text = "You can buy a lyre, lute, drum, and simple fanfare. If you'd like to see my offers, ask me for a trade." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Quero." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I make instruments and sometimes I'm wandering through the lands of Tibia as a {bard}." })
+keywordHandler:addKeyword({ "bard" }, StdModule.say, { npcHandler = npcHandler, text = "Selling instruments isn't enough to live on and I love {music}. That's why I wander through the lands from time to time." })
+keywordHandler:addKeyword({ "music" }, StdModule.say, { npcHandler = npcHandler, text = "I love the music of the {elves}." })
+keywordHandler:addKeyword({ "elves", "elf" }, StdModule.say, { npcHandler = npcHandler, text = "They live in the northeast of Tibia." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't know what time it is." })
+
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
+npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
+npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just take a look at my instruments.")
+npcHandler:setMessage(MESSAGE_GREET, "Welcome |PLAYERNAME|! Can I help you? I'm selling {instruments}.")
 
 npcType:register(npcConfig)

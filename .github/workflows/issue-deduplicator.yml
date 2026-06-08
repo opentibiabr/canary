@@ -10,22 +10,30 @@ on:
 jobs:
   find-duplicates:
     name: Find potential duplicates
-    if: github.repository == 'opentibiabr/canary' && (github.event.action == 'opened' || (github.event.action == 'labeled' && (github.event.label.name == 'duplicate-check' || github.event.label.name == 'codex-deduplicate')))
+    if: >-
+      github.repository == 'opentibiabr/canary' &&
+      (github.event.action == 'opened' ||
+      (github.event.action == 'labeled' &&
+      (github.event.label.name == 'duplicate-check' ||
+      github.event.label.name == 'duplicate-check-dry-run' ||
+      github.event.label.name == 'codex-deduplicate')))
     runs-on: ubuntu-latest
     permissions:
       contents: read
       issues: write
     steps:
-      - name: Find and comment potential duplicates
+      - name: Find potential duplicates
         uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
         with:
           github-token: ${{ github.token }}
           script: |
             const marker = '<!-- issue-deduplicator -->';
-            const triggerLabels = new Set(['duplicate-check', 'codex-deduplicate']);
+            const dryRunLabel = 'duplicate-check-dry-run';
+            const triggerLabels = new Set(['duplicate-check', dryRunLabel, 'codex-deduplicate']);
             const issue = context.payload.issue;
             const action = context.payload.action;
             const labelName = context.payload.label?.name;
+            const dryRun = action === 'labeled' && labelName === dryRunLabel;
 
             if (!issue || issue.pull_request) {
               core.info('No issue payload found, or payload is a pull request.');
@@ -265,6 +273,13 @@ jobs:
               });
             }
 
+            async function writeStepSummary(lines) {
+              await core.summary
+                .addHeading('Issue duplicate check')
+                .addRaw(lines.join('\n'), true)
+                .write();
+            }
+
             try {
               const recentIssues = await collectIssues('all', 'created', maxIssuesPerPass);
               let matches = rankCandidates(recentIssues);
@@ -278,6 +293,13 @@ jobs:
 
               if (matches.length === 0) {
                 core.info('No potential duplicates found.');
+                if (dryRun) {
+                  await writeStepSummary([
+                    'Dry run only. No issue comment was posted.',
+                    '',
+                    'No potential duplicates found.',
+                  ]);
+                }
                 return;
               }
 
@@ -293,6 +315,18 @@ jobs:
                 `Detection pass: ${pass}.`,
                 'This is a keyword-based check and can produce false positives.',
               ];
+
+              if (dryRun) {
+                const dryRunLines = [
+                  'Dry run only. No issue comment was posted.',
+                  '',
+                  ...lines.filter((line) => line !== marker),
+                ];
+
+                core.info(dryRunLines.join('\n'));
+                await writeStepSummary(dryRunLines);
+                return;
+              }
 
               await upsertComment(lines.join('\n'));
               core.info(`Commented with ${matches.length} potential duplicate(s).`);

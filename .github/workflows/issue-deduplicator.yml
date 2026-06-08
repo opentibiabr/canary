@@ -48,70 +48,110 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const currentIssueNumber = issue.number;
-            const automaticThreshold = 0.34;
-            const manualThreshold = 0.28;
-            const threshold = action === 'labeled' ? manualThreshold : automaticThreshold;
             const maxIssuesPerPass = 500;
+            const minimumScore = 34;
 
-            const stopwords = new Set([
-              'about', 'above', 'after', 'again', 'against', 'also', 'area', 'being', 'bug',
-              'canary', 'check', 'client', 'code', 'codex', 'com', 'content', 'could',
-              'current', 'description', 'details', 'does', 'error', 'expected', 'from',
-              'github', 'have', 'issue', 'label', 'missing', 'more', 'need', 'needs',
-              'only', 'open', 'opentibia', 'opentibiabr', 'priority', 'problem', 'report',
-              'request', 'same', 'server', 'should', 'status', 'steps', 'system', 'test',
-              'that', 'there', 'this', 'type', 'using', 'version', 'what', 'when', 'where',
-              'with', 'would',
+            const boilerplateStopwords = new Set([
+              'about', 'above', 'actual', 'additional', 'after', 'again', 'against',
+              'also', 'area', 'behavior', 'behaviour', 'being', 'branch', 'bug', 'build',
+              'canary', 'case', 'category', 'check', 'client', 'code', 'codex', 'com',
+              'content', 'could', 'current', 'datapack', 'description', 'details', 'does',
+              'doesn', 'error', 'expected', 'feature', 'from', 'github', 'happened',
+              'happens', 'have', 'information', 'issue', 'label', 'latest', 'file',
+              'function', 'local', 'logs', 'medium', 'missing', 'module', 'more', 'need',
+              'needs', 'not', 'observed', 'only', 'open', 'opentibia', 'opentibiabr',
+              'other', 'player:send', 'please', 'position', 'position.x', 'position.y',
+              'position.z', 'priority', 'problem', 'report', 'reproduce', 'request',
+              'result', 'same', 'section', 'seeing', 'server', 'should', 'source',
+              'stable', 'status', 'steps', 'summary', 'system', 'template', 'test',
+              'text', 'that', 'then', 'there', 'this', 'tried', 'type', 'using',
+              'version', 'what', 'when', 'where', 'with', 'work', 'worked', 'working',
+              'works', 'would',
               'abrir', 'acontece', 'algum', 'alguma', 'aqui', 'area', 'bugado', 'cada',
               'como', 'comportamento', 'conteudo', 'depois', 'erro', 'esta', 'este',
               'isso', 'mais', 'mesmo', 'nao', 'para', 'por', 'porque', 'problema',
               'qual', 'quando', 'sem', 'sobre', 'tambem', 'tem', 'tipo', 'uma',
             ]);
 
-            const broadTokens = new Set([
-              'account', 'action', 'boss', 'crash', 'creature', 'database', 'depot',
-              'docker', 'house', 'item', 'login', 'lua', 'map', 'monster', 'npc',
-              'player', 'protocol', 'quest', 'reward', 'script', 'spell', 'store',
-              'task', 'vocation',
+            const weakTopicTokens = new Set([
+              'account', 'action', 'boss', 'bug', 'character', 'client', 'creature',
+              'crash', 'database', 'depot', 'docker', 'error', 'game', 'house', 'item',
+              'login', 'lua', 'map', 'monster', 'npc', 'player', 'protocol', 'quest',
+              'reward', 'script', 'server', 'spell', 'store', 'support', 'task', 'tibia',
+              'vocation',
+            ]);
+
+            const genericTechTokens = new Set([
+              'config.lua',
+              'functions::lua',
+              'isplayer()',
+              'lua_pushnil(l)',
+              'player()',
+              'position()',
+              'register()',
+              'std::shared_ptr',
+              'std::string',
             ]);
 
             function normalizeText(value) {
               return String(value ?? '')
+                .replace(/([a-z])([A-Z])/g, '$1 $2')
                 .normalize('NFKD')
                 .replace(/[\u0300-\u036f]/g, '')
                 .toLowerCase();
             }
 
-            function tokenize(value) {
+            function singularize(token) {
+              if (token.length > 4 && token.endsWith('ies')) {
+                return `${token.slice(0, -3)}y`;
+              }
+
+              if (token.length > 4 && token.endsWith('es')) {
+                return token.slice(0, -2);
+              }
+
+              if (token.length > 4 && token.endsWith('s')) {
+                return token.slice(0, -1);
+              }
+
+              return token;
+            }
+
+            function rawTokens(value) {
               const normalized = normalizeText(value)
                 .replace(/https?:\/\/\S+/g, ' ')
                 .replace(/[#*_()[\]{}>]/g, ' ');
+
               return (normalized.match(/[a-z0-9][a-z0-9_./:-]{2,}/g) ?? [])
                 .map((token) => token.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, ''))
+                .map(singularize)
                 .filter((token) => token.length >= 3)
-                .filter((token) => !/^\d{1,2}$/.test(token))
-                .filter((token) => !stopwords.has(token));
+                .filter((token) => !/^\d+$/.test(token))
+                .filter((token) => !boilerplateStopwords.has(token));
+            }
+
+            function isSpecificToken(token) {
+              return token.length >= 4 && !boilerplateStopwords.has(token) && !weakTopicTokens.has(token);
+            }
+
+            function tokenize(value, options = {}) {
+              const { keepWeak = false } = options;
+              return rawTokens(value).filter((token) => keepWeak || isSpecificToken(token));
             }
 
             function technicalTokens(value) {
               const normalized = normalizeText(value);
               const matches = normalized.match(
-                /\b[a-z0-9_./-]+\.(?:cpp|hpp|h|lua|sql|xml|json|yml|yaml|otbm)\b|\b[a-z_][a-z0-9_]*::[a-z_][a-z0-9_]*\b|\b(?:0x[0-9a-f]+|[1-9][0-9]{2,})\b|\b[a-z_][a-z0-9_]*\([a-z0-9_,\s:<>*&.-]{0,60}\)/g,
+                /\b[a-z0-9_./-]+\.(?:cpp|hpp|h|lua|sql|xml|json|yml|yaml|otbm)\b|\b[a-z_][a-z0-9_]*::[a-z_][a-z0-9_]*\b|\b[a-z_][a-z0-9_]*\([a-z0-9_,\s:<>*&.-]{0,60}\)/g,
               ) ?? [];
+              const namedTokens = normalized.match(/\b(?:ipv4|ipv6|sha-?256|mysql|mariadb|sqlite|protobuf|openssl|cmake|vcpkg)\b/g) ?? [];
 
-              return [...new Set(matches.map((token) => token.trim()).filter(Boolean))];
-            }
-
-            function labelTokens(labels) {
-              return (labels ?? [])
-                .map((label) => normalizeText(typeof label === 'string' ? label : label.name))
-                .flatMap((label) => label.split(/[^a-z0-9]+/))
+              return [...new Set([...matches, ...namedTokens]
+                .map((token) => token.trim().replace(/\s+/g, ' '))
                 .filter((token) => token.length >= 3)
-                .filter((token) => !stopwords.has(token));
-            }
-
-            function weightedSet(...tokenGroups) {
-              return new Set(tokenGroups.flat().filter(Boolean));
+                .filter((token) => !/^\d+$/.test(token))
+                .filter((token) => !genericTechTokens.has(token.replace(/\s+/g, '').toLowerCase()))
+                .filter((token) => !weakTopicTokens.has(token)))];
             }
 
             function intersection(left, right) {
@@ -124,62 +164,71 @@ jobs:
               return values;
             }
 
-            function overlap(left, right) {
-              if (left.size === 0 || right.size === 0) {
-                return 0;
+            function phraseTokens(tokens) {
+              const phrases = new Set();
+              for (let size = 2; size <= 3; size += 1) {
+                for (let index = 0; index <= tokens.length - size; index += 1) {
+                  const parts = tokens.slice(index, index + size);
+                  if (parts.every(isSpecificToken)) {
+                    phrases.add(parts.join(' '));
+                  }
+                }
               }
 
-              return intersection(left, right).length / Math.sqrt(left.size * right.size);
+              return phrases;
+            }
+
+            function canonicalTitle(value) {
+              return rawTokens(value).filter((token) => !weakTopicTokens.has(token)).join(' ');
             }
 
             function issueFeatures(candidate) {
               const titleTokens = tokenize(candidate.title);
-              const bodyTokens = tokenize(candidate.body);
+              const titlePhraseSource = tokenize(candidate.title, { keepWeak: true });
+              const bodyTokens = tokenize(candidate.body).slice(0, 500);
               const techTokens = technicalTokens(`${candidate.title}\n${candidate.body}`);
-              const labels = labelTokens(candidate.labels);
 
               return {
+                canonicalTitle: canonicalTitle(candidate.title),
                 title: new Set(titleTokens),
                 body: new Set(bodyTokens),
                 tech: new Set(techTokens),
-                labels: new Set(labels),
-                all: weightedSet(titleTokens, bodyTokens, techTokens, labels),
+                phrases: phraseTokens(titlePhraseSource),
               };
             }
 
             const currentFeatures = issueFeatures(issue);
 
             function scoreCandidate(candidate) {
-              if (candidate.number === currentIssueNumber || candidate.pull_request) {
+              if (candidate.number >= currentIssueNumber || candidate.pull_request) {
                 return null;
               }
 
               const candidateFeatures = issueFeatures(candidate);
+              const sharedPhrase = intersection(currentFeatures.phrases, candidateFeatures.phrases);
               const sharedTitle = intersection(currentFeatures.title, candidateFeatures.title);
               const sharedBody = intersection(currentFeatures.body, candidateFeatures.body);
               const sharedTech = intersection(currentFeatures.tech, candidateFeatures.tech);
-              const sharedAll = intersection(currentFeatures.all, candidateFeatures.all);
-              const sharedSpecific = sharedAll.filter((token) => {
-                return token.length >= 5 && (!broadTokens.has(token) || sharedTech.includes(token));
-              });
+              const exactTitle = currentFeatures.canonicalTitle.length > 0
+                && currentFeatures.canonicalTitle === candidateFeatures.canonicalTitle;
+
+              const hasStrongTitleMatch = sharedTitle.length >= 3 || sharedPhrase.length >= 2;
+              const hasBodyConfirmation = sharedTitle.length >= 2 && sharedBody.length >= 2;
+              const hasSpecificTechMatch = sharedTech.length > 0 && (sharedTitle.length >= 1 || sharedBody.length >= 2);
+
+              if (!exactTitle && !hasStrongTitleMatch && !hasBodyConfirmation && !hasSpecificTechMatch) {
+                return null;
+              }
 
               let score = 0;
-              score += overlap(currentFeatures.title, candidateFeatures.title) * 0.35;
-              score += overlap(currentFeatures.all, candidateFeatures.all) * 0.30;
-              score += overlap(currentFeatures.body, candidateFeatures.body) * 0.18;
-              score += overlap(currentFeatures.labels, candidateFeatures.labels) * 0.05;
-              score += Math.min(sharedTech.length * 0.08, 0.24);
+              score += exactTitle ? 100 : 0;
+              score += sharedPhrase.length * 14;
+              score += sharedTitle.length * 10;
+              score += sharedTech.length * 24;
+              score += Math.min(sharedBody.length, 5) * 2;
 
-              if (candidate.state === 'open') {
-                score += 0.03;
-              }
-
-              if (sharedSpecific.length < 2 && sharedTech.length === 0) {
-                score *= 0.55;
-              }
-
-              if (sharedTitle.length === 0 && sharedTech.length === 0 && sharedSpecific.length < 3) {
-                score *= 0.70;
+              if (score < minimumScore) {
+                return null;
               }
 
               return {
@@ -187,7 +236,7 @@ jobs:
                 title: candidate.title,
                 state: candidate.state,
                 score,
-                shared: [...new Set([...sharedTitle, ...sharedTech, ...sharedSpecific, ...sharedBody])].slice(0, 8),
+                shared: [...new Set([...sharedPhrase, ...sharedTech, ...sharedTitle, ...sharedBody])].slice(0, 8),
               };
             }
 
@@ -221,9 +270,8 @@ jobs:
               return candidates
                 .map(scoreCandidate)
                 .filter(Boolean)
-                .filter((candidate) => candidate.score >= threshold)
                 .sort((left, right) => right.score - left.score)
-                .slice(0, 5);
+                .slice(0, 3);
             }
 
             async function removeTriggerLabel() {
@@ -281,15 +329,9 @@ jobs:
             }
 
             try {
-              const recentIssues = await collectIssues('all', 'created', maxIssuesPerPass);
-              let matches = rankCandidates(recentIssues);
-              let pass = 'recent issues';
-
-              if (matches.length === 0) {
-                const openIssues = await collectIssues('open', 'updated', maxIssuesPerPass);
-                matches = rankCandidates(openIssues);
-                pass = 'open issues fallback';
-              }
+              const openIssues = await collectIssues('open', 'updated', maxIssuesPerPass);
+              const matches = rankCandidates(openIssues);
+              const pass = 'open issues only';
 
               if (matches.length === 0) {
                 core.info('No potential duplicates found.');
@@ -305,7 +347,7 @@ jobs:
 
               const lines = [
                 marker,
-                'Potential duplicates or closely related issues were found. Please review before continuing triage.',
+                'Potential duplicate issues were found. Please verify before continuing triage.',
                 '',
                 ...matches.map((candidate) => {
                   const shared = candidate.shared.length > 0 ? ` (shared: ${candidate.shared.join(', ')})` : '';

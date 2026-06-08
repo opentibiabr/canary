@@ -106,15 +106,19 @@ jobs:
                 return `${token.slice(0, -3)}y`;
               }
 
-              if (token.length > 4 && token.endsWith('es')) {
+              if (token.length > 4 && /(?:s|x|z|ch|sh)es$/.test(token)) {
                 return token.slice(0, -2);
               }
 
-              if (token.length > 4 && token.endsWith('s')) {
+              if (token.length > 4 && token.endsWith('s') && !token.endsWith('ss')) {
                 return token.slice(0, -1);
               }
 
               return token;
+            }
+
+            function genericTokenKey(token) {
+              return token.replace(/\s+/g, '').toLowerCase();
             }
 
             function rawTokens(value) {
@@ -124,10 +128,12 @@ jobs:
 
               return (normalized.match(/[a-z0-9][a-z0-9_./:-]{2,}/g) ?? [])
                 .map((token) => token.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, ''))
+                .filter((token) => !boilerplateStopwords.has(token))
                 .map(singularize)
                 .filter((token) => token.length >= 3)
                 .filter((token) => !/^\d+$/.test(token))
-                .filter((token) => !boilerplateStopwords.has(token));
+                .filter((token) => !boilerplateStopwords.has(token))
+                .filter((token) => !genericTechTokens.has(genericTokenKey(token)));
             }
 
             function isSpecificToken(token) {
@@ -150,7 +156,7 @@ jobs:
                 .map((token) => token.trim().replace(/\s+/g, ' '))
                 .filter((token) => token.length >= 3)
                 .filter((token) => !/^\d+$/.test(token))
-                .filter((token) => !genericTechTokens.has(token.replace(/\s+/g, '').toLowerCase()))
+                .filter((token) => !genericTechTokens.has(genericTokenKey(token)))
                 .filter((token) => !weakTopicTokens.has(token)))];
             }
 

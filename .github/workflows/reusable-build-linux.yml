@@ -24,6 +24,9 @@ on:
         required: false
         type: string
         default: ""
+    secrets:
+      VCPKG_PACKAGES_TOKEN:
+        required: false
 
 permissions:
   contents: write

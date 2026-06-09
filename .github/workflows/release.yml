@@ -57,7 +57,6 @@ jobs:
       contents: write
       checks: write
     uses: ./.github/workflows/reusable-checks.yml
-    secrets: inherit
 
   tests-lua:
     name: Lua Tests
@@ -65,7 +64,6 @@ jobs:
     permissions:
       contents: read
     uses: ./.github/workflows/reusable-tests-lua.yml
-    secrets: inherit
 
   build-linux:
     name: Build - Linux
@@ -79,7 +77,8 @@ jobs:
       run_canary_smoke: true
       run_global_smoke: false
       release_tag: ${{ needs.validate.outputs.tag }}
-    secrets: inherit
+    secrets:
+      VCPKG_PACKAGES_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN }}
 
   build-windows:
     name: Build - Windows
@@ -91,7 +90,6 @@ jobs:
     with:
       run_canary_smoke: true
       release_tag: ${{ needs.validate.outputs.tag }}
-    secrets: inherit
 
   build-macos:
     name: Build - macOS
@@ -103,7 +101,8 @@ jobs:
     with:
       run_canary_smoke: true
       release_tag: ${{ needs.validate.outputs.tag }}
-    secrets: inherit
+    secrets:
+      VCPKG_PACKAGES_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN }}
 
   build-docker:
     name: Build - Docker
@@ -114,7 +113,6 @@ jobs:
     uses: ./.github/workflows/reusable-build-docker.yml
     with:
       release_tag: ${{ needs.validate.outputs.tag }}
-    secrets: inherit
 
   publish:
     name: Publish Release

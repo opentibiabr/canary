@@ -1,3 +1,4 @@
+---
 name: Reusable Fast Checks
 
 on:
@@ -43,7 +44,7 @@ jobs:
 
       - uses: JohnnyMorganz/stylua-action@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           version: latest
           args: .
 
@@ -68,7 +69,7 @@ jobs:
             CMakeLists.txt
             **/*.cmake
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Check formatting diff
         id: formatting-diff
@@ -106,7 +107,7 @@ jobs:
       - name: Run Analysis (Reviewdog)
         if: github.event_name == 'pull_request'
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
           REVIEWDOG_REPORTER: github-pr-check
         run: |
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added
@@ -117,5 +118,5 @@ jobs:
       - name: Run yamllint
         uses: reviewdog/action-yamllint@v1.6.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
           reporter: github-pr-check

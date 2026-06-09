@@ -1,3 +1,4 @@
+---
 name: Reusable Windows Build
 
 on:
@@ -8,6 +9,11 @@ on:
         required: false
         type: boolean
         default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -43,6 +49,13 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        shell: pwsh
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python .github/scripts/release_metadata.py materialize --tag "$env:RELEASE_TAG"
 
       - name: Get vcpkg baseline
         shell: pwsh
@@ -169,7 +182,7 @@ jobs:
         if: matrix.type == 'CMake'
         uses: actions/upload-artifact@v7
         with:
-          name: windows-cmake-release
+          name: canary-windows-cmake-release
           path: build/windows-release/bin/
 
       - name: Build project (MSBuild)
@@ -209,5 +222,5 @@ jobs:
         if: matrix.type == 'Solution'
         uses: actions/upload-artifact@v7
         with:
-          name: windows-solution-debug
+          name: canary-windows-solution-debug
           path: artifacts/

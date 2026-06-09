@@ -1,0 +1,403 @@
+---
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to publish.
+        required: true
+        type: string
+      dry_run:
+        description: Validate and build, but do not create a release or metadata PR.
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate Release Metadata
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.metadata.outputs.tag }}
+      version: ${{ steps.metadata.outputs.version }}
+      client_version: ${{ steps.metadata.outputs.client_version }}
+      client_display: ${{ steps.metadata.outputs.client_display }}
+      map_url: ${{ steps.metadata.outputs.map_url }}
+      previous_tag: ${{ steps.metadata.outputs.previous_tag }}
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Validate release metadata
+        id: metadata
+        env:
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: |
+          python3 .github/scripts/release_metadata.py materialize --tag "$RELEASE_TAG"
+          python3 .github/scripts/release_metadata.py check --tag "$RELEASE_TAG" --strict
+
+  checks:
+    name: Fast Checks
+    needs: validate
+    permissions:
+      contents: write
+      checks: write
+    uses: ./.github/workflows/reusable-checks.yml
+
+  tests-lua:
+    name: Lua Tests
+    needs: validate
+    permissions:
+      contents: read
+    uses: ./.github/workflows/reusable-tests-lua.yml
+
+  build-linux:
+    name: Build - Linux
+    needs: [validate, checks, tests-lua]
+    permissions:
+      contents: write
+      packages: write
+    uses: ./.github/workflows/reusable-build-linux.yml
+    with:
+      buildtypes: '["linux-release","linux-debug"]'
+      run_canary_smoke: true
+      run_global_smoke: false
+      release_tag: ${{ needs.validate.outputs.tag }}
+    secrets:
+      VCPKG_PACKAGES_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN }}
+
+  build-windows:
+    name: Build - Windows
+    needs: [validate, checks, tests-lua]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-windows.yml
+    with:
+      run_canary_smoke: true
+      release_tag: ${{ needs.validate.outputs.tag }}
+
+  build-macos:
+    name: Build - macOS
+    needs: [validate, checks, tests-lua]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-macos.yml
+    with:
+      run_canary_smoke: true
+      release_tag: ${{ needs.validate.outputs.tag }}
+    secrets:
+      VCPKG_PACKAGES_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN }}
+
+  build-docker:
+    name: Build - Docker
+    needs: [validate, checks, tests-lua]
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/reusable-build-docker.yml
+    with:
+      release_tag: ${{ needs.validate.outputs.tag }}
+
+  publish:
+    name: Publish Release
+    needs: [validate, build-linux, build-windows, build-macos, build-docker]
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.validate.outputs.tag }}
+      RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+      CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+      PREVIOUS_TAG: ${{ needs.validate.outputs.previous_tag }}
+      DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ needs.validate.outputs.tag }}
+
+      - name: Materialize release metadata
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
+
+      - name: Prepare release notes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          notes_args=(
+            -f "tag_name=${RELEASE_TAG}"
+            -f "target_commitish=$(git rev-parse "${RELEASE_TAG}^{commit}")"
+          )
+          if [[ -n "${PREVIOUS_TAG}" ]]; then
+            notes_args+=(-f "previous_tag_name=${PREVIOUS_TAG}")
+          fi
+
+          generated_notes="$(gh api "repos/${GITHUB_REPOSITORY}/releases/generate-notes" "${notes_args[@]}" --jq .body)"
+
+          cat > release-notes.md <<EOF_NOTES
+          #### Welcome! The OpenTibiaBR team is deeply committed to continuously enriching this project with new features and fixes. Your support, either financial or through code contributions and issue reports, is vital for our ongoing work.
+
+          - #### To contribute code or report problems, join our [Discord community](https://discord.gg/gvTj5sh9Mp).
+          - #### If you'd like to financially support the project, please consider making a [donation](https://docs.opentibiabr.com/home/donate).
+          - #### For tutorials and additional resources, visit our [documentation](https://docs.opentibiabr.com/home/welcome).
+
+          ------------------------------------
+          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/latest)
+          ### [Download OTClient Redemption](https://github.com/opentibiabr/otclient), thanks for @mehah
+
+          ------------------------------------
+
+          EOF_NOTES
+          printf '%s\n' "${generated_notes}" >> release-notes.md
+
+      - name: Download Action artifact zips
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          download_artifact_zip() {
+            local artifact_name="$1"
+            local asset_name="$2"
+            local url
+            url="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" \
+              --jq '.artifacts[] | "\(.name)\t\(.archive_download_url)"' \
+              | awk -F '\t' -v artifact_name="${artifact_name}" '$1 == artifact_name { print $2; exit }')"
+            if [[ -z "${url}" ]]; then
+              echo "Artifact '${artifact_name}' was not found in this workflow run." >&2
+              exit 1
+            fi
+
+            curl --fail --location \
+              --header "Authorization: Bearer ${GITHUB_TOKEN}" \
+              --header "X-GitHub-Api-Version: 2022-11-28" \
+              "${url}" \
+              --output "dist/${asset_name}"
+          }
+
+          download_artifact_zip "canary-linux-release" "canary-linux-release.zip"
+          download_artifact_zip "canary-linux-debug" "canary-linux-debug.zip"
+          download_artifact_zip "canary-windows-cmake-release" "canary-windows-cmake-release.zip"
+          download_artifact_zip "canary-windows-solution-debug" "canary-windows-solution-debug.zip"
+          download_artifact_zip "canary-macos-release" "canary-macos-release.zip"
+          download_artifact_zip "canary-docker" "canary-docker.zip"
+
+      - name: Copy map from latest published release
+        id: map
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+
+          source_tag="$(gh api "repos/${GITHUB_REPOSITORY}/releases/latest" --jq .tag_name)"
+          if [[ "${source_tag}" == "${RELEASE_TAG}" && -n "${PREVIOUS_TAG}" ]]; then
+            source_tag="${PREVIOUS_TAG}"
+          fi
+          if [[ -z "${source_tag}" ]]; then
+            echo "Could not determine a source release for otservbr.otbm." >&2
+            exit 1
+          fi
+
+          gh release download "${source_tag}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern "otservbr.otbm" \
+            --dir dist
+
+          test -s dist/otservbr.otbm
+          echo "source_tag=${source_tag}" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update draft release
+        if: env.DRY_RUN != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          title="Canary - Version ${RELEASE_VERSION}"
+          if gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" >/tmp/release.json 2>/dev/null; then
+            is_draft="$(gh release view "${RELEASE_TAG}" --repo "${GITHUB_REPOSITORY}" --json isDraft --jq .isDraft)"
+            if [[ "${is_draft}" != "true" ]]; then
+              echo "Release ${RELEASE_TAG} already exists and is published." >&2
+              exit 1
+            fi
+            gh release edit "${RELEASE_TAG}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "${title}" \
+              --notes-file release-notes.md \
+              --draft
+          else
+            gh release create "${RELEASE_TAG}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --verify-tag \
+              --draft \
+              --title "${title}" \
+              --notes-file release-notes.md
+          fi
+
+      - name: Upload release assets
+        if: env.DRY_RUN != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release upload "${RELEASE_TAG}" dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --clobber
+
+      - name: Publish release
+        if: env.DRY_RUN != 'true'
+        shell: bash
+        env:
+          MAP_SOURCE_TAG: ${{ steps.map.outputs.source_tag }}
+        run: |
+          set -euo pipefail
+          gh release edit "${RELEASE_TAG}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --draft=false \
+            --latest
+
+          {
+            echo "Published ${RELEASE_TAG}"
+            echo "Copied otservbr.otbm from ${MAP_SOURCE_TAG}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Summarize dry run
+        if: env.DRY_RUN == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          {
+            echo "Dry run completed for ${RELEASE_TAG}."
+            echo ""
+            echo "Prepared release assets:"
+            find dist -maxdepth 1 -type f -printf "- %f\n" | sort
+            echo ""
+            echo "Release creation, asset upload, publish, and metadata PR were skipped."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  open-metadata-pr:
+    name: Open Release Metadata PR
+    needs: [validate, publish]
+    if: github.event_name != 'workflow_dispatch' || inputs.dry_run == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RELEASE_TAG: ${{ needs.validate.outputs.tag }}
+      RELEASE_VERSION: ${{ needs.validate.outputs.version }}
+      CLIENT_VERSION: ${{ needs.validate.outputs.client_version }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Update tracked release metadata
+        id: metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          python3 .github/scripts/release_metadata.py update \
+            --version "${RELEASE_VERSION}" \
+            --client-version "${CLIENT_VERSION}"
+
+          if git diff --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "Tracked release metadata already matches ${RELEASE_TAG}."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "has_changes=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit metadata update
+        if: steps.metadata.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          branch="release-${RELEASE_TAG}-metadata"
+
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+          git switch -c "${branch}"
+          git add \
+            src/core.hpp \
+            config.lua.dist \
+            docker/data/start.sh \
+            docker/.env.dist \
+            docker/docker-compose.yml \
+            docker/DOCKER.md \
+            docker/quickstart/myaac/bootstrap.php
+          git commit -m "chore: update release metadata to ${RELEASE_VERSION}"
+          git push --force-with-lease origin "HEAD:${branch}"
+
+          echo "branch=${branch}" >> "$GITHUB_ENV"
+
+      - name: Open or update pull request
+        if: steps.metadata.outputs.has_changes == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          existing_pr="$(gh pr list \
+            --repo "${GITHUB_REPOSITORY}" \
+            --base main \
+            --head "${branch}" \
+            --state open \
+            --json number \
+            --jq '.[0].number // empty')"
+
+          title="chore: update release metadata to ${RELEASE_VERSION}"
+          body="$(cat <<EOF_PR
+          Updates tracked release metadata after publishing ${RELEASE_TAG}.
+
+          Release: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG}
+
+          This keeps the default map URL, Docker quickstart defaults, MyAAC client version, and server release version aligned with the latest published release.
+          EOF_PR
+          )"
+
+          if [[ -n "${existing_pr}" ]]; then
+            gh pr edit "${existing_pr}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "${title}" \
+              --body "${body}"
+            pr_url="https://github.com/${GITHUB_REPOSITORY}/pull/${existing_pr}"
+          else
+            pr_url="$(gh pr create \
+              --repo "${GITHUB_REPOSITORY}" \
+              --base main \
+              --head "${branch}" \
+              --title "${title}" \
+              --body "${body}")"
+          fi
+
+          {
+            echo "Release metadata PR: ${pr_url}"
+          } >> "$GITHUB_STEP_SUMMARY"

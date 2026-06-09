@@ -1,3 +1,4 @@
+---
 name: Reusable Docker Build
 
 on:
@@ -25,7 +26,9 @@ jobs:
 
       - name: Materialize release metadata
         if: inputs.release_tag != ''
-        run: python3 .github/scripts/release_metadata.py materialize --tag "${{ inputs.release_tag }}"
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.15

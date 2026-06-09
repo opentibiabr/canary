@@ -21,7 +21,7 @@ release-only metadata in its own checkout before building, so a release does not
 need a separate pull request just to change `3.5.0` to `3.6.0`.
 
 After publishing, the workflow opens or updates a branch named like
-`dudantas/release-v3.6.0-metadata` with the permanent metadata changes. Review
+`release-v3.6.0-metadata` with the permanent metadata changes. Review
 and merge that pull request to keep `main` aligned with the latest release.
 
 ## Optional Metadata Update

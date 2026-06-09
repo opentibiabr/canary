@@ -1,3 +1,4 @@
+---
 name: Release
 
 on:
@@ -38,6 +39,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
           ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
 
       - name: Validate release metadata
@@ -133,6 +135,7 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+          persist-credentials: false
           ref: ${{ needs.validate.outputs.tag }}
 
       - name: Materialize release metadata
@@ -340,7 +343,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          branch="dudantas/release-${RELEASE_TAG}-metadata"
+          branch="release-${RELEASE_TAG}-metadata"
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "GitHub Actions"

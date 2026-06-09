@@ -161,7 +161,7 @@ def semver_tags_merged_into(tag: str) -> list[str]:
 
 def previous_semver_tag(tag: str) -> str:
     for candidate in semver_tags_merged_into(tag):
-        if candidate != tag:
+        if candidate != tag and TAG_RE.match(candidate):
             return candidate
     return ""
 

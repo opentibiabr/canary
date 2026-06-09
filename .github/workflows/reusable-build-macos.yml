@@ -1,3 +1,4 @@
+---
 name: Reusable macOS Build
 
 on:
@@ -8,6 +9,14 @@ on:
         required: false
         type: boolean
         default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+    secrets:
+      VCPKG_PACKAGES_TOKEN:
+        required: false
 
 permissions:
   contents: read
@@ -22,6 +31,13 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
 
       - name: Get vcpkg baseline
         shell: bash
@@ -146,7 +162,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: macos-release
+          name: canary-macos-release
           path: build/macos-release
 
       - name: Verify vcpkg binary cache push

@@ -1933,7 +1933,7 @@ uint16_t Player::parseRacebyCharm(charmRune_t charmId, bool set /*= false*/, uin
 	return raceid;
 }
 
-bool Player::isNearDepotBox() {
+bool Player::isNearDepotBox() const {
 	const Position &pos = getPosition();
 	for (int32_t cx = -1; cx <= 1; ++cx) {
 		for (int32_t cy = -1; cy <= 1; ++cy) {
@@ -8923,12 +8923,19 @@ void Player::sendBatchUpdateContainer(Container* container, bool hasParent) {
 		closeContainersOutOfRange();
 	}
 
-	for (const auto &[cid, containerInfo] : openContainers) {
+	for (auto &[cid, containerInfo] : openContainers) {
 		if (containerInfo.container.get() != container) {
 			continue;
 		}
 
-		client->sendContainer(cid, containerInfo.container, hasParent, containerInfo.index);
+		auto &firstIndex = containerInfo.index;
+		const uint32_t containerSize = containerInfo.container->size();
+		if (firstIndex >= containerSize) {
+			const uint32_t pageSize = std::max<uint32_t>(containerInfo.container->capacity(), 1);
+			firstIndex = containerSize == 0 ? 0 : static_cast<uint16_t>(((containerSize - 1) / pageSize) * pageSize);
+		}
+
+		client->sendContainer(cid, containerInfo.container, hasParent, firstIndex);
 		g_logger().debug("Player::sendBatchUpdateContainer - Sent batch update for container {} to player {}.", cid, getName());
 	}
 }
@@ -8981,7 +8988,7 @@ bool Player::shouldCloseContainer(const std::shared_ptr<Container> &container) c
 	if (const auto &depotChest = topParent->getDepotChest()) {
 		for (const auto &[depotId, chest] : depotChests) {
 			if (depotId != 0 && chest == depotChest) {
-				return false;
+				return !isNearDepotBox();
 			}
 		}
 	}

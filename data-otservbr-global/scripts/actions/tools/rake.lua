@@ -16,11 +16,11 @@ function rake.onUse(player, item, fromPosition, target, toPosition, isHotkey)
 		-- Threatened Dreams Mission04
 	elseif player:getStorageValue(Storage.Quest.U11_40.ThreatenedDreams.Mission04.GrumpyStone) == 1 then
 		local positions = {
-			{x = 32617, y = 31863, z = 7},
-			{x = 32616, y = 31864, z = 7},
-			{x = 32615, y = 31866, z = 7},
-			{x = 32620, y = 31864, z = 7},
-			{x = 32619, y = 31865, z = 7}
+			{ x = 32617, y = 31863, z = 7 },
+			{ x = 32616, y = 31864, z = 7 },
+			{ x = 32615, y = 31866, z = 7 },
+			{ x = 32620, y = 31864, z = 7 },
+			{ x = 32619, y = 31865, z = 7 },
 		}
 		local positionStorages = {
 			[1] = Storage.Quest.U11_40.ThreatenedDreams.Mission04.Stone1,

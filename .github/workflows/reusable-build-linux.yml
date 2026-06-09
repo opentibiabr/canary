@@ -18,6 +18,11 @@ on:
         required: false
         type: boolean
         default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -50,6 +55,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${{ inputs.release_tag }}"
 
       - name: Get vcpkg baseline
         id: vcpkg-baseline
@@ -312,7 +321,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: linux-${{ matrix.buildtype }}
+          name: canary-${{ matrix.buildtype }}
           path: build/${{ matrix.buildtype }}/bin/
 
       - name: Verify vcpkg binary cache push

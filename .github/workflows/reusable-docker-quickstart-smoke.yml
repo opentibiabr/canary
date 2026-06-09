@@ -25,7 +25,7 @@ jobs:
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         uses: actions/download-artifact@v7
         with:
-          name: docker-canary-image
+          name: canary-docker-image
           path: artifacts/docker-image
 
       - name: Run Docker quickstart smoke (PR image)

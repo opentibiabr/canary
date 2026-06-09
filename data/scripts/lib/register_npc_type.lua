@@ -170,7 +170,7 @@ registerNpcType.shop = function(npcType, mask)
 				parent:setSellPrice(sellPrice)
 			end
 
-			if clientId then
+			if clientId and npcName ~= "Test Server" then
 				if not NpcPriceChecker[clientId] then
 					NpcPriceChecker[clientId] = { buy = nil, sell = nil, buyNpc = nil, sellNpc = nil }
 				end

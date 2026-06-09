@@ -20,11 +20,13 @@ local config = {
 		{ name = "Spark of Destruction", pos = Position(32210, 31251, 14) },
 		{ name = "Spark of Destruction", pos = Position(32212, 31246, 14) },
 	},
-	onUseExtra = function()
+	onUseExtra = function(player)
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.ForeshockHealth, 105000)
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.AftershockHealth, 105000)
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.ForeshockStage, -1)
 		Game.setStorageValue(GlobalStorage.HeartOfDestruction.AftershockStage, -1)
+		player:setBossCooldown("Realityquake", os.time() + configManager.getNumber(configKeys.BOSS_DEFAULT_TIME_TO_FIGHT_AGAIN))
+		player:sendBosstiaryCooldownTimer()
 		local tile = Tile(Position(32199, 31248, 14))
 		if tile then
 			local vortex = tile:getItemById(23482)

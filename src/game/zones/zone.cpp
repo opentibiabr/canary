@@ -9,6 +9,10 @@
 
 #include "game/zones/zone.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+#endif
+
 #include "game/game.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/npcs/npc.hpp"
@@ -18,6 +22,7 @@
 
 phmap::parallel_flat_hash_map<std::string, std::shared_ptr<Zone>> Zone::zones = {};
 phmap::parallel_flat_hash_map<uint32_t, std::shared_ptr<Zone>> Zone::zonesByID = {};
+phmap::parallel_flat_hash_map<Position, std::vector<std::shared_ptr<Zone>>> Zone::zonesByPosition = {};
 const static std::shared_ptr<Zone> nullZone = nullptr;
 
 std::shared_ptr<Zone> Zone::addZone(const std::string &name, uint32_t zoneID /* = 0 */) {
@@ -30,6 +35,7 @@ std::shared_ptr<Zone> Zone::addZone(const std::string &name, uint32_t zoneID /* 
 		auto zone = zonesByID[zoneID];
 		zone->name = name;
 		zones[name] = zone;
+		zone->indexPositions();
 		return zone;
 	}
 
@@ -58,8 +64,68 @@ void Zone::subtractArea(Area area) {
 	refresh();
 }
 
+void Zone::addPosition(const Position &position) {
+	if (!positions.emplace(position).second || name.empty()) {
+		return;
+	}
+
+	indexPosition(position);
+}
+
+void Zone::removePosition(const Position &position) {
+	if (positions.erase(position) == 0 || name.empty()) {
+		return;
+	}
+
+	unindexPosition(position);
+}
+
 bool Zone::contains(const Position &pos) const {
 	return positions.contains(pos);
+}
+
+void Zone::indexPosition(const Position &position) {
+	auto self = shared_from_this();
+	auto &zonesAtPosition = zonesByPosition[position];
+	for (const auto &zone : zonesAtPosition) {
+		if (zone.get() == this) {
+			return;
+		}
+	}
+	zonesAtPosition.emplace_back(std::move(self));
+}
+
+void Zone::indexPositions() {
+	if (name.empty()) {
+		return;
+	}
+
+	for (const auto &position : positions) {
+		indexPosition(position);
+	}
+}
+
+void Zone::unindexPosition(const Position &position) {
+	const auto it = zonesByPosition.find(position);
+	if (it == zonesByPosition.end()) {
+		return;
+	}
+
+	auto &zonesAtPosition = it->second;
+	const auto removed = std::ranges::remove_if(zonesAtPosition, [this](const auto &zone) {
+		return !zone || zone.get() == this;
+	});
+	zonesAtPosition.erase(removed.begin(), removed.end());
+
+	if (zonesAtPosition.empty()) {
+		zonesByPosition.erase(it);
+	}
+}
+
+void Zone::unindexPositions() {
+	for (const auto &position : positions) {
+		unindexPosition(position);
+	}
 }
 
 Position Zone::getRemoveDestination(const std::shared_ptr<Creature> &creature /* = nullptr */) const {
@@ -147,6 +213,7 @@ void Zone::clearZones() {
 		if (!zone || zone->isStatic()) {
 			continue;
 		}
+		zone->unindexPositions();
 		zone->refresh();
 	}
 	zones.clear();
@@ -156,31 +223,25 @@ void Zone::clearZones() {
 }
 
 std::vector<std::shared_ptr<Zone>> Zone::getZones(const Position position) {
-	Benchmark bm_getZones;
 	std::vector<std::shared_ptr<Zone>> result;
-	for (const auto &[_, zone] : zones) {
-		if (zone && zone->contains(position)) {
+	if (const auto it = zonesByPosition.find(position); it != zonesByPosition.end()) {
+		result.reserve(it->second.size());
+		for (const auto &zone : it->second) {
+			if (!zone) {
+				continue;
+			}
 			result.push_back(zone);
 		}
-	}
-	auto duration = bm_getZones.duration();
-	if (duration > 100) {
-		g_logger().warn("Listed {} zones for position {} in {} milliseconds", result.size(), position.toString(), duration);
 	}
 	return result;
 }
 
 std::vector<std::shared_ptr<Zone>> Zone::getZones() {
-	Benchmark bm_getZones;
 	std::vector<std::shared_ptr<Zone>> result;
 	for (const auto &[_, zone] : zones) {
 		if (zone) {
 			result.push_back(zone);
 		}
-	}
-	auto duration = bm_getZones.duration();
-	if (duration > 100) {
-		g_logger().warn("Listed {} zones in {} milliseconds", result.size(), duration);
 	}
 	return result;
 }

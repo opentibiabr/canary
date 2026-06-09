@@ -77,5 +77,5 @@ spell:isSelfTarget(true)
 spell:cooldown(12 * 1000)
 spell:groupCooldown(2 * 1000, 12 * 1000)
 spell:vocation("sorcerer;true", "master sorcerer;true")
-spell:needLearn(false)
+
 spell:register()

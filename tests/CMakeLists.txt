@@ -41,7 +41,9 @@ function(
 
     target_compile_definitions(
         ${TARGET_NAME}
-        PUBLIC -DDEBUG_LOG -DBUILD_TESTS
+        PUBLIC -DDEBUG_LOG
+               -DBUILD_TESTS
+               TESTS_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"
     )
 
     target_link_libraries(
@@ -114,9 +116,15 @@ function(
     gtest_discover_tests(
         ${TARGET_NAME}
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/${DIR}
+                          DISCOVERY_TIMEOUT 60
         PROPERTIES
         TIMEOUT 120
-                DISCOVERY_MODE PRE_TEST
+                RESOURCE_LOCK
+                ${TARGET_NAME}_resource_lock
+                RUN_SERIAL
+                TRUE
+                DISCOVERY_MODE
+                PRE_TEST
     )
 endfunction()
 

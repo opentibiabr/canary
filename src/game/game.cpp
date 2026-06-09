@@ -94,6 +94,9 @@ namespace InternalGame {
 	constexpr uint64_t TELEPORT_SPAM_WINDOW_MS = 1000;
 	constexpr uint16_t TELEPORT_SPAM_LIMIT = 10;
 	constexpr uint64_t TELEPORT_SPAM_BLOCK_MS = 1000;
+	constexpr uint64_t TELEPORT_SUSTAINED_WINDOW_MS = 10000;
+	constexpr uint16_t TELEPORT_SUSTAINED_LIMIT = 30;
+	constexpr uint64_t TELEPORT_SUSTAINED_BLOCK_MS = 5000;
 	constexpr uint64_t TELEPORT_GUARD_STATE_TTL_MS = 60000;
 	constexpr uint64_t TELEPORT_LOG_INITIAL_DELAY_MS = 1000;
 	constexpr uint64_t TELEPORT_LOG_MAX_DELAY_MS = 60000;
@@ -135,6 +138,8 @@ namespace InternalGame {
 		uint64_t logDelayMs = TELEPORT_LOG_INITIAL_DELAY_MS;
 		uint64_t windowStartMs = 0;
 		uint16_t windowCount = 0;
+		uint64_t sustainedWindowStartMs = 0;
+		uint16_t sustainedWindowCount = 0;
 		uint64_t blockedUntilMs = 0;
 		uint64_t lastSeenMs = 0;
 	};
@@ -193,19 +198,30 @@ namespace InternalGame {
 			return true;
 		}
 
+		bool exceededBurstLimit = false;
 		if (state.windowStartMs == 0 || state.windowStartMs + TELEPORT_SPAM_WINDOW_MS <= now) {
 			state.windowStartMs = now;
 			state.windowCount = 1;
-			return false;
+		} else {
+			++state.windowCount;
+			exceededBurstLimit = state.windowCount > TELEPORT_SPAM_LIMIT;
 		}
 
-		++state.windowCount;
-		if (state.windowCount <= TELEPORT_SPAM_LIMIT) {
-			return false;
+		bool exceededSustainedLimit = false;
+		if (state.sustainedWindowStartMs == 0 || state.sustainedWindowStartMs + TELEPORT_SUSTAINED_WINDOW_MS <= now) {
+			state.sustainedWindowStartMs = now;
+			state.sustainedWindowCount = 1;
+		} else {
+			++state.sustainedWindowCount;
+			exceededSustainedLimit = state.sustainedWindowCount > TELEPORT_SUSTAINED_LIMIT;
 		}
 
-		state.blockedUntilMs = now + TELEPORT_SPAM_BLOCK_MS;
-		return true;
+		if (exceededBurstLimit || exceededSustainedLimit) {
+			state.blockedUntilMs = now + (exceededSustainedLimit ? TELEPORT_SUSTAINED_BLOCK_MS : TELEPORT_SPAM_BLOCK_MS);
+			return true;
+		}
+
+		return false;
 	}
 
 	[[nodiscard]] inline TeleportGuardLogSnapshot recordTeleportGuardBlock(uint64_t key, uint64_t now) {

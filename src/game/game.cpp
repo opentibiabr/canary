@@ -71,6 +71,17 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace InternalGame {
+	constexpr uint64_t TELEPORT_SPAM_WINDOW_MS = 1000;
+	constexpr uint16_t TELEPORT_SPAM_LIMIT = 10;
+	constexpr uint64_t TELEPORT_SPAM_BLOCK_MS = 1000;
+	constexpr uint64_t TELEPORT_GUARD_STATE_TTL_MS = 60000;
+	constexpr uint64_t TELEPORT_LOG_INITIAL_DELAY_MS = 1000;
+	constexpr uint64_t TELEPORT_LOG_MAX_DELAY_MS = 60000;
+	constexpr size_t TELEPORT_MAX_TRACKED_THINGS = 4096;
+	constexpr uint64_t TELEPORT_CREATURE_KEY_TAG = 0x1000000000000000ULL;
+	constexpr uint64_t TELEPORT_ITEM_KEY_TAG = 0x2000000000000000ULL;
+	constexpr uint64_t TELEPORT_THING_KEY_TAG = 0x3000000000000000ULL;
+
 	[[nodiscard]] inline std::unordered_set<const Thing*> &teleportStack() {
 		static thread_local std::unordered_set<const Thing*> stack;
 		return stack;
@@ -92,13 +103,153 @@ namespace InternalGame {
 		}
 	};
 
-	struct TeleportLogState {
-		uint32_t count = 0;
-		uint64_t nextLogMs = 0;
-		uint64_t delayMs = 1000; // Start in 1s
+	enum class TeleportGuardReason : uint8_t {
+		Recursion,
+		RateLimit,
 	};
 
-	static std::unordered_map<uint32_t, TeleportLogState> teleportLog;
+	struct TeleportGuardState {
+		uint32_t blockedEvents = 0;
+		uint32_t suppressedLogs = 0;
+		uint64_t nextLogMs = 0;
+		uint64_t logDelayMs = TELEPORT_LOG_INITIAL_DELAY_MS;
+		uint64_t windowStartMs = 0;
+		uint16_t windowCount = 0;
+		uint64_t blockedUntilMs = 0;
+		uint64_t lastSeenMs = 0;
+	};
+
+	struct TeleportGuardLogSnapshot {
+		bool shouldLog = false;
+		uint32_t blockedEvents = 0;
+		uint32_t suppressedLogs = 0;
+	};
+
+	static std::unordered_map<uint64_t, TeleportGuardState> teleportGuards;
+	static std::mutex teleportGuardsMutex;
+
+	[[nodiscard]] inline uint64_t pointerTeleportKey(uint64_t tag, const void* ptr) {
+		return tag ^ static_cast<uint64_t>(reinterpret_cast<uintptr_t>(ptr));
+	}
+
+	[[nodiscard]] inline uint64_t teleportGuardKey(const std::shared_ptr<Thing> &thing, const Thing* rawThing) {
+		if (const auto creature = thing->getCreature()) {
+			return TELEPORT_CREATURE_KEY_TAG | creature->getID();
+		}
+
+		if (const auto item = thing->getItem()) {
+			return pointerTeleportKey(TELEPORT_ITEM_KEY_TAG, item.get());
+		}
+
+		return pointerTeleportKey(TELEPORT_THING_KEY_TAG, rawThing);
+	}
+
+	inline void pruneTeleportGuardStates(uint64_t now) {
+		if (teleportGuards.size() <= TELEPORT_MAX_TRACKED_THINGS) {
+			return;
+		}
+
+		for (auto it = teleportGuards.begin(); it != teleportGuards.end();) {
+			if (it->second.lastSeenMs + TELEPORT_GUARD_STATE_TTL_MS <= now) {
+				it = teleportGuards.erase(it);
+			} else {
+				++it;
+			}
+		}
+
+		for (auto it = teleportGuards.begin(); teleportGuards.size() > TELEPORT_MAX_TRACKED_THINGS && it != teleportGuards.end();) {
+			it = teleportGuards.erase(it);
+		}
+	}
+
+	[[nodiscard]] inline bool shouldBlockTeleportRate(uint64_t key, uint64_t now) {
+		std::scoped_lock<std::mutex> lock(teleportGuardsMutex);
+		pruneTeleportGuardStates(now);
+
+		auto &state = teleportGuards[key];
+		state.lastSeenMs = now;
+
+		if (state.blockedUntilMs > now) {
+			return true;
+		}
+
+		if (state.windowStartMs == 0 || state.windowStartMs + TELEPORT_SPAM_WINDOW_MS <= now) {
+			state.windowStartMs = now;
+			state.windowCount = 1;
+			return false;
+		}
+
+		++state.windowCount;
+		if (state.windowCount <= TELEPORT_SPAM_LIMIT) {
+			return false;
+		}
+
+		state.blockedUntilMs = now + TELEPORT_SPAM_BLOCK_MS;
+		return true;
+	}
+
+	[[nodiscard]] inline TeleportGuardLogSnapshot recordTeleportGuardBlock(uint64_t key, uint64_t now) {
+		std::scoped_lock<std::mutex> lock(teleportGuardsMutex);
+		pruneTeleportGuardStates(now);
+
+		auto &state = teleportGuards[key];
+		state.lastSeenMs = now;
+		++state.blockedEvents;
+
+		if (state.nextLogMs > now) {
+			++state.suppressedLogs;
+			return {};
+		}
+
+		TeleportGuardLogSnapshot snapshot;
+		snapshot.shouldLog = true;
+		snapshot.blockedEvents = state.blockedEvents;
+		snapshot.suppressedLogs = state.suppressedLogs;
+
+		state.suppressedLogs = 0;
+		state.nextLogMs = now + state.logDelayMs;
+		state.logDelayMs = std::min<uint64_t>(state.logDelayMs * 2, TELEPORT_LOG_MAX_DELAY_MS);
+		return snapshot;
+	}
+
+	[[nodiscard]] inline const char* teleportGuardReasonName(TeleportGuardReason reason) {
+		switch (reason) {
+			case TeleportGuardReason::Recursion:
+				return "recursive";
+			case TeleportGuardReason::RateLimit:
+				return "rate-limited";
+		}
+
+		return "guarded";
+	}
+
+	inline void logTeleportGuardBlock(const std::shared_ptr<Thing> &thing, TeleportGuardReason reason, const TeleportGuardLogSnapshot &snapshot) {
+		if (!snapshot.shouldLog) {
+			return;
+		}
+
+		const char* reasonName = teleportGuardReasonName(reason);
+		if (const auto creature = thing->getCreature()) {
+			g_logger().error(
+				"[Game::internalTeleport] - Blocked {} teleport for creature {} at position {} (blocked events: {}, suppressed logs: {})",
+				reasonName, creature->getName(), creature->getPosition().toString(), snapshot.blockedEvents, snapshot.suppressedLogs
+			);
+			return;
+		}
+
+		if (const auto item = thing->getItem()) {
+			g_logger().error(
+				"[Game::internalTeleport] - Blocked {} teleport for item id {} at position {} (blocked events: {}, suppressed logs: {})",
+				reasonName, item->getID(), item->getPosition().toString(), snapshot.blockedEvents, snapshot.suppressedLogs
+			);
+			return;
+		}
+
+		g_logger().error(
+			"[Game::internalTeleport] - Blocked {} teleport for unknown thing ptr {} (blocked events: {}, suppressed logs: {})",
+			reasonName, fmt::ptr(thing.get()), snapshot.blockedEvents, snapshot.suppressedLogs
+		);
+	}
 
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
@@ -2981,45 +3132,27 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 	}
 
 	const Thing* teleportThing = thing.get();
+	const uint64_t now = OTSYS_TIME();
+	const uint64_t teleportKey = InternalGame::teleportGuardKey(thing, teleportThing);
 	if (!InternalGame::tryInsertTeleportStack(teleportThing)) {
-		const uint64_t now = OTSYS_TIME();
-
-		uint32_t id = 0;
-		if (const auto creature = thing->getCreature()) {
-			id = creature->getID();
-		} else if (const auto item = thing->getItem()) {
-			// Simple hash: itemId + position
-			const auto &pos = item->getPosition();
-			id = static_cast<uint32_t>(
-				item->getID() ^ (pos.x << 16) ^ (pos.y << 1) ^ (pos.z << 24)
-			);
-		} else {
-			id = static_cast<uint32_t>(reinterpret_cast<uintptr_t>(teleportThing) & 0xFFFFFFFFu);
-		}
-
-		auto &state = InternalGame::teleportLog[id];
-		state.count++;
-
-		if (now >= state.nextLogMs) {
-			if (const auto creature = thing->getCreature()) {
-				g_logger().error("[{}] Teleport recursion detected for creature {} at {} (count={})", __FUNCTION__, creature->getName(), creature->getPosition().toString(), state.count);
-			} else if (const auto item = thing->getItem()) {
-				g_logger().error("[{}] Teleport recursion detected for item {} at {} (count={})", __FUNCTION__, item->getName(), item->getPosition().toString(), state.count);
-			} else {
-				g_logger().error("[{}] Teleport recursion detected (count={})", __FUNCTION__, state.count);
-			}
-
-			if (state.delayMs == 0) {
-				state.delayMs = 1000; // start at 1s
-			}
-			state.delayMs = std::min<uint64_t>(state.delayMs * 2, 60000); // cap at 60s
-			state.nextLogMs = now + state.delayMs;
-		}
-
+		InternalGame::logTeleportGuardBlock(
+			thing,
+			InternalGame::TeleportGuardReason::Recursion,
+			InternalGame::recordTeleportGuardBlock(teleportKey, now)
+		);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
-	auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
+	[[maybe_unused]] auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
+
+	if (InternalGame::shouldBlockTeleportRate(teleportKey, now)) {
+		InternalGame::logTeleportGuardBlock(
+			thing,
+			InternalGame::TeleportGuardReason::RateLimit,
+			InternalGame::recordTeleportGuardBlock(teleportKey, now)
+		);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 
 	if (newPos == thing->getPosition()) {
 		return RETURNVALUE_CONTACTADMINISTRATOR;

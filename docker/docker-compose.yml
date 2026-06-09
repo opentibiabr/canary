@@ -35,7 +35,7 @@ services:
       CANARY_STATUS_TIMEOUT: "${CANARY_STATUS_TIMEOUT:-5000}"
       CANARY_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
       CANARY_DATA_PACK: "${CANARY_DATA_PACK:-data-otservbr-global}"
-      CANARY_MAP_URL: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
+      CANARY_MAP_URL: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm}"
       # Keep the published runtime image compatible while CANARY_* remains the
       # public quickstart contract.
       OT_DB_HOST: "${CANARY_DB_HOST:-db}"
@@ -49,7 +49,7 @@ services:
       OT_SERVER_STATUS_PORT: "${CANARY_STATUS_PORT:-7173}"
       OT_SERVER_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
       OT_SERVER_DATA: "${CANARY_DATA_PACK:-data-otservbr-global}"
-      OT_SERVER_MAP: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
+      OT_SERVER_MAP: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm}"
     networks:
       - canary-net
     ports:

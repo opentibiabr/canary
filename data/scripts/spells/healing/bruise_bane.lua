@@ -30,6 +30,6 @@ spell:level(1)
 spell:mana(10)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:isPremium(false)
 spell:register()

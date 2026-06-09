@@ -116,5 +116,5 @@ spell:groupCooldown(2 * 1000)
 spell:level(25)
 spell:mana(20)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

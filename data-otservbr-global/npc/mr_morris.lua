@@ -82,7 +82,7 @@ local function creatureSayCallback(npc, creature, type, message)
 					Would you go on that errand?",
 			}, npc, creature, 10)
 			npcHandler:setTopic(playerId, 1)
-		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheLostAmulet) == 2 and player:getItemCount(21379) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheLostAmulet) == 2 and player:getItemCount(21379) >= 1 then
 			npcHandler:say({
 				"Ah, you found the amulet! Ah. Really? Poor Dormovo. \z
 					Always a bit hasty. Forgot his rope, or food, or potions - \z
@@ -103,7 +103,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				creature
 			)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TornLogBook) == 1 and player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheStolenLogBook) == 1 and player:getItemCount(21378) == 1 then
+		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.TornLogBook) == 1 and player:getStorageValue(Storage.Quest.U10_55.Dawnport.TheStolenLogBook) == 1 and player:getItemCount(21378) >= 1 then
 			npcHandler:say(
 				"Ah, yes, that's it! Torn and gnawed, but, ah well, the information is still retrievable. \z
 				Thank you. Here's your reward.",
@@ -386,6 +386,10 @@ keywordHandler:addKeyword({ "wentworth" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Be careful that he doesn't bore you to death with accountants of, well, your bank account history.",
 })
+keywordHandler:addKeyword({ "menesto" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "He's still down there? And what about the others of his group?",
+})
 keywordHandler:addKeyword({ "woblin" }, StdModule.say, {
 	npcHandler = npcHandler,
 	text = "Ah, the goblin who sneaks around here now and then? Lives in a cave to the west, somewhere.",
@@ -398,6 +402,8 @@ If you seek to help me with some things, I might have a little {quest} or {missi
 )
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+npcHandler:setMessage(MESSAGE_FAREWELL, "Watch your back, young friend.")
+npcHandler:setMessage(MESSAGE_WALKAWAY, "Manners.")
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -13,7 +13,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void VocationFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Vocation", "", VocationFunctions::luaVocationCreate);
+	Lua::registerSharedClass<Vocation>(L, "", VocationFunctions::luaVocationCreate);
 	Lua::registerMetaMethod(L, "Vocation", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "Vocation", "getId", VocationFunctions::luaVocationGetId);
@@ -57,8 +57,7 @@ int VocationFunctions::luaVocationCreate(lua_State* L) {
 
 	const auto &vocation = g_vocations().getVocation(vocationId);
 	if (vocation) {
-		Lua::pushUserdata<Vocation>(L, vocation);
-		Lua::setMetatable(L, -1, "Vocation");
+		Lua::pushSharedUserdata<Vocation>(L, vocation);
 	} else {
 		lua_pushnil(L);
 	}
@@ -293,8 +292,7 @@ int VocationFunctions::luaVocationGetDemotion(lua_State* L) {
 
 	const auto &demotedVocation = g_vocations().getVocation(fromId);
 	if (demotedVocation && demotedVocation != vocation) {
-		Lua::pushUserdata<Vocation>(L, demotedVocation);
-		Lua::setMetatable(L, -1, "Vocation");
+		Lua::pushSharedUserdata<Vocation>(L, demotedVocation);
 	} else {
 		lua_pushnil(L);
 	}
@@ -317,8 +315,7 @@ int VocationFunctions::luaVocationGetPromotion(lua_State* L) {
 
 	const auto &promotedVocation = g_vocations().getVocation(promotedId);
 	if (promotedVocation && promotedVocation != vocation) {
-		Lua::pushUserdata<Vocation>(L, promotedVocation);
-		Lua::setMetatable(L, -1, "Vocation");
+		Lua::pushSharedUserdata<Vocation>(L, promotedVocation);
 	} else {
 		lua_pushnil(L);
 	}

@@ -17,6 +17,7 @@ class Item;
 class Creature;
 class Container;
 class Player;
+class DepotChest;
 
 class Thing {
 public:
@@ -49,6 +50,7 @@ public:
 	}
 
 	virtual const Position &getPosition();
+	virtual const Position &getPosition() const;
 	virtual int32_t getThrowRange() const = 0;
 	virtual bool isPushable() = 0;
 
@@ -74,6 +76,13 @@ public:
 		return nullptr;
 	}
 	virtual std::shared_ptr<Cylinder> getCylinder() {
+		return nullptr;
+	}
+
+	virtual std::shared_ptr<DepotChest> getDepotChest() {
+		return nullptr;
+	}
+	virtual std::shared_ptr<const DepotChest> getDepotChest() const {
 		return nullptr;
 	}
 

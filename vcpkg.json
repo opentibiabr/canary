@@ -6,10 +6,8 @@
     "argon2",
     "asio",
     "bext-di",
-    "bext-ut",
     "curl",
     "eventpp",
-    "gtest",
     "libmariadb",
     "luajit",
     "magic-enum",
@@ -22,9 +20,15 @@
     "bshoshany-thread-pool",
     "atomic-queue",
     "nlohmann-json",
-    "openssl"
+    "mbedtls"
   ],
   "features": {
+    "tests": {
+      "description": "Dependencies required to build tests.",
+      "dependencies": [
+        "gtest"
+      ]
+    },
     "metrics": {
       "description": "Enable OpenTelemetry metrics exporters",
       "dependencies": [
@@ -39,5 +43,5 @@
       ]
     }
   },
-  "builtin-baseline": "c3867e714dd3a51c272826eea77267876517ed99"
+  "builtin-baseline": "f3e10653cc27d62a37a3763cd84b38bca07c6075"
 }

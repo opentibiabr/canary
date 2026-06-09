@@ -31,5 +31,5 @@ spell:mana(210)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

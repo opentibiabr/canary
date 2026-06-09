@@ -82,14 +82,15 @@ local function exerciseTrainingEvent(playerId, tilePosition, weaponId, dummyId)
 		return false
 	end
 
-	if player:getItemCount(weaponId) <= 0 then
+	local trainingData = _G.OnExerciseTraining[playerId]
+	local weapon = trainingData and trainingData.weapon
+	if not weapon or not weapon:isItem() or weapon:getPosition() ~= playerPosition then
 		player:sendTextMessage(MESSAGE_FAILURE, "You need the training weapon in the backpack, the training has stopped.")
 		leaveExerciseTraining(playerId, targetItem)
 		return false
 	end
 
-	local weapon = player:getItemById(weaponId, true)
-	if not weapon:isItem() or not weapon:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
+	if not weapon:hasAttribute(ITEM_ATTRIBUTE_CHARGES) then
 		player:sendTextMessage(MESSAGE_FAILURE, "The selected item is not a training weapon, the training has stopped.")
 		leaveExerciseTraining(playerId, targetItem)
 		return false
@@ -203,6 +204,7 @@ function exerciseTraining.onUse(player, item, fromPosition, target, toPosition, 
 
 		_G.OnExerciseTraining[playerId] = {}
 		if not _G.OnExerciseTraining[playerId].event then
+			_G.OnExerciseTraining[playerId].weapon = item
 			_G.OnExerciseTraining[playerId].event = addEvent(exerciseTrainingEvent, 0, playerId, targetPos, item.itemid, targetId)
 			_G.OnExerciseTraining[playerId].dummyPos = targetPos
 			targetItem:actor(true)

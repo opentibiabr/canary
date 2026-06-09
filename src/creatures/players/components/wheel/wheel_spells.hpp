@@ -14,7 +14,7 @@ namespace WheelSpells {
 		bool area = false;
 		int damage = 0;
 		int heal = 0;
-		int aditionalTarget = 0;
+		int additionalTarget = 0;
 		int damageReduction = 0;
 		int duration = 0;
 		int criticalDamage = 0;

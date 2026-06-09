@@ -31,6 +31,6 @@ spell:needDirection(true)
 spell:needWeapon(true)
 spell:cooldown(6 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("knight;true", "elite knight;true")
 spell:register()

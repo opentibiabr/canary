@@ -16,6 +16,7 @@
 #include "io/io_bosstiary.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "utils/const.hpp"
 
 constexpr const char* soundNamespace = "SOUND_EFFECT_TYPE_";
 
@@ -149,6 +150,7 @@ void LuaEnums::initOthersEnums(lua_State* L) {
 	registerEnum(L, FLAG_IGNOREFIELDDAMAGE);
 	registerEnum(L, FLAG_IGNORENOTMOVABLE);
 	registerEnum(L, FLAG_IGNOREAUTOSTACK);
+	registerEnum(L, FLAG_LOOTPOUCH);
 
 	// Use with house:getAccessList, house:setAccessList
 	registerEnum(L, GUEST_LIST);

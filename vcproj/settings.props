@@ -40,10 +40,6 @@
     <CANARY_RUNTIME_LIBRARY>MultiThreadedDLL</CANARY_RUNTIME_LIBRARY>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <CANARY_RUNTIME_LIBRARY>MultiThreadedDebugDLL</CANARY_RUNTIME_LIBRARY>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <CANARY_COMMON_LIBDEPS>
       $(CANARY_COMMON_LIBDEPS_BASE);

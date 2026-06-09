@@ -19,6 +19,37 @@
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
+#include "mbedtls/sha256.h"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <cstddef>
+	#include <cstdint>
+	#include <span>
+	#include <string_view>
+#endif
+
+namespace {
+	std::string bytesToHex(std::span<const std::byte> bytes) {
+		static constexpr std::array<char, 16> hexDigits = {
+			'0', '1', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+		};
+
+		std::string hex(bytes.size() * 2, '\0');
+		for (size_t i = 0; i < bytes.size(); ++i) {
+			const auto offset = i * 2;
+			hex[offset] = hexDigits[std::to_integer<size_t>(bytes[i] >> 4)];
+			hex[offset + 1] = hexDigits[std::to_integer<size_t>(bytes[i] & std::byte { 0x0F })];
+		}
+		return hex;
+	}
+
+	[[nodiscard]] std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
+		// mbedTLS exposes a C API that writes to unsigned char buffers.
+		return { reinterpret_cast<unsigned char*>(bytes.data()), bytes.size() }; // NOSONAR
+	}
+}
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -66,6 +97,18 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 		}
 	}
 	g_logger().error("^");
+}
+
+uint8_t undoShift(uint64_t value) {
+	if (value == 0) {
+		return 0;
+	}
+
+	auto trailingZeros = std::countr_zero(value);
+	if (trailingZeros < 2) {
+		return 0;
+	}
+	return trailingZeros - 2;
 }
 
 static uint32_t circularShift(int bits, uint32_t value) {
@@ -183,15 +226,22 @@ std::string transformToSHA1(const std::string &input) {
 
 	processSHA1MessageBlock(messageBlock, H);
 
-	char hexstring[41];
-	static constexpr char hexDigits[] = { "0123456789abcdef" };
-	for (int hashByte = 20; --hashByte >= 0;) {
+	std::array<std::byte, 20> hash {};
+	for (size_t hashByte = hash.size(); hashByte-- > 0;) {
 		const uint8_t byte = H[hashByte >> 2] >> (((3 - hashByte) & 3) << 3);
-		index = hashByte << 1;
-		hexstring[index] = hexDigits[byte >> 4];
-		hexstring[index + 1] = hexDigits[byte & 15];
+		hash[hashByte] = static_cast<std::byte>(byte);
 	}
-	return std::string(hexstring, 40);
+	return bytesToHex(hash);
+}
+
+std::string transformToSHA256(std::string_view input) {
+	std::array<std::byte, 32> hash {};
+	const auto hashOutput = asWritableUnsignedBytes(hash);
+	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), hashOutput.data(), 0) != 0) {
+		return {};
+	}
+
+	return bytesToHex(hash);
 }
 
 uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
@@ -1986,6 +2036,89 @@ std::string getFormattedTimeRemaining(uint32_t time) {
 unsigned int getNumberOfCores() {
 	static auto cores = std::thread::hardware_concurrency();
 	return cores;
+}
+
+skills_t getSkillsFromCipbiaSkill(CipbiaSkills_t cipbiaSkills) {
+	using enum CipbiaSkills_t;
+
+	switch (cipbiaSkills) {
+		case MagicLevel:
+			return SKILL_MAGLEVEL;
+		case Shield:
+			return SKILL_SHIELD;
+		case Distance:
+			return SKILL_DISTANCE;
+		case Sword:
+			return SKILL_SWORD;
+		case Club:
+			return SKILL_CLUB;
+		case Axe:
+			return SKILL_AXE;
+		case Fist:
+			return SKILL_FIST;
+		case Fishing:
+			return SKILL_FISHING;
+		default:
+			return SKILL_NONE;
+	}
+}
+
+CipbiaSkills_t getCipbiaSkill(skills_t skill) {
+	using enum CipbiaSkills_t;
+
+	switch (skill) {
+		case SKILL_MAGLEVEL:
+			return MagicLevel;
+		case SKILL_SHIELD:
+			return Shield;
+		case SKILL_DISTANCE:
+			return Distance;
+		case SKILL_SWORD:
+			return Sword;
+		case SKILL_CLUB:
+			return Club;
+		case SKILL_AXE:
+			return Axe;
+		case SKILL_FIST:
+			return Fist;
+		case SKILL_FISHING:
+			return Fishing;
+		default:
+			return None;
+	}
+}
+
+CombatType_t getCombatFromCipbiaElement(Cipbia_Elementals_t cipbiaElement) {
+	switch (cipbiaElement) {
+		case CIPBIA_ELEMENTAL_PHYSICAL:
+			return COMBAT_PHYSICALDAMAGE;
+		case CIPBIA_ELEMENTAL_ENERGY:
+			return COMBAT_ENERGYDAMAGE;
+		case CIPBIA_ELEMENTAL_EARTH:
+			return COMBAT_EARTHDAMAGE;
+		case CIPBIA_ELEMENTAL_FIRE:
+			return COMBAT_FIREDAMAGE;
+		case CIPBIA_ELEMENTAL_LIFEDRAIN:
+			return COMBAT_LIFEDRAIN;
+		case CIPBIA_ELEMENTAL_HEALING:
+			return COMBAT_HEALING;
+		case CIPBIA_ELEMENTAL_DROWN:
+			return COMBAT_DROWNDAMAGE;
+		case CIPBIA_ELEMENTAL_ICE:
+			return COMBAT_ICEDAMAGE;
+		case CIPBIA_ELEMENTAL_HOLY:
+			return COMBAT_HOLYDAMAGE;
+		case CIPBIA_ELEMENTAL_DEATH:
+			return COMBAT_DEATHDAMAGE;
+		case CIPBIA_ELEMENTAL_MANADRAIN:
+			return COMBAT_MANADRAIN;
+		case CIPBIA_ELEMENTAL_AGONY:
+			return COMBAT_AGONYDAMAGE;
+		case CIPBIA_ELEMENTAL_HEALING_2:
+			return COMBAT_HEALING;
+		default:
+			return COMBAT_NONE;
+	}
 }
 
 Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {

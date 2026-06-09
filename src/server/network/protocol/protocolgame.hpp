@@ -35,6 +35,7 @@ enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
 enum class MonkData_t : uint8_t;
+enum class ImbuementAction : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -45,6 +46,7 @@ class Container;
 class Tile;
 class Connection;
 class ProtocolGame;
+class LivestreamManager;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
@@ -174,6 +176,8 @@ private:
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
 
 	void parseHighscores(NetworkMessage &msg);
+	void parseImbuementAction(NetworkMessage &msg);
+	void parseWeaponProficiency(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
@@ -265,7 +269,8 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction = false) const;
+	void addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction = false) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -282,7 +287,7 @@ private:
 	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item = nullptr);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -434,7 +439,7 @@ private:
 
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
-	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendRemoveTileThing(const Position &pos, uint32_t stackpos, std::source_location loc = std::source_location::current());
 	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature);
 	void sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos);
 
@@ -534,6 +539,16 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+	void sendWeaponProficiency(uint16_t weaponId);
+	void sendWeaponProficiencyWindow(uint16_t weaponId);
+
+	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
+	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);
+	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer);
+	void resendLivestreamViewerContainer(NetworkMessage &msg);
+	bool canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password);
+
 	/**
 	 * @brief Sends monk-specific data to the client.
 	 *
@@ -556,6 +571,7 @@ private:
 	friend class PlayerWheel;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class LivestreamManager;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -577,6 +593,10 @@ private:
 	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
+	bool m_isLivestreamBroadcaster = false;
+	bool m_isLivestreamViewer = false;
+	int64_t m_livestreamMessageCooldownTime = 0;
+	uint32_t m_livestreamMessageCount = 0;
 
 	// ProtocolGame instances are per-connection and handled on the connection thread,
 	// so the fine-grained throttle here does not require cross-thread synchronization.

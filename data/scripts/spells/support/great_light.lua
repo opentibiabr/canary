@@ -26,5 +26,5 @@ spell:level(13)
 spell:mana(60)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

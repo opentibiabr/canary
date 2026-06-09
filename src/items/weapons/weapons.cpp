@@ -132,7 +132,9 @@ void Weapon::configureWeapon(const ItemType &it) {
 	id = it.id;
 }
 
-int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const {
+int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, int32_t shootRange) const {
+	shootRange += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_RANGE);
+
 	const Position &playerPos = player->getPosition();
 	const Position &targetPos = target->getPosition();
 	if (playerPos.z != targetPos.z) {
@@ -641,10 +643,11 @@ int16_t WeaponMelee::getElementDamageValue() const {
 }
 
 int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &item, bool maxDamage /*= false*/) const {
+	const auto proficiencyAttack = player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 	const int32_t attackSkill = player->getWeaponSkill(item);
 	const int32_t physicalAttack = std::max<int32_t>(0, item->getAttack());
 	const int32_t elementalAttack = getElementDamageValue();
-	const int32_t combinedAttack = physicalAttack + elementalAttack;
+	const int32_t combinedAttack = physicalAttack + elementalAttack + proficiencyAttack;
 
 	const float attackFactor = player->getAttackFactor();
 	const uint32_t level = player->getLevel();
@@ -825,6 +828,7 @@ bool WeaponDistance::useWeapon(const std::shared_ptr<Player> &player, const std:
 		const auto &bow = player->getWeapon(true);
 		if (bow && bow->getHitChance() != 0) {
 			chance += bow->getHitChance();
+			chance += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::RANGED_HIT_CHANCE);
 		}
 	}
 
@@ -894,6 +898,7 @@ int16_t WeaponDistance::getElementDamageValue() const {
 
 int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, bool maxDamage /*= false*/) const {
 	int32_t attackValue = item->getAttack();
+	attackValue += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 	bool hasElement = false;
 
 	if (player && item && item->getWeaponType() == WEAPON_AMMO) {

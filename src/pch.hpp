@@ -22,16 +22,22 @@
 #include "utils/vectorsort.hpp"
 
 // --------------------
-// STL Includes
+// Standard STL Includes
 // --------------------
 
+#include <atomic>
 #include <bitset>
 #include <charconv>
+#include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
+#include <functional>
 #include <list>
 #include <map>
+#include <memory>
+#include <unordered_map>
 #include <unordered_set>
 #include <queue>
 #include <random>
@@ -40,6 +46,7 @@
 #include <regex>
 #include <set>
 #include <thread>
+#include <utility>
 #include <vector>
 #include <variant>
 #include <numeric>
@@ -49,6 +56,10 @@
 #include <source_location>
 #include <span>
 #include <compare>
+#include <string>
+#include <string_view>
+#include <type_traits>
+#include <iostream>
 
 // --------------------
 // System Includes
@@ -100,8 +111,6 @@ format_as(E e) {
 	#include <lua.hpp>
 #endif
 
-#include "lua/global/shared_object.hpp"
-
 /**
  * @brief Magic Enum is a C++ library that facilitates easy conversion between enums and strings.
  * By default, the range of supported enum values is from -128 to 128. We need extends that range.
@@ -140,6 +149,8 @@ format_as(E e) {
 
 #include <boost/di.hpp>
 
+#include <nlohmann/json.hpp>
+
 // -------------------------
 // GIT Metadata Includes
 // -------------------------
@@ -147,13 +158,6 @@ format_as(E e) {
 #if __has_include("gitmetadata.h")
 	#include "gitmetadata.h"
 #endif
-
-// ---------------------
-// Standard STL Includes
-// ---------------------
-
-#include <string>
-#include <iostream>
 
 /**
  * Static custom libraries that can be pre-compiled like DI and messaging

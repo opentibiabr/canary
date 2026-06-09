@@ -362,8 +362,8 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 	}
 
 	if (creature.get() == this) {
-		if (spawnMonster) {
-			spawnMonster->startSpawnMonsterCheck();
+		if (const auto &spawn = spawnMonster.lock()) {
+			spawn->startSpawnMonsterCheck();
 		}
 
 		setIdle(true);
@@ -541,12 +541,12 @@ void Monster::onSpawn(const Position &position) {
 }
 
 void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
-	if (creature == getMonster()) {
+	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
 		return;
 	}
 
-	assert(creature != getMonster());
+	assert(creature.get() != this);
 	friendList.try_emplace(creature->getID(), creature);
 }
 
@@ -558,12 +558,12 @@ void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	if (creature == getMonster()) {
+	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
 		return false;
 	}
 
-	assert(creature != getMonster());
+	assert(creature.get() != this);
 
 	auto it = getTargetIterator(creature);
 	if (it != targetList.end()) {
@@ -756,7 +756,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
 	// the same unreachable creature as "nearest".
 	const auto &currentAttacked = getAttackedCreature();
-	const bool skipCurrentUnreachable = currentAttacked && static_self_cast<Monster>()->targetDistance <= 1 && !hasFollowPath;
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
 
 	for (const auto &cref : targetList) {
 		const auto &creature = cref.lock();
@@ -764,7 +764,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			if (skipCurrentUnreachable && creature == currentAttacked) {
 				continue;
 			}
-			if ((static_self_cast<Monster>()->targetDistance == 1) || canUseAttack(myPos, creature)) {
+			if ((targetDistance == 1) || canUseAttack(myPos, creature)) {
 				resultList.emplace_back(creature);
 			}
 		}
@@ -1030,7 +1030,7 @@ bool Monster::getIdleStatus() const {
 }
 
 bool Monster::isInSpawnLocation() const {
-	if (!spawnMonster) {
+	if (spawnMonster.expired()) {
 		return true;
 	}
 	return position == masterPos || masterPos == Position();
@@ -2369,6 +2369,9 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		return;
 	}
 
+	targetPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::KILL);
+	targetPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::KILL);
+
 	auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, m_monsterType);
 	if (activeCharm == CHARM_CARNAGE) {
 		const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
@@ -2376,6 +2379,18 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		if (charm && charm->chance[charmTier] >= normal_random(1, 10000) / 100.0) {
 			g_iobestiary().parseCharmCombat(charm, targetPlayer, getMonster());
 		}
+	}
+
+	const auto equippedWeaponId = targetPlayer->getWeaponId(true);
+
+	const auto weaponExperienceFromBoss = targetPlayer->weaponProficiency().getBosstiaryExperience(m_monsterType->info.bosstiaryRace);
+	if (weaponExperienceFromBoss > 0) {
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBoss, equippedWeaponId);
+	}
+
+	const auto weaponExperienceFromBestiary = targetPlayer->weaponProficiency().getBestiaryExperience(m_monsterType->info.bestiaryStars);
+	if (weaponExperienceFromBestiary > 0) {
+		targetPlayer->weaponProficiency().addExperience(weaponExperienceFromBestiary, equippedWeaponId);
 	}
 }
 
@@ -2397,7 +2412,7 @@ std::shared_ptr<Item> Monster::getCorpse(const std::shared_ptr<Creature> &lastHi
 }
 
 bool Monster::isInSpawnRange(const Position &pos) const {
-	if (!spawnMonster) {
+	if (spawnMonster.expired()) {
 		return true;
 	}
 

@@ -2,6 +2,12 @@ name: Reusable Windows Build
 
 on:
   workflow_call:
+    inputs:
+      run_canary_smoke:
+        description: Run the data-canary runtime smoke test.
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -37,13 +43,6 @@ jobs:
 
       - name: Checkout repository
         uses: actions/checkout@v6
-
-      - name: Export GitHub Actions cache environment variables
-        uses: actions/github-script@v8
-        with:
-          script: |
-            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
       - name: Get vcpkg baseline
         shell: pwsh
@@ -111,6 +110,60 @@ jobs:
           configurePreset: windows-release
           buildPreset: windows-release
           configurePresetAdditionalArgs: "['-DTOGGLE_BIN_FOLDER=ON']"
+
+      - name: Install MariaDB for smoke test
+        if: matrix.type == 'CMake' && inputs.run_canary_smoke
+        shell: pwsh
+        run: |
+          choco install mariadb.install --version=12.2.2 --yes --no-progress --install-arguments="'SERVICENAME=MariaDB PASSWORD=root PORT=3306 UTF8=1'"
+
+          $mysqlBin = Get-ChildItem -Path "C:\Program Files\MariaDB*\bin\mysql.exe" -ErrorAction SilentlyContinue |
+            Sort-Object FullName -Descending |
+            Select-Object -First 1
+          if (-not $mysqlBin) {
+            throw "mysql.exe was not found after MariaDB install"
+          }
+
+          Split-Path $mysqlBin.FullName | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+          $mysqlAdmin = Join-Path (Split-Path $mysqlBin.FullName) "mysqladmin.exe"
+          for ($i = 0; $i -lt 60; $i++) {
+            & $mysqlAdmin --user=root --password=root --host=127.0.0.1 --port=3306 --protocol=tcp ping
+            if ($LASTEXITCODE -eq 0) {
+              exit 0
+            }
+            Start-Sleep -Seconds 2
+          }
+
+          throw "MariaDB did not become reachable"
+
+      - name: Smoke test Canary datapack runtime
+        if: matrix.type == 'CMake' && inputs.run_canary_smoke
+        shell: pwsh
+        run: |
+          python .github/scripts/smoke_test_canary.py `
+            --binary-path build/windows-release/bin/canary.exe `
+            --data-pack data-canary `
+            --map-name canary `
+            --db-host 127.0.0.1 `
+            --db-port 3306 `
+            --db-user root `
+            --db-password root `
+            --db-name canary_smoke_windows_canary `
+            --login-port 7571 `
+            --game-port 7572 `
+            --status-port 7571 `
+            --startup-timeout-seconds 420 `
+            --fail-on-warnings
+
+      - name: Upload runtime smoke logs
+        if: matrix.type == 'CMake' && always()
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: windows-cmake-runtime-smoke-logs
+          path: build/runtime-smoke-logs/
+          if-no-files-found: ignore
 
       - name: Upload artifacts (CMake)
         if: matrix.type == 'CMake'

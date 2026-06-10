@@ -14,6 +14,8 @@
 #include "lib/metrics/metrics.hpp"
 #include "utils/tools.hpp"
 
+#include <iterator>
+
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);
@@ -441,19 +443,23 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::string baseQuery = this->query;
+	const std::string &baseQuery = this->query;
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
-		std::ostringstream upsertStream;
-		upsertStream << " ON DUPLICATE KEY UPDATE ";
+		size_t estimatedSize = 32;
+		for (const auto &column : upsertColumns) {
+			estimatedSize += (column.size() * 2) + 6;
+		}
+
+		upsertQuery.reserve(estimatedSize);
+		upsertQuery.append(" ON DUPLICATE KEY UPDATE ");
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			upsertStream << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
-			if (i < upsertColumns.size() - 1) {
-				upsertStream << ", ";
+			fmt::format_to(std::back_inserter(upsertQuery), "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
+			if (i + 1 < upsertColumns.size()) {
+				upsertQuery.append(", ");
 			}
 		}
-		upsertQuery = upsertStream.str();
 	}
 
 	std::string currentBatch = values;
@@ -470,19 +476,27 @@ bool DBInsert::execute() {
 		}
 
 		std::string batchValues = currentBatch.substr(0, cutPos);
-		if (batchValues.back() == ',') {
+		if (!batchValues.empty() && batchValues.back() == ',') {
 			batchValues.pop_back();
 		}
 		currentBatch = currentBatch.substr(cutPos);
 
-		std::ostringstream query;
-		query << baseQuery << " " << batchValues << upsertQuery;
-		if (!Database::getInstance().executeQuery(query.str())) {
+		std::string query;
+		const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+		query.reserve(baseQuery.size() + (baseHasSpace ? 0U : 1U) + batchValues.size() + upsertQuery.size());
+		query.append(baseQuery);
+		if (!baseHasSpace) {
+			query.push_back(' ');
+		}
+		query.append(batchValues);
+		query.append(upsertQuery);
+
+		if (!g_database().executeQuery(query)) {
 			return false;
 		}
 	}
 
 	values.clear();
-	length = query.length();
+	length = this->query.length();
 	return true;
 }

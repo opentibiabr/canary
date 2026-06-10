@@ -16,6 +16,10 @@
 
 #include <iterator>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <fmt/format.h>
+#endif
+
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);

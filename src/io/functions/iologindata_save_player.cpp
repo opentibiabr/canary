@@ -114,6 +114,7 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		const ContainerBlock &cb = queue.front();
 		const std::shared_ptr<Container> &container = cb.first;
 		if (!container) {
+			queue.pop_front();
 			continue;
 		}
 

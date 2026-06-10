@@ -211,57 +211,64 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		return db.executeQuery(fmt::format("UPDATE `players` SET `lastlogin` = {}, `lastip` = {} WHERE `id` = {}", player->lastLoginSaved, player->lastIP, playerGuid));
 	}
 
-	std::vector<std::string> columns;
-	columns.reserve(96);
+	std::string setClause;
+	setClause.reserve(4096);
 
-	columns.emplace_back(fmt::format("`name` = {}", db.escapeString(player->name)));
-	columns.emplace_back(fmt::format("`level` = {}", player->level));
-	columns.emplace_back(fmt::format("`group_id` = {}", player->group->id));
-	columns.emplace_back(fmt::format("`vocation` = {}", player->getVocationId()));
-	columns.emplace_back(fmt::format("`health` = {}", player->health));
-	columns.emplace_back(fmt::format("`healthmax` = {}", player->healthMax));
-	columns.emplace_back(fmt::format("`experience` = {}", player->experience));
-	columns.emplace_back(fmt::format("`lookbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookBody)));
-	columns.emplace_back(fmt::format("`lookfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookFeet)));
-	columns.emplace_back(fmt::format("`lookhead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookHead)));
-	columns.emplace_back(fmt::format("`looklegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookLegs)));
-	columns.emplace_back(fmt::format("`looktype` = {}", player->defaultOutfit.lookType));
-	columns.emplace_back(fmt::format("`lookaddons` = {}", static_cast<uint32_t>(player->defaultOutfit.lookAddons)));
-	columns.emplace_back(fmt::format("`lookmountbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountBody)));
-	columns.emplace_back(fmt::format("`lookmountfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountFeet)));
-	columns.emplace_back(fmt::format("`lookmounthead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountHead)));
-	columns.emplace_back(fmt::format("`lookmountlegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountLegs)));
-	columns.emplace_back(fmt::format("`lookfamiliarstype` = {}", player->defaultOutfit.lookFamiliarsType));
-	columns.emplace_back(fmt::format("`isreward` = {}", static_cast<uint16_t>(player->isDailyReward)));
-	columns.emplace_back(fmt::format("`maglevel` = {}", player->magLevel));
-	columns.emplace_back(fmt::format("`mana` = {}", player->mana));
-	columns.emplace_back(fmt::format("`manamax` = {}", player->manaMax));
-	columns.emplace_back(fmt::format("`manaspent` = {}", player->manaSpent));
-	columns.emplace_back(fmt::format("`soul` = {}", static_cast<uint16_t>(player->soul)));
+	auto appendColumn = [&setClause]<typename... Args>(fmt::format_string<Args...> format, Args &&... args) {
+		if (!setClause.empty()) {
+			setClause.append(", ");
+		}
+		fmt::format_to(std::back_inserter(setClause), format, args...);
+	};
+
+	appendColumn("`name` = {}", db.escapeString(player->name));
+	appendColumn("`level` = {}", player->level);
+	appendColumn("`group_id` = {}", player->group->id);
+	appendColumn("`vocation` = {}", player->getVocationId());
+	appendColumn("`health` = {}", player->health);
+	appendColumn("`healthmax` = {}", player->healthMax);
+	appendColumn("`experience` = {}", player->experience);
+	appendColumn("`lookbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookBody));
+	appendColumn("`lookfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookFeet));
+	appendColumn("`lookhead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookHead));
+	appendColumn("`looklegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookLegs));
+	appendColumn("`looktype` = {}", player->defaultOutfit.lookType);
+	appendColumn("`lookaddons` = {}", static_cast<uint32_t>(player->defaultOutfit.lookAddons));
+	appendColumn("`lookmountbody` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountBody));
+	appendColumn("`lookmountfeet` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountFeet));
+	appendColumn("`lookmounthead` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountHead));
+	appendColumn("`lookmountlegs` = {}", static_cast<uint32_t>(player->defaultOutfit.lookMountLegs));
+	appendColumn("`lookfamiliarstype` = {}", player->defaultOutfit.lookFamiliarsType);
+	appendColumn("`isreward` = {}", static_cast<uint16_t>(player->isDailyReward));
+	appendColumn("`maglevel` = {}", player->magLevel);
+	appendColumn("`mana` = {}", player->mana);
+	appendColumn("`manamax` = {}", player->manaMax);
+	appendColumn("`manaspent` = {}", player->manaSpent);
+	appendColumn("`soul` = {}", static_cast<uint16_t>(player->soul));
 	if (player->town) {
-		columns.emplace_back(fmt::format("`town_id` = {}", player->town->getID()));
+		appendColumn("`town_id` = {}", player->town->getID());
 	}
 
 	const Position &loginPosition = player->getLoginPosition();
-	columns.emplace_back(fmt::format("`posx` = {}", loginPosition.getX()));
-	columns.emplace_back(fmt::format("`posy` = {}", loginPosition.getY()));
-	columns.emplace_back(fmt::format("`posz` = {}", loginPosition.getZ()));
+	appendColumn("`posx` = {}", loginPosition.getX());
+	appendColumn("`posy` = {}", loginPosition.getY());
+	appendColumn("`posz` = {}", loginPosition.getZ());
 
-	columns.emplace_back(fmt::format("`prey_wildcard` = {}", player->getPreyCards()));
-	columns.emplace_back(fmt::format("`task_points` = {}", player->getTaskHuntingPoints()));
-	columns.emplace_back(fmt::format("`boss_points` = {}", player->getBossPoints()));
-	columns.emplace_back(fmt::format("`forge_dusts` = {}", player->getForgeDusts()));
-	columns.emplace_back(fmt::format("`forge_dust_level` = {}", player->getForgeDustLevel()));
-	columns.emplace_back(fmt::format("`randomize_mount` = {}", static_cast<uint16_t>(player->isRandomMounted())));
-	columns.emplace_back(fmt::format("`cap` = {}", (player->capacity / 100)));
-	columns.emplace_back(fmt::format("`sex` = {}", static_cast<uint16_t>(player->sex)));
+	appendColumn("`prey_wildcard` = {}", player->getPreyCards());
+	appendColumn("`task_points` = {}", player->getTaskHuntingPoints());
+	appendColumn("`boss_points` = {}", player->getBossPoints());
+	appendColumn("`forge_dusts` = {}", player->getForgeDusts());
+	appendColumn("`forge_dust_level` = {}", player->getForgeDustLevel());
+	appendColumn("`randomize_mount` = {}", static_cast<uint16_t>(player->isRandomMounted()));
+	appendColumn("`cap` = {}", (player->capacity / 100));
+	appendColumn("`sex` = {}", static_cast<uint16_t>(player->sex));
 
 	if (player->lastLoginSaved != 0) {
-		columns.emplace_back(fmt::format("`lastlogin` = {}", player->lastLoginSaved));
+		appendColumn("`lastlogin` = {}", player->lastLoginSaved);
 	}
 
 	if (player->lastIP != 0) {
-		columns.emplace_back(fmt::format("`lastip` = {}", player->lastIP));
+		appendColumn("`lastip` = {}", player->lastIP);
 	}
 
 	// serialize conditions
@@ -276,7 +283,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	size_t attributesSize;
 	const char* attributes = propWriteStream.getStream(attributesSize);
 
-	columns.emplace_back(fmt::format("`conditions` = {}", db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize))));
+	appendColumn("`conditions` = {}", db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize)));
 
 	// serialize animus mastery
 	PropWriteStream propAnimusMasteryStream;
@@ -284,7 +291,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	size_t animusMasterySize;
 	const char* animusMastery = propAnimusMasteryStream.getStream(animusMasterySize);
 
-	columns.emplace_back(fmt::format("`animus_mastery` = {}", db.escapeBlob(animusMastery, static_cast<uint32_t>(animusMasterySize))));
+	appendColumn("`animus_mastery` = {}", db.escapeBlob(animusMastery, static_cast<uint32_t>(animusMasterySize)));
 
 	if (g_game().getWorldType() != WORLD_TYPE_PVP_ENFORCED) {
 		int64_t skullTime = 0;
@@ -294,7 +301,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 			skullTime = now + player->skullTicks;
 		}
 
-		columns.emplace_back(fmt::format("`skulltime` = {}", skullTime));
+		appendColumn("`skulltime` = {}", skullTime);
 
 		Skulls_t skull = SKULL_NONE;
 		if (player->skull == SKULL_RED) {
@@ -302,68 +309,54 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		} else if (player->skull == SKULL_BLACK) {
 			skull = SKULL_BLACK;
 		}
-		columns.emplace_back(fmt::format("`skull` = {}", static_cast<int64_t>(skull)));
+		appendColumn("`skull` = {}", static_cast<int64_t>(skull));
 	}
 
-	columns.emplace_back(fmt::format("`lastlogout` = {}", player->getLastLogout()));
-	columns.emplace_back(fmt::format("`balance` = {}", player->bankBalance));
-	columns.emplace_back(fmt::format("`offlinetraining_time` = {}", player->getOfflineTrainingTime() / 1000));
-	columns.emplace_back(fmt::format("`offlinetraining_skill` = {}", std::to_string(player->getOfflineTrainingSkill())));
-	columns.emplace_back(fmt::format("`stamina` = {}", player->getStaminaMinutes()));
-	columns.emplace_back(fmt::format("`skill_fist` = {}", player->skills[SKILL_FIST].level));
-	columns.emplace_back(fmt::format("`skill_fist_tries` = {}", player->skills[SKILL_FIST].tries));
-	columns.emplace_back(fmt::format("`skill_club` = {}", player->skills[SKILL_CLUB].level));
-	columns.emplace_back(fmt::format("`skill_club_tries` = {}", player->skills[SKILL_CLUB].tries));
-	columns.emplace_back(fmt::format("`skill_sword` = {}", player->skills[SKILL_SWORD].level));
-	columns.emplace_back(fmt::format("`skill_sword_tries` = {}", player->skills[SKILL_SWORD].tries));
-	columns.emplace_back(fmt::format("`skill_axe` = {}", player->skills[SKILL_AXE].level));
-	columns.emplace_back(fmt::format("`skill_axe_tries` = {}", player->skills[SKILL_AXE].tries));
-	columns.emplace_back(fmt::format("`skill_dist` = {}", player->skills[SKILL_DISTANCE].level));
-	columns.emplace_back(fmt::format("`skill_dist_tries` = {}", player->skills[SKILL_DISTANCE].tries));
-	columns.emplace_back(fmt::format("`skill_shielding` = {}", player->skills[SKILL_SHIELD].level));
-	columns.emplace_back(fmt::format("`skill_shielding_tries` = {}", player->skills[SKILL_SHIELD].tries));
-	columns.emplace_back(fmt::format("`skill_fishing` = {}", player->skills[SKILL_FISHING].level));
-	columns.emplace_back(fmt::format("`skill_fishing_tries` = {}", player->skills[SKILL_FISHING].tries));
-	columns.emplace_back(fmt::format("`skill_critical_hit_chance` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].level));
-	columns.emplace_back(fmt::format("`skill_critical_hit_chance_tries` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].tries));
-	columns.emplace_back(fmt::format("`skill_critical_hit_damage` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].level));
-	columns.emplace_back(fmt::format("`skill_critical_hit_damage_tries` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries));
-	columns.emplace_back(fmt::format("`skill_life_leech_chance` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].level));
-	columns.emplace_back(fmt::format("`skill_life_leech_chance_tries` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].tries));
-	columns.emplace_back(fmt::format("`skill_life_leech_amount` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].level));
-	columns.emplace_back(fmt::format("`skill_life_leech_amount_tries` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].tries));
-	columns.emplace_back(fmt::format("`skill_mana_leech_chance` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].level));
-	columns.emplace_back(fmt::format("`skill_mana_leech_chance_tries` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].tries));
-	columns.emplace_back(fmt::format("`skill_mana_leech_amount` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].level));
-	columns.emplace_back(fmt::format("`skill_mana_leech_amount_tries` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].tries));
-	columns.emplace_back(fmt::format("`manashield` = {}", player->getManaShield()));
-	columns.emplace_back(fmt::format("`max_manashield` = {}", player->getMaxManaShield()));
-	columns.emplace_back(fmt::format("`xpboost_value` = {}", player->getXpBoostPercent()));
-	columns.emplace_back(fmt::format("`xpboost_stamina` = {}", player->getXpBoostTime()));
-	columns.emplace_back(fmt::format("`quickloot_fallback` = {}", player->quickLootFallbackToMainContainer ? 1 : 0));
+	appendColumn("`lastlogout` = {}", player->getLastLogout());
+	appendColumn("`balance` = {}", player->bankBalance);
+	appendColumn("`offlinetraining_time` = {}", player->getOfflineTrainingTime() / 1000);
+	appendColumn("`offlinetraining_skill` = {}", player->getOfflineTrainingSkill());
+	appendColumn("`stamina` = {}", player->getStaminaMinutes());
+	appendColumn("`skill_fist` = {}", player->skills[SKILL_FIST].level);
+	appendColumn("`skill_fist_tries` = {}", player->skills[SKILL_FIST].tries);
+	appendColumn("`skill_club` = {}", player->skills[SKILL_CLUB].level);
+	appendColumn("`skill_club_tries` = {}", player->skills[SKILL_CLUB].tries);
+	appendColumn("`skill_sword` = {}", player->skills[SKILL_SWORD].level);
+	appendColumn("`skill_sword_tries` = {}", player->skills[SKILL_SWORD].tries);
+	appendColumn("`skill_axe` = {}", player->skills[SKILL_AXE].level);
+	appendColumn("`skill_axe_tries` = {}", player->skills[SKILL_AXE].tries);
+	appendColumn("`skill_dist` = {}", player->skills[SKILL_DISTANCE].level);
+	appendColumn("`skill_dist_tries` = {}", player->skills[SKILL_DISTANCE].tries);
+	appendColumn("`skill_shielding` = {}", player->skills[SKILL_SHIELD].level);
+	appendColumn("`skill_shielding_tries` = {}", player->skills[SKILL_SHIELD].tries);
+	appendColumn("`skill_fishing` = {}", player->skills[SKILL_FISHING].level);
+	appendColumn("`skill_fishing_tries` = {}", player->skills[SKILL_FISHING].tries);
+	appendColumn("`skill_critical_hit_chance` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].level);
+	appendColumn("`skill_critical_hit_chance_tries` = {}", player->skills[SKILL_CRITICAL_HIT_CHANCE].tries);
+	appendColumn("`skill_critical_hit_damage` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].level);
+	appendColumn("`skill_critical_hit_damage_tries` = {}", player->skills[SKILL_CRITICAL_HIT_DAMAGE].tries);
+	appendColumn("`skill_life_leech_chance` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].level);
+	appendColumn("`skill_life_leech_chance_tries` = {}", player->skills[SKILL_LIFE_LEECH_CHANCE].tries);
+	appendColumn("`skill_life_leech_amount` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].level);
+	appendColumn("`skill_life_leech_amount_tries` = {}", player->skills[SKILL_LIFE_LEECH_AMOUNT].tries);
+	appendColumn("`skill_mana_leech_chance` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].level);
+	appendColumn("`skill_mana_leech_chance_tries` = {}", player->skills[SKILL_MANA_LEECH_CHANCE].tries);
+	appendColumn("`skill_mana_leech_amount` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].level);
+	appendColumn("`skill_mana_leech_amount_tries` = {}", player->skills[SKILL_MANA_LEECH_AMOUNT].tries);
+	appendColumn("`manashield` = {}", player->getManaShield());
+	appendColumn("`max_manashield` = {}", player->getMaxManaShield());
+	appendColumn("`xpboost_value` = {}", player->getXpBoostPercent());
+	appendColumn("`xpboost_stamina` = {}", player->getXpBoostTime());
+	appendColumn("`quickloot_fallback` = {}", player->quickLootFallbackToMainContainer ? 1 : 0);
 
 	if (!player->isOffline()) {
 		auto now = std::chrono::system_clock::now();
 		auto lastLoginSaved = std::chrono::system_clock::from_time_t(player->lastLoginSaved);
-		columns.emplace_back(fmt::format("`onlinetime` = `onlinetime` + {}", std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count()));
+		appendColumn("`onlinetime` = `onlinetime` + {}", std::chrono::duration_cast<std::chrono::seconds>(now - lastLoginSaved).count());
 	}
 
 	for (int i = 1; i <= 8; i++) {
-		columns.emplace_back(fmt::format("`blessings{}` = {}", i, static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i)))));
-	}
-
-	size_t estimatedSize = 0;
-	for (const auto &column : columns) {
-		estimatedSize += column.size() + 2;
-	}
-
-	std::string setClause;
-	setClause.reserve(estimatedSize);
-	for (size_t i = 0; i < columns.size(); ++i) {
-		setClause.append(columns[i]);
-		if (i + 1 < columns.size()) {
-			setClause.append(", ");
-		}
+		appendColumn("`blessings{}` = {}", i, static_cast<uint32_t>(player->getBlessingCount(static_cast<uint8_t>(i))));
 	}
 
 	if (!db.executeQuery(fmt::format("UPDATE `players` SET {} WHERE `id` = {}", setClause, playerGuid))) {

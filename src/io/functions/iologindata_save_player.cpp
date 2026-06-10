@@ -27,6 +27,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <fmt/format.h>
+	#include <string_view>
 #endif
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
@@ -214,11 +215,11 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	std::string setClause;
 	setClause.reserve(4096);
 
-	auto appendColumn = [&setClause]<typename... Args>(fmt::format_string<Args...> format, Args &&... args) {
+	auto appendColumn = [&setClause]<typename... Args>(std::string_view format, Args &&... args) {
 		if (!setClause.empty()) {
 			setClause.append(", ");
 		}
-		fmt::format_to(std::back_inserter(setClause), format, args...);
+		fmt::format_to(std::back_inserter(setClause), fmt::runtime(format), args...);
 	};
 
 	appendColumn("`name` = {}", db.escapeString(player->name));

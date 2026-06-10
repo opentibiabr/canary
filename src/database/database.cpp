@@ -453,7 +453,7 @@ bool DBInsert::execute() {
 	if (!upsertColumns.empty()) {
 		size_t estimatedSize = 32;
 		for (const auto &column : upsertColumns) {
-			estimatedSize += (column.size() * 2) + 6;
+			estimatedSize += (column.size() * 2) + 16;
 		}
 
 		upsertQuery.reserve(estimatedSize);
@@ -467,8 +467,15 @@ bool DBInsert::execute() {
 	}
 
 	std::string currentBatch = values;
+	const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+	const size_t separatorSize = baseHasSpace ? 0U : 1U;
+	const size_t queryPrefixSize = baseQuery.size() + separatorSize + upsertQuery.size();
+	if (queryPrefixSize >= Database::MAX_QUERY_SIZE) {
+		return false;
+	}
+
 	while (!currentBatch.empty()) {
-		size_t cutPos = Database::MAX_QUERY_SIZE - baseQuery.size() - upsertQuery.size();
+		size_t cutPos = Database::MAX_QUERY_SIZE - queryPrefixSize;
 		if (cutPos < currentBatch.size()) {
 			cutPos = currentBatch.rfind("),(", cutPos);
 			if (cutPos == std::string::npos) {
@@ -486,8 +493,7 @@ bool DBInsert::execute() {
 		currentBatch = currentBatch.substr(cutPos);
 
 		std::string query;
-		const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
-		query.reserve(baseQuery.size() + (baseHasSpace ? 0U : 1U) + batchValues.size() + upsertQuery.size());
+		query.reserve(queryPrefixSize + batchValues.size());
 		query.append(baseQuery);
 		if (!baseHasSpace) {
 			query.push_back(' ');

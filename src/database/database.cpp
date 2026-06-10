@@ -22,12 +22,12 @@
 
 namespace {
 
-void appendInsertBaseQuery(std::string &sql, const std::string &baseQuery, bool baseHasSpace) {
-	sql += baseQuery;
-	if (!baseHasSpace) {
-		sql.push_back(' ');
+	void appendInsertBaseQuery(std::string &sql, const std::string &baseQuery, bool baseHasSpace) {
+		sql += baseQuery;
+		if (!baseHasSpace) {
+			sql.push_back(' ');
+		}
 	}
-}
 
 }
 

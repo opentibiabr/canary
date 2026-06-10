@@ -23,6 +23,8 @@
 #include "io/player_storage_repository.hpp"
 #include "kv/kv.hpp"
 
+#include <iterator>
+
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
 	if (!player) {
 		g_logger().warn("[IOLoginData::savePlayer] - Player nullptr: {}", __FUNCTION__);
@@ -30,7 +32,9 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	}
 
 	const Database &db = Database::getInstance();
-	std::ostringstream ss;
+	const uint32_t playerGuid = player->getGUID();
+	fmt::memory_buffer rowBuffer;
+	rowBuffer.reserve(256);
 
 	// Initialize variables
 	using ContainerBlock = std::pair<std::shared_ptr<Container>, int32_t>;
@@ -83,8 +87,18 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 		const char* attributes = propWriteStream.getStream(attributesSize);
 
 		// Build query string and add row
-		ss << player->getGUID() << ',' << pid << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-		if (!query_insert.addRow(ss)) {
+		rowBuffer.clear();
+		fmt::format_to(
+			std::back_inserter(rowBuffer),
+			"{},{},{},{},{},{}",
+			playerGuid,
+			pid,
+			runningId,
+			item->getID(),
+			item->getSubType(),
+			db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize))
+		);
+		if (!query_insert.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 			g_logger().error("Error adding row to query.");
 			return false;
 		}
@@ -137,8 +151,18 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 			const char* attributes = propWriteStream.getStream(attributesSize);
 
 			// Build query string and add row
-			ss << player->getGUID() << ',' << parentId << ',' << runningId << ',' << item->getID() << ',' << item->getSubType() << ',' << db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize));
-			if (!query_insert.addRow(ss)) {
+			rowBuffer.clear();
+			fmt::format_to(
+				std::back_inserter(rowBuffer),
+				"{},{},{},{},{},{}",
+				playerGuid,
+				parentId,
+				runningId,
+				item->getID(),
+				item->getSubType(),
+				db.escapeBlob(attributes, static_cast<uint32_t>(attributesSize))
+			);
+			if (!query_insert.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 				g_logger().error("Error adding row to query for container item.");
 				return false;
 			}

@@ -20,6 +20,17 @@
 	#include <fmt/format.h>
 #endif
 
+namespace {
+
+void appendInsertBaseQuery(std::string &sql, const std::string &baseQuery, bool baseHasSpace) {
+	sql += baseQuery;
+	if (!baseHasSpace) {
+		sql.push_back(' ');
+	}
+}
+
+}
+
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);
@@ -447,11 +458,7 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::string baseQuery = this->query;
-	if (baseQuery.empty() || baseQuery.back() != ' ') {
-		baseQuery.push_back(' ');
-	}
-
+	const std::string &baseQuery = this->query;
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
@@ -473,7 +480,9 @@ bool DBInsert::execute() {
 	}
 
 	std::string currentBatch = values;
-	const size_t queryPrefixSize = baseQuery.size() + upsertQuery.size();
+	const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+	const size_t separatorSize = baseHasSpace ? 0U : 1U;
+	const size_t queryPrefixSize = baseQuery.size() + separatorSize + upsertQuery.size();
 	if (queryPrefixSize >= Database::MAX_QUERY_SIZE) {
 		return false;
 	}
@@ -498,7 +507,7 @@ bool DBInsert::execute() {
 
 		std::string sql;
 		sql.reserve(queryPrefixSize + batchValues.size());
-		sql += baseQuery;
+		appendInsertBaseQuery(sql, baseQuery, baseHasSpace);
 		sql += batchValues;
 		sql += upsertQuery;
 

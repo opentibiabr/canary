@@ -159,9 +159,27 @@ def semver_tags_merged_into(tag: str) -> list[str]:
     return [line.strip() for line in output.splitlines() if line.strip()]
 
 
+def semver_tags() -> list[str]:
+    output = run_git(["tag", "--sort=-version:refname", "--list", "v[0-9]*.[0-9]*.[0-9]*"])
+    return [line.strip() for line in output.splitlines() if line.strip()]
+
+
+def semver_tuple(tag: str) -> tuple[int, int, int]:
+    version = parse_tag(tag)
+    major, minor, patch = version.split(".")
+    return int(major), int(minor), int(patch)
+
+
 def previous_semver_tag(tag: str) -> str:
     for candidate in semver_tags_merged_into(tag):
         if candidate != tag and TAG_RE.match(candidate):
+            return candidate
+
+    current_version = semver_tuple(tag)
+    for candidate in semver_tags():
+        if candidate == tag or not TAG_RE.match(candidate):
+            continue
+        if semver_tuple(candidate) < current_version:
             return candidate
     return ""
 

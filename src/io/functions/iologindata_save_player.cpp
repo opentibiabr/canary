@@ -28,6 +28,7 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <fmt/format.h>
 	#include <string_view>
+	#include <utility>
 #endif
 
 bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const ItemBlockList &itemList, DBInsert &query_insert, PropWriteStream &propWriteStream) {
@@ -40,6 +41,7 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 	const uint32_t playerGuid = player->getGUID();
 	fmt::memory_buffer rowBuffer;
 	rowBuffer.reserve(256);
+	auto rowOutput = std::back_inserter(rowBuffer);
 
 	// Initialize variables
 	using ContainerBlock = std::pair<std::shared_ptr<Container>, int32_t>;
@@ -93,8 +95,8 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 
 		// Build query string and add row
 		rowBuffer.clear();
-		fmt::format_to(
-			std::back_inserter(rowBuffer),
+		rowOutput = fmt::format_to(
+			rowOutput,
 			"{},{},{},{},{},{}",
 			playerGuid,
 			pid,
@@ -158,8 +160,8 @@ bool IOLoginDataSave::saveItems(const std::shared_ptr<Player> &player, const Ite
 
 			// Build query string and add row
 			rowBuffer.clear();
-			fmt::format_to(
-				std::back_inserter(rowBuffer),
+			rowOutput = fmt::format_to(
+				rowOutput,
 				"{},{},{},{},{},{}",
 				playerGuid,
 				parentId,
@@ -215,12 +217,13 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 
 	std::string setClause;
 	setClause.reserve(4096);
+	auto setClauseOutput = std::back_inserter(setClause);
 
-	auto appendColumn = [&setClause]<typename... Args>(std::string_view format, Args &&... args) {
+	auto appendColumn = [&setClause, &setClauseOutput]<typename... Args>(std::string_view format, Args &&... args) {
 		if (!setClause.empty()) {
-			setClause.append(", ");
+			setClause += ", ";
 		}
-		fmt::format_to(std::back_inserter(setClause), fmt::runtime(format), args...);
+		setClauseOutput = fmt::format_to(setClauseOutput, fmt::runtime(format), std::forward<Args>(args)...);
 	};
 
 	appendColumn("`name` = {}", db.escapeString(player->name));
@@ -383,6 +386,7 @@ bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
 	DBInsert stashQuery("INSERT INTO `player_stash` (`player_id`,`item_id`,`item_count`) VALUES ");
 	fmt::memory_buffer rowBuffer;
 	rowBuffer.reserve(48);
+	auto rowOutput = std::back_inserter(rowBuffer);
 	for (const auto &[itemId, itemCount] : player->getStashItems()) {
 		const ItemType &itemType = Item::items[itemId];
 		if (itemType.decayTo >= 0 && itemType.decayTime > 0) {
@@ -396,7 +400,7 @@ bool IOLoginDataSave::savePlayerStash(const std::shared_ptr<Player> &player) {
 		}
 
 		rowBuffer.clear();
-		fmt::format_to(std::back_inserter(rowBuffer), "{},{},{}", playerGuid, itemId, itemCount);
+		rowOutput = fmt::format_to(rowOutput, "{},{},{}", playerGuid, itemId, itemCount);
 		if (!stashQuery.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 			return false;
 		}
@@ -424,9 +428,10 @@ bool IOLoginDataSave::savePlayerSpells(const std::shared_ptr<Player> &player) {
 	DBInsert spellsQuery("INSERT INTO `player_spells` (`player_id`, `name` ) VALUES ");
 	fmt::memory_buffer rowBuffer;
 	rowBuffer.reserve(64);
+	auto rowOutput = std::back_inserter(rowBuffer);
 	for (const std::string &spellName : player->learnedInstantSpellList) {
 		rowBuffer.clear();
-		fmt::format_to(std::back_inserter(rowBuffer), "{},{}", playerGuid, db.escapeString(spellName));
+		rowOutput = fmt::format_to(rowOutput, "{},{}", playerGuid, db.escapeString(spellName));
 		if (!spellsQuery.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 			return false;
 		}
@@ -454,9 +459,10 @@ bool IOLoginDataSave::savePlayerKills(const std::shared_ptr<Player> &player) {
 	DBInsert killsQuery("INSERT INTO `player_kills` (`player_id`, `target`, `time`, `unavenged`) VALUES");
 	fmt::memory_buffer rowBuffer;
 	rowBuffer.reserve(80);
+	auto rowOutput = std::back_inserter(rowBuffer);
 	for (const auto &kill : player->unjustifiedKills) {
 		rowBuffer.clear();
-		fmt::format_to(std::back_inserter(rowBuffer), "{},{},{},{}", playerGuid, kill.target, kill.time, kill.unavenged);
+		rowOutput = fmt::format_to(rowOutput, "{},{},{},{}", playerGuid, kill.target, kill.time, kill.unavenged);
 		if (!killsQuery.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 			return false;
 		}
@@ -659,47 +665,52 @@ bool IOLoginDataSave::savePlayerPreyClass(const std::shared_ptr<Player> &player)
 
 	Database &db = Database::getInstance();
 	const uint32_t playerGuid = player->getGUID();
-	if (g_configManager().getBoolean(PREY_ENABLED)) {
-		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId))) {
-				PropWriteStream propPreyStream;
-				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
-					propPreyStream.write<uint16_t>(raceId);
-				});
+	if (!g_configManager().getBoolean(PREY_ENABLED)) {
+		return true;
+	}
 
-				size_t preySize;
-				const char* preyList = propPreyStream.getStream(preySize);
-				const std::string query = fmt::format(
-					"INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
-					"VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) "
-					"ON DUPLICATE KEY UPDATE "
-					"`state` = VALUES(`state`), "
-					"`raceid` = VALUES(`raceid`), "
-					"`option` = VALUES(`option`), "
-					"`bonus_type` = VALUES(`bonus_type`), "
-					"`bonus_rarity` = VALUES(`bonus_rarity`), "
-					"`bonus_percentage` = VALUES(`bonus_percentage`), "
-					"`bonus_time` = VALUES(`bonus_time`), "
-					"`free_reroll` = VALUES(`free_reroll`), "
-					"`monster_list` = VALUES(`monster_list`)",
-					playerGuid,
-					static_cast<uint16_t>(slot->id),
-					static_cast<uint16_t>(slot->state),
-					slot->selectedRaceId,
-					static_cast<uint16_t>(slot->option),
-					static_cast<uint16_t>(slot->bonus),
-					static_cast<uint16_t>(slot->bonusRarity),
-					slot->bonusPercentage,
-					slot->bonusTimeLeft,
-					slot->freeRerollTimeStamp,
-					db.escapeBlob(preyList, static_cast<uint32_t>(preySize))
-				);
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		const auto &slot = player->getPreySlotById(static_cast<PreySlot_t>(slotId));
+		if (!slot) {
+			continue;
+		}
 
-				if (!db.executeQuery(query)) {
-					g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
-					return false;
-				}
-			}
+		PropWriteStream propPreyStream;
+		[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propPreyStream](uint16_t raceId) {
+			propPreyStream.write<uint16_t>(raceId);
+		});
+
+		size_t preySize;
+		const char* preyList = propPreyStream.getStream(preySize);
+		const std::string query = fmt::format(
+			"INSERT INTO player_prey (`player_id`, `slot`, `state`, `raceid`, `option`, `bonus_type`, `bonus_rarity`, `bonus_percentage`, `bonus_time`, `free_reroll`, `monster_list`) "
+			"VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}) "
+			"ON DUPLICATE KEY UPDATE "
+			"`state` = VALUES(`state`), "
+			"`raceid` = VALUES(`raceid`), "
+			"`option` = VALUES(`option`), "
+			"`bonus_type` = VALUES(`bonus_type`), "
+			"`bonus_rarity` = VALUES(`bonus_rarity`), "
+			"`bonus_percentage` = VALUES(`bonus_percentage`), "
+			"`bonus_time` = VALUES(`bonus_time`), "
+			"`free_reroll` = VALUES(`free_reroll`), "
+			"`monster_list` = VALUES(`monster_list`)",
+			playerGuid,
+			static_cast<uint16_t>(slot->id),
+			static_cast<uint16_t>(slot->state),
+			slot->selectedRaceId,
+			static_cast<uint16_t>(slot->option),
+			static_cast<uint16_t>(slot->bonus),
+			static_cast<uint16_t>(slot->bonusRarity),
+			slot->bonusPercentage,
+			slot->bonusTimeLeft,
+			slot->freeRerollTimeStamp,
+			db.escapeBlob(preyList, static_cast<uint32_t>(preySize))
+		);
+
+		if (!db.executeQuery(query)) {
+			g_logger().warn("[IOLoginData::savePlayer] - Error saving prey slot data from player: {}", player->getName());
+			return false;
 		}
 	}
 	return true;
@@ -713,45 +724,50 @@ bool IOLoginDataSave::savePlayerTaskHuntingClass(const std::shared_ptr<Player> &
 
 	Database &db = Database::getInstance();
 	const uint32_t playerGuid = player->getGUID();
-	if (g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
-		for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
-			if (const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId))) {
-				PropWriteStream propTaskHuntingStream;
-				[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
-					propTaskHuntingStream.write<uint16_t>(raceId);
-				});
+	if (!g_configManager().getBoolean(TASK_HUNTING_ENABLED)) {
+		return true;
+	}
 
-				size_t taskHuntingSize;
-				const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
-				const std::string query = fmt::format(
-					"INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) "
-					"VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}) "
-					"ON DUPLICATE KEY UPDATE "
-					"`state` = VALUES(`state`), "
-					"`raceid` = VALUES(`raceid`), "
-					"`upgrade` = VALUES(`upgrade`), "
-					"`rarity` = VALUES(`rarity`), "
-					"`kills` = VALUES(`kills`), "
-					"`disabled_time` = VALUES(`disabled_time`), "
-					"`free_reroll` = VALUES(`free_reroll`), "
-					"`monster_list` = VALUES(`monster_list`)",
-					playerGuid,
-					static_cast<uint16_t>(slot->id),
-					static_cast<uint16_t>(slot->state),
-					slot->selectedRaceId,
-					slot->upgrade ? 1 : 0,
-					static_cast<uint16_t>(slot->rarity),
-					slot->currentKills,
-					slot->disabledUntilTimeStamp,
-					slot->freeRerollTimeStamp,
-					db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize))
-				);
+	for (uint8_t slotId = PreySlot_First; slotId <= PreySlot_Last; slotId++) {
+		const auto &slot = player->getTaskHuntingSlotById(static_cast<PreySlot_t>(slotId));
+		if (!slot) {
+			continue;
+		}
 
-				if (!db.executeQuery(query)) {
-					g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
-					return false;
-				}
-			}
+		PropWriteStream propTaskHuntingStream;
+		[[maybe_unused]] auto lambda = std::ranges::for_each(slot->raceIdList, [&propTaskHuntingStream](uint16_t raceId) {
+			propTaskHuntingStream.write<uint16_t>(raceId);
+		});
+
+		size_t taskHuntingSize;
+		const char* taskHuntingList = propTaskHuntingStream.getStream(taskHuntingSize);
+		const std::string query = fmt::format(
+			"INSERT INTO `player_taskhunt` (`player_id`, `slot`, `state`, `raceid`, `upgrade`, `rarity`, `kills`, `disabled_time`, `free_reroll`, `monster_list`) "
+			"VALUES ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}) "
+			"ON DUPLICATE KEY UPDATE "
+			"`state` = VALUES(`state`), "
+			"`raceid` = VALUES(`raceid`), "
+			"`upgrade` = VALUES(`upgrade`), "
+			"`rarity` = VALUES(`rarity`), "
+			"`kills` = VALUES(`kills`), "
+			"`disabled_time` = VALUES(`disabled_time`), "
+			"`free_reroll` = VALUES(`free_reroll`), "
+			"`monster_list` = VALUES(`monster_list`)",
+			playerGuid,
+			static_cast<uint16_t>(slot->id),
+			static_cast<uint16_t>(slot->state),
+			slot->selectedRaceId,
+			slot->upgrade ? 1 : 0,
+			static_cast<uint16_t>(slot->rarity),
+			slot->currentKills,
+			slot->disabledUntilTimeStamp,
+			slot->freeRerollTimeStamp,
+			db.escapeBlob(taskHuntingList, static_cast<uint32_t>(taskHuntingSize))
+		);
+
+		if (!db.executeQuery(query)) {
+			g_logger().warn("[IOLoginData::savePlayer] - Error saving task hunting slot data from player: {}", player->getName());
+			return false;
 		}
 	}
 	return true;
@@ -794,8 +810,9 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 	const char* chars = stream.getStream(size);
 	fmt::memory_buffer rowBuffer;
 	rowBuffer.reserve(96);
-	fmt::format_to(
-		std::back_inserter(rowBuffer),
+	auto rowOutput = std::back_inserter(rowBuffer);
+	rowOutput = fmt::format_to(
+		rowOutput,
 		"{},{},{},{},{}",
 		playerGuid,
 		player->getSlotBossId(1),
@@ -803,6 +820,7 @@ bool IOLoginDataSave::savePlayerBosstiary(const std::shared_ptr<Player> &player)
 		player->getRemoveTimes(),
 		db.escapeBlob(chars, static_cast<uint32_t>(size))
 	);
+	static_cast<void>(rowOutput);
 
 	if (!insertQuery.addRow(std::string_view(rowBuffer.data(), rowBuffer.size()))) {
 		return false;

@@ -447,7 +447,11 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	const std::string &baseQuery = this->query;
+	std::string baseQuery = this->query;
+	if (baseQuery.empty() || baseQuery.back() != ' ') {
+		baseQuery.push_back(' ');
+	}
+
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
@@ -457,19 +461,19 @@ bool DBInsert::execute() {
 		}
 
 		upsertQuery.reserve(estimatedSize);
-		upsertQuery.append(" ON DUPLICATE KEY UPDATE ");
+		upsertQuery += " ON DUPLICATE KEY UPDATE ";
+		auto upsertOutput = std::back_inserter(upsertQuery);
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			fmt::format_to(std::back_inserter(upsertQuery), "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
+			upsertOutput = fmt::format_to(upsertOutput, "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
 			if (i + 1 < upsertColumns.size()) {
-				upsertQuery.append(", ");
+				upsertQuery.push_back(',');
+				upsertQuery.push_back(' ');
 			}
 		}
 	}
 
 	std::string currentBatch = values;
-	const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
-	const size_t separatorSize = baseHasSpace ? 0U : 1U;
-	const size_t queryPrefixSize = baseQuery.size() + separatorSize + upsertQuery.size();
+	const size_t queryPrefixSize = baseQuery.size() + upsertQuery.size();
 	if (queryPrefixSize >= Database::MAX_QUERY_SIZE) {
 		return false;
 	}
@@ -492,16 +496,13 @@ bool DBInsert::execute() {
 		}
 		currentBatch = currentBatch.substr(cutPos);
 
-		std::string query;
-		query.reserve(queryPrefixSize + batchValues.size());
-		query.append(baseQuery);
-		if (!baseHasSpace) {
-			query.push_back(' ');
-		}
-		query.append(batchValues);
-		query.append(upsertQuery);
+		std::string sql;
+		sql.reserve(queryPrefixSize + batchValues.size());
+		sql += baseQuery;
+		sql += batchValues;
+		sql += upsertQuery;
 
-		if (!g_database().executeQuery(query)) {
+		if (!g_database().executeQuery(sql)) {
 			return false;
 		}
 	}

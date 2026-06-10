@@ -1,7 +1,19 @@
+---
 name: Reusable Docker Build
 
 on:
   workflow_call:
+    inputs:
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
@@ -13,9 +25,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
 
       - name: Install GitVersion
         uses: gittools/actions/gitversion/setup@v0.9.15
@@ -119,7 +147,7 @@ jobs:
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7
         with:
-          name: docker-canary-image
+          name: canary-docker-image
           path: artifacts/docker-image/canary-pr.tar
           retention-days: 1
 
@@ -127,5 +155,5 @@ jobs:
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
         uses: actions/upload-artifact@v7
         with:
-          name: docker-canary
+          name: canary-docker
           path: artifacts/docker-rootfs/bin/canary

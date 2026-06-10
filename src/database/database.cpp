@@ -18,11 +18,12 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <fmt/format.h>
+	#include <string_view>
 #endif
 
 namespace {
 
-	void appendInsertBaseQuery(std::string &sql, const std::string &baseQuery, bool baseHasSpace) {
+	void appendInsertBaseQuery(std::string &sql, std::string_view baseQuery, bool baseHasSpace) {
 		sql += baseQuery;
 		if (!baseHasSpace) {
 			sql.push_back(' ');

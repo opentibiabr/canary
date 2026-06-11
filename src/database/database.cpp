@@ -14,6 +14,13 @@
 #include "lib/metrics/metrics.hpp"
 #include "utils/tools.hpp"
 
+#include <iterator>
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <fmt/format.h>
+	#include <string_view>
+#endif
+
 namespace {
 	// Per-thread query capture buffer. When non-null, executeQuery records into
 	// it instead of executing. See Database::beginQueryCapture.
@@ -29,6 +36,13 @@ namespace {
 			mysql_thread_end();
 		}
 	};
+
+	void appendInsertBaseQuery(std::string &sql, std::string_view baseQuery, bool baseHasSpace) {
+		sql += baseQuery;
+		if (!baseHasSpace) {
+			sql.push_back(' ');
+		}
+	}
 }
 
 Database::ConnectionContext::~ConnectionContext() {
@@ -588,24 +602,37 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::string baseQuery = this->query;
+	const std::string &baseQuery = this->query;
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
-		std::ostringstream upsertStream;
-		upsertStream << " ON DUPLICATE KEY UPDATE ";
+		size_t estimatedSize = 32;
+		for (const auto &column : upsertColumns) {
+			estimatedSize += (column.size() * 2) + 16;
+		}
+
+		upsertQuery.reserve(estimatedSize);
+		upsertQuery += " ON DUPLICATE KEY UPDATE ";
+		auto upsertOutput = std::back_inserter(upsertQuery);
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			upsertStream << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
-			if (i < upsertColumns.size() - 1) {
-				upsertStream << ", ";
+			upsertOutput = fmt::format_to(upsertOutput, "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
+			if (i + 1 < upsertColumns.size()) {
+				upsertQuery.push_back(',');
+				upsertQuery.push_back(' ');
 			}
 		}
-		upsertQuery = upsertStream.str();
 	}
 
 	std::string currentBatch = values;
+	const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+	const size_t separatorSize = baseHasSpace ? 0U : 1U;
+	const size_t queryPrefixSize = baseQuery.size() + separatorSize + upsertQuery.size();
+	if (queryPrefixSize >= Database::MAX_QUERY_SIZE) {
+		return false;
+	}
+
 	while (!currentBatch.empty()) {
-		size_t cutPos = Database::MAX_QUERY_SIZE - baseQuery.size() - upsertQuery.size();
+		size_t cutPos = Database::MAX_QUERY_SIZE - queryPrefixSize;
 		if (cutPos < currentBatch.size()) {
 			cutPos = currentBatch.rfind("),(", cutPos);
 			if (cutPos == std::string::npos) {
@@ -617,19 +644,23 @@ bool DBInsert::execute() {
 		}
 
 		std::string batchValues = currentBatch.substr(0, cutPos);
-		if (batchValues.back() == ',') {
+		if (!batchValues.empty() && batchValues.back() == ',') {
 			batchValues.pop_back();
 		}
 		currentBatch = currentBatch.substr(cutPos);
 
-		std::ostringstream query;
-		query << baseQuery << " " << batchValues << upsertQuery;
-		if (!Database::getInstance().executeQuery(query.str())) {
+		std::string sql;
+		sql.reserve(queryPrefixSize + batchValues.size());
+		appendInsertBaseQuery(sql, baseQuery, baseHasSpace);
+		sql += batchValues;
+		sql += upsertQuery;
+
+		if (!g_database().executeQuery(sql)) {
 			return false;
 		}
 	}
 
 	values.clear();
-	length = query.length();
+	length = this->query.length();
 	return true;
 }

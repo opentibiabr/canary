@@ -10,43 +10,21 @@ The project follows a layered architecture that separates networking, game logic
 
 # High-Level Architecture
 
-```text
-┌───────────────────────────────┐
-│         Game Clients          │
-│ Game Client / OTClient        │
-└───────────────┬───────────────┘
-                │
-                ▼
-┌───────────────────────────────┐
-│      Network Layer            │
-│ ProtocolGame                  │
-│ ProtocolLogin                 │
-│ Connection Management         │
-└───────────────┬───────────────┘
-                │
-                ▼
-┌───────────────────────────────┐
-│        Game Engine            │
-│ Game Singleton                │
-│ Dispatcher                    │
-│ Scheduler                     │
-│ Creature System               │
-│ Combat System                 │
-│ Map System                    │
-│ Events                        │
-└───────────────┬───────────────┘
-                │
-    ┌───────────┼───────────┐
-    ▼           ▼           ▼
-┌─────────┐ ┌─────────┐ ┌─────────┐
-│ Lua API │ │ Database│ │ Metrics │
-│ Scripts │ │ Layer   │ │ System  │
-└─────────┘ └─────────┘ └─────────┘
-                │
-                ▼
-        ┌───────────────┐
-        │ MariaDB/MySQL │
-        └───────────────┘
+```mermaid
+flowchart LR
+    clients["Game clients"]
+    network["Network layer<br/>ProtocolGame / ProtocolLogin"]
+    engine["Game engine<br/>Dispatcher / Scheduler"]
+    world["World systems<br/>Creatures / Combat / Map / Events"]
+    lua["Lua scripting"]
+    database["Persistence"]
+    metrics["Observability<br/>Metrics system"]
+    mariadb["MariaDB / MySQL"]
+
+    clients --> network --> engine --> world
+    world --> lua
+    world --> database --> mariadb
+    world --> metrics
 ```
 
 ---

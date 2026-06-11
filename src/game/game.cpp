@@ -4138,7 +4138,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::vector<Direction> { direction }, false);
+	player->startAutoWalk(std::vector<Direction> { direction }, false, Creature::WalkStartPolicy::ImmediateWhenReady);
 }
 
 void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
@@ -4152,7 +4152,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::vector<Direction> { direction }, true);
+	player->startAutoWalk(std::vector<Direction> { direction }, true, Creature::WalkStartPolicy::ImmediateWhenReady);
 }
 
 bool Game::playerBroadcastMessage(const std::shared_ptr<Player> &player, const std::string &text) const {
@@ -4326,7 +4326,8 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
-	player->startAutoWalk(listDir, false);
+	const auto startPolicy = listDir.size() == 1 ? Creature::WalkStartPolicy::ImmediateWhenReady : Creature::WalkStartPolicy::RespectDelay;
+	player->startAutoWalk(listDir, false, startPolicy);
 }
 
 void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir) {
@@ -4344,7 +4345,8 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 
-	player->startAutoWalk(listDir, true);
+	const auto startPolicy = listDir.size() == 1 ? Creature::WalkStartPolicy::ImmediateWhenReady : Creature::WalkStartPolicy::RespectDelay;
+	player->startAutoWalk(listDir, true, startPolicy);
 }
 
 void Game::playerStopAutoWalk(uint32_t playerId) {

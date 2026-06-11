@@ -275,7 +275,7 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	return true;
 }
 
-void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/) {
+void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/, WalkStartPolicy startPolicy /* = WalkStartPolicy::RespectDelay*/) {
 	listWalkDir.clear();
 
 	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
@@ -288,10 +288,10 @@ void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreC
 		return;
 	}
 
-	addEventWalk();
+	addEventWalk(startPolicy);
 }
 
-void Creature::addEventWalk() {
+void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::RespectDelay*/) {
 	cancelNextWalk = false;
 
 	if (getStepSpeed() <= 0) {
@@ -307,10 +307,15 @@ void Creature::addEventWalk() {
 			return;
 		}
 
-		const int64_t ticks = getEventStepTicks();
+		const int64_t ticks = getEventStepTicks(startPolicy);
 		if (ticks <= 0) {
 			return;
 		}
+
+		if (ticks == 1) {
+			onCreatureWalk();
+		}
+
 		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), [self = std::weak_ptr(getCreature())] {
 				if (const auto &creature = self.lock()) {
@@ -1485,9 +1490,14 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	return duration;
 }
 
-int64_t Creature::getEventStepTicks() {
+int64_t Creature::getEventStepTicks(WalkStartPolicy startPolicy) {
 	const int64_t ret = getWalkDelay();
-	return ret <= 0 ? getStepDuration() * lastStepCost : ret;
+	if (ret > 0) {
+		return ret;
+	}
+
+	const uint16_t stepDuration = getStepDuration();
+	return startPolicy == WalkStartPolicy::ImmediateWhenReady && stepDuration > 0 ? 1 : stepDuration * lastStepCost;
 }
 
 LightInfo Creature::getCreatureLight() const {

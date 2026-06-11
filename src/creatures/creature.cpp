@@ -317,7 +317,7 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 		}
 
 		eventWalk = g_dispatcher().scheduleEvent(
-			static_cast<uint32_t>(ticks), [self = std::weak_ptr(getCreature())] {
+			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
 				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
 				}

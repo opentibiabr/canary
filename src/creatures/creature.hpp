@@ -222,7 +222,8 @@ public:
 	enum class WalkStartPolicy : uint8_t {
 		/// Honor the current walk delay or full step duration before walking.
 		RespectDelay,
-		/// Run the first step on the next dispatcher tick only if walking is ready.
+		/// Preserve legacy input responsiveness by requesting the first step
+		/// immediately when walking is ready.
 		ImmediateWhenReady,
 	};
 

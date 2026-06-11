@@ -26,6 +26,7 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "defense", ITEM_PARSE_DEFENSE },
 	{ "extradef", ITEM_PARSE_EXTRADEF },
 	{ "attack", ITEM_PARSE_ATTACK },
+	{ "mantra", ITEM_PARSE_MANTRA },
 	{ "rotateto", ITEM_PARSE_ROTATETO },
 	{ "wrapcontainer", ITEM_PARSE_WRAPCONTAINER },
 	{ "wrapableto", ITEM_PARSE_WRAPABLETO },
@@ -158,7 +159,9 @@ const phmap::flat_hash_map<std::string, ItemParseAttributes_t> ItemParseAttribut
 	{ "primarytype", ITEM_PARSE_PRIMARYTYPE },
 	{ "usedbyhouseguests", ITEM_PARSE_USEDBYGUESTS },
 	{ "script", ITEM_PARSE_SCRIPT },
-	{ "augments", ITEM_PARSE_AUGMENT }
+	{ "augments", ITEM_PARSE_AUGMENT },
+	{ "elementalbond", ITEM_PARSE_ELEMENTALBOND },
+	{ "proficiency", ITEM_PARSE_PROFICIENCY },
 };
 
 const phmap::flat_hash_map<std::string, ItemTypes_t> ItemTypesMap = {
@@ -218,6 +221,7 @@ const phmap::flat_hash_map<std::string, Fluids_t> FluidTypesMap = {
 };
 
 const phmap::flat_hash_map<std::string, WeaponType_t> WeaponTypesMap = {
+	{ "fist", WEAPON_FIST },
 	{ "sword", WEAPON_SWORD },
 	{ "club", WEAPON_CLUB },
 	{ "axe", WEAPON_AXE },
@@ -241,13 +245,17 @@ const phmap::flat_hash_map<std::string, ImbuementTypes_t> ImbuementsTypeMap = {
 	{ "elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY },
 	{ "elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY },
 	{ "increase speed", IMBUEMENT_INCREASE_SPEED },
+	{ "skillboost fist", IMBUEMENT_SKILLBOOST_FIST },
 	{ "skillboost axe", IMBUEMENT_SKILLBOOST_AXE },
 	{ "skillboost sword", IMBUEMENT_SKILLBOOST_SWORD },
 	{ "skillboost club", IMBUEMENT_SKILLBOOST_CLUB },
 	{ "skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING },
 	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
 	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
-	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
+	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY },
+	{ "paralysis deflection", IMBUEMENT_PARALYSIS_DEFLECTION },
+	{ "vibrancy", IMBUEMENT_PARALYSIS_DEFLECTION },
+	{ "paralysis removal", IMBUEMENT_PARALYSIS_DEFLECTION }
 };
 
 const phmap::flat_hash_map<Augment_t, ConfigKey_t> AugmentWithoutValueDescriptionDefaultKeys = {
@@ -271,6 +279,7 @@ private:
 	static void parseDefense(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseExtraDefense(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseAttack(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseMantra(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseRotateTo(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseWrapContainer(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseWrapableTo(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
@@ -309,6 +318,15 @@ private:
 	static void parseReplaceable(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseLevelDoor(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseBeds(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+
+	/**
+	 * @brief Parses the elemental bond from the item's XML attribute and assigns the corresponding combat type.
+	 *
+	 * @param stringValue The key used to identify the elemental bond (should be "elementalbond").
+	 * @param valueAttribute The XML attribute containing the elemental type as string ("energy", "earth", or "physical").
+	 * @param itemType The item type to which the parsed elemental bond will be assigned.
+	 */
+	static void parseElementalBond(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseElement(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseWalk(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseAllowDistanceRead(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
@@ -322,6 +340,7 @@ private:
 	static void parseReflectDamage(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseTransformOnUse(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parsePrimaryType(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
+	static void parseProficiency(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseHouseRelated(std::string_view stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType);
 	static void parseUnscriptedItems(std::string_view stringValue, pugi::xml_node attributeNode, pugi::xml_attribute valueAttribute, ItemType &itemType);
 

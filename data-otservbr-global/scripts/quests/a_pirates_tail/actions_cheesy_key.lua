@@ -15,6 +15,10 @@ local config = {
 		id = 1365,
 		name = "Snowbash",
 	},
+	monk = {
+		id = 1819,
+		name = "Moonhunter",
+	},
 }
 
 local action = Action()

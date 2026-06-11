@@ -19,6 +19,37 @@
 
 #include "absl/debugging/stacktrace.h"
 #include "absl/debugging/symbolize.h"
+#include "mbedtls/sha256.h"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <cstddef>
+	#include <cstdint>
+	#include <span>
+	#include <string_view>
+#endif
+
+namespace {
+	std::string bytesToHex(std::span<const std::byte> bytes) {
+		static constexpr std::array<char, 16> hexDigits = {
+			'0', '1', '2', '3', '4', '5', '6', '7',
+			'8', '9', 'a', 'b', 'c', 'd', 'e', 'f'
+		};
+
+		std::string hex(bytes.size() * 2, '\0');
+		for (size_t i = 0; i < bytes.size(); ++i) {
+			const auto offset = i * 2;
+			hex[offset] = hexDigits[std::to_integer<size_t>(bytes[i] >> 4)];
+			hex[offset + 1] = hexDigits[std::to_integer<size_t>(bytes[i] & std::byte { 0x0F })];
+		}
+		return hex;
+	}
+
+	[[nodiscard]] std::span<unsigned char> asWritableUnsignedBytes(std::span<std::byte> bytes) {
+		// mbedTLS exposes a C API that writes to unsigned char buffers.
+		return { reinterpret_cast<unsigned char*>(bytes.data()), bytes.size() }; // NOSONAR
+	}
+}
 
 void printXMLError(const std::string &where, const std::string &fileName, const pugi::xml_parse_result &result) {
 	g_logger().error("[{}] Failed to load {}: {}", where, fileName, result.description());
@@ -66,6 +97,18 @@ void printXMLError(const std::string &where, const std::string &fileName, const 
 		}
 	}
 	g_logger().error("^");
+}
+
+uint8_t undoShift(uint64_t value) {
+	if (value == 0) {
+		return 0;
+	}
+
+	auto trailingZeros = std::countr_zero(value);
+	if (trailingZeros < 2) {
+		return 0;
+	}
+	return trailingZeros - 2;
 }
 
 static uint32_t circularShift(int bits, uint32_t value) {
@@ -183,15 +226,22 @@ std::string transformToSHA1(const std::string &input) {
 
 	processSHA1MessageBlock(messageBlock, H);
 
-	char hexstring[41];
-	static constexpr char hexDigits[] = { "0123456789abcdef" };
-	for (int hashByte = 20; --hashByte >= 0;) {
+	std::array<std::byte, 20> hash {};
+	for (size_t hashByte = hash.size(); hashByte-- > 0;) {
 		const uint8_t byte = H[hashByte >> 2] >> (((3 - hashByte) & 3) << 3);
-		index = hashByte << 1;
-		hexstring[index] = hexDigits[byte >> 4];
-		hexstring[index + 1] = hexDigits[byte & 15];
+		hash[hashByte] = static_cast<std::byte>(byte);
 	}
-	return std::string(hexstring, 40);
+	return bytesToHex(hash);
+}
+
+std::string transformToSHA256(std::string_view input) {
+	std::array<std::byte, 32> hash {};
+	const auto hashOutput = asWritableUnsignedBytes(hash);
+	if (mbedtls_sha256(reinterpret_cast<const unsigned char*>(input.data()), input.size(), hashOutput.data(), 0) != 0) {
+		return {};
+	}
+
+	return bytesToHex(hash);
 }
 
 uint16_t getStashSize(const std::map<uint16_t, uint32_t> &itemList) {
@@ -445,7 +495,8 @@ std::string convertIPToString(uint32_t ip) {
 
 std::string formatDate(time_t time) {
 	try {
-		return fmt::format("{:%d/%m/%Y %H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date with error code {}", exception.what());
 	}
@@ -454,18 +505,20 @@ std::string formatDate(time_t time) {
 
 std::string formatDateShort(time_t time) {
 	try {
-		return fmt::format("{:%Y-%m-%d %X}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(time);
+		return fmt::format("{:%Y-%m-%d %X}", tp);
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date short with error code {}", exception.what());
 	}
 	return {};
 }
 
-std::string formatTime(time_t time) {
+std::string formatDateTime(int64_t ms) {
 	try {
-		return fmt::format("{:%H:%M:%S}", fmt::localtime(time));
+		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
+		return fmt::format("{:%Y-%m-%d %H:%M:%S}", tp);
 	} catch (const std::out_of_range &exception) {
-		g_logger().error("Failed to format time with error code {}", exception.what());
+		g_logger().error("Failed to format datetime with error code {}", exception.what());
 	}
 	return {};
 }
@@ -879,13 +932,19 @@ const ImbuementTypeNames imbuementTypeNames = {
 	{ "elemental protection energy", IMBUEMENT_ELEMENTAL_PROTECTION_ENERGY },
 	{ "elemental protection holy", IMBUEMENT_ELEMENTAL_PROTECTION_HOLY },
 	{ "increase speed", IMBUEMENT_INCREASE_SPEED },
+	{ "skillboost fist", IMBUEMENT_SKILLBOOST_FIST },
 	{ "skillboost axe", IMBUEMENT_SKILLBOOST_AXE },
 	{ "skillboost sword", IMBUEMENT_SKILLBOOST_SWORD },
 	{ "skillboost club", IMBUEMENT_SKILLBOOST_CLUB },
 	{ "skillboost shielding", IMBUEMENT_SKILLBOOST_SHIELDING },
 	{ "skillboost distance", IMBUEMENT_SKILLBOOST_DISTANCE },
 	{ "skillboost magic level", IMBUEMENT_SKILLBOOST_MAGIC_LEVEL },
-	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY }
+	{ "increase capacity", IMBUEMENT_INCREASE_CAPACITY },
+
+	/////////Imbuement Vibrancy/////////
+	{ "paralysis deflection", IMBUEMENT_PARALYSIS_DEFLECTION },
+	{ "vibrancy", IMBUEMENT_PARALYSIS_DEFLECTION },
+	{ "paralysis removal", IMBUEMENT_PARALYSIS_DEFLECTION }
 };
 
 /**
@@ -1074,6 +1133,8 @@ bool booleanString(const std::string &str) {
 
 std::string getWeaponName(WeaponType_t weaponType) {
 	switch (weaponType) {
+		case WEAPON_FIST:
+			return "fist";
 		case WEAPON_SWORD:
 			return "sword";
 		case WEAPON_CLUB:
@@ -1096,6 +1157,7 @@ std::string getWeaponName(WeaponType_t weaponType) {
 WeaponType_t getWeaponType(const std::string &name) {
 	static const std::unordered_map<std::string, WeaponType_t> type_mapping = {
 		{ "none", WeaponType_t::WEAPON_NONE },
+		{ "fist", WeaponType_t::WEAPON_FIST },
 		{ "sword", WeaponType_t::WEAPON_SWORD },
 		{ "club", WeaponType_t::WEAPON_CLUB },
 		{ "axe", WeaponType_t::WEAPON_AXE },
@@ -1213,6 +1275,9 @@ ItemAttribute_t stringToItemAttribute(const std::string &str) {
 	}
 	if (str == "weight") {
 		return ItemAttribute_t::WEIGHT;
+	}
+	if (str == "mantra") {
+		return ItemAttribute_t::MANTRA;
 	}
 	if (str == "attack") {
 		return ItemAttribute_t::ATTACK;
@@ -1594,6 +1659,9 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
 	if (tmpStr == "greatbeams" || tmpStr == "10") {
 		return SPELLGROUP_GREAT_BEAMS;
 	}
+	if (tmpStr == "virtue" || tmpStr == "11") {
+		return SPELLGROUP_VIRTUE;
+	}
 
 	return SPELLGROUP_NONE;
 }
@@ -1732,6 +1800,8 @@ std::string getObjectCategoryName(ObjectCategory_t category) {
 			return "Gold";
 		case OBJECTCATEGORY_QUIVERS:
 			return "Quiver";
+		case OBJECTCATEGORY_FISTWEAPONS:
+			return "Fist Weapons";
 		case OBJECTCATEGORY_DEFAULT:
 			return "Unassigned Loot";
 		default:
@@ -1767,6 +1837,7 @@ bool isValidObjectCategory(ObjectCategory_t category) {
 		OBJECTCATEGORY_TIBIACOINS,
 		OBJECTCATEGORY_CREATUREPRODUCTS,
 		OBJECTCATEGORY_QUIVERS,
+		OBJECTCATEGORY_FISTWEAPONS,
 		OBJECTCATEGORY_GOLD,
 		OBJECTCATEGORY_DEFAULT,
 	};
@@ -1967,6 +2038,89 @@ unsigned int getNumberOfCores() {
 	return cores;
 }
 
+skills_t getSkillsFromCipbiaSkill(CipbiaSkills_t cipbiaSkills) {
+	using enum CipbiaSkills_t;
+
+	switch (cipbiaSkills) {
+		case MagicLevel:
+			return SKILL_MAGLEVEL;
+		case Shield:
+			return SKILL_SHIELD;
+		case Distance:
+			return SKILL_DISTANCE;
+		case Sword:
+			return SKILL_SWORD;
+		case Club:
+			return SKILL_CLUB;
+		case Axe:
+			return SKILL_AXE;
+		case Fist:
+			return SKILL_FIST;
+		case Fishing:
+			return SKILL_FISHING;
+		default:
+			return SKILL_NONE;
+	}
+}
+
+CipbiaSkills_t getCipbiaSkill(skills_t skill) {
+	using enum CipbiaSkills_t;
+
+	switch (skill) {
+		case SKILL_MAGLEVEL:
+			return MagicLevel;
+		case SKILL_SHIELD:
+			return Shield;
+		case SKILL_DISTANCE:
+			return Distance;
+		case SKILL_SWORD:
+			return Sword;
+		case SKILL_CLUB:
+			return Club;
+		case SKILL_AXE:
+			return Axe;
+		case SKILL_FIST:
+			return Fist;
+		case SKILL_FISHING:
+			return Fishing;
+		default:
+			return None;
+	}
+}
+
+CombatType_t getCombatFromCipbiaElement(Cipbia_Elementals_t cipbiaElement) {
+	switch (cipbiaElement) {
+		case CIPBIA_ELEMENTAL_PHYSICAL:
+			return COMBAT_PHYSICALDAMAGE;
+		case CIPBIA_ELEMENTAL_ENERGY:
+			return COMBAT_ENERGYDAMAGE;
+		case CIPBIA_ELEMENTAL_EARTH:
+			return COMBAT_EARTHDAMAGE;
+		case CIPBIA_ELEMENTAL_FIRE:
+			return COMBAT_FIREDAMAGE;
+		case CIPBIA_ELEMENTAL_LIFEDRAIN:
+			return COMBAT_LIFEDRAIN;
+		case CIPBIA_ELEMENTAL_HEALING:
+			return COMBAT_HEALING;
+		case CIPBIA_ELEMENTAL_DROWN:
+			return COMBAT_DROWNDAMAGE;
+		case CIPBIA_ELEMENTAL_ICE:
+			return COMBAT_ICEDAMAGE;
+		case CIPBIA_ELEMENTAL_HOLY:
+			return COMBAT_HOLYDAMAGE;
+		case CIPBIA_ELEMENTAL_DEATH:
+			return COMBAT_DEATHDAMAGE;
+		case CIPBIA_ELEMENTAL_MANADRAIN:
+			return COMBAT_MANADRAIN;
+		case CIPBIA_ELEMENTAL_AGONY:
+			return COMBAT_AGONYDAMAGE;
+		case CIPBIA_ELEMENTAL_HEALING_2:
+			return COMBAT_HEALING;
+		default:
+			return COMBAT_NONE;
+	}
+}
+
 Cipbia_Elementals_t getCipbiaElement(CombatType_t combatType) {
 	switch (combatType) {
 		case COMBAT_PHYSICALDAMAGE:
@@ -2133,4 +2287,40 @@ uint8_t calculateMaxPvpReduction(uint8_t blessCount, bool isPromoted /* = false*
 	}
 
 	return result;
+}
+
+uint32_t getVocationIdFromClientId(uint32_t clientId) {
+	if (clientId == 0xFFFFFFFF) {
+		return clientId;
+	}
+
+	// Mapping from client vocation ID to internal server vocation ID
+	static const std::unordered_map<uint32_t, uint32_t> CIP_TO_INTERNAL = {
+		{ VOCATION_KNIGHT_CIP, VOCATION_KNIGHT },
+		{ VOCATION_PALADIN_CIP, VOCATION_PALADIN },
+		{ VOCATION_SORCERER_CIP, VOCATION_SORCERER },
+		{ VOCATION_DRUID_CIP, VOCATION_DRUID },
+		{ VOCATION_MONK_CIP, VOCATION_MONK },
+		{ VOCATION_NONE, VOCATION_NONE }
+	};
+
+	// Try to find the clientId in the map
+	const auto it = CIP_TO_INTERNAL.find(clientId);
+	if (it != CIP_TO_INTERNAL.end()) {
+		return it->second;
+	}
+
+	// Return fallback value if not found
+	return 0xFFFFFFFF;
+}
+
+Direction getPrimaryDirection(const Position &from, const Position &to) {
+	int dx = to.x - from.x;
+	int dy = to.y - from.y;
+
+	// Determine whether horizontal or vertical movement is dominant
+	if (std::abs(dx) > std::abs(dy)) {
+		return (dx > 0) ? DIRECTION_EAST : DIRECTION_WEST;
+	}
+	return (dy > 0) ? DIRECTION_SOUTH : DIRECTION_NORTH;
 }

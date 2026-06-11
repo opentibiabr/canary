@@ -1,60 +1,134 @@
 name: otbr
 services:
-  database:
-    image: mariadb:latest
+  db:
+    image: mariadb:11.4
     restart: unless-stopped
-    env_file:
-      - '.env'
+    environment:
+      MARIADB_DATABASE: "${CANARY_DB_NAME:-canary}"
+      MARIADB_USER: "${CANARY_DB_USER:-canary}"
+      MARIADB_PASSWORD: "${CANARY_DB_PASSWORD:-canary}"
+      MARIADB_ROOT_PASSWORD: "${CANARY_DB_ROOT_PASSWORD:-root}"
     networks:
       - canary-net
-    ports:
-      - '$MYSQL_PORT:3306'
     volumes:
       - 'db-volume:/var/lib/mysql'
-      - ../schema.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect"]
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
       interval: 10s
       timeout: 5s
       retries: 10
 
-
   server:
-    # cpuset: "0-4"
-    build:
-      context: ..
-      dockerfile: docker/Dockerfile.dev
-      target: prod
+    image: "${CANARY_IMAGE:-ghcr.io/opentibiabr/canary:latest}"
     restart: unless-stopped
-    env_file:
-      - '.env'
+    environment:
+      CANARY_DB_HOST: "${CANARY_DB_HOST:-db}"
+      CANARY_DB_PORT: "${CANARY_DB_PORT:-3306}"
+      CANARY_DB_NAME: "${CANARY_DB_NAME:-canary}"
+      CANARY_DB_USER: "${CANARY_DB_USER:-canary}"
+      CANARY_DB_PASSWORD: "${CANARY_DB_PASSWORD:-canary}"
+      CANARY_SERVER_NAME: "${CANARY_SERVER_NAME:-OpenTibiaBR Canary}"
+      CANARY_SERVER_IP: "${CANARY_SERVER_IP:-127.0.0.1}"
+      CANARY_LOGIN_PORT: "${CANARY_LOGIN_PORT:-7171}"
+      CANARY_GAME_PORT: "${CANARY_GAME_PORT:-7172}"
+      CANARY_STATUS_PORT: "${CANARY_STATUS_PORT:-7173}"
+      CANARY_STATUS_TIMEOUT: "${CANARY_STATUS_TIMEOUT:-5000}"
+      CANARY_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
+      CANARY_DATA_PACK: "${CANARY_DATA_PACK:-data-otservbr-global}"
+      CANARY_MAP_URL: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm}"
+      # Keep the published runtime image compatible while CANARY_* remains the
+      # public quickstart contract.
+      OT_DB_HOST: "${CANARY_DB_HOST:-db}"
+      OT_DB_PORT: "${CANARY_DB_PORT:-3306}"
+      OT_DB_DATABASE: "${CANARY_DB_NAME:-canary}"
+      OT_DB_USER: "${CANARY_DB_USER:-canary}"
+      OT_DB_PASSWORD: "${CANARY_DB_PASSWORD:-canary}"
+      OT_SERVER_IP: "${CANARY_SERVER_IP:-127.0.0.1}"
+      OT_SERVER_LOGIN_PORT: "${CANARY_LOGIN_PORT:-7171}"
+      OT_SERVER_GAME_PORT: "${CANARY_GAME_PORT:-7172}"
+      OT_SERVER_STATUS_PORT: "${CANARY_STATUS_PORT:-7173}"
+      OT_SERVER_TEST_ACCOUNTS: "${CANARY_TEST_ACCOUNTS:-true}"
+      OT_SERVER_DATA: "${CANARY_DATA_PACK:-data-otservbr-global}"
+      OT_SERVER_MAP: "${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm}"
     networks:
       - canary-net
     ports:
-      - '$gameProtocolPort:$gameProtocolPort'
-      - '$statusProtocolPort:$statusProtocolPort'
+      - '${CANARY_LOGIN_PORT:-7171}:${CANARY_LOGIN_PORT:-7171}'
+      - '${CANARY_GAME_PORT:-7172}:${CANARY_GAME_PORT:-7172}'
+      - '${CANARY_STATUS_PORT:-7173}:${CANARY_STATUS_PORT:-7173}'
     volumes:
-      - '../:/srv/canary'
+      - 'server-data:/data'
     depends_on:
-      database:
+      db:
         condition: service_healthy
 
-  login:
-    image: opentibiabr/login-server:latest
+  myaac:
+    build:
+      context: .
+      dockerfile: quickstart/myaac/Dockerfile
+      args:
+        MYAAC_REF: "${MYAAC_REF:-develop}"
     restart: unless-stopped
+    environment:
+      CANARY_DB_HOST: "${CANARY_DB_HOST:-db}"
+      CANARY_DB_PORT: "${CANARY_DB_PORT:-3306}"
+      CANARY_DB_NAME: "${CANARY_DB_NAME:-canary}"
+      CANARY_DB_USER: "${CANARY_DB_USER:-canary}"
+      CANARY_DB_PASSWORD: "${CANARY_DB_PASSWORD:-canary}"
+      CANARY_SERVER_NAME: "${CANARY_SERVER_NAME:-OpenTibiaBR Canary}"
+      CANARY_SERVER_IP: "${CANARY_SERVER_IP:-127.0.0.1}"
+      CANARY_SERVER_LOCATION: "${CANARY_SERVER_LOCATION:-BRA}"
+      CANARY_LOGIN_PORT: "${CANARY_LOGIN_PORT:-7171}"
+      CANARY_GAME_PORT: "${CANARY_GAME_PORT:-7172}"
+      CANARY_STATUS_PORT: "${CANARY_STATUS_PORT:-7173}"
+      CANARY_STATUS_TIMEOUT: "${CANARY_STATUS_TIMEOUT:-5000}"
+      CANARY_DATA_PACK: "${CANARY_DATA_PACK:-data-otservbr-global}"
+      MYAAC_SITE_URL: "${MYAAC_SITE_URL:-http://localhost:8080}"
+      MYAAC_ADMIN_ACCOUNT: "${MYAAC_ADMIN_ACCOUNT:-myaacadmin}"
+      MYAAC_ADMIN_EMAIL: "${MYAAC_ADMIN_EMAIL:-admin@localhost.local}"
+      MYAAC_ADMIN_PASSWORD: "${MYAAC_ADMIN_PASSWORD:-admin123}"
+      MYAAC_ADMIN_PLAYER: "${MYAAC_ADMIN_PLAYER:-ADM1}"
+      MYAAC_CLIENT_VERSION: "${MYAAC_CLIENT_VERSION:-1511}"
+      MYAAC_TIMEZONE: "${MYAAC_TIMEZONE:-America/Fortaleza}"
     ports:
-      - '$LOGIN_HTTP_PORT:$LOGIN_HTTP_PORT'
-      - '$LOGIN_GRPC_PORT:$LOGIN_GRPC_PORT'
-    env_file:
-      - '.env'
+      - '${MYAAC_HTTP_PORT:-8080}:80'
     networks:
       - canary-net
     depends_on:
-      database:
+      db:
+        condition: service_healthy
+      server:
+        condition: service_started
+
+  login-server:
+    image: "${LOGIN_SERVER_IMAGE:-opentibiabr/login-server:latest}"
+    restart: unless-stopped
+    environment:
+      LOGIN_HTTP_PORT: "${LOGIN_HTTP_PORT:-8088}"
+      LOGIN_GRPC_PORT: "${LOGIN_GRPC_PORT:-9090}"
+      MYSQL_HOST: "${CANARY_DB_HOST:-db}"
+      MYSQL_PORT: "${CANARY_DB_PORT:-3306}"
+      MYSQL_DBNAME: "${CANARY_DB_NAME:-canary}"
+      MYSQL_USER: "${CANARY_DB_USER:-canary}"
+      MYSQL_PASS: "${CANARY_DB_PASSWORD:-canary}"
+      SERVER_NAME: "${CANARY_SERVER_NAME:-OpenTibiaBR Canary}"
+      SERVER_IP: "${CANARY_SERVER_IP:-127.0.0.1}"
+      SERVER_PORT: "${CANARY_GAME_PORT:-7172}"
+      SERVER_LOCATION: "${CANARY_SERVER_LOCATION:-BRA}"
+      RATE_LIMITER_RATE: "${LOGIN_RATE_LIMITER_RATE:-2}"
+      RATE_LIMITER_BURST: "${LOGIN_RATE_LIMITER_BURST:-5}"
+    ports:
+      - '${LOGIN_HTTP_PORT:-8088}:${LOGIN_HTTP_PORT:-8088}'
+      - '${LOGIN_GRPC_PORT:-9090}:${LOGIN_GRPC_PORT:-9090}'
+    networks:
+      - canary-net
+    depends_on:
+      db:
         condition: service_healthy
 
 volumes:
   db-volume:
+  server-data:
 
 networks:
   canary-net:

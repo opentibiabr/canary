@@ -169,6 +169,7 @@ enum ItemTypes_t {
 	ITEM_TYPE_CREATUREPRODUCT = 24,
 	ITEM_TYPE_QUIVER = 25,
 	ITEM_TYPE_SOULCORES = 26,
+	ITEM_TYPE_FIST = 27,
 	// End
 
 	ITEM_TYPE_DEPOT,
@@ -244,6 +245,7 @@ enum AttrTypes_t {
 	ATTR_STORE_INBOX_CATEGORY = 42,
 	ATTR_OWNER = 43,
 	ATTR_OBTAINCONTAINER = 44,
+	ATTR_MANTRA = 45,
 
 	// Always the last
 	ATTR_NONE = 0
@@ -268,19 +270,33 @@ enum ImbuementTypes_t : int64_t {
 	IMBUEMENT_SKILLBOOST_SHIELDING = 14,
 	IMBUEMENT_SKILLBOOST_DISTANCE = 15,
 	IMBUEMENT_SKILLBOOST_MAGIC_LEVEL = 16,
-	IMBUEMENT_INCREASE_CAPACITY = 17
+	IMBUEMENT_INCREASE_CAPACITY = 17,
+	IMBUEMENT_SKILLBOOST_FIST = 18,
+	IMBUEMENT_PARALYSIS_DEFLECTION = 19,
 };
 
 enum class Augment_t : uint8_t {
-	None,
-	Base,
-	PowerfulImpact,
-	StrongImpact,
-	IncreasedDamage,
-	Cooldown,
-	CriticalExtraDamage,
-	LifeLeech,
-	ManaLeech
+	None = 0,
+	ManaCost = 1, // Not implemented to use in items.xml
+	BaseDamage = 2,
+	BaseHealing = 3,
+	DurationIncreased = 4, // Not implemented to use in items.xml
+	AdditionalTargets = 5, // Not implemented to use in items.xml
+	Cooldown = 6,
+	SecondaryGroupCooldown = 7, // Not implemented to use in items.xml
+	AffectedAreaEnlarged = 8, // Not implemented to use in items.xml
+	IncreasedDamageReduction = 9, // Not implemented to use in items.xml
+
+	EnhancedEffect = 12, // Not implemented to use in items.xml
+	IncreasedSkill = 13, // Not implemented to use in items.xml
+	LifeLeech = 14,
+	ManaLeech = 15,
+	CriticalExtraDamage = 16,
+	CriticalHitChance = 17,
+
+	PowerfulImpact = 100,
+	StrongImpact = 101,
+	IncreasedDamage = 102,
 };
 
 enum class ContainerCategory_t : uint8_t {
@@ -477,6 +493,8 @@ enum CylinderFlags_t {
 	FLAG_IGNOREFIELDDAMAGE = 1 << 5, // Bypass field damage checks
 	FLAG_IGNORENOTMOVABLE = 1 << 6, // Bypass check for mobility
 	FLAG_IGNOREAUTOSTACK = 1 << 7, // queryDestination will not try to stack items together
+	FLAG_DROPONMAP = 1 << 8, // Drop item on map
+	FLAG_LOOTPOUCH = 1 << 9, // Bypass loot pouch capacity guards for trusted batch operations
 };
 
 enum CylinderLink_t {
@@ -496,6 +514,7 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_DEFENSE,
 	ITEM_PARSE_EXTRADEF,
 	ITEM_PARSE_ATTACK,
+	ITEM_PARSE_MANTRA,
 	ITEM_PARSE_ROTATETO,
 	ITEM_PARSE_WRAPCONTAINER,
 	ITEM_PARSE_IMBUEMENT,
@@ -620,6 +639,8 @@ enum ItemParseAttributes_t {
 	ITEM_PARSE_USEDBYGUESTS,
 	ITEM_PARSE_SCRIPT,
 	ITEM_PARSE_AUGMENT,
+	ITEM_PARSE_ELEMENTALBOND,
+	ITEM_PARSE_PROFICIENCY,
 };
 
 struct ImbuementInfo {

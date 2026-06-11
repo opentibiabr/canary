@@ -10,6 +10,7 @@
 #pragma once
 
 #include "creatures/creatures_definitions.hpp"
+#include "items/items_definitions.hpp"
 
 class Player;
 class Item;
@@ -53,11 +54,12 @@ public:
 
 	static Imbuements &getInstance();
 
-	Imbuement* getImbuement(uint16_t id);
+	[[nodiscard]] Imbuement* getImbuement(uint16_t id);
+	[[nodiscard]] Imbuement* getImbuementByScrollID(uint16_t scrollId);
 
-	BaseImbuement* getBaseByID(uint16_t id);
-	CategoryImbuement* getCategoryByID(uint16_t id);
-	std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item);
+	[[nodiscard]] BaseImbuement* getBaseByID(uint16_t id);
+	[[nodiscard]] CategoryImbuement* getCategoryByID(uint16_t id);
+	[[nodiscard]] std::vector<Imbuement*> getImbuements(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item = nullptr, bool scroll = false);
 
 protected:
 	friend class Imbuement;
@@ -65,6 +67,7 @@ protected:
 
 private:
 	std::map<uint32_t, Imbuement> imbuementMap;
+	std::unordered_map<uint16_t, Imbuement*> scrollIdMap;
 
 	std::vector<BaseImbuement> basesImbuement;
 	std::vector<CategoryImbuement> categoriesImbuement;
@@ -79,29 +82,38 @@ public:
 	Imbuement(uint16_t initId, uint16_t initBaseId) :
 		id(initId), baseid(initBaseId) { }
 
-	uint16_t getID() const;
+	[[nodiscard]] uint16_t getID() const;
 
-	uint16_t getBaseID() const;
+	[[nodiscard]] uint16_t getBaseID() const;
 
-	uint32_t getStorage() const;
+	[[nodiscard]] uint32_t getStorage() const;
 
-	bool isPremium() const;
-	std::string getName() const;
-	std::string getDescription() const;
+	[[nodiscard]] bool isPremium() const;
+	[[nodiscard]] std::string getName() const;
+	[[nodiscard]] std::string getDescription() const;
 
-	std::string getSubGroup() const;
+	[[nodiscard]] std::string getSubGroup() const;
 
-	uint16_t getCategory() const;
+	[[nodiscard]] uint16_t getCategory() const;
 
-	const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
+	[[nodiscard]] const std::vector<std::pair<uint16_t, uint16_t>> &getItems() const;
 
-	uint16_t getIconID() const;
+	[[nodiscard]] uint16_t getIconID() const;
+	[[nodiscard]] uint16_t getScrollItemID() const;
 
+	uint16_t scrollId = 0;
 	uint16_t icon = 1;
 	int32_t stats[maxSkillOrStatId + 1] = {};
 	int32_t skills[SKILL_LAST + 1] = {};
 	int32_t speed = 0;
 	uint32_t capacity = 0;
+
+	/////////Imbuement Vibrancy/////////
+	// Chance (0-100) to remove paralysis when a paralysis condition would be applied
+	uint8_t paralysisRemoveChance = 0;
+	// If true: when receiving additional PvP paralyse attacks while already paralyzed, the new paralyse is deflected (ignored)
+	bool pvpParalysisDeflect = false;
+
 	int16_t absorbPercent[COMBAT_COUNT] = {};
 	int16_t elementDamage = 0;
 	SoundEffect_t soundEffect = SoundEffect_t::SILENCE;
@@ -124,3 +136,32 @@ private:
 
 	std::vector<std::pair<uint16_t, uint16_t>> items;
 };
+
+class ImbuementDecay {
+public:
+	// ImbuementDecay tracks timer persistence for items that currently have active imbuements.
+	ImbuementDecay() = default;
+
+	// Non-copyable
+	ImbuementDecay(const ImbuementDecay &) = delete;
+	ImbuementDecay &operator=(const ImbuementDecay &) = delete;
+
+	static ImbuementDecay &getInstance();
+
+	void startImbuementDecay(const std::shared_ptr<Item> &item);
+	void stopImbuementDecay(const std::shared_ptr<Item> &item);
+	void checkImbuementDecay();
+
+private:
+	struct TrackedImbuementItem {
+		std::weak_ptr<Item> item;
+		int64_t lastUpdate = 0;
+	};
+
+	bool canDecayImbuement(const std::shared_ptr<Item> &item, const ImbuementInfo &imbuementInfo) const;
+
+	std::unordered_map<Item*, TrackedImbuementItem> m_itemsToDecay;
+	uint32_t m_eventId { 0 };
+};
+
+constexpr auto g_imbuementDecay = ImbuementDecay::getInstance;

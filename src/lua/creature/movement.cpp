@@ -16,6 +16,7 @@
 #include "game/game.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/events.hpp"
+#include "creatures/players/imbuements/imbuements.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/item.hpp"
@@ -546,6 +547,8 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 
 	player->setItemAbility(slot, true);
 
+	g_imbuementDecay().startImbuementDecay(item);
+
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
 		ImbuementInfo imbuementInfo;
@@ -620,8 +623,15 @@ uint32_t MoveEvent::EquipItem(const std::shared_ptr<MoveEvent> &moveEvent, const
 		player->setMainBackpackUnassigned(item->getContainer());
 	}
 
+	if (slot == CONST_SLOT_LEFT) {
+		player->weaponProficiency().clearAllStats();
+		player->weaponProficiency().applyPerks(item->getID(), false);
+		player->sendWeaponProficiency(item->getID());
+	}
+
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 
@@ -643,6 +653,8 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 
 	const ItemType &it = Item::items[item->getID()];
 	player->setItemAbility(slot, false);
+
+	g_imbuementDecay().stopImbuementDecay(item);
 
 	for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
 		player->updateImbuementTrackerStats();
@@ -690,24 +702,32 @@ uint32_t MoveEvent::DeEquipItem(const std::shared_ptr<MoveEvent> &, const std::s
 		g_game().changePlayerSpeed(player, -item->getSpeed());
 	}
 
-	std::vector<ConditionType_t> toRemove;
-	for (auto cond : it.abilities->conditionSuppressions) {
-		if (cond == ConditionType_t::CONDITION_NONE) {
-			continue;
+	if (it.abilities) {
+		std::vector<ConditionType_t> toRemove;
+		for (auto cond : it.abilities->conditionSuppressions) {
+			if (cond == ConditionType_t::CONDITION_NONE) {
+				continue;
+			}
+			toRemove.emplace_back(cond);
 		}
-		toRemove.emplace_back(cond);
-	}
-	if (!toRemove.empty()) {
-		player->removeConditionSuppressions(toRemove);
-		player->sendIcons();
+		if (!toRemove.empty()) {
+			player->removeConditionSuppressions(toRemove);
+			player->sendIcons();
+		}
 	}
 
 	if (it.transformDeEquipTo != 0) {
 		g_game().transformItem(item, it.transformDeEquipTo);
 	}
 
+	if (slot == CONST_SLOT_LEFT) {
+		player->weaponProficiency().clearAllStats();
+		player->sendWeaponProficiency(item->getID());
+	}
+
 	player->sendStats();
 	player->sendSkills();
+	player->updatePartyMantra();
 	return 1;
 }
 

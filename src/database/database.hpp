@@ -83,7 +83,7 @@ private:
 	static bool isRecoverableError(unsigned int error);
 
 	MYSQL* handle = nullptr;
-	std::recursive_mutex databaseLock;
+	mutable std::recursive_mutex databaseLock;
 	uint64_t maxPacketSize = 1048576;
 
 	friend class DBTransaction;
@@ -231,21 +231,51 @@ public:
 	DBTransaction &operator=(const DBTransaction &&) = delete;
 
 	template <typename Func>
-	static bool executeWithinTransaction(const Func &toBeExecuted) {
-		bool changesExpected = toBeExecuted();
-		if (changesExpected) {
-			DBTransaction transaction;
-			try {
-				transaction.begin();
-				transaction.commit();
-				return changesExpected;
-			} catch (const std::exception &exception) {
-				transaction.rollback();
-				g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+	static bool executeWithinTransaction(const Func &callback)
+		requires std::invocable<Func>
+	{
+		DBTransaction transaction;
+		try {
+			if (!transaction.begin()) {
+				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
 				return false;
 			}
-		} else {
-			return true;
+
+			const bool result = callback();
+
+			if (!transaction.commit()) {
+				return false;
+			}
+
+			return result;
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
+		}
+	}
+
+	template <typename Func>
+	static bool executeWithinTransactionRollbackOnFailure(const Func &callback)
+		requires std::invocable<Func>
+	{
+		DBTransaction transaction;
+		try {
+			if (!transaction.begin()) {
+				g_logger().error("[{}] Failed to begin transaction", __FUNCTION__);
+				return false;
+			}
+
+			if (!callback()) {
+				transaction.rollback();
+				return false;
+			}
+
+			return transaction.commit();
+		} catch (const std::exception &exception) {
+			transaction.rollback();
+			g_logger().error("[{}] Error occurred during transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 
@@ -284,21 +314,28 @@ private:
 		}
 	}
 
-	void commit() {
+	bool commit() {
 		// Ensure that the transaction has been started
 		if (state != STATE_START) {
 			g_logger().error("Transaction not started");
-			return;
+			return false;
 		}
 
 		try {
 			// Commit the transaction
 			state = STATE_COMMIT;
-			Database::getInstance().commit();
+			if (!Database::getInstance().commit()) {
+				state = STATE_NO_START;
+				g_logger().error("[{}] Commit returned false", __FUNCTION__);
+				return false;
+			}
+
+			return true;
 		} catch (const std::exception &exception) {
 			// An error occurred while committing the transaction
 			state = STATE_NO_START;
 			g_logger().error("[{}] An error occurred while committing the transaction, error: {}", __FUNCTION__, exception.what());
+			return false;
 		}
 	}
 

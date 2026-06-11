@@ -74,6 +74,8 @@ StyleCopReport.xml
 *_p.c
 *_h.h
 *.ilk
+*.exp
+*.lib
 *.meta
 *.obj
 *.iobj
@@ -395,9 +397,16 @@ canary.old
 # VCPKG
 vcpkg_installed
 
+# Cppcheck Cache
+.cppcheck_cache/
+
 # DB Backups
 database_backup
+cache/lua-bytecode/
 
 # CLION
 cmake-build-*
 compile_commands.json
+/plan
+/enc_temp_folder
+canary-debug

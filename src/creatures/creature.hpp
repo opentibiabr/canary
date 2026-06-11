@@ -95,16 +95,34 @@ public:
 	virtual std::shared_ptr<const Player> getPlayer() const {
 		return nullptr;
 	}
+	virtual Player* getPlayerRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Player* getPlayerRaw() const noexcept {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Npc> getNpc() {
 		return nullptr;
 	}
 	virtual std::shared_ptr<const Npc> getNpc() const {
 		return nullptr;
 	}
+	virtual Npc* getNpcRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Npc* getNpcRaw() const noexcept {
+		return nullptr;
+	}
 	virtual std::shared_ptr<Monster> getMonster() {
 		return nullptr;
 	}
 	virtual std::shared_ptr<const Monster> getMonster() const {
+		return nullptr;
+	}
+	virtual Monster* getMonsterRaw() noexcept {
+		return nullptr;
+	}
+	virtual const Monster* getMonsterRaw() const noexcept {
 		return nullptr;
 	}
 
@@ -252,6 +270,10 @@ public:
 
 	void setBuff(buffs_t buff, int32_t modifier) {
 		varBuffs[buff] += modifier;
+	}
+
+	void resetBuff(buffs_t buff) {
+		varBuffs[buff] = 100;
 	}
 
 	virtual std::vector<CreatureIcon> getIcons() const {
@@ -571,6 +593,10 @@ public:
 		return position;
 	}
 
+	const Position &getPosition() const final {
+		return position;
+	}
+
 	std::shared_ptr<Tile> getTile() final {
 		return m_tile.lock();
 	}
@@ -777,7 +803,7 @@ protected:
 
 	uint32_t manaShield = 0;
 	uint32_t maxManaShield = 0;
-	int32_t varBuffs[BUFF_LAST + 1] = { 100, 100, 100 };
+	std::array<int32_t, BUFF_LAST + 1> varBuffs = { 100, 100, 100, 100, 100, 100, 100 };
 
 	std::array<int32_t, COMBAT_COUNT> reflectPercent = { 0 };
 	std::array<int32_t, COMBAT_COUNT> reflectFlat = { 0 };

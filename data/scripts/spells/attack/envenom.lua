@@ -28,6 +28,6 @@ spell:needTarget(true)
 spell:blockWalls(true)
 spell:cooldown(40 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("druid;true", "elder druid;true")
 spell:register()

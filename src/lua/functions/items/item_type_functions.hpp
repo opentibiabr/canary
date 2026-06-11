@@ -36,6 +36,7 @@ private:
 	static int luaItemTypeIsKey(lua_State* L);
 	static int luaItemTypeIsQuiver(lua_State* L);
 	static int luaItemTypeIsPodium(lua_State* L);
+	static int luaItemTypeIsWeapon(lua_State* L);
 
 	static int luaItemTypeGetType(lua_State* L);
 	static int luaItemTypeGetId(lua_State* L);
@@ -76,6 +77,7 @@ private:
 	static int luaItemTypeGetShowDuration(lua_State* L);
 	static int luaItemTypeGetWrapableTo(lua_State* L);
 	static int luaItemTypeGetVocationString(lua_State* L);
+	static int luaItemTypeGetElementalBond(lua_State* L);
 
 	static int luaItemTypeHasSubType(lua_State* L);
 };

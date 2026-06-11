@@ -1,0 +1,202 @@
+---
+name: Reusable macOS Build
+
+on:
+  workflow_call:
+    inputs:
+      run_canary_smoke:
+        description: Run the data-canary runtime smoke test.
+        required: false
+        type: boolean
+        default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
+    secrets:
+      VCPKG_PACKAGES_TOKEN:
+        required: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Compile (macOS)
+    runs-on: macos-latest
+    env:
+      VCPKG_BINARY_SOURCES: "clear;nugettimeout,600;nuget,https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json,${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'readwrite' || 'read' }}"
+    steps:
+      - name: Checkout repository
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        shell: bash
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
+
+      - name: Get vcpkg baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' | tr -d '," ')
+          echo "VCPKG_GIT_COMMIT_ID=$vcpkgCommitId" >> "$GITHUB_ENV"
+
+      - name: Install macOS dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew update
+          brew install ccache ninja pkg-config mono mysql
+          which ninja
+          ninja --version
+
+      - name: CCache
+        uses: hendrikmuhs/ccache-action@v1.2.23
+        with:
+          max-size: "1G"
+          key: ccache-macos-release
+          restore-keys: |
+            ccache-macos
+
+      - name: Setup vcpkg
+        uses: lukka/run-vcpkg@v11
+        with:
+          vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
+          vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
+
+      - name: Setup NuGet source for vcpkg (GitHub Packages)
+        shell: bash
+        env:
+          NUGET_AUTH_TOKEN: ${{ secrets.VCPKG_PACKAGES_TOKEN || github.token }}
+        run: |
+          set -euo pipefail
+
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+
+          NUGET_PATH="$(vcpkg fetch nuget 2>&1 | grep -E '^/' | tail -n 1)"
+          if [[ -z "${NUGET_PATH}" || ! -f "${NUGET_PATH}" ]]; then
+            echo "Failed to locate NuGet fetched by vcpkg."
+            vcpkg fetch nuget 2>&1 || true
+            exit 1
+          fi
+
+          mono "${NUGET_PATH}" sources remove -name "GitHubPackages" >/dev/null 2>&1 || true
+          mono "${NUGET_PATH}" sources add \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            -storepasswordincleartext \
+            -name "GitHubPackages" \
+            -username "${{ github.repository_owner }}" \
+            -password "${NUGET_AUTH_TOKEN}"
+          mono "${NUGET_PATH}" setapikey "${NUGET_AUTH_TOKEN}" \
+            -source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+
+      - name: Configure (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --preset macos-release -DTOGGLE_BIN_FOLDER=ON -DOPTIONS_ENABLE_CCACHE=ON -DOPTIONS_ENABLE_SCCACHE=OFF
+
+      - name: Build (CMake preset)
+        shell: bash
+        run: |
+          set -euo pipefail
+          unset VCPKG_FORCE_SYSTEM_BINARIES
+          cmake --build --preset macos-release
+
+      - name: Start MySQL
+        if: inputs.run_canary_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          brew services start mysql || mysql.server start
+          for _ in {1..60}; do
+            if mysqladmin ping -uroot --silent >/dev/null 2>&1; then
+              break
+            fi
+            sleep 2
+          done
+          mysqladmin ping -uroot --silent
+          mysql -uroot -e "
+            CREATE USER IF NOT EXISTS 'canary_ci'@'localhost' IDENTIFIED BY 'root';
+            CREATE USER IF NOT EXISTS 'canary_ci'@'127.0.0.1' IDENTIFIED BY 'root';
+            GRANT ALL PRIVILEGES ON *.* TO 'canary_ci'@'localhost';
+            GRANT ALL PRIVILEGES ON *.* TO 'canary_ci'@'127.0.0.1';
+            FLUSH PRIVILEGES;
+          "
+
+      - name: Smoke test Canary datapack runtime
+        if: inputs.run_canary_smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/smoke_test_canary.py \
+            --binary-path build/macos-release/bin/canary \
+            --data-pack data-canary \
+            --map-name canary \
+            --db-host 127.0.0.1 \
+            --db-port 3306 \
+            --db-user canary_ci \
+            --db-password root \
+            --db-name canary_smoke_macos_canary \
+            --login-port 7471 \
+            --game-port 7472 \
+            --status-port 7471 \
+            --startup-timeout-seconds 420 \
+            --fail-on-warnings
+
+      - name: Upload runtime smoke logs
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: macos-runtime-smoke-logs
+          path: build/runtime-smoke-logs/
+          if-no-files-found: ignore
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: canary-macos-release
+          path: build/macos-release
+
+      - name: Verify vcpkg binary cache push
+        if: success() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+          found_logs=false
+          while IFS= read -r -d '' log; do
+            found_logs=true
+            if grep -q "to 0 binary cache(s)" -- "$log"; then
+              echo "Binary cache push reported 0 caches." >&2
+              exit 1
+            fi
+          done < <(find . -name "vcpkg-manifest-install.log" -print0)
+
+          if [[ "${found_logs}" != true ]]; then
+            echo "No vcpkg manifest logs found." >&2
+            exit 1
+          fi

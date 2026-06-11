@@ -9,33 +9,32 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+	#include <string>
+#endif
+
 class Logger;
+class RsaBackend;
 
-class RSA {
+class RSAManager {
 public:
-	explicit RSA(Logger &logger);
-	~RSA();
+	RSAManager(const RSAManager &) = delete;
+	void operator=(const RSAManager &) = delete;
 
-	// Singleton - ensures we don't accidentally copy it
-	RSA(RSA const &) = delete;
-	void operator=(RSA const &) = delete;
+	static RSAManager &getInstance();
 
-	static RSA &getInstance();
+	explicit RSAManager(Logger &logger);
+	~RSAManager();
 
-	void start();
-
+	void start(const std::string &filename = "key.pem");
 	void setKey(const char* pString, const char* qString, int base = 10);
 	void decrypt(char* msg) const;
-
-	std::string base64Decrypt(const std::string &input) const;
-	uint16_t decodeLength(char*&pos) const;
-	void readHexString(char*&pos, uint16_t length, std::string &output) const;
 	bool loadPEM(const std::string &filename);
 
 private:
 	Logger &logger;
-	mpz_t n {};
-	mpz_t d {};
+	std::unique_ptr<RsaBackend> backend;
 };
 
-constexpr auto g_RSA = RSA::getInstance;
+constexpr auto g_RSA = RSAManager::getInstance;

@@ -28,6 +28,6 @@ spell:isPremium(true)
 spell:needDirection(true)
 spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
-spell:needLearn(false)
+
 spell:vocation("druid;true", "elder druid;true")
 spell:register()

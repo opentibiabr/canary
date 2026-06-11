@@ -14,6 +14,24 @@
 #include "lib/metrics/metrics.hpp"
 #include "utils/tools.hpp"
 
+#include <iterator>
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <fmt/format.h>
+	#include <string_view>
+#endif
+
+namespace {
+
+	void appendInsertBaseQuery(std::string &sql, std::string_view baseQuery, bool baseHasSpace) {
+		sql += baseQuery;
+		if (!baseHasSpace) {
+			sql.push_back(' ');
+		}
+	}
+
+}
+
 Database::~Database() {
 	if (handle != nullptr) {
 		mysql_close(handle);
@@ -68,9 +86,8 @@ void Database::createDatabaseBackup(bool compress) const {
 
 	// Get current time for formatting
 	auto now = std::chrono::system_clock::now();
-	std::time_t now_c = std::chrono::system_clock::to_time_t(now);
-	std::string formattedDate = fmt::format("{:%Y-%m-%d}", fmt::localtime(now_c));
-	std::string formattedTime = fmt::format("{:%H-%M-%S}", fmt::localtime(now_c));
+	std::string formattedDate = fmt::format("{:%Y-%m-%d}", now);
+	std::string formattedTime = fmt::format("{:%H-%M-%S}", now);
 
 	// Create a backup directory based on the current date
 	std::string backupDir = fmt::format("database_backup/{}/", formattedDate);
@@ -287,6 +304,10 @@ std::string Database::escapeString(const std::string &s) const {
 }
 
 std::string Database::escapeBlob(const char* s, uint32_t length) const {
+	metrics::lock_latency measureLock("database");
+	std::scoped_lock lock { databaseLock };
+	measureLock.stop();
+
 	size_t maxLength = (length * 2) + 1;
 
 	std::string escaped;
@@ -393,13 +414,21 @@ DBInsert::DBInsert(std::string insertQuery) :
 
 bool DBInsert::addRow(std::string_view row) {
 	const size_t rowLength = row.length();
-	length += rowLength;
 	auto max_packet_size = Database::getInstance().getMaxPacketSize();
+	size_t addedLength = values.empty() ? rowLength + 2 : rowLength + 3;
 
-	if (length > max_packet_size && !execute()) {
-		return false;
+	if (length + addedLength > max_packet_size) {
+		if (values.empty() || !execute()) {
+			return false;
+		}
+
+		addedLength = rowLength + 2;
+		if (length + addedLength > max_packet_size) {
+			return false;
+		}
 	}
 
+	length += addedLength;
 	if (values.empty()) {
 		values.reserve(rowLength + 2);
 		values.push_back('(');
@@ -430,24 +459,37 @@ bool DBInsert::execute() {
 		return true;
 	}
 
-	std::string baseQuery = this->query;
+	const std::string &baseQuery = this->query;
 	std::string upsertQuery;
 
 	if (!upsertColumns.empty()) {
-		std::ostringstream upsertStream;
-		upsertStream << " ON DUPLICATE KEY UPDATE ";
+		size_t estimatedSize = 32;
+		for (const auto &column : upsertColumns) {
+			estimatedSize += (column.size() * 2) + 16;
+		}
+
+		upsertQuery.reserve(estimatedSize);
+		upsertQuery += " ON DUPLICATE KEY UPDATE ";
+		auto upsertOutput = std::back_inserter(upsertQuery);
 		for (size_t i = 0; i < upsertColumns.size(); ++i) {
-			upsertStream << "`" << upsertColumns[i] << "` = VALUES(`" << upsertColumns[i] << "`)";
-			if (i < upsertColumns.size() - 1) {
-				upsertStream << ", ";
+			upsertOutput = fmt::format_to(upsertOutput, "`{0}` = VALUES(`{0}`)", upsertColumns[i]);
+			if (i + 1 < upsertColumns.size()) {
+				upsertQuery.push_back(',');
+				upsertQuery.push_back(' ');
 			}
 		}
-		upsertQuery = upsertStream.str();
 	}
 
 	std::string currentBatch = values;
+	const bool baseHasSpace = !baseQuery.empty() && baseQuery.back() == ' ';
+	const size_t separatorSize = baseHasSpace ? 0U : 1U;
+	const size_t queryPrefixSize = baseQuery.size() + separatorSize + upsertQuery.size();
+	if (queryPrefixSize >= Database::MAX_QUERY_SIZE) {
+		return false;
+	}
+
 	while (!currentBatch.empty()) {
-		size_t cutPos = Database::MAX_QUERY_SIZE - baseQuery.size() - upsertQuery.size();
+		size_t cutPos = Database::MAX_QUERY_SIZE - queryPrefixSize;
 		if (cutPos < currentBatch.size()) {
 			cutPos = currentBatch.rfind("),(", cutPos);
 			if (cutPos == std::string::npos) {
@@ -459,17 +501,23 @@ bool DBInsert::execute() {
 		}
 
 		std::string batchValues = currentBatch.substr(0, cutPos);
-		if (batchValues.back() == ',') {
+		if (!batchValues.empty() && batchValues.back() == ',') {
 			batchValues.pop_back();
 		}
 		currentBatch = currentBatch.substr(cutPos);
 
-		std::ostringstream query;
-		query << baseQuery << " " << batchValues << upsertQuery;
-		if (!Database::getInstance().executeQuery(query.str())) {
+		std::string sql;
+		sql.reserve(queryPrefixSize + batchValues.size());
+		appendInsertBaseQuery(sql, baseQuery, baseHasSpace);
+		sql += batchValues;
+		sql += upsertQuery;
+
+		if (!g_database().executeQuery(sql)) {
 			return false;
 		}
 	}
 
+	values.clear();
+	length = this->query.length();
 	return true;
 }

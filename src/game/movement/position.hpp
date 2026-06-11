@@ -128,6 +128,7 @@ namespace std {
 std::ostream &operator<<(std::ostream &, const Position &);
 std::ostream &operator<<(std::ostream &, const Direction &);
 
+// Automatic conversion to string from Position
 template <>
 struct fmt::formatter<Position> {
 	constexpr auto parse(format_parse_context &ctx) {

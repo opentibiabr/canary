@@ -82,7 +82,7 @@ function lowerRoshamuulChamber.onUse(cid, item, fromPosition, itemEx, toPosition
 		end
 
 		local raid = config.raid
-		for y, x in pairs(raid) do
+		for y, x in ipairs(raid) do
 			local i = 1
 			while i <= #x do
 				time = time + config.timeBetweenraid

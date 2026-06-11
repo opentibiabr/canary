@@ -607,10 +607,6 @@ function onUsePick(player, item, fromPosition, target, toPosition, isHotkey)
 		target:transform(594)
 		target:decay()
 		toPosition:sendMagicEffect(CONST_ME_HITAREA)
-	elseif target.itemid == 6298 and target.actionid > 0 then
-		target:transform(615)
-		target:decay()
-		toPosition:sendMagicEffect(CONST_ME_HITAREA)
 	elseif target.itemid == 21341 then
 		target:transform(21342)
 		target:decay()
@@ -957,30 +953,36 @@ function onUseSpoon(player, item, fromPosition, target, toPosition, isHotkey)
 			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SporesMushroom, 1)
 			toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
 			player:say("You retrieve spores from a mushroom.", TALKTYPE_MONSTER_SAY)
-			return true
 		end
-	elseif targetId == 390 then
-		-- The Ice Islands Quest - Cure the Dogs
-		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
-			if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava) < 1 then
-				player:addItem(7247, 1) -- fine sulphur
-				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava, 1)
-				toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
-				player:say("You retrieve a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
-			end
-		-- What a Foolish Quest - Mission 8 (sulphur)
-		elseif player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 21 then
-			if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur) < 1 then
-				player:addItem(124, 1) -- Easily inflammable sulphur
-				player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur, 1)
-				toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
-			end
-		else
-			return false
-		end
+		return true
 	end
 
-	return true
+	if targetId ~= 390 then
+		return false
+	end
+
+	-- The Ice Islands Quest - Cure the Dogs
+	if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline) >= 21 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava) < 1 then
+			player:addItem(7247, 1) -- fine sulphur
+			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.SulphurLava, 1)
+			toPosition:sendMagicEffect(CONST_ME_MAGIC_RED)
+			player:say("You retrieve a fine sulphur from a lava hole.", TALKTYPE_MONSTER_SAY)
+		end
+		return true
+	end
+
+	-- What a Foolish Quest - Mission 8 (sulphur)
+	if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline) == 21 then
+		if player:getStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur) < 1 then
+			player:addItem(124, 1) -- Easily inflammable sulphur
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.InflammableSulphur, 1)
+			toPosition:sendMagicEffect(CONST_ME_YELLOW_RINGS)
+		end
+		return true
+	end
+
+	return false
 end
 
 function onUseSpikedSquelcher(player, item, fromPosition, target, toPosition, isHotkey)

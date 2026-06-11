@@ -1,0 +1,42 @@
+---
+name: Reusable Lua Tests
+
+on:
+  workflow_call:
+    inputs:
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
+
+jobs:
+  job:
+    name: Run Lua Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Lua
+        run: sudo apt-get update && sudo apt-get install -y luajit
+      - name: Check out code
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Check out requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+      - name: Run Tests
+        run: |
+          failed=0
+          for f in tests/lua/test_*.lua; do
+            echo "=== $f ==="
+            if ! luajit "$f"; then
+              failed=1
+            fi
+          done
+          exit $failed

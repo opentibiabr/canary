@@ -35,6 +35,7 @@ void ItemTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "ItemType", "isKey", ItemTypeFunctions::luaItemTypeIsKey);
 	Lua::registerMethod(L, "ItemType", "isQuiver", ItemTypeFunctions::luaItemTypeIsQuiver);
 	Lua::registerMethod(L, "ItemType", "isPodium", ItemTypeFunctions::luaItemTypeIsPodium);
+	Lua::registerMethod(L, "ItemType", "isWeapon", ItemTypeFunctions::luaItemTypeIsWeapon);
 
 	Lua::registerMethod(L, "ItemType", "getType", ItemTypeFunctions::luaItemTypeGetType);
 	Lua::registerMethod(L, "ItemType", "getId", ItemTypeFunctions::luaItemTypeGetId);
@@ -76,6 +77,7 @@ void ItemTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "ItemType", "getSpeed", ItemTypeFunctions::luaItemTypeGetSpeed);
 	Lua::registerMethod(L, "ItemType", "getBaseSpeed", ItemTypeFunctions::luaItemTypeGetBaseSpeed);
 	Lua::registerMethod(L, "ItemType", "getVocationString", ItemTypeFunctions::luaItemTypeGetVocationString);
+	Lua::registerMethod(L, "ItemType", "getElementalBond", ItemTypeFunctions::luaItemTypeGetElementalBond);
 
 	Lua::registerMethod(L, "ItemType", "hasSubType", ItemTypeFunctions::luaItemTypeHasSubType);
 
@@ -289,6 +291,17 @@ int ItemTypeFunctions::luaItemTypeIsPodium(lua_State* L) {
 	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		Lua::pushBoolean(L, itemType->isPodium);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeIsWeapon(lua_State* L) {
+	// itemType:isWeapon()
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		Lua::pushBoolean(L, itemType->isWeapon());
 	} else {
 		lua_pushnil(L);
 	}
@@ -699,6 +712,17 @@ int ItemTypeFunctions::luaItemTypeGetVocationString(lua_State* L) {
 	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		Lua::pushString(L, itemType->vocationString);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetElementalBond(lua_State* L) {
+	// itemType:getElementalBond()
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		lua_pushnumber(L, itemType->elementalBond);
 	} else {
 		lua_pushnil(L);
 	}

@@ -15,26 +15,64 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void GlobalEventFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "GlobalEvent", "", GlobalEventFunctions::luaCreateGlobalEvent);
+	Lua::registerSharedClass<GlobalEvent>(L, "", GlobalEventFunctions::luaCreateGlobalEvent);
 	Lua::registerMethod(L, "GlobalEvent", "type", GlobalEventFunctions::luaGlobalEventType);
 	Lua::registerMethod(L, "GlobalEvent", "register", GlobalEventFunctions::luaGlobalEventRegister);
 	Lua::registerMethod(L, "GlobalEvent", "time", GlobalEventFunctions::luaGlobalEventTime);
 	Lua::registerMethod(L, "GlobalEvent", "interval", GlobalEventFunctions::luaGlobalEventInterval);
+	/***
+	 * @function GlobalEvent:onThink
+	 * @param callback fun(interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onThink", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onTime
+	 * @param callback fun(interval: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onTime", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onStartup
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onStartup", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onShutdown
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onShutdown", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onRecord
+	 * @param callback fun(current: integer, old: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onRecord", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onPeriodChange
+	 * @param callback fun(lightState: integer, lightLevel: integer): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onPeriodChange", GlobalEventFunctions::luaGlobalEventOnCallback);
+	/***
+	 * @function GlobalEvent:onSave
+	 * @param callback fun(): boolean
+	 * @return boolean
+	 */
 	Lua::registerMethod(L, "GlobalEvent", "onSave", GlobalEventFunctions::luaGlobalEventOnCallback);
 }
 
+/***
+ * @class GlobalEvent
+ * @overload fun(name: string): GlobalEvent
+ */
 int GlobalEventFunctions::luaCreateGlobalEvent(lua_State* L) {
 	const auto global = std::make_shared<GlobalEvent>();
 	global->setName(Lua::getString(L, 2));
 	global->setEventType(GLOBALEVENT_NONE);
-	Lua::pushUserdata<GlobalEvent>(L, global);
-	Lua::setMetatable(L, -1, "GlobalEvent");
+	Lua::pushSharedUserdata<GlobalEvent>(L, global);
 	return 1;
 }
 

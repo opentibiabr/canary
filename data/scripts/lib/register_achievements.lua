@@ -548,7 +548,25 @@ ACHIEVEMENTS = {
 	[547] = { name = "Museum Goer", grade = 1, points = 2, description = "You unveiled the secret plot of the Mitmah who stole away an entire civilisation for their own entertainment. Let the death of their outpost vanguard be an eternal lesson to them." },
 	[548] = { name = "Mystic Predator", grade = 1, points = 3, description = "Proving your true worth to a mystic creature like the jaguar, king of the hunt, granted you not only respect but also its heart." },
 	[549] = { name = "The Rule of Raccool", grade = 1, points = 2, description = "You almost feel as cool as a raccoon. Now, where's the trash?" },
-	[550] = { name = "Fiend Slayer", grade = 1, points = 2, description = "No living fiends were hurt to achieve this outfit." },
+	[552] = { name = "I Wanna Fly Away", grade = 1, points = 3, description = "... on a pegasus, to a land of honey and milk. With this beautiful flying steed you certainly can." },
+	[553] = { name = "The Rootwalker", grade = 1, points = 2, description = "Traversing the entrances to Podzilla is an achievement in itself, thanks to Two Lips you are now one with the plant biosphere as you walk its many intertwined trails." },
+	[554] = { name = "Soul Crusher", grade = 1, points = 2, description = "The Soulpit resonates as the spirit of your final foe shatters under your might." },
+	[555] = { name = "Inner Peace", grade = 1, points = 2, description = "The transcendence to a higher state of mind and existence in order to achieve inner peace has been amplified by various means throughout Merudri history. Among them a manifold of potions with varying potency - it seems some of them actually work..." },
+	[556] = { name = "Fiend Rider", grade = 1, points = 2, description = "Riding such an ancient beast is certainly a good and harmless idea." },
+	[557] = { name = "Fiend Slayer", grade = 1, points = 2, description = "No living fiends were hurt to achieve this outfit." },
+	[558] = { name = "Tear the Toxic Veil", grade = 3, points = 7, description = "On the shoulders of demons, you tore through veils of venomous corruption. Demonic essences made you an unstoppable force but take care to also foster your human side." },
+	[559] = { name = "Hope of the Merudri", grade = 1, points = 3, description = "You followed the Three-Fold Path as did generations of Merudri before you. Carry the legacy, culture and hope of the Merudri proudly into this realm, the hearts of its people and beyond." },
+	[560] = { name = "Umbral Redeemer", grade = 2, points = 6, description = "You managed to create, improve and transform your katar into a master state and have proven yourself worthy in a nightmarish world." },
+	[561] = { name = "Hell Rider", grade = 1, points = 2, description = "Pray it never finds its way back to its original stable with you still riding." },
+	[562] = { name = "Alpha Rider", grade = 1, points = 2, description = "You never can tell, who's boss here." },
+	-- [563] = Unknown/non-existent
+	[564] = { name = "The First of Many", grade = 1, points = 3, description = "The first step to greatness has been done." },
+	[565] = { name = "A Well-Honed Arsenal", grade = 2, points = 5, description = "Your expertise in weaponry reaches new heights." },
+	[566] = { name = "Arsenal of War", grade = 3, points = 7, description = "Feared by your enemies, admired by many - your reputation in weapon mastery precedes you." },
+	-- [567] = Unknown/non-existent
+	[568] = { name = "Bat Person", grade = 1, points = 3, description = "No matter your command, this beast is all ears!" },
+	[569] = { name = "Illuminator", grade = 1, points = 3, description = "Joran and Yvette have brought the colours back to the world, and you have freed it from the monsters of this story. The world of books is now yours." },
+	[570] = { name = "Power of Words", grade = 2, points = 5, description = "The pen is mightier than the sword. In a way, yes, you have had this experience. You have seen with your own eyes what the power of words can do, the written word, to be precise." },
 }
 
 --[[
@@ -623,16 +641,18 @@ function Player.getAchievements(self)
 end
 
 function Player.addAllAchievements(self, denyMsg)
-	for achievIdentifier = ACHIEVEMENT_FIRST, ACHIEVEMENT_LAST do
-		self:addAchievement(achievIdentifier, denyMsg)
+	for id in pairs(ACHIEVEMENTS) do
+		if type(id) == "number" then
+			self:addAchievement(id, denyMsg)
+		end
 	end
 	return true
 end
 
 function Player.removeAllAchievements(self)
-	for achievIdentifier = 1, #ACHIEVEMENTS do
-		if self:hasAchievement(achievIdentifier) then
-			self:removeAchievement(achievIdentifier)
+	for id in pairs(ACHIEVEMENTS) do
+		if type(id) == "number" then
+			self:removeAchievement(id)
 		end
 	end
 	return true

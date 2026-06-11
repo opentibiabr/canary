@@ -26,4 +26,6 @@ private:
 
 	static bool loadContainer(PropStream &propStream, const std::shared_ptr<Container> &container);
 	static bool loadItem(PropStream &propStream, const std::shared_ptr<Cylinder> &parent, bool isHouseItem = false);
+
+	static thread_local inline std::vector<std::shared_ptr<BedItem>> bedsToCheck;
 };

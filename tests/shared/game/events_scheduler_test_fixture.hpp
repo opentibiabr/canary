@@ -1,13 +1,5 @@
 #pragma once
 
-#include <filesystem>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <system_error>
-
-#include <gtest/gtest.h>
-
 #include "config/configmanager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "kv/kv.hpp"
@@ -23,11 +15,26 @@ namespace test::events_scheduler {
 			ASSERT_FALSE(repoRoot_.empty()) << "Could not locate repository root";
 			std::filesystem::current_path(repoRoot_);
 
-			eventsJsonPath_ = repoRoot_ / "tests/fixture/core/json/eventscheduler/events.json";
+			fixtureEventsJsonPath_ = repoRoot_ / "tests/fixture/core/json/eventscheduler/events.json";
+			eventsJsonPath_ = fixtureEventsJsonPath_;
 			originalEventsJson_ = readEventsJson();
 
+			const auto nowTicks = std::chrono::steady_clock::now().time_since_epoch().count();
+			tempCoreDir_ = std::filesystem::temp_directory_path() / ("canary-events-scheduler-" + std::to_string(nowTicks));
+			std::filesystem::create_directories(tempCoreDir_ / "json/eventscheduler");
+			eventsJsonPath_ = tempCoreDir_ / "json/eventscheduler/events.json";
+			writeEventsJson(originalEventsJson_);
+
+			tempConfigFilePath_ = tempCoreDir_ / "events_scheduler_test.lua";
+			{
+				std::ofstream configFile(tempConfigFilePath_);
+				ASSERT_TRUE(configFile.is_open());
+				configFile << "coreDirectory = \"" << tempCoreDir_.generic_string() << "\"\n";
+				configFile.flush();
+			}
+
 			previousConfigFile_ = g_configManager().getConfigFileLua();
-			g_configManager().setConfigFileLua("tests/fixture/config/events_scheduler_test.lua");
+			g_configManager().setConfigFileLua(tempConfigFilePath_.string());
 			ASSERT_TRUE(g_configManager().reload());
 
 			resetSchedulerState();
@@ -37,8 +44,9 @@ namespace test::events_scheduler {
 		void TearDown() override {
 			onTearDown();
 			resetSchedulerState();
-			writeEventsJson(originalEventsJson_);
 			g_configManager().setConfigFileLua(previousConfigFile_);
+			std::error_code ec;
+			std::filesystem::remove_all(tempCoreDir_, ec);
 			std::filesystem::current_path(previousPath_);
 		}
 
@@ -62,7 +70,10 @@ namespace test::events_scheduler {
 
 		[[nodiscard]] std::string readEventsJson() const {
 			std::ifstream file(eventsJsonPath_);
-			EXPECT_TRUE(file.is_open());
+			if (!file.is_open()) {
+				ADD_FAILURE() << "Failed to open events fixture file: " << eventsJsonPath_;
+				return {};
+			}
 			std::ostringstream buffer;
 			buffer << file.rdbuf();
 			return buffer.str();
@@ -70,14 +81,17 @@ namespace test::events_scheduler {
 
 		void writeEventsJson(const std::string &content) const {
 			std::ofstream file(eventsJsonPath_);
-			EXPECT_TRUE(file.is_open());
+			ASSERT_TRUE(file.is_open());
 			file << content;
 			file.flush();
 		}
 
 		std::filesystem::path repoRoot_ {};
 		std::filesystem::path previousPath_ {};
+		std::filesystem::path fixtureEventsJsonPath_ {};
 		std::filesystem::path eventsJsonPath_ {};
+		std::filesystem::path tempCoreDir_ {};
+		std::filesystem::path tempConfigFilePath_ {};
 		std::string originalEventsJson_ {};
 		std::string previousConfigFile_ {};
 

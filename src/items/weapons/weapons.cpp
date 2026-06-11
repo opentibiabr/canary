@@ -19,6 +19,21 @@
 #include "lua/global/lua_variant.hpp"
 #include "creatures/players/player.hpp"
 
+namespace {
+	void sendWeaponSoundEffect(const std::shared_ptr<Player> &player, const CombatParams &params) {
+		if (!player) {
+			return;
+		}
+
+		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
+			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
+			return;
+		}
+
+		g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
+	}
+}
+
 Weapons::Weapons() = default;
 Weapons::~Weapons() = default;
 
@@ -117,7 +132,9 @@ void Weapon::configureWeapon(const ItemType &it) {
 	id = it.id;
 }
 
-int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, uint8_t shootRange) const {
+int32_t Weapon::playerWeaponCheck(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, int32_t shootRange) const {
+	shootRange += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_RANGE);
+
 	const Position &playerPos = player->getPosition();
 	const Position &targetPos = target->getPosition();
 	if (playerPos.z != targetPos.z) {
@@ -218,7 +235,12 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 	params.soundImpactEffect = SoundEffect_t::HUMAN_CLOSE_ATK_FIST;
 
 	CombatDamage damage;
-	damage.origin = ORIGIN_MELEE;
+	if (player->getPlayerVocationEnum() == VOCATION_MONK_CIP) {
+		damage.origin = ORIGIN_FIST;
+	} else {
+		damage.origin = ORIGIN_MELEE;
+	}
+
 	damage.primary.type = params.combatType;
 	damage.primary.value = -normal_random(0, maxDamage);
 
@@ -231,13 +253,7 @@ bool Weapon::useFist(const std::shared_ptr<Player> &player, const std::shared_pt
 }
 
 void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &target, int32_t damageModifier, int32_t cleavePercent) const {
-	if (player) {
-		if (params.soundCastEffect == SoundEffect_t::SILENCE) {
-			g_game().sendDoubleSoundEffect(player->getPosition(), player->getHitSoundEffect(), player->getAttackSoundEffect(), player);
-		} else {
-			g_game().sendDoubleSoundEffect(player->getPosition(), params.soundCastEffect, params.soundImpactEffect, player);
-		}
-	}
+	sendWeaponSoundEffect(player, params);
 
 	if (isLoadedScriptId()) {
 		if (cleavePercent != 0) {
@@ -258,6 +274,10 @@ void Weapon::internalUseWeapon(const std::shared_ptr<Player> &player, const std:
 		}
 		damage.primary.type = params.combatType;
 		damage.secondary.type = getElementType();
+
+		if (item->getWeaponType() == WEAPON_FIST) {
+			damage.origin = ORIGIN_FIST;
+		}
 
 		const int32_t totalDamage = (getWeaponDamage(player, target, item) * damageModifier) / 100;
 		const int32_t physicalAttack = item->getAttack();
@@ -577,6 +597,10 @@ bool WeaponMelee::getSkillType(const std::shared_ptr<Player> &player, const std:
 
 	const WeaponType_t weaponType = item->getWeaponType();
 	switch (weaponType) {
+		case WEAPON_FIST: {
+			skill = SKILL_FIST;
+			return true;
+		}
 		case WEAPON_SWORD: {
 			skill = SKILL_SWORD;
 			return true;
@@ -619,10 +643,11 @@ int16_t WeaponMelee::getElementDamageValue() const {
 }
 
 int32_t WeaponMelee::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &, const std::shared_ptr<Item> &item, bool maxDamage /*= false*/) const {
+	const auto proficiencyAttack = player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 	const int32_t attackSkill = player->getWeaponSkill(item);
 	const int32_t physicalAttack = std::max<int32_t>(0, item->getAttack());
 	const int32_t elementalAttack = getElementDamageValue();
-	const int32_t combinedAttack = physicalAttack + elementalAttack;
+	const int32_t combinedAttack = physicalAttack + elementalAttack + proficiencyAttack;
 
 	const float attackFactor = player->getAttackFactor();
 	const uint32_t level = player->getLevel();
@@ -803,6 +828,7 @@ bool WeaponDistance::useWeapon(const std::shared_ptr<Player> &player, const std:
 		const auto &bow = player->getWeapon(true);
 		if (bow && bow->getHitChance() != 0) {
 			chance += bow->getHitChance();
+			chance += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::RANGED_HIT_CHANCE);
 		}
 	}
 
@@ -872,6 +898,7 @@ int16_t WeaponDistance::getElementDamageValue() const {
 
 int32_t WeaponDistance::getWeaponDamage(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, const std::shared_ptr<Item> &item, bool maxDamage /*= false*/) const {
 	int32_t attackValue = item->getAttack();
+	attackValue += player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ATTACK_DAMAGE);
 	bool hasElement = false;
 
 	if (player && item && item->getWeaponType() == WEAPON_AMMO) {

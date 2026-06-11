@@ -1,8 +1,9 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE game/config_functions.cpp
             game/game_functions.cpp
             game/bank_functions.cpp
+            game/batch_update_functions.cpp
             game/global_functions.cpp
             game/lua_enums.cpp
             game/modal_window_functions.cpp

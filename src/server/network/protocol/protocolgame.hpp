@@ -12,6 +12,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -28,9 +29,13 @@ enum SpellGroup_t : uint8_t;
 enum Slots_t : uint8_t;
 enum skills_t : int8_t;
 enum CombatType_t : uint8_t;
+enum SoundMusicEffect_t : uint8_t;
+enum SoundAmbientEffect_t : uint16_t;
 enum SoundEffect_t : uint16_t;
 enum class SourceEffect_t : uint8_t;
 enum class HouseAuctionType : uint8_t;
+enum class MonkData_t : uint8_t;
+enum class ImbuementAction : uint8_t;
 
 class NetworkMessage;
 class Player;
@@ -41,6 +46,7 @@ class Container;
 class Tile;
 class Connection;
 class ProtocolGame;
+class LivestreamManager;
 class PreySlot;
 class TaskHuntingSlot;
 class TaskHuntingOption;
@@ -68,7 +74,6 @@ using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using MarketOfferList = std::list<MarketOffer>;
 using HistoryMarketOfferList = std::list<HistoryMarketOffer>;
-using ItemsTierCountList = std::map<uint16_t, std::map<uint8_t, uint32_t>>;
 using StashItemList = std::map<uint16_t, uint32_t>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
@@ -108,7 +113,7 @@ public:
 	void AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &item);
 	void AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const;
 
-	uint16_t getVersion() const {
+	[[nodiscard]] uint16_t getVersion() const {
 		return version;
 	}
 
@@ -171,6 +176,8 @@ private:
 	void parseCyclopediaCharacterInfo(NetworkMessage &msg);
 
 	void parseHighscores(NetworkMessage &msg);
+	void parseImbuementAction(NetworkMessage &msg);
+	void parseWeaponProficiency(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
@@ -262,7 +269,8 @@ private:
 	void parseCloseChannel(NetworkMessage &msg);
 
 	// Imbuement info
-	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementId) const;
+	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction = false) const;
+	void addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction = false) const;
 
 	// Send functions
 	void sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel);
@@ -279,7 +287,7 @@ private:
 	void sendIconBakragore(const IconBakragore icon);
 	void sendFYIBox(const std::string &message);
 
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item = nullptr);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -391,7 +399,7 @@ private:
 	void sendMarketDetail(uint16_t itemId, uint8_t tier);
 	void sendTradeItemRequest(const std::string &traderName, const std::shared_ptr<Item> &item, bool ack);
 	void sendCloseTrade();
-	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party);
+	void updatePartyTrackerAnalyzer(const std::shared_ptr<Party> &party, bool force = false);
 
 	void sendTextWindow(uint32_t windowTextId, uint32_t itemId, const std::string &text);
 	void sendTextWindow(uint32_t windowTextId, const std::shared_ptr<Item> &item, uint16_t maxlen, bool canWrite);
@@ -431,7 +439,7 @@ private:
 
 	void sendAddTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
-	void sendRemoveTileThing(const Position &pos, uint32_t stackpos);
+	void sendRemoveTileThing(const Position &pos, uint32_t stackpos, std::source_location loc = std::source_location::current());
 	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature);
 	void sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos);
 
@@ -531,10 +539,39 @@ private:
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
+	void sendWeaponProficiency(uint16_t weaponId);
+	void sendWeaponProficiencyWindow(uint16_t weaponId);
+
+	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
+	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);
+	void sendLivestreamViewerAppear(const std::shared_ptr<Player> &foundPlayer);
+	void syncLivestreamViewerOpenContainers(const std::shared_ptr<Player> &foundPlayer);
+	void resendLivestreamViewerContainer(NetworkMessage &msg);
+	bool canWatchLivestream(const std::shared_ptr<Player> &foundPlayer, const std::string &password);
+
+	/**
+	 * @brief Sends monk-specific data to the client.
+	 *
+	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or Virtue states.
+	 *
+	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
+	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
+	 */
+	void sendMonkData(MonkData_t type, uint8_t value);
+	/**
+	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
+	 *
+	 * This function processes a list of spells and whether the player wants them to aim at their current target.
+	 *
+	 * @param msg The network message containing the spell list and aim states.
+	 */
+	void parseAimAtTarget(NetworkMessage &msg);
+
 	friend class Player;
 	friend class PlayerWheel;
 	friend class PlayerVIP;
 	friend class PlayerAttachedEffects;
+	friend class LivestreamManager;
 
 	std::unordered_set<uint32_t> knownCreatureSet;
 	std::shared_ptr<Player> player = nullptr;
@@ -550,13 +587,20 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
-	bool shouldAddExivaRestrictions = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;
 	bool isOTCR = false;
 
 	uint16_t otclientV8 = 0;
+	bool m_isLivestreamBroadcaster = false;
+	bool m_isLivestreamViewer = false;
+	int64_t m_livestreamMessageCooldownTime = 0;
+	uint32_t m_livestreamMessageCount = 0;
+
+	// ProtocolGame instances are per-connection and handled on the connection thread,
+	// so the fine-grained throttle here does not require cross-thread synchronization.
+	uint64_t m_nextPartyAnalyzerUpdate = 0;
 
 	void sendOpenStash();
 	void parseStashWithdraw(NetworkMessage &msg);
@@ -567,6 +611,8 @@ private:
 
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source);
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource);
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
+	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
 	void sendTakeScreenshot(Screenshot_t screenshotType);
 	void sendDisableLoginMusic();
@@ -576,4 +622,13 @@ private:
 	void resetPlayerDeathTime() {
 		m_playerDeathTime = 0;
 	}
+
+	void parseExivaRestrictions(NetworkMessage &msg);
+	void sendExivaRestrictions(
+		bool isLogin = false,
+		const std::vector<std::string> &addedPlayerNames = {},
+		const std::vector<std::string> &removedPlayerNames = {},
+		const std::vector<std::string> &addedGuildNames = {},
+		const std::vector<std::string> &removedGuildNames = {}
+	);
 };

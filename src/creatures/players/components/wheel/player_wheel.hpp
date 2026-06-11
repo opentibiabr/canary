@@ -11,6 +11,9 @@
 
 #include "creatures/creatures_definitions.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+#include "creatures/players/components/wheel/wheel_spells.hpp"
+#include "utils/hash.hpp"
+#include "items/items_definitions.hpp"
 
 class Creature;
 class IOWheel;
@@ -37,73 +40,6 @@ enum Vocation_t : uint16_t;
 namespace WheelSpells {
 	struct Bonus;
 }
-
-struct PlayerWheelMethodsBonusData {
-	// Raw value. Example: 1 == 1
-	struct Stats {
-		int health = 0;
-		int mana = 0;
-		int capacity = 0;
-		int damage = 0;
-		int healing = 0;
-	};
-	// value * 100. Example: 1% == 100
-	std::array<uint8_t, 4> unlockedVesselResonances = {};
-
-	// Raw value. Example: 1 == 1
-	struct Skills {
-		int melee = 0;
-		int distance = 0;
-		int magic = 0;
-	};
-
-	// value * 100. Example: 1% == 100
-	struct Leech {
-		double manaLeech = 0;
-		double lifeLeech = 0;
-	};
-
-	struct Instant {
-		bool battleInstinct = false; // Knight
-		bool battleHealing = false; // Knight
-		bool positionalTactics = false; // Paladin
-		bool ballisticMastery = false; // Paladin
-		bool healingLink = false; // Druid
-		bool runicMastery = false; // Druid/sorcerer
-		bool focusMastery = false; // Sorcerer
-	};
-
-	struct Stages {
-		int combatMastery = 0; // Knight
-		int giftOfLife = 0; // Knight/Paladin/Druid/Sorcerer
-		int divineEmpowerment = 0; // Paladin
-		int divineGrenade = 0; // Paladin
-		int blessingOfTheGrove = 0; // Druid
-		int drainBody = 0; // Sorcerer
-		int beamMastery = 0; // Sorcerer
-		int twinBurst = 0; // Druid
-		int executionersThrow = 0; // Knight
-	};
-
-	struct Avatar {
-		int light = 0; // Paladin
-		int nature = 0; // Druid
-		int steel = 0; // Knight
-		int storm = 0; // Sorcerer
-	};
-
-	// Initialize structs
-	Stats stats;
-	Skills skills;
-	Leech leech;
-	Instant instant;
-	Stages stages;
-	Avatar avatar;
-
-	float momentum = 0;
-	float mitigation = 0;
-	std::vector<std::string> spells;
-};
 
 struct PlayerWheelGem {
 	std::string uuid = {};
@@ -243,6 +179,50 @@ public:
 
 	void loadDedicationAndConvictionPerks();
 
+	template <typename VocationArray>
+	void getAugmentsByVocation(
+		const uint16_t spellId,
+		const std::string &spellName,
+		uint8_t grade,
+		const VocationArray &vocSpells,
+		std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> &map
+	) const {
+		// helper: add or accumulate value into map
+		auto addValue = [&](Augment_t augmentType, double value) {
+			if (value == 0.0) {
+				return;
+			}
+			const auto key = std::make_pair(spellId, magic_enum::enum_integer(augmentType));
+			map[key] += value;
+		};
+
+		for (const auto &spellBonus : vocSpells) {
+			if (spellBonus.name != spellName) {
+				continue;
+			}
+
+			if (grade >= spellBonus.grade.size()) {
+				continue;
+			}
+			const auto &bonus = spellBonus.grade[grade];
+			addValue(Augment_t::ManaCost, -bonus.decrease.manaCost);
+			addValue(Augment_t::BaseDamage, bonus.increase.damage / 100.0);
+			addValue(Augment_t::BaseHealing, bonus.increase.heal / 100.0);
+			addValue(Augment_t::DurationIncreased, bonus.increase.duration);
+			addValue(Augment_t::AdditionalTargets, bonus.increase.additionalTarget);
+			addValue(Augment_t::Cooldown, -(bonus.decrease.cooldown / 1000.0));
+			addValue(Augment_t::SecondaryGroupCooldown, -(bonus.decrease.secondaryGroupCooldown / 1000.0));
+			addValue(Augment_t::AffectedAreaEnlarged, bonus.increase.area);
+			addValue(Augment_t::IncreasedDamageReduction, bonus.increase.damageReduction / 100.0);
+			addValue(Augment_t::LifeLeech, bonus.leech.life / 100.0);
+			addValue(Augment_t::ManaLeech, bonus.leech.mana / 100.0);
+			addValue(Augment_t::CriticalExtraDamage, bonus.increase.criticalDamage / 100.0);
+			addValue(Augment_t::CriticalHitChance, bonus.increase.criticalChance / 100.0);
+		}
+	}
+
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getActiveAugments() const;
+
 	/**
 	 * @brief Adds a spell to the spells vector.
 	 * @details This function adds a spell to the player's spells vector, only if the spell doesn't already exist in the vector.
@@ -264,6 +244,7 @@ private:
 	 * Open wheel functions helpers
 	 */
 	bool canOpenWheel() const;
+	bool hasCompletedMonkQuest() const;
 
 	/**
 	 * @brief Get the options available to the player for changing points.
@@ -521,7 +502,7 @@ private:
 
 	uint8_t m_modsMaxGrade = {};
 	std::array<uint8_t, 49> m_basicGrades = { 0 };
-	std::array<uint8_t, 76> m_supremeGrades = { 0 };
+	std::array<uint8_t, 95> m_supremeGrades = { 0 };
 
 	std::array<uint8_t, static_cast<size_t>(WheelStage_t::STAGE_COUNT)> m_stages = { 0 };
 	std::array<int64_t, static_cast<size_t>(WheelOnThink_t::TOTAL_COUNT)> m_onThink = { 0 };

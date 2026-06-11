@@ -16,7 +16,6 @@ class Item;
 class Creature;
 class Player;
 struct Position;
-class RSA;
 
 class NetworkMessage {
 public:
@@ -69,6 +68,32 @@ public:
 
 	// simply write functions for outgoing message
 	void addByte(uint8_t value, std::source_location location = std::source_location::current());
+
+	/**
+	 * @brief Encodes an item count using Tibia’s variable-length integer format (≥ client 15.00).
+	 *
+	 * This method serializes stackable item quantities using a compact format expected by the client
+	 * in inventory displays, tooltips, and action messages (e.g., “Using one of X ...”).
+	 *
+	 * The encoding uses 1, 2, or 4 bytes depending on the magnitude of `count`:
+	 *
+	 * | Count Range               | Bytes | Format Description                                                                 |
+	 * |---------------------------|--------|-------------------------------------------------------------------------------------|
+	 * | **0 to 63**               | 1 byte | `0b00vvvvvv` — Direct 6-bit value.                                                  |
+	 * | **64 to 16,383**          | 2 bytes| `0b01ssssss 0bvvvvvvvv` — First byte holds upper 6 bits with prefix `01`.           |
+	 * | **16,384 to 1,073,741,823** | 4 bytes| `0b1sssssss b2 b3 b4` — First byte prefixed with `1`, followed by full 30-bit value. |
+	 * | **> 1,073,741,823**       | 4 bytes| Encoded as `0x00 0x00 0x00 0x00` (fallback); indicates unsupported value.           |
+	 *
+	 * Notes:
+	 * - This function returns `false` if the value is too large to encode properly.
+	 * - It does not split values >16,383 into multiple encoded blocks; that logic must be handled externally.
+	 *
+	 * @param count The item quantity to encode.
+	 * @return true if the value was encoded successfully; false if a fallback was written.
+	 *
+	 * @post The encoded bytes are appended to the internal buffer.
+	 */
+	bool writeCount(uint32_t count);
 
 	template <typename T>
 	void add(T value, std::source_location location = std::source_location::current()) {

@@ -16,6 +16,7 @@
 #include "items/cylinder.hpp"
 #include "game/movement/position.hpp"
 #include "creatures/creatures_definitions.hpp"
+#include "creatures/players/stash_definitions.hpp"
 
 // Player components are decoupled to reduce complexity. Keeping includes here aids in clarity and maintainability, but avoid including player.hpp in headers to prevent circular dependencies.
 #include "creatures/players/animus_mastery/animus_mastery.hpp"
@@ -29,6 +30,8 @@
 #include "creatures/players/components/player_vip.hpp"
 #include "creatures/players/components/wheel/wheel_gems.hpp"
 #include "creatures/players/components/player_attached_effects.hpp"
+#include "creatures/players/components/weapon_proficiency.hpp"
+#include "utils/hash.hpp"
 
 class House;
 class NetworkMessage;
@@ -73,12 +76,14 @@ struct Outfit_t;
 struct TextMessage;
 struct HighscoreCharacter;
 
+enum class MonkData_t : uint8_t;
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
 enum class HouseAuctionType : uint8_t;
 enum class BidErrorMessage : uint8_t;
 enum class TransferErrorMessage : uint8_t;
 enum class AcceptTransferErrorMessage : uint8_t;
+enum class ImbuementAction : uint8_t;
 enum ObjectCategory_t : uint8_t;
 enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
@@ -93,6 +98,16 @@ using UsersMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using InvitedMap = std::map<uint32_t, std::shared_ptr<Player>>;
 using HouseMap = std::map<uint32_t, std::shared_ptr<House>>;
 
+struct SkillsEquipment {
+	double_t equipment = 0;
+	double_t imbuement = 0;
+};
+
+struct BaseCritical {
+	double_t chance = 0.05;
+	double_t damage = 0.1;
+};
+
 struct CharmInfo {
 	uint16_t raceId = 0;
 	uint8_t tier = 0;
@@ -106,11 +121,14 @@ struct OpenContainer {
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
+static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 1500;
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
 class Player final : public Creature, public Cylinder, public Bankable {
 public:
+	using Thing::getDepotChest;
+
 	class PlayerLock {
 	public:
 		explicit PlayerLock(const std::shared_ptr<Player> &p) :
@@ -152,6 +170,88 @@ public:
 	std::shared_ptr<const Player> getPlayer() const override {
 		return static_self_cast<Player>();
 	}
+	Player* getPlayerRaw() noexcept override {
+		return this;
+	}
+	const Player* getPlayerRaw() const noexcept override {
+		return this;
+	}
+
+	struct ExivaRestrictions {
+		bool allowAll = false;
+		bool allowOwnGuild = true;
+		bool allowOwnParty = true;
+		bool allowVipList = true;
+		bool allowPlayerWhitelist = true;
+		bool allowGuildWhitelist = true;
+
+		std::vector<uint32_t> playerWhitelist;
+		std::vector<uint32_t> guildWhitelist;
+	};
+
+	ExivaRestrictions &getExivaRestrictions();
+	const ExivaRestrictions &getExivaRestrictions() const;
+
+	void sendWeaponProficiency(uint16_t weaponId = 0);
+
+	std::array<SkillsEquipment, SKILL_LAST + 1> getSkillsEquipment() const;
+	const BaseCritical &getBaseCritical() const;
+
+	/**
+	 * @brief Gets the current virtue of the player.
+	 * @return The virtue as Virtue_t.
+	 */
+	Virtue_t getVirtue() const;
+
+	/**
+	 * @brief Sets the player's virtue.
+	 * @param virtue The virtue to set.
+	 */
+	void setVirtue(Virtue_t virtue);
+
+	/**
+	 * @brief Sets the player's serene state.
+	 * @param b Whether the player is serene.
+	 * @param ticks Duration of the effect in ticks (default -1 for indefinite).
+	 */
+	void setSerene(bool b, int32_t ticks = -1);
+
+	/**
+	 * @brief Empties the player's Harmony bar.
+	 */
+	void emptyHarmony();
+
+	/**
+	 * @brief Fills the player's Harmony bar completely.
+	 */
+	void fillHarmony();
+
+	/**
+	 * @brief Increases Harmony charges.
+	 * @param charges Number of charges to add (default is 1).
+	 */
+	void buildHarmony(uint8_t charges = 1);
+
+	/**
+	 * @brief Spends all Harmony charges.
+	 */
+	void spendHarmony();
+
+	/**
+	 * @brief Gets the current number of Harmony charges.
+	 * @return Number of Harmony charges.
+	 */
+	uint8_t getHarmony();
+
+	void setHarmony(uint8_t newHarmony);
+
+	/**
+	 * @brief Calculates bonus damage range based on Harmony state.
+	 * @param min Minimum base damage.
+	 * @param max Maximum base damage.
+	 * @return Pair containing final min and max damage.
+	 */
+	std::pair<uint64_t, uint64_t> getHarmonyDamage(double min, double max);
 
 	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, const std::string &context);
 
@@ -294,6 +394,7 @@ public:
 	bool isOldProtocol() const;
 
 	uint32_t getProtocolVersion() const;
+	std::shared_ptr<ProtocolGame> getClient() const;
 
 	bool hasSecureMode() const;
 
@@ -377,9 +478,21 @@ public:
 		return getIP() == 0;
 	}
 
+#ifdef BUILD_TESTS
+	void setTestIP(uint32_t testIpAddress) {
+		testIP = testIpAddress;
+	}
+
+	void setTestIdleTime(int32_t testIdleTimeInMs) {
+		idleTime = testIdleTimeInMs;
+	}
+#endif
+
 	void addContainer(uint8_t cid, const std::shared_ptr<Container> &container);
 	void closeContainer(uint8_t cid);
 	void setContainerIndex(uint8_t cid, uint16_t index);
+	void closeContainersOutOfRange();
+	bool shouldCloseContainer(const std::shared_ptr<Container> &container) const;
 
 	std::shared_ptr<Container> getContainerByID(uint8_t cid);
 	int8_t getContainerID(const std::shared_ptr<Container> &container) const;
@@ -573,7 +686,7 @@ public:
 	std::shared_ptr<DepotChest> getDepotChest(uint32_t depotId, bool autoCreate);
 	std::shared_ptr<DepotLocker> getDepotLocker(uint32_t depotId);
 	void onReceiveMail();
-	bool isNearDepotBox();
+	bool isNearDepotBox() const;
 
 	std::shared_ptr<Container> refreshManagedContainer(ObjectCategory_t category, const std::shared_ptr<Container> &container, bool isLootContainer, bool loading = false);
 	std::shared_ptr<Container> getManagedContainer(ObjectCategory_t category, bool isLootContainer) const;
@@ -617,6 +730,13 @@ public:
 	bool closeShopWindow();
 	bool updateSaleShopList(const std::shared_ptr<Item> &item);
 	void updateSaleShopList();
+	/**
+	 * @brief Refreshes the player's current state.
+	 *
+	 * Updates various player-related status indicators including inventory weight,
+	 * light emitted by items, inventory display, and stats.
+	 * If the player is a shop owner, it also refreshes the sale shop list.
+	 */
 	void updateState();
 	bool hasShopItemForSale(uint16_t itemId, uint8_t subType) const;
 
@@ -633,11 +753,25 @@ public:
 	bool isImmune(ConditionType_t type) const override;
 	bool hasShield() const;
 	bool isAttackable() const override;
+	void beginBatchUpdate();
+	void endBatchUpdate();
+	void sendBatchUpdateContainer(Container* container, bool hasParent);
+	bool isBatching() const {
+		return m_batching > 0;
+	}
 	static bool lastHitIsPlayer(const std::shared_ptr<Creature> &lastHitCreature);
 
 	// stash functions
 	ReturnValue addItemFromStash(uint16_t itemId, uint32_t itemCount);
 	void stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool allItems);
+	struct AddItemBatchOptions {
+		uint8_t subType = 0;
+		uint32_t flags = 0;
+		uint8_t tier = 0;
+		bool dropOnMap = false;
+		bool inBackpacks = false;
+		uint16_t backpackId = ITEM_BACKPACK;
+	};
 
 	ReturnValue addItemBatchToPaginedContainer(
 		const std::shared_ptr<Container> &container,
@@ -645,7 +779,14 @@ public:
 		uint32_t totalCount,
 		uint32_t &actuallyAdded,
 		uint32_t flags = 0,
-		uint8_t tier = 0
+		uint8_t tier = 0,
+		bool testOnly = false
+	);
+	ReturnValue addItemBatch(
+		uint16_t itemId,
+		uint32_t totalCount,
+		uint32_t &actuallyAdded,
+		const AddItemBatchOptions &options
 	);
 	std::vector<std::shared_ptr<Container>> getAllContainers(bool onlyFromMainBackpack = true) const;
 	std::shared_ptr<Container> getBackpack() const;
@@ -688,11 +829,21 @@ public:
 
 	void updateLastAggressiveAction();
 
+	uint16_t getWeaponId(bool ignoreAmmo = false) const;
 	std::shared_ptr<Item> getWeapon(Slots_t slot, bool ignoreAmmo) const;
 	std::shared_ptr<Item> getWeapon(bool ignoreAmmo = false) const;
 	WeaponType_t getWeaponType() const;
 	int32_t getWeaponSkill(const std::shared_ptr<Item> &item) const;
 	void getShieldAndWeapon(std::shared_ptr<Item> &shield, std::shared_ptr<Item> &weapon) const;
+	/**
+	 * @brief Calculates a level-based flat damage or healing value.
+	 *
+	 * This function returns a value that increases progressively with the player's level,
+	 * using tiered thresholds and diminishing scaling factors.
+	 * It is used to determine the base value of damage or healing spells that scale with level.
+	 *
+	 * @return A uint16_t representing the computed base damage/heal value for the player's current level.
+	 */
 	uint16_t calculateFlatDamageHealing() const;
 	uint16_t attackTotal(uint16_t flatBonus, uint16_t equipment, uint16_t skill) const;
 	uint16_t attackRawTotal(uint16_t flatBonus, uint16_t equipment, uint16_t skill) const;
@@ -713,6 +864,19 @@ public:
 	float getAttackFactor() const override;
 	float getDefenseFactor(bool sendToClient) const override;
 	float getMitigation() const override;
+
+	/**
+	 * @brief Calculates the total mantra value from equipped items.
+	 *
+	 * Iterates over a predefined set of armor and accessory slots, summing up
+	 * the mantra value provided by each equipped item. This value is used for
+	 * determining monk-related mechanics like buffs and shared bonuses.
+	 *
+	 * @return Total mantra value from all valid equipment slots.
+	 */
+	int32_t getMantra() const;
+	int32_t getPartyMantra() const;
+	void updatePartyMantra() const;
 
 	void addInFightTicks(bool pzlock = false);
 
@@ -774,6 +938,8 @@ public:
 
 	size_t getMaxDepotItems() const;
 
+	bool canExiva(const std::string &spellParam) const;
+
 	// tile
 	// send methods
 	// tile
@@ -815,6 +981,13 @@ public:
 	void sendRemoveContainerItem(const std::shared_ptr<Container> &container, uint16_t slot);
 	void sendContainer(uint8_t cid, const std::shared_ptr<Container> &container, bool hasParent, uint16_t firstIndex) const;
 
+	void sendExivaRestrictions();
+
+	// Monk Update
+	void sendMonkData(MonkData_t type, uint8_t value);
+	void updateAimAtTargetSpells(uint16_t spellId, uint8_t state);
+	std::unordered_set<uint16_t> getAimAtTargetSpells() const;
+
 	// inventory
 	void sendDepotItems(const ItemsTierCountList &itemMap, uint16_t count) const;
 	void sendCloseDepotSearch() const;
@@ -831,6 +1004,10 @@ public:
 	void sendSingleSoundEffect(const Position &pos, SoundEffect_t id, SourceEffect_t source) const;
 
 	void sendDoubleSoundEffect(const Position &pos, SoundEffect_t mainSoundId, SourceEffect_t mainSource, SoundEffect_t secondarySoundId, SourceEffect_t secondarySource) const;
+
+	void sendAmbientSoundEffect(const SoundAmbientEffect_t id) const;
+
+	void sendMusicSoundEffect(const SoundMusicEffect_t id) const;
 
 	SoundEffect_t getAttackSoundEffect() const;
 	SoundEffect_t getHitSoundEffect() const;
@@ -929,9 +1106,12 @@ public:
 	void sendResourceBalance(Resource_t resourceType, uint64_t value) const;
 	void sendHouseAuctionMessage(uint32_t houseId, HouseAuctionType type, uint8_t index, bool bidSuccess = false) const;
 	// Imbuements
-	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot, bool protectionCharm);
+	void applyScrollImbuement(const std::shared_ptr<Item> &item, const std::shared_ptr<Item> &scrollItem);
+	void createScrollImbuement(const Imbuement* imbuement);
+	void onApplyImbuement(const Imbuement* imbuement, const std::shared_ptr<Item> &item, uint8_t slot);
 	void onClearImbuement(const std::shared_ptr<Item> &item, uint8_t slot);
-	void openImbuementWindow(const std::shared_ptr<Item> &item);
+	bool clearAllImbuements(const std::shared_ptr<Item> &item);
+	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message) const;
 	void closeImbuementWindow() const;
 	void sendPodiumWindow(const std::shared_ptr<Item> &podium, const Position &position, uint16_t itemId, uint8_t stackpos) const;
@@ -1027,6 +1207,7 @@ public:
 	bool walkExhausted() const;
 
 	void setWalkExhaust(int64_t value);
+	void updateParalyzeWalkExhaust();
 
 	const std::map<uint8_t, OpenContainer> &getOpenContainers() const;
 
@@ -1063,7 +1244,7 @@ public:
 
 	bool updateKillTracker(const std::shared_ptr<Container> &corpse, const std::string &playerName, const Outfit_t &creatureOutfit) const;
 
-	void updatePartyTrackerAnalyzer() const;
+	void updatePartyTrackerAnalyzer(bool force = false) const;
 
 	void sendLootStats(const std::shared_ptr<Item> &item, uint8_t count);
 	void updateSupplyTracker(const std::shared_ptr<Item> &item);
@@ -1100,7 +1281,7 @@ public:
 	uint16_t parseRacebyCharm(charmRune_t charmId, bool set = false, uint16_t newRaceid = 0);
 
 	uint64_t getItemCustomPrice(uint16_t itemId, bool buyPrice = false) const;
-	uint16_t getFreeBackpackSlots() const;
+	uint32_t getFreeBackpackSlots() const;
 
 	bool canAutoWalk(const Position &toPosition, const std::function<void()> &function, uint32_t delay = 500);
 
@@ -1288,6 +1469,8 @@ public:
 	// Gets the equipped items with augment
 	std::vector<std::shared_ptr<Item>> getEquippedAugmentItems() const;
 
+	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getEquippedAugments() const;
+
 	/**
 	 * @brief Get the equipped items of the player->
 	 * @details This function returns a vector containing the items currently equipped by the player
@@ -1331,8 +1514,13 @@ public:
 	PlayerAttachedEffects &attachedEffects();
 	const PlayerAttachedEffects &attachedEffects() const;
 
+	// Player storage interface
 	PlayerStorage &storage();
 	const PlayerStorage &storage() const;
+
+	// Player weapon proficiency interface
+	WeaponProficiency &weaponProficiency();
+	const WeaponProficiency &weaponProficiency() const;
 
 	void sendLootMessage(const std::string &message) const;
 
@@ -1363,6 +1551,14 @@ public:
 		return m_managedContainers;
 	}
 
+	void clearCooldowns(bool spenders = false, bool builders = false, int32_t ticks = 0);
+
+	void sendSpellCooldowns();
+
+	void updateFood(uint16_t itemId, uint32_t timeLeft);
+	const std::map<uint16_t, uint32_t> &getActiveFoods() const;
+	bool isFoodActive(uint16_t itemId) const;
+
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
@@ -1374,6 +1570,7 @@ private:
 
 	void checkTradeState(const std::shared_ptr<Item> &item);
 	bool hasCapacity(const std::shared_ptr<Item> &item, uint32_t count) const;
+	bool processStashItem(const std::shared_ptr<Item> &item, uint16_t itemCount, uint16_t &refreshDepotSearchOnItem);
 
 	void checkLootContainers(const std::shared_ptr<Container> &item);
 
@@ -1382,11 +1579,7 @@ private:
 	void removeExperience(uint64_t exp, bool sendText = false);
 
 	void updateInventoryWeight();
-	/**
-	 * @brief Starts checking the imbuements in the item so that the time decay is performed
-	 * Registers the player in an unordered_map in game.h so that the function can be initialized by the task
-	 */
-	void updateInventoryImbuement();
+	void updateSerenityState();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);
@@ -1436,6 +1629,18 @@ private:
 	void addBestiaryKill(const std::shared_ptr<MonsterType> &mType);
 	void addBosstiaryKill(const std::shared_ptr<MonsterType> &mType);
 
+	double_t getHarmonyBonus();
+
+	/**
+	 * @brief Heals the player or a nearby party member using Harmony charges.
+	 *
+	 * This function attempts to find the party member with the lowest health within the player's screen range
+	 * and applies a Harmony heal to them. If no valid party member is found, the healing is applied to the player themselves.
+	 *
+	 * @param charges The number of Harmony charges to apply. Defaults to 1.
+	 */
+	void healFromHarmony(uint8_t charges = 1);
+
 	phmap::flat_hash_set<uint32_t> attackedSet {};
 
 	std::map<uint8_t, OpenContainer> openContainers;
@@ -1443,6 +1648,8 @@ private:
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
 	std::map<uint8_t, int64_t> moduleDelayMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
+
+	std::map<uint16_t, uint32_t> m_activeFoods;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 
@@ -1467,6 +1674,10 @@ private:
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bestiaryMonsterTracker;
 	std::unordered_set<std::shared_ptr<MonsterType>> m_bosstiaryMonsterTracker;
 
+	uint8_t harmony = 0;
+	Virtue_t virtue = Virtue_t::None;
+	std::unordered_set<uint16_t> aimAtTargetSpellIds;
+
 	std::string name;
 	std::string guildNick;
 	std::string loyaltyTitle;
@@ -1478,6 +1689,8 @@ private:
 
 	time_t lastLoginSaved = 0;
 	time_t lastLogout = 0;
+
+	BaseCritical baseCritical;
 
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
@@ -1532,6 +1745,9 @@ private:
 	std::shared_ptr<Town> town;
 	std::shared_ptr<Vocation> vocation = nullptr;
 	std::shared_ptr<RewardChest> rewardChest = nullptr;
+#ifdef BUILD_TESTS
+	uint32_t testIP = 0;
+#endif
 
 	uint32_t inventoryWeight = 0;
 	uint32_t capacity = 40000;
@@ -1617,6 +1833,8 @@ private:
 	QuickLootFilter_t quickLootFilter {};
 	PlayerPronoun_t pronoun = PLAYERPRONOUN_THEY;
 
+	ExivaRestrictions exivaRestrictions;
+
 	bool chaseMode = false;
 	bool secureMode = true;
 	bool inMarket = false;
@@ -1661,7 +1879,8 @@ private:
 
 	void updateItemsLight(bool internal = false);
 	uint16_t getStepSpeed() const override {
-		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(PLAYER_MAX_SPEED, getSpeed()));
+		const uint16_t maxStepSpeed = hasFlag(PlayerFlags_t::SetMaxSpeed) ? PLAYER_MAX_STAFF_SPEED : PLAYER_MAX_SPEED;
+		return std::max<uint16_t>(PLAYER_MIN_SPEED, std::min<uint16_t>(maxStepSpeed, getSpeed()));
 	}
 	void updateBaseSpeed();
 
@@ -1684,7 +1903,6 @@ private:
 	bool isDead() const override;
 
 	void triggerMomentum();
-	void clearCooldowns();
 	void triggerTranscendence();
 
 	friend class Game;
@@ -1720,8 +1938,10 @@ private:
 	PlayerAttachedEffects m_playerAttachedEffects;
 	PlayerStorage m_storage;
 	PlayerForgeHistory m_forgeHistoryPlayer;
+	WeaponProficiency m_weaponProficiency;
 
 	std::mutex quickLootMutex;
+	uint32_t m_batching = 0;
 
 	std::shared_ptr<Account> account;
 	bool online = true;

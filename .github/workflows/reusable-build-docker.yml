@@ -1,0 +1,159 @@
+---
+name: Reusable Docker Build
+
+on:
+  workflow_call:
+    inputs:
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    name: Image Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.15
+        with:
+          versionSpec: "5.x"
+
+      - name: Determine Version
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v0.9.15
+
+      - name: Convert repository name to lowercase
+        id: repo_lower
+        run: |
+          echo "value=${REPO,,}" >> $GITHUB_OUTPUT
+        env:
+          REPO: ${{ github.repository }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Prepare Docker artifact directories
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        run: mkdir -p artifacts/docker-image artifacts/docker-rootfs/bin
+
+      - name: Login to GHCR
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ github.token }}
+
+      - name: Build and push (main)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/Dockerfile.x86
+          push: true
+          build-args: |
+            VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            VCPKG_FEED_USERNAME=${{ github.repository_owner }}
+            VCPKG_BINARY_CACHE_MODE=readwrite
+          secrets: |
+            github_token=${{ github.token }}
+          tags: |
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:latest
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:${{ steps.gitversion.outputs.semVer }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and export (PR)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/Dockerfile.x86
+          push: false
+          outputs: type=docker,dest=artifacts/docker-image/canary-pr.tar
+          build-args: |
+            VCPKG_FEED_URL=https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json
+            VCPKG_FEED_USERNAME=${{ github.repository_owner }}
+            VCPKG_BINARY_CACHE_MODE=read
+          secrets: |
+            github_token=${{ github.token }}
+          tags: |
+            ghcr.io/${{ steps.repo_lower.outputs.value }}:pr
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Validate Docker image (PR)
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          image="ghcr.io/${{ steps.repo_lower.outputs.value }}:pr"
+          docker load --input artifacts/docker-image/canary-pr.tar
+
+          container_id="$(docker create "${image}")"
+          trap 'docker rm -f "${container_id}" >/dev/null 2>&1 || true' EXIT
+          docker cp "${container_id}:/bin/canary" artifacts/docker-rootfs/bin/canary
+
+          docker run --rm --entrypoint /bin/sh "${image}" -lc '
+            test -x /bin/canary &&
+            test -x /canary/start.sh &&
+            test -f /canary/schema.sql &&
+            test -f /canary/config.lua &&
+            test -f /canary/01-test_account.sql &&
+            test -f /canary/02-test_account_players.sql &&
+            test -d /canary/data &&
+            test -d /canary/data-canary &&
+            test -d /canary/data-otservbr-global/world
+          '
+
+          if docker run --rm --entrypoint /bin/sh "${image}" -lc 'test -f /canary/data-otservbr-global/world/otservbr.otbm'; then
+            echo "The runtime image must not embed data-otservbr-global/world/otservbr.otbm. It is downloaded at first start through CANARY_MAP_URL." >&2
+            exit 1
+          fi
+
+      - name: Upload docker image artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: canary-docker-image
+          path: artifacts/docker-image/canary-pr.tar
+          retention-days: 1
+
+      - name: Upload docker artifact
+        if: github.event_name != 'push' || github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v7
+        with:
+          name: canary-docker
+          path: artifacts/docker-rootfs/bin/canary

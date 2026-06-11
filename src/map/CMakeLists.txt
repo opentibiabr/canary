@@ -1,10 +1,11 @@
 target_sources(
-    ${PROJECT_NAME}_lib
+    ${CORE_TARGET_NAME}
     PRIVATE house/house.cpp
             house/housetile.cpp
             utils/astarnodes.cpp
             utils/mapsector.cpp
             map.cpp
+            map_download.cpp
             mapcache.cpp
             spectators.cpp
 )

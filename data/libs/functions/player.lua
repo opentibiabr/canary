@@ -52,6 +52,10 @@ function Player.isUsingOtClient(self)
 	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX
 end
 
+function Player.isUsingOTCR(self)
+	return self:getClient().os >= CLIENTOS_OTCLIENT_LINUX and self:getClient().os < CLIENTOS_OTCLIENT_MAC
+end
+
 function Player.sendExtendedOpcode(self, opcode, buffer)
 	if not self:isUsingOtClient() then
 		return false
@@ -159,6 +163,10 @@ function Player:vocationAbbrev()
 		abbrev = abbrev .. name:sub(1, 1)
 	end
 	return abbrev:upper()
+end
+
+function Player.isMonk(self)
+	return table.contains({ VOCATION.ID.MONK, VOCATION.ID.EXALTED_MONK }, self:getVocation():getId())
 end
 
 function Player.isSorcerer(self)
@@ -423,10 +431,24 @@ function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
 		return nil
 	end
 
+	local inbox = self:getStoreInbox()
+	if not inbox then
+		return nil
+	end
+
+	local batchUpdate = BatchUpdate(self)
+	batchUpdate:add(inbox)
+
 	if iType:isStackable() then
 		local stackSize = iType:getStackSize()
 		while amount > stackSize do
-			self:addItemStoreInboxEx(Game.createItem(itemId, stackSize), movable, setOwner)
+			local stackItem = Game.createItem(itemId, stackSize)
+			if not stackItem then
+				batchUpdate:delete()
+				return nil
+			end
+
+			self:addItemStoreInboxEx(stackItem, movable, setOwner)
 			amount = amount - stackSize
 		end
 	end
@@ -442,10 +464,13 @@ function Player:addItemStoreInbox(itemId, amount, movable, setOwner)
 	end
 
 	if not item then
+		batchUpdate:delete()
 		return nil
 	end
 
-	return self:addItemStoreInboxEx(item, movable, setOwner)
+	local inboxItem = self:addItemStoreInboxEx(item, movable, setOwner)
+	batchUpdate:delete()
+	return inboxItem
 end
 
 ---@param monster Monster

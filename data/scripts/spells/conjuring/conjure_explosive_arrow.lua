@@ -17,5 +17,5 @@ spell:mana(290)
 spell:soul(3)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
-spell:needLearn(false)
+
 spell:register()

@@ -1,5 +1,5 @@
 local combat = Combat()
-combat:setParameter(createCombatArea(AREA_CIRCLE5X5))
+combat:setArea(createCombatArea(AREA_CIRCLE5X5))
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, 0)
 
@@ -82,5 +82,5 @@ spell:mana(120)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
 spell:isPremium(true)
-spell:needLearn(false)
+
 spell:register()

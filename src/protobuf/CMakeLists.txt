@@ -31,7 +31,7 @@ endif()
 
 target_link_libraries(
     ${PROJECT_NAME}
-    PUBLIC protobuf::libprotobuf
+    PUBLIC protobuf::libprotobuf-lite
 )
 target_include_directories(
     ${PROJECT_NAME}

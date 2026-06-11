@@ -131,7 +131,9 @@ bool Database::establishConnection(ConnectionContext &ctx) const {
 	// Each thread must initialize the MySQL client library's thread-local state,
 	// and release it when the thread exits (the thread_local destructor runs on
 	// this very thread, which is where mysql_thread_end() must be called).
-	(void)mysql_thread_init();
+	if (mysql_thread_init() != 0) {
+		g_logger().warn("mysql_thread_init() failed for a database worker thread");
+	}
 	static thread_local ThreadCleanup threadCleanup;
 
 	ctx.handle = mysql_init(nullptr);
@@ -357,7 +359,7 @@ bool Database::retryQuery(std::string_view query, int retries) {
 		retries--;
 	}
 	if (retries == 0) {
-		g_logger().error("Query {} failed after {} retries.", query, 10);
+		g_logger().error("Query {} failed, retries exhausted.", query);
 		return false;
 	}
 

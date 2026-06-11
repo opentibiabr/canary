@@ -537,21 +537,21 @@ docker/
 Local Docker quickstart stack:
 
 ```text
-┌────────────────────────────┐
-│ MariaDB                    │
-└────────────┬───────────────┘
-             │
-┌────────────▼───────────────┐
-│ Canary runtime image        │
-│ data-otservbr-global default│
-└────────────┬───────────────┘
-             │
-      ┌──────┴──────┐
-      ▼             ▼
-┌──────────┐  ┌────────────────┐
-│ MyAAC    │  │ login-server   │
-│ website  │  │ client login   │
-└──────────┘  └────────────────┘
+┌──────────────────────────────┐
+│ MariaDB                      │
+└───────────────┬──────────────┘
+                │
+┌───────────────▼──────────────┐
+│ Canary runtime image         │
+│ data-otservbr-global default │
+└───────────────┬──────────────┘
+                │
+       ┌────────┴─────────┐
+       ▼                  ▼
+┌────────────┐    ┌────────────────┐
+│ MyAAC      │    │ login-server   │
+│ website    │    │ client login   │
+└────────────┘    └────────────────┘
 ```
 
 This enables local development, local testing and LAN demos without compiling

@@ -9,12 +9,12 @@ This directory is the main documentation hub for the Canary repository.
 This documentation is organized around four primary guides, with specialized
 references in the surrounding subdirectories:
 
-| Document          | Purpose                                                              |
-| ----------------- | -------------------------------------------------------------------- |
-| [`README.md`](README.md) | Project overview and documentation index                     |
-| [`architecture.md`](architecture.md) | System design, components and technical architecture |
-| [`development.md`](development.md) | Development environment, coding standards and contribution workflow |
-| [`operations.md`](operations.md) | Deployment, monitoring, security, backups and production operations |
+| Document                                  | Purpose                                                             |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| [`README.md`](README.md)                  | Project overview and documentation index                            |
+| [`architecture.md`](architecture.md)      | System design, components and technical architecture                 |
+| [`development.md`](development.md)        | Development environment, coding standards and contribution workflow  |
+| [`operations.md`](operations.md)          | Deployment, monitoring, security, backups and production operations  |
 
 ---
 
@@ -264,17 +264,9 @@ Before contributing:
 
 # Additional Resources
 
-## Project Repository
-
-https://github.com/opentibiabr/canary
-
-## Official Documentation
-
-https://github.com/opentibiabr/canary/tree/main/docs
-
-## Releases
-
-https://github.com/opentibiabr/canary/releases
+* [Project repository](https://github.com/opentibiabr/canary)
+* [Documentation index](README.md)
+* [Releases](https://github.com/opentibiabr/canary/releases)
 
 ---
 

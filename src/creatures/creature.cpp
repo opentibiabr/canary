@@ -302,7 +302,7 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 		return;
 	}
 
-	safeCall([this] {
+	safeCall([this, startPolicy] {
 		if (eventWalk != 0) {
 			return;
 		}

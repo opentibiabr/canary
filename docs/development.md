@@ -82,7 +82,7 @@ canary/
 
 ## Option 1: Docker (Recommended for Beginners)
 
-The fastest way to start development is using Docker.
+The fastest way to start local testing is using the Docker quickstart.
 
 Services provided:
 
@@ -99,12 +99,18 @@ cp .env.dist .env
 docker compose up -d --build
 ```
 
+This pulls the published Canary runtime image and builds the MyAAC quickstart
+image. It does not compile Canary locally.
+
 Default endpoints:
 
 ```text
-Website:      http://localhost:8080
-Login API:    http://localhost:8088/login
-Game Server:  7172
+Website:                 http://localhost:8080
+Client login API:        http://localhost:8088/login
+Canary login protocol:   7171
+Canary game protocol:    7172
+Canary status protocol:  7173
+Login-server gRPC:       9090
 ```
 
 Docker is ideal when:
@@ -113,6 +119,11 @@ Docker is ideal when:
 * Developing datapacks
 * Learning the project structure
 * Avoiding local dependency installation
+* Running local or LAN demos with trusted defaults
+
+Do not expose the quickstart directly to the public Internet with default
+accounts, passwords or rolling image tags. See `docker/DOCKER.md` for the full
+Docker quickstart contract.
 
 ---
 
@@ -148,11 +159,13 @@ Canary uses **vcpkg** as its dependency manager and **CMake** as the build syste
 # Cloning the Repository
 
 ```bash
-git clone --recursive https://github.com/opentibiabr/canary.git
+git clone https://github.com/opentibiabr/canary.git
 cd canary
 ```
 
-Always use recursive cloning because some dependencies are managed through submodules and external repositories.
+Canary does not require Git submodules for the normal development workflow.
+Configure vcpkg separately and make sure `VCPKG_ROOT` points to that vcpkg
+installation before using CMake presets.
 
 ---
 
@@ -214,12 +227,14 @@ cmake --build --preset linux-release -j4
 
 Open the repository in Visual Studio.
 
-Visual Studio automatically:
+Visual Studio can automatically:
 
-* Detects CMake
-* Resolves dependencies
-* Configures vcpkg
-* Generates the build cache
+* Detect CMake
+* Resolve dependencies through vcpkg
+* Generate the build cache
+
+Make sure `VCPKG_ROOT` is configured before opening the folder or configuring
+the CMake preset.
 
 Then:
 
@@ -241,23 +256,28 @@ to declare dependencies.
 
 Examples:
 
-* Boost
+* asio
+* curl
+* libmariadb
 * LuaJIT
-* fmt
-* cryptographic libraries
-* networking libraries
+* mbedtls
+* protobuf
+* pugixml
+* spdlog
 
 If dependencies fail:
 
 ```bash
+cd "$VCPKG_ROOT"
 git pull
-cd vcpkg
 ./bootstrap-vcpkg.sh
 ```
 
 or on Windows:
 
 ```powershell
+Set-Location $env:VCPKG_ROOT
+git pull
 .\bootstrap-vcpkg.bat
 ```
 
@@ -488,7 +508,7 @@ std::unordered_map
 std::shared_ptr
 ```
 
-over raw pointers where ownership matters.
+when they match the ownership model of the surrounding code.
 
 Avoid:
 
@@ -498,6 +518,10 @@ delete
 ```
 
 when smart pointers are possible.
+
+For Lua bindings that expose shared C++ objects, read
+`docs/systems/lua-shared-userdata.md` before changing ownership or userdata
+registration code.
 
 ---
 
@@ -610,11 +634,11 @@ docs/
 Good:
 
 ```text
-Fix player logout race condition
+fix(player): prevent logout race condition
 
-Add wheel progression API
+feat(wheel): add progression API
 
-Refactor combat condition processing
+refactor(combat): simplify condition processing
 ```
 
 Avoid:
@@ -729,6 +753,7 @@ if Lua access is required.
 Rebuild vcpkg:
 
 ```bash
+cd "$VCPKG_ROOT"
 git pull
 ./bootstrap-vcpkg.sh
 ```
@@ -737,13 +762,15 @@ git pull
 
 ## CMake Cache Issues
 
-Remove build directory:
+Remove only the affected preset directory, then reconfigure the same preset:
 
 ```bash
-rm -rf build
+rm -rf build/<preset-name>
+cmake --preset <preset-name>
 ```
 
-Then reconfigure.
+For example, if `linux-release` is the broken cache, remove
+`build/linux-release`, not the entire `build/` directory.
 
 ---
 

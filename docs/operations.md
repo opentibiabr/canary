@@ -26,7 +26,7 @@ This guide focuses on:
 
 # Operational Overview
 
-A typical Canary deployment consists of:
+A typical native or production Canary deployment consists of:
 
 ```text
 Internet
@@ -109,16 +109,17 @@ Requirements:
 
 # Deployment Models
 
-## Docker Deployment
+## Docker Quickstart
 
-Recommended for most operators.
+Recommended for local development, local testing and LAN demos.
 
-Canary provides Docker-based deployment including:
+Canary provides a Docker Compose quickstart including:
 
-* Canary
+* Canary from the published runtime image
 * MariaDB
-* MyAAC
-* Login Server
+* MyAAC as website/admin AAC
+* `opentibiabr/login-server` as the client login webservice
+* Optional test accounts and characters
 
 Startup:
 
@@ -128,15 +129,24 @@ cp .env.dist .env
 docker compose up -d --build
 ```
 
-Default ports:
+The `--build` flag builds the MyAAC quickstart image. It does not compile
+Canary locally.
+
+Default exposed endpoints and ports:
 
 ```text
-Website:      8080
-Login API:    8088
-Game Server:  7172
+MyAAC website:            http://localhost:8080
+Client login API:         http://localhost:8088/login
+Canary login protocol:    7171
+Canary game protocol:     7172
+Canary status protocol:   7173
+Login-server gRPC:        9090
 ```
 
-Never expose default credentials publicly. Replace all default accounts and passwords before opening the server to external users.
+The quickstart is not a hardened production deployment with default settings.
+Before using it outside a trusted local network, change all default passwords,
+disable or remove test accounts, review published ports, and pin image tags.
+For the full contract, see `docker/DOCKER.md`.
 
 ---
 
@@ -147,6 +157,7 @@ Suitable when:
 * Maximum performance is required
 * Custom infrastructure exists
 * Advanced monitoring is used
+* Production hardening is required
 
 Typical deployment:
 
@@ -162,6 +173,10 @@ Linux Server
 ---
 
 # Infrastructure Requirements
+
+The values below are starting points only. Real capacity depends on the datapack,
+map size, Lua scripts, enabled metrics, database latency and player behavior.
+Validate production sizing with monitoring and representative load.
 
 ## Small Community
 
@@ -308,6 +323,7 @@ Database
 config.lua
 data/
 data-canary/
+data-otservbr-global/
 Custom Scripts
 Website Files
 ```
@@ -321,7 +337,7 @@ Recommended:
 ### Hourly
 
 ```text
-Database Incremental
+Recent database backup or binary-log/incremental backup if configured
 ```
 
 ### Daily
@@ -434,9 +450,10 @@ Lua Errors
 
 # Metrics
 
-Canary includes metrics and observability support.
+Canary includes optional OpenTelemetry-based metrics support.
 
-Recommended integrations:
+The repository provides Prometheus and Grafana examples under `metrics/`.
+Common integrations:
 
 ```text
 Prometheus
@@ -638,11 +655,16 @@ Expose only required services.
 Allow:
 
 ```text
-7171
-7172
-80
-443
+7171  Canary login protocol, if used directly
+7172  Canary game protocol
+7173  Canary status protocol, if public status is needed
+80    Web/API HTTP, preferably redirected to HTTPS
+443   Web/API HTTPS
+8088  login-server HTTP, only if not behind a reverse proxy
 ```
+
+Keep `9090` login-server gRPC and `3306` MariaDB restricted to trusted
+networks unless a deployment explicitly requires otherwise.
 
 Restrict:
 
@@ -742,11 +764,14 @@ Capacity Assessment
 
 ## Startup
 
+Docker quickstart:
+
 ```bash
+cd docker
 docker compose up -d
 ```
 
-or
+Native server:
 
 ```bash
 ./canary

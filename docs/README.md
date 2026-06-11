@@ -6,30 +6,31 @@ This directory is the main documentation hub for the Canary repository.
 
 # Documentation Index
 
-This documentation is organized into four primary guides:
+This documentation is organized around four primary guides, with specialized
+references in the surrounding subdirectories:
 
 | Document          | Purpose                                                              |
 | ----------------- | -------------------------------------------------------------------- |
-| `README.md`       | Project overview and documentation index                             |
-| `architecture.md` | System design, components and technical architecture                 |
-| `development.md`  | Development environment, coding standards and contribution workflow  |
-| `operations.md`   | Deployment, monitoring, security, backups and production operations  |
+| [`README.md`](README.md) | Project overview and documentation index                     |
+| [`architecture.md`](architecture.md) | System design, components and technical architecture |
+| [`development.md`](development.md) | Development environment, coding standards and contribution workflow |
+| [`operations.md`](operations.md) | Deployment, monitoring, security, backups and production operations |
 
 ---
 
 # What is Canary?
 
-Canary is a modern MMORPG server engine that evolved from the OTServBR ecosystem. The project aims to provide a clean, maintainable, and extensible codebase that supports both custom game projects and OpenTibia-based servers. The repository includes support for multiple datapacks, Lua scripting, database persistence, Docker deployment, automated testing and observability tooling.
+Canary is a modern MMORPG server engine that evolved from the OTServBR ecosystem. The project aims to provide a clean, maintainable, and extensible codebase that supports both custom game projects and OpenTibia-based servers. The repository includes support for multiple datapacks, Lua scripting, database persistence, a Docker quickstart for local testing, automated testing and observability tooling.
 
 Key characteristics:
 
 * C++20 core engine
 * Lua gameplay scripting
 * MariaDB/MySQL persistence
-* Docker deployment support
+* Docker quickstart support for local testing and LAN demos
 * Automated testing
 * Metrics and observability
-* OpenTelemetry integration
+* Optional OpenTelemetry metrics integration
 * Multiple datapack support
 * Modern build tooling using CMake and vcpkg
 
@@ -42,7 +43,11 @@ docs/
 ├── README.md
 ├── architecture.md
 ├── development.md
-└── operations.md
+├── operations.md
+├── building/
+├── docker/
+├── lua-api/
+└── systems/
 ```
 
 ---
@@ -66,11 +71,7 @@ Topics include:
 * Scheduler and dispatcher
 * Metrics and observability
 
-Read:
-
-```text
-architecture.md
-```
+Read the [Architecture Guide](architecture.md).
 
 Recommended for:
 
@@ -98,11 +99,7 @@ Topics include:
 * Pull request workflow
 * Debugging techniques
 
-Read:
-
-```text
-development.md
-```
+Read the [Development Guide](development.md).
 
 Recommended for:
 
@@ -115,13 +112,14 @@ Recommended for:
 
 # Operations Guide
 
-The Operations Guide focuses on running Canary in production environments.
+The Operations Guide focuses on operating Canary safely, including native
+production deployments and the limits of the local Docker quickstart.
 
 Topics include:
 
 * Infrastructure planning
 * Deployment models
-* Docker operations
+* Docker quickstart operations
 * Configuration management
 * Security practices
 * Monitoring and alerting
@@ -130,11 +128,7 @@ Topics include:
 * Upgrade procedures
 * Incident response
 
-Read:
-
-```text
-operations.md
-```
+Read the [Operations Guide](operations.md).
 
 Recommended for:
 
@@ -156,7 +150,7 @@ canary/
 ├── data-otservbr-global/   # Global datapack
 ├── docs/                   # Project documentation
 ├── tests/                  # Automated tests
-├── docker/                 # Docker deployment assets
+├── docker/                 # Local Docker quickstart assets
 ├── metrics/                # Observability and metrics
 │
 ├── schema.sql              # Database schema
@@ -204,10 +198,10 @@ Maintenance
 
 ## Infrastructure
 
-* Docker
+* Docker Compose quickstart
 * GitHub Actions
-* OpenTelemetry
-* Metrics Collection
+* OpenTelemetry-based metrics
+* Prometheus and Grafana examples
 
 ## Supported Platforms
 
@@ -219,7 +213,7 @@ Maintenance
 
 # Deployment Options
 
-Canary can be deployed using:
+Canary can be run using:
 
 ## Docker
 
@@ -227,7 +221,12 @@ Recommended for:
 
 * Local development
 * Testing
-* Small and medium communities
+* LAN demos
+
+The repository Docker Compose stack is a quickstart. It uses the published
+Canary runtime image, builds the MyAAC quickstart image, and should not be used
+as a production deployment with default settings. See
+[docker/DOCKER.md](../docker/DOCKER.md) for the complete quickstart contract.
 
 ## Native Installation
 
@@ -237,7 +236,8 @@ Recommended for:
 * Custom infrastructure
 * Advanced monitoring setups
 
-The repository provides Docker assets, build presets and deployment examples for both approaches.
+The repository provides Docker quickstart assets, CMake build presets and
+operational guidance for these approaches.
 
 ---
 

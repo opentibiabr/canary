@@ -197,7 +197,7 @@ Responsibilities:
 
 Main protocols:
 
-### ProtocolLogin
+## ProtocolLogin
 
 Handles:
 
@@ -205,7 +205,7 @@ Handles:
 * Character list retrieval
 * Session initialization
 
-### ProtocolGame
+## ProtocolGame
 
 Handles:
 
@@ -447,36 +447,41 @@ This prevents race conditions and maintains world consistency.
 
 ## data/
 
-Contains:
+Contains shared engine resources and reusable Lua systems loaded by the server,
+including:
 
 * Actions
 * Spells
-* NPCs
 * Quests
-* Monsters
 * Movements
 * Talkactions
+* Core libraries
+* Shared event scripts
 
-This is where most game customization occurs.
+Use this directory for shared systems that are not specific to one datapack.
 
 ---
 
 ## data-canary/
 
-Contains Canary-specific content and systems.
+Contains the lightweight Canary datapack.
 
 Examples:
 
 * New quests
 * New monsters
 * New mechanics
-* Protocol-specific features
+* NPCs
+* Raids
+* World files
 
 ---
 
 ## data-otservbr-global/
 
-Legacy compatibility content originating from OTServBR-Global.
+Contains the larger OTServBR-Global datapack used by the default Docker
+quickstart. It includes the full global world content, monsters, NPCs, raids,
+startup scripts and migrations for that datapack.
 
 ---
 
@@ -529,25 +534,29 @@ Located under:
 docker/
 ```
 
-Development stack:
+Local Docker quickstart stack:
 
 ```text
-┌──────────────┐
-│   Canary     │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│   MariaDB    │
-└──────┬───────┘
-       │
-       ▼
-┌──────────────┐
-│    MyAAC     │
-└──────────────┘
+┌────────────────────────────┐
+│ MariaDB                    │
+└────────────┬───────────────┘
+             │
+┌────────────▼───────────────┐
+│ Canary runtime image        │
+│ data-otservbr-global default│
+└────────────┬───────────────┘
+             │
+      ┌──────┴──────┐
+      ▼             ▼
+┌──────────┐  ┌────────────────┐
+│ MyAAC    │  │ login-server   │
+│ website  │  │ client login   │
+└──────────┘  └────────────────┘
 ```
 
-This enables local development without manual infrastructure setup.
+This enables local development, local testing and LAN demos without compiling
+Canary locally. It is not the production deployment model with default settings;
+see `docker/DOCKER.md` for the quickstart contract.
 
 ---
 

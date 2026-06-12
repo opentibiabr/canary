@@ -5608,6 +5608,17 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, cons
 
 	std::bitset<static_cast<size_t>(PlayerIcon::Count)> iconsBitSet;
 	for (const auto &icon : iconSet) {
+		if (oldProtocol && version < 1100) {
+			if (icon == PlayerIcon::NewManaShield) {
+				iconsBitSet.set(enumToValue(PlayerIcon::ManaShield));
+				continue;
+			}
+
+			if (enumToValue(icon) > enumToValue(PlayerIcon::Bleeding)) {
+				continue;
+			}
+		}
+
 		iconsBitSet.set(enumToValue(icon));
 	}
 

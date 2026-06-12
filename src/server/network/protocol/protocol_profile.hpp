@@ -22,6 +22,7 @@ enum class ProtocolProfileId : uint8_t {
 	Current,
 	Tibia1100,
 	Cipsoft860Vanilla,
+	Cipsoft860ExtendedAssets,
 	OTCv8Extended860,
 };
 
@@ -54,6 +55,8 @@ enum class ProtocolFeature : uint64_t {
 	LegacyPayload = 1ULL << 2,
 	RequiresItemMapper = 1ULL << 3,
 	InlineLoginBugReportFlag = 1ULL << 4,
+	ExtendedSpriteFiles = 1ULL << 5,
+	MagicEffectU16 = 1ULL << 6,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {
@@ -132,6 +135,14 @@ struct InitialConnectionBehavior {
 	[[nodiscard]] friend constexpr bool operator==(const InitialConnectionBehavior &, const InitialConnectionBehavior &) = default;
 };
 
+struct ClientAssetSignatures {
+	uint32_t dat = 0;
+	uint32_t spr = 0;
+	uint32_t pic = 0;
+
+	[[nodiscard]] friend constexpr bool operator==(const ClientAssetSignatures &, const ClientAssetSignatures &) = default;
+};
+
 struct ProtocolProfile {
 	ProtocolProfileId id = ProtocolProfileId::Current;
 	uint16_t clientVersion = CLIENT_VERSION;
@@ -140,6 +151,7 @@ struct ProtocolProfile {
 	ProtocolSupportState supportState = ProtocolSupportState::Enabled;
 	ItemMapperPolicy itemMapperPolicy = ItemMapperPolicy::NotRequired;
 	InitialConnectionBehavior initialBehavior {};
+	ClientAssetSignatures assetSignatures {};
 	uint64_t features = static_cast<uint64_t>(ProtocolFeature::None);
 	std::string_view name;
 
@@ -163,6 +175,7 @@ struct AccountLoginLayout {
 	uint16_t clientVersion = CLIENT_VERSION;
 	TransportProfileId responseTransport = TransportProfileId::CurrentModern;
 	uint8_t bytesToSkipBeforeRsa = 17;
+	bool hasAssetSignaturesBeforeRsa = false;
 	AccountCharacterListLayout characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey;
 	bool sendsSessionKey = true;
 };
@@ -186,8 +199,11 @@ public:
 	[[nodiscard]] static const ProtocolProfile &getCurrentProfile();
 	[[nodiscard]] static const ProtocolProfile* getProfile(ProtocolProfileId id);
 	[[nodiscard]] static const ProtocolProfile* resolveByClientVersion(uint16_t version, ClientWireFamily family = ClientWireFamily::CipsoftVanilla);
+	[[nodiscard]] static const ProtocolProfile* resolveByClientVersionAndAssets(uint16_t version, const ClientAssetSignatures &signatures, ClientWireFamily family = ClientWireFamily::CipsoftVanilla);
 	[[nodiscard]] static const AccountLoginLayout* resolveAccountLoginLayout(uint16_t version);
+	[[nodiscard]] static const AccountLoginLayout* resolveAccountLoginLayout(ProtocolProfileId id);
 	[[nodiscard]] static const GameLoginLayout* resolveGameLoginLayout(uint16_t version);
+	[[nodiscard]] static const GameLoginLayout* resolveGameLoginLayout(ProtocolProfileId id);
 	[[nodiscard]] static InitialConnectionBehavior defaultModernInitialBehavior();
 	[[nodiscard]] static bool isProfileAllowed(ProtocolProfileId id);
 };

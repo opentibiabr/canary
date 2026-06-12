@@ -79,6 +79,15 @@ namespace {
 		.expectedProfile = ProtocolProfileId::Cipsoft860Vanilla,
 	};
 
+	constexpr InitialConnectionBehavior cipsoft860ExtendedAssetsInitialBehavior {
+		.transport = TransportProfileId::LegacyClassic,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::Cipsoft860LoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::Cipsoft860ExtendedAssets,
+	};
+
 	constexpr InitialConnectionBehavior otcv8Extended860InitialBehavior {
 		.transport = TransportProfileId::LegacyClassic,
 		.challenge = {
@@ -124,6 +133,23 @@ namespace {
 		.name = "cipsoft860vanilla",
 	};
 
+	constexpr ProtocolProfile cipsoft860ExtendedAssetsProfile {
+		.id = ProtocolProfileId::Cipsoft860ExtendedAssets,
+		.clientVersion = 860,
+		.wireFamily = ClientWireFamily::CipsoftVanilla,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::Enabled,
+		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
+		.initialBehavior = cipsoft860ExtendedAssetsInitialBehavior,
+		.assetSignatures = {
+			.dat = 0x4C2C7993,
+			.spr = 0x4C220594,
+			.pic = 0x4AE5C3D3,
+		},
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles),
+		.name = "cipsoft860extendedassets",
+	};
+
 	constexpr ProtocolProfile otcv8Extended860Profile {
 		.id = ProtocolProfileId::OTCv8Extended860,
 		.clientVersion = 860,
@@ -159,6 +185,17 @@ namespace {
 		.clientVersion = 860,
 		.responseTransport = TransportProfileId::LegacyClassic,
 		.bytesToSkipBeforeRsa = 12,
+		.hasAssetSignaturesBeforeRsa = true,
+		.characterListLayout = AccountCharacterListLayout::LegacyCharacterList,
+		.sendsSessionKey = false,
+	};
+
+	constexpr AccountLoginLayout cipsoft860ExtendedAssetsAccountLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860ExtendedAssets,
+		.clientVersion = 860,
+		.responseTransport = TransportProfileId::LegacyClassic,
+		.bytesToSkipBeforeRsa = 12,
+		.hasAssetSignaturesBeforeRsa = true,
 		.characterListLayout = AccountCharacterListLayout::LegacyCharacterList,
 		.sendsSessionKey = false,
 	};
@@ -201,6 +238,19 @@ namespace {
 		.hasChallengeResponse = true,
 		.hasOtcV8Probe = false,
 	};
+
+	constexpr GameLoginLayout cipsoft860ExtendedAssetsGameLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860ExtendedAssets,
+		.clientVersion = 860,
+		.hasClientVersionU32 = false,
+		.hasClientVersionString = false,
+		.hasAssetHashString = false,
+		.hasContentRevisionU16 = false,
+		.hasPreviewState = false,
+		.authenticationLayout = GameLoginAuthenticationLayout::AccountPassword,
+		.hasChallengeResponse = true,
+		.hasOtcV8Probe = false,
+	};
 }
 
 const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportProfileId id) {
@@ -227,6 +277,8 @@ const ProtocolProfile* ProtocolProfileRegistry::getProfile(ProtocolProfileId id)
 			return &tibia1100Profile;
 		case ProtocolProfileId::Cipsoft860Vanilla:
 			return &cipsoft860Profile;
+		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+			return &cipsoft860ExtendedAssetsProfile;
 		case ProtocolProfileId::OTCv8Extended860:
 			return &otcv8Extended860Profile;
 		default:
@@ -253,6 +305,19 @@ const ProtocolProfile* ProtocolProfileRegistry::resolveByClientVersion(uint16_t 
 	return nullptr;
 }
 
+const ProtocolProfile* ProtocolProfileRegistry::resolveByClientVersionAndAssets(uint16_t version, const ClientAssetSignatures &signatures, ClientWireFamily family /*= ClientWireFamily::CipsoftVanilla*/) {
+	const auto* profile = resolveByClientVersion(version, family);
+	if (!profile) {
+		return nullptr;
+	}
+
+	if (version == 860 && family == ClientWireFamily::CipsoftVanilla && signatures == cipsoft860ExtendedAssetsProfile.assetSignatures) {
+		return &cipsoft860ExtendedAssetsProfile;
+	}
+
+	return profile;
+}
+
 const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(uint16_t version) {
 	if (version == CLIENT_VERSION) {
 		return &currentAccountLoginLayout;
@@ -269,6 +334,21 @@ const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(uin
 	return nullptr;
 }
 
+const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(ProtocolProfileId id) {
+	switch (id) {
+		case ProtocolProfileId::Current:
+			return &currentAccountLoginLayout;
+		case ProtocolProfileId::Tibia1100:
+			return &tibia1100AccountLoginLayout;
+		case ProtocolProfileId::Cipsoft860Vanilla:
+			return &cipsoft860AccountLoginLayout;
+		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+			return &cipsoft860ExtendedAssetsAccountLoginLayout;
+		default:
+			return nullptr;
+	}
+}
+
 const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(uint16_t version) {
 	if (version == CLIENT_VERSION) {
 		return &currentGameLoginLayout;
@@ -283,6 +363,21 @@ const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(uint16_t 
 	}
 
 	return nullptr;
+}
+
+const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolProfileId id) {
+	switch (id) {
+		case ProtocolProfileId::Current:
+			return &currentGameLoginLayout;
+		case ProtocolProfileId::Tibia1100:
+			return &tibia1100GameLoginLayout;
+		case ProtocolProfileId::Cipsoft860Vanilla:
+			return &cipsoft860GameLoginLayout;
+		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+			return &cipsoft860ExtendedAssetsGameLoginLayout;
+		default:
+			return nullptr;
+	}
 }
 
 InitialConnectionBehavior ProtocolProfileRegistry::defaultModernInitialBehavior() {

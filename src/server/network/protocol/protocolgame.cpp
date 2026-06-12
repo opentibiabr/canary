@@ -364,6 +364,12 @@ namespace {
 		msg.addDouble(wheelCritical);
 		msg.addDouble(concoctionCritical);
 	}
+
+	bool isCipsoft860Profile(const ProtocolProfile* profile) {
+		return profile
+			&& (profile->id == ProtocolProfileId::Cipsoft860Vanilla
+			    || profile->id == ProtocolProfileId::Cipsoft860ExtendedAssets);
+	}
 } // namespace
 
 ProtocolGame::ProtocolGame(const Connection_ptr &initConnection) :
@@ -736,7 +742,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			}
 		}
 
-		const bool suppressPreLoginPacketsBeforePlacement = protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla;
+		const bool suppressPreLoginPacketsBeforePlacement = isCipsoft860Profile(protocolProfile);
 		const bool previousSuppressPreLoginPackets = suppressPreLoginPackets;
 		if (suppressPreLoginPacketsBeforePlacement) {
 			suppressPreLoginPackets = true;
@@ -800,7 +806,7 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	player->isConnecting = false;
 
 	player->client = getThis();
-	const bool suppressPreLoginPacketsBeforeConnectBootstrap = protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla;
+	const bool suppressPreLoginPacketsBeforeConnectBootstrap = isCipsoft860Profile(protocolProfile);
 	const bool previousSuppressPreLoginPackets = suppressPreLoginPackets;
 	if (suppressPreLoginPacketsBeforeConnectBootstrap) {
 		suppressPreLoginPackets = true;
@@ -1002,8 +1008,19 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		characterName = msg.getString();
 	}
 	if (sessionHintLease) {
-		const bool hintMatches = ProtocolSessionHintStore::getInstance().consumeIfMatches(*sessionHintLease, sessionKey, characterName, version);
-		if (!hintMatches && !sessionHintLease->behavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
+		const auto matchedProfileId = ProtocolSessionHintStore::getInstance().consumeAndResolveProfile(*sessionHintLease, sessionKey, characterName, version);
+		if (matchedProfileId) {
+			const auto* matchedProfile = ProtocolProfileRegistry::getProfile(*matchedProfileId);
+			const auto* matchedLayout = ProtocolProfileRegistry::resolveGameLoginLayout(*matchedProfileId);
+			if (!matchedProfile || !matchedLayout || !initialConnectionBehavior.hasSameWireBehavior(matchedProfile->initialBehavior)) {
+				disconnect();
+				return;
+			}
+
+			protocolProfile = matchedProfile;
+			gameLoginLayout = matchedLayout;
+			oldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
+		} else if (!sessionHintLease->behavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
 			disconnect();
 			return;
 		}
@@ -1178,7 +1195,7 @@ void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
 }
 
 bool ProtocolGame::shouldSuppressPreLoginPacket() const {
-	return !loggedIn && protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla;
+	return !loggedIn && isCipsoft860Profile(protocolProfile);
 }
 
 void ProtocolGame::parsePacket(NetworkMessage &msg) {
@@ -1732,7 +1749,7 @@ void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, Network
 		msg.add<uint16_t>(0x00); // Env effects
 	}
 
-	if (protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla) {
+	if (isCipsoft860Profile(protocolProfile)) {
 		int32_t count = 0;
 		const auto ground = tile->getGround();
 		if (ground) {
@@ -8719,7 +8736,7 @@ void ProtocolGame::sendModalWindow(const ModalWindow &modalWindow) {
 void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creature> &creature, bool known, uint32_t remove) {
 	CreatureType_t creatureType = creature->getType();
 	std::shared_ptr<Player> otherPlayer = creature->getPlayer();
-	const bool cipsoft860 = protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla;
+	const bool cipsoft860 = isCipsoft860Profile(protocolProfile);
 
 	if (known) {
 		msg.add<uint16_t>(0x62);
@@ -8848,7 +8865,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
-	if (protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla) {
+	if (isCipsoft860Profile(protocolProfile)) {
 		msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
@@ -8927,7 +8944,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	msg.addByte(0xA1);
 
-	if (protocolProfile && protocolProfile->id == ProtocolProfileId::Cipsoft860Vanilla) {
+	if (isCipsoft860Profile(protocolProfile)) {
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
 			auto skill = static_cast<skills_t>(i);
 			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getSkillLevel(skill), std::numeric_limits<uint8_t>::max())));

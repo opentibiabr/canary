@@ -27,23 +27,42 @@ namespace {
 	}
 }
 
-TEST(ProtocolProfileRegistryTest, Version860VanillaAndOTCv8AreDifferentProfiles) {
+TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	const auto* vanilla = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::CipsoftVanilla);
+	const auto* extendedAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
+		860,
+		ClientAssetSignatures {
+			.dat = 0x4C2C7993,
+			.spr = 0x4C220594,
+			.pic = 0x4AE5C3D3,
+		},
+		ClientWireFamily::CipsoftVanilla
+	);
 	const auto* otcv8 = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::OTCv8Extended);
 
 	ASSERT_NE(nullptr, vanilla);
+	ASSERT_NE(nullptr, extendedAssets);
 	ASSERT_NE(nullptr, otcv8);
 	EXPECT_NE(vanilla->id, otcv8->id);
+	EXPECT_NE(vanilla->id, extendedAssets->id);
+	EXPECT_NE(extendedAssets->id, otcv8->id);
 	EXPECT_EQ(ProtocolProfileId::Cipsoft860Vanilla, vanilla->id);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860ExtendedAssets, extendedAssets->id);
 	EXPECT_EQ(ProtocolProfileId::OTCv8Extended860, otcv8->id);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, vanilla->wireFamily);
+	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, extendedAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::OTCv8Extended, otcv8->wireFamily);
 	EXPECT_EQ(RSAKeyFamily::OpenTibia, vanilla->rsaKeyFamily);
 	EXPECT_EQ(860, vanilla->clientVersion);
+	EXPECT_EQ(860, extendedAssets->clientVersion);
 	EXPECT_EQ(860, otcv8->clientVersion);
 	EXPECT_FALSE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
+	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
+	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(extendedAssets->id));
 	EXPECT_FALSE(ProtocolProfileRegistry::isProfileAllowed(otcv8->id));
 }
 
@@ -57,6 +76,7 @@ TEST(ProtocolProfileRegistryTest, Cipsoft860UsesClassicLoginLayouts) {
 	ASSERT_NE(nullptr, profile);
 	EXPECT_EQ(TransportProfileId::LegacyClassic, accountLayout->responseTransport);
 	EXPECT_EQ(12, accountLayout->bytesToSkipBeforeRsa);
+	EXPECT_TRUE(accountLayout->hasAssetSignaturesBeforeRsa);
 	EXPECT_EQ(AccountCharacterListLayout::LegacyCharacterList, accountLayout->characterListLayout);
 	EXPECT_FALSE(accountLayout->sendsSessionKey);
 	EXPECT_FALSE(gameLayout->hasClientVersionU32);
@@ -65,6 +85,16 @@ TEST(ProtocolProfileRegistryTest, Cipsoft860UsesClassicLoginLayouts) {
 	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, gameLayout->authenticationLayout);
 	EXPECT_EQ(TransportProfileId::LegacyClassic, profile->initialBehavior.transport);
 	EXPECT_EQ(ChallengeLayout::Cipsoft860LoginChallenge, profile->initialBehavior.challenge.layout);
+
+	const auto* extendedProfile = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860ExtendedAssets);
+	const auto* extendedAccountLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(ProtocolProfileId::Cipsoft860ExtendedAssets);
+	const auto* extendedGameLayout = ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolProfileId::Cipsoft860ExtendedAssets);
+	ASSERT_NE(nullptr, extendedProfile);
+	ASSERT_NE(nullptr, extendedAccountLayout);
+	ASSERT_NE(nullptr, extendedGameLayout);
+	EXPECT_TRUE(profile->initialBehavior.hasSameWireBehavior(extendedProfile->initialBehavior));
+	EXPECT_EQ(AccountCharacterListLayout::LegacyCharacterList, extendedAccountLayout->characterListLayout);
+	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, extendedGameLayout->authenticationLayout);
 }
 
 TEST(ProtocolProfileRegistryTest, CurrentAnd1100ShareInitialWireBehavior) {
@@ -190,4 +220,19 @@ TEST(SessionHintTest, WrongCharacterDoesNotConsumeHint) {
 	ASSERT_TRUE(lease);
 	EXPECT_FALSE(store.consumeIfMatches(*lease, session, "Wrong Character", 1100));
 	EXPECT_TRUE(store.consumeIfMatches(*lease, session, character, 1100));
+}
+
+TEST(SessionHintTest, ConsumeReturnsMatchedAssetProfile) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000106;
+	const std::string session = "extended-account\nextended-password";
+	const std::string character = "Extended Character";
+
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860ExtendedAssets, session, { character });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	const auto matchedProfile = store.consumeAndResolveProfile(*lease, session, character, 860);
+	ASSERT_TRUE(matchedProfile);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860ExtendedAssets, *matchedProfile);
 }

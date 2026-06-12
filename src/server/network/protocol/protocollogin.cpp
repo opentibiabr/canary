@@ -194,19 +194,52 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
+	if (loginLayout->hasAssetSignaturesBeforeRsa) {
+		if (!msg.canRead(sizeof(uint32_t) * 3)) {
+			disconnectClient(fmt::format("Invalid login packet for protocol version {}.", version));
+			return;
+		}
+
+		const ClientAssetSignatures assetSignatures {
+			.dat = msg.get<uint32_t>(),
+			.spr = msg.get<uint32_t>(),
+			.pic = msg.get<uint32_t>(),
+		};
+
+		protocolProfile = ProtocolProfileRegistry::resolveByClientVersionAndAssets(version, assetSignatures);
+		if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+			disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+			return;
+		}
+
+		loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id);
+		if (!loginLayout) {
+			disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+			return;
+		}
+
+		g_logger().debug(
+			"[ProtocolLogin::onRecvFirstMessage] Detected protocol profile '{}' from asset signatures dat=0x{:08X} spr=0x{:08X} pic=0x{:08X}",
+			protocolProfile->name,
+			assetSignatures.dat,
+			assetSignatures.spr,
+			assetSignatures.pic
+		);
+	} else {
+		msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
+	}
+
 	if (const auto connection = getConnection()) {
 		connection->setTransportCodec(TransportCodecs::get(loginLayout->responseTransport), InitialTransportState::ResolvedFromPrelude);
 	}
 
 	// Old protocol support
 	oldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
-
-	msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
 	/*
-	 - Skipped bytes:
-	 - 4 bytes: client version (971+)
-	 - 12 bytes: dat, spr, pic signatures (4 bytes each)
-	 - 1 byte: preview world(971+)
+	 - Current/11.00 skips the remaining pre-RSA metadata:
+	   4 bytes client version, 12 bytes dat/spr/pic signatures, 1 preview byte.
+	 - 8.60 layouts read the dat/spr/pic signatures before RSA so the profile can
+	   be resolved from the actual asset contract instead of the protocol number only.
 	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {

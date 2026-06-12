@@ -53,6 +53,12 @@ public:
 		const std::string &characterName,
 		uint16_t clientVersion
 	);
+	[[nodiscard]] std::optional<ProtocolProfileId> consumeAndResolveProfile(
+		const ProtocolSessionHintLease &lease,
+		const std::string &accountSession,
+		const std::string &characterName,
+		uint16_t clientVersion
+	);
 
 private:
 	struct Hint {

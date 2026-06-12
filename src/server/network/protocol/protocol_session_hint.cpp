@@ -112,8 +112,17 @@ bool ProtocolSessionHintStore::consumeIfMatches(
 	const std::string &characterName,
 	uint16_t clientVersion
 ) {
+	return consumeAndResolveProfile(lease, accountSession, characterName, clientVersion).has_value();
+}
+
+std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProfile(
+	const ProtocolSessionHintLease &lease,
+	const std::string &accountSession,
+	const std::string &characterName,
+	uint16_t clientVersion
+) {
 	if (!lease) {
-		return false;
+		return std::nullopt;
 	}
 
 	const auto now = std::chrono::steady_clock::now();
@@ -143,11 +152,12 @@ bool ProtocolSessionHintStore::consumeIfMatches(
 			continue;
 		}
 
+		const auto profileId = it->profileId;
 		hints.erase(it);
-		return true;
+		return profileId;
 	}
 
-	return false;
+	return std::nullopt;
 }
 
 void ProtocolSessionHintStore::cleanupExpired(std::chrono::steady_clock::time_point now) {

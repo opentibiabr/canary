@@ -29,7 +29,7 @@ namespace {
 
 TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	const auto* vanilla = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::CipsoftVanilla);
-	const auto* extendedAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
+	const auto* developmentAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
 		860,
 		ClientAssetSignatures {
 			.dat = 0x4C2C7993,
@@ -38,30 +38,49 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 		},
 		ClientWireFamily::CipsoftVanilla
 	);
+	const auto* canaryAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
+		860,
+		ClientAssetSignatures {
+			.dat = 0x44363843,
+			.spr = 0x53363843,
+			.pic = 0x50363843,
+		},
+		ClientWireFamily::CipsoftVanilla
+	);
+	const auto* extendedAssets = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860ExtendedAssets);
 	const auto* otcv8 = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::OTCv8Extended);
 
 	ASSERT_NE(nullptr, vanilla);
+	ASSERT_NE(nullptr, developmentAssets);
+	ASSERT_NE(nullptr, canaryAssets);
 	ASSERT_NE(nullptr, extendedAssets);
 	ASSERT_NE(nullptr, otcv8);
 	EXPECT_NE(vanilla->id, otcv8->id);
 	EXPECT_NE(vanilla->id, extendedAssets->id);
 	EXPECT_NE(extendedAssets->id, otcv8->id);
 	EXPECT_EQ(ProtocolProfileId::Cipsoft860Vanilla, vanilla->id);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860CanaryExtended, developmentAssets->id);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860CanaryExtended, canaryAssets->id);
 	EXPECT_EQ(ProtocolProfileId::Cipsoft860ExtendedAssets, extendedAssets->id);
 	EXPECT_EQ(ProtocolProfileId::OTCv8Extended860, otcv8->id);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, vanilla->wireFamily);
+	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, developmentAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, extendedAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::OTCv8Extended, otcv8->wireFamily);
 	EXPECT_EQ(RSAKeyFamily::OpenTibia, vanilla->rsaKeyFamily);
 	EXPECT_EQ(860, vanilla->clientVersion);
+	EXPECT_EQ(860, developmentAssets->clientVersion);
 	EXPECT_EQ(860, extendedAssets->clientVersion);
 	EXPECT_EQ(860, otcv8->clientVersion);
 	EXPECT_FALSE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
+	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
+	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(developmentAssets->id));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(extendedAssets->id));
 	EXPECT_FALSE(ProtocolProfileRegistry::isProfileAllowed(otcv8->id));
 }
@@ -89,12 +108,21 @@ TEST(ProtocolProfileRegistryTest, Cipsoft860UsesClassicLoginLayouts) {
 	const auto* extendedProfile = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860ExtendedAssets);
 	const auto* extendedAccountLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(ProtocolProfileId::Cipsoft860ExtendedAssets);
 	const auto* extendedGameLayout = ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolProfileId::Cipsoft860ExtendedAssets);
+	const auto* canaryProfile = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860CanaryExtended);
+	const auto* canaryAccountLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(ProtocolProfileId::Cipsoft860CanaryExtended);
+	const auto* canaryGameLayout = ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolProfileId::Cipsoft860CanaryExtended);
 	ASSERT_NE(nullptr, extendedProfile);
 	ASSERT_NE(nullptr, extendedAccountLayout);
 	ASSERT_NE(nullptr, extendedGameLayout);
+	ASSERT_NE(nullptr, canaryProfile);
+	ASSERT_NE(nullptr, canaryAccountLayout);
+	ASSERT_NE(nullptr, canaryGameLayout);
 	EXPECT_TRUE(profile->initialBehavior.hasSameWireBehavior(extendedProfile->initialBehavior));
+	EXPECT_TRUE(profile->initialBehavior.hasSameWireBehavior(canaryProfile->initialBehavior));
 	EXPECT_EQ(AccountCharacterListLayout::LegacyCharacterList, extendedAccountLayout->characterListLayout);
+	EXPECT_EQ(AccountCharacterListLayout::LegacyCharacterList, canaryAccountLayout->characterListLayout);
 	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, extendedGameLayout->authenticationLayout);
+	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, canaryGameLayout->authenticationLayout);
 }
 
 TEST(ProtocolProfileRegistryTest, CurrentAnd1100ShareInitialWireBehavior) {
@@ -228,11 +256,11 @@ TEST(SessionHintTest, ConsumeReturnsMatchedAssetProfile) {
 	const std::string session = "extended-account\nextended-password";
 	const std::string character = "Extended Character";
 
-	store.registerHint(testIp, ProtocolProfileId::Cipsoft860ExtendedAssets, session, { character });
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860CanaryExtended, session, { character });
 
 	const auto lease = store.claimByIp(testIp);
 	ASSERT_TRUE(lease);
 	const auto matchedProfile = store.consumeAndResolveProfile(*lease, session, character, 860);
 	ASSERT_TRUE(matchedProfile);
-	EXPECT_EQ(ProtocolProfileId::Cipsoft860ExtendedAssets, *matchedProfile);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860CanaryExtended, *matchedProfile);
 }

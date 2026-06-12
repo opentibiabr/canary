@@ -368,7 +368,12 @@ namespace {
 	bool isCipsoft860Profile(const ProtocolProfile* profile) {
 		return profile
 			&& (profile->id == ProtocolProfileId::Cipsoft860Vanilla
-			    || profile->id == ProtocolProfileId::Cipsoft860ExtendedAssets);
+			    || profile->id == ProtocolProfileId::Cipsoft860ExtendedAssets
+			    || profile->id == ProtocolProfileId::Cipsoft860CanaryExtended);
+	}
+
+	bool hasProtocolFeature(const ProtocolProfile* profile, ProtocolFeature feature) {
+		return profile && profile->hasFeature(feature);
 	}
 } // namespace
 
@@ -7381,7 +7386,8 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 }
 
 void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
-	if (!canSee(pos) || (oldProtocol && type > 0xFF)) {
+	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
+	if (!canSee(pos) || (oldProtocol && !useLegacyU16Effect && type > 0xFF)) {
 		return;
 	}
 
@@ -7389,7 +7395,11 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 	if (oldProtocol) {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
-		msg.addByte(static_cast<uint8_t>(type));
+		if (useLegacyU16Effect) {
+			msg.add<uint16_t>(type);
+		} else {
+			msg.addByte(static_cast<uint8_t>(type));
+		}
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(pos);
@@ -7401,14 +7411,19 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
-	if (oldProtocol && type > 0xFF) {
+	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
+	if (oldProtocol && !useLegacyU16Effect && type > 0xFF) {
 		return;
 	}
 	NetworkMessage msg;
 	msg.addByte(0x84);
 	msg.addPosition(pos);
 	if (oldProtocol) {
-		msg.addByte(static_cast<uint8_t>(type));
+		if (useLegacyU16Effect) {
+			msg.add<uint16_t>(type);
+		} else {
+			msg.addByte(static_cast<uint8_t>(type));
+		}
 	} else {
 		msg.add<uint16_t>(type);
 	}

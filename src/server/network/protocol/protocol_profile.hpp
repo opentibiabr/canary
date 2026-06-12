@@ -23,6 +23,7 @@ enum class ProtocolProfileId : uint8_t {
 	Tibia1100,
 	Cipsoft860Vanilla,
 	Cipsoft860ExtendedAssets,
+	Cipsoft860CanaryExtended,
 	OTCv8Extended860,
 };
 

@@ -88,6 +88,15 @@ namespace {
 		.expectedProfile = ProtocolProfileId::Cipsoft860ExtendedAssets,
 	};
 
+	constexpr InitialConnectionBehavior cipsoft860CanaryExtendedInitialBehavior {
+		.transport = TransportProfileId::LegacyClassic,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::Cipsoft860LoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::Cipsoft860CanaryExtended,
+	};
+
 	constexpr InitialConnectionBehavior otcv8Extended860InitialBehavior {
 		.transport = TransportProfileId::LegacyClassic,
 		.challenge = {
@@ -96,6 +105,22 @@ namespace {
 		},
 		.expectedProfile = ProtocolProfileId::OTCv8Extended860,
 	};
+
+	constexpr ClientAssetSignatures cipsoft860CanaryAssetSignatures {
+		.dat = 0x44363843, // "C86D"
+		.spr = 0x53363843, // "C86S"
+		.pic = 0x50363843, // "C86P"
+	};
+
+	constexpr ClientAssetSignatures cipsoft860DevelopmentAssetSignatures {
+		.dat = 0x4C2C7993,
+		.spr = 0x4C220594,
+		.pic = 0x4AE5C3D3,
+	};
+
+	constexpr bool isCipsoft860CanaryAssetPackage(const ClientAssetSignatures &signatures) {
+		return signatures == cipsoft860CanaryAssetSignatures || signatures == cipsoft860DevelopmentAssetSignatures;
+	}
 
 	constexpr ProtocolProfile currentProfile {
 		.id = ProtocolProfileId::Current,
@@ -141,13 +166,22 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
 		.initialBehavior = cipsoft860ExtendedAssetsInitialBehavior,
-		.assetSignatures = {
-			.dat = 0x4C2C7993,
-			.spr = 0x4C220594,
-			.pic = 0x4AE5C3D3,
-		},
+		.assetSignatures = cipsoft860DevelopmentAssetSignatures,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles),
 		.name = "cipsoft860extendedassets",
+	};
+
+	constexpr ProtocolProfile cipsoft860CanaryExtendedProfile {
+		.id = ProtocolProfileId::Cipsoft860CanaryExtended,
+		.clientVersion = 860,
+		.wireFamily = ClientWireFamily::CipsoftVanilla,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::Enabled,
+		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
+		.initialBehavior = cipsoft860CanaryExtendedInitialBehavior,
+		.assetSignatures = cipsoft860CanaryAssetSignatures,
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::MagicEffectU16),
+		.name = "cipsoft860canaryextended",
 	};
 
 	constexpr ProtocolProfile otcv8Extended860Profile {
@@ -192,6 +226,16 @@ namespace {
 
 	constexpr AccountLoginLayout cipsoft860ExtendedAssetsAccountLoginLayout {
 		.profileId = ProtocolProfileId::Cipsoft860ExtendedAssets,
+		.clientVersion = 860,
+		.responseTransport = TransportProfileId::LegacyClassic,
+		.bytesToSkipBeforeRsa = 12,
+		.hasAssetSignaturesBeforeRsa = true,
+		.characterListLayout = AccountCharacterListLayout::LegacyCharacterList,
+		.sendsSessionKey = false,
+	};
+
+	constexpr AccountLoginLayout cipsoft860CanaryExtendedAccountLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860CanaryExtended,
 		.clientVersion = 860,
 		.responseTransport = TransportProfileId::LegacyClassic,
 		.bytesToSkipBeforeRsa = 12,
@@ -251,6 +295,19 @@ namespace {
 		.hasChallengeResponse = true,
 		.hasOtcV8Probe = false,
 	};
+
+	constexpr GameLoginLayout cipsoft860CanaryExtendedGameLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860CanaryExtended,
+		.clientVersion = 860,
+		.hasClientVersionU32 = false,
+		.hasClientVersionString = false,
+		.hasAssetHashString = false,
+		.hasContentRevisionU16 = false,
+		.hasPreviewState = false,
+		.authenticationLayout = GameLoginAuthenticationLayout::AccountPassword,
+		.hasChallengeResponse = true,
+		.hasOtcV8Probe = false,
+	};
 }
 
 const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportProfileId id) {
@@ -279,6 +336,8 @@ const ProtocolProfile* ProtocolProfileRegistry::getProfile(ProtocolProfileId id)
 			return &cipsoft860Profile;
 		case ProtocolProfileId::Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsProfile;
+		case ProtocolProfileId::Cipsoft860CanaryExtended:
+			return &cipsoft860CanaryExtendedProfile;
 		case ProtocolProfileId::OTCv8Extended860:
 			return &otcv8Extended860Profile;
 		default:
@@ -311,8 +370,8 @@ const ProtocolProfile* ProtocolProfileRegistry::resolveByClientVersionAndAssets(
 		return nullptr;
 	}
 
-	if (version == 860 && family == ClientWireFamily::CipsoftVanilla && signatures == cipsoft860ExtendedAssetsProfile.assetSignatures) {
-		return &cipsoft860ExtendedAssetsProfile;
+	if (version == 860 && family == ClientWireFamily::CipsoftVanilla && isCipsoft860CanaryAssetPackage(signatures)) {
+		return &cipsoft860CanaryExtendedProfile;
 	}
 
 	return profile;
@@ -344,6 +403,8 @@ const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(Pro
 			return &cipsoft860AccountLoginLayout;
 		case ProtocolProfileId::Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsAccountLoginLayout;
+		case ProtocolProfileId::Cipsoft860CanaryExtended:
+			return &cipsoft860CanaryExtendedAccountLoginLayout;
 		default:
 			return nullptr;
 	}
@@ -375,6 +436,8 @@ const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolP
 			return &cipsoft860GameLoginLayout;
 		case ProtocolProfileId::Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsGameLoginLayout;
+		case ProtocolProfileId::Cipsoft860CanaryExtended:
+			return &cipsoft860CanaryExtendedGameLoginLayout;
 		default:
 			return nullptr;
 	}

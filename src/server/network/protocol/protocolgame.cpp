@@ -2148,22 +2148,6 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	}
 
 	std::vector<Direction> path;
-	if (legacyInnerLength) {
-		path.reserve(numdirs);
-		for (uint8_t i = 0; i < numdirs; ++i) {
-			if (const auto direction = translateAutoWalkDirection(msg.getByte())) {
-				path.emplace_back(*direction);
-			}
-		}
-
-		if (path.empty()) {
-			return;
-		}
-
-		g_game().playerAutoWalk(player->getID(), path);
-		return;
-	}
-
 	path.resize(numdirs, DIRECTION_NORTH);
 	for (size_t i = numdirs; --i < numdirs;) {
 		const uint8_t rawdir = msg.getByte();

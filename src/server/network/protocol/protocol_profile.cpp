@@ -118,8 +118,23 @@ namespace {
 		.pic = 0x4AE5C3D3,
 	};
 
+	constexpr ClientAssetSignatures cipsoft860ExtendedClientLibrarySignatures {
+		.dat = 0x44545845, // "EXTD"
+		.spr = 0x44545845, // "EXTD"
+		.pic = 0x44545845, // "EXTD"
+	};
+
+	constexpr ClientAssetSignatures cipsoft860ExtendedClientLibrarySpriteSignature {
+		.dat = 0x4C2C7993,
+		.spr = 0x44545845, // "EXTD"
+		.pic = 0x4AE5C3D3,
+	};
+
 	constexpr bool isCipsoft860CanaryAssetPackage(const ClientAssetSignatures &signatures) {
-		return signatures == cipsoft860CanaryAssetSignatures || signatures == cipsoft860DevelopmentAssetSignatures;
+		return signatures == cipsoft860CanaryAssetSignatures
+			|| signatures == cipsoft860DevelopmentAssetSignatures
+			|| signatures == cipsoft860ExtendedClientLibrarySignatures
+			|| signatures == cipsoft860ExtendedClientLibrarySpriteSignature;
 	}
 
 	constexpr ProtocolProfile currentProfile {
@@ -154,7 +169,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
 		.initialBehavior = cipsoft860InitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860vanilla",
 	};
 
@@ -167,7 +182,7 @@ namespace {
 		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
 		.initialBehavior = cipsoft860ExtendedAssetsInitialBehavior,
 		.assetSignatures = cipsoft860DevelopmentAssetSignatures,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860extendedassets",
 	};
 
@@ -180,7 +195,7 @@ namespace {
 		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
 		.initialBehavior = cipsoft860CanaryExtendedInitialBehavior,
 		.assetSignatures = cipsoft860CanaryAssetSignatures,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::MagicEffectU16),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::MagicEffectU16 | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860canaryextended",
 	};
 

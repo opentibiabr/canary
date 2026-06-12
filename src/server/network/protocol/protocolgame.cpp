@@ -406,6 +406,8 @@ namespace {
 
 	constexpr uint8_t cipsoft860TalkNone = 0;
 	constexpr uint8_t cipsoft860EventDefaultMessage = 0x18;
+	constexpr uint32_t cipsoft860MaxSignedExperienceLevel = 506;
+	constexpr uint32_t cipsoft860MaxSignedExperience = static_cast<uint32_t>(std::numeric_limits<int32_t>::max());
 
 	uint8_t translateCipsoft860SpeakClassToClient(SpeakClasses talkType) {
 		switch (talkType) {
@@ -9081,12 +9083,21 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.addByte(0xA0);
 
 	if (isCipsoft860Profile(protocolProfile)) {
+		uint32_t clientLevel = player->getLevel();
+		uint64_t clientExperience = player->getExperience();
+		uint8_t clientLevelPercent = player->getLevelPercent();
+		if (clientExperience > cipsoft860MaxSignedExperience) {
+			clientLevel = std::min<uint32_t>(clientLevel, cipsoft860MaxSignedExperienceLevel);
+			clientExperience = Player::getExpForLevel(clientLevel);
+			clientLevelPercent = 0;
+		}
+
 		msg.add<uint16_t>(std::min<int32_t>(player->getHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxHealth(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint32_t>(player->hasFlag(PlayerFlags_t::HasInfiniteCapacity) ? 1000000 : player->getFreeCapacity());
-		msg.add<uint32_t>(std::min<uint64_t>(player->getExperience(), std::numeric_limits<uint32_t>::max()));
-		msg.add<uint16_t>(std::min<uint32_t>(player->getLevel(), std::numeric_limits<uint16_t>::max()));
-		msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+		msg.add<uint32_t>(static_cast<uint32_t>(clientExperience));
+		msg.add<uint16_t>(std::min<uint32_t>(clientLevel, std::numeric_limits<uint16_t>::max()));
+		msg.addByte(std::min<uint8_t>(clientLevelPercent, 100));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMana(), std::numeric_limits<uint16_t>::max()));
 		msg.add<uint16_t>(std::min<int32_t>(player->getMaxMana(), std::numeric_limits<uint16_t>::max()));
 		msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(player->getMagicLevel(), std::numeric_limits<uint8_t>::max())));

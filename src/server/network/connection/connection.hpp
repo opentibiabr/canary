@@ -31,6 +31,15 @@ class ServicePort;
 using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 class NetworkMessage;
+class TransportCodec;
+
+enum class InitialTransportState : uint8_t {
+	Pending,
+	ResolvedModernDefault,
+	ResolvedFromPrelude,
+	ResolvedFromHint,
+	Rejected,
+};
 
 class ConnectionManager {
 public:
@@ -70,6 +79,11 @@ public:
 
 	uint32_t getIP();
 
+	void setTransportCodec(const TransportCodec &codec, InitialTransportState state = InitialTransportState::ResolvedModernDefault);
+	void setInitialTransportState(InitialTransportState state);
+	[[nodiscard]] const TransportCodec &getTransportCodec() const;
+	[[nodiscard]] InitialTransportState getInitialTransportState() const;
+
 private:
 	void parseProxyIdentification(const std::error_code &error);
 	void parseHeader(const std::error_code &error);
@@ -96,6 +110,8 @@ private:
 
 	ConstServicePort_ptr service_port;
 	Protocol_ptr protocol;
+	const TransportCodec* transportCodec = nullptr;
+	InitialTransportState initialTransportState = InitialTransportState::Pending;
 
 	asio::ip::tcp::socket socket;
 

@@ -1,0 +1,193 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
+#include "server/network/protocol/protocol_profile.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
+#include "server/network/protocol/transport_codec.hpp"
+#include "server/network/message/networkmessage.hpp"
+#include "server/network/message/outputmessage.hpp"
+#include "utils/tools.hpp"
+
+namespace {
+	uint16_t readU16(const uint8_t* buffer) {
+		return static_cast<uint16_t>(buffer[0]) | static_cast<uint16_t>(buffer[1] << 8);
+	}
+
+	uint32_t readU32(const uint8_t* buffer) {
+		return static_cast<uint32_t>(buffer[0]) |
+		       (static_cast<uint32_t>(buffer[1]) << 8) |
+		       (static_cast<uint32_t>(buffer[2]) << 16) |
+		       (static_cast<uint32_t>(buffer[3]) << 24);
+	}
+}
+
+TEST(ProtocolProfileRegistryTest, Version860VanillaAndOTCv8AreDifferentProfiles) {
+	const auto* vanilla = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::CipsoftVanilla);
+	const auto* otcv8 = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::OTCv8Extended);
+
+	ASSERT_NE(nullptr, vanilla);
+	ASSERT_NE(nullptr, otcv8);
+	EXPECT_NE(vanilla->id, otcv8->id);
+	EXPECT_EQ(ProtocolProfileId::Cipsoft860Vanilla, vanilla->id);
+	EXPECT_EQ(ProtocolProfileId::OTCv8Extended860, otcv8->id);
+	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, vanilla->wireFamily);
+	EXPECT_EQ(ClientWireFamily::OTCv8Extended, otcv8->wireFamily);
+	EXPECT_EQ(RSAKeyFamily::OpenTibia, vanilla->rsaKeyFamily);
+	EXPECT_EQ(860, vanilla->clientVersion);
+	EXPECT_EQ(860, otcv8->clientVersion);
+	EXPECT_FALSE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
+	EXPECT_FALSE(ProtocolProfileRegistry::isProfileAllowed(otcv8->id));
+}
+
+TEST(ProtocolProfileRegistryTest, Cipsoft860UsesClassicLoginLayouts) {
+	const auto* accountLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(860);
+	const auto* gameLayout = ProtocolProfileRegistry::resolveGameLoginLayout(860);
+	const auto* profile = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+
+	ASSERT_NE(nullptr, accountLayout);
+	ASSERT_NE(nullptr, gameLayout);
+	ASSERT_NE(nullptr, profile);
+	EXPECT_EQ(TransportProfileId::LegacyClassic, accountLayout->responseTransport);
+	EXPECT_EQ(12, accountLayout->bytesToSkipBeforeRsa);
+	EXPECT_EQ(AccountCharacterListLayout::LegacyCharacterList, accountLayout->characterListLayout);
+	EXPECT_FALSE(accountLayout->sendsSessionKey);
+	EXPECT_FALSE(gameLayout->hasClientVersionU32);
+	EXPECT_FALSE(gameLayout->hasContentRevisionU16);
+	EXPECT_FALSE(gameLayout->hasPreviewState);
+	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, gameLayout->authenticationLayout);
+	EXPECT_EQ(TransportProfileId::LegacyClassic, profile->initialBehavior.transport);
+	EXPECT_EQ(ChallengeLayout::Cipsoft860LoginChallenge, profile->initialBehavior.challenge.layout);
+}
+
+TEST(ProtocolProfileRegistryTest, CurrentAnd1100ShareInitialWireBehavior) {
+	const auto &current = ProtocolProfileRegistry::getCurrentProfile();
+	const auto* tibia1100 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
+
+	ASSERT_NE(nullptr, tibia1100);
+	EXPECT_NE(current.id, tibia1100->id);
+	EXPECT_TRUE(current.initialBehavior.hasSameWireBehavior(tibia1100->initialBehavior));
+	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::OldProtocolCompat));
+	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(tibia1100->id));
+}
+
+TEST(ConnectionTransportTest, ProtocolGameNoLongerImpliesModernFraming) {
+	const auto modernSize = TransportCodecs::currentModern().decodeBodySize(1);
+	const auto rawSize = TransportCodecs::rawClientFirst().decodeBodySize(1);
+	const auto legacySize = TransportCodecs::legacyClassic().decodeBodySize(1);
+
+	ASSERT_TRUE(modernSize);
+	ASSERT_TRUE(rawSize);
+	ASSERT_TRUE(legacySize);
+	EXPECT_EQ(XTEA_MULTIPLE + CHECKSUM_LENGTH, *modernSize);
+	EXPECT_EQ(1, *rawSize);
+	EXPECT_EQ(1, *legacySize);
+	EXPECT_EQ(CHECKSUM_LENGTH + 2, TransportCodecs::currentModern().getProfile().serverFirstPacketHeaderBytes);
+	EXPECT_EQ(CHECKSUM_LENGTH + 1, TransportCodecs::legacyClassic().getProfile().serverFirstPacketHeaderBytes);
+}
+
+TEST(ConnectionTransportTest, LegacyEncryptedOutboundHeaderFitsInitialBuffer) {
+	constexpr auto legacyEncryptedHeaderSize = HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t);
+	EXPECT_GE(NetworkMessage::INITIAL_BUFFER_POSITION, legacyEncryptedHeaderSize);
+}
+
+TEST(ConnectionTransportTest, LegacyLoginChallengeIncludesInnerMessageSize) {
+	OutputMessage msg;
+	constexpr uint32_t timestamp = 0x01020304;
+	constexpr uint8_t random = 0x7A;
+
+	msg.addByte(0x1F);
+	msg.add<uint32_t>(timestamp);
+	msg.addByte(random);
+	msg.writeLegacyInnerLength();
+	const uint32_t checksum = adlerChecksum(msg.getOutputBuffer(), msg.getLength());
+	msg.writeChecksum(checksum);
+	msg.writeRawMessageLength();
+
+	const uint8_t* buffer = msg.getOutputBuffer();
+	constexpr uint16_t payloadSize = 1 + sizeof(uint32_t) + sizeof(uint8_t);
+	constexpr uint16_t bodySize = CHECKSUM_LENGTH + sizeof(uint16_t) + payloadSize;
+
+	EXPECT_EQ(HEADER_LENGTH + bodySize, msg.getLength());
+	EXPECT_EQ(bodySize, readU16(buffer));
+	EXPECT_EQ(checksum, readU32(buffer + HEADER_LENGTH));
+	EXPECT_EQ(payloadSize, readU16(buffer + HEADER_LENGTH + CHECKSUM_LENGTH));
+	EXPECT_EQ(0x1F, buffer[HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t)]);
+	EXPECT_EQ(random, buffer[HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t) + 1 + sizeof(uint32_t)]);
+}
+
+TEST(SessionHintTest, ClaimDoesNotConsumeHint) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000101;
+	const std::string session = "account-one\npassword-one";
+	const std::string character = "Hint Knight";
+
+	store.registerHint(testIp, ProtocolProfileId::Tibia1100, session, { character });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	EXPECT_TRUE(store.consumeIfMatches(*lease, session, character, 1100));
+}
+
+TEST(SessionHintTest, HintConflictIsBasedOnInitialBehaviorNotOnlyTransport) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000102;
+	const std::string modernSession = "modern-account\nmodern-password";
+	const std::string oldSession = "old-account\nold-password";
+
+	store.registerHint(testIp, ProtocolProfileId::Current, modernSession, { "Modern Character" });
+	store.registerHint(testIp, ProtocolProfileId::Tibia1100, oldSession, { "Old Character" });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	EXPECT_EQ(2, lease->candidateIds.size());
+	EXPECT_TRUE(store.consumeIfMatches(*lease, oldSession, "Old Character", 1100));
+}
+
+TEST(SessionHintTest, Conflicting860AndModernHintsDoNotSelectLegacy) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000104;
+
+	store.registerHint(testIp, ProtocolProfileId::Current, "modern-account\nmodern-password", { "Modern Character" });
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860Vanilla, "legacy-account\nlegacy-password", { "Legacy Character" });
+
+	const auto lease = store.claimByIp(testIp);
+	EXPECT_FALSE(lease);
+}
+
+TEST(SessionHintTest, NewHintReplacesOlderSameIpCharacterHint) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000105;
+	const std::string character = "Shared Character";
+	const std::string modernSession = "modern-account\nmodern-password";
+	const std::string legacySession = "legacy-account\nlegacy-password";
+
+	store.registerHint(testIp, ProtocolProfileId::Current, modernSession, { character });
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860Vanilla, legacySession, { character });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	EXPECT_EQ(TransportProfileId::LegacyClassic, lease->behavior.transport);
+	EXPECT_TRUE(store.consumeIfMatches(*lease, legacySession, character, 860));
+}
+
+TEST(SessionHintTest, WrongCharacterDoesNotConsumeHint) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000103;
+	const std::string session = "account-two\npassword-two";
+	const std::string character = "Correct Character";
+
+	store.registerHint(testIp, ProtocolProfileId::Tibia1100, session, { character });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	EXPECT_FALSE(store.consumeIfMatches(*lease, session, "Wrong Character", 1100));
+	EXPECT_TRUE(store.consumeIfMatches(*lease, session, character, 1100));
+}

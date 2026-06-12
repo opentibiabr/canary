@@ -1,0 +1,295 @@
+/**
+ * Canary - A free and open-source MMORPG server emulator
+ * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
+ * Repository: https://github.com/opentibiabr/canary
+ * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+ * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+ * Website: https://docs.opentibiabr.com/
+ */
+
+#include "server/network/protocol/protocol_profile.hpp"
+
+namespace {
+	constexpr TransportProfile rawClientFirstTransport {
+		.id = TransportProfileId::RawClientFirst,
+		.outerLength = OuterLengthEncoding::RawBodyLength,
+		.encryptedPayload = EncryptedPayloadLayout::None,
+		.inboundChecksum = CHECKSUM_METHOD_NONE,
+		.outboundChecksum = CHECKSUM_METHOD_NONE,
+		.compression = CompressionLayout::None,
+		.modernLengthExtraBytes = 0,
+		.serverFirstPacketHeaderBytes = 0,
+		.hasCryptoHeader = false,
+		.lengthIncludesChecksum = false,
+		.sequenceHighBitSignalsCompression = false,
+	};
+
+	constexpr TransportProfile currentModernTransport {
+		.id = TransportProfileId::CurrentModern,
+		.outerLength = OuterLengthEncoding::ModernBlockCount,
+		.encryptedPayload = EncryptedPayloadLayout::ModernPaddingByte,
+		.inboundChecksum = CHECKSUM_METHOD_SEQUENCE,
+		.outboundChecksum = CHECKSUM_METHOD_SEQUENCE,
+		.compression = CompressionLayout::Official,
+		.modernLengthExtraBytes = CHECKSUM_LENGTH,
+		.serverFirstPacketHeaderBytes = CHECKSUM_LENGTH + 2,
+		.hasCryptoHeader = true,
+		.lengthIncludesChecksum = true,
+		.sequenceHighBitSignalsCompression = true,
+	};
+
+	constexpr TransportProfile legacyClassicTransport {
+		.id = TransportProfileId::LegacyClassic,
+		.outerLength = OuterLengthEncoding::RawBodyLength,
+		.encryptedPayload = EncryptedPayloadLayout::LegacyInnerLength,
+		.inboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.outboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.compression = CompressionLayout::None,
+		.modernLengthExtraBytes = 0,
+		.serverFirstPacketHeaderBytes = CHECKSUM_LENGTH + 1,
+		.hasCryptoHeader = true,
+		.lengthIncludesChecksum = true,
+		.sequenceHighBitSignalsCompression = false,
+	};
+
+	constexpr InitialConnectionBehavior currentInitialBehavior {
+		.transport = TransportProfileId::CurrentModern,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::CurrentLoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::Current,
+	};
+
+	constexpr InitialConnectionBehavior tibia1100InitialBehavior {
+		.transport = TransportProfileId::CurrentModern,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::CurrentLoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::Tibia1100,
+	};
+
+	constexpr InitialConnectionBehavior cipsoft860InitialBehavior {
+		.transport = TransportProfileId::LegacyClassic,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::Cipsoft860LoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::Cipsoft860Vanilla,
+	};
+
+	constexpr InitialConnectionBehavior otcv8Extended860InitialBehavior {
+		.transport = TransportProfileId::LegacyClassic,
+		.challenge = {
+			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
+			.layout = ChallengeLayout::Cipsoft860LoginChallenge,
+		},
+		.expectedProfile = ProtocolProfileId::OTCv8Extended860,
+	};
+
+	constexpr ProtocolProfile currentProfile {
+		.id = ProtocolProfileId::Current,
+		.clientVersion = CLIENT_VERSION,
+		.wireFamily = ClientWireFamily::CipsoftVanilla,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::Enabled,
+		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
+		.initialBehavior = currentInitialBehavior,
+		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload),
+		.name = "current",
+	};
+
+	constexpr ProtocolProfile tibia1100Profile {
+		.id = ProtocolProfileId::Tibia1100,
+		.clientVersion = 1100,
+		.wireFamily = ClientWireFamily::CipsoftVanilla,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::Enabled,
+		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
+		.initialBehavior = tibia1100InitialBehavior,
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload),
+		.name = "tibia1100",
+	};
+
+	constexpr ProtocolProfile cipsoft860Profile {
+		.id = ProtocolProfileId::Cipsoft860Vanilla,
+		.clientVersion = 860,
+		.wireFamily = ClientWireFamily::CipsoftVanilla,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::Enabled,
+		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
+		.initialBehavior = cipsoft860InitialBehavior,
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper),
+		.name = "cipsoft860vanilla",
+	};
+
+	constexpr ProtocolProfile otcv8Extended860Profile {
+		.id = ProtocolProfileId::OTCv8Extended860,
+		.clientVersion = 860,
+		.wireFamily = ClientWireFamily::OTCv8Extended,
+		.rsaKeyFamily = RSAKeyFamily::OpenTibia,
+		.supportState = ProtocolSupportState::BlockedPendingFixture,
+		.itemMapperPolicy = ItemMapperPolicy::RequiredBeforeWorldEnter,
+		.initialBehavior = otcv8Extended860InitialBehavior,
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::InlineLoginBugReportFlag),
+		.name = "otcv8extended860",
+	};
+
+	constexpr AccountLoginLayout currentAccountLoginLayout {
+		.profileId = ProtocolProfileId::Current,
+		.clientVersion = CLIENT_VERSION,
+		.responseTransport = TransportProfileId::CurrentModern,
+		.bytesToSkipBeforeRsa = 17,
+		.characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey,
+		.sendsSessionKey = true,
+	};
+
+	constexpr AccountLoginLayout tibia1100AccountLoginLayout {
+		.profileId = ProtocolProfileId::Tibia1100,
+		.clientVersion = 1100,
+		.responseTransport = TransportProfileId::CurrentModern,
+		.bytesToSkipBeforeRsa = 17,
+		.characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey,
+		.sendsSessionKey = true,
+	};
+
+	constexpr AccountLoginLayout cipsoft860AccountLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860Vanilla,
+		.clientVersion = 860,
+		.responseTransport = TransportProfileId::LegacyClassic,
+		.bytesToSkipBeforeRsa = 12,
+		.characterListLayout = AccountCharacterListLayout::LegacyCharacterList,
+		.sendsSessionKey = false,
+	};
+
+	constexpr GameLoginLayout currentGameLoginLayout {
+		.profileId = ProtocolProfileId::Current,
+		.clientVersion = CLIENT_VERSION,
+		.hasClientVersionU32 = true,
+		.hasClientVersionString = true,
+		.hasAssetHashString = true,
+		.hasContentRevisionU16 = false,
+		.hasPreviewState = true,
+		.authenticationLayout = GameLoginAuthenticationLayout::SessionKey,
+		.hasChallengeResponse = true,
+		.hasOtcV8Probe = true,
+	};
+
+	constexpr GameLoginLayout tibia1100GameLoginLayout {
+		.profileId = ProtocolProfileId::Tibia1100,
+		.clientVersion = 1100,
+		.hasClientVersionU32 = true,
+		.hasClientVersionString = false,
+		.hasAssetHashString = false,
+		.hasContentRevisionU16 = true,
+		.hasPreviewState = true,
+		.authenticationLayout = GameLoginAuthenticationLayout::SessionKey,
+		.hasChallengeResponse = true,
+		.hasOtcV8Probe = true,
+	};
+
+	constexpr GameLoginLayout cipsoft860GameLoginLayout {
+		.profileId = ProtocolProfileId::Cipsoft860Vanilla,
+		.clientVersion = 860,
+		.hasClientVersionU32 = false,
+		.hasClientVersionString = false,
+		.hasAssetHashString = false,
+		.hasContentRevisionU16 = false,
+		.hasPreviewState = false,
+		.authenticationLayout = GameLoginAuthenticationLayout::AccountPassword,
+		.hasChallengeResponse = true,
+		.hasOtcV8Probe = false,
+	};
+}
+
+const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportProfileId id) {
+	switch (id) {
+		case TransportProfileId::CurrentModern:
+			return currentModernTransport;
+		case TransportProfileId::LegacyClassic:
+			return legacyClassicTransport;
+		case TransportProfileId::RawClientFirst:
+		default:
+			return rawClientFirstTransport;
+	}
+}
+
+const ProtocolProfile &ProtocolProfileRegistry::getCurrentProfile() {
+	return currentProfile;
+}
+
+const ProtocolProfile* ProtocolProfileRegistry::getProfile(ProtocolProfileId id) {
+	switch (id) {
+		case ProtocolProfileId::Current:
+			return &currentProfile;
+		case ProtocolProfileId::Tibia1100:
+			return &tibia1100Profile;
+		case ProtocolProfileId::Cipsoft860Vanilla:
+			return &cipsoft860Profile;
+		case ProtocolProfileId::OTCv8Extended860:
+			return &otcv8Extended860Profile;
+		default:
+			return nullptr;
+	}
+}
+
+const ProtocolProfile* ProtocolProfileRegistry::resolveByClientVersion(uint16_t version, ClientWireFamily family /*= ClientWireFamily::CipsoftVanilla*/) {
+	if (version == CLIENT_VERSION) {
+		return &currentProfile;
+	}
+
+	if (version == 1100) {
+		return &tibia1100Profile;
+	}
+
+	if (version == 860) {
+		if (family == ClientWireFamily::OTCv8Extended) {
+			return &otcv8Extended860Profile;
+		}
+		return &cipsoft860Profile;
+	}
+
+	return nullptr;
+}
+
+const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(uint16_t version) {
+	if (version == CLIENT_VERSION) {
+		return &currentAccountLoginLayout;
+	}
+
+	if (version == 1100) {
+		return &tibia1100AccountLoginLayout;
+	}
+
+	if (version == 860) {
+		return &cipsoft860AccountLoginLayout;
+	}
+
+	return nullptr;
+}
+
+const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(uint16_t version) {
+	if (version == CLIENT_VERSION) {
+		return &currentGameLoginLayout;
+	}
+
+	if (version == 1100) {
+		return &tibia1100GameLoginLayout;
+	}
+
+	if (version == 860) {
+		return &cipsoft860GameLoginLayout;
+	}
+
+	return nullptr;
+}
+
+InitialConnectionBehavior ProtocolProfileRegistry::defaultModernInitialBehavior() {
+	return currentInitialBehavior;
+}
+
+bool ProtocolProfileRegistry::isProfileAllowed(ProtocolProfileId id) {
+	const auto* profile = getProfile(id);
+	return profile && profile->supportState == ProtocolSupportState::Enabled;
+}

@@ -10,6 +10,7 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
 
 class NetworkMessage;
 class OutputMessage;
@@ -36,4 +37,5 @@ private:
 	void getLivestreamCharacterList(const std::string &password) const;
 
 	bool oldProtocol = false;
+	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
 };

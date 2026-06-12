@@ -11,6 +11,8 @@
 
 #include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
+#include "server/network/protocol/transport_codec.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
 #include "creatures/players/livestream/livestream.hpp"
@@ -20,6 +22,35 @@
 #include "game/game.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <charconv>
+	#include <string_view>
+#endif
+
+namespace {
+	uint32_t legacyIpStringToNumber(std::string_view ip) {
+		std::array<uint32_t, 4> octets {};
+		size_t offset = 0;
+		for (size_t index = 0; index < octets.size(); ++index) {
+			const size_t end = index + 1 == octets.size() ? ip.size() : ip.find('.', offset);
+			if (end == std::string_view::npos || end == offset) {
+				return 0;
+			}
+
+			const auto part = ip.substr(offset, end - offset);
+			const auto [ptr, ec] = std::from_chars(part.data(), part.data() + part.size(), octets[index]);
+			if (ec != std::errc {} || ptr != part.data() + part.size() || octets[index] > 255) {
+				return 0;
+			}
+
+			offset = end + 1;
+		}
+
+		return octets[0] | (octets[1] << 8) | (octets[2] << 16) | (octets[3] << 24);
+	}
+}
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();
@@ -51,6 +82,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 
 	auto output = OutputMessagePool::getOutputMessage();
+	const std::string sessionKey = accountDescriptor + "\n" + password;
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
@@ -62,17 +94,50 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addString(ss.str());
 	}
 
-	// Add session key
-	output->addByte(0x28);
-	output->addString(accountDescriptor + "\n" + password);
-
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
 	if (AccountErrors_t::Ok != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
+	const auto* loginLayout = protocolProfile ? ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->clientVersion) : nullptr;
+	const auto characterListLayout = loginLayout ? loginLayout->characterListLayout : AccountCharacterListLayout::WorldListWithSessionKey;
+	if (loginLayout && loginLayout->sendsSessionKey) {
+		// Add session key
+		output->addByte(0x28);
+		output->addString(sessionKey);
+	}
+
 	output->addByte(0x64);
+
+	if (characterListLayout == AccountCharacterListLayout::LegacyCharacterList) {
+		uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
+		output->addByte(size);
+
+		const auto serverName = g_configManager().getString(SERVER_NAME);
+		const auto worldIp = legacyIpStringToNumber(g_configManager().getString(IP));
+		const auto worldPort = static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT));
+		std::vector<std::string> characterNames;
+		characterNames.reserve(size);
+		for (const auto &[name, deletion] : players) {
+			output->addString(name);
+			output->addString(serverName);
+			output->add<uint32_t>(worldIp);
+			output->add<uint16_t>(worldPort);
+			characterNames.emplace_back(name);
+		}
+
+		output->add<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), account.getPremiumRemainingDays()));
+
+		send(output);
+
+		if (protocolProfile) {
+			ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+		}
+
+		disconnect();
+		return;
+	}
 
 	output->addByte(1); // number of worlds
 
@@ -86,9 +151,12 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
+	std::vector<std::string> characterNames;
+	characterNames.reserve(size);
 	for (const auto &[name, deletion] : players) {
 		output->addByte(0);
 		output->addString(name);
+		characterNames.emplace_back(name);
 	}
 
 	// Get premium days, check is premium and get lastday
@@ -97,6 +165,10 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->add<uint32_t>(account.getPremiumLastDay());
 
 	send(output);
+
+	if (protocolProfile) {
+		ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+	}
 
 	disconnect();
 }
@@ -110,11 +182,26 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	msg.skipBytes(2); // client OS
 
 	auto version = msg.get<uint16_t>();
+	const auto* loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(version);
+	if (!loginLayout) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return;
+	}
+
+	protocolProfile = ProtocolProfileRegistry::getProfile(loginLayout->profileId);
+	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return;
+	}
+
+	if (const auto connection = getConnection()) {
+		connection->setTransportCodec(TransportCodecs::get(loginLayout->responseTransport), InitialTransportState::ResolvedFromPrelude);
+	}
 
 	// Old protocol support
-	oldProtocol = version == 1100;
+	oldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
 
-	msg.skipBytes(17);
+	msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
 	/*
 	 - Skipped bytes:
 	 - 4 bytes: client version (971+)

@@ -10,9 +10,15 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/stash_definitions.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -124,6 +130,7 @@ private:
 	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(NetworkMessage &msg);
+	[[nodiscard]] bool shouldSuppressPreLoginPacket() const;
 
 	void release() override;
 
@@ -137,6 +144,7 @@ private:
 	void parsePacket(NetworkMessage &msg) override;
 	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
+	void onConnectionAccepted() override;
 	void sendLoginChallenge() override;
 
 	// Parse methods
@@ -580,6 +588,9 @@ private:
 	uint32_t challengeTimestamp = 0;
 	uint16_t version = 0;
 	int32_t clientVersion = 0;
+	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
+	InitialConnectionBehavior initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
+	std::optional<ProtocolSessionHintLease> sessionHintLease;
 
 	uint8_t challengeRandom = 0;
 
@@ -587,6 +598,7 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
+	bool suppressPreLoginPackets = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;

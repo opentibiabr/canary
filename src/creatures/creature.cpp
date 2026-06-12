@@ -275,7 +275,7 @@ bool Creature::getNextStep(Direction &dir, uint32_t &) {
 	return true;
 }
 
-void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/) {
+void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreConditions /* = false*/, WalkStartPolicy startPolicy /* = WalkStartPolicy::RespectDelay*/) {
 	listWalkDir.clear();
 
 	if (!ignoreConditions && (hasCondition(CONDITION_ROOTED) || hasCondition(CONDITION_FEARED))) {
@@ -288,10 +288,10 @@ void Creature::startAutoWalk(const std::vector<Direction> &listDir, bool ignoreC
 		return;
 	}
 
-	addEventWalk(listWalkDir.size() == 1);
+	addEventWalk(startPolicy);
 }
 
-void Creature::addEventWalk(bool firstStep) {
+void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::RespectDelay*/) {
 	cancelNextWalk = false;
 
 	if (getStepSpeed() <= 0) {
@@ -302,13 +302,16 @@ void Creature::addEventWalk(bool firstStep) {
 		return;
 	}
 
-	const int64_t ticks = getEventStepTicks(firstStep);
-	if (ticks <= 0) {
-		return;
-	}
+	safeCall([this, startPolicy] {
+		if (eventWalk != 0) {
+			return;
+		}
 
-	safeCall([this, ticks]() {
-		// Take first step right away, but still queue the next
+		const int64_t ticks = getEventStepTicks(startPolicy);
+		if (ticks <= 0) {
+			return;
+		}
+
 		if (ticks == 1) {
 			onCreatureWalk();
 		}
@@ -1487,14 +1490,14 @@ uint16_t Creature::getStepDuration(Direction dir) {
 	return duration;
 }
 
-int64_t Creature::getEventStepTicks(bool onlyDelay) {
-	int64_t ret = getWalkDelay();
-	if (ret <= 0) {
-		const uint16_t stepDuration = getStepDuration();
-		ret = onlyDelay && stepDuration > 0 ? 1 : stepDuration * lastStepCost;
+int64_t Creature::getEventStepTicks(WalkStartPolicy startPolicy) {
+	const int64_t ret = getWalkDelay();
+	if (ret > 0) {
+		return ret;
 	}
 
-	return ret;
+	const uint16_t stepDuration = getStepDuration();
+	return startPolicy == WalkStartPolicy::ImmediateWhenReady && stepDuration > 0 ? 1 : stepDuration * lastStepCost;
 }
 
 LightInfo Creature::getCreatureLight() const {

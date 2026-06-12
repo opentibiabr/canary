@@ -375,6 +375,78 @@ namespace {
 	bool hasProtocolFeature(const ProtocolProfile* profile, ProtocolFeature feature) {
 		return profile && profile->hasFeature(feature);
 	}
+
+	constexpr uint8_t cipsoft860TalkNone = 0;
+	constexpr uint8_t cipsoft860EventDefaultMessage = 0x18;
+
+	uint8_t translateCipsoft860SpeakClassToClient(SpeakClasses talkType) {
+		switch (talkType) {
+			case TALKTYPE_SAY:
+				return 0x01;
+			case TALKTYPE_WHISPER:
+				return 0x02;
+			case TALKTYPE_YELL:
+				return 0x03;
+			case TALKTYPE_PRIVATE_FROM:
+			case TALKTYPE_PRIVATE_TO:
+				return 0x06;
+			case TALKTYPE_CHANNEL_MANAGER:
+				return 0x08;
+			case TALKTYPE_CHANNEL_Y:
+				return 0x07;
+			case TALKTYPE_CHANNEL_O:
+				return 0x0F;
+			case TALKTYPE_SPELL_USE:
+				return 0x01;
+			case TALKTYPE_PRIVATE_NP:
+			case TALKTYPE_NPC_UNKOWN:
+				return 0x05;
+			case TALKTYPE_PRIVATE_PN:
+				return 0x04;
+			case TALKTYPE_BROADCAST:
+				return 0x0C;
+			case TALKTYPE_CHANNEL_R1:
+				return 0x0D;
+			case TALKTYPE_PRIVATE_RED_FROM:
+			case TALKTYPE_PRIVATE_RED_TO:
+				return 0x0E;
+			case TALKTYPE_MONSTER_SAY:
+				return 0x13;
+			case TALKTYPE_MONSTER_YELL:
+				return 0x14;
+			case TALKTYPE_CHANNEL_R2:
+			default:
+				return cipsoft860TalkNone;
+		}
+	}
+
+	uint8_t translateCipsoft860MessageClassToClient(MessageClasses messageType) {
+		switch (messageType) {
+			case MESSAGE_LOGIN:
+				return 0x17;
+			case MESSAGE_ADMINISTRATOR:
+			case MESSAGE_GAME_HIGHLIGHT:
+				return 0x15;
+			case MESSAGE_EVENT_ADVANCE:
+				return 0x16;
+			case MESSAGE_FAILURE:
+				return 0x1A;
+			case MESSAGE_LOOK:
+			case MESSAGE_LOOT:
+			case MESSAGE_TRADE:
+			case MESSAGE_REPORT:
+			case MESSAGE_HOTKEY_PRESSED:
+			case MESSAGE_TUTORIAL_HINT:
+			case MESSAGE_THANK_YOU:
+				return 0x19;
+			case MESSAGE_STATUS:
+				return cipsoft860EventDefaultMessage;
+			case MESSAGE_GAMEMASTER_CONSOLE:
+				return 0x12;
+			default:
+				return MESSAGE_NONE;
+		}
+	}
 } // namespace
 
 ProtocolGame::ProtocolGame(const Connection_ptr &initConnection) :
@@ -3999,10 +4071,16 @@ void ProtocolGame::sendCreatureSquare(const std::shared_ptr<Creature> &creature,
 	}
 
 	NetworkMessage msg;
-	msg.addByte(0x93);
-	msg.add<uint32_t>(creature->getID());
-	msg.addByte(0x01);
-	msg.addByte(color);
+	if (oldProtocol) {
+		msg.addByte(0x86);
+		msg.add<uint32_t>(creature->getID());
+		msg.addByte(color);
+	} else {
+		msg.addByte(0x93);
+		msg.add<uint32_t>(creature->getID());
+		msg.addByte(0x01);
+		msg.addByte(color);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -5050,9 +5128,14 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 void ProtocolGame::sendReLoginWindow(uint8_t unfairFightReduction) {
 	NetworkMessage msg;
 	msg.addByte(0x28);
-	msg.addByte(0x00);
-	msg.addByte(unfairFightReduction);
-	if (!oldProtocol) {
+
+	if (version >= 1055) {
+		msg.addByte(0x00);
+	}
+	if (version >= 862) {
+		msg.addByte(unfairFightReduction);
+	}
+	if (!oldProtocol && version >= 1121) {
 		msg.addByte(0x00); // use death redemption (boolean)
 	}
 	writeToOutputBuffer(msg);
@@ -5069,7 +5152,7 @@ void ProtocolGame::sendStats() {
 }
 
 void ProtocolGame::sendBasicData() {
-	if (!player) {
+	if (!player || version < 950) {
 		return;
 	}
 
@@ -5145,7 +5228,7 @@ void ProtocolGame::sendBasicData() {
 }
 
 void ProtocolGame::sendBlessingWindow() {
-	if (!player || oldProtocol) {
+	if (!player || oldProtocol || version < 1100) {
 		return;
 	}
 
@@ -5216,7 +5299,7 @@ void ProtocolGame::sendBlessingWindow() {
 }
 
 void ProtocolGame::sendBlessStatus() {
-	if (!player) {
+	if (!player || version < 1100) {
 		return;
 	}
 
@@ -5246,6 +5329,10 @@ void ProtocolGame::sendBlessStatus() {
 }
 
 void ProtocolGame::sendPremiumTrigger() {
+	if (version < 1100) {
+		return;
+	}
+
 	if (g_configManager().getBoolean(FREE_PREMIUM) || g_configManager().getBoolean(VIP_SYSTEM_ENABLED)) {
 		return;
 	}
@@ -5328,9 +5415,62 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		}
 	}
 
+	uint8_t clientType = static_cast<uint8_t>(internalType);
+	if (isCipsoft860Profile(protocolProfile)) {
+		clientType = translateCipsoft860MessageClassToClient(internalType);
+		if (clientType == MESSAGE_NONE) {
+			switch (internalType) {
+				case MESSAGE_DAMAGE_DEALT:
+				case MESSAGE_DAMAGE_RECEIVED:
+				case MESSAGE_DAMAGE_OTHERS: {
+					NetworkMessage msg;
+					if (message.primary.value != 0) {
+						msg.addByte(0x84);
+						msg.addPosition(message.position);
+						msg.addByte(message.primary.color);
+						msg.addString(std::to_string(message.primary.value));
+					}
+					if (message.secondary.value != 0) {
+						msg.addByte(0x84);
+						msg.addPosition(message.position);
+						msg.addByte(message.secondary.color);
+						msg.addString(std::to_string(message.secondary.value));
+					}
+					if (!message.text.empty()) {
+						msg.addByte(0xB4);
+						msg.addByte(cipsoft860EventDefaultMessage);
+						msg.addString(message.text);
+					}
+					writeToOutputBuffer(msg);
+					return;
+				}
+				case MESSAGE_MANA:
+				case MESSAGE_HEALED:
+				case MESSAGE_HEALED_OTHERS:
+				case MESSAGE_EXPERIENCE:
+				case MESSAGE_EXPERIENCE_OTHERS: {
+					NetworkMessage msg;
+					msg.addByte(0x84);
+					msg.addPosition(message.position);
+					msg.addByte(message.primary.color);
+					msg.addString(std::to_string(message.primary.value));
+					if (!message.text.empty()) {
+						msg.addByte(0xB4);
+						msg.addByte(cipsoft860EventDefaultMessage);
+						msg.addString(message.text);
+					}
+					writeToOutputBuffer(msg);
+					return;
+				}
+				default:
+					return;
+			}
+		}
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xB4);
-	msg.addByte(internalType);
+	msg.addByte(clientType);
 	switch (internalType) {
 		case MESSAGE_DAMAGE_DEALT:
 		case MESSAGE_DAMAGE_RECEIVED:
@@ -5411,33 +5551,43 @@ void ProtocolGame::sendChannel(uint16_t channelId, const std::string &channelNam
 	msg.add<uint16_t>(channelId);
 	msg.addString(channelName);
 
-	if (channelUsers) {
-		msg.add<uint16_t>(channelUsers->size());
-		for (const auto &it : *channelUsers) {
-			msg.addString(it.second->getName());
+	if (version >= 910) {
+		if (channelUsers) {
+			msg.add<uint16_t>(channelUsers->size());
+			for (const auto &it : *channelUsers) {
+				msg.addString(it.second->getName());
+			}
+		} else {
+			msg.add<uint16_t>(0x00);
 		}
-	} else {
-		msg.add<uint16_t>(0x00);
-	}
 
-	if (invitedUsers) {
-		msg.add<uint16_t>(invitedUsers->size());
-		for (const auto &it : *invitedUsers) {
-			msg.addString(it.second->getName());
+		if (invitedUsers) {
+			msg.add<uint16_t>(invitedUsers->size());
+			for (const auto &it : *invitedUsers) {
+				msg.addString(it.second->getName());
+			}
+		} else {
+			msg.add<uint16_t>(0x00);
 		}
-	} else {
-		msg.add<uint16_t>(0x00);
 	}
 	writeToOutputBuffer(msg);
 }
 
 void ProtocolGame::sendChannelMessage(const std::string &author, const std::string &text, SpeakClasses type, uint16_t channel) {
+	uint8_t clientType = static_cast<uint8_t>(type);
+	if (isCipsoft860Profile(protocolProfile)) {
+		clientType = translateCipsoft860SpeakClassToClient(type);
+		if (clientType == cipsoft860TalkNone) {
+			return;
+		}
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xAA);
 	msg.add<uint32_t>(0x00);
 	msg.addString(author);
 	msg.add<uint16_t>(0x00);
-	msg.addByte(type);
+	msg.addByte(clientType);
 	msg.add<uint16_t>(channel);
 	msg.addString(text);
 	writeToOutputBuffer(msg);
@@ -7159,7 +7309,9 @@ void ProtocolGame::sendCreatureTurn(const std::shared_ptr<Creature> &creature, u
 	msg.add<uint16_t>(0x63);
 	msg.add<uint32_t>(creature->getID());
 	msg.addByte(creature->getDirection());
-	msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
+	if (version >= 953) {
+		msg.addByte(player->canWalkthroughEx(creature) ? 0x00 : 0x01);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -7183,11 +7335,17 @@ void ProtocolGame::sendCreatureSay(const std::shared_ptr<Creature> &creature, Sp
 		msg.add<uint16_t>(0x00);
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_MONSTER_SAY);
-	} else {
-		msg.addByte(type);
+	uint8_t clientType = static_cast<uint8_t>(type);
+	if (isCipsoft860Profile(protocolProfile)) {
+		clientType = translateCipsoft860SpeakClassToClient(type);
+		if (clientType == cipsoft860TalkNone) {
+			return;
+		}
+	} else if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
+		clientType = TALKTYPE_MONSTER_SAY;
 	}
+
+	msg.addByte(clientType);
 
 	if (pos) {
 		msg.addPosition(*pos);
@@ -7230,11 +7388,17 @@ void ProtocolGame::sendToChannel(const std::shared_ptr<Creature> &creature, Spea
 		}
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_CHANNEL_O);
-	} else {
-		msg.addByte(type);
+	uint8_t clientType = static_cast<uint8_t>(type);
+	if (isCipsoft860Profile(protocolProfile)) {
+		clientType = translateCipsoft860SpeakClassToClient(type);
+		if (clientType == cipsoft860TalkNone) {
+			return;
+		}
+	} else if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
+		clientType = TALKTYPE_CHANNEL_O;
 	}
+
+	msg.addByte(clientType);
 
 	msg.add<uint16_t>(channelId);
 	msg.addString(text);
@@ -7259,11 +7423,17 @@ void ProtocolGame::sendPrivateMessage(const std::shared_ptr<Player> &speaker, Sp
 		}
 	}
 
-	if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
-		msg.addByte(TALKTYPE_PRIVATE_TO);
-	} else {
-		msg.addByte(type);
+	uint8_t clientType = static_cast<uint8_t>(type);
+	if (isCipsoft860Profile(protocolProfile)) {
+		clientType = translateCipsoft860SpeakClassToClient(type);
+		if (clientType == cipsoft860TalkNone) {
+			return;
+		}
+	} else if (oldProtocol && type >= TALKTYPE_MONSTER_LAST_OLDPROTOCOL && type != TALKTYPE_CHANNEL_R2) {
+		clientType = TALKTYPE_PRIVATE_TO;
 	}
+
+	msg.addByte(clientType);
 
 	msg.addString(text);
 	writeToOutputBuffer(msg);
@@ -7280,8 +7450,10 @@ void ProtocolGame::sendChangeSpeed(const std::shared_ptr<Creature> &creature, ui
 	NetworkMessage msg;
 	msg.addByte(0x8F);
 	msg.add<uint32_t>(creature->getID());
-	msg.add<uint16_t>(creature->getBaseSpeed());
-	msg.add<uint16_t>(speed);
+	if (!oldProtocol || version >= 1059) {
+		msg.add<uint16_t>(creature->getBaseSpeed());
+	}
+	msg.add<uint16_t>(oldProtocol ? speed * 2 : speed);
 	writeToOutputBuffer(msg);
 }
 
@@ -7307,7 +7479,7 @@ void ProtocolGame::sendSkills() {
 void ProtocolGame::sendPing() {
 	if (player) {
 		NetworkMessage msg;
-		msg.addByte(0x1D);
+		msg.addByte(oldProtocol && version < 953 ? 0x1E : 0x1D);
 		writeToOutputBuffer(msg);
 	}
 }
@@ -7319,7 +7491,8 @@ void ProtocolGame::sendPingBack() {
 }
 
 void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
-	if (oldProtocol && type > 0xFF) {
+	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
+	if (oldProtocol && !useLegacyU16Effect && type > 0xFF) {
 		return;
 	}
 	NetworkMessage msg;
@@ -7327,7 +7500,11 @@ void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, u
 		msg.addByte(0x85);
 		msg.addPosition(from);
 		msg.addPosition(to);
-		msg.addByte(static_cast<uint8_t>(type));
+		if (useLegacyU16Effect) {
+			msg.add<uint16_t>(type);
+		} else {
+			msg.addByte(static_cast<uint8_t>(type));
+		}
 	} else {
 		msg.addByte(0x83);
 		msg.addPosition(from);
@@ -7972,6 +8149,10 @@ void ProtocolGame::sendMoveCreature(const std::shared_ptr<Creature> &creature, c
 }
 
 void ProtocolGame::sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &item) {
+	if (oldProtocol && slot > CONST_SLOT_AMMO) {
+		return;
+	}
+
 	NetworkMessage msg;
 	if (item) {
 		msg.addByte(0x78);
@@ -7986,6 +8167,9 @@ void ProtocolGame::sendInventoryItem(Slots_t slot, const std::shared_ptr<Item> &
 
 void ProtocolGame::sendInventoryIds() {
 	if (!player) {
+		return;
+	}
+	if (oldProtocol) {
 		return;
 	}
 

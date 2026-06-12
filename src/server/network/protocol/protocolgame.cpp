@@ -5145,7 +5145,7 @@ void ProtocolGame::sendBasicData() {
 }
 
 void ProtocolGame::sendBlessingWindow() {
-	if (!player) {
+	if (!player || oldProtocol) {
 		return;
 	}
 

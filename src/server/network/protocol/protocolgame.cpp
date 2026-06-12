@@ -376,6 +376,34 @@ namespace {
 		return profile && profile->hasFeature(feature);
 	}
 
+	bool usesLegacyInnerLength(const ProtocolProfile* profile) {
+		return profile
+			&& ProtocolProfileRegistry::getTransportProfile(profile->initialBehavior.transport).encryptedPayload == EncryptedPayloadLayout::LegacyInnerLength;
+	}
+
+	std::optional<Direction> translateAutoWalkDirection(uint8_t rawDirection) {
+		switch (rawDirection) {
+			case 1:
+				return DIRECTION_EAST;
+			case 2:
+				return DIRECTION_NORTHEAST;
+			case 3:
+				return DIRECTION_NORTH;
+			case 4:
+				return DIRECTION_NORTHWEST;
+			case 5:
+				return DIRECTION_WEST;
+			case 6:
+				return DIRECTION_SOUTHWEST;
+			case 7:
+				return DIRECTION_SOUTH;
+			case 8:
+				return DIRECTION_SOUTHEAST;
+			default:
+				return std::nullopt;
+		}
+	}
+
 	constexpr uint8_t cipsoft860TalkNone = 0;
 	constexpr uint8_t cipsoft860EventDefaultMessage = 0x18;
 
@@ -2113,41 +2141,34 @@ void ProtocolGame::parseOpenPrivateChannel(NetworkMessage &msg) {
 
 void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	uint8_t numdirs = msg.getByte();
-	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != (msg.getLength() + 6)) {
+	const bool legacyInnerLength = usesLegacyInnerLength(protocolProfile);
+	const auto expectedEndPosition = legacyInnerLength ? msg.getLength() : msg.getLength() + 6;
+	if (numdirs == 0 || (msg.getBufferPosition() + numdirs) != expectedEndPosition) {
 		return;
 	}
 
 	std::vector<Direction> path;
+	if (legacyInnerLength) {
+		path.reserve(numdirs);
+		for (uint8_t i = 0; i < numdirs; ++i) {
+			if (const auto direction = translateAutoWalkDirection(msg.getByte())) {
+				path.emplace_back(*direction);
+			}
+		}
+
+		if (path.empty()) {
+			return;
+		}
+
+		g_game().playerAutoWalk(player->getID(), path);
+		return;
+	}
+
 	path.resize(numdirs, DIRECTION_NORTH);
 	for (size_t i = numdirs; --i < numdirs;) {
 		const uint8_t rawdir = msg.getByte();
-		switch (rawdir) {
-			case 1:
-				path[i] = DIRECTION_EAST;
-				break;
-			case 2:
-				path[i] = DIRECTION_NORTHEAST;
-				break;
-			case 3:
-				path[i] = DIRECTION_NORTH;
-				break;
-			case 4:
-				path[i] = DIRECTION_NORTHWEST;
-				break;
-			case 5:
-				path[i] = DIRECTION_WEST;
-				break;
-			case 6:
-				path[i] = DIRECTION_SOUTHWEST;
-				break;
-			case 7:
-				path[i] = DIRECTION_SOUTH;
-				break;
-			case 8:
-				path[i] = DIRECTION_SOUTHEAST;
-				break;
-			default:
-				break;
+		if (const auto direction = translateAutoWalkDirection(rawdir)) {
+			path[i] = *direction;
 		}
 	}
 

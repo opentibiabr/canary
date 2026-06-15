@@ -69,10 +69,10 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_EQ(860, developmentAssets->clientVersion);
 	EXPECT_EQ(860, extendedAssets->clientVersion);
 	EXPECT_EQ(860, otcv8->clientVersion);
-	EXPECT_FALSE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::MagicEffectU16));
-	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
@@ -122,13 +122,13 @@ TEST(ProtocolProfileRegistryTest, Cipsoft860UsesClassicLoginLayouts) {
 	EXPECT_EQ(GameLoginAuthenticationLayout::AccountPassword, canaryGameLayout->authenticationLayout);
 }
 
-TEST(ProtocolProfileRegistryTest, CurrentAnd1100ShareInitialWireBehavior) {
+TEST(ProtocolProfileRegistryTest, CurrentAnd1100UseDifferentInitialWireBehavior) {
 	const auto &current = ProtocolProfileRegistry::getCurrentProfile();
 	const auto* tibia1100 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
 
 	ASSERT_NE(nullptr, tibia1100);
 	EXPECT_NE(current.id, tibia1100->id);
-	EXPECT_TRUE(current.initialBehavior.hasSameWireBehavior(tibia1100->initialBehavior));
+	EXPECT_FALSE(current.initialBehavior.hasSameWireBehavior(tibia1100->initialBehavior));
 	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::OldProtocolCompat));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(tibia1100->id));
 }

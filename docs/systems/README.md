@@ -7,3 +7,4 @@ points.
 - [Livestream](livestream/README.md)
 - [Lua API documentation generator](lua-api-docgen.md)
 - [Lua shared userdata ownership](lua-shared-userdata.md)
+- [Multiprotocol runtime profiles](multiprotocol.md)

@@ -218,13 +218,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 			return;
 		}
 
-		g_logger().info(
-			"[ProtocolLogin::onRecvFirstMessage] Detected protocol profile '{}' from asset signatures dat=0x{:08X} spr=0x{:08X} pic=0x{:08X}",
-			protocolProfile->name,
-			assetSignatures.dat,
-			assetSignatures.spr,
-			assetSignatures.pic
-		);
 	} else {
 		msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
 	}

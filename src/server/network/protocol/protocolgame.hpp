@@ -123,6 +123,10 @@ public:
 		return version;
 	}
 
+	[[nodiscard]] const ProtocolProfile* getProtocolProfile() const {
+		return protocolProfile;
+	}
+
 private:
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());

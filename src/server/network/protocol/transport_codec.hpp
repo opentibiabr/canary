@@ -45,5 +45,6 @@ public:
 	[[nodiscard]] static const TransportCodec &get(TransportProfileId id);
 	[[nodiscard]] static const TransportCodec &rawClientFirst();
 	[[nodiscard]] static const TransportCodec &currentModern();
+	[[nodiscard]] static const TransportCodec &legacyRawWithLoginHeader();
 	[[nodiscard]] static const TransportCodec &legacyClassic();
 };

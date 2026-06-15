@@ -156,6 +156,8 @@ const TransportCodec &TransportCodecs::get(TransportProfileId id) {
 	switch (id) {
 		case TransportProfileId::CurrentModern:
 			return currentModern();
+		case TransportProfileId::LegacyRawWithLoginHeader:
+			return legacyRawWithLoginHeader();
 		case TransportProfileId::LegacyClassic:
 			return legacyClassic();
 		case TransportProfileId::RawClientFirst:
@@ -171,6 +173,11 @@ const TransportCodec &TransportCodecs::rawClientFirst() {
 
 const TransportCodec &TransportCodecs::currentModern() {
 	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::CurrentModern));
+	return codec;
+}
+
+const TransportCodec &TransportCodecs::legacyRawWithLoginHeader() {
+	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::LegacyRawWithLoginHeader));
 	return codec;
 }
 

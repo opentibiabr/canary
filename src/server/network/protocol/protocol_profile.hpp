@@ -58,6 +58,9 @@ enum class ProtocolFeature : uint64_t {
 	InlineLoginBugReportFlag = 1ULL << 4,
 	ExtendedSpriteFiles = 1ULL << 5,
 	MagicEffectU16 = 1ULL << 6,
+	LoginSpeedFormula = 1ULL << 7,
+	ModernLoginSideSystems = 1ULL << 8,
+	ResourceBalancePackets = 1ULL << 9,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {
@@ -71,6 +74,7 @@ enum class ProtocolFeature : uint64_t {
 enum class TransportProfileId : uint8_t {
 	RawClientFirst,
 	CurrentModern,
+	LegacyRawWithLoginHeader,
 	LegacyClassic,
 };
 
@@ -112,6 +116,7 @@ enum class GameHandshakeFlow : uint8_t {
 
 enum class ChallengeLayout : uint8_t {
 	CurrentLoginChallenge,
+	Tibia1100LoginChallenge,
 	Cipsoft860LoginChallenge,
 };
 

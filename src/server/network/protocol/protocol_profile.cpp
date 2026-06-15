@@ -38,6 +38,20 @@ namespace {
 		.sequenceHighBitSignalsCompression = true,
 	};
 
+	constexpr TransportProfile legacyRawWithLoginHeaderTransport {
+		.id = TransportProfileId::LegacyRawWithLoginHeader,
+		.outerLength = OuterLengthEncoding::RawBodyLength,
+		.encryptedPayload = EncryptedPayloadLayout::LegacyInnerLength,
+		.inboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.outboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.compression = CompressionLayout::None,
+		.modernLengthExtraBytes = 0,
+		.serverFirstPacketHeaderBytes = CHECKSUM_LENGTH + 1,
+		.hasCryptoHeader = true,
+		.lengthIncludesChecksum = true,
+		.sequenceHighBitSignalsCompression = false,
+	};
+
 	constexpr TransportProfile legacyClassicTransport {
 		.id = TransportProfileId::LegacyClassic,
 		.outerLength = OuterLengthEncoding::RawBodyLength,
@@ -62,10 +76,10 @@ namespace {
 	};
 
 	constexpr InitialConnectionBehavior tibia1100InitialBehavior {
-		.transport = TransportProfileId::CurrentModern,
+		.transport = TransportProfileId::LegacyRawWithLoginHeader,
 		.challenge = {
 			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
-			.layout = ChallengeLayout::CurrentLoginChallenge,
+			.layout = ChallengeLayout::Tibia1100LoginChallenge,
 		},
 		.expectedProfile = ProtocolProfileId::Tibia1100,
 	};
@@ -145,7 +159,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = currentInitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload),
+		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets),
 		.name = "current",
 	};
 
@@ -157,7 +171,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = tibia1100InitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula),
 		.name = "tibia1100",
 	};
 
@@ -223,7 +237,7 @@ namespace {
 	constexpr AccountLoginLayout tibia1100AccountLoginLayout {
 		.profileId = ProtocolProfileId::Tibia1100,
 		.clientVersion = 1100,
-		.responseTransport = TransportProfileId::CurrentModern,
+		.responseTransport = TransportProfileId::LegacyClassic,
 		.bytesToSkipBeforeRsa = 17,
 		.characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey,
 		.sendsSessionKey = true,
@@ -329,6 +343,8 @@ const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportPr
 	switch (id) {
 		case TransportProfileId::CurrentModern:
 			return currentModernTransport;
+		case TransportProfileId::LegacyRawWithLoginHeader:
+			return legacyRawWithLoginHeaderTransport;
 		case TransportProfileId::LegacyClassic:
 			return legacyClassicTransport;
 		case TransportProfileId::RawClientFirst:

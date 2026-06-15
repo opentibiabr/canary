@@ -372,6 +372,10 @@ namespace {
 			    || profile->id == ProtocolProfileId::Cipsoft860CanaryExtended);
 	}
 
+	bool isTibia1100Profile(const ProtocolProfile* profile) {
+		return profile && profile->id == ProtocolProfileId::Tibia1100;
+	}
+
 	bool hasProtocolFeature(const ProtocolProfile* profile, ProtocolFeature feature) {
 		return profile && profile->hasFeature(feature);
 	}
@@ -1237,7 +1241,8 @@ void ProtocolGame::sendLoginChallenge() {
 	static std::ranlux24 generator(rd());
 	static std::uniform_int_distribution<uint16_t> randNumber(0x00, 0xFF);
 
-	if (initialConnectionBehavior.challenge.layout == ChallengeLayout::Cipsoft860LoginChallenge) {
+	if (initialConnectionBehavior.challenge.layout == ChallengeLayout::Cipsoft860LoginChallenge
+	    || initialConnectionBehavior.challenge.layout == ChallengeLayout::Tibia1100LoginChallenge) {
 		output->addByte(0x1F);
 		challengeTimestamp = static_cast<uint32_t>(time(nullptr));
 		output->add<uint32_t>(challengeTimestamp);
@@ -5491,9 +5496,11 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 		}
 		case MESSAGE_HEALED:
 		case MESSAGE_HEALED_OTHERS: {
-			msg.addPosition(message.position);
-			msg.add<uint32_t>(message.primary.value);
-			msg.addByte(message.primary.color);
+			if (!oldProtocol) {
+				msg.addPosition(message.position);
+				msg.add<uint32_t>(message.primary.value);
+				msg.addByte(message.primary.color);
+			}
 			break;
 		}
 		case MESSAGE_EXPERIENCE:
@@ -5951,7 +5958,7 @@ void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*
 		return;
 	}
 
-	if (version < 1100) {
+	if (version < 1100 || !hasProtocolFeature(protocolProfile, ProtocolFeature::ResourceBalancePackets)) {
 		return;
 	}
 
@@ -5965,7 +5972,7 @@ void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) {
-	if (version < 1100) {
+	if (version < 1100 || !hasProtocolFeature(protocolProfile, ProtocolFeature::ResourceBalancePackets)) {
 		return;
 	}
 
@@ -7947,14 +7954,15 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	msg.add<uint32_t>(player->getID());
 	msg.add<uint16_t>(SERVER_BEAT); // beat duration (50)
 
-	if (version >= 981) {
+	if (version >= 981 && hasProtocolFeature(protocolProfile, ProtocolFeature::LoginSpeedFormula)) {
 		msg.addDouble(Creature::speedA, 3);
 		msg.addDouble(Creature::speedB, 3);
 		msg.addDouble(Creature::speedC, 3);
 	}
 
 	// Allow bug report (Ctrl + Z)
-	if (oldProtocol && version < 1054 && protocolProfile && protocolProfile->hasFeature(ProtocolFeature::InlineLoginBugReportFlag)) {
+	const bool hasInlineBugReportFlag = oldProtocol && (version >= 1054 || (protocolProfile && protocolProfile->hasFeature(ProtocolFeature::InlineLoginBugReportFlag)));
+	if (hasInlineBugReportFlag) {
 		if (player->getAccountType() >= ACCOUNT_TYPE_NORMAL) {
 			msg.addByte(0x01);
 		} else {
@@ -8008,19 +8016,25 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	sendStats();
 	sendSkills();
 	if (version >= 1100) {
-		player->weaponProficiency().clearAllStats();
-		if (const auto equippedWeaponId = player->getWeaponId(true); equippedWeaponId != 0) {
-			player->weaponProficiency().applyPerks(equippedWeaponId, false);
+		const bool sendModernLoginSideSystems = hasProtocolFeature(protocolProfile, ProtocolFeature::ModernLoginSideSystems);
+		if (sendModernLoginSideSystems) {
+			player->weaponProficiency().clearAllStats();
+			if (const auto equippedWeaponId = player->getWeaponId(true); equippedWeaponId != 0) {
+				player->weaponProficiency().applyPerks(equippedWeaponId, false);
+			}
+
+			player->sendWeaponProficiency();
 		}
 
-		player->sendWeaponProficiency();
 		sendBlessStatus();
 		sendPremiumTrigger();
-		sendItemsPrice();
-		sendPreyPrices();
-		player->sendPreyData();
-		player->sendTaskHuntingData();
-		sendForgingData();
+		if (sendModernLoginSideSystems) {
+			sendItemsPrice();
+			sendPreyPrices();
+			player->sendPreyData();
+			player->sendTaskHuntingData();
+			sendForgingData();
+		}
 	}
 
 	// gameworld light-settings
@@ -9175,6 +9189,22 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 			auto skill = static_cast<skills_t>(i);
 			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getSkillLevel(skill), std::numeric_limits<uint8_t>::max())));
 			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getBaseSkill(skill), std::numeric_limits<uint8_t>::max())));
+		}
+		return;
+	}
+
+	if (isTibia1100Profile(protocolProfile)) {
+		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
+			auto skill = static_cast<skills_t>(i);
+			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(player->getBaseSkill(skill));
+			msg.addByte(std::min<uint8_t>(100, static_cast<uint8_t>(player->getSkillPercent(skill))));
+		}
+
+		for (uint8_t i = SKILL_CRITICAL_HIT_CHANCE; i <= SKILL_LAST; ++i) {
+			auto skill = static_cast<skills_t>(i);
+			msg.add<uint16_t>(std::min<int32_t>(player->getSkillLevel(skill), std::numeric_limits<uint16_t>::max()));
+			msg.add<uint16_t>(player->getBaseSkill(skill));
 		}
 		return;
 	}

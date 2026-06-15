@@ -537,10 +537,10 @@ std::string ProtocolProfileRegistry::getAllowedClientProtocolDescription(bool in
 	if (includeOldProtocolProfiles) {
 		for (const auto* profile : registeredProfiles) {
 			if (!profile
-				|| profile->id == ProtocolProfileId::Current
-				|| !isProfileAllowed(profile->id)
-				|| profile->supportLabel.empty()
-				|| !profile->hasFeature(ProtocolFeature::OldProtocolCompat)) {
+			    || profile->id == ProtocolProfileId::Current
+			    || !isProfileAllowed(profile->id)
+			    || profile->supportLabel.empty()
+			    || !profile->hasFeature(ProtocolFeature::OldProtocolCompat)) {
 				continue;
 			}
 

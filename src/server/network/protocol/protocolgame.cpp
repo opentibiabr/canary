@@ -368,8 +368,8 @@ namespace {
 	bool isCipsoft860Profile(const ProtocolProfile* profile) {
 		return profile
 			&& (profile->id == ProtocolProfileId::Cipsoft860Vanilla
-			    || profile->id == ProtocolProfileId::Cipsoft860ExtendedAssets
-			    || profile->id == ProtocolProfileId::Cipsoft860CanaryExtended);
+		        || profile->id == ProtocolProfileId::Cipsoft860ExtendedAssets
+		        || profile->id == ProtocolProfileId::Cipsoft860CanaryExtended);
 	}
 
 	bool isTibia1100Profile(const ProtocolProfile* profile) {

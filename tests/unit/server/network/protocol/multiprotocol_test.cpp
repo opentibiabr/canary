@@ -20,10 +20,7 @@ namespace {
 	}
 
 	uint32_t readU32(const uint8_t* buffer) {
-		return static_cast<uint32_t>(buffer[0]) |
-		       (static_cast<uint32_t>(buffer[1]) << 8) |
-		       (static_cast<uint32_t>(buffer[2]) << 16) |
-		       (static_cast<uint32_t>(buffer[3]) << 24);
+		return static_cast<uint32_t>(buffer[0]) | (static_cast<uint32_t>(buffer[1]) << 8) | (static_cast<uint32_t>(buffer[2]) << 16) | (static_cast<uint32_t>(buffer[3]) << 24);
 	}
 }
 

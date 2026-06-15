@@ -69,6 +69,7 @@ private:
 		std::string accountSessionHash;
 		std::unordered_set<std::string> allowedCharacterNames;
 		std::chrono::steady_clock::time_point expiresAt {};
+		bool reusable = false;
 	};
 
 	void cleanupExpired(std::chrono::steady_clock::time_point now);

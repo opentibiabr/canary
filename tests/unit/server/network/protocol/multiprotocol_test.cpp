@@ -194,6 +194,39 @@ TEST(SessionHintTest, ClaimDoesNotConsumeHint) {
 	EXPECT_TRUE(store.consumeIfMatches(*lease, session, character, 1100));
 }
 
+TEST(SessionHintTest, ModernHintIsConsumedAfterValidatedLogin) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000107;
+	const std::string session = "modern-relog\npassword";
+	const std::string character = "Modern Relog";
+
+	store.registerHint(testIp, ProtocolProfileId::Current, session, { character });
+
+	const auto lease = store.claimByIp(testIp);
+	ASSERT_TRUE(lease);
+	EXPECT_TRUE(store.consumeIfMatches(*lease, session, character, CLIENT_VERSION));
+	EXPECT_FALSE(store.claimByIp(testIp));
+}
+
+TEST(SessionHintTest, LegacyHintRemainsClaimableAfterValidatedRelog) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000108;
+	const std::string session = "legacy-relog\npassword";
+	const std::string character = "Legacy Relog";
+
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860CanaryExtended, session, { character });
+
+	const auto firstLease = store.claimByIp(testIp);
+	ASSERT_TRUE(firstLease);
+	EXPECT_EQ(TransportProfileId::LegacyClassic, firstLease->behavior.transport);
+	EXPECT_TRUE(store.consumeIfMatches(*firstLease, session, character, 860));
+
+	const auto relogLease = store.claimByIp(testIp);
+	ASSERT_TRUE(relogLease);
+	EXPECT_EQ(TransportProfileId::LegacyClassic, relogLease->behavior.transport);
+	EXPECT_TRUE(store.consumeIfMatches(*relogLease, session, character, 860));
+}
+
 TEST(SessionHintTest, HintConflictIsBasedOnInitialBehaviorNotOnlyTransport) {
 	auto &store = ProtocolSessionHintStore::getInstance();
 	constexpr uint32_t testIp = 0x0A000102;

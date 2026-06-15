@@ -17,7 +17,16 @@
 
 namespace {
 	constexpr auto hintTtl = std::chrono::seconds(30);
+	constexpr auto reusableHintTtl = std::chrono::hours(24);
 	constexpr size_t maxHints = 512;
+
+	bool shouldReuseHintAfterMatch(const ProtocolProfile &profile) {
+		return !profile.initialBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior());
+	}
+
+	std::chrono::steady_clock::time_point getHintExpiration(const ProtocolProfile &profile, std::chrono::steady_clock::time_point now) {
+		return now + (shouldReuseHintAfterMatch(profile) ? reusableHintTtl : hintTtl);
+	}
 }
 
 ProtocolSessionHintStore &ProtocolSessionHintStore::getInstance() {
@@ -50,7 +59,8 @@ void ProtocolSessionHintStore::registerHint(
 	hint.profileId = profileId;
 	hint.behavior = profile->initialBehavior;
 	hint.accountSessionHash = hashSession(accountSession);
-	hint.expiresAt = now + hintTtl;
+	hint.expiresAt = getHintExpiration(*profile, now);
+	hint.reusable = shouldReuseHintAfterMatch(*profile);
 	for (const auto &characterName : characterNames) {
 		hint.allowedCharacterNames.insert(asLowerCaseString(characterName));
 	}
@@ -153,7 +163,11 @@ std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProf
 		}
 
 		const auto profileId = it->profileId;
-		hints.erase(it);
+		if (it->reusable) {
+			it->expiresAt = getHintExpiration(*profile, now);
+		} else {
+			hints.erase(it);
+		}
 		return profileId;
 	}
 

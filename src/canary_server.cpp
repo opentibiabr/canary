@@ -31,6 +31,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/components/weapon_proficiency.hpp"
@@ -104,7 +105,8 @@ int CanaryServer::run() {
 				}
 				validateDatapack();
 
-				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+				const auto allowOldProtocol = g_configManager().getBoolean(OLD_PROTOCOL);
+				logger.info("Server protocol: {}{}", ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol), allowOldProtocol ? " allowed!" : "");
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;

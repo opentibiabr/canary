@@ -9,7 +9,44 @@
 
 #include "server/network/protocol/protocol_profile.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+	#include <array>
+	#include <string>
+	#include <string_view>
+	#include <vector>
+#endif
+
 namespace {
+	std::string currentClientVersionLabel() {
+		auto label = std::to_string(CLIENT_VERSION_UPPER);
+		label += ".";
+		if constexpr (CLIENT_VERSION_LOWER < 10) {
+			label += "0";
+		}
+		label += std::to_string(CLIENT_VERSION_LOWER);
+		return label;
+	}
+
+	std::string joinProtocolLabels(const std::vector<std::string> &labels) {
+		if (labels.empty()) {
+			return {};
+		}
+
+		if (labels.size() == 1) {
+			return labels.front();
+		}
+
+		std::string result;
+		for (size_t index = 0; index < labels.size(); ++index) {
+			if (index > 0) {
+				result += index + 1 == labels.size() ? " and " : ", ";
+			}
+			result += labels[index];
+		}
+		return result;
+	}
+
 	constexpr TransportProfile rawClientFirstTransport {
 		.id = TransportProfileId::RawClientFirst,
 		.outerLength = OuterLengthEncoding::RawBodyLength,
@@ -161,6 +198,7 @@ namespace {
 		.initialBehavior = currentInitialBehavior,
 		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets),
 		.name = "current",
+		.supportLabel = "",
 	};
 
 	constexpr ProtocolProfile tibia1100Profile {
@@ -173,6 +211,7 @@ namespace {
 		.initialBehavior = tibia1100InitialBehavior,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula),
 		.name = "tibia1100",
+		.supportLabel = "10x",
 	};
 
 	constexpr ProtocolProfile cipsoft860Profile {
@@ -185,6 +224,7 @@ namespace {
 		.initialBehavior = cipsoft860InitialBehavior,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860vanilla",
+		.supportLabel = "8.6",
 	};
 
 	constexpr ProtocolProfile cipsoft860ExtendedAssetsProfile {
@@ -198,6 +238,7 @@ namespace {
 		.assetSignatures = cipsoft860DevelopmentAssetSignatures,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860extendedassets",
+		.supportLabel = "8.6",
 	};
 
 	constexpr ProtocolProfile cipsoft860CanaryExtendedProfile {
@@ -211,6 +252,7 @@ namespace {
 		.assetSignatures = cipsoft860CanaryAssetSignatures,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::ExtendedSpriteFiles | ProtocolFeature::MagicEffectU16 | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "cipsoft860canaryextended",
+		.supportLabel = "8.6",
 	};
 
 	constexpr ProtocolProfile otcv8Extended860Profile {
@@ -223,6 +265,16 @@ namespace {
 		.initialBehavior = otcv8Extended860InitialBehavior,
 		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::RequiresItemMapper | ProtocolFeature::InlineLoginBugReportFlag),
 		.name = "otcv8extended860",
+		.supportLabel = "8.6",
+	};
+
+	constexpr std::array<const ProtocolProfile*, 6> registeredProfiles {
+		&currentProfile,
+		&tibia1100Profile,
+		&cipsoft860Profile,
+		&cipsoft860ExtendedAssetsProfile,
+		&cipsoft860CanaryExtendedProfile,
+		&otcv8Extended860Profile,
 	};
 
 	constexpr AccountLoginLayout currentAccountLoginLayout {
@@ -476,6 +528,40 @@ const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolP
 
 InitialConnectionBehavior ProtocolProfileRegistry::defaultModernInitialBehavior() {
 	return currentInitialBehavior;
+}
+
+std::string ProtocolProfileRegistry::getAllowedClientProtocolDescription(bool includeOldProtocolProfiles) {
+	std::vector<std::string> labels;
+	labels.emplace_back(currentClientVersionLabel());
+
+	if (includeOldProtocolProfiles) {
+		for (const auto* profile : registeredProfiles) {
+			if (!profile
+				|| profile->id == ProtocolProfileId::Current
+				|| !isProfileAllowed(profile->id)
+				|| profile->supportLabel.empty()
+				|| !profile->hasFeature(ProtocolFeature::OldProtocolCompat)) {
+				continue;
+			}
+
+			const auto alreadyListed = std::ranges::any_of(labels, [label = profile->supportLabel](const std::string &listedLabel) {
+				return listedLabel == label;
+			});
+			if (!alreadyListed) {
+				labels.emplace_back(profile->supportLabel);
+			}
+		}
+	}
+
+	return joinProtocolLabels(labels);
+}
+
+std::string ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(bool includeOldProtocolProfiles) {
+	const auto description = getAllowedClientProtocolDescription(includeOldProtocolProfiles);
+	const auto hasMultipleProtocols = description.find(", ") != std::string::npos || description.find(" and ") != std::string::npos;
+	return hasMultipleProtocols
+		? "Only supported client protocols are " + description + "."
+		: "Only supported client protocol is " + description + ".";
 }
 
 bool ProtocolProfileRegistry::isProfileAllowed(ProtocolProfileId id) {

@@ -15,6 +15,7 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>
 	#include <optional>
+	#include <string>
 	#include <string_view>
 #endif
 
@@ -160,6 +161,7 @@ struct ProtocolProfile {
 	ClientAssetSignatures assetSignatures {};
 	uint64_t features = static_cast<uint64_t>(ProtocolFeature::None);
 	std::string_view name;
+	std::string_view supportLabel;
 
 	[[nodiscard]] bool hasFeature(ProtocolFeature feature) const {
 		return (features & static_cast<uint64_t>(feature)) != 0;
@@ -211,5 +213,7 @@ public:
 	[[nodiscard]] static const GameLoginLayout* resolveGameLoginLayout(uint16_t version);
 	[[nodiscard]] static const GameLoginLayout* resolveGameLoginLayout(ProtocolProfileId id);
 	[[nodiscard]] static InitialConnectionBehavior defaultModernInitialBehavior();
+	[[nodiscard]] static std::string getAllowedClientProtocolDescription(bool includeOldProtocolProfiles);
+	[[nodiscard]] static std::string getUnsupportedClientProtocolMessage(bool includeOldProtocolProfiles);
 	[[nodiscard]] static bool isProfileAllowed(ProtocolProfileId id);
 };

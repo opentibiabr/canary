@@ -67,10 +67,10 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	account.setProtocolCompat(oldProtocol);
 
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 		return;
 	} else if (!oldProtocol) {
-		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 		return;
 	}
 
@@ -286,10 +286,10 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string password = msg.getString();
 	if (accountDescriptor == "@livestream") {
 		if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-			disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 			return;
 		} else if (!oldProtocol) {
-			disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 			return;
 		}
 

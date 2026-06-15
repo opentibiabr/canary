@@ -987,13 +987,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	const auto* gameLoginLayout = ProtocolProfileRegistry::resolveGameLoginLayout(version);
 	if (!gameLoginLayout) {
-		std::ostringstream ss;
-		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER;
-		if (g_configManager().getBoolean(OLD_PROTOCOL)) {
-			ss << " or 11.00";
-		}
-		ss << " allowed!";
-		disconnectClient(ss.str());
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 		return;
 	}
 
@@ -1010,9 +1004,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	const bool profileOldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
 	if (profileOldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-		std::ostringstream ss;
-		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER << " allowed!";
-		disconnectClient(ss.str());
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 		return;
 	}
 
@@ -1181,13 +1173,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	if (!oldProtocol && clientVersion != CLIENT_VERSION) {
-		ss.str(std::string());
-		ss << "Only clients with protocol " << CLIENT_VERSION_UPPER << "." << CLIENT_VERSION_LOWER;
-		if (g_configManager().getBoolean(OLD_PROTOCOL)) {
-			ss << " or 11.00";
-		}
-		ss << " allowed!";
-		disconnectClient(ss.str());
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 		return;
 	}
 

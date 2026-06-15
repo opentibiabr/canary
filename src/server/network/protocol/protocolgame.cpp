@@ -1146,12 +1146,21 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			return;
 		}
 
-		auto message = fmt::format("You are already connected through another client. Please use only one client at a time!");
-		if (foundPlayer->getProtocolVersion() != getVersion() && foundPlayer->isOldProtocol() != oldProtocol) {
-			message = fmt::format("You are already logged in using protocol '{}'. Please log out from the other session to connect here.", foundPlayer->getProtocolVersion());
+		const auto* existingProfile = foundPlayer->client->getProtocolProfile();
+		const bool sameProtocolProfile = existingProfile && protocolProfile && existingProfile->id == protocolProfile->id;
+		const bool sameLegacyContract = !existingProfile && !protocolProfile && foundPlayer->getProtocolVersion() == getVersion() && foundPlayer->isOldProtocol() == oldProtocol;
+		if (!sameProtocolProfile && !sameLegacyContract) {
+			const auto formatClientVersion = [](uint32_t clientVersion) {
+				return fmt::format("{}.{:02d}", clientVersion / 100, clientVersion % 100);
+			};
+			disconnectClient(fmt::format(
+				"This character is already online using client version {}. Please log out from that client before switching to version {}.",
+				formatClientVersion(foundPlayer->getProtocolVersion()), formatClientVersion(getVersion())
+			));
+			return;
 		}
 
-		foundPlayer->client->disconnectClient(message);
+		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
 	}
 
 	if (gameLoginLayout->hasChallengeResponse) {

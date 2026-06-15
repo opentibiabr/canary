@@ -13,7 +13,7 @@ CANARY_STATUS_PORT="${CANARY_STATUS_PORT:-7173}"
 CANARY_STATUS_TIMEOUT="${CANARY_STATUS_TIMEOUT:-5000}"
 CANARY_TEST_ACCOUNTS="${CANARY_TEST_ACCOUNTS:-false}"
 CANARY_DATA_PACK="${CANARY_DATA_PACK:-data-otservbr-global}"
-CANARY_MAP_URL="${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.5.0/otservbr.otbm}"
+CANARY_MAP_URL="${CANARY_MAP_URL:-https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm}"
 
 validate_identifier() {
 	local name="$1"

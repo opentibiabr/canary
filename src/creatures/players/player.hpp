@@ -686,7 +686,7 @@ public:
 	std::shared_ptr<DepotChest> getDepotChest(uint32_t depotId, bool autoCreate);
 	std::shared_ptr<DepotLocker> getDepotLocker(uint32_t depotId);
 	void onReceiveMail();
-	bool isNearDepotBox();
+	bool isNearDepotBox() const;
 
 	std::shared_ptr<Container> refreshManagedContainer(ObjectCategory_t category, const std::shared_ptr<Container> &container, bool isLootContainer, bool loading = false);
 	std::shared_ptr<Container> getManagedContainer(ObjectCategory_t category, bool isLootContainer) const;

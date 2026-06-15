@@ -1,0 +1,383 @@
+---
+name: Issue Deduplicator
+
+on:
+  issues:
+    types:
+      - opened
+      - labeled
+
+jobs:
+  find-duplicates:
+    name: Find potential duplicates
+    if: >-
+      github.repository == 'opentibiabr/canary' &&
+      (github.event.action == 'opened' ||
+      (github.event.action == 'labeled' &&
+      (github.event.label.name == 'duplicate-check' ||
+      github.event.label.name == 'duplicate-check-dry-run' ||
+      github.event.label.name == 'codex-deduplicate')))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Find potential duplicates
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd  # v8.0.0
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const marker = '<!-- issue-deduplicator -->';
+            const dryRunLabel = 'duplicate-check-dry-run';
+            const triggerLabels = new Set(['duplicate-check', dryRunLabel, 'codex-deduplicate']);
+            const issue = context.payload.issue;
+            const action = context.payload.action;
+            const labelName = context.payload.label?.name;
+            const dryRun = action === 'labeled' && labelName === dryRunLabel;
+
+            if (!issue || issue.pull_request) {
+              core.info('No issue payload found, or payload is a pull request.');
+              return;
+            }
+
+            if (action === 'labeled' && !triggerLabels.has(labelName)) {
+              core.info(`Ignoring unrelated label: ${labelName}`);
+              return;
+            }
+
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const currentIssueNumber = issue.number;
+            const maxIssuesPerPass = 500;
+            const minimumScore = 34;
+
+            const boilerplateStopwords = new Set([
+              'about', 'above', 'actual', 'additional', 'after', 'again', 'against',
+              'also', 'area', 'behavior', 'behaviour', 'being', 'branch', 'bug', 'build',
+              'canary', 'case', 'category', 'check', 'client', 'code', 'codex', 'com',
+              'content', 'could', 'current', 'datapack', 'description', 'details', 'does',
+              'doesn', 'error', 'expected', 'feature', 'from', 'github', 'happened',
+              'happens', 'have', 'information', 'issue', 'label', 'latest', 'file',
+              'function', 'local', 'logs', 'medium', 'missing', 'module', 'more', 'need',
+              'needs', 'not', 'observed', 'only', 'open', 'opentibia', 'opentibiabr',
+              'other', 'player:send', 'please', 'position', 'position.x', 'position.y',
+              'position.z', 'priority', 'problem', 'report', 'reproduce', 'request',
+              'result', 'same', 'section', 'seeing', 'server', 'should', 'source',
+              'stable', 'status', 'steps', 'summary', 'system', 'template', 'test',
+              'text', 'that', 'then', 'there', 'this', 'tried', 'type', 'using',
+              'version', 'what', 'when', 'where', 'with', 'work', 'worked', 'working',
+              'works', 'would',
+              'abrir', 'acontece', 'algum', 'alguma', 'aqui', 'area', 'bugado', 'cada',
+              'como', 'comportamento', 'conteudo', 'depois', 'erro', 'esta', 'este',
+              'isso', 'mais', 'mesmo', 'nao', 'para', 'por', 'porque', 'problema',
+              'qual', 'quando', 'sem', 'sobre', 'tambem', 'tem', 'tipo', 'uma',
+            ]);
+
+            const weakTopicTokens = new Set([
+              'account', 'action', 'boss', 'bug', 'character', 'client', 'creature',
+              'crash', 'database', 'depot', 'docker', 'error', 'game', 'house', 'item',
+              'login', 'lua', 'map', 'monster', 'npc', 'player', 'protocol', 'quest',
+              'reward', 'script', 'server', 'spell', 'store', 'support', 'task', 'tibia',
+              'vocation',
+            ]);
+
+            const genericTechTokens = new Set([
+              'config.lua',
+              'functions::lua',
+              'isplayer()',
+              'lua_pushnil(l)',
+              'player()',
+              'position()',
+              'register()',
+              'std::shared_ptr',
+              'std::string',
+            ]);
+
+            function normalizeText(value) {
+              return String(value ?? '')
+                .replace(/([a-z])([A-Z])/g, '$1 $2')
+                .normalize('NFKD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase();
+            }
+
+            function singularize(token) {
+              if (token.length > 4 && token.endsWith('ies')) {
+                return `${token.slice(0, -3)}y`;
+              }
+
+              if (token.length > 4 && /(?:s|x|z|ch|sh)es$/.test(token)) {
+                return token.slice(0, -2);
+              }
+
+              if (token.length > 4 && token.endsWith('s') && !token.endsWith('ss')) {
+                return token.slice(0, -1);
+              }
+
+              return token;
+            }
+
+            function genericTokenKey(token) {
+              return token.replace(/\s+/g, '').toLowerCase();
+            }
+
+            function rawTokens(value) {
+              const normalized = normalizeText(value)
+                .replace(/https?:\/\/\S+/g, ' ')
+                .replace(/[#*_()[\]{}>]/g, ' ');
+
+              return (normalized.match(/[a-z0-9][a-z0-9_./:-]{2,}/g) ?? [])
+                .map((token) => token.replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, ''))
+                .filter((token) => !boilerplateStopwords.has(token))
+                .map(singularize)
+                .filter((token) => token.length >= 3)
+                .filter((token) => !/^\d+$/.test(token))
+                .filter((token) => !boilerplateStopwords.has(token))
+                .filter((token) => !genericTechTokens.has(genericTokenKey(token)));
+            }
+
+            function isSpecificToken(token) {
+              return token.length >= 4 && !boilerplateStopwords.has(token) && !weakTopicTokens.has(token);
+            }
+
+            function tokenize(value, options = {}) {
+              const { keepWeak = false } = options;
+              return rawTokens(value).filter((token) => keepWeak || isSpecificToken(token));
+            }
+
+            function technicalTokens(value) {
+              const normalized = normalizeText(value);
+              const matches = normalized.match(
+                /\b[a-z0-9_./-]+\.(?:cpp|hpp|h|lua|sql|xml|json|yml|yaml|otbm)\b|\b[a-z_][a-z0-9_]*::[a-z_][a-z0-9_]*\b|\b[a-z_][a-z0-9_]*\([a-z0-9_,\s:<>*&.-]{0,60}\)/g,
+              ) ?? [];
+              const namedTokens = normalized.match(/\b(?:ipv4|ipv6|sha-?256|mysql|mariadb|sqlite|protobuf|openssl|cmake|vcpkg)\b/g) ?? [];
+
+              return [...new Set([...matches, ...namedTokens]
+                .map((token) => token.trim().replace(/\s+/g, ' '))
+                .filter((token) => token.length >= 3)
+                .filter((token) => !/^\d+$/.test(token))
+                .filter((token) => !genericTechTokens.has(genericTokenKey(token)))
+                .filter((token) => !weakTopicTokens.has(token)))];
+            }
+
+            function intersection(left, right) {
+              const values = [];
+              for (const value of left) {
+                if (right.has(value)) {
+                  values.push(value);
+                }
+              }
+              return values;
+            }
+
+            function phraseTokens(tokens) {
+              const phrases = new Set();
+              for (let size = 2; size <= 3; size += 1) {
+                for (let index = 0; index <= tokens.length - size; index += 1) {
+                  const parts = tokens.slice(index, index + size);
+                  if (parts.every(isSpecificToken)) {
+                    phrases.add(parts.join(' '));
+                  }
+                }
+              }
+
+              return phrases;
+            }
+
+            function canonicalTitle(value) {
+              return rawTokens(value).filter((token) => !weakTopicTokens.has(token)).join(' ');
+            }
+
+            function issueFeatures(candidate) {
+              const titleTokens = tokenize(candidate.title);
+              const titlePhraseSource = tokenize(candidate.title, { keepWeak: true });
+              const bodyTokens = tokenize(candidate.body).slice(0, 500);
+              const techTokens = technicalTokens(`${candidate.title}\n${candidate.body}`);
+
+              return {
+                canonicalTitle: canonicalTitle(candidate.title),
+                title: new Set(titleTokens),
+                body: new Set(bodyTokens),
+                tech: new Set(techTokens),
+                phrases: phraseTokens(titlePhraseSource),
+              };
+            }
+
+            const currentFeatures = issueFeatures(issue);
+
+            function scoreCandidate(candidate) {
+              if (candidate.number >= currentIssueNumber || candidate.pull_request) {
+                return null;
+              }
+
+              const candidateFeatures = issueFeatures(candidate);
+              const sharedPhrase = intersection(currentFeatures.phrases, candidateFeatures.phrases);
+              const sharedTitle = intersection(currentFeatures.title, candidateFeatures.title);
+              const sharedBody = intersection(currentFeatures.body, candidateFeatures.body);
+              const sharedTech = intersection(currentFeatures.tech, candidateFeatures.tech);
+              const exactTitle = currentFeatures.canonicalTitle.length > 0
+                && currentFeatures.canonicalTitle === candidateFeatures.canonicalTitle;
+
+              const hasStrongTitleMatch = sharedTitle.length >= 3 || sharedPhrase.length >= 2;
+              const hasBodyConfirmation = sharedTitle.length >= 2 && sharedBody.length >= 2;
+              const hasSpecificTechMatch = sharedTech.length > 0 && (sharedTitle.length >= 1 || sharedBody.length >= 2);
+
+              if (!exactTitle && !hasStrongTitleMatch && !hasBodyConfirmation && !hasSpecificTechMatch) {
+                return null;
+              }
+
+              let score = 0;
+              score += exactTitle ? 100 : 0;
+              score += sharedPhrase.length * 14;
+              score += sharedTitle.length * 10;
+              score += sharedTech.length * 24;
+              score += Math.min(sharedBody.length, 5) * 2;
+
+              if (score < minimumScore) {
+                return null;
+              }
+
+              return {
+                number: candidate.number,
+                title: candidate.title,
+                state: candidate.state,
+                score,
+                shared: [...new Set([...sharedPhrase, ...sharedTech, ...sharedTitle, ...sharedBody])].slice(0, 8),
+              };
+            }
+
+            async function collectIssues(state, sort, limit) {
+              const issues = [];
+              const iterator = github.paginate.iterator(github.rest.issues.listForRepo, {
+                owner,
+                repo,
+                state,
+                sort,
+                direction: 'desc',
+                per_page: 100,
+              });
+
+              for await (const response of iterator) {
+                for (const candidate of response.data) {
+                  if (!candidate.pull_request) {
+                    issues.push(candidate);
+                  }
+
+                  if (issues.length >= limit) {
+                    return issues;
+                  }
+                }
+              }
+
+              return issues;
+            }
+
+            function rankCandidates(candidates) {
+              return candidates
+                .map(scoreCandidate)
+                .filter(Boolean)
+                .sort((left, right) => right.score - left.score)
+                .slice(0, 3);
+            }
+
+            async function removeTriggerLabel() {
+              if (action !== 'labeled' || !triggerLabels.has(labelName)) {
+                return;
+              }
+
+              try {
+                await github.rest.issues.removeLabel({
+                  owner,
+                  repo,
+                  issue_number: currentIssueNumber,
+                  name: labelName,
+                });
+              } catch (error) {
+                core.info(`Could not remove trigger label ${labelName}: ${error.message}`);
+              }
+            }
+
+            async function upsertComment(body) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: currentIssueNumber,
+                per_page: 100,
+              });
+
+              const existing = comments.find((comment) => {
+                return comment.user?.type === 'Bot' && comment.body?.includes(marker);
+              });
+
+              if (existing) {
+                await github.rest.issues.updateComment({
+                  owner,
+                  repo,
+                  comment_id: existing.id,
+                  body,
+                });
+                return;
+              }
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: currentIssueNumber,
+                body,
+              });
+            }
+
+            async function writeStepSummary(lines) {
+              await core.summary
+                .addHeading('Issue duplicate check')
+                .addRaw(lines.join('\n'), true)
+                .write();
+            }
+
+            try {
+              const openIssues = await collectIssues('open', 'updated', maxIssuesPerPass);
+              const matches = rankCandidates(openIssues);
+              const pass = 'open issues only';
+
+              if (matches.length === 0) {
+                core.info('No potential duplicates found.');
+                if (dryRun) {
+                  await writeStepSummary([
+                    'Dry run only. No issue comment was posted.',
+                    '',
+                    'No potential duplicates found.',
+                  ]);
+                }
+                return;
+              }
+
+              const lines = [
+                marker,
+                'Potential duplicate issues were found. Please verify before continuing triage.',
+                '',
+                ...matches.map((candidate) => {
+                  const shared = candidate.shared.length > 0 ? ` (shared: ${candidate.shared.join(', ')})` : '';
+                  return `- #${candidate.number} - ${candidate.title}${shared}`;
+                }),
+                '',
+                `Detection pass: ${pass}.`,
+                'This is a keyword-based check and can produce false positives.',
+              ];
+
+              if (dryRun) {
+                const dryRunLines = [
+                  'Dry run only. No issue comment was posted.',
+                  '',
+                  ...lines.filter((line) => line !== marker),
+                ];
+
+                core.info(dryRunLines.join('\n'));
+                await writeStepSummary(dryRunLines);
+                return;
+              }
+
+              await upsertComment(lines.join('\n'));
+              core.info(`Commented with ${matches.length} potential duplicate(s).`);
+            } finally {
+              await removeTriggerLabel();
+            }

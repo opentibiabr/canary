@@ -365,7 +365,7 @@ function finish_myaac_install(PDO $pdo): void
 	$settings = \MyAAC\Settings::getInstance();
 	$settings->updateInDatabase('core', 'anonymous_usage_statistics', 'false');
 	$settings->updateInDatabase('core', 'date_timezone', env_value('MYAAC_TIMEZONE', 'America/Fortaleza'));
-	$settings->updateInDatabase('core', 'client', env_value('MYAAC_CLIENT_VERSION', '1501'));
+	$settings->updateInDatabase('core', 'client', env_value('MYAAC_CLIENT_VERSION', '1511'));
 
 	$statement = $pdo->prepare(
 		'INSERT INTO myaac_config (`name`, `value`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `value` = VALUES(`value`)'

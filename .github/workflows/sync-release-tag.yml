@@ -1,0 +1,84 @@
+---
+name: Sync Release Tag
+
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync merged release tag
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository && startsWith(github.event.pull_request.head.ref, 'release-v') && endsWith(github.event.pull_request.head.ref, '-metadata')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: main
+
+      - name: Move release tag to merged main commit
+        shell: bash
+        env:
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          MERGE_COMMIT_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+        run: |
+          set -euo pipefail
+
+          tag="${PR_HEAD_REF#release-}"
+          tag="${tag%-metadata}"
+          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Skipping unexpected release metadata branch ${PR_HEAD_REF}."
+            exit 0
+          fi
+
+          git fetch --force --tags origin main
+
+          merge_sha="${MERGE_COMMIT_SHA}"
+          if [[ -z "${merge_sha}" || "${merge_sha}" == "null" ]]; then
+            merge_sha="$(git rev-parse origin/main)"
+          fi
+
+          current_sha="$(git rev-parse "${tag}^{commit}" 2>/dev/null || true)"
+          if [[ "${current_sha}" == "${merge_sha}" ]]; then
+            echo "${tag} already points to ${merge_sha}."
+            exit 0
+          fi
+          if [[ -z "${current_sha}" ]]; then
+            echo "::warning::${tag} does not exist; leaving tags unchanged."
+            exit 0
+          fi
+
+          current_tree="$(git rev-parse "${current_sha}^{tree}")"
+          merge_tree="$(git rev-parse "${merge_sha}^{tree}")"
+          if [[ "${current_tree}" != "${merge_tree}" ]]; then
+            echo "::warning::Merged commit ${merge_sha} contains changes outside ${tag}; leaving ${tag} at ${current_sha}."
+            {
+              echo "Kept ${tag} at ${current_sha} because ${merge_sha} has a different tree."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "GitHub Actions"
+          tag_object_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags" \
+            -f "tag=${tag}" \
+            -f "message=${tag}" \
+            -f "object=${merge_sha}" \
+            -f "type=commit" \
+            --jq .sha)"
+          gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${tag}" \
+            -f "sha=${tag_object_sha}" \
+            -F force=true >/dev/null
+
+          {
+            echo "Moved ${tag} from ${current_sha:-missing} to ${merge_sha}."
+          } >> "$GITHUB_STEP_SUMMARY"

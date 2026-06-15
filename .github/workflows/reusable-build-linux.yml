@@ -1,3 +1,4 @@
+---
 name: Reusable Linux Build
 
 on:
@@ -18,6 +19,19 @@ on:
         required: false
         type: boolean
         default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
+    secrets:
+      VCPKG_PACKAGES_TOKEN:
+        required: false
 
 permissions:
   contents: write
@@ -49,7 +63,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
 
       - name: Get vcpkg baseline
         id: vcpkg-baseline
@@ -312,7 +344,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: linux-${{ matrix.buildtype }}
+          name: canary-${{ matrix.buildtype }}
           path: build/${{ matrix.buildtype }}/bin/
 
       - name: Verify vcpkg binary cache push

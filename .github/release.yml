@@ -1,0 +1,22 @@
+---
+changelog:
+  categories:
+    - title: Source Changes
+      labels:
+        - "Area: Source"
+    - title: Datapack Changes
+      labels:
+        - "Area: Datapack"
+        - "Area: Datapack Core"
+        - "Area: Datapack Global"
+        - "Area: Datapack Canary"
+    - title: Map Changes
+      labels:
+        - "Area: Map Global"
+        - "Area: Map Canary"
+    - title: Docker Changes
+      labels:
+        - "Area: Docker"
+    - title: Other Changes
+      labels:
+        - "*"

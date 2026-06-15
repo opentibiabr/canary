@@ -38,6 +38,31 @@
 #include "creatures/players/vocations/vocation.hpp"
 #include "utils/benchmark.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string_view>
+#endif
+
+namespace {
+	constexpr std::string_view getLuaRuntimeDisplayVersion() {
+#if defined(LUAJIT_VERSION)
+		constexpr std::string_view version = LUAJIT_VERSION;
+		constexpr std::string_view prefix = "LuaJIT ";
+		constexpr auto majorSeparator = version.find('.', prefix.size());
+		if constexpr (majorSeparator != std::string_view::npos) {
+			constexpr auto minorSeparator = version.find('.', majorSeparator + 1);
+			if constexpr (minorSeparator != std::string_view::npos) {
+				return version.substr(0, minorSeparator);
+			}
+		}
+		return version;
+#elif defined(LUA_VERSION)
+		return LUA_VERSION;
+#else
+		return "Lua";
+#endif
+	}
+}
+
 CanaryServer::CanaryServer(
 	Logger &logger,
 	RSAManager &rsa,
@@ -285,9 +310,7 @@ void CanaryServer::logInfos() {
 
 	logger.info("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
 
-#if defined(LUAJIT_VERSION)
-	logger.info("Linked with {} for Lua support", LUAJIT_VERSION);
-#endif
+	logger.info("Linked with {} for Lua support", getLuaRuntimeDisplayVersion());
 
 	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
 	logger.info("Visit our website for updates, support, and resources: "

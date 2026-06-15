@@ -115,7 +115,11 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addByte(size);
 
 		const auto serverName = g_configManager().getString(SERVER_NAME);
-		const auto worldIp = legacyIpStringToNumber(g_configManager().getString(IP));
+		const auto configuredWorldIp = g_configManager().getString(IP);
+		const auto worldIp = legacyIpStringToNumber(configuredWorldIp);
+		if (worldIp == 0) {
+			g_logger().warn("Legacy character list cannot encode configured IP '{}'; old clients require a numeric IPv4 address.", configuredWorldIp);
+		}
 		const auto worldPort = static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT));
 		std::vector<std::string> characterNames;
 		characterNames.reserve(size);

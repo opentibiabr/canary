@@ -224,19 +224,30 @@ TEST(SessionHintTest, LegacyHintRemainsClaimableAfterValidatedRelog) {
 	EXPECT_TRUE(store.consumeIfMatches(*relogLease, session, character, 860));
 }
 
-TEST(SessionHintTest, HintConflictIsBasedOnInitialBehaviorNotOnlyTransport) {
+TEST(SessionHintTest, SameInitialBehaviorDifferentProfilesCanSelectTransport) {
 	auto &store = ProtocolSessionHintStore::getInstance();
 	constexpr uint32_t testIp = 0x0A000102;
-	const std::string modernSession = "modern-account\nmodern-password";
-	const std::string oldSession = "old-account\nold-password";
+	const std::string vanillaSession = "vanilla-account\nvanilla-password";
+	const std::string extendedSession = "extended-account\nextended-password";
 
-	store.registerHint(testIp, ProtocolProfileId::Current, modernSession, { "Modern Character" });
-	store.registerHint(testIp, ProtocolProfileId::Tibia1100, oldSession, { "Old Character" });
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860Vanilla, vanillaSession, { "Vanilla Character" });
+	store.registerHint(testIp, ProtocolProfileId::Cipsoft860CanaryExtended, extendedSession, { "Extended Character" });
 
 	const auto lease = store.claimByIp(testIp);
 	ASSERT_TRUE(lease);
 	EXPECT_EQ(2, lease->candidateIds.size());
-	EXPECT_TRUE(store.consumeIfMatches(*lease, oldSession, "Old Character", 1100));
+	EXPECT_TRUE(store.consumeIfMatches(*lease, extendedSession, "Extended Character", 860));
+}
+
+TEST(SessionHintTest, ConflictingCurrentAnd1100HintsDoNotSelectTransport) {
+	auto &store = ProtocolSessionHintStore::getInstance();
+	constexpr uint32_t testIp = 0x0A000103;
+
+	store.registerHint(testIp, ProtocolProfileId::Current, "modern-account\nmodern-password", { "Modern Character" });
+	store.registerHint(testIp, ProtocolProfileId::Tibia1100, "old-account\nold-password", { "Old Character" });
+
+	const auto lease = store.claimByIp(testIp);
+	EXPECT_FALSE(lease);
 }
 
 TEST(SessionHintTest, Conflicting860AndModernHintsDoNotSelectLegacy) {

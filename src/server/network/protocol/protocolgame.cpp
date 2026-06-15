@@ -1120,9 +1120,15 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 				return;
 			}
 
+			const bool matchedOldProtocol = matchedProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
+			if (!ProtocolProfileRegistry::isProfileAllowed(matchedProfile->id) || (matchedOldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL))) {
+				disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
+				return;
+			}
+
 			protocolProfile = matchedProfile;
 			gameLoginLayout = matchedLayout;
-			oldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
+			oldProtocol = matchedOldProtocol;
 		} else if (!sessionHintLease->behavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
 			disconnect();
 			return;
@@ -1145,10 +1151,7 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			const auto formatClientVersion = [](uint32_t clientVersion) {
 				return fmt::format("{}.{:02d}", clientVersion / 100, clientVersion % 100);
 			};
-			disconnectClient(fmt::format(
-				"This character is already online using client version {}. Please log out from that client before switching to version {}.",
-				formatClientVersion(foundPlayer->getProtocolVersion()), formatClientVersion(getVersion())
-			));
+			disconnectClient(fmt::format("This character is already online using client version {}. Please log out from that client before switching to version {}.", formatClientVersion(foundPlayer->getProtocolVersion()), formatClientVersion(getVersion())));
 			return;
 		}
 
@@ -1865,11 +1868,13 @@ void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, Network
 		}
 
 		static constexpr uint8_t maxStackCount = 10;
+		const bool isPlayerTile = tile->getPosition() == player->getPosition();
+		const uint8_t itemStackLimit = isPlayerTile ? maxStackCount - 1 : maxStackCount;
 		const TileItemVector* items = tile->getItemList();
 		if (items) {
 			for (auto it = items->getBeginTopItem(), end = items->getEndTopItem(); it != end; ++it) {
 				AddItem(msg, *it);
-				if (++count == maxStackCount) {
+				if (++count == itemStackLimit) {
 					break;
 				}
 			}
@@ -1887,6 +1892,10 @@ void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, Network
 						continue;
 					}
 
+					if (isPlayerTile && !playerAdded && count == maxStackCount - 1) {
+						creature = player;
+					}
+
 					if (creature->getID() == player->getID()) {
 						playerAdded = true;
 					}
@@ -1901,11 +1910,12 @@ void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, Network
 				}
 			}
 
-			if (!playerAdded && tile->getPosition() == player->getPosition()) {
+			if (!playerAdded && isPlayerTile && count < maxStackCount) {
 				bool known;
 				uint32_t removedKnown;
 				checkCreatureAsKnown(player->getID(), known, removedKnown);
 				AddCreature(msg, player, known, removedKnown);
+				++count;
 			}
 		}
 
@@ -2155,6 +2165,8 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		const uint8_t rawdir = msg.getByte();
 		if (const auto direction = translateAutoWalkDirection(rawdir)) {
 			path[i] = *direction;
+		} else {
+			return;
 		}
 	}
 
@@ -9183,7 +9195,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 		for (uint8_t i = SKILL_FIRST; i <= SKILL_FISHING; ++i) {
 			auto skill = static_cast<skills_t>(i);
 			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getSkillLevel(skill), std::numeric_limits<uint8_t>::max())));
-			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getBaseSkill(skill), std::numeric_limits<uint8_t>::max())));
+			msg.addByte(static_cast<uint8_t>(std::min<uint16_t>(player->getSkillPercent(skill), 100)));
 		}
 		return;
 	}

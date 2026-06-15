@@ -43,7 +43,7 @@
 #endif
 
 namespace {
-	constexpr std::string_view getLuaRuntimeDisplayVersion() {
+	[[nodiscard]] constexpr std::string_view getLuaRuntimeDisplayVersion() {
 #if defined(LUAJIT_VERSION)
 		constexpr std::string_view version = LUAJIT_VERSION;
 		constexpr std::string_view prefix = "LuaJIT ";
@@ -131,7 +131,7 @@ int CanaryServer::run() {
 				validateDatapack();
 
 				const auto allowOldProtocol = g_configManager().getBoolean(OLD_PROTOCOL);
-				logger.info("Server protocol: {}{}", ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol), allowOldProtocol ? " allowed!" : "");
+				logger.info("Allowed client protocols: {}", ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol));
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;

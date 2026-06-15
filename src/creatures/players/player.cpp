@@ -11961,7 +11961,7 @@ void Player::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool is
 			bed->wakeUp(static_self_cast<Player>());
 		}
 
-		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
+		auto version = client && client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
 		const auto* protocolProfile = client ? client->getProtocolProfile() : nullptr;
 		if (protocolProfile
 		    && (protocolProfile->assetSignatures.dat != 0 || protocolProfile->assetSignatures.spr != 0 || protocolProfile->assetSignatures.pic != 0)) {

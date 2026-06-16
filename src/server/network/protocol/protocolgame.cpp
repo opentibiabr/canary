@@ -2197,19 +2197,15 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 		return;
 	}
 
-	std::vector<Direction> path;
-	path.reserve(numdirs);
+	std::vector<Direction> path(numdirs, DIRECTION_NORTH);
 	for (uint8_t i = 0; i < numdirs; ++i) {
 		const uint8_t rawdir = msg.getByte();
 		if (const auto direction = translateAutoWalkDirection(rawdir)) {
-			path.push_back(*direction);
+			// Creature walking consumes directions from the back of the list.
+			path[static_cast<size_t>(numdirs - i - 1)] = *direction;
 		} else {
 			return;
 		}
-	}
-
-	if (path.empty()) {
-		return;
 	}
 
 	g_game().playerAutoWalk(player->getID(), path);

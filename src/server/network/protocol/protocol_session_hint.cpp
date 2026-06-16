@@ -78,7 +78,7 @@ void ProtocolSessionHintStore::registerHint(
 	[[maybe_unused]] auto &storedHint = hints.emplace_back(std::move(hint));
 }
 
-std::optional<ProtocolSessionHintLease> ProtocolSessionHintStore::claimByIp(uint32_t remoteIp) {
+std::optional<ProtocolSessionHintLease> ProtocolSessionHintStore::claimByIp(uint32_t remoteIp, std::optional<InitialConnectionBehavior> requiredBehavior) {
 	const auto now = std::chrono::steady_clock::now();
 	std::scoped_lock lock(mutex);
 	cleanupExpired(now);
@@ -87,6 +87,9 @@ std::optional<ProtocolSessionHintLease> ProtocolSessionHintStore::claimByIp(uint
 	std::vector<ProtocolSessionHintId> candidates;
 	for (const auto &hint : hints) {
 		if (hint.remoteIp != remoteIp) {
+			continue;
+		}
+		if (requiredBehavior && !requiredBehavior->hasSameWireBehavior(hint.behavior)) {
 			continue;
 		}
 
@@ -170,13 +173,17 @@ std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProf
 	return std::nullopt;
 }
 
-void ProtocolSessionHintStore::clearReusableHintsByIp(uint32_t remoteIp) {
+void ProtocolSessionHintStore::clearReusableHintsByIp(uint32_t remoteIp, std::optional<InitialConnectionBehavior> requiredBehavior) {
 	const auto now = std::chrono::steady_clock::now();
 	std::scoped_lock lock(mutex);
 	cleanupExpired(now);
 
-	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [remoteIp](const Hint &hint) {
-		return hint.remoteIp == remoteIp && hint.reusable;
+	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [remoteIp, &requiredBehavior](const Hint &hint) {
+		if (hint.remoteIp != remoteIp || !hint.reusable) {
+			return false;
+		}
+
+		return !requiredBehavior || requiredBehavior->hasSameWireBehavior(hint.behavior);
 	});
 }
 

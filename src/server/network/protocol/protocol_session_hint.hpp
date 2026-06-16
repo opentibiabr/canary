@@ -46,7 +46,7 @@ public:
 		const std::vector<std::string> &characterNames
 	);
 
-	[[nodiscard]] std::optional<ProtocolSessionHintLease> claimByIp(uint32_t remoteIp);
+	[[nodiscard]] std::optional<ProtocolSessionHintLease> claimByIp(uint32_t remoteIp, std::optional<InitialConnectionBehavior> requiredBehavior = std::nullopt);
 	[[nodiscard]] bool consumeIfMatches(
 		const ProtocolSessionHintLease &lease,
 		const std::string &accountSession,
@@ -59,7 +59,7 @@ public:
 		const std::string &characterName,
 		uint16_t clientVersion
 	);
-	void clearReusableHintsByIp(uint32_t remoteIp);
+	void clearReusableHintsByIp(uint32_t remoteIp, std::optional<InitialConnectionBehavior> requiredBehavior = std::nullopt);
 
 private:
 	struct Hint {

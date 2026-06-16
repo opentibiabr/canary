@@ -78,6 +78,11 @@ public:
 	void send(const OutputMessage_ptr &outputMessage);
 
 	uint32_t getIP();
+	[[nodiscard]] uint16_t getLocalPort() const {
+		std::error_code error;
+		const auto endpoint = socket.local_endpoint(error);
+		return error ? 0 : endpoint.port();
+	}
 
 	void setTransportCodec(const TransportCodec &codec, InitialTransportState state = InitialTransportState::ResolvedModernDefault);
 	void setInitialTransportState(InitialTransportState state);

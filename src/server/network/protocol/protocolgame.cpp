@@ -47,6 +47,7 @@
 #include "lua/modules/modules.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/transport_codec.hpp"
 #include "utils/tools.hpp"
 #include "creatures/players/vocations/vocation.hpp"
@@ -74,6 +75,18 @@
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
 	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+
+	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
+		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
+			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
+		}
+
+		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy860GamePort()) {
+			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+		}
+
+		return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Current);
+	}
 
 	[[nodiscard]] size_t getUnreadBytes(const NetworkMessage &msg) {
 		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
@@ -506,18 +519,33 @@ ProtocolGame::ProtocolGame(const Connection_ptr &initConnection) :
 }
 
 void ProtocolGame::onConnectionAccepted() {
-	initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
+	const auto* portPinnedProfile = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Current);
 	sessionHintLease.reset();
 	auto transportState = InitialTransportState::ResolvedModernDefault;
 
 	if (const auto connection = getConnection()) {
-		if (auto lease = ProtocolSessionHintStore::getInstance().claimByIp(connection->getIP())) {
-			initialConnectionBehavior = lease->behavior;
-			sessionHintLease = std::move(*lease);
-			transportState = InitialTransportState::ResolvedFromHint;
+		portPinnedProfile = getPortPinnedProfile(connection->getLocalPort());
+		if (!portPinnedProfile || !ProtocolProfileRegistry::isProfileAllowed(portPinnedProfile->id)) {
+			connection->setInitialTransportState(InitialTransportState::Rejected);
+			connection->close(FORCE_CLOSE);
+			return;
 		}
 
-		protocolProfile = ProtocolProfileRegistry::getProfile(initialConnectionBehavior.expectedProfile);
+		initialConnectionBehavior = portPinnedProfile->initialBehavior;
+		if (portPinnedProfile->id == ProtocolProfileId::Current) {
+			transportState = InitialTransportState::ResolvedModernDefault;
+		} else {
+			transportState = InitialTransportState::ResolvedFromPrelude;
+		}
+
+		if (portPinnedProfile->id == ProtocolProfileId::Cipsoft860Vanilla) {
+			if (auto lease = ProtocolSessionHintStore::getInstance().claimByIp(connection->getIP(), initialConnectionBehavior)) {
+				sessionHintLease = std::move(*lease);
+				transportState = InitialTransportState::ResolvedFromHint;
+			}
+		}
+
+		protocolProfile = portPinnedProfile;
 		if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
 			connection->setInitialTransportState(InitialTransportState::Rejected);
 			connection->close(FORCE_CLOSE);
@@ -533,10 +561,9 @@ void ProtocolGame::onConnectionAccepted() {
 }
 
 void ProtocolGame::clearReusableSessionHints() {
-	// Legacy clients that return to the character list reuse the same game-profile hint
-	// on the next world connection. Clearing it after a successful login/logout cycle
-	// breaks same-client relog because that follow-up world socket does not hit login
-	// again before the transport/profile must be chosen.
+	// Legacy 8.6 clients can return to the character list and reconnect to the world
+	// without hitting ProtocolLogin again. Their reusable hint must survive a normal
+	// login/logout cycle so the next 8.6 world socket can resolve the exact profile.
 	if (loggedIn) {
 		return;
 	}
@@ -545,7 +572,7 @@ void ProtocolGame::clearReusableSessionHints() {
 		return;
 	}
 
-	ProtocolSessionHintStore::getInstance().clearReusableHintsByIp(getIP());
+	ProtocolSessionHintStore::getInstance().clearReusableHintsByIp(getIP(), initialConnectionBehavior);
 }
 
 bool ProtocolGame::isSessionEnding() const {
@@ -7557,7 +7584,11 @@ void ProtocolGame::sendChangeSpeed(const std::shared_ptr<Creature> &creature, ui
 	if (!oldProtocol || version >= 1059) {
 		msg.add<uint16_t>(creature->getBaseSpeed());
 	}
-	msg.add<uint16_t>(oldProtocol ? speed * 2 : speed);
+	const bool usesLegacyDoubledSpeed = oldProtocol && !hasProtocolFeature(protocolProfile, ProtocolFeature::LoginSpeedFormula);
+	const auto clientSpeed = usesLegacyDoubledSpeed
+		? static_cast<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), static_cast<uint32_t>(speed) * 2))
+		: speed;
+	msg.add<uint16_t>(clientSpeed);
 	writeToOutputBuffer(msg);
 }
 

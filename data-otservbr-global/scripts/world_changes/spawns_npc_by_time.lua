@@ -32,6 +32,12 @@ local npcSpawns = {
 		position = Position(32404, 32493, 6),
 	},
 	{
+		name = "Innkeeper Alphonse",
+		spawnPeriod = LIGHT_STATE_SUNSET,
+		despawnPeriod = LIGHT_STATE_SUNRISE,
+		position = Position(32417, 32501, 7),
+	},
+	{
 		name = "Wes the Blacksmith (Day)",
 		spawnPeriod = LIGHT_STATE_SUNRISE,
 		despawnPeriod = LIGHT_STATE_SUNSET,

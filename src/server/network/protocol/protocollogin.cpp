@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/protocol_session_hint.hpp"
 #include "server/network/protocol/transport_codec.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -120,7 +121,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		if (worldIp == 0) {
 			g_logger().warn("Legacy character list cannot encode configured IP '{}'; old clients require a numeric IPv4 address.", configuredWorldIp);
 		}
-		const auto worldPort = static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT));
+		const auto worldPort = protocolProfile ? protocol_port_utils::getGamePortForProfile(*protocolProfile) : protocol_port_utils::getModernGamePort();
 		std::vector<std::string> characterNames;
 		characterNames.reserve(size);
 		for (const auto &[name, deletion] : players) {
@@ -149,7 +150,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addString(g_configManager().getString(SERVER_NAME));
 	output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
+	output->add<uint16_t>(protocolProfile ? protocol_port_utils::getGamePortForProfile(*protocolProfile) : protocol_port_utils::getModernGamePort());
 
 	output->addByte(0);
 

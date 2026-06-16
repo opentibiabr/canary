@@ -31,6 +31,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/protocol_profile.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
@@ -60,6 +61,29 @@ namespace {
 #else
 		return "Lua";
 #endif
+	}
+
+	[[nodiscard]] std::string formatClientVersion(uint16_t version) {
+		return fmt::format("{}.{:02d}", version / 100, version % 100);
+	}
+
+	[[nodiscard]] std::string getClientProtocolPortSummary(bool includeOldProtocolProfiles) {
+		std::vector<std::string> entries;
+		entries.emplace_back(fmt::format("{} -> {}", formatClientVersion(ProtocolProfileRegistry::getCurrentProfile().clientVersion), protocol_port_utils::getModernGamePort()));
+
+		if (includeOldProtocolProfiles) {
+			if (const auto* tibia1100 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
+			    tibia1100 && ProtocolProfileRegistry::isProfileAllowed(tibia1100->id)) {
+				entries.emplace_back(fmt::format("11.00 -> {}", protocol_port_utils::getLegacy1100GamePort()));
+			}
+
+			if (const auto* cipsoft860 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+			    cipsoft860 && ProtocolProfileRegistry::isProfileAllowed(cipsoft860->id)) {
+				entries.emplace_back(fmt::format("8.60 -> {}", protocol_port_utils::getLegacy860GamePort()));
+			}
+		}
+
+		return fmt::format("login {} | world {}", g_configManager().getNumber(LOGIN_PORT), fmt::join(entries, ", "));
 	}
 }
 
@@ -131,7 +155,11 @@ int CanaryServer::run() {
 				validateDatapack();
 
 				const auto allowOldProtocol = g_configManager().getBoolean(OLD_PROTOCOL);
-				logger.info("Allowed client protocols: {}", ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol));
+				logger.info(
+					"Allowed client protocols: {} ({})",
+					ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol),
+					getClientProtocolPortSummary(allowOldProtocol)
+				);
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;

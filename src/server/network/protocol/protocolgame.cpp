@@ -7275,35 +7275,34 @@ void ProtocolGame::sendMarketDetail(uint16_t itemId, uint8_t tier) {
 	if (!oldProtocol) {
 		// Version 12.70 new skills
 		if (it.abilities) {
-			std::ostringstream string;
 			if (it.abilities->magicShieldCapacityFlat > 0) {
-				string.clear();
-				string << fmt::format("{:+} and {}%", it.abilities->magicShieldCapacityFlat, it.abilities->magicShieldCapacityPercent);
-				msg.addString(string.str());
+				msg.addString(fmt::format(
+					"{:+} and {}%",
+					it.abilities->magicShieldCapacityFlat,
+					it.abilities->magicShieldCapacityPercent
+				));
 			} else {
 				msg.add<uint16_t>(0x00);
 			}
 
 			if (it.abilities->cleavePercent > 0) {
-				string.clear();
-				string << it.abilities->cleavePercent << "%";
-				msg.addString(string.str());
+				msg.addString(fmt::format("{}%", it.abilities->cleavePercent));
 			} else {
 				msg.add<uint16_t>(0x00);
 			}
 
 			if (it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE] > 0) {
-				string.clear();
-				string << it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE];
-				msg.addString(string.str());
+				msg.addString(std::to_string(it.abilities->reflectFlat[COMBAT_PHYSICALDAMAGE]));
 			} else {
 				msg.add<uint16_t>(0x00);
 			}
 
 			if (it.abilities->perfectShotDamage > 0) {
-				string.clear();
-				string << fmt::format("{:+} at range {}", it.abilities->perfectShotDamage, static_cast<unsigned>(it.abilities->perfectShotRange));
-				msg.addString(string.str());
+				msg.addString(fmt::format(
+					"{:+} at range {}",
+					it.abilities->perfectShotDamage,
+					static_cast<unsigned>(it.abilities->perfectShotRange)
+				));
 			} else {
 				msg.add<uint16_t>(0x00);
 			}

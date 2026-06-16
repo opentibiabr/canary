@@ -4179,7 +4179,7 @@ void ProtocolGame::sendCreatureSquare(const std::shared_ptr<Creature> &creature,
 	}
 
 	NetworkMessage msg;
-	if (oldProtocol) {
+	if (isCipsoft860Profile(protocolProfile)) {
 		msg.addByte(0x86);
 		msg.add<uint32_t>(creature->getID());
 		msg.addByte(color);

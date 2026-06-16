@@ -533,6 +533,14 @@ void ProtocolGame::onConnectionAccepted() {
 }
 
 void ProtocolGame::clearReusableSessionHints() {
+	// Legacy clients that return to the character list reuse the same game-profile hint
+	// on the next world connection. Clearing it after a successful login/logout cycle
+	// breaks same-client relog because that follow-up world socket does not hit login
+	// again before the transport/profile must be chosen.
+	if (loggedIn) {
+		return;
+	}
+
 	if (initialConnectionBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
 		return;
 	}

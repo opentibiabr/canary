@@ -196,7 +196,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = currentInitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets),
+		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::CustomMonkPackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow),
 		.name = "current",
 		.supportLabel = "",
 	};
@@ -209,7 +209,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = tibia1100InitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow),
 		.name = "tibia1100",
 		.supportLabel = "10x",
 	};

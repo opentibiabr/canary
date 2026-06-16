@@ -282,6 +282,7 @@ private:
 
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction = false) const;
+	void addTibia1100ImbuementInfo(NetworkMessage &msg, uint16_t imbuementID) const;
 	void addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction = false) const;
 
 	// Send functions
@@ -300,6 +301,7 @@ private:
 	void sendFYIBox(const std::string &message);
 
 	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item = nullptr);
+	void openTibia1100ImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 

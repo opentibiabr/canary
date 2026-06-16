@@ -3821,10 +3821,18 @@ void ProtocolGame::parseQuestLine(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseMarketLeave() {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	g_game().playerLeaveMarket(player->getID());
 }
 
 void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	uint16_t browseId = oldProtocol ? msg.get<uint16_t>() : static_cast<uint16_t>(msg.getByte());
 
 	if ((oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS_OLD) || (!oldProtocol && browseId == MARKETREQUEST_OWN_OFFERS)) {
@@ -3845,6 +3853,10 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	uint8_t type = msg.getByte();
 	auto itemId = msg.get<uint16_t>();
 	uint8_t itemTier = 0;
@@ -3861,6 +3873,10 @@ void ProtocolGame::parseMarketCreateOffer(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseMarketCancelOffer(NetworkMessage &msg) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	auto timestamp = msg.get<uint32_t>();
 	auto counter = msg.get<uint16_t>();
 	if (counter > 0) {
@@ -3871,6 +3887,10 @@ void ProtocolGame::parseMarketCancelOffer(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseMarketAcceptOffer(NetworkMessage &msg) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	auto timestamp = msg.get<uint32_t>();
 	auto counter = msg.get<uint16_t>();
 	auto amount = msg.get<uint16_t>();
@@ -5913,8 +5933,14 @@ void ProtocolGame::sendShop(const std::shared_ptr<Npc> &npc) {
 	}
 
 	const auto &shoplist = npc->getShopItemVector(player->getGUID());
-	uint16_t itemsToSend = std::min<size_t>(shoplist.size(), std::numeric_limits<uint16_t>::max());
-	msg.add<uint16_t>(itemsToSend);
+	const bool useCipsoft860ShopLayout = isCipsoft860Profile(protocolProfile);
+	const auto shopItemLimit = useCipsoft860ShopLayout ? std::numeric_limits<uint8_t>::max() : std::numeric_limits<uint16_t>::max();
+	uint16_t itemsToSend = static_cast<uint16_t>(std::min<size_t>(shoplist.size(), shopItemLimit));
+	if (useCipsoft860ShopLayout) {
+		msg.addByte(static_cast<uint8_t>(itemsToSend));
+	} else {
+		msg.add<uint16_t>(itemsToSend);
+	}
 
 	// Initialize before the loop to avoid database overload on each iteration
 	auto talkactionHidden = player->kv()->get("npc-shop-hidden-sell-item");
@@ -6098,6 +6124,15 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 }
 
 void ProtocolGame::sendMarketEnter(uint32_t depotId) {
+	if (!player) {
+		return;
+	}
+
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		player->sendCancelMessage("The market is not available on this client version.");
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xF6);
 
@@ -6203,6 +6238,10 @@ void ProtocolGame::updateCoinBalance() {
 }
 
 void ProtocolGame::sendMarketLeave() {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::MarketPackets)) {
+		return;
+	}
+
 	NetworkMessage msg;
 	msg.addByte(0xF7);
 	writeToOutputBuffer(msg);
@@ -9419,6 +9458,34 @@ void ProtocolGame::addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, b
 	msg.add<uint32_t>(baseImbuement->price);
 }
 
+void ProtocolGame::addTibia1100ImbuementInfo(NetworkMessage &msg, uint16_t imbuementID) const {
+	Imbuement* imbuement = g_imbuements().getImbuement(imbuementID);
+	const BaseImbuement* baseImbuement = g_imbuements().getBaseByID(imbuement->getBaseID());
+	const CategoryImbuement* categoryImbuement = g_imbuements().getCategoryByID(imbuement->getCategory());
+
+	msg.add<uint32_t>(imbuementID);
+	msg.addString(fmt::format("{} {}", baseImbuement->name, imbuement->getName()));
+	msg.addString(imbuement->getDescription());
+	msg.addString(categoryImbuement->name + imbuement->getSubGroup());
+
+	msg.add<uint16_t>(imbuement->getIconID());
+	msg.add<uint32_t>(baseImbuement->duration);
+	msg.addByte(imbuement->isPremium() ? 0x01 : 0x00);
+
+	const auto &items = imbuement->getItems();
+	msg.addByte(items.size());
+	for (const auto &[id, amount] : items) {
+		const ItemType &it = Item::items[id];
+		msg.add<uint16_t>(id);
+		msg.addString(it.name);
+		msg.add<uint16_t>(amount);
+	}
+
+	msg.add<uint32_t>(baseImbuement->price);
+	msg.addByte(baseImbuement->percent);
+	msg.add<uint32_t>(baseImbuement->protectionPrice);
+}
+
 void ProtocolGame::addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction /* = false */) const {
 	auto imbuements = g_imbuements().getImbuements(player, item, isScrollAction);
 	msg.add<uint16_t>(imbuements.size());
@@ -9447,6 +9514,21 @@ void ProtocolGame::addAvailableImbuementsInfo(NetworkMessage &msg, const std::sh
 }
 
 void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::ImbuementWindow)) {
+		player->sendCancelMessage("Imbuements are not available on this client version.");
+		return;
+	}
+
+	if (isTibia1100Profile(protocolProfile)) {
+		if (action != ImbuementAction::PickItem || !item) {
+			player->sendCancelMessage("Select an imbuable item to open the imbuement window.");
+			return;
+		}
+
+		openTibia1100ImbuementWindow(item);
+		return;
+	}
+
 	if (!item && action == ImbuementAction::PickItem) {
 		return;
 	}
@@ -9502,6 +9584,58 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 
 	sendResourceBalance(RESOURCE_BANK, player->getBankBalance());
 	sendResourceBalance(RESOURCE_INVENTORY_MONEY, player->getMoney());
+
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::openTibia1100ImbuementWindow(const std::shared_ptr<Item> &item) {
+	if (!item || item->isRemoved()) {
+		return;
+	}
+
+	player->setImbuingItem(item);
+
+	NetworkMessage msg;
+	msg.addByte(0xEB);
+	msg.add<uint16_t>(item->getID());
+	msg.addByte(item->getImbuementSlot());
+
+	for (uint8_t slotID = 0; slotID < item->getImbuementSlot(); slotID++) {
+		ImbuementInfo imbuementInfo;
+		if (!item->getImbuementInfo(slotID, &imbuementInfo)) {
+			msg.addByte(0x00);
+			continue;
+		}
+
+		msg.addByte(0x01);
+		addTibia1100ImbuementInfo(msg, imbuementInfo.imbuement->getID());
+		msg.add<uint32_t>(imbuementInfo.duration);
+		msg.add<uint32_t>(g_imbuements().getBaseByID(imbuementInfo.imbuement->getBaseID())->removeCost);
+	}
+
+	phmap::flat_hash_map<uint16_t, uint16_t> neededItems;
+	const auto imbuements = g_imbuements().getImbuements(player, item);
+	msg.add<uint16_t>(imbuements.size());
+	for (const Imbuement* imbuement : imbuements) {
+		addTibia1100ImbuementInfo(msg, imbuement->getID());
+
+		for (const auto &[id, _] : imbuement->getItems()) {
+			if (neededItems.count(id) != 0) {
+				continue;
+			}
+
+			const uint32_t invCount = player->getItemTypeCount(id);
+			const uint32_t stashCount = player->getStashItemCount(id);
+			const uint32_t total = invCount + stashCount;
+			neededItems[id] = static_cast<uint16_t>(std::min<uint32_t>(total, std::numeric_limits<uint16_t>::max()));
+		}
+	}
+
+	msg.add<uint32_t>(neededItems.size());
+	for (const auto &[id, amount] : neededItems) {
+		msg.add<uint16_t>(id);
+		msg.add<uint16_t>(amount);
+	}
 
 	writeToOutputBuffer(msg);
 }
@@ -11249,6 +11383,10 @@ void ProtocolGame::sendHousesInfo() {
 }
 
 void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CustomMonkPackets)) {
+		return;
+	}
+
 	NetworkMessage msg;
 
 	msg.addByte(0xC1); // Custom opcode for monk data

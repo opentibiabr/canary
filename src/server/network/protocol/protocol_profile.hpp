@@ -62,6 +62,9 @@ enum class ProtocolFeature : uint64_t {
 	LoginSpeedFormula = 1ULL << 7,
 	ModernLoginSideSystems = 1ULL << 8,
 	ResourceBalancePackets = 1ULL << 9,
+	CustomMonkPackets = 1ULL << 10,
+	MarketPackets = 1ULL << 11,
+	ImbuementWindow = 1ULL << 12,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

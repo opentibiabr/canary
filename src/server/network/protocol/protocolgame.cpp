@@ -411,6 +411,37 @@ namespace {
 		return profile && profile->hasFeature(feature);
 	}
 
+	[[nodiscard]] std::string_view getProtocolSupportLabel(const ProtocolProfile* profile) {
+		if (isCipsoft860Profile(profile)) {
+			return "8.60";
+		}
+		if (isTibia1100Profile(profile)) {
+			return "11.00";
+		}
+		if (profile && !profile->supportLabel.empty()) {
+			return profile->supportLabel;
+		}
+		return "this client version";
+	}
+
+	[[nodiscard]] bool shouldBlockOutgoingOpcodeForProfile(const ProtocolProfile* profile, uint8_t opcode) {
+		switch (opcode) {
+			case 0xB0:
+				return !hasProtocolFeature(profile, ProtocolFeature::MemorialPackets);
+			default:
+				return false;
+		}
+	}
+
+	[[nodiscard]] std::string getUnsupportedOpcodeMessage(const ProtocolProfile* profile, uint8_t opcode) {
+		switch (opcode) {
+			case 0xB0:
+				return fmt::format("The memorial window is not available in client {}.", getProtocolSupportLabel(profile));
+			default:
+				return "This feature is not available in your client version.";
+		}
+	}
+
 	[[nodiscard]] bool usesLegacyInnerLength(const ProtocolProfile* profile) {
 		return profile
 			&& ProtocolProfileRegistry::getTransportProfile(profile->initialBehavior.transport).encryptedPayload == EncryptedPayloadLayout::LegacyInnerLength;
@@ -1360,6 +1391,22 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 }
 
 void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
+	if (msg.getLength() > 0) {
+		const auto opcode = msg.getBuffer()[NetworkMessage::INITIAL_BUFFER_POSITION];
+		if (shouldBlockOutgoingOpcodeForProfile(protocolProfile, opcode)) {
+			g_logger().info(
+				"[{}] Dropped unsupported packet 0x{:02X} for profile '{}'",
+				__FUNCTION__,
+				opcode,
+				protocolProfile ? protocolProfile->name : "unknown"
+			);
+			if (player) {
+				player->sendTextMessage(MESSAGE_FAILURE, getUnsupportedOpcodeMessage(protocolProfile, opcode));
+			}
+			return;
+		}
+	}
+
 	auto writeMessage = [self = getThis(), msg]() mutable {
 		self->getOutputBuffer(msg.getLength())->append(msg);
 		if (self->m_isLivestreamBroadcaster && self->player && !self->m_isLivestreamViewer) {

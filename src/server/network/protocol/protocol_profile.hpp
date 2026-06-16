@@ -65,6 +65,7 @@ enum class ProtocolFeature : uint64_t {
 	CustomMonkPackets = 1ULL << 10,
 	MarketPackets = 1ULL << 11,
 	ImbuementWindow = 1ULL << 12,
+	MemorialPackets = 1ULL << 13,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

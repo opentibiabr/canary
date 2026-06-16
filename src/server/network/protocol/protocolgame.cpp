@@ -2191,11 +2191,11 @@ void ProtocolGame::parseAutoWalk(NetworkMessage &msg) {
 	}
 
 	std::vector<Direction> path;
-	path.resize(numdirs, DIRECTION_NORTH);
-	for (size_t i = numdirs; --i < numdirs;) {
+	path.reserve(numdirs);
+	for (uint8_t i = 0; i < numdirs; ++i) {
 		const uint8_t rawdir = msg.getByte();
 		if (const auto direction = translateAutoWalkDirection(rawdir)) {
-			path[i] = *direction;
+			path.push_back(*direction);
 		} else {
 			return;
 		}

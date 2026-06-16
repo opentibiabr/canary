@@ -5780,7 +5780,7 @@ void ProtocolGame::sendIcons(const std::unordered_set<PlayerIcon> &iconSet, cons
 }
 
 void ProtocolGame::sendIconBakragore(const IconBakragore icon) {
-	if (shouldSuppressPreLoginPacket()) {
+	if (oldProtocol || shouldSuppressPreLoginPacket()) {
 		return;
 	}
 

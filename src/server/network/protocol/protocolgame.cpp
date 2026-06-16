@@ -540,6 +540,10 @@ void ProtocolGame::clearReusableSessionHints() {
 	ProtocolSessionHintStore::getInstance().clearReusableHintsByIp(getIP());
 }
 
+bool ProtocolGame::isSessionEnding() const {
+	return loggedIn && !acceptPackets;
+}
+
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const {
 	const ItemType &it = Item::items[id];
 
@@ -997,6 +1001,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 	}
 
+	acceptPackets = false;
 	clearReusableSessionHints();
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
 
@@ -1183,7 +1188,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 			return;
 		}
 
-		foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
+		if (!foundPlayer->client->isSessionEnding()) {
+			foundPlayer->client->disconnectClient("You are already connected through another client. Please use only one client at a time!");
+		}
 	}
 
 	if (gameLoginLayout->hasChallengeResponse) {

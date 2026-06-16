@@ -135,6 +135,7 @@ private:
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(NetworkMessage &msg);
 	[[nodiscard]] bool shouldSuppressPreLoginPacket() const;
+	[[nodiscard]] bool isSessionEnding() const;
 	void clearReusableSessionHints();
 
 	void release() override;

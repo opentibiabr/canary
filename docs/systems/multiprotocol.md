@@ -3,7 +3,7 @@
 Canary supports multiple Tibia client protocol contracts through runtime
 profiles. The goal is to keep the current client behavior intact while allowing
 older or extended clients to connect without compile-time `CLIENT_VERSION`
-switches, per-version ports, or scattered raw version checks.
+switches or scattered raw version checks.
 
 The profile model separates three concerns:
 
@@ -54,7 +54,18 @@ do not always evolve together.
 
 ## Detection flow
 
-There is no separate port per client version.
+There is one account login port. World login can use separate configured game
+ports for the current profile, 11.00, and 8.60 because the first game-socket
+transport cannot always be selected safely without the account-login hint.
+When `legacy1100GameProtocolPort` or `legacy860GameProtocolPort` is `0`, Canary
+auto-selects the next available ports after `gameProtocolPort` while avoiding
+the login and status ports. Docker quickstart uses explicit legacy ports so the
+host mappings stay stable:
+
+- `CANARY_GAME_PORT=7172`
+- `CANARY_STATUS_PORT=7173`
+- `CANARY_LEGACY_1100_GAME_PORT=7174`
+- `CANARY_LEGACY_860_GAME_PORT=7175`
 
 1. The account login flow resolves an `AccountLoginLayout` from the client
    version and, when needed, client asset signatures.
@@ -142,13 +153,23 @@ not have the official CipSoft private RSA key.
 - Features: old protocol compatibility, legacy payload, item mapper required,
   inline bug-report flag
 
+This profile is a classic wire-layout profile, not a promise that an
+unmodified vanilla asset set can render the modern Canary world. The supported
+8.60 deployment path uses an extended asset package whose item ids match the
+current server item ids, so map, inventory, container, trade, and shop payloads
+can keep using the same item ids as the current profile. A truly vanilla 8.60
+asset set still requires an item mapper or an explicit world-entry block before
+item-dependent packets are sent.
+
 ### Cipsoft860ExtendedAssets
 
 `ProtocolProfileId::Cipsoft860ExtendedAssets` keeps the 8.60 CipSoft wire
 layout but allows an extended asset package.
 
 - Transport and challenge match `Cipsoft860Vanilla`.
-- Item mapper is required before world enter.
+- Extended assets keep item ids aligned with the current profile; a mapper is
+  only required for deployments that intentionally use a different asset id
+  table.
 - Extended sprite files are enabled.
 
 ### Cipsoft860CanaryExtended
@@ -157,7 +178,9 @@ layout but allows an extended asset package.
 8.60 client contract.
 
 - Transport and challenge match `Cipsoft860Vanilla`.
-- Item mapper is required before world enter.
+- Extended assets keep item ids aligned with the current profile; a mapper is
+  only required for deployments that intentionally use a different asset id
+  table.
 - Extended sprite files and 16-bit magic effects are enabled.
 - Asset signatures select this profile automatically when they match a known
   Canary extended package.

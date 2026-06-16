@@ -16,9 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
-	profession = "trader",
+	profession = "normal",
 }
-npcConfig.speechBubble = SPEECHBUBBLE_TRADE
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 local itemsTable = {
 	["potions"] = {

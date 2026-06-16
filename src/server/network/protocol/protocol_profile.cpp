@@ -551,7 +551,7 @@ std::string ProtocolProfileRegistry::getAllowedClientProtocolDescription(bool in
 				return listedLabel == label;
 			});
 			if (!alreadyListed) {
-				labels.push_back(profile->supportLabel);
+				labels.emplace_back(profile->supportLabel);
 			}
 		}
 	}

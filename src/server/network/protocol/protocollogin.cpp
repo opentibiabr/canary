@@ -26,32 +26,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <array>
-	#include <charconv>
-	#include <string_view>
 #endif
-
-namespace {
-	uint32_t legacyIpStringToNumber(std::string_view ip) {
-		std::array<uint32_t, 4> octets {};
-		size_t offset = 0;
-		for (size_t index = 0; index < octets.size(); ++index) {
-			const size_t end = index + 1 == octets.size() ? ip.size() : ip.find('.', offset);
-			if (end == std::string_view::npos || end == offset) {
-				return 0;
-			}
-
-			const auto part = ip.substr(offset, end - offset);
-			const auto [ptr, ec] = std::from_chars(part.data(), part.data() + part.size(), octets[index]);
-			if (ec != std::errc {} || ptr != part.data() + part.size() || octets[index] > 255) {
-				return 0;
-			}
-
-			offset = end + 1;
-		}
-
-		return octets[0] | (octets[1] << 8) | (octets[2] << 16) | (octets[3] << 24);
-	}
-}
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();
@@ -114,7 +89,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	if (characterListLayout == AccountCharacterListLayout::LegacyCharacterList) {
 		const auto serverName = g_configManager().getString(SERVER_NAME);
 		const auto configuredWorldIp = g_configManager().getString(IP);
-		const auto worldIp = legacyIpStringToNumber(configuredWorldIp);
+		const auto worldIp = protocol_port_utils::legacyIpStringToNumber(configuredWorldIp);
 		if (worldIp == 0) {
 			g_logger().warn("Legacy character list cannot encode configured IP '{}'; old clients require a numeric IPv4 address.", configuredWorldIp);
 			disconnectClient("Legacy 8.60 clients require the server IP to be a numeric IPv4 address.");

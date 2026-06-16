@@ -85,6 +85,28 @@ namespace {
 
 		return fmt::format("login {} | world {}", g_configManager().getNumber(LOGIN_PORT), fmt::join(entries, ", "));
 	}
+
+	void warnLegacy860WorldIpConfiguration(Logger &logger, bool allowOldProtocol) {
+		if (!allowOldProtocol) {
+			return;
+		}
+
+		const auto* cipsoft860 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+		if (!cipsoft860 || !ProtocolProfileRegistry::isProfileAllowed(cipsoft860->id)) {
+			return;
+		}
+
+		const auto configuredWorldIp = g_configManager().getString(IP);
+		if (protocol_port_utils::legacyIpStringToNumber(configuredWorldIp) != 0) {
+			return;
+		}
+
+		logger.warn(
+			"Legacy 8.60 clients require a numeric IPv4 server IP, but configured ip is '{}'. "
+			"8.60 clients will be rejected before the character list is sent.",
+			configuredWorldIp
+		);
+	}
 }
 
 CanaryServer::CanaryServer(
@@ -160,6 +182,7 @@ int CanaryServer::run() {
 					ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol),
 					getClientProtocolPortSummary(allowOldProtocol)
 				);
+				warnLegacy860WorldIpConfiguration(logger, allowOldProtocol);
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;

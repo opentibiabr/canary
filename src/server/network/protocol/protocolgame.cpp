@@ -533,7 +533,7 @@ void ProtocolGame::onConnectionAccepted() {
 }
 
 void ProtocolGame::clearReusableSessionHints() {
-	if (!sessionHintLease || initialConnectionBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
+	if (initialConnectionBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
 		return;
 	}
 

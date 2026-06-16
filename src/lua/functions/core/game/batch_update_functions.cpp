@@ -14,8 +14,12 @@
 #include "creatures/players/player.hpp"
 
 void BatchUpdateFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "BatchUpdate", "", luaBatchUpdateCreate);
-	Lua::registerMethod(L, "BatchUpdate", "delete", Lua::luaGarbageCollection);
+	Lua::registerSharedClass<BatchUpdate>(L, "", luaBatchUpdateCreate);
+	/***
+	 * @function BatchUpdate.delete
+	 * @return nil
+	 */
+	Lua::registerMethod(L, "BatchUpdate", "delete", Lua::luaSharedPtrGarbageCollection<BatchUpdate>);
 	Lua::registerMethod(L, "BatchUpdate", "add", luaBatchUpdateAdd);
 }
 
@@ -28,8 +32,7 @@ int BatchUpdateFunctions::luaBatchUpdateCreate(lua_State* L) {
 		return 1;
 	}
 
-	Lua::pushUserdata<BatchUpdate>(L, std::make_shared<BatchUpdate>(playerActor));
-	Lua::setMetatable(L, -1, "BatchUpdate");
+	Lua::pushSharedUserdata<BatchUpdate>(L, std::make_shared<BatchUpdate>(playerActor));
 	return 1;
 }
 

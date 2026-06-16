@@ -7909,7 +7909,7 @@
       {
         "name": "getZones",
         "params": [],
-        "return": "nil",
+        "return": "table|nil",
         "source": "src/lua/functions/map/position_functions.cpp"
       },
       {
@@ -9521,26 +9521,8 @@
     ]
   },
   "classOverloads": {
-    "Action": [
-      "fun(): Action"
-    ],
-    "Combat": [
-      "fun(): Combat"
-    ],
-    "Condition": [
-      "fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?"
-    ],
-    "CreatureEvent": [
-      "fun(eventName: string): CreatureEvent"
-    ],
-    "GlobalEvent": [
-      "fun(name: string): GlobalEvent"
-    ],
     "MoveEvent": [
       "fun(): MoveEvent"
-    ],
-    "NetworkMessage": [
-      "fun(): NetworkMessage"
     ],
     "NpcType": [
       "fun(name: string): NpcType"
@@ -9554,15 +9536,6 @@
       "fun(): Position",
       "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
       "fun(position: Position): Position"
-    ],
-    "Spell": [
-      "fun(nameOrTypeOrId: string|integer): Spell?"
-    ],
-    "TalkAction": [
-      "fun(...: string): TalkAction"
-    ],
-    "Weapon": [
-      "fun(type: integer): Weapon?"
     ]
   },
   "globals": []

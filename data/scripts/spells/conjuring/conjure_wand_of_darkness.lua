@@ -18,5 +18,5 @@ spell:isPremium(true)
 spell:isSelfTarget(true)
 spell:isAggressive(false)
 spell:vocation("sorcerer;true", "master sorcerer;true")
-spell:needLearn(false)
+
 spell:register()

@@ -36,6 +36,7 @@
 #include <functional>
 #include <list>
 #include <map>
+#include <memory>
 #include <unordered_map>
 #include <unordered_set>
 #include <queue>
@@ -57,6 +58,7 @@
 #include <compare>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <iostream>
 
 // --------------------

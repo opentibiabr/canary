@@ -91,6 +91,202 @@ namespace {
 }
 
 namespace InternalGame {
+	constexpr uint64_t TELEPORT_SPAM_WINDOW_MS = 1000;
+	constexpr uint16_t TELEPORT_SPAM_LIMIT = 10;
+	constexpr uint64_t TELEPORT_SPAM_BLOCK_MS = 1000;
+	constexpr uint64_t TELEPORT_SUSTAINED_WINDOW_MS = 10000;
+	constexpr uint16_t TELEPORT_SUSTAINED_LIMIT = 30;
+	constexpr uint64_t TELEPORT_SUSTAINED_BLOCK_MS = 5000;
+	constexpr uint64_t TELEPORT_GUARD_STATE_TTL_MS = 60000;
+	constexpr uint64_t TELEPORT_LOG_INITIAL_DELAY_MS = 1000;
+	constexpr uint64_t TELEPORT_LOG_MAX_DELAY_MS = 60000;
+	constexpr size_t TELEPORT_MAX_TRACKED_THINGS = 4096;
+	constexpr uint64_t TELEPORT_CREATURE_KEY_TAG = 0x1000000000000000ULL;
+	constexpr uint64_t TELEPORT_ITEM_KEY_TAG = 0x2000000000000000ULL;
+	constexpr uint64_t TELEPORT_THING_KEY_TAG = 0x3000000000000000ULL;
+
+	[[nodiscard]] inline std::unordered_set<const Thing*> &teleportStack() {
+		static thread_local std::unordered_set<const Thing*> stack;
+		return stack;
+	}
+
+	inline bool tryInsertTeleportStack(const Thing* thing) {
+		return teleportStack().insert(thing).second;
+	}
+
+	inline bool eraseTeleportStack(const Thing* thing) {
+		return teleportStack().erase(thing) > 0;
+	}
+
+	struct TeleportStackCleaner {
+		void operator()(const Thing* thing) const {
+			if (!eraseTeleportStack(thing)) {
+				g_logger().error("[{}] Teleport stack cleanup failed", __FUNCTION__);
+			}
+		}
+	};
+
+	enum class TeleportGuardReason : uint8_t {
+		Recursion,
+		RateLimit,
+	};
+
+	struct TeleportGuardState {
+		uint32_t blockedEvents = 0;
+		uint32_t suppressedLogs = 0;
+		uint64_t nextLogMs = 0;
+		uint64_t logDelayMs = TELEPORT_LOG_INITIAL_DELAY_MS;
+		uint64_t windowStartMs = 0;
+		uint16_t windowCount = 0;
+		uint64_t sustainedWindowStartMs = 0;
+		uint16_t sustainedWindowCount = 0;
+		uint64_t blockedUntilMs = 0;
+		uint64_t lastSeenMs = 0;
+	};
+
+	struct TeleportGuardLogSnapshot {
+		bool shouldLog = false;
+		uint32_t blockedEvents = 0;
+		uint32_t suppressedLogs = 0;
+	};
+
+	static std::unordered_map<uint64_t, TeleportGuardState> teleportGuards;
+	static std::mutex teleportGuardsMutex;
+
+	[[nodiscard]] inline uint64_t pointerTeleportKey(uint64_t tag, const void* ptr) {
+		return tag ^ static_cast<uint64_t>(reinterpret_cast<uintptr_t>(ptr));
+	}
+
+	[[nodiscard]] inline uint64_t teleportGuardKey(const std::shared_ptr<Thing> &thing, const Thing* rawThing) {
+		if (const auto creature = thing->getCreature()) {
+			return TELEPORT_CREATURE_KEY_TAG | creature->getID();
+		}
+
+		if (const auto item = thing->getItem()) {
+			return pointerTeleportKey(TELEPORT_ITEM_KEY_TAG, item.get());
+		}
+
+		return pointerTeleportKey(TELEPORT_THING_KEY_TAG, rawThing);
+	}
+
+	inline void pruneTeleportGuardStates(uint64_t now) {
+		if (teleportGuards.size() <= TELEPORT_MAX_TRACKED_THINGS) {
+			return;
+		}
+
+		for (auto it = teleportGuards.begin(); it != teleportGuards.end();) {
+			if (it->second.lastSeenMs + TELEPORT_GUARD_STATE_TTL_MS <= now) {
+				it = teleportGuards.erase(it);
+			} else {
+				++it;
+			}
+		}
+
+		for (auto it = teleportGuards.begin(); teleportGuards.size() > TELEPORT_MAX_TRACKED_THINGS && it != teleportGuards.end();) {
+			it = teleportGuards.erase(it);
+		}
+	}
+
+	[[nodiscard]] inline bool shouldBlockTeleportRate(uint64_t key, uint64_t now) {
+		std::scoped_lock<std::mutex> lock(teleportGuardsMutex);
+		pruneTeleportGuardStates(now);
+
+		auto &state = teleportGuards[key];
+		state.lastSeenMs = now;
+
+		if (state.blockedUntilMs > now) {
+			return true;
+		}
+
+		bool exceededBurstLimit = false;
+		if (state.windowStartMs == 0 || state.windowStartMs + TELEPORT_SPAM_WINDOW_MS <= now) {
+			state.windowStartMs = now;
+			state.windowCount = 1;
+		} else {
+			++state.windowCount;
+			exceededBurstLimit = state.windowCount > TELEPORT_SPAM_LIMIT;
+		}
+
+		bool exceededSustainedLimit = false;
+		if (state.sustainedWindowStartMs == 0 || state.sustainedWindowStartMs + TELEPORT_SUSTAINED_WINDOW_MS <= now) {
+			state.sustainedWindowStartMs = now;
+			state.sustainedWindowCount = 1;
+		} else {
+			++state.sustainedWindowCount;
+			exceededSustainedLimit = state.sustainedWindowCount > TELEPORT_SUSTAINED_LIMIT;
+		}
+
+		if (exceededBurstLimit || exceededSustainedLimit) {
+			state.blockedUntilMs = now + (exceededSustainedLimit ? TELEPORT_SUSTAINED_BLOCK_MS : TELEPORT_SPAM_BLOCK_MS);
+			return true;
+		}
+
+		return false;
+	}
+
+	[[nodiscard]] inline TeleportGuardLogSnapshot recordTeleportGuardBlock(uint64_t key, uint64_t now) {
+		std::scoped_lock<std::mutex> lock(teleportGuardsMutex);
+		pruneTeleportGuardStates(now);
+
+		auto &state = teleportGuards[key];
+		state.lastSeenMs = now;
+		++state.blockedEvents;
+
+		if (state.nextLogMs > now) {
+			++state.suppressedLogs;
+			return {};
+		}
+
+		TeleportGuardLogSnapshot snapshot;
+		snapshot.shouldLog = true;
+		snapshot.blockedEvents = state.blockedEvents;
+		snapshot.suppressedLogs = state.suppressedLogs;
+
+		state.suppressedLogs = 0;
+		state.nextLogMs = now + state.logDelayMs;
+		state.logDelayMs = std::min<uint64_t>(state.logDelayMs * 2, TELEPORT_LOG_MAX_DELAY_MS);
+		return snapshot;
+	}
+
+	[[nodiscard]] inline const char* teleportGuardReasonName(TeleportGuardReason reason) {
+		switch (reason) {
+			case TeleportGuardReason::Recursion:
+				return "recursive";
+			case TeleportGuardReason::RateLimit:
+				return "rate-limited";
+		}
+
+		return "guarded";
+	}
+
+	inline void logTeleportGuardBlock(const std::shared_ptr<Thing> &thing, TeleportGuardReason reason, const TeleportGuardLogSnapshot &snapshot) {
+		if (!snapshot.shouldLog) {
+			return;
+		}
+
+		const char* reasonName = teleportGuardReasonName(reason);
+		if (const auto creature = thing->getCreature()) {
+			g_logger().error(
+				"[Game::internalTeleport] - Blocked {} teleport for creature {} at position {} (blocked events: {}, suppressed logs: {})",
+				reasonName, creature->getName(), creature->getPosition().toString(), snapshot.blockedEvents, snapshot.suppressedLogs
+			);
+			return;
+		}
+
+		if (const auto item = thing->getItem()) {
+			g_logger().error(
+				"[Game::internalTeleport] - Blocked {} teleport for item id {} at position {} (blocked events: {}, suppressed logs: {})",
+				reasonName, item->getID(), item->getPosition().toString(), snapshot.blockedEvents, snapshot.suppressedLogs
+			);
+			return;
+		}
+
+		g_logger().error(
+			"[Game::internalTeleport] - Blocked {} teleport for unknown thing ptr {} (blocked events: {}, suppressed logs: {})",
+			reasonName, fmt::ptr(thing.get()), snapshot.blockedEvents, snapshot.suppressedLogs
+		);
+	}
+
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
 			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
@@ -1230,14 +1426,19 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 	auto fromZones = creature->getZones();
 
 	if (tile) {
-		std::vector<int32_t> oldStackPosVector;
 		auto spectators = Spectators().find<Creature>(tile->getPosition(), true);
-		auto playersSpectators = spectators.filter<Player>();
-
-		for (const auto &spectator : playersSpectators) {
-			if (const auto &player = spectator->getPlayer()) {
-				oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
+		std::vector<Player*> playerSpectators;
+		playerSpectators.reserve(spectators.size());
+		for (const auto &spectator : spectators) {
+			if (auto* player = spectator->getPlayerRaw()) {
+				playerSpectators.emplace_back(player);
 			}
+		}
+
+		std::vector<int32_t> oldStackPosVector;
+		oldStackPosVector.reserve(playerSpectators.size());
+		for (const auto* player : playerSpectators) {
+			oldStackPosVector.push_back(player->canSeeCreature(creature) ? tile->getClientIndexOfCreature(player, creature) : -1);
 		}
 
 		tile->removeCreature(creature);
@@ -1246,10 +1447,8 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 
 		// Send to client
 		size_t i = 0;
-		for (const auto &spectator : playersSpectators) {
-			if (const auto &player = spectator->getPlayer()) {
-				player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
-			}
+		for (const auto* player : playerSpectators) {
+			player->sendRemoveTileThing(tilePosition, oldStackPosVector[i++]);
 		}
 
 		// event method
@@ -3193,6 +3392,29 @@ ReturnValue Game::internalTeleport(const std::shared_ptr<Thing> &thing, const Po
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 
+	const Thing* teleportThing = thing.get();
+	const uint64_t now = OTSYS_TIME();
+	const uint64_t teleportKey = InternalGame::teleportGuardKey(thing, teleportThing);
+	if (!InternalGame::tryInsertTeleportStack(teleportThing)) {
+		InternalGame::logTeleportGuardBlock(
+			thing,
+			InternalGame::TeleportGuardReason::Recursion,
+			InternalGame::recordTeleportGuardBlock(teleportKey, now)
+		);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
+	[[maybe_unused]] auto teleportStackGuard = std::unique_ptr<const Thing, InternalGame::TeleportStackCleaner>(teleportThing);
+
+	if (InternalGame::shouldBlockTeleportRate(teleportKey, now)) {
+		InternalGame::logTeleportGuardBlock(
+			thing,
+			InternalGame::TeleportGuardReason::RateLimit,
+			InternalGame::recordTeleportGuardBlock(teleportKey, now)
+		);
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
+
 	if (newPos == thing->getPosition()) {
 		return RETURNVALUE_CONTACTADMINISTRATOR;
 	} else if (thing->isRemoved()) {
@@ -3916,7 +4138,7 @@ void Game::playerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::vector<Direction> { direction }, false);
+	player->startAutoWalk(std::vector<Direction> { direction }, false, Creature::WalkStartPolicy::ImmediateWhenReady);
 }
 
 void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
@@ -3930,7 +4152,7 @@ void Game::forcePlayerMove(uint32_t playerId, Direction direction) {
 	player->setNextWalkActionTask(nullptr);
 	player->cancelPush();
 
-	player->startAutoWalk(std::vector<Direction> { direction }, true);
+	player->startAutoWalk(std::vector<Direction> { direction }, true, Creature::WalkStartPolicy::ImmediateWhenReady);
 }
 
 bool Game::playerBroadcastMessage(const std::shared_ptr<Player> &player, const std::string &text) const {
@@ -4104,7 +4326,8 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 	player->resetLoginProtection();
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
-	player->startAutoWalk(listDir, false);
+	const auto startPolicy = listDir.size() == 1 ? Creature::WalkStartPolicy::ImmediateWhenReady : Creature::WalkStartPolicy::RespectDelay;
+	player->startAutoWalk(listDir, false, startPolicy);
 }
 
 void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir) {
@@ -4122,7 +4345,8 @@ void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &
 	player->resetIdleTime();
 	player->setNextWalkTask(nullptr);
 
-	player->startAutoWalk(listDir, true);
+	const auto startPolicy = listDir.size() == 1 ? Creature::WalkStartPolicy::ImmediateWhenReady : Creature::WalkStartPolicy::RespectDelay;
+	player->startAutoWalk(listDir, true, startPolicy);
 }
 
 void Game::playerStopAutoWalk(uint32_t playerId) {

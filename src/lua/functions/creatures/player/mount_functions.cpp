@@ -14,7 +14,7 @@
 #include "lua/functions/lua_functions_loader.hpp"
 
 void MountFunctions::init(lua_State* L) {
-	Lua::registerSharedClass(L, "Mount", "", MountFunctions::luaCreateMount);
+	Lua::registerSharedClass<Mount>(L, "", MountFunctions::luaCreateMount);
 	Lua::registerMetaMethod(L, "Mount", "__eq", Lua::luaUserdataCompare);
 
 	Lua::registerMethod(L, "Mount", "getName", MountFunctions::luaMountGetName);
@@ -36,8 +36,7 @@ int MountFunctions::luaCreateMount(lua_State* L) {
 	}
 
 	if (mount) {
-		Lua::pushUserdata<Mount>(L, mount);
-		Lua::setMetatable(L, -1, "Mount");
+		Lua::pushSharedUserdata<Mount>(L, mount);
 	} else {
 		lua_pushnil(L);
 	}

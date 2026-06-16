@@ -34,6 +34,12 @@ public:
 
 	std::shared_ptr<Monster> getMonster() override;
 	std::shared_ptr<const Monster> getMonster() const override;
+	Monster* getMonsterRaw() noexcept override {
+		return this;
+	}
+	const Monster* getMonsterRaw() const noexcept override {
+		return this;
+	}
 
 	void setID() override;
 

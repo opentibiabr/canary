@@ -93,7 +93,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, 2)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 2 and player:getStorageValue(Storage.Quest.U10_90.FerumbrasAscension.Access) < 1 then
 		npcHandler:say("Good!, but I need 30 {demonic essences} to exchange with the demonic messenger for a ticket for you to enter the Abodes of Torments.", npc, creature)
-	elseif MsgContains(message, "demonic essence") or MsgContains(message, "essence") then
+	elseif MsgContains(message, "essence") or MsgContains(message, "essences") then
 		npcHandler:say("Do you have 30 demonic essences to offer to the demonic messenger?", npc, creature)
 		npcHandler:setTopic(playerId, 3)
 	elseif MsgContains(message, "yes") and npcHandler:getTopic(playerId) == 3 then

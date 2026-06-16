@@ -157,8 +157,7 @@ int GameFunctions::luaGameCreateMonsterType(lua_State* L) {
 			}
 		}
 
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 	} else {
 		lua_pushnil(L);
 	}
@@ -184,8 +183,7 @@ int GameFunctions::luaGameGetMonsterTypeByName(lua_State* L) {
 		return 1;
 	}
 
-	Lua::pushUserdata<MonsterType>(L, mType);
-	Lua::setMetatable(L, -1, "MonsterType");
+	Lua::pushSharedUserdata<MonsterType>(L, mType);
 	return 1;
 }
 
@@ -348,8 +346,7 @@ int GameFunctions::luaGameGetMonsterTypes(lua_State* L) {
 	lua_createtable(L, type.size(), 0);
 
 	for (const auto &[typeName, mType] : type) {
-		Lua::pushUserdata<MonsterType>(L, mType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, mType);
 		lua_setfield(L, -2, typeName.c_str());
 	}
 	return 1;
@@ -366,8 +363,7 @@ int GameFunctions::luaGameGetTowns(lua_State* L) {
 
 	int index = 0;
 	for (const auto &townEntry : towns) {
-		Lua::pushUserdata<Town>(L, townEntry.second);
-		Lua::setMetatable(L, -1, "Town");
+		Lua::pushSharedUserdata<Town>(L, townEntry.second);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -724,8 +720,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 
 	int index = 0;
 	for (const auto &charmPtr : c_list) {
-		Lua::pushUserdata<Charm>(L, charmPtr);
-		Lua::setMetatable(L, -1, "Charm");
+		Lua::pushSharedUserdata<Charm>(L, charmPtr);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -734,8 +729,7 @@ int GameFunctions::luaGameGetBestiaryCharm(lua_State* L) {
 int GameFunctions::luaGameCreateBestiaryCharm(lua_State* L) {
 	// Game.createBestiaryCharm(id)
 	if (const std::shared_ptr<Charm> &charm = g_iobestiary().getBestiaryCharm(static_cast<charmRune_t>(Lua::getNumber<int8_t>(L, 1, 0)), true)) {
-		Lua::pushUserdata<Charm>(L, charm);
-		Lua::setMetatable(L, -1, "Charm");
+		Lua::pushSharedUserdata<Charm>(L, charm);
 	} else {
 		lua_pushnil(L);
 	}
@@ -980,8 +974,7 @@ int GameFunctions::luaGameGetTalkActions(lua_State* L) {
 	lua_createtable(L, static_cast<int>(talkactionsMap.size()), 0);
 
 	for (const auto &[talkName, talkactionSharedPtr] : talkactionsMap) {
-		Lua::pushUserdata<TalkAction>(L, talkactionSharedPtr);
-		Lua::setMetatable(L, -1, "TalkAction");
+		Lua::pushSharedUserdata<TalkAction>(L, talkactionSharedPtr);
 		lua_setfield(L, -2, talkName.c_str());
 	}
 	return 1;
@@ -1144,8 +1137,7 @@ int GameFunctions::luaGameGetMonstersByRace(lua_State* L) {
 	lua_createtable(L, monstersByRace.size(), 0);
 	int index = 0;
 	for (const auto &monsterType : monstersByRace) {
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;
@@ -1159,8 +1151,7 @@ int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
 	lua_createtable(L, monstersByStars.size(), 0);
 	int index = 0;
 	for (const auto &monsterType : monstersByStars) {
-		Lua::pushUserdata<MonsterType>(L, monsterType);
-		Lua::setMetatable(L, -1, "MonsterType");
+		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
 	return 1;

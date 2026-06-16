@@ -28,6 +28,6 @@ spell:isPremium(true)
 spell:isSelfTarget(true)
 spell:cooldown(40 * 1000)
 spell:groupCooldown(4 * 1000, 40 * 1000)
-spell:needLearn(false)
+
 spell:vocation("druid;true", "elder druid;true")
 spell:register()

@@ -1,24 +1,41 @@
+---
 name: Reusable Fast Checks
 
 on:
   workflow_call:
+    inputs:
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
 
 jobs:
   run-checks:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository (PR head branch for same-repo PRs)
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
-        uses: actions/checkout@v6
+        if: inputs.checkout_ref == '' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
           ref: ${{ github.head_ref }}
 
       - name: Checkout repository (default ref)
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
-        uses: actions/checkout@v6
+        if: inputs.checkout_ref == '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository)
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
 
       - name: Set up Git
         run: |
@@ -43,7 +60,7 @@ jobs:
 
       - uses: JohnnyMorganz/stylua-action@v5
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ github.token }}
           version: latest
           args: .
 
@@ -68,7 +85,7 @@ jobs:
             CMakeLists.txt
             **/*.cmake
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
 
       - name: Check formatting diff
         id: formatting-diff
@@ -106,7 +123,7 @@ jobs:
       - name: Run Analysis (Reviewdog)
         if: github.event_name == 'pull_request'
         env:
-          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ github.token }}
           REVIEWDOG_REPORTER: github-pr-check
         run: |
           reviewdog -reporter="${REVIEWDOG_REPORTER}" -runners=luac -fail-level=error -filter-mode=added

@@ -1,3 +1,4 @@
+---
 name: Reusable Linux Build
 
 on:
@@ -18,9 +19,22 @@ on:
         required: false
         type: boolean
         default: true
+      release_tag:
+        description: Optional release tag used to materialize versioned metadata in the build checkout.
+        required: false
+        type: string
+        default: ""
+      checkout_ref:
+        description: Optional ref or SHA to check out.
+        required: false
+        type: string
+        default: ""
+    secrets:
+      VCPKG_PACKAGES_TOKEN:
+        required: false
 
 permissions:
-  contents: read
+  contents: write
   packages: write
 
 jobs:
@@ -49,7 +63,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        if: inputs.checkout_ref == ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Checkout requested ref
+        if: inputs.checkout_ref != ''
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ inputs.checkout_ref }}
+
+      - name: Materialize release metadata
+        if: inputs.release_tag != ''
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
 
       - name: Get vcpkg baseline
         id: vcpkg-baseline
@@ -108,9 +140,33 @@ jobs:
       - name: Check generated Lua API docs are current
         if: matrix.buildtype == 'linux-release'
         shell: bash
+        env:
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          CURRENT_REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           build/${{ matrix.buildtype }}/bin/canary --generate-lua-api-docs-only
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "$PR_HEAD_REPO" == "$CURRENT_REPO" ]]; then
+            if [[ ! "$PR_HEAD_REF" =~ ^[-A-Za-z0-9_./]+$ ]]; then
+              echo "Unsafe pull request branch name: $PR_HEAD_REF" >&2
+              exit 1
+            fi
+            if ! git diff --quiet -- docs/lua-api; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add docs/lua-api
+              git commit -m "ci(lua-docs): regenerate lua api docs"
+              if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                echo "Initial docs push failed, retrying after fetch/rebase..."
+                git fetch origin "$PR_HEAD_REF"
+                git rebase "origin/$PR_HEAD_REF"
+                if ! git push origin "HEAD:$PR_HEAD_REF"; then
+                  echo "Docs push still failed after retry (likely concurrent push). Continuing without failing this step."
+                fi
+              fi
+            fi
+          fi
           git diff --exit-code -- docs/lua-api
 
       - name: Smoke test Canary datapack runtime
@@ -288,7 +344,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: linux-${{ matrix.buildtype }}
+          name: canary-${{ matrix.buildtype }}
           path: build/${{ matrix.buildtype }}/bin/
 
       - name: Verify vcpkg binary cache push

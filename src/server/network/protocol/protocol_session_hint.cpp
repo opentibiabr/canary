@@ -170,6 +170,16 @@ std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProf
 	return std::nullopt;
 }
 
+void ProtocolSessionHintStore::clearReusableHintsByIp(uint32_t remoteIp) {
+	const auto now = std::chrono::steady_clock::now();
+	std::scoped_lock lock(mutex);
+	cleanupExpired(now);
+
+	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [remoteIp](const Hint &hint) {
+		return hint.remoteIp == remoteIp && hint.reusable;
+	});
+}
+
 void ProtocolSessionHintStore::cleanupExpired(std::chrono::steady_clock::time_point now) {
 	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [now](const Hint &hint) {
 		return hint.expiresAt <= now;

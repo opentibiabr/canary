@@ -59,6 +59,7 @@ public:
 		const std::string &characterName,
 		uint16_t clientVersion
 	);
+	void clearReusableHintsByIp(uint32_t remoteIp);
 
 private:
 	struct Hint {

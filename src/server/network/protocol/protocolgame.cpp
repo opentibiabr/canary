@@ -532,6 +532,14 @@ void ProtocolGame::onConnectionAccepted() {
 	}
 }
 
+void ProtocolGame::clearReusableSessionHints() {
+	if (!sessionHintLease || initialConnectionBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior())) {
+		return;
+	}
+
+	ProtocolSessionHintStore::getInstance().clearReusableHintsByIp(getIP());
+}
+
 void ProtocolGame::AddItem(NetworkMessage &msg, uint16_t id, uint8_t count, uint8_t tier) const {
 	const ItemType &it = Item::items[id];
 
@@ -745,6 +753,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 
 void ProtocolGame::release() {
 	// dispatcher thread
+	clearReusableSessionHints();
+
 	if (m_isLivestreamViewer) {
 		g_livestream().removeViewer(getThis());
 		player = nullptr;
@@ -987,6 +997,7 @@ void ProtocolGame::logout(bool displayEffect, bool forced) {
 		g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 	}
 
+	clearReusableSessionHints();
 	sendSessionEndInformation(forced ? SESSION_END_FORCECLOSE : SESSION_END_LOGOUT);
 
 	g_game().removeCreature(player, true);

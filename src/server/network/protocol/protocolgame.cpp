@@ -5538,9 +5538,7 @@ void ProtocolGame::sendTextMessage(const TextMessage &message) {
 	if (isCipsoft860Profile(protocolProfile)) {
 		clientType = translateCipsoft860MessageClassToClient(internalType);
 		if (clientType == MESSAGE_NONE) {
-			if (sendCipsoft860SpecialTextMessage(message, internalType)) {
-				return;
-			}
+			sendCipsoft860SpecialTextMessage(message, internalType);
 			return;
 		}
 	}

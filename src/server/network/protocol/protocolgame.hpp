@@ -359,6 +359,7 @@ private:
 	void sendStats();
 	void sendBasicData();
 	void sendTextMessage(const TextMessage &message);
+	bool sendCipsoft860SpecialTextMessage(const TextMessage &message, MessageClasses internalType);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
 	void sendTutorial(uint8_t tutorialId);
@@ -489,6 +490,7 @@ private:
 	// Help functions
 	// translate a tile to clientreadable format
 	void GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
+	void GetCipsoft860TileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);

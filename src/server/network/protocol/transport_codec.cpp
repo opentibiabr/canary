@@ -153,14 +153,14 @@ void TransportCodec::encryptXtea(Protocol &protocol, OutputMessage &msg) const {
 }
 
 const TransportCodec &TransportCodecs::get(TransportProfileId id) {
+	using enum TransportProfileId;
 	switch (id) {
-		case TransportProfileId::CurrentModern:
+		case CurrentModern:
 			return currentModern();
-		case TransportProfileId::LegacyRawWithLoginHeader:
+		case LegacyRawWithLoginHeader:
 			return legacyRawWithLoginHeader();
-		case TransportProfileId::LegacyClassic:
+		case LegacyClassic:
 			return legacyClassic();
-		case TransportProfileId::RawClientFirst:
 		default:
 			return rawClientFirst();
 	}

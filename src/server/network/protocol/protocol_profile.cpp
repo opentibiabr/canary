@@ -18,7 +18,7 @@
 #endif
 
 namespace {
-	std::string currentClientVersionLabel() {
+	[[nodiscard]] std::string currentClientVersionLabel() {
 		auto label = std::to_string(CLIENT_VERSION_UPPER);
 		label += ".";
 		if constexpr (CLIENT_VERSION_LOWER < 10) {
@@ -28,7 +28,7 @@ namespace {
 		return label;
 	}
 
-	std::string joinProtocolLabels(const std::vector<std::string> &labels) {
+	[[nodiscard]] std::string joinProtocolLabels(const std::vector<std::string> &labels) {
 		if (labels.empty()) {
 			return {};
 		}
@@ -181,7 +181,7 @@ namespace {
 		.pic = 0x4AE5C3D3,
 	};
 
-	constexpr bool isCipsoft860CanaryAssetPackage(const ClientAssetSignatures &signatures) {
+	[[nodiscard]] constexpr bool isCipsoft860CanaryAssetPackage(const ClientAssetSignatures &signatures) {
 		return signatures == cipsoft860CanaryAssetSignatures
 			|| signatures == cipsoft860DevelopmentAssetSignatures
 			|| signatures == cipsoft860ExtendedClientLibrarySignatures
@@ -392,14 +392,14 @@ namespace {
 }
 
 const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportProfileId id) {
+	using enum TransportProfileId;
 	switch (id) {
-		case TransportProfileId::CurrentModern:
+		case CurrentModern:
 			return currentModernTransport;
-		case TransportProfileId::LegacyRawWithLoginHeader:
+		case LegacyRawWithLoginHeader:
 			return legacyRawWithLoginHeaderTransport;
-		case TransportProfileId::LegacyClassic:
+		case LegacyClassic:
 			return legacyClassicTransport;
-		case TransportProfileId::RawClientFirst:
 		default:
 			return rawClientFirstTransport;
 	}
@@ -410,18 +410,19 @@ const ProtocolProfile &ProtocolProfileRegistry::getCurrentProfile() {
 }
 
 const ProtocolProfile* ProtocolProfileRegistry::getProfile(ProtocolProfileId id) {
+	using enum ProtocolProfileId;
 	switch (id) {
-		case ProtocolProfileId::Current:
+		case Current:
 			return &currentProfile;
-		case ProtocolProfileId::Tibia1100:
+		case Tibia1100:
 			return &tibia1100Profile;
-		case ProtocolProfileId::Cipsoft860Vanilla:
+		case Cipsoft860Vanilla:
 			return &cipsoft860Profile;
-		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+		case Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsProfile;
-		case ProtocolProfileId::Cipsoft860CanaryExtended:
+		case Cipsoft860CanaryExtended:
 			return &cipsoft860CanaryExtendedProfile;
-		case ProtocolProfileId::OTCv8Extended860:
+		case OTCv8Extended860:
 			return &otcv8Extended860Profile;
 		default:
 			return nullptr;
@@ -477,16 +478,17 @@ const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(uin
 }
 
 const AccountLoginLayout* ProtocolProfileRegistry::resolveAccountLoginLayout(ProtocolProfileId id) {
+	using enum ProtocolProfileId;
 	switch (id) {
-		case ProtocolProfileId::Current:
+		case Current:
 			return &currentAccountLoginLayout;
-		case ProtocolProfileId::Tibia1100:
+		case Tibia1100:
 			return &tibia1100AccountLoginLayout;
-		case ProtocolProfileId::Cipsoft860Vanilla:
+		case Cipsoft860Vanilla:
 			return &cipsoft860AccountLoginLayout;
-		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+		case Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsAccountLoginLayout;
-		case ProtocolProfileId::Cipsoft860CanaryExtended:
+		case Cipsoft860CanaryExtended:
 			return &cipsoft860CanaryExtendedAccountLoginLayout;
 		default:
 			return nullptr;
@@ -510,16 +512,17 @@ const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(uint16_t 
 }
 
 const GameLoginLayout* ProtocolProfileRegistry::resolveGameLoginLayout(ProtocolProfileId id) {
+	using enum ProtocolProfileId;
 	switch (id) {
-		case ProtocolProfileId::Current:
+		case Current:
 			return &currentGameLoginLayout;
-		case ProtocolProfileId::Tibia1100:
+		case Tibia1100:
 			return &tibia1100GameLoginLayout;
-		case ProtocolProfileId::Cipsoft860Vanilla:
+		case Cipsoft860Vanilla:
 			return &cipsoft860GameLoginLayout;
-		case ProtocolProfileId::Cipsoft860ExtendedAssets:
+		case Cipsoft860ExtendedAssets:
 			return &cipsoft860ExtendedAssetsGameLoginLayout;
-		case ProtocolProfileId::Cipsoft860CanaryExtended:
+		case Cipsoft860CanaryExtended:
 			return &cipsoft860CanaryExtendedGameLoginLayout;
 		default:
 			return nullptr;
@@ -532,7 +535,7 @@ InitialConnectionBehavior ProtocolProfileRegistry::defaultModernInitialBehavior(
 
 std::string ProtocolProfileRegistry::getAllowedClientProtocolDescription(bool includeOldProtocolProfiles) {
 	std::vector<std::string> labels;
-	labels.emplace_back(currentClientVersionLabel());
+	labels.push_back(currentClientVersionLabel());
 
 	if (includeOldProtocolProfiles) {
 		for (const auto* profile : registeredProfiles) {
@@ -548,7 +551,7 @@ std::string ProtocolProfileRegistry::getAllowedClientProtocolDescription(bool in
 				return listedLabel == label;
 			});
 			if (!alreadyListed) {
-				labels.emplace_back(profile->supportLabel);
+				labels.push_back(profile->supportLabel);
 			}
 		}
 	}

@@ -20,11 +20,11 @@ namespace {
 	constexpr auto reusableHintTtl = std::chrono::hours(24);
 	constexpr size_t maxHints = 512;
 
-	bool shouldReuseHintAfterMatch(const ProtocolProfile &profile) {
+	[[nodiscard]] bool shouldReuseHintAfterMatch(const ProtocolProfile &profile) {
 		return !profile.initialBehavior.hasSameWireBehavior(ProtocolProfileRegistry::defaultModernInitialBehavior());
 	}
 
-	std::chrono::steady_clock::time_point getHintExpiration(const ProtocolProfile &profile, std::chrono::steady_clock::time_point now) {
+	[[nodiscard]] std::chrono::steady_clock::time_point getHintExpiration(const ProtocolProfile &profile, std::chrono::steady_clock::time_point now) {
 		return now + (shouldReuseHintAfterMatch(profile) ? reusableHintTtl : hintTtl);
 	}
 }
@@ -50,7 +50,7 @@ void ProtocolSessionHintStore::registerHint(
 	cleanupExpired(now);
 
 	if (hints.size() >= maxHints) {
-		hints.erase(hints.begin());
+		[[maybe_unused]] auto nextHint = hints.erase(hints.begin());
 	}
 
 	Hint hint;
@@ -62,24 +62,20 @@ void ProtocolSessionHintStore::registerHint(
 	hint.expiresAt = getHintExpiration(*profile, now);
 	hint.reusable = shouldReuseHintAfterMatch(*profile);
 	for (const auto &characterName : characterNames) {
-		hint.allowedCharacterNames.insert(asLowerCaseString(characterName));
+		[[maybe_unused]] auto [_, inserted] = hint.allowedCharacterNames.insert(asLowerCaseString(characterName));
 	}
 
-	std::erase_if(hints, [&hint](const Hint &existingHint) {
+	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [&hint](const Hint &existingHint) {
 		if (existingHint.remoteIp != hint.remoteIp) {
 			return false;
 		}
 
-		for (const auto &characterName : hint.allowedCharacterNames) {
-			if (existingHint.allowedCharacterNames.contains(characterName)) {
-				return true;
-			}
-		}
-
-		return false;
+		return std::ranges::any_of(hint.allowedCharacterNames, [&existingHint](const auto &characterName) {
+			return existingHint.allowedCharacterNames.contains(characterName);
+		});
 	});
 
-	hints.emplace_back(std::move(hint));
+	[[maybe_unused]] auto &storedHint = hints.emplace_back(std::move(hint));
 }
 
 std::optional<ProtocolSessionHintLease> ProtocolSessionHintStore::claimByIp(uint32_t remoteIp) {
@@ -100,7 +96,7 @@ std::optional<ProtocolSessionHintLease> ProtocolSessionHintStore::claimByIp(uint
 			return std::nullopt;
 		}
 
-		candidates.emplace_back(hint.id);
+		candidates.push_back(hint.id);
 	}
 
 	if (!behavior || candidates.empty()) {
@@ -166,7 +162,7 @@ std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProf
 		if (it->reusable) {
 			it->expiresAt = getHintExpiration(*profile, now);
 		} else {
-			hints.erase(it);
+			[[maybe_unused]] auto nextHint = hints.erase(it);
 		}
 		return profileId;
 	}
@@ -175,7 +171,7 @@ std::optional<ProtocolProfileId> ProtocolSessionHintStore::consumeAndResolveProf
 }
 
 void ProtocolSessionHintStore::cleanupExpired(std::chrono::steady_clock::time_point now) {
-	std::erase_if(hints, [now](const Hint &hint) {
+	[[maybe_unused]] const auto erasedHints = std::erase_if(hints, [now](const Hint &hint) {
 		return hint.expiresAt <= now;
 	});
 }

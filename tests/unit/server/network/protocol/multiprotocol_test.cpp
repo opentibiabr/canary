@@ -14,17 +14,22 @@
 #include "server/network/message/outputmessage.hpp"
 #include "utils/tools.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstddef>
+#endif
+
 namespace {
-	uint16_t readU16(const uint8_t* buffer) {
-		return static_cast<uint16_t>(buffer[0]) | static_cast<uint16_t>(buffer[1] << 8);
+	[[nodiscard]] uint16_t readU16(const std::byte* buffer) {
+		return static_cast<uint16_t>(std::to_integer<uint8_t>(buffer[0])) | static_cast<uint16_t>(std::to_integer<uint8_t>(buffer[1]) << 8);
 	}
 
-	uint32_t readU32(const uint8_t* buffer) {
-		return static_cast<uint32_t>(buffer[0]) | (static_cast<uint32_t>(buffer[1]) << 8) | (static_cast<uint32_t>(buffer[2]) << 16) | (static_cast<uint32_t>(buffer[3]) << 24);
+	[[nodiscard]] uint32_t readU32(const std::byte* buffer) {
+		return static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[0])) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[1])) << 8) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[2])) << 16) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[3])) << 24);
 	}
 }
 
 TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
+	using enum ProtocolProfileId;
 	const auto* vanilla = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::CipsoftVanilla);
 	const auto* developmentAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
 		860,
@@ -44,7 +49,7 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 		},
 		ClientWireFamily::CipsoftVanilla
 	);
-	const auto* extendedAssets = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860ExtendedAssets);
+	const auto* extendedAssets = ProtocolProfileRegistry::getProfile(Cipsoft860ExtendedAssets);
 	const auto* otcv8 = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::OTCv8Extended);
 
 	ASSERT_NE(nullptr, vanilla);
@@ -55,11 +60,11 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_NE(vanilla->id, otcv8->id);
 	EXPECT_NE(vanilla->id, extendedAssets->id);
 	EXPECT_NE(extendedAssets->id, otcv8->id);
-	EXPECT_EQ(ProtocolProfileId::Cipsoft860Vanilla, vanilla->id);
-	EXPECT_EQ(ProtocolProfileId::Cipsoft860CanaryExtended, developmentAssets->id);
-	EXPECT_EQ(ProtocolProfileId::Cipsoft860CanaryExtended, canaryAssets->id);
-	EXPECT_EQ(ProtocolProfileId::Cipsoft860ExtendedAssets, extendedAssets->id);
-	EXPECT_EQ(ProtocolProfileId::OTCv8Extended860, otcv8->id);
+	EXPECT_EQ(Cipsoft860Vanilla, vanilla->id);
+	EXPECT_EQ(Cipsoft860CanaryExtended, developmentAssets->id);
+	EXPECT_EQ(Cipsoft860CanaryExtended, canaryAssets->id);
+	EXPECT_EQ(Cipsoft860ExtendedAssets, extendedAssets->id);
+	EXPECT_EQ(OTCv8Extended860, otcv8->id);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, vanilla->wireFamily);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, developmentAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, extendedAssets->wireFamily);
@@ -167,13 +172,14 @@ TEST(ConnectionTransportTest, LegacyLoginChallengeIncludesInnerMessageSize) {
 	msg.writeRawMessageLength();
 
 	const uint8_t* buffer = msg.getOutputBuffer();
+	const auto* byteBuffer = reinterpret_cast<const std::byte*>(buffer);
 	constexpr uint16_t payloadSize = 1 + sizeof(uint32_t) + sizeof(uint8_t);
 	constexpr uint16_t bodySize = CHECKSUM_LENGTH + sizeof(uint16_t) + payloadSize;
 
 	EXPECT_EQ(HEADER_LENGTH + bodySize, msg.getLength());
-	EXPECT_EQ(bodySize, readU16(buffer));
-	EXPECT_EQ(checksum, readU32(buffer + HEADER_LENGTH));
-	EXPECT_EQ(payloadSize, readU16(buffer + HEADER_LENGTH + CHECKSUM_LENGTH));
+	EXPECT_EQ(bodySize, readU16(byteBuffer));
+	EXPECT_EQ(checksum, readU32(byteBuffer + HEADER_LENGTH));
+	EXPECT_EQ(payloadSize, readU16(byteBuffer + HEADER_LENGTH + CHECKSUM_LENGTH));
 	EXPECT_EQ(0x1F, buffer[HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t)]);
 	EXPECT_EQ(random, buffer[HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t) + 1 + sizeof(uint32_t)]);
 }

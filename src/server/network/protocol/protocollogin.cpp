@@ -177,6 +177,50 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	disconnect();
 }
 
+const AccountLoginLayout* ProtocolLogin::resolveLoginLayout(NetworkMessage &msg, uint16_t version) {
+	const auto* loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(version);
+	if (!loginLayout) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	protocolProfile = ProtocolProfileRegistry::getProfile(loginLayout->profileId);
+	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	if (!loginLayout->hasAssetSignaturesBeforeRsa) {
+		msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
+		return loginLayout;
+	}
+
+	if (!msg.canRead(sizeof(uint32_t) * 3)) {
+		disconnectClient(fmt::format("Invalid login packet for protocol version {}.", version));
+		return nullptr;
+	}
+
+	const ClientAssetSignatures assetSignatures {
+		.dat = msg.get<uint32_t>(),
+		.spr = msg.get<uint32_t>(),
+		.pic = msg.get<uint32_t>(),
+	};
+
+	protocolProfile = ProtocolProfileRegistry::resolveByClientVersionAndAssets(version, assetSignatures);
+	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id);
+	if (!loginLayout) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	return loginLayout;
+}
+
 void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	if (g_game().getGameState() == GAME_STATE_SHUTDOWN) {
 		disconnect();
@@ -186,44 +230,9 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	msg.skipBytes(2); // client OS
 
 	auto version = msg.get<uint16_t>();
-	const auto* loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(version);
+	const auto* loginLayout = resolveLoginLayout(msg, version);
 	if (!loginLayout) {
-		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
 		return;
-	}
-
-	protocolProfile = ProtocolProfileRegistry::getProfile(loginLayout->profileId);
-	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
-		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
-		return;
-	}
-
-	if (loginLayout->hasAssetSignaturesBeforeRsa) {
-		if (!msg.canRead(sizeof(uint32_t) * 3)) {
-			disconnectClient(fmt::format("Invalid login packet for protocol version {}.", version));
-			return;
-		}
-
-		const ClientAssetSignatures assetSignatures {
-			.dat = msg.get<uint32_t>(),
-			.spr = msg.get<uint32_t>(),
-			.pic = msg.get<uint32_t>(),
-		};
-
-		protocolProfile = ProtocolProfileRegistry::resolveByClientVersionAndAssets(version, assetSignatures);
-		if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
-			disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
-			return;
-		}
-
-		loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id);
-		if (!loginLayout) {
-			disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
-			return;
-		}
-
-	} else {
-		msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
 	}
 
 	if (const auto connection = getConnection()) {

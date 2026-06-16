@@ -112,15 +112,18 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addByte(0x64);
 
 	if (characterListLayout == AccountCharacterListLayout::LegacyCharacterList) {
-		uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
-		output->addByte(size);
-
 		const auto serverName = g_configManager().getString(SERVER_NAME);
 		const auto configuredWorldIp = g_configManager().getString(IP);
 		const auto worldIp = legacyIpStringToNumber(configuredWorldIp);
 		if (worldIp == 0) {
 			g_logger().warn("Legacy character list cannot encode configured IP '{}'; old clients require a numeric IPv4 address.", configuredWorldIp);
+			disconnectClient("Legacy 8.60 clients require the server IP to be a numeric IPv4 address.");
+			return;
 		}
+
+		uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
+		output->addByte(size);
+
 		const auto worldPort = protocolProfile ? protocol_port_utils::getGamePortForProfile(*protocolProfile) : protocol_port_utils::getModernGamePort();
 		std::vector<std::string> characterNames;
 		characterNames.reserve(size);

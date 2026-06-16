@@ -153,6 +153,11 @@ not have the official CipSoft private RSA key.
 - Features: old protocol compatibility, legacy payload, item mapper required,
   inline bug-report flag
 
+The legacy character list encodes the world address as a 32-bit IPv4 number.
+Set `ip` or `CANARY_SERVER_IP` to a numeric IPv4 address reachable by the
+client. Hostnames, `auto`, and IPv6 addresses cannot be represented in this
+packet and are rejected before the character list is sent.
+
 This profile is a classic wire-layout profile, not a promise that an
 unmodified vanilla asset set can render the modern Canary world. The supported
 8.60 deployment path uses an extended asset package whose item ids match the

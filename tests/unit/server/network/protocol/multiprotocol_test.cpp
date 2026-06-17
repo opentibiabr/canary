@@ -285,7 +285,7 @@ TEST(SessionHintTest, NewHintReplacesOlderSameIpCharacterHint) {
 
 TEST(SessionHintTest, WrongCharacterDoesNotConsumeHint) {
 	auto &store = ProtocolSessionHintStore::getInstance();
-	constexpr uint32_t testIp = 0x0A000103;
+	constexpr uint32_t testIp = 0x0A000109;
 	const std::string session = "account-two\npassword-two";
 	const std::string character = "Correct Character";
 

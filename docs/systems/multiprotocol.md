@@ -175,6 +175,8 @@ layout but allows an extended asset package.
 - Extended assets keep item ids aligned with the current profile; a mapper is
   only required for deployments that intentionally use a different asset id
   table.
+- Runtime metadata reflects that contract: the profile does not advertise
+  `RequiresItemMapper` and does not require a mapper before world entry.
 - Extended sprite files are enabled.
 
 ### Cipsoft860CanaryExtended
@@ -186,6 +188,8 @@ layout but allows an extended asset package.
 - Extended assets keep item ids aligned with the current profile; a mapper is
   only required for deployments that intentionally use a different asset id
   table.
+- Runtime metadata reflects that contract: the profile does not advertise
+  `RequiresItemMapper` and does not require a mapper before world entry.
 - Extended sprite files and 16-bit magic effects are enabled.
 - Asset signatures select this profile automatically when they match a known
   Canary extended package.

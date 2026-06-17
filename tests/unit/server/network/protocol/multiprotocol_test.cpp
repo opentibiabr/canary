@@ -75,11 +75,14 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_EQ(860, extendedAssets->clientVersion);
 	EXPECT_EQ(860, otcv8->clientVersion);
 	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::RequiresItemMapper));
 	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::MagicEffectU16));
+	EXPECT_FALSE(developmentAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
+	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(developmentAssets->id));

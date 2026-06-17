@@ -76,7 +76,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
-	const auto* loginLayout = protocolProfile ? ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->clientVersion) : nullptr;
+	const auto* loginLayout = protocolProfile ? ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id) : nullptr;
 	const auto characterListLayout = loginLayout ? loginLayout->characterListLayout : AccountCharacterListLayout::WorldListWithSessionKey;
 	if (loginLayout && loginLayout->sendsSessionKey) {
 		// Add session key

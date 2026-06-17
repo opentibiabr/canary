@@ -47,6 +47,13 @@ capture or fixture before adding new clients.
 client version, `ClientWireFamily`, `RSAKeyFamily`, support state, item mapper
 policy, initial behavior, optional asset signatures, and protocol feature flags.
 
+`TransportProfile` already describes outer length, encrypted payload layout,
+checksum, and compression intent. However, checksum/compression execution is not
+yet fully owned by `TransportProfile`: parts of the live behavior still follow
+`Protocol` state so the shipped login and game contracts stay byte-compatible.
+Treat the checksum/compression fields as aligned metadata for now, not as a
+guarantee that every path has been fully de-hardcoded.
+
 `AccountLoginLayout` and `GameLoginLayout` are intentionally separate. The
 account login socket builds the character list and can register a session hint;
 the game socket enters the world and validates the hint. Their packet layouts

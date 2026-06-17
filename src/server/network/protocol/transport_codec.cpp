@@ -32,6 +32,10 @@ std::optional<uint16_t> TransportCodec::decodeBodySize(uint16_t rawLengthHeader)
 }
 
 void TransportCodec::encodeOutbound(Protocol &protocol, OutputMessage &msg) const {
+	// Checksum/compression selection still follows Protocol state so existing
+	// login and game contracts remain byte-compatible while multiprotocol is
+	// phased in. TransportProfile documents the intended contract, but it is not
+	// yet the sole runtime authority for these fields.
 	const uint32_t sendMessageChecksum = msg.getLength() >= 128 && protocol.compression(msg) ? (1U << 31) : 0;
 
 	const auto writeOuterLength = [&msg, this] {
@@ -69,6 +73,8 @@ void TransportCodec::encodeOutbound(Protocol &protocol, OutputMessage &msg) cons
 }
 
 bool TransportCodec::prepareInbound(Protocol &protocol, NetworkMessage &msg) const {
+	// See encodeOutbound(): inbound checksum handling still mirrors the active
+	// Protocol state to preserve current login/game behavior.
 	if (protocol.checksumMethod != CHECKSUM_METHOD_NONE) {
 		const auto recvChecksum = msg.get<uint32_t>();
 		if (protocol.checksumMethod == CHECKSUM_METHOD_SEQUENCE) {

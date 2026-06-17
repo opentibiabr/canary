@@ -30,7 +30,23 @@ public:
 	}
 
 	[[nodiscard]] std::optional<uint16_t> decodeBodySize(uint16_t rawLengthHeader) const;
+	/**
+	 * @brief Encodes an outbound message using the active transport framing.
+	 *
+	 * @details Outer length and encrypted payload layout come from the bound
+	 * TransportProfile, but checksum/compression behavior is still finalized from
+	 * the current Protocol state. This preserves the shipped login/game byte
+	 * contracts while multiprotocol transport ownership is phased in.
+	 */
 	void encodeOutbound(Protocol &protocol, OutputMessage &msg) const;
+	/**
+	 * @brief Validates and unwraps an inbound message using the active transport framing.
+	 *
+	 * @details Inbound checksum handling still mirrors the current Protocol state
+	 * instead of relying exclusively on TransportProfile metadata. The profile
+	 * describes the intended contract, but Protocol remains part of the runtime
+	 * authority for checksum/compression-sensitive paths.
+	 */
 	[[nodiscard]] bool prepareInbound(Protocol &protocol, NetworkMessage &msg) const;
 
 private:

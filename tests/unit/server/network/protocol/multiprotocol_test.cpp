@@ -31,7 +31,7 @@ namespace {
 TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	using enum ProtocolProfileId;
 	const auto* vanilla = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::CipsoftVanilla);
-	const auto* developmentAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
+	const auto* shippedExtendedAssets = ProtocolProfileRegistry::resolveByClientVersionAndAssets(
 		860,
 		ClientAssetSignatures {
 			.dat = 0x4C2C7993,
@@ -53,7 +53,7 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	const auto* otcv8 = ProtocolProfileRegistry::resolveByClientVersion(860, ClientWireFamily::OTCv8Extended);
 
 	ASSERT_NE(nullptr, vanilla);
-	ASSERT_NE(nullptr, developmentAssets);
+	ASSERT_NE(nullptr, shippedExtendedAssets);
 	ASSERT_NE(nullptr, canaryAssets);
 	ASSERT_NE(nullptr, extendedAssets);
 	ASSERT_NE(nullptr, otcv8);
@@ -61,24 +61,24 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_NE(vanilla->id, extendedAssets->id);
 	EXPECT_NE(extendedAssets->id, otcv8->id);
 	EXPECT_EQ(Cipsoft860Vanilla, vanilla->id);
-	EXPECT_EQ(Cipsoft860CanaryExtended, developmentAssets->id);
+	EXPECT_EQ(Cipsoft860CanaryExtended, shippedExtendedAssets->id);
 	EXPECT_EQ(Cipsoft860CanaryExtended, canaryAssets->id);
 	EXPECT_EQ(Cipsoft860ExtendedAssets, extendedAssets->id);
 	EXPECT_EQ(OTCv8Extended860, otcv8->id);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, vanilla->wireFamily);
-	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, developmentAssets->wireFamily);
+	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, shippedExtendedAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::CipsoftVanilla, extendedAssets->wireFamily);
 	EXPECT_EQ(ClientWireFamily::OTCv8Extended, otcv8->wireFamily);
 	EXPECT_EQ(RSAKeyFamily::OpenTibia, vanilla->rsaKeyFamily);
 	EXPECT_EQ(860, vanilla->clientVersion);
-	EXPECT_EQ(860, developmentAssets->clientVersion);
+	EXPECT_EQ(860, shippedExtendedAssets->clientVersion);
 	EXPECT_EQ(860, extendedAssets->clientVersion);
 	EXPECT_EQ(860, otcv8->clientVersion);
 	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::RequiresItemMapper));
-	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
-	EXPECT_TRUE(developmentAssets->hasFeature(ProtocolFeature::MagicEffectU16));
-	EXPECT_FALSE(developmentAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
+	EXPECT_TRUE(shippedExtendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
+	EXPECT_TRUE(shippedExtendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
+	EXPECT_FALSE(shippedExtendedAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));

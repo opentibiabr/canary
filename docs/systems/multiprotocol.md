@@ -179,6 +179,11 @@ layout but allows an extended asset package.
   `RequiresItemMapper` and does not require a mapper before world entry.
 - Extended sprite files are enabled.
 
+This profile is currently kept as an explicit/runtime-registered variant for
+layout and metadata purposes. The known shipped asset signatures still resolve
+to `Cipsoft860CanaryExtended`, so `Cipsoft860ExtendedAssets` is not selected by
+the normal asset-signature detection path today.
+
 ### Cipsoft860CanaryExtended
 
 `ProtocolProfileId::Cipsoft860CanaryExtended` is the Canary-controlled extended

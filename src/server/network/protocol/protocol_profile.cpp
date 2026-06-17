@@ -182,6 +182,9 @@ namespace {
 	};
 
 	[[nodiscard]] constexpr bool isCipsoft860CanaryAssetPackage(const ClientAssetSignatures &signatures) {
+		// The currently shipped extended 8.60 packages resolve to the Canary-owned
+		// runtime profile. Cipsoft860ExtendedAssets stays registered for explicit
+		// layout/metadata access, but it is not auto-selected by these signatures.
 		return signatures == cipsoft860CanaryAssetSignatures
 			|| signatures == cipsoft860DevelopmentAssetSignatures
 			|| signatures == cipsoft860ExtendedClientLibrarySignatures

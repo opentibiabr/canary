@@ -85,7 +85,7 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
-	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(developmentAssets->id));
+	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(shippedExtendedAssets->id));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(extendedAssets->id));
 	EXPECT_FALSE(ProtocolProfileRegistry::isProfileAllowed(otcv8->id));
 }

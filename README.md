@@ -60,6 +60,9 @@ environment variables, test account, and troubleshooting guide.
 ## Documentation
 
 - [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
+- [Multiprotocol runtime profiles](docs/systems/multiprotocol.md). Covers the
+  current, 11.00, and 8.60 runtime contracts, port layout, client preparation,
+  and validation checklist.
 - [System documentation](docs/systems/README.md).
 - [Lua API reference and VSCode IntelliSense stubs](docs/lua-api/lua_api.md). Canary generates these files from the C++ Lua bindings during startup when `generateLuaApiDocs` is enabled. The repository `.luarc.json` already adds `docs/lua-api` to the Lua Language Server workspace library; for VSCode workspace settings, run `tools/setup_vscode_lua_api.ps1`.
 
@@ -67,9 +70,14 @@ environment variables, test account, and troubleshooting guide.
 
 ## Recommended Tools and Clients
 
-- [Assets Editor](https://github.com/Arch-Mina/Assets-Editor).
+- [Assets Editor](https://github.com/Arch-Mina/Assets-Editor). Use this as the
+  single asset source of truth, then export legacy-compatible `.dat`/`.spr`
+  packages for 8.60 clients from the same current asset set.
 - [Remere's Map Editor](https://github.com/opentibiabr/remeres-map-editor/).
 - [OTClient Redemption](https://github.com/opentibiabr/otclient).
+- [Tibia Extended Client Library](https://github.com/dudantas/Tibia-Extended-Client-Library).
+  Use this to prepare compatible 8.60/11.00 CipSoft clients with extended
+  limits, config-driven login redirect, and per-client local state.
 - [Game Client](https://github.com/dudantas/tibia-client/releases/latest).
 
 ---

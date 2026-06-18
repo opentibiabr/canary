@@ -74,6 +74,25 @@ host mappings stay stable:
 - `CANARY_LEGACY_1100_GAME_PORT=7174`
 - `CANARY_LEGACY_860_GAME_PORT=7175`
 
+Repository defaults in [config.lua.dist](../../config.lua.dist) remain:
+
+- `loginProtocolPort = 7171`
+- `gameProtocolPort = 7172`
+- `legacy1100GameProtocolPort = 0`
+- `legacy860GameProtocolPort = 0`
+- `statusProtocolPort = 7171`
+
+With the repository defaults, legacy game ports are auto-selected at startup.
+`statusProtocolPort` shares `7171` with the login protocol by default; the
+Docker quickstart publishes a separate status port so the host mapping stays
+predictable.
+
+Legacy and modern clients must still start on the account login port. The game
+ports returned in the character list are profile-specific world ports, not a
+replacement for the login entry point. Pointing a client directly at a game
+port bypasses the account-login hint flow and can fail before the first game
+login packet is parsed.
+
 1. The account login flow resolves an `AccountLoginLayout` from the client
    version and, when needed, client asset signatures.
 2. After a successful account login, `ProtocolSessionHintStore` registers a
@@ -107,7 +126,8 @@ profile, but it must not select legacy framing just because no hint exists.
 - Compression: official sequence high-bit compression
 - Challenge: current login challenge
 - Features: current payload, login speed formula, modern login side systems,
-  and resource balance packets
+  resource balance packets, market packets, imbuement window, memorial packets,
+  and custom monk packets
 
 This profile is the default only when no safer legacy hint was found and the
 current profile is allowed.
@@ -124,7 +144,8 @@ current profile is allowed.
 - Compression: none
 - Challenge: `Tibia1100LoginChallenge`
 - Account login response transport: `LegacyClassic`
-- Features: old protocol compatibility, legacy payload, and login speed formula
+- Features: old protocol compatibility, legacy payload, login speed formula,
+  market packets, and imbuement window
 
 This profile is not a modern transport profile. It must not inherit the modern
 block-count framing, sequence checksum, resource balance packet, or current
@@ -220,6 +241,26 @@ fixtures are available.
 
 OTC is useful as an implementation reference, but it is not the final
 specification for CipSoft client behavior.
+
+## Client preparation
+
+The supported legacy deployment path keeps a single asset source of truth and
+exports compatibility packages from that source instead of maintaining separate
+server-side item tables per client generation.
+
+- Edit the current asset set once, then export the legacy-compatible 8.60
+  `.dat`/`.spr` package with
+  [Assets Editor](https://github.com/Arch-Mina/Assets-Editor).
+- Prepare the target 8.60/11.00 CipSoft client with the
+  [Tibia Extended Client Library](https://github.com/dudantas/Tibia-Extended-Client-Library)
+  so the executable accepts the extended sprite/effect limits, config-driven
+  login redirect, and per-client local state used by the exported package.
+- The supported 8.60 `.dat` must stay parseable by the classic client reader.
+  Do not write modern attributes such as `Clothes` into an 8.60 `.dat`; the
+  classic outfit layout and protocol color fields already handle outfit colors.
+- Extended sprite or effect support is a client capability extension. It does
+  not change the rule that Canary keeps one gameplay/item-id truth on the
+  server side and adapts legacy clients at the protocol or asset boundary.
 
 ## Adding a new client profile
 

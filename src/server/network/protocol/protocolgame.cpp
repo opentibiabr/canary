@@ -8558,7 +8558,16 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint64_t>(player->getExperience());
 
 	msg.add<uint16_t>(player->getLevel());
-	msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+	if (!oldProtocol) {
+		if constexpr (CLIENT_VERSION >= 1513) {
+			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
+			msg.add<uint16_t>(levelPercent);
+		} else {
+			msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+		}
+	} else {
+		msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+	}
 
 	msg.add<uint16_t>(player->getBaseXpGain()); // base xp gain rate
 
@@ -8599,9 +8608,6 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	if (!oldProtocol) {
 		msg.add<uint32_t>(player->getManaShield()); // remaining mana shield
 		msg.add<uint32_t>(player->getMaxManaShield()); // total mana shield
-		if constexpr (CLIENT_VERSION >= 1512 && CLIENT_VERSION < 1520) {
-			msg.addByte(0x00); // 15.12-15.13 client expects one trailing player data byte.
-		}
 	}
 }
 

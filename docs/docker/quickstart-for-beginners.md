@@ -168,6 +168,8 @@ host machine. The quickstart uses these TCP ports:
 - `7171`
 - `7172`
 - `7173`
+- `7174` (11.00 legacy world port)
+- `7175` (8.60 legacy world port)
 - `8080`
 - `8088`
 

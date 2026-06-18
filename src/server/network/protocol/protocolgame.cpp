@@ -8559,7 +8559,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getLevel());
 	if (!oldProtocol) {
-		if constexpr (CLIENT_VERSION >= 1513) {
+		if (clientVersion >= 1513) {
 			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
 			msg.add<uint16_t>(levelPercent);
 		} else {

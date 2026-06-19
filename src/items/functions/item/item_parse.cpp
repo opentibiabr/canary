@@ -486,6 +486,16 @@ void ItemParse::parseCriticalHit(const std::string &stringValue, pugi::xml_attri
 	}
 }
 
+void ItemParse::parseExtraAttack(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
+    if (stringValue == "extraattack") {
+        itemType.extraAttack = pugi::cast<int32_t>(valueAttribute.value());
+    } else if (stringValue == "extraattackdelay") {
+        itemType.extraAttackDelay = pugi::cast<int32_t>(valueAttribute.value());
+    } else if (stringValue == "extraattackchance") {
+        itemType.extraAttackChance = pugi::cast<int32_t>(valueAttribute.value());
+    }
+}
+
 void ItemParse::parseLifeAndManaLeech(const std::string &stringValue, pugi::xml_attribute valueAttribute, ItemType &itemType) {
 	if (stringValue == "lifeleechchance") {
 		itemType.getAbilities().skills[SKILL_LIFE_LEECH_CHANCE] = pugi::cast<int32_t>(valueAttribute.value());

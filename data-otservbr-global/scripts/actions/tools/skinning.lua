@@ -1,4 +1,4 @@
-local CREATURE_SKINNING_CHANCE = 25000 -- 25% probability
+local CREATURE_SKINNING_CHANCE = 25000 -- 25% chance
 
 local ICE_CONFIG = {
 	[7441] = { chance = 22344, newItem = 7442 },
@@ -20,7 +20,7 @@ local config = {
 		[4173] = { value = CREATURE_SKINNING_CHANCE, newItem = 12172, after = 4302 },
 		[6017] = { value = CREATURE_SKINNING_CHANCE, newItem = 12172, after = 4302 }, -- after being killed
 
-		-- Minotaurs
+		-- minotaurs
 		[4011] = { value = CREATURE_SKINNING_CHANCE, newItem = 5878, after = 4012 }, -- minotaur
 		[5969] = { value = CREATURE_SKINNING_CHANCE, newItem = 5878, after = 4012 }, -- minotaur, after being killed
 		[4052] = { value = CREATURE_SKINNING_CHANCE, newItem = 5878, after = 4053 }, -- minotaur archer
@@ -42,7 +42,7 @@ local config = {
 		[20996] = { value = CREATURE_SKINNING_CHANCE, newItem = 5878, after = 20998 }, -- moohtant
 		[20997] = { value = CREATURE_SKINNING_CHANCE, newItem = 5878, after = 20998 }, -- moohtant, after being killed
 
-		-- Low Class Lizards
+		-- low class lizards
 		[4324] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4325 }, -- lizard sentinel
 		[6040] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4325 }, -- lizard sentinel, after being killed
 		[4327] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4328 }, -- lizard snakecharmer
@@ -50,7 +50,7 @@ local config = {
 		[4321] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4322 }, -- lizard templar
 		[4239] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 4322 }, -- lizard templar, after being killed
 
-		-- High Class Lizards
+		-- high class lizards
 		[10368] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10369 }, -- lizard chosen
 		[10371] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10369 }, -- lizard chosen, after being killed
 		[10360] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10361 }, -- lizard dragon priest
@@ -62,27 +62,27 @@ local config = {
 		[10356] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10357 }, -- lizard legionnaire
 		[10359] = { value = CREATURE_SKINNING_CHANCE, newItem = 5876, after = 10357 }, -- lizard legionnaire, after being killed
 
-		-- Dragons
+		-- dragons
 		[4025] = { value = CREATURE_SKINNING_CHANCE, newItem = 5877, after = 4026 }, -- Dragon
 		[5973] = { value = CREATURE_SKINNING_CHANCE, newItem = 5877, after = 4026 }, -- Dragon, after being killed
 
-		-- Dragon Lords
+		-- dragon lords
 		[4062] = { value = CREATURE_SKINNING_CHANCE, newItem = 5948, after = 4063 },
 		[5984] = { value = CREATURE_SKINNING_CHANCE, newItem = 5948, after = 4063 }, -- after being killed
 
-		-- Behemoths
+		-- behemoths
 		[4112] = { value = CREATURE_SKINNING_CHANCE, newItem = 5893, after = 4113 },
 		[5999] = { value = CREATURE_SKINNING_CHANCE, newItem = 5893, after = 4113 }, -- after being killed
 
-		-- Bone Beasts
+		-- bone beasts
 		[4212] = { value = CREATURE_SKINNING_CHANCE, newItem = 5925, after = 4213 },
 		[6030] = { value = CREATURE_SKINNING_CHANCE, newItem = 5925, after = 4213 }, -- after being killed
 
-		-- Clomp - raw meat
+		-- clomp
 		[22743] = { value = CREATURE_SKINNING_CHANCE, newItem = 22186, after = 22744 },
 		[22742] = { value = CREATURE_SKINNING_CHANCE, newItem = 22186, after = 22744 }, -- after being killed
 
-		-- The Mutated Pumpkin
+		-- the mutated pumpkin
 		[12816] = {
 			{ value = 5000, newItem = 8032 }, -- spiderwebs
 			{ value = 5000, newItem = 8178 }, -- toy spider
@@ -100,11 +100,11 @@ local config = {
 		},
 	},
 	[5942] = {
-		-- Demon
+		-- demon
 		[4097] = { value = CREATURE_SKINNING_CHANCE, newItem = 5906, after = 4098 },
 		[5995] = { value = CREATURE_SKINNING_CHANCE, newItem = 5906, after = 4098 }, -- after being killed
 
-		-- Vampires
+		-- vampires
 		[4137] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 4138 }, -- vampire
 		[6006] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 4138 }, -- vampire, after being killed
 		[8738] = { value = CREATURE_SKINNING_CHANCE, newItem = 5905, after = 8742 }, -- vampire bride
@@ -119,6 +119,10 @@ local config = {
 local skinning = Action()
 
 function skinning.onUse(player, item, fromPosition, target, toPosition, isHotkey)
+	if not target or not target:isItem() then
+		return true
+	end
+
 	if ICE_CONFIG[target.itemid] then -- ice blocks
 		local ice = ICE_CONFIG[target.itemid]
 		if math.random(1, 100000) <= ice.chance then

@@ -14,7 +14,7 @@ WEAK_PARAM_PATTERNS = (
     re.compile(r":\s*any\b"),
     re.compile(r"\barg\d+\b"),
 )
-GIT_REF_PATTERN = re.compile(r"^(?:[0-9a-fA-F]{7,40}|[A-Za-z0-9][A-Za-z0-9._/-]*)$")
+GIT_REF_PATTERN = re.compile(r"^(?:[0-9a-fA-F]{7,40}|[A-Za-z0-9][A-Za-z0-9._/\\-]*)$")
 
 @dataclass(frozen=True)
 class Binding:

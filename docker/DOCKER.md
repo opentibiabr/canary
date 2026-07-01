@@ -230,7 +230,7 @@ the Docker service name.
 ```env
 CANARY_TEST_ACCOUNTS=true
 CANARY_DATA_PACK=data-otservbr-global
-CANARY_MAP_URL=https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm
+CANARY_MAP_URL=https://github.com/opentibiabr/canary/releases/download/v3.6.1/otservbr.otbm
 ```
 
 The Docker image intentionally does not embed the large `.otbm` map file. On the

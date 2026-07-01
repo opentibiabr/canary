@@ -223,9 +223,12 @@
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
     <ClInclude Include="..\src\server\network\message\outputmessage.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol.hpp" />
+    <ClInclude Include="..\src\server\network\protocol\protocol_profile.hpp" />
+    <ClInclude Include="..\src\server\network\protocol\protocol_session_hint.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocolgame.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocollogin.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocolstatus.hpp" />
+    <ClInclude Include="..\src\server\network\protocol\transport_codec.hpp" />
     <ClInclude Include="..\src\server\network\webhook\webhook.hpp" />
     <ClInclude Include="..\src\server\server.hpp" />
     <ClInclude Include="..\src\server\server_definitions.hpp" />
@@ -428,9 +431,12 @@
     <ClCompile Include="..\src\server\network\message\networkmessage.cpp" />
     <ClCompile Include="..\src\server\network\message\outputmessage.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocol.cpp" />
+    <ClCompile Include="..\src\server\network\protocol\protocol_profile.cpp" />
+    <ClCompile Include="..\src\server\network\protocol\protocol_session_hint.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocolgame.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocollogin.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocolstatus.cpp" />
+    <ClCompile Include="..\src\server\network\protocol\transport_codec.cpp" />
     <ClCompile Include="..\src\server\network\webhook\webhook.cpp" />
     <ClCompile Include="..\src\server\server.cpp" />
     <ClCompile Include="..\src\server\signals.cpp" />

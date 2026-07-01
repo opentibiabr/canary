@@ -10,9 +10,15 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/stash_definitions.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -117,6 +123,10 @@ public:
 		return version;
 	}
 
+	[[nodiscard]] const ProtocolProfile* getProtocolProfile() const {
+		return protocolProfile;
+	}
+
 private:
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -124,6 +134,9 @@ private:
 	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(NetworkMessage &msg);
+	[[nodiscard]] bool shouldSuppressPreLoginPacket() const;
+	[[nodiscard]] bool isSessionEnding() const;
+	void clearReusableSessionHints();
 
 	void release() override;
 
@@ -137,6 +150,7 @@ private:
 	void parsePacket(NetworkMessage &msg) override;
 	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
+	void onConnectionAccepted() override;
 	void sendLoginChallenge() override;
 
 	// Parse methods
@@ -270,6 +284,7 @@ private:
 
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction = false) const;
+	void addTibia1100ImbuementInfo(NetworkMessage &msg, uint16_t imbuementID) const;
 	void addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction = false) const;
 
 	// Send functions
@@ -288,6 +303,7 @@ private:
 	void sendFYIBox(const std::string &message);
 
 	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item = nullptr);
+	void openTibia1100ImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -347,6 +363,7 @@ private:
 	void sendStats();
 	void sendBasicData();
 	void sendTextMessage(const TextMessage &message);
+	bool sendCipsoft860SpecialTextMessage(const TextMessage &message, MessageClasses internalType);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
 	void sendTutorial(uint8_t tutorialId);
@@ -477,6 +494,7 @@ private:
 	// Help functions
 	// translate a tile to clientreadable format
 	void GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
+	void GetCipsoft860TileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);
@@ -580,6 +598,9 @@ private:
 	uint32_t challengeTimestamp = 0;
 	uint16_t version = 0;
 	int32_t clientVersion = 0;
+	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
+	InitialConnectionBehavior initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
+	std::optional<ProtocolSessionHintLease> sessionHintLease;
 
 	uint8_t challengeRandom = 0;
 
@@ -587,6 +608,7 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
+	bool suppressPreLoginPackets = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;

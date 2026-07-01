@@ -26,6 +26,7 @@
 
 - Compile when the change is critical, complex, or likely to break compilation. For small documentation, script, or clearly non-build-affecting changes, avoid builds unless they add real validation value.
 - When compiling, prioritize the correct known workflow below instead of guessing commands or creating new build trees, to avoid wasting time on environment or cache mistakes.
+- When adding, removing, or renaming C++ source/header files, update every maintained build entry point in the same change. For Canary server code this usually means the relevant `CMakeLists.txt` file and the tracked Visual Studio project `vcproj/canary.vcxproj`; for tests, update the relevant test `CMakeLists.txt` as well. Missing `.cpp` entries in `vcproj/canary.vcxproj` commonly appear as unresolved external linker errors when building `vcproj/canary.sln`.
 - Before building on Windows, inspect the repository build entry points instead of guessing:
   - Check `CMakePresets.json` and `CMakeLists.txt`.
   - Check whether Visual Studio solutions exist, such as `vcproj/*.sln` or generated `build/**/*.sln`.

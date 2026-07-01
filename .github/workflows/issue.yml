@@ -1,8 +1,9 @@
+---
 name: Issue - Labeling
 on:
   workflow_dispatch:
   issues:
-      types: ['opened']
+    types: ['opened']
 jobs:
   build:
     runs-on: ubuntu-latest

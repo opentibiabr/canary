@@ -1,4 +1,5 @@
 registerNpcType = {}
+NpcDialogProfessionByName = NpcDialogProfessionByName or {}
 setmetatable(registerNpcType, {
 	__call = function(self, npcType, mask)
 		for _, parse in pairs(self) do
@@ -78,6 +79,14 @@ registerNpcType.flags = function(npcType, mask)
 		end
 		if mask.flags.pushable ~= nil then
 			npcType:isPushable(mask.flags.pushable)
+		end
+		if type(mask.flags.profession) == "string" then
+			local key = mask.flags.profession:lower()
+			if NpcDialog and NpcDialog.ValidProfessions and NpcDialog.ValidProfessions[key] then
+				NpcDialogProfessionByName[npcType:getName():lower()] = key
+			else
+				logger.warn("Unknown npc profession '{}' on npc '{}'", mask.flags.profession, npcType:getName())
+			end
 		end
 	end
 end

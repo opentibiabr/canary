@@ -336,6 +336,9 @@ enum SpeechBubble_t {
 	SPEECHBUBBLE_TRADE = 2,
 	SPEECHBUBBLE_QUEST = 3,
 	SPEECHBUBBLE_QUESTTRADER = 4,
+	SPEECHBUBBLE_SAILOR = 5,
+	// Banker falls back to trade icon for client compatibility.
+	SPEECHBUBBLE_BANKER = 2,
 	SPEECHBUBBLE_HIRELING = 7,
 };
 

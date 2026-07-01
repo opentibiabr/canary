@@ -1,3 +1,4 @@
+---
 name: Report a problem/bug
 description: Any issues that you have found while using the server
 labels: ["Type: Bug"]

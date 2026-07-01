@@ -314,7 +314,6 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
 	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
-	loadIntConfig(L, PARALLELISM, "parallelism", 2);
 	loadIntConfig(L, PARTY_LIST_MAX_DISTANCE, "partyListMaxDistance", 0);
 	loadIntConfig(L, PREY_BONUS_REROLL_PRICE, "preyBonusRerollPrice", 1);
 	loadIntConfig(L, PREY_BONUS_TIME, "preyBonusTime", 7200);
@@ -346,7 +345,6 @@ bool ConfigManager::load() {
 	loadIntConfig(L, STATUSQUERY_TIMEOUT, "statusTimeout", 5000);
 	loadIntConfig(L, STORE_COIN_PACKET, "coinPacketSize", 25);
 	loadIntConfig(L, STOREINBOX_MAXLIMIT, "storeInboxMaxLimit", 2000);
-	loadIntConfig(L, T_CONST, "temporaryConst", 2);
 	loadIntConfig(L, TASK_HUNTING_BONUS_REROLL_PRICE, "taskHuntingBonusRerollPrice", 1);
 	loadIntConfig(L, TASK_HUNTING_FREE_REROLL_TIME, "taskHuntingFreeRerollTime", 72000);
 	loadIntConfig(L, TASK_HUNTING_LIMIT_EXHAUST, "taskHuntingLimitedTasksExhaust", 72000);
@@ -385,7 +383,6 @@ bool ConfigManager::load() {
 	loadStringConfig(L, FORGE_FIENDISH_INTERVAL_TYPE, "forgeFiendishIntervalType", "hour");
 	loadStringConfig(L, GLOBAL_SERVER_SAVE_TIME, "globalServerSaveTime", "06:00");
 	loadStringConfig(L, LOCATION, "location", "");
-	loadStringConfig(L, M_CONST, "memoryConst", "1<<16");
 	loadStringConfig(L, METRICS_PROMETHEUS_ADDRESS, "metricsPrometheusAddress", "localhost:9464");
 	loadStringConfig(L, LUA_SCRIPT_BYTECODE_CACHE_PATH, "luaScriptBytecodeCachePath", "cache/lua-bytecode");
 	loadStringConfig(L, OWNER_EMAIL, "ownerEmail", "");

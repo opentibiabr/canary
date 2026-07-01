@@ -51,6 +51,7 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "map/spectators.hpp"
 #include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "server/network/webhook/webhook.hpp"
@@ -738,7 +739,19 @@ void Game::loadBoostedCreature() {
 
 void Game::start(ServiceManager* manager) {
 	// Game client protocols
-	manager->add<ProtocolGame>(static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT)));
+	const auto modernGamePort = protocol_port_utils::getModernGamePort();
+	manager->add<ProtocolGame>(modernGamePort);
+	if (g_configManager().getBoolean(OLD_PROTOCOL)) {
+		const auto legacy1100GamePort = protocol_port_utils::getLegacy1100GamePort();
+		if (legacy1100GamePort != modernGamePort) {
+			manager->add<ProtocolGame>(legacy1100GamePort);
+		}
+
+		const auto legacy860GamePort = protocol_port_utils::getLegacy860GamePort();
+		if (legacy860GamePort != modernGamePort && legacy860GamePort != legacy1100GamePort) {
+			manager->add<ProtocolGame>(legacy860GamePort);
+		}
+	}
 	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
 	// OT protocols
 	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT)));

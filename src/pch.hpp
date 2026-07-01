@@ -34,6 +34,7 @@
 #include <fstream>
 #include <forward_list>
 #include <functional>
+#include <limits>
 #include <list>
 #include <map>
 #include <memory>
@@ -51,7 +52,9 @@
 #include <variant>
 #include <numeric>
 #include <cmath>
+#include <chrono>
 #include <mutex>
+#include <optional>
 #include <stack>
 #include <source_location>
 #include <span>

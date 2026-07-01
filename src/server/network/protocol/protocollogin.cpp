@@ -11,6 +11,9 @@
 
 #include "config/configmanager.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
+#include "server/network/protocol/transport_codec.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "account/account.hpp"
 #include "creatures/players/livestream/livestream.hpp"
@@ -20,6 +23,10 @@
 #include "game/game.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+#endif
 
 void ProtocolLogin::disconnectClient(const std::string &message) const {
 	const auto output = OutputMessagePool::getOutputMessage();
@@ -36,10 +43,10 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	account.setProtocolCompat(oldProtocol);
 
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-		disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 		return;
 	} else if (!oldProtocol) {
-		disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 		return;
 	}
 
@@ -51,6 +58,7 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 
 	auto output = OutputMessagePool::getOutputMessage();
+	const std::string sessionKey = accountDescriptor + "\n" + password;
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
@@ -62,17 +70,57 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 		output->addString(ss.str());
 	}
 
-	// Add session key
-	output->addByte(0x28);
-	output->addString(accountDescriptor + "\n" + password);
-
 	// Add char list
 	auto [players, result] = account.getAccountPlayers();
 	if (AccountErrors_t::Ok != result) {
 		g_logger().warn("Account[{}] failed to load players!", account.getID());
 	}
 
+	const auto* loginLayout = protocolProfile ? ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id) : nullptr;
+	const auto characterListLayout = loginLayout ? loginLayout->characterListLayout : AccountCharacterListLayout::WorldListWithSessionKey;
+	if (loginLayout && loginLayout->sendsSessionKey) {
+		// Add session key
+		output->addByte(0x28);
+		output->addString(sessionKey);
+	}
+
 	output->addByte(0x64);
+
+	if (characterListLayout == AccountCharacterListLayout::LegacyCharacterList) {
+		const auto serverName = g_configManager().getString(SERVER_NAME);
+		const auto configuredWorldIp = g_configManager().getString(IP);
+		const auto worldIp = protocol_port_utils::legacyIpStringToNumber(configuredWorldIp);
+		if (worldIp == 0) {
+			g_logger().warn("Legacy character list cannot encode configured IP '{}'; old clients require a numeric IPv4 address.", configuredWorldIp);
+			disconnectClient("Legacy 8.60 clients require the server IP to be a numeric IPv4 address.");
+			return;
+		}
+
+		uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
+		output->addByte(size);
+
+		const auto worldPort = protocolProfile ? protocol_port_utils::getGamePortForProfile(*protocolProfile) : protocol_port_utils::getModernGamePort();
+		std::vector<std::string> characterNames;
+		characterNames.reserve(size);
+		for (const auto &[name, deletion] : players) {
+			output->addString(name);
+			output->addString(serverName);
+			output->add<uint32_t>(worldIp);
+			output->add<uint16_t>(worldPort);
+			characterNames.emplace_back(name);
+		}
+
+		output->add<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), account.getPremiumRemainingDays()));
+
+		send(output);
+
+		if (protocolProfile) {
+			ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+		}
+
+		disconnect();
+		return;
+	}
 
 	output->addByte(1); // number of worlds
 
@@ -80,15 +128,18 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addString(g_configManager().getString(SERVER_NAME));
 	output->addString(g_configManager().getString(IP));
 
-	output->add<uint16_t>(g_configManager().getNumber(GAME_PORT));
+	output->add<uint16_t>(protocolProfile ? protocol_port_utils::getGamePortForProfile(*protocolProfile) : protocol_port_utils::getModernGamePort());
 
 	output->addByte(0);
 
 	uint8_t size = std::min<size_t>(std::numeric_limits<uint8_t>::max(), players.size());
 	output->addByte(size);
+	std::vector<std::string> characterNames;
+	characterNames.reserve(size);
 	for (const auto &[name, deletion] : players) {
 		output->addByte(0);
 		output->addString(name);
+		characterNames.emplace_back(name);
 	}
 
 	// Get premium days, check is premium and get lastday
@@ -98,7 +149,55 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	send(output);
 
+	if (protocolProfile) {
+		ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+	}
+
 	disconnect();
+}
+
+const AccountLoginLayout* ProtocolLogin::resolveLoginLayout(NetworkMessage &msg, uint16_t version) {
+	const auto* loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(version);
+	if (!loginLayout) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	protocolProfile = ProtocolProfileRegistry::getProfile(loginLayout->profileId);
+	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	if (!loginLayout->hasAssetSignaturesBeforeRsa) {
+		msg.skipBytes(loginLayout->bytesToSkipBeforeRsa);
+		return loginLayout;
+	}
+
+	if (!msg.canRead(sizeof(uint32_t) * 3)) {
+		disconnectClient(fmt::format("Invalid login packet for protocol version {}.", version));
+		return nullptr;
+	}
+
+	const ClientAssetSignatures assetSignatures {
+		.dat = msg.get<uint32_t>(),
+		.spr = msg.get<uint32_t>(),
+		.pic = msg.get<uint32_t>(),
+	};
+
+	protocolProfile = ProtocolProfileRegistry::resolveByClientVersionAndAssets(version, assetSignatures);
+	if (!protocolProfile || !ProtocolProfileRegistry::isProfileAllowed(protocolProfile->id)) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	loginLayout = ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id);
+	if (!loginLayout) {
+		disconnectClient(fmt::format("Unsupported client protocol version {}.", version));
+		return nullptr;
+	}
+
+	return loginLayout;
 }
 
 void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
@@ -110,16 +209,22 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	msg.skipBytes(2); // client OS
 
 	auto version = msg.get<uint16_t>();
+	const auto* loginLayout = resolveLoginLayout(msg, version);
+	if (!loginLayout) {
+		return;
+	}
+
+	if (const auto connection = getConnection()) {
+		connection->setTransportCodec(TransportCodecs::get(loginLayout->responseTransport), InitialTransportState::ResolvedFromPrelude);
+	}
 
 	// Old protocol support
-	oldProtocol = version == 1100;
-
-	msg.skipBytes(17);
+	oldProtocol = protocolProfile->hasFeature(ProtocolFeature::OldProtocolCompat);
 	/*
-	 - Skipped bytes:
-	 - 4 bytes: client version (971+)
-	 - 12 bytes: dat, spr, pic signatures (4 bytes each)
-	 - 1 byte: preview world(971+)
+	 - Current/11.00 skips the remaining pre-RSA metadata:
+	   4 bytes client version, 12 bytes dat/spr/pic signatures, 1 preview byte.
+	 - 8.60 layouts read the dat/spr/pic signatures before RSA so the profile can
+	   be resolved from the actual asset contract instead of the protocol number only.
 	 */
 
 	if (!Protocol::RSA_decrypt(msg)) {
@@ -173,10 +278,10 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	std::string password = msg.getString();
 	if (accountDescriptor == "@livestream") {
 		if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
-			disconnectClient(fmt::format("Only protocol version {}.{} is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 			return;
 		} else if (!oldProtocol) {
-			disconnectClient(fmt::format("Only protocol version {}.{} or outdated 11.00 is allowed.", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER));
+			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 			return;
 		}
 

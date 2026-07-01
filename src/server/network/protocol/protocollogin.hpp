@@ -10,6 +10,7 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
 
 class NetworkMessage;
 class OutputMessage;
@@ -31,9 +32,11 @@ public:
 
 private:
 	void disconnectClient(const std::string &message) const;
+	const AccountLoginLayout* resolveLoginLayout(NetworkMessage &msg, uint16_t version);
 
 	void getCharacterList(const std::string &accountDescriptor, const std::string &password) const;
 	void getLivestreamCharacterList(const std::string &password) const;
 
 	bool oldProtocol = false;
+	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
 };

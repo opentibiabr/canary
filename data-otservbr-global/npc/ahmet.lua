@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 npcConfig.shop = { -- Sellable items
 	{ itemName = "basket", clientId = 2855, buy = 6 },
 	{ itemName = "bottle", clientId = 2875, buy = 3 },

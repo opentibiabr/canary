@@ -29,7 +29,9 @@ npcConfig.voices = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "normal",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 -- Npc shop
 npcConfig.shop = {

@@ -20,7 +20,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -100,7 +102,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npc:getPosition():sendMagicEffect(CONST_ME_GIFT_WRAPS)
 			npcHandler:say("Well, it's a welcome change from all that gingerbread ... AHHH HOW DARE YOU??? FEEL MY WRATH!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			if player:removeItem(3734, 1) then
 				player:setStorageValue(Storage.BloodHerbQuest, 2)

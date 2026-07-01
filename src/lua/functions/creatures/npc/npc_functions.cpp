@@ -597,7 +597,7 @@ int NpcFunctions::luaNpcSellItem(lua_State* L) {
 
 	constexpr uint32_t shoppingBagPrice = 20;
 	constexpr double shoppingBagSlots = 20;
-	if (const auto &tile = ignoreCap ? player->getTile() : nullptr; tile) {
+	if (const auto tile = ignoreCap ? player->getTile() : PolyPtr<Tile>::Borrowed {}; tile) {
 		double slotsNedeed = 0;
 		if (it.stackable) {
 			slotsNedeed = inBackpacks ? std::ceil(std::ceil(amount / it.stackSize) / shoppingBagSlots) : std::ceil(amount / it.stackSize);

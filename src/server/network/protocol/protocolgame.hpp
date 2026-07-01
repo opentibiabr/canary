@@ -12,6 +12,7 @@
 #include "server/network/protocol/protocol.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
+#include "utils/worldpointer.hpp"
 #include "creatures/players/stash_definitions.hpp"
 
 enum class PlayerIcon : uint8_t;
@@ -441,7 +442,7 @@ private:
 	void sendUpdateTileItem(const Position &pos, uint32_t stackpos, const std::shared_ptr<Item> &item);
 	void sendRemoveTileThing(const Position &pos, uint32_t stackpos, std::source_location loc = std::source_location::current());
 	void sendUpdateTileCreature(const Position &pos, uint32_t stackpos, const std::shared_ptr<Creature> &creature);
-	void sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos);
+	void sendUpdateTile(PolyPtr<Tile>::Borrowed tile, const Position &pos);
 
 	void sendAddCreature(const std::shared_ptr<Creature> &creature, const Position &pos, int32_t stackpos, bool isLogin);
 	void sendMoveCreature(const std::shared_ptr<Creature> &creature, const Position &newPos, int32_t newStackPos, const Position &oldPos, int32_t oldStackPos, bool teleport);
@@ -476,7 +477,7 @@ private:
 
 	// Help functions
 	// translate a tile to clientreadable format
-	void GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
+	void GetTileDescription(PolyPtr<Tile>::Borrowed tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);

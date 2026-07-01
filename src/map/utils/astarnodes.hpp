@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "utils/worldpointer.hpp"
+
 struct Position;
 class Creature;
 class Tile;
@@ -31,7 +33,7 @@ public:
 	AStarNode* getNodeByPosition(uint32_t x, uint32_t y);
 
 	static int_fast32_t getMapWalkCost(const AStarNode* node, const Position &neighborPos);
-	static int_fast32_t getTileWalkCost(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile);
+	static int_fast32_t getTileWalkCost(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile);
 
 private:
 	static constexpr int32_t MAX_NODES = 512;

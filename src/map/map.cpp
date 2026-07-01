@@ -148,58 +148,70 @@ bool Map::save() {
 	return false;
 }
 
-std::shared_ptr<Tile> Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
-	auto tile = getTile(x, y, z);
-	if (!tile) {
-		if (isDynamic) {
-			tile = std::make_shared<DynamicTile>(x, y, z);
-		} else {
-			tile = std::make_shared<StaticTile>(x, y, z);
-		}
-
-		setTile(x, y, z, tile);
+PolyPtr<Tile>::Borrowed Map::getOrCreateTile(uint16_t x, uint16_t y, uint8_t z, bool isDynamic) {
+	// Bail out on invalid layer before constructing anything — `setTile`
+	// silently drops out-of-range writes, which would leave us returning
+	// a `Borrowed` of a locally-destroyed `Owning` (dangling).
+	if (z >= MAP_MAX_LAYERS) {
+		return {};
 	}
 
-	return tile;
+	if (auto tile = getTile(x, y, z)) {
+		return tile;
+	}
+	// Construct the Owning explicitly upcasted to `PolyPtr<Tile>::Owning`
+	// on each branch — the ternary cannot deduce a common type from
+	// `PolyPtr<DynamicTile>::Owning` and `PolyPtr<StaticTile>::Owning`
+	// (different instantiations).
+	//
+	// Borrow BEFORE handing the Owning to setTile — `Borrowed` shares the
+	// underlying Header, so it stays valid after Floor takes ownership.
+	// Avoids the re-fetch race where a concurrent setTile could have
+	// replaced the slot between our setTile and a re-getTile lookup.
+	PolyPtr<Tile>::Owning owning = isDynamic
+		? PolyPtr<Tile>::Owning(make_poly<DynamicTile>(x, y, z))
+		: PolyPtr<Tile>::Owning(make_poly<StaticTile>(x, y, z));
+	auto borrowed = owning.borrow();
+	setTile(x, y, z, std::move(owning));
+	return borrowed;
 }
 
-std::shared_ptr<Tile> Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
+PolyPtr<Tile>::Borrowed Map::getLoadedTile(uint16_t x, uint16_t y, uint8_t z) {
 	if (z >= MAP_MAX_LAYERS) {
-		return nullptr;
+		return {};
 	}
 
 	const auto &leaf = getMapSector(x, y);
 	if (!leaf) {
-		return nullptr;
+		return {};
 	}
 
 	const auto &floor = leaf->getFloor(z);
 	if (!floor) {
-		return nullptr;
+		return {};
 	}
 
-	const auto &tile = floor->getTile(x, y);
-	return tile;
+	return floor->getTile(x, y);
 }
 
-std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
+PolyPtr<Tile>::Borrowed Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	// Check if the coordinates are valid
 	if (x == 0 && y == 0 && z == 0) {
-		return nullptr;
+		return {};
 	}
 
 	if (z >= MAP_MAX_LAYERS) {
-		return nullptr;
+		return {};
 	}
 
 	const auto &sector = getMapSector(x, y);
 	if (!sector) {
-		return nullptr;
+		return {};
 	}
 
 	const auto &floor = sector->getFloor(z);
 	if (!floor) {
-		return nullptr;
+		return {};
 	}
 
 	return getOrCreateTileFromCache(floor, x, y);
@@ -218,16 +230,16 @@ void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
 	}
 }
 
-void Map::setTile(uint16_t x, uint16_t y, uint8_t z, const std::shared_ptr<Tile> &newTile) {
+void Map::setTile(uint16_t x, uint16_t y, uint8_t z, PolyPtr<Tile>::Owning newTile) {
 	if (z >= MAP_MAX_LAYERS) {
 		g_logger().error("Attempt to set tile on invalid coordinate: {}", Position(x, y, z).toString());
 		return;
 	}
 
 	if (const auto &sector = getMapSector(x, y)) {
-		sector->createFloor(z)->setTile(x, y, newTile);
+		sector->createFloor(z)->setTile(x, y, std::move(newTile));
 	} else {
-		getBestMapSector(x, y)->createFloor(z)->setTile(x, y, newTile);
+		getBestMapSector(x, y)->createFloor(z)->setTile(x, y, std::move(newTile));
 	}
 }
 
@@ -236,7 +248,7 @@ bool Map::placeCreature(
 	const std::shared_ptr<Creature> &creature,
 	bool extendedPos /* = false*/,
 	bool forceLogin /* = false*/,
-	const std::shared_ptr<Tile> &centerTile /* = nullptr */
+	PolyPtr<Tile>::Borrowed centerTile /* = {} */
 ) {
 	const auto &monster = creature ? creature->getMonster() : nullptr;
 	if (monster) {
@@ -351,7 +363,7 @@ bool Map::placeCreature(
 	return true;
 }
 
-void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
+void Map::moveCreature(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, bool forceTeleport /* = false*/) {
 	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
@@ -465,17 +477,38 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	auto events = [=] {
-		oldTile->postRemoveNotification(creature, newTile, 0);
-		newTile->postAddNotification(creature, oldTile, 0);
-		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
-	};
-
 	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
-		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+		// Async path: deferred to next dispatcher iteration, which runs AFTER
+		// the current tick's QSBR drain. `Borrowed` is non-pinning — if a
+		// concurrent `Floor::setTile` retired the tile between the schedule
+		// and the dispatch, the drain destroys it before this lambda fires.
+		// Pin the tiles via `Shared` so they survive into the next tick.
+		//
+		// `Borrowed::share()` now returns a null Shared if the block was
+		// already retired (CAS refuses to resurrect). In the single-thread
+		// dispatcher we're still in the same tick as `getTile()` so the
+		// pin should succeed, but the lambda guards defensively — under
+		// future multi-thread dispatch a concurrent retire could in
+		// principle null either pin between schedule and dispatch.
+		g_dispatcher().addEvent(
+			[creature, fromZones, toZones,
+		     oldTilePin = oldTile.share(),
+		     newTilePin = newTile.share()] {
+				if (oldTilePin && newTilePin) {
+					oldTilePin->postRemoveNotification(creature, newTilePin->getCylinder(), 0);
+					newTilePin->postAddNotification(creature, oldTilePin->getCylinder(), 0);
+				}
+				// Zone change book-keeping doesn't touch tiles — always fire.
+				g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+			},
+			"Map::moveCreature"
+		);
 	} else {
-		events();
+		// Sync path: caller's stack still holds the Tile borrows alive — no
+		// pin needed.
+		oldTile->postRemoveNotification(creature, newTile->getCylinder(), 0);
+		newTile->postAddNotification(creature, oldTile->getCylinder(), 0);
+		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
 	}
 
 	if (forceTeleport) {
@@ -670,15 +703,15 @@ bool Map::isSightClear(const Position &fromPos, const Position &toPos, bool floo
 	return true;
 }
 
-std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos) {
+PolyPtr<Tile>::Borrowed Map::canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos) {
 	if (!creature || creature->isRemoved()) {
-		return nullptr;
+		return {};
 	}
 
-	const auto &tile = getTile(pos.x, pos.y, pos.z);
+	const auto tile = getTile(pos.x, pos.y, pos.z);
 	if (creature->getTile() != tile) {
 		if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
-			return nullptr;
+			return {};
 		}
 	}
 

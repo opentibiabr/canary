@@ -97,7 +97,7 @@ public:
 
 	void onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) override;
 	void onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLogout) override;
-	void onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) override;
+	void onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) override;
 	void onCreatureSay(const std::shared_ptr<Creature> &creature, SpeakClasses type, const std::string &text) override;
 	void onAttackedByPlayer(const std::shared_ptr<Player> &attackerPlayer);
 	void onSpawn(const Position &position);
@@ -368,9 +368,9 @@ private:
 	 * @param tile Shared pointer to the tile whose items should be processed.
 	 * @param nextDirection Direction in which items should be pushed.
 	 */
-	static void pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection);
+	static void pushItems(PolyPtr<Tile>::Borrowed tile, const Direction &nextDirection);
 	static bool pushCreature(const std::shared_ptr<Creature> &creature);
-	static void pushCreatures(const std::shared_ptr<Tile> &tile);
+	static void pushCreatures(PolyPtr<Tile>::Borrowed tile);
 
 	void onThinkTarget(uint32_t interval);
 	void onThinkYell(uint32_t interval);

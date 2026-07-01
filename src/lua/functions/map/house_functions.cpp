@@ -356,7 +356,7 @@ int HouseFunctions::luaHouseGetTiles(lua_State* L) {
 
 	int index = 0;
 	for (const auto &tile : tiles) {
-		Lua::pushUserdata<Tile>(L, tile);
+		Lua::pushUserdataPoly<Tile>(L, tile);
 		Lua::setMetatable(L, -1, "Tile");
 		lua_rawseti(L, -2, ++index);
 	}

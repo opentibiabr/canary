@@ -16,6 +16,7 @@
 #include "items/tile.hpp"
 #include "items/items_definitions.hpp"
 #include "lib/logging/in_memory_logger.hpp"
+#include "utils/worldpointer.hpp"
 
 namespace {
 	constexpr uint32_t kPlayerGuid = 3974;
@@ -25,9 +26,24 @@ namespace {
 	const Position kPlayerPosition { 100, 100, 7 };
 	const Position kOutOfRangeNpcPosition { 100, 106, 7 };
 
+	// Per-test scratch tiles, kept alive for the duration of the test.
+	// Each `placeCreature` call appends here so the Owning outlives the
+	// test body — without this, `make_poly<DynamicTile>` would retire
+	// at the end of the helper and creature->m_parent (Weak<Tile>) would
+	// see the tile expired before any assertion can run.
+	// NOSONAR(cpp:S5421) — mutable on purpose; tests append to it and the
+	// fixture clears it in SetUp/TearDown. `const` would break the API.
+	inline std::vector<PolyPtr<Tile>::Owning> g_scratchTiles;
+
 	void placeCreature(const std::shared_ptr<Creature> &creature, const Position &position) {
-		auto tile = std::make_shared<DynamicTile>(position);
-		tile->addThing(creature);
+		// Must use `make_poly` (not `std::make_shared`) so the
+		// `enable_borrowed_from_this` mixin's `poly_header_` field is
+		// wired — `Tile::addThing` internally sets the creature's
+		// parent via `borrowedFromThis()`, which returns empty on a
+		// stack/heap Tile that didn't go through `make_poly`.
+		PolyPtr<Tile>::Owning tile = make_poly<DynamicTile>(position);
+		tile.borrow()->addThing(creature);
+		g_scratchTiles.emplace_back(std::move(tile));
 	}
 
 	std::shared_ptr<Player> createRegisteredPlayer(Game &game) {
@@ -98,10 +114,19 @@ namespace {
 
 	private:
 		void SetUp() override {
+			g_scratchTiles.clear();
 			player = createRegisteredPlayer(game);
 			npc = createOutOfRangeShopNpc();
 			startBankBalance = player->getBankBalance();
 			startHasShopItem = player->hasItemCountById(kShopItemId, 1, false);
+		}
+
+		void TearDown() override {
+			// Release the scratch tiles BEFORE the next test sets up. They
+			// retire to QSBR; flush so the per-tick drain doesn't grow
+			// across tests.
+			g_scratchTiles.clear();
+			PolyPtr<Tile>::quiescentState();
 		}
 
 		Game game;

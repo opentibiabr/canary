@@ -25,8 +25,35 @@
 #include "utils/tools.hpp"
 #include "game/scheduling/dispatcher.hpp"
 
-auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
-const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
+std::shared_ptr<Cylinder> Tile::getCylinder() {
+	// Bridge to the legacy `shared_ptr<Cylinder>` API. The returned
+	// shared_ptr PINS the underlying Tile for its entire lifetime — the
+	// custom deleter holds a `PolyPtr<Tile>::Shared` that keeps the
+	// PolyPtr's strong refcount > 0. Callers that persist the result
+	// across tick boundaries (deferred events, queues, member fields)
+	// are safe by construction.
+	//
+	// Cost analysis per call (with this design):
+	//   - 1 atomic ADD on PolyPtr strong (`share()`)
+	//   - 1 heap alloc for the shared_ptr control block (stores the
+	//     deleter; the captured `Shared` SBOs into the deleter slot —
+	//     `Sp_counted_deleter` keeps it inline)
+	//   - control block init store (relaxed, not atomic)
+	//
+	// The previous holder-based design (`make_shared<Shared>` + aliasing
+	// constructor) paid an extra ADD+SUB pair on the holder's control
+	// block: one when the alias ctor copied the holder, one when the
+	// local holder went out of scope. The custom-deleter form avoids
+	// that intermediate refcount dance.
+	auto pinned = this->borrowedFromThis().share();
+	if (!pinned) {
+		return nullptr;
+	}
+	return std::shared_ptr<Cylinder>(
+		static_cast<Cylinder*>(this),
+		[pinned = std::move(pinned)](Cylinder*) noexcept { /* keeps pinned alive via capture */ }
+	);
+}
 
 bool Tile::hasProperty(ItemProperty prop) const {
 	switch (prop) {
@@ -375,7 +402,8 @@ void Tile::onAddTileItem(const std::shared_ptr<Item> &item) {
 	}
 
 	if ((item->hasProperty(CONST_PROP_MOVABLE) || item->getContainer()) || (item->isWrapable() && !item->hasProperty(CONST_PROP_MOVABLE) && !item->hasProperty(CONST_PROP_BLOCKPATH))) {
-		const auto it = g_game().browseFields.find(static_self_cast<Tile>());
+		// Transparent lookup — no `.share()` atomic needed.
+		const auto it = g_game().browseFields.find(borrowedFromThis());
 		if (it != g_game().browseFields.end()) {
 			const auto &lockedCylinder = it->second.lock();
 			if (lockedCylinder) {
@@ -394,19 +422,19 @@ void Tile::onAddTileItem(const std::shared_ptr<Item> &item) {
 	// send to client
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendAddTileItem(static_self_cast<Tile>(), cylinderMapPos, item);
+			tmpPlayer->sendAddTileItem(borrowedFromThis(), cylinderMapPos, item);
 		}
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->onAddTileItem(static_self_cast<Tile>(), cylinderMapPos);
+		spectator->onAddTileItem(borrowedFromThis(), cylinderMapPos);
 	}
 
 	if ((!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES))
 	    && item->isCleanable()) {
 		if (!this->getHouse()) {
-			g_game().addTileToClean(static_self_cast<Tile>());
+			g_game().addTileToClean(borrowedFromThis());
 		}
 	}
 
@@ -460,7 +488,7 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 				const int32_t index = lockedCylinder->getThingIndex(oldItem);
 				if (index != -1) {
 					lockedCylinder->replaceThing(index, newItem);
-					newItem->setParent(static_self_cast<Tile>());
+					newItem->setParent(borrowedFromThis());
 				}
 			}
 		}
@@ -483,13 +511,13 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 	// send to client
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendUpdateTileItem(static_self_cast<Tile>(), cylinderMapPos, newItem);
+			tmpPlayer->sendUpdateTileItem(borrowedFromThis(), cylinderMapPos, newItem);
 		}
 	}
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->onUpdateTileItem(static_self_cast<Tile>(), cylinderMapPos, oldItem, oldType, newItem, newType);
+		spectator->onUpdateTileItem(borrowedFromThis(), cylinderMapPos, oldItem, oldType, newItem, newType);
 	}
 }
 
@@ -527,13 +555,13 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 
 	// event methods
 	for (const auto &spectator : spectators) {
-		spectator->onRemoveTileItem(static_self_cast<Tile>(), cylinderMapPos, iType, item);
+		spectator->onRemoveTileItem(borrowedFromThis(), cylinderMapPos, iType, item);
 	}
 
 	if (!hasFlag(TILESTATE_PROTECTIONZONE) || g_configManager().getBoolean(CLEAN_PROTECTION_ZONES)) {
 		const auto &items = getItemList();
 		if (!items || items->empty()) {
-			g_game().removeTileToClean(static_self_cast<Tile>());
+			g_game().removeTileToClean(borrowedFromThis());
 			return;
 		}
 
@@ -546,7 +574,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 		}
 
 		if (!ret) {
-			g_game().removeTileToClean(static_self_cast<Tile>());
+			g_game().removeTileToClean(borrowedFromThis());
 		}
 	}
 
@@ -897,7 +925,7 @@ ReturnValue Tile::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t coun
 }
 
 std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_ptr<Thing> &thing, std::shared_ptr<Item> &destItem, uint32_t &tileFlags) {
-	std::shared_ptr<Tile> destTile = nullptr;
+	PolyPtr<Tile>::Borrowed destTile;
 	destItem = nullptr;
 
 	if (hasFlag(TILESTATE_FLOORCHANGE_DOWN)) {
@@ -977,8 +1005,8 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 		destTile = g_game().map.getTile(dx, dy, dz);
 	}
 
-	if (destTile == nullptr) {
-		destTile = static_self_cast<Tile>();
+	if (!destTile) {
+		destTile = borrowedFromThis();
 	} else {
 		tileFlags |= FLAG_NOLIMIT; // Will ignore that there is blocking items/creatures
 	}
@@ -989,7 +1017,7 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 			destItem = destThing->getItem();
 			const auto &thingItem = thing ? thing->getItem() : nullptr;
 			if (!thingItem || thingItem->getMailbox() != destItem->getMailbox()) {
-				return destTile;
+				return destTile->getCylinder();
 			}
 			const auto &destCylinder = destThing->getCylinder();
 			if (destCylinder && !destCylinder->getContainer()) {
@@ -997,10 +1025,10 @@ std::shared_ptr<Cylinder> Tile::queryDestination(int32_t &, const std::shared_pt
 			}
 		}
 	}
-	return destTile;
+	return destTile ? destTile->getCylinder() : nullptr;
 }
 
-std::vector<std::shared_ptr<Tile>> Tile::getSurroundingTiles() {
+std::vector<PolyPtr<Tile>::Borrowed> Tile::getSurroundingTiles() {
 	const auto position = getPosition();
 	return {
 		g_game().map.getTile(position.x - 1, position.y, position.z),
@@ -1026,7 +1054,7 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 	const auto &creature = thing->getCreature();
 	if (creature) {
 		Spectators::clearCache();
-		creature->setParent(static_self_cast<Tile>());
+		creature->setParent(borrowedFromThis());
 
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
@@ -1041,7 +1069,7 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 			return /*RETURNVALUE_NOTPOSSIBLE*/;
 		}
 
-		item->setParent(static_self_cast<Tile>());
+		item->setParent(borrowedFromThis());
 
 		const ItemType &itemType = Item::items[item->getID()];
 		if (itemType.isGroundTile()) {
@@ -1217,7 +1245,7 @@ void Tile::replaceThing(uint32_t index, const std::shared_ptr<Thing> &thing) {
 	}
 
 	if (isInserted) {
-		item->setParent(static_self_cast<Tile>());
+		item->setParent(borrowedFromThis());
 
 		resetTileFlags(oldItem);
 		setTileFlags(item);
@@ -1589,9 +1617,9 @@ void Tile::postAddNotification(const std::shared_ptr<Thing> &thing, const std::s
 
 		// calling movement scripts
 		if (creature) {
-			g_moveEvents().onCreatureMove(creature, static_self_cast<Tile>(), MOVE_EVENT_STEP_IN);
+			g_moveEvents().onCreatureMove(creature, borrowedFromThis(), MOVE_EVENT_STEP_IN);
 		} else if (item) {
-			g_moveEvents().onItemMove(item, static_self_cast<Tile>(), true);
+			g_moveEvents().onItemMove(item, borrowedFromThis(), true);
 		}
 	}
 }
@@ -1614,11 +1642,11 @@ void Tile::postRemoveNotification(const std::shared_ptr<Thing> &thing, const std
 	// calling movement scripts
 	const auto &creature = thing->getCreature();
 	if (creature) {
-		g_moveEvents().onCreatureMove(creature, static_self_cast<Tile>(), MOVE_EVENT_STEP_OUT);
+		g_moveEvents().onCreatureMove(creature, borrowedFromThis(), MOVE_EVENT_STEP_OUT);
 	} else {
 		const auto &item = thing->getItem();
 		if (item) {
-			g_moveEvents().onItemMove(item, static_self_cast<Tile>(), false);
+			g_moveEvents().onItemMove(item, borrowedFromThis(), false);
 		}
 	}
 }
@@ -1954,14 +1982,59 @@ void Tile::clearZones() {
 	}
 }
 
+void Tile::safeCall(std::function<void(PolyPtr<Tile>::Borrowed)> &&action) const {
+	// NOSONAR(cpp:S859) — `borrowedFromThis()` is non-const by design
+	// (returns a non-const `Borrowed<Tile>`, matching `shared_from_this`).
+	// The const-cast only escapes the const on `this` to call it; the
+	// view itself isn't used to mutate Tile state from this const method.
+	auto self = const_cast<Tile*>(this)->borrowedFromThis();
+	// `borrowedFromThis()` returns empty only if `poly_header_` was never
+	// wired — i.e., the Tile wasn't constructed via `make_poly<>`. In
+	// production every Tile flows through `make_poly` (MapCache / Map);
+	// a null here is a programming error worth surfacing loudly.
+	assert(self && "Tile not wired — construct via make_poly<DerivedTile>()");
+	if (g_dispatcher().context().isAsync()) {
+		// Pin via Shared so the lambda survives across QSBR drains.
+		// `share()` can return null if the tile was already retired
+		// between borrowedFromThis() and here (CAS-loop in
+		// worldpointer.hpp). In release builds the assert above
+		// disappears, so enqueueing an event whose pin is null would
+		// silently invoke `action` with an empty Borrowed — drop the
+		// work explicitly instead.
+		auto pinned = self.share();
+		if (!pinned) {
+			assert(false && "Tile retired before async safeCall could pin");
+			return;
+		}
+		g_dispatcher().addEvent(
+			[pinned = std::move(pinned), action = std::move(action)] {
+				action(pinned);
+			},
+			g_dispatcher().context().getName()
+		);
+	} else {
+		// Sync — caller's stack already pins the tile.
+		action(self);
+	}
+}
+
 void Tile::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
-			if (weak_self.lock()) {
+		// NOSONAR(cpp:S859) — same rationale as the Borrowed overload above.
+		auto pin = const_cast<Tile*>(this)->borrowedFromThis().share();
+		// Same rationale as the Borrowed overload above: assert covers
+		// debug, but release builds need the runtime guard so we don't
+		// enqueue an event whose pin is empty.
+		if (!pin) {
+			assert(false && "Tile retired before async safeCall could pin");
+			return;
+		}
+		g_dispatcher().addEvent(
+			[pin = std::move(pin), action = std::move(action)] {
 				action();
-			}
-		},
-		                        g_dispatcher().context().getName());
+			},
+			g_dispatcher().context().getName()
+		);
 	} else {
 		action();
 	}

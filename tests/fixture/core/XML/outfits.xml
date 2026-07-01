@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<outfits>
+	<outfit type="0" looktype="128" name="Citizen" enabled="yes" premium="no" unlocked="yes" from="default" />
+	<outfit type="0" looktype="129" name="Hunter" enabled="yes" premium="yes" unlocked="yes" from="default" />
+	<outfit type="0" looktype="130" name="Mage" enabled="yes" premium="no" unlocked="no" from="quest" />
+	<outfit type="1" looktype="136" name="Citizen" enabled="yes" premium="no" unlocked="yes" from="default" />
+	<outfit type="1" looktype="137" name="Hunter" enabled="yes" premium="yes" unlocked="yes" from="default" />
+	<outfit type="1" looktype="138" name="Mage" enabled="yes" premium="no" unlocked="no" from="quest" />
+</outfits>

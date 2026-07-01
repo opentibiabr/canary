@@ -374,7 +374,7 @@ void Monster::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool i
 	}
 }
 
-void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
+void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	if (m_monsterType->info.creatureMoveEvent != -1) {
@@ -1438,7 +1438,7 @@ bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &dir) 
 	}
 
 	const Position &fromPos = fromTile->getPosition();
-	std::shared_ptr<Cylinder> fromCyl = fromTile;
+	auto fromCyl = fromTile->getCylinder();
 
 	for (auto [dx, dy] : getPushItemLocationOptions(dir)) {
 		Position toPos(fromPos.x + dx, fromPos.y + dy, fromPos.z);
@@ -1451,7 +1451,7 @@ bool Monster::pushItem(const std::shared_ptr<Item> &item, const Direction &dir) 
 	return false;
 }
 
-void Monster::pushItems(const std::shared_ptr<Tile> &tile, const Direction &nextDirection) {
+void Monster::pushItems(PolyPtr<Tile>::Borrowed tile, const Direction &nextDirection) {
 	if (!tile) {
 		return;
 	}
@@ -1516,7 +1516,7 @@ bool Monster::pushCreature(const std::shared_ptr<Creature> &creature) {
 	return false;
 }
 
-void Monster::pushCreatures(const std::shared_ptr<Tile> &tile) {
+void Monster::pushCreatures(PolyPtr<Tile>::Borrowed tile) {
 	if (!tile) {
 		return;
 	}
@@ -1583,8 +1583,15 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 				if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
 					Monster::pushCreatures(posTile);
 				} else {
-					g_dispatcher().addWalkEvent([=] {
-						Monster::pushCreatures(posTile);
+					// `posTile` is a `Borrowed` — capturing it across the
+					// dispatcher boundary would let the lambda observe a
+					// retired tile (QSBR drains at end-of-tick, lambda fires
+					// later). Re-resolve from the Position inside the
+					// lambda; positions are trivially copyable.
+					g_dispatcher().addWalkEvent([pos] {
+						if (const auto tile = g_game().map.getTile(pos)) {
+							Monster::pushCreatures(tile);
+						}
 					});
 				}
 			}

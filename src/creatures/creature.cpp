@@ -432,7 +432,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 	}
 }
 
-void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
+void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (hasCondition(CONDITION_ROOTED)) {
 		resetMovementState();
@@ -1590,24 +1590,46 @@ bool Creature::unregisterCreatureEvent(const std::string &name) {
 }
 
 std::shared_ptr<Cylinder> Creature::getParent() {
-	return getTile();
+	auto tile = getTile();
+	return tile ? tile->getCylinder() : nullptr;
 }
 
-void Creature::setParent(std::weak_ptr<Cylinder> cylinder) {
+void Creature::setParentImpl(ParentRef parent) {
 	const auto oldGroundSpeed = walk.groundSpeed;
 	walk.groundSpeed = 150;
 
-	if (const auto &lockedCylinder = cylinder.lock()) {
-		const auto &newParent = lockedCylinder->getTile();
-		position = newParent->getPosition();
-		m_tile = newParent;
+	// Resolve to a `Borrowed` (live tile to read) regardless of which arm
+	// of the variant came in. Legacy `weak_ptr<Cylinder>` arms walk up via
+	// the cylinder's `getTile()`. Tile arm uses `borrowIfAlive` to handle
+	// the (rare) case where the Tile was already destroyed.
+	auto resolved = std::visit(
+		[](auto &arm) -> PolyPtr<Tile>::Borrowed {
+			using A = std::decay_t<decltype(arm)>;
+			if constexpr (std::is_same_v<A, PolyPtr<Tile>::Weak>) {
+				return arm.borrowIfAlive();
+			} else {
+				if (const auto &locked = arm.lock()) {
+					return locked->getTile();
+				}
+				return {};
+			}
+		},
+		parent
+	);
 
-		if (newParent->getGround()) {
-			const auto &it = Item::items[newParent->getGround()->getID()];
+	if (resolved) {
+		position = resolved->getPosition();
+		if (resolved->getGround()) {
+			const auto &it = Item::items[resolved->getGround()->getID()];
 			if (it.speed > 0) {
 				walk.groundSpeed = it.speed;
 			}
 		}
+		// Store as Weak — Tile owns Creature via `creatures` vector, so
+		// pinning here would create a cycle (same rationale as Item.m_parent).
+		m_tile = PolyPtr<Tile>::Weak { resolved };
+	} else {
+		m_tile = nullptr;
 	}
 
 	if (walk.groundSpeed != oldGroundSpeed) {

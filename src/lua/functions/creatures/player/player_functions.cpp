@@ -3039,7 +3039,7 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 		return 1;
 	}
 
-	std::shared_ptr<Mount> mount = nullptr;
+	Mounts::BorrowedMount mount;
 	if (Lua::isNumber(L, 2)) {
 		mount = g_game().mounts->getMountByID(Lua::getNumber<uint8_t>(L, 2));
 	} else {
@@ -3047,7 +3047,7 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 	}
 
 	if (mount) {
-		Lua::pushBoolean(L, player->hasMount(mount));
+		Lua::pushBoolean(L, player->hasMount(mount.get()));
 	} else {
 		lua_pushnil(L);
 	}

@@ -11,6 +11,7 @@
 
 #include "items/items_definitions.hpp"
 #include "utils/mapsector.hpp"
+#include "utils/worldpointer.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
@@ -182,7 +183,7 @@ public:
 	}
 
 protected:
-	std::shared_ptr<Tile> getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y);
+	PolyPtr<Tile>::Borrowed getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y);
 
 	std::unordered_map<uint32_t, MapSector> mapSectors;
 

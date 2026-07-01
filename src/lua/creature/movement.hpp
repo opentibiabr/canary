@@ -10,6 +10,7 @@
 #pragma once
 
 #include "declarations.hpp"
+#include "utils/worldpointer.hpp"
 
 class MoveEvent;
 class LuaScriptInterface;
@@ -35,10 +36,10 @@ public:
 
 	static MoveEvents &getInstance();
 
-	uint32_t onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &tile, MoveEvent_t eventType);
+	uint32_t onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed tile, MoveEvent_t eventType);
 	uint32_t onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck);
 	uint32_t onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot);
-	uint32_t onItemMove(const std::shared_ptr<Item> &item, const std::shared_ptr<Tile> &tile, bool isAdd);
+	uint32_t onItemMove(const std::shared_ptr<Item> &item, PolyPtr<Tile>::Borrowed tile, bool isAdd);
 
 	std::map<Position, MoveEventList> getPositionsMap() const {
 		return positionsMap;
@@ -116,7 +117,7 @@ public:
 private:
 	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, int32_t id, std::map<int32_t, MoveEventList> &moveListMap) const;
 	bool registerEvent(const std::shared_ptr<MoveEvent> &moveEvent, const Position &position, std::map<Position, MoveEventList> &moveListMap) const;
-	std::shared_ptr<MoveEvent> getEvent(const std::shared_ptr<Tile> &tile, MoveEvent_t eventType);
+	std::shared_ptr<MoveEvent> getEvent(PolyPtr<Tile>::Borrowed tile, MoveEvent_t eventType);
 
 	std::shared_ptr<MoveEvent> getEvent(const std::shared_ptr<Item> &item, MoveEvent_t eventType, Slots_t slot);
 

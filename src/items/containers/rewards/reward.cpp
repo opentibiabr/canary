@@ -52,5 +52,5 @@ void Reward::postRemoveNotification(const std::shared_ptr<Thing> &thing, const s
 }
 
 std::shared_ptr<Cylinder> Reward::getParent() {
-	return m_parent.lock();
+	return Item::getParent();
 }

@@ -44,7 +44,7 @@ std::shared_ptr<Container> Container::create(uint16_t type, uint16_t size, bool 
 	return std::make_shared<Container>(type, size, unlocked, pagination);
 }
 
-std::shared_ptr<Container> Container::createBrowseField(const std::shared_ptr<Tile> &tile) {
+std::shared_ptr<Container> Container::createBrowseField(PolyPtr<Tile>::Borrowed tile) {
 	const auto &newContainer = create(ITEM_BROWSEFIELD, 30, false, true);
 	if (!newContainer || !tile) {
 		return nullptr;
@@ -693,7 +693,8 @@ ReturnValue Container::queryRemove(const std::shared_ptr<Thing> &thing, uint32_t
 		g_logger().debug("{} - Item is not movable", __FUNCTION__);
 		return RETURNVALUE_NOTMOVABLE;
 	}
-	const std::shared_ptr<HouseTile> &houseTile = std::dynamic_pointer_cast<HouseTile>(getTopParent());
+	auto topParent = getTopParent();
+	auto* houseTile = topParent ? dynamic_cast<HouseTile*>(topParent.get()) : nullptr;
 	if (houseTile) {
 		return houseTile->queryRemove(thing, count, flags, actor);
 	}

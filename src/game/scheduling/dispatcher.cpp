@@ -11,6 +11,10 @@
 
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
+#include "creatures/appearance/mounts/mounts.hpp"
+#include "creatures/appearance/outfit/outfit.hpp"
+#include "items/tile.hpp"
+#include "utils/worldpointer.hpp"
 #include "utils/tools.hpp"
 
 thread_local DispatcherContext Dispatcher::dispacherContext;
@@ -37,10 +41,31 @@ void Dispatcher::init() {
 			executeScheduledEvents();
 			mergeEvents();
 
+			// End-of-tick quiescent state: drain every retiree list.
+			//
+			// `WorldPtr<T>` is intrusive — one drain call per (T, Allocator)
+			// pair, so this list grows as new types adopt the affine ptr.
+			WorldPtr<Mount>::quiescentState<Mounts::MountAllocator>();
+			WorldPtr<Outfit>::quiescentState<Outfits::OutfitAllocator>();
+			// `PolyPtr<T>` shares a SINGLE global retire list across every
+			// polymorphic type (Tile, Item, …). One call drains them all.
+			polyPtrQuiescentState();
+
 			if (!hasPendingTasks) {
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
 			}
 		}
+
+		// Final drain on shutdown — without this, anything retired during
+		// the last iteration's `executeEvents` (e.g. a Tile dropped by a
+		// shutdown handler that ran AFTER the in-loop drain) never has
+		// its destructor invoked. The block memory is reclaimed when the
+		// process exits, but side-effectful destructors (Tile removing
+		// itself from zone indices, Item logging owner release, etc.) are
+		// skipped silently. Same trio as the in-loop drain.
+		WorldPtr<Mount>::quiescentState<Mounts::MountAllocator>();
+		WorldPtr<Outfit>::quiescentState<Outfits::OutfitAllocator>();
+		polyPtrQuiescentState();
 	});
 
 	if (futureStarted.wait_for(std::chrono::seconds(5)) != std::future_status::ready) {

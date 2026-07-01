@@ -310,7 +310,16 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 		// depot container
 		if (const auto &depot = container->getDepotLocker()) {
 			const auto &myDepotLocker = player->getDepotLocker(depot->getDepotId());
-			myDepotLocker->setParent(depot->getParent()->getTile());
+			// Pre-PolyPtr code chained `depot->getParent()->getTile()`
+			// unconditionally (assumed non-null). Now we null-check the
+			// intermediate parent — opening a depot whose locker has lost
+			// its parent simply skips the tile re-parenting (the locker
+			// keeps whatever parent it already had). This matches the
+			// effective behavior of the legacy crash path: nothing useful
+			// happened either way.
+			if (auto depotParent = depot->getParent()) {
+				myDepotLocker->setParent(depotParent->getTile());
+			}
 			openContainer = myDepotLocker;
 			player->setLastDepotId(depot->getDepotId());
 		} else {

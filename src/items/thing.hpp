@@ -9,7 +9,10 @@
 
 #pragma once
 
+#include <variant>
+
 #include "game/movement/position.hpp"
+#include "utils/worldpointer.hpp"
 
 class Tile;
 class Cylinder;
@@ -21,6 +24,15 @@ class DepotChest;
 
 class Thing {
 public:
+	// Unified parent reference. Either a legacy `weak_ptr<Cylinder>` (for
+	// shared_ptr-managed parents like Container/Player/Inbox) OR a
+	// `PolyPtr<Tile>::Weak` for Tile parents (Tile lives outside the
+	// shared_ptr world).
+	//
+	// IMPORTANT: Tile arm uses Weak (NOT Shared) to break the Item↔Tile
+	// ownership cycle. See `Item::m_parent` comment for the rationale.
+	using ParentRef = std::variant<std::weak_ptr<Cylinder>, PolyPtr<Tile>::Weak>;
+
 	constexpr Thing() = default;
 	virtual ~Thing() = default;
 
@@ -37,16 +49,40 @@ public:
 		return getParent();
 	}
 
-	virtual void setParent(std::weak_ptr<Cylinder>) {
+	// PUBLIC API (NVI idiom). Only these two overloads are visible to
+	// callsites. Both are non-virtual and dispatch to the protected
+	// `setParentImpl(ParentRef)` virtual. This avoids the ambiguity that a
+	// public `setParent(ParentRef)` virtual would create: variant has an
+	// implicit converting ctor from each alternative, so a `shared_ptr<X>`
+	// argument would be a viable match for BOTH `setParent(weak_ptr)` and
+	// `setParent(ParentRef)`.
+	void setParent(std::weak_ptr<Cylinder> parent) {
+		setParentImpl(ParentRef { std::move(parent) });
+	}
+	void setParent(PolyPtr<Tile>::Borrowed tile) {
+		if (tile) {
+			// Borrowed → Weak (1 atomic weak ADD). Doesn't pin the Tile —
+			// avoids the cycle. See ParentRef comment for rationale.
+			setParentImpl(ParentRef { PolyPtr<Tile>::Weak { tile } });
+		} else {
+			setParentImpl(ParentRef { std::weak_ptr<Cylinder> {} });
+		}
+	}
+
+protected:
+	// Single virtual sink — derived classes override this and ONLY this.
+	// Hidden behind the public `setParent` overloads above.
+	virtual void setParentImpl(ParentRef /*parent*/) {
 		//
 	}
 
-	virtual std::shared_ptr<Tile> getTile() {
-		return nullptr;
+public:
+	virtual PolyPtr<Tile>::Borrowed getTile() {
+		return {};
 	}
 
-	virtual std::shared_ptr<Tile> getTile() const {
-		return nullptr;
+	virtual PolyPtr<Tile>::Borrowed getTile() const {
+		return {};
 	}
 
 	virtual const Position &getPosition();

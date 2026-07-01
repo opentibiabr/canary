@@ -141,7 +141,7 @@ namespace {
 	TEST_F(EventCallbacksIntegrationTest, ReturnEventsReturnNoErrorAndCallOnce) {
 		const std::vector<ReturnEventTest> returnEvents {
 			{ EventCallback_t::creatureOnAreaCombat, [] {
-				 return g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnAreaCombat, std::shared_ptr<Creature> {}, std::shared_ptr<Tile> {}, false);
+				 return g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnAreaCombat, std::shared_ptr<Creature> {}, PolyPtr<Tile>::Borrowed {}, false);
 			 } },
 			{ EventCallback_t::creatureOnTargetCombat, [] {
 				 return g_callbacks().dispatchReturnValue(EventCallback_t::creatureOnTargetCombat, std::shared_ptr<Creature> {}, std::shared_ptr<Creature> {});

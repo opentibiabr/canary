@@ -104,14 +104,18 @@ std::shared_ptr<Cylinder> HouseTile::queryDestination(int32_t &index, const std:
 					                 "with id: {} not found tile: {}",
 					                 house->getName(), house->getId(), entryPos.toString());
 					destTile = g_game().map.getTile(player->getTemplePosition());
-					if (!destTile) {
-						destTile = Tile::nullptr_tile;
-					}
 				}
 
 				index = -1;
 				destItem = nullptr;
-				return destTile;
+				// Contract: queryDestination NEVER returns null. Callers in
+				// `Game::internalMoveCreature` / `internalMoveItem` chain
+				// `queryDestination(...)->getTile()` without null-check; a
+				// null here would crash. If both entry and temple are gone
+				// (degenerate installation), self-reference — the caller's
+				// `sub == this` loop check then breaks out cleanly without
+				// re-placing the player inside the house.
+				return destTile ? destTile->getCylinder() : getCylinder();
 			}
 		}
 	}

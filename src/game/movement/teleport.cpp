@@ -48,7 +48,7 @@ std::shared_ptr<Cylinder> Teleport::queryDestination(int32_t &, const std::share
 	return getTeleport();
 }
 
-bool Teleport::checkInfinityLoop(const std::shared_ptr<Tile> &destTile) {
+bool Teleport::checkInfinityLoop(PolyPtr<Tile>::Borrowed destTile) {
 	if (!destTile) {
 		return false;
 	}
@@ -79,7 +79,7 @@ void Teleport::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 		return;
 	}
 
-	const std::shared_ptr<Tile> &destTile = g_game().map.getTile(destPos);
+	PolyPtr<Tile>::Borrowed destTile = g_game().map.getTile(destPos);
 	if (!destTile) {
 		return;
 	}

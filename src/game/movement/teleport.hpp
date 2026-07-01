@@ -38,7 +38,7 @@ public:
 		destPos = pos;
 	}
 
-	bool checkInfinityLoop(const std::shared_ptr<Tile> &destTile);
+	bool checkInfinityLoop(PolyPtr<Tile>::Borrowed destTile);
 
 	// cylinder implementations
 	ReturnValue queryAdd(int32_t index, const std::shared_ptr<Thing> &thing, uint32_t count, uint32_t flags, const std::shared_ptr<Creature> &actor = nullptr) override;

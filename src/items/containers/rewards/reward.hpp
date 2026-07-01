@@ -32,6 +32,6 @@ public:
 
 	std::shared_ptr<Cylinder> getParent() override;
 	std::shared_ptr<Cylinder> getRealParent() override {
-		return m_parent.lock();
+		return Item::getParent();
 	}
 };

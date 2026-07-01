@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "utils/worldpointer.hpp"
+
 enum PlayerSex_t : uint8_t;
 class Player;
 
@@ -42,13 +44,23 @@ struct ProtocolOutfit {
 
 class Outfits {
 public:
+	using OutfitAllocator = WorldPtr<Outfit>::DefaultAllocator;
+	using OwningOutfit = WorldPtr<Outfit>::Owning<OutfitAllocator>;
+	using BorrowedOutfit = WorldPtr<Outfit>::Borrowed<OutfitAllocator>;
+	using OutfitVector = std::vector<OwningOutfit>;
+
 	static Outfits &getInstance();
 
 	bool reload();
 	bool loadFromXml();
 
-	[[nodiscard]] std::shared_ptr<Outfit> getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
-	[[nodiscard]] const std::vector<std::shared_ptr<Outfit>> &getOutfits(PlayerSex_t sex) const;
+	// Storage owns each Outfit via an affine WorldPtr<Outfit>::Owning;
+	// callers receive a WorldPtr<Outfit>::Borrowed (`BorrowedOutfit`),
+	// free to copy and cheap to pass around. To escape the world (Lua,
+	// network), assign to a WorldPtr<Outfit>::Shared — the implicit
+	// conversion bumps the existing block's refcount.
+	[[nodiscard]] BorrowedOutfit getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit = false) const;
+	[[nodiscard]] const OutfitVector &getOutfits(PlayerSex_t sex) const;
 
-	std::shared_ptr<Outfit> getOutfitByName(PlayerSex_t sex, const std::string &name) const;
+	[[nodiscard]] BorrowedOutfit getOutfitByName(PlayerSex_t sex, const std::string &name) const;
 };

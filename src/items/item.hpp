@@ -9,11 +9,14 @@
 
 #pragma once
 
+#include <variant>
+
 #include "enums/item_attribute.hpp"
 #include "io/fileloader.hpp"
 #include "items/functions/item/attribute.hpp"
 #include "items/items.hpp"
 #include "items/thing.hpp"
+#include "utils/worldpointer.hpp"
 
 class Creature;
 class Player;
@@ -678,17 +681,28 @@ public:
 
 	bool hasMarketAttributes() const;
 
-	std::shared_ptr<Cylinder> getParent() override {
-		return m_parent.lock();
-	}
-	void setParent(std::weak_ptr<Cylinder> cylinder) override {
-		m_parent = cylinder;
-	}
+	// Defined out-of-line in item.cpp — the Tile-parent branch needs the
+	// complete Tile type to call `getCylinder()`, and Tile is only
+	// forward-declared here.
+	std::shared_ptr<Cylinder> getParent() override;
+
 	void resetParent() {
-		m_parent.reset();
+		m_parent = std::weak_ptr<Cylinder> {};
 	}
+
+protected:
+	// NVI override — driven by Thing's public `setParent(weak_ptr)` /
+	// `setParent(Borrowed)` overloads which wrap into a `ParentRef`.
+	void setParentImpl(ParentRef parent) override {
+		m_parent = std::move(parent);
+	}
+
+public:
 	std::shared_ptr<Cylinder> getTopParent();
-	std::shared_ptr<Tile> getTile() override;
+	// Bring Thing's `getTile() const` overload back into scope so the
+	// non-const override below doesn't hide it (C++ name-hiding rule).
+	using Thing::getTile;
+	PolyPtr<Tile>::Borrowed getTile() override;
 	bool isRemoved() override;
 
 	bool isInsideDepot(bool includeInbox = false);
@@ -769,7 +783,16 @@ public:
 	void playerUpdateSupplyTracker();
 
 protected:
-	std::weak_ptr<Cylinder> m_parent;
+	// Variant: legacy `weak_ptr<Cylinder>` for shared_ptr-managed parents
+	// (Container, Player, Inbox, …) OR `PolyPtr<Tile>::Weak` when parent is
+	// a Tile.
+	//
+	// CRITICAL: Tile arm uses Weak (NOT Shared) to break the ownership
+	// cycle. Tile owns its items via `TileItemVector` (shared_ptr<Item>);
+	// if Item.m_parent pinned the Tile via Shared, we'd have a refcount
+	// cycle that prevents Tile destruction on map reload / house transfer.
+	// Weak doesn't pin — observes Tile lifetime, doesn't extend it.
+	std::variant<std::weak_ptr<Cylinder>, PolyPtr<Tile>::Weak> m_parent { std::weak_ptr<Cylinder> {} };
 
 	uint16_t id; // the same id as in ItemType
 	uint8_t count = 1; // number of stacked items

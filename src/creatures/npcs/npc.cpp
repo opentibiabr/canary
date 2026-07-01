@@ -56,7 +56,7 @@ namespace {
 			return false;
 		}
 
-		const std::shared_ptr<Tile> &tile = player->getTile();
+		const auto tile = player->getTile();
 		if (!tile) {
 			return false;
 		}
@@ -617,7 +617,7 @@ void Npc::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool isLog
 	}
 }
 
-void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
+void Npc::onCreatureMove(const std::shared_ptr<Creature> &creature, PolyPtr<Tile>::Borrowed newTile, const Position &newPos, PolyPtr<Tile>::Borrowed oldTile, const Position &oldPos, bool teleport) {
 	Creature::onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 
 	// onCreatureMove(self, creature, oldPosition, newPosition)

@@ -16,7 +16,9 @@
 #include "utils/pugicast.hpp"
 #include "utils/tools.hpp"
 
-std::vector<std::shared_ptr<Outfit>> outfits[PLAYERSEX_LAST + 1];
+// One vector per sex. OwningOutfit is move-only; clearing the vector retires
+// each Owning to QSBR.
+static Outfits::OutfitVector outfits[PLAYERSEX_LAST + 1];
 
 Outfits &Outfits::getInstance() {
 	return inject<Outfits>();
@@ -68,7 +70,10 @@ bool Outfits::loadFromXml() {
 			continue;
 		}
 
-		outfits[type].emplace_back(std::make_shared<Outfit>(
+		// OwningOutfit::make allocates a single Block { refcount, next, Outfit }
+		// and constructs Outfit in-place. Boundary materialisations later
+		// only pay one atomic refcount op — never a heap allocation.
+		outfits[type].emplace_back(OwningOutfit::make(
 			outfitNode.attribute("name").as_string(),
 			pugi::cast<uint16_t>(lookTypeAttribute.value()),
 			outfitNode.attribute("premium").as_bool(),
@@ -82,42 +87,42 @@ bool Outfits::loadFromXml() {
 	return true;
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit) const {
+Outfits::BorrowedOutfit Outfits::getOutfitByLookType(const std::shared_ptr<const Player> &player, uint16_t lookType, bool isOppositeOutfit) const {
 	if (!player) {
 		g_logger().error("[{}] - Player not found", __FUNCTION__);
-		return nullptr;
+		return {};
 	}
 
 	auto sex = player->getSex();
 	if (sex != PLAYERSEX_FEMALE && sex != PLAYERSEX_MALE) {
 		g_logger().error("[{}] - Sex invalid or player: {}", __FUNCTION__, player->getName());
-		return nullptr;
+		return {};
 	}
 
 	if (isOppositeOutfit) {
 		sex = (sex == PLAYERSEX_MALE) ? PLAYERSEX_FEMALE : PLAYERSEX_MALE;
 	}
 
-	auto it = std::ranges::find_if(outfits[sex], [&lookType](const auto &outfit) {
+	auto it = std::ranges::find_if(outfits[sex], [&lookType](const OwningOutfit &outfit) {
 		return outfit->lookType == lookType;
 	});
 
 	if (it != outfits[sex].end()) {
-		return *it;
+		return it->borrow();
 	}
-	return nullptr;
+	return {};
 }
 
-const std::vector<std::shared_ptr<Outfit>> &Outfits::getOutfits(PlayerSex_t sex) const {
+const Outfits::OutfitVector &Outfits::getOutfits(PlayerSex_t sex) const {
 	return outfits[sex];
 }
 
-std::shared_ptr<Outfit> Outfits::getOutfitByName(PlayerSex_t sex, const std::string &name) const {
+Outfits::BorrowedOutfit Outfits::getOutfitByName(PlayerSex_t sex, const std::string &name) const {
 	for (const auto &outfit : outfits[sex]) {
 		if (outfit->name == name) {
-			return outfit;
+			return outfit.borrow();
 		}
 	}
 
-	return nullptr;
+	return {};
 }

@@ -42,6 +42,7 @@
 #include "io/ioguild.hpp"
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
+#include "items/tile.hpp"
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
@@ -1589,7 +1590,7 @@ void ProtocolGame::parseHotkeyEquip(NetworkMessage &msg) {
 	g_game().playerEquipItem(player->getID(), itemId, hasTier, tier);
 }
 
-void ProtocolGame::GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg) {
+void ProtocolGame::GetTileDescription(PolyPtr<Tile>::Borrowed tile, NetworkMessage &msg) {
 	if (oldProtocol) {
 		msg.add<uint16_t>(0x00); // Env effects
 	}
@@ -4051,10 +4052,10 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	auto startOutfits = msg.getBufferPosition();
 	msg.skipBytes(2);
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
+		if (!player->getOutfitAddons(outfit.get(), addons)) {
 			continue;
 		}
 		const std::string from = outfit->from;
@@ -4088,7 +4089,7 @@ void ProtocolGame::sendCyclopediaCharacterOutfitsMounts() {
 	msg.skipBytes(2);
 	for (const auto &mount : g_game().mounts->getMounts()) {
 		const std::string type = mount->type;
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			++mountSize;
 
 			msg.add<uint16_t>(mount->clientId);
@@ -7369,7 +7370,7 @@ void ProtocolGame::sendUpdateTileCreature(const Position &pos, uint32_t stackpos
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendUpdateTile(const std::shared_ptr<Tile> &tile, const Position &pos) {
+void ProtocolGame::sendUpdateTile(PolyPtr<Tile>::Borrowed tile, const Position &pos) {
 	if (!canSee(pos)) {
 		return;
 	}
@@ -7851,11 +7852,11 @@ void ProtocolGame::sendOutfitWindow() {
 
 	if (oldProtocol) {
 		std::vector<ProtocolOutfit> protocolOutfits;
-		const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+		const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 		protocolOutfits.reserve(outfits.size());
 		for (const auto &outfit : outfits) {
 			uint8_t addons;
-			if (!player->getOutfitAddons(outfit, addons)) {
+			if (!player->getOutfitAddons(outfit.get(), addons)) {
 				continue;
 			}
 
@@ -7874,10 +7875,13 @@ void ProtocolGame::sendOutfitWindow() {
 			msg.addByte(outfit.addons);
 		}
 
-		std::vector<std::shared_ptr<Mount>> mounts;
+		// Within a single network send, the player's mount references don't
+		// outlive the tick: we can hold non-owning Borrowed views (each is
+		// just a `Mount*`) instead of paying for refcount-bumped Shareds.
+		std::vector<Mounts::BorrowedMount> mounts;
 		for (const auto &mount : g_game().mounts->getMounts()) {
-			if (player->hasMount(mount)) {
-				mounts.emplace_back(mount);
+			if (player->hasMount(mount.get())) {
+				mounts.emplace_back(mount.borrow());
 			}
 		}
 
@@ -7928,11 +7932,11 @@ void ProtocolGame::sendOutfitWindow() {
 		++outfitSize;
 	}
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (player->getOutfitAddons(outfit, addons)) {
+		if (player->getOutfitAddons(outfit.get(), addons)) {
 			msg.add<uint16_t>(outfit->lookType);
 			msg.addString(outfit->name);
 			msg.addByte(addons);
@@ -7978,9 +7982,9 @@ void ProtocolGame::sendOutfitWindow() {
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts->getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 			msg.addByte(0x00);
@@ -8075,10 +8079,10 @@ void ProtocolGame::sendPodiumWindow(const std::shared_ptr<Item> &podium, const P
 	uint16_t outfitSize = 0;
 	msg.skipBytes(2);
 
-	const auto outfits = Outfits::getInstance().getOutfits(player->getSex());
+	const auto &outfits = Outfits::getInstance().getOutfits(player->getSex());
 	for (const auto &outfit : outfits) {
 		uint8_t addons;
-		if (!player->getOutfitAddons(outfit, addons)) {
+		if (!player->getOutfitAddons(outfit.get(), addons)) {
 			continue;
 		}
 
@@ -8101,9 +8105,9 @@ void ProtocolGame::sendPodiumWindow(const std::shared_ptr<Item> &podium, const P
 	uint16_t mountSize = 0;
 	msg.skipBytes(2);
 
-	const auto mounts = g_game().mounts->getMounts();
+	const auto &mounts = g_game().mounts->getMounts();
 	for (const auto &mount : mounts) {
-		if (player->hasMount(mount)) {
+		if (player->hasMount(mount.get())) {
 			msg.add<uint16_t>(mount->clientId);
 			msg.addString(mount->name);
 			msg.addByte(0x00);
@@ -9376,7 +9380,7 @@ void ProtocolGame::sendInventoryImbuements(const std::map<Slots_t, std::shared_p
 			msg.add<uint16_t>(imbuement->getIconID());
 			msg.add<uint32_t>(imbuementInfo.duration);
 
-			std::shared_ptr<Tile> playerTile = player->getTile();
+			PolyPtr<Tile>::Borrowed playerTile = player->getTile();
 			// Check if the player is in a protection zone
 			bool isInProtectionZone = playerTile && playerTile->hasFlag(TILESTATE_PROTECTIONZONE);
 			// Check if the player is in fight mode

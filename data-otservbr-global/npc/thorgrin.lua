@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "sailor",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_SAILOR
 
 npcConfig.voices = {
 	interval = 15000,

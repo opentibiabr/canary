@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "sailor",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_SAILOR
 
 local hints = {
 	[1] = "If you don't know the meaning of an icon on the minimap, move the mouse cursor on it and wait a moment.",

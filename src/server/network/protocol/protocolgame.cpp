@@ -8558,7 +8558,16 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint64_t>(player->getExperience());
 
 	msg.add<uint16_t>(player->getLevel());
-	msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+	if (!oldProtocol) {
+		if (clientVersion >= 1513) {
+			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
+			msg.add<uint16_t>(levelPercent);
+		} else {
+			msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+		}
+	} else {
+		msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));
+	}
 
 	msg.add<uint16_t>(player->getBaseXpGain()); // base xp gain rate
 

@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 npcConfig.shop = {
 	{ clientId = 19214, buy = 250, storageKey = SPIKE_MIDDLE_MUSHROOM_MAIN, storageValue = 4 },

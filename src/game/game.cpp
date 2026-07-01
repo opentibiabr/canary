@@ -9945,9 +9945,10 @@ void Game::playerNpcGreet(uint32_t playerId, uint32_t npcId) {
 
 	auto npcsSpectators = spectators.filter<Npc>();
 
-	if (npc->getSpeechBubble() == SPEECHBUBBLE_TRADE) {
+	const auto speechBubble = npc->getSpeechBubble();
+	if (speechBubble == SPEECHBUBBLE_TRADE) {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "trade", false, &npcsSpectators);
-	} else {
+	} else if (speechBubble == SPEECHBUBBLE_SAILOR) {
 		internalCreatureSay(player, TALKTYPE_PRIVATE_PN, "sail", false, &npcsSpectators);
 	}
 

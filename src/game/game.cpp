@@ -11308,6 +11308,24 @@ void Game::addPlayer(const std::shared_ptr<Player> &player) {
 	players[player->getID()] = player;
 }
 
+bool Game::reserveLogin(uint32_t guid) {
+	// Dispatcher-only: the insert is atomic relative to other logins because the
+	// dispatcher processes them serially (m_pendingLogins is unsynchronized).
+	// Returns false if a login for this character is already in flight.
+	assert(DispatcherContext::isOn());
+	return m_pendingLogins.emplace(guid).second;
+}
+
+void Game::releaseLogin(uint32_t guid) {
+	assert(DispatcherContext::isOn());
+	m_pendingLogins.erase(guid);
+}
+
+bool Game::isLoginPending(uint32_t guid) const {
+	assert(DispatcherContext::isOn());
+	return m_pendingLogins.contains(guid);
+}
+
 void Game::removePlayer(const std::shared_ptr<Player> &player) {
 	const std::string &lowercase_name = asLowerCaseString(player->getName());
 	mappedPlayerNames.erase(lowercase_name);

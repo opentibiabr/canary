@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "lib/thread/thread_pool.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
@@ -679,40 +680,29 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
-			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
+		// The heavy character load (~20 queries) runs on a pool thread so it no
+		// longer blocks the dispatcher/game loop. Reserve the login first so a
+		// second concurrent attempt for the same character is rejected while the
+		// load is in flight; finishLogin (back on the dispatcher) releases it.
+		if (!g_game().reserveLogin(player->getGUID())) {
+			disconnectClient("You are already logging in.");
 			return;
 		}
 
-		player->setOperatingSystem(operatingSystem);
-
-		const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
-		// moving from a pz tile to a non-pz tile
-		if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
-			auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
-			auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
-			int countOutsizePZ = 0;
-			for (const auto &accountPlayer : accountPlayers) {
-				if (accountPlayer != player && accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
-					++countOutsizePZ;
-				}
-			}
-			if (countOutsizePZ >= maxOutsizePZ) {
-				disconnectClient(fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""));
-				return;
-			}
-		}
-
-		if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
-			disconnectClient("Temple position is wrong. Please, contact the administrator.");
-			g_logger().warn("Player {} temple position is wrong", player->getName());
-			return;
-		}
-
-		player->lastIP = player->getIP();
-		player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
-		player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
-		acceptPackets = true;
+		// Capture the reserved guid and a local shared_ptr to the player here: if
+		// the client disconnects mid-load, release() may clear the `player` member,
+		// which would null-deref on the pool thread and lose the reserved guid.
+		const uint32_t reservedGuid = player->getGUID();
+		const auto loginPlayer = player;
+		g_threadPool().detach_task([self = getThis(), loginPlayer, reservedGuid, operatingSystem]() {
+			// pool thread — populates only loginPlayer (kept alive by this capture,
+			// not yet in the world, and protected from a concurrent login by the
+			// reservation above). The two load steps that touch shared global state
+			// are deferred to finishLogin.
+			const bool loaded = IOLoginData::loadPlayerById(loginPlayer, reservedGuid, false, true);
+			g_dispatcher().addEvent([self, reservedGuid, loaded, operatingSystem]() { self->finishLogin(reservedGuid, loaded, operatingSystem); }, "ProtocolGame::finishLogin");
+		});
+		return;
 	} else {
 		if (eventConnect != 0 || !g_configManager().getBoolean(REPLACE_KICK_ON_LOGIN)) {
 			// Already trying to connect
@@ -731,7 +721,69 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
+
+		OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
+		sendBosstiaryCooldownTimer();
 	}
+}
+
+void ProtocolGame::finishLogin(uint32_t reservedGuid, bool loaded, OperatingSystem_t operatingSystem) {
+	// dispatcher thread — continuation after loadPlayerById ran on the pool. Use
+	// the captured reservedGuid (not player->getGUID()) so the reservation is
+	// always released even if the player member was cleared by a disconnect.
+
+	// The client may have dropped while we were loading; nothing was placed in
+	// the world yet, so just release the reservation and bail.
+	if (!player || isConnectionExpired()) {
+		g_game().releaseLogin(reservedGuid);
+		return;
+	}
+
+	if (!loaded) {
+		g_game().releaseLogin(reservedGuid);
+		disconnectClient("Your character could not be loaded, please contact an adminstrator.");
+		return;
+	}
+
+	// Deferred load steps that mutate shared global state (guild registry, system
+	// initialization) — safe here on the dispatcher.
+	IOLoginData::loadPlayerWorldData(player);
+
+	player->setOperatingSystem(operatingSystem);
+
+	const auto tile = g_game().map.getOrCreateTile(player->getLoginPosition());
+	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
+	// moving from a pz tile to a non-pz tile
+	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
+		auto maxOutsizePZ = g_configManager().getNumber(MAX_PLAYERS_OUTSIDE_PZ_PER_ACCOUNT);
+		auto accountPlayers = g_game().getPlayersByAccount(player->getAccount());
+		int countOutsizePZ = 0;
+		for (const auto &accountPlayer : accountPlayers) {
+			if (accountPlayer != player && accountPlayer->getTile() && !accountPlayer->getTile()->hasFlag(TILESTATE_PROTECTIONZONE)) {
+				++countOutsizePZ;
+			}
+		}
+		if (countOutsizePZ >= maxOutsizePZ) {
+			g_game().releaseLogin(reservedGuid);
+			disconnectClient(fmt::format("You can only have {} character{} from your account outside of a protection zone.", maxOutsizePZ == 1 ? "one" : std::to_string(maxOutsizePZ), maxOutsizePZ > 1 ? "s" : ""));
+			return;
+		}
+	}
+
+	if (!g_game().placeCreature(player, player->getLoginPosition()) && !g_game().placeCreature(player, player->getTemplePosition(), false, true)) {
+		g_game().releaseLogin(reservedGuid);
+		disconnectClient("Temple position is wrong. Please, contact the administrator.");
+		g_logger().warn("Player {} temple position is wrong", player->getName());
+		return;
+	}
+
+	player->lastIP = player->getIP();
+	player->lastLoginSaved = std::max<time_t>(time(nullptr), player->lastLoginSaved + 1);
+	player->loginProtectionTime = OTSYS_TIME() + g_configManager().getNumber(LOGIN_PROTECTION_TIME);
+	acceptPackets = true;
+
+	g_game().releaseLogin(reservedGuid);
+
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
 }

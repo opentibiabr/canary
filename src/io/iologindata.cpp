@@ -78,11 +78,11 @@ uint8_t IOLoginData::getAccountType(uint32_t accountId) {
 }
 
 // The boolean "disableIrrelevantInfo" will deactivate the loading of information that is not relevant to the preload, for example, forge, bosstiary, etc. None of this we need to access if the player is offline
-bool IOLoginData::loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo /* = true*/) {
+bool IOLoginData::loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo /* = true*/, bool deferWorldData /* = false */) {
 	Database &db = Database::getInstance();
 	std::ostringstream query;
 	query << "SELECT * FROM `players` WHERE `id` = " << id;
-	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
+	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo, deferWorldData);
 }
 
 bool IOLoginData::loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo /* = true*/) {
@@ -92,7 +92,7 @@ bool IOLoginData::loadPlayerByName(const std::shared_ptr<Player> &player, const 
 	return loadPlayer(player, db.storeQuery(query.str()), disableIrrelevantInfo);
 }
 
-bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool disableIrrelevantInfo /* = false*/) {
+bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool disableIrrelevantInfo /* = false*/, bool deferWorldData /* = false */) {
 	if (!result || !player) {
 		std::string nullptrType = !result ? "Result" : "Player";
 		g_logger().warn("[{}] - {} is nullptr", __FUNCTION__, nullptrType);
@@ -130,8 +130,11 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		// kills load
 		IOLoginDataLoad::loadPlayerKills(player, result);
 
-		// guild load
-		IOLoginDataLoad::loadPlayerGuild(player, result);
+		// guild load — skipped here when deferred (mutates global guild registry;
+		// must run on the dispatcher via loadPlayerWorldData).
+		if (!deferWorldData) {
+			IOLoginDataLoad::loadPlayerGuild(player);
+		}
 
 		// stash load items
 		IOLoginDataLoad::loadPlayerStashItems(player, result);
@@ -171,7 +174,7 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 
 		if (!disableIrrelevantInfo) {
 			// Load additional data only if the player is online (e.g., forge, bosstiary)
-			loadOnlyDataForOnlinePlayer(player, result);
+			loadOnlyDataForOnlinePlayer(player, result, deferWorldData);
 		}
 
 		return true;
@@ -184,30 +187,74 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 	}
 }
 
-void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result) {
+void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const DBResult_ptr &result, bool deferWorldData /* = false */) {
 	IOLoginDataLoad::loadPlayerForgeHistory(player);
 	IOLoginDataLoad::loadPlayerBosstiary(player, result);
+	// loadPlayerInitializeSystem mutates shared state (Party::m_mantraHolder via
+	// the wheel). When deferred, it — together with the two steps that must run
+	// after it (updateSystem recalculates base speed/weight from the wheel
+	// bonuses applied by initializeSystem; exiva restrictions) — runs on the
+	// dispatcher in loadPlayerWorldData, preserving the original order.
+	if (!deferWorldData) {
+		IOLoginDataLoad::loadPlayerInitializeSystem(player);
+		IOLoginDataLoad::loadPlayerUpdateSystem(player);
+		IOLoginDataLoad::loadPlayerExivaRestrictions(player);
+	}
+}
+
+void IOLoginData::loadPlayerWorldData(const std::shared_ptr<Player> &player) {
+	// Dispatcher-only: the load steps that touch shared global state, plus the
+	// steps that must run after initializeSystem (same order as the inline load).
+	IOLoginDataLoad::loadPlayerGuild(player);
 	IOLoginDataLoad::loadPlayerInitializeSystem(player);
 	IOLoginDataLoad::loadPlayerUpdateSystem(player);
 	IOLoginDataLoad::loadPlayerExivaRestrictions(player);
 }
 
-bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
+std::optional<std::vector<std::string>> IOLoginData::buildPlayerSave(const std::shared_ptr<Player> &player) {
+	std::vector<std::string> queries;
 	try {
-		bool success = DBTransaction::executeWithinTransaction([player]() {
-			return savePlayerGuard(player);
-		});
-
-		if (!success) {
-			g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+		// Capture every executeQuery issued by savePlayerGuard instead of running
+		// it. The player is read here, on the owning (dispatcher) thread, and the
+		// SQL is replayed later on a pool thread by flushPlayerSave.
+		QueryCaptureScope capture(queries);
+		if (!savePlayerGuard(player)) {
+			return std::nullopt;
 		}
-
-		return success;
 	} catch (const DatabaseException &e) {
 		g_logger().error("[{}] Exception occurred: {}", __FUNCTION__, e.what());
+		return std::nullopt;
+	}
+	return queries;
+}
+
+bool IOLoginData::flushPlayerSave(const std::vector<std::string> &queries) {
+	// RollbackOnFailure (not executeWithinTransaction): a failing query must roll
+	// the whole transaction back — otherwise a partial save would be committed —
+	// and the rollback is what lets the deadlock retry kick in.
+	return DBTransaction::executeWithinTransactionRollbackOnFailure([&queries]() {
+		Database &db = Database::getInstance();
+		for (const auto &query : queries) {
+			if (!db.executeQuery(query)) {
+				return false;
+			}
+		}
+		return true;
+	});
+}
+
+bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
+	auto queries = buildPlayerSave(player);
+	if (!queries) {
+		g_logger().error("[{}] Error occurred building player save", __FUNCTION__);
+		return false;
 	}
 
-	return false;
+	bool success = flushPlayerSave(*queries);
+	if (!success) {
+		g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
+	}
+	return success;
 }
 
 bool IOLoginData::savePlayerGuard(const std::shared_ptr<Player> &player) {

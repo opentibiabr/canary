@@ -22,9 +22,18 @@ class IOLoginData {
 public:
 	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip);
 	static uint8_t getAccountType(uint32_t accountId);
-	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true);
+	// deferWorldData: when true, skips the two load steps that mutate shared
+	// global state (guild registry + system initialization). Used by the async
+	// login path so the heavy load runs on a pool thread; the deferred steps are
+	// then run on the dispatcher via loadPlayerWorldData().
+	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true, bool deferWorldData = false);
 	static bool loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo = true);
-	static bool loadPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool disableIrrelevantInfo = false);
+	static bool loadPlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool disableIrrelevantInfo = false, bool deferWorldData = false);
+
+	// Runs the load steps that touch shared global state (guild registry, system
+	// initialization). MUST run on the dispatcher thread. Pairs with a load done
+	// with deferWorldData = true.
+	static void loadPlayerWorldData(const std::shared_ptr<Player> &player);
 
 	/**
 	 * @brief Loads data components that are only relevant when the player is online.
@@ -38,9 +47,19 @@ public:
 	 * @param player A shared pointer to the Player instance. Must not be nullptr.
 	 * @param result The database result containing the player's data.
 	 */
-	static void loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result);
+	static void loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result, bool deferWorldData = false);
 
 	static bool savePlayer(const std::shared_ptr<Player> &player);
+
+	// Thread-safe split of savePlayer (record-replay):
+	//  - buildPlayerSave: serializes the player into a list of SQL statements.
+	//    MUST run on the thread that owns the player state (the dispatcher),
+	//    reading it consistently. Returns nullopt on failure.
+	//  - flushPlayerSave: executes those statements in a transaction. Safe on a
+	//    pool thread — touches no player state.
+	// savePlayer() simply chains build+flush for synchronous callers.
+	static std::optional<std::vector<std::string>> buildPlayerSave(const std::shared_ptr<Player> &player);
+	static bool flushPlayerSave(const std::vector<std::string> &queries);
 
 	/**
 	 * @brief Saves data components that are only relevant when the player is online.

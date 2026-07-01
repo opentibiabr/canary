@@ -205,13 +205,9 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 	Database &db = Database::getInstance();
 	const uint32_t playerGuid = player->getGUID();
 
-	DBResult_ptr result = db.storeQuery(fmt::format("SELECT `save` FROM `players` WHERE `id` = {}", playerGuid));
-	if (!result) {
-		g_logger().warn("[IOLoginData::savePlayer] - Error for select result query from player: {}", player->getName());
-		return false;
-	}
-
-	if (result->getNumber<uint16_t>("save") == 0) {
+	// `save` flag is cached on the player at login (loadPlayerBasicInfo), so no
+	// SELECT is needed here — keeping the save build free of DB round-trips.
+	if (!player->getSaveFlag()) {
 		return db.executeQuery(fmt::format("UPDATE `players` SET `lastlogin` = {}, `lastip` = {} WHERE `id` = {}", player->lastLoginSaved, player->lastIP, playerGuid));
 	}
 

@@ -38,9 +38,30 @@ private:
 
 	void schedulePlayer(std::weak_ptr<Player> player);
 	bool doSavePlayer(std::shared_ptr<Player> player);
+	// Dispatcher callback after a player's async flush finishes: clears the
+	// in-flight flag and rebuilds if another save was requested meanwhile.
+	void onPlayerFlushed(uint32_t guid);
+
+	// (name, captured SQL) pairs produced by the save build phase.
+	using PlayerSaveBatch = std::vector<std::pair<std::string, std::vector<std::string>>>;
+	// Builds save payloads for every online player. MUST run on the dispatcher —
+	// it reads (and adjusts loginPosition of) live player state.
+	PlayerSaveBatch buildAllPlayers();
+	// Executes the built payloads (in parallel when possible). Touches no player
+	// state, so it is safe on a pool thread.
+	void flushBuiltPlayers(PlayerSaveBatch &built);
+	void saveGuildsMapAndKV();
 
 	std::atomic<std::chrono::steady_clock::time_point> m_scheduledAt;
-	phmap::parallel_flat_hash_map<uint32_t, std::chrono::steady_clock::time_point> m_playerMap;
+	// Per-player async-save coordination (dispatcher-only, no lock): guids whose
+	// flush is currently running on a pool thread, and the already-built (name,
+	// SQL) of a save queued while a flush was in flight. Keeping same-player
+	// flushes serial and ordered means an older flush can never overwrite a newer
+	// one; storing the built SQL (instead of a guid to re-look-up) means the final
+	// save (e.g. on logout) is never dropped even if the player object is already
+	// gone when the in-flight flush completes.
+	phmap::flat_hash_set<uint32_t> m_flushInFlight;
+	phmap::flat_hash_map<uint32_t, std::pair<std::string, std::vector<std::string>>> m_pendingFlushes;
 
 	ThreadPool &threadPool;
 	KVStore &kv;

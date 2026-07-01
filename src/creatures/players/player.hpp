@@ -391,6 +391,15 @@ public:
 	OperatingSystem_t getOperatingSystem() const;
 	void setOperatingSystem(OperatingSystem_t clientos);
 
+	// Whether the `players.save` column allows persisting full player data.
+	// Cached at login so the save build needs no DB round-trip. Defaults true.
+	bool getSaveFlag() const {
+		return m_saveFlag;
+	}
+	void setSaveFlag(bool value) {
+		m_saveFlag = value;
+	}
+
 	bool isOldProtocol() const;
 
 	uint32_t getProtocolVersion() const;
@@ -1826,6 +1835,7 @@ private:
 
 	PlayerSex_t sex = PLAYERSEX_FEMALE;
 	OperatingSystem_t operatingSystem = CLIENTOS_NONE;
+	bool m_saveFlag = true;
 	BlockType_t lastAttackBlockType = BLOCK_NONE;
 	TradeState_t tradeState = TRADE_NONE;
 	FightMode_t fightMode = FIGHTMODE_ATTACK;

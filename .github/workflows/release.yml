@@ -211,6 +211,7 @@ jobs:
     outputs:
       client_tag: ${{ steps.client.outputs.tag }}
       client_commit_sha: ${{ steps.client.outputs.commit_sha }}
+      legacy_template_tag: ${{ steps.client.outputs.legacy_template_tag }}
     env:
       GH_TOKEN: ${{ github.token }}
       CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
@@ -230,9 +231,21 @@ jobs:
             Where-Object { -not $_.draft -and -not $_.prerelease -and $_.tag_name.StartsWith($prefix) } |
             Sort-Object { [DateTime]$_.published_at } -Descending |
             Select-Object -First 1
+          $legacyTemplateRelease = $releases |
+            Where-Object {
+              -not $_.draft -and
+              -not $_.prerelease -and
+              ($_.assets | Where-Object { $_.name -eq "client-11.zip" }) -and
+              ($_.assets | Where-Object { $_.name -eq "tibia-8.6-extended.zip" })
+            } |
+            Sort-Object { [DateTime]$_.published_at } -Descending |
+            Select-Object -First 1
 
           if ($null -eq $release) {
             throw "No published dudantas/tibia-client release tag was found for client ${env:CLIENT_DISPLAY}."
+          }
+          if ($null -eq $legacyTemplateRelease) {
+            throw "No published dudantas/tibia-client release was found with client-11.zip and tibia-8.6-extended.zip templates."
           }
 
           $ref = gh api "repos/dudantas/tibia-client/git/ref/tags/$($release.tag_name)" | ConvertFrom-Json
@@ -244,6 +257,7 @@ jobs:
 
           "tag=$($release.tag_name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           "commit_sha=$commitSha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "legacy_template_tag=$($legacyTemplateRelease.tag_name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
 
           @(
             "Resolved Tibia client release:"
@@ -251,6 +265,7 @@ jobs:
             "- Tag: $($release.tag_name)"
             "- Commit: $commitSha"
             "- Published: $($release.published_at)"
+            "- Legacy template release: $($legacyTemplateRelease.tag_name)"
           ) | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
 
       - name: Checkout Tibia client
@@ -295,6 +310,7 @@ jobs:
         env:
           CLIENT_RELEASE_TAG: ${{ steps.client.outputs.tag }}
           CLIENT_COMMIT_SHA: ${{ steps.client.outputs.commit_sha }}
+          LEGACY_TEMPLATE_TAG: ${{ steps.client.outputs.legacy_template_tag }}
         run: |
           $ErrorActionPreference = "Stop"
 
@@ -304,16 +320,16 @@ jobs:
           $clientRoot = (Resolve-Path "tibia-client").Path
           $safeClientTag = $env:CLIENT_RELEASE_TAG -replace "[^A-Za-z0-9._-]", "-"
 
+          $sevenZip = (Get-Command 7z -ErrorAction SilentlyContinue).Source
+          if (-not $sevenZip) {
+            $sevenZip = Join-Path $env:ProgramFiles "7-Zip\7z.exe"
+          }
+          if (-not (Test-Path $sevenZip)) {
+            throw "7-Zip was not found; cannot extract archived Tibia client runtime files."
+          }
+
           $archives = Get-ChildItem -Path $clientRoot -Recurse -File -Include "*.rar", "*.zip", "*.7z"
           if ($archives.Count -gt 0) {
-            $sevenZip = (Get-Command 7z -ErrorAction SilentlyContinue).Source
-            if (-not $sevenZip) {
-              $sevenZip = Join-Path $env:ProgramFiles "7-Zip\7z.exe"
-            }
-            if (-not (Test-Path $sevenZip)) {
-              throw "7-Zip was not found; cannot extract archived Tibia client runtime files."
-            }
-
             foreach ($archive in $archives) {
               & $sevenZip x $archive.FullName "-o$($archive.Directory.FullName)" -y
               if ($LASTEXITCODE -ne 0) {
@@ -365,10 +381,29 @@ jobs:
           $clientZip = Join-Path $dist "tibia-client-$safeClientTag.zip"
           Compress-Archive -Path $clientPaths -DestinationPath $clientZip -Force
 
+          $legacyTemplates = Join-Path $env:RUNNER_TEMP "legacy-client-templates"
+          New-Item -ItemType Directory -Force -Path $legacyTemplates | Out-Null
+          gh release download $env:LEGACY_TEMPLATE_TAG `
+            --repo dudantas/tibia-client `
+            --pattern "client-11.zip" `
+            --pattern "tibia-8.6-extended.zip" `
+            --dir $legacyTemplates
+
           $editorExe = (Resolve-Path "$env:RUNNER_TEMP\assets-editor\Assets Editor.exe").Path
           $assetsInput = Join-Path $clientRoot "assets"
-          $profiles = @("cip860-extended", "client11-15x")
-          foreach ($profile in $profiles) {
+          $legacyClients = @(
+            @{
+              Profile = "cip860-extended"
+              Template = "tibia-8.6-extended.zip"
+            },
+            @{
+              Profile = "client11-15x"
+              Template = "client-11.zip"
+            }
+          )
+          foreach ($legacyClient in $legacyClients) {
+            $profile = $legacyClient.Profile
+            $templateName = $legacyClient.Template
             $profileOutput = Join-Path $env:RUNNER_TEMP "legacy-assets\$profile"
             New-Item -ItemType Directory -Force -Path $profileOutput | Out-Null
 
@@ -390,18 +425,59 @@ jobs:
               throw "Assets Editor validation failed for profile $profile."
             }
 
+            $templateZip = Join-Path $legacyTemplates $templateName
+            if (-not (Test-Path $templateZip)) {
+              throw "Legacy client template was not downloaded: $templateName"
+            }
+
+            $legacyClientRoot = Join-Path $env:RUNNER_TEMP "legacy-client-packages\$profile"
+            New-Item -ItemType Directory -Force -Path $legacyClientRoot | Out-Null
+
+            & $sevenZip x $templateZip "-o$legacyClientRoot" -y
+            if ($LASTEXITCODE -ne 0) {
+              throw "Failed to extract legacy client template: $templateZip"
+            }
+
+            $targetDat = Get-ChildItem -Path $legacyClientRoot -Recurse -File -Filter "Tibia.dat" | Select-Object -First 1
+            $targetSpr = Get-ChildItem -Path $legacyClientRoot -Recurse -File -Filter "Tibia.spr" | Select-Object -First 1
+            if ($null -eq $targetDat -or $null -eq $targetSpr) {
+              throw "Legacy client template $templateName does not contain Tibia.dat and Tibia.spr."
+            }
+
+            Copy-Item -LiteralPath (Join-Path $profileOutput "Tibia.dat") -Destination $targetDat.FullName -Force
+            Copy-Item -LiteralPath (Join-Path $profileOutput "Tibia.spr") -Destination $targetSpr.FullName -Force
+
+            $itemFlag = Join-Path $profileOutput "itemFlag.otml"
+            if (Test-Path $itemFlag) {
+              Copy-Item -LiteralPath $itemFlag -Destination (Join-Path $targetDat.Directory.FullName "itemFlag.otml") -Force
+            }
+
             @(
               "client_repository=dudantas/tibia-client"
               "client_tag=$env:CLIENT_RELEASE_TAG"
               "client_commit_sha=$env:CLIENT_COMMIT_SHA"
               "client_display=$env:CLIENT_DISPLAY"
+              "legacy_template_tag=$env:LEGACY_TEMPLATE_TAG"
+              "legacy_template_asset=$templateName"
               "assets_editor_repository=$env:ASSETS_EDITOR_REPOSITORY"
               "assets_editor_ref=$env:ASSETS_EDITOR_REF"
               "legacy_profile=$profile"
-            ) | Set-Content -Path (Join-Path $profileOutput "CANARY_CLIENT_SOURCE.txt") -Encoding UTF8
+            ) | Set-Content -Path (Join-Path $legacyClientRoot "CANARY_CLIENT_SOURCE.txt") -Encoding UTF8
 
-            $legacyZip = Join-Path $dist "tibia-client-$safeClientTag-legacy-$profile.zip"
-            Compress-Archive -Path (Join-Path $profileOutput "*") -DestinationPath $legacyZip -Force
+            $legacyZip = Join-Path $dist $templateName
+            if (Test-Path $legacyZip) {
+              Remove-Item -LiteralPath $legacyZip -Force
+            }
+            Push-Location $legacyClientRoot
+            try {
+              & $sevenZip a -tzip $legacyZip ".\*" -mx=9
+              if ($LASTEXITCODE -ne 0) {
+                throw "Failed to package updated legacy client: $templateName"
+              }
+            }
+            finally {
+              Pop-Location
+            }
           }
 
           @(
@@ -430,6 +506,7 @@ jobs:
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
       CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
       CLIENT_RELEASE_TAG: ${{ needs.build-client-assets.outputs.client_tag }}
+      CLIENT_RELEASE_TOKEN: ${{ secrets.TIBIA_CLIENT_RELEASE_TOKEN }}
       PREVIOUS_TAG: ${{ needs.validate.outputs.previous_tag }}
       RELEASE_COMMIT_SHA: ${{ needs.prepare-tag.outputs.commit_sha }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -470,6 +547,7 @@ jobs:
 
           ------------------------------------
           ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/tag/${CLIENT_RELEASE_TAG})
+          ### Full client packages are attached to this release, including `client-11.zip` and `tibia-8.6-extended.zip` with updated assets.
           ### [Download OTClient Redemption](https://github.com/opentibiabr/otclient), thanks for @mehah
 
           ------------------------------------
@@ -589,6 +667,26 @@ jobs:
           gh release upload "${RELEASE_TAG}" dist/* \
             --repo "${GITHUB_REPOSITORY}" \
             --clobber
+
+      - name: Mirror client assets to Tibia client release
+        if: env.DRY_RUN != 'true' && env.CLIENT_RELEASE_TOKEN != ''
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.TIBIA_CLIENT_RELEASE_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release upload "${CLIENT_RELEASE_TAG}" \
+            dist/tibia-client-${CLIENT_RELEASE_TAG}.zip \
+            dist/client-11.zip \
+            dist/tibia-8.6-extended.zip \
+            --repo dudantas/tibia-client \
+            --clobber
+
+      - name: Warn when Tibia client release mirroring is disabled
+        if: env.DRY_RUN != 'true' && env.CLIENT_RELEASE_TOKEN == ''
+        shell: bash
+        run: |
+          echo "::warning::TIBIA_CLIENT_RELEASE_TOKEN is not configured; client assets were only uploaded to the Canary release."
 
       - name: Publish release
         if: env.DRY_RUN != 'true'

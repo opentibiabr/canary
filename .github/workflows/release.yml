@@ -202,9 +202,205 @@ jobs:
       release_tag: ${{ needs.validate.outputs.tag }}
       checkout_ref: ${{ needs.prepare-tag.outputs.commit_sha }}
 
+  build-client-assets:
+    name: Build - Client Assets
+    needs: [prepare-tag, validate, checks, tests-lua]
+    runs-on: windows-latest
+    permissions:
+      contents: read
+    outputs:
+      client_tag: ${{ steps.client.outputs.tag }}
+      client_commit_sha: ${{ steps.client.outputs.commit_sha }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+      ASSETS_EDITOR_REPOSITORY: dudantas/Assets-Editor
+      # PR Arch-Mina/Assets-Editor#90 adds the export-legacy CLI required here.
+      ASSETS_EDITOR_REF: d8b1c0115574d8c6a9e7a296a0e281a9bc783584
+    steps:
+      - name: Resolve Tibia client tag
+        id: client
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $prefix = "${env:CLIENT_DISPLAY}."
+          $releases = gh api "repos/dudantas/tibia-client/releases?per_page=100" | ConvertFrom-Json
+          $release = $releases |
+            Where-Object { -not $_.draft -and -not $_.prerelease -and $_.tag_name.StartsWith($prefix) } |
+            Sort-Object { [DateTime]$_.published_at } -Descending |
+            Select-Object -First 1
+
+          if ($null -eq $release) {
+            throw "No published dudantas/tibia-client release tag was found for client ${env:CLIENT_DISPLAY}."
+          }
+
+          $ref = gh api "repos/dudantas/tibia-client/git/ref/tags/$($release.tag_name)" | ConvertFrom-Json
+          $commitSha = $ref.object.sha
+          if ($ref.object.type -eq "tag") {
+            $tagObject = gh api "repos/dudantas/tibia-client/git/tags/$commitSha" | ConvertFrom-Json
+            $commitSha = $tagObject.object.sha
+          }
+
+          "tag=$($release.tag_name)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          "commit_sha=$commitSha" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+          @(
+            "Resolved Tibia client release:"
+            ""
+            "- Tag: $($release.tag_name)"
+            "- Commit: $commitSha"
+            "- Published: $($release.published_at)"
+          ) | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+
+      - name: Checkout Tibia client
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          repository: dudantas/tibia-client
+          ref: ${{ steps.client.outputs.tag }}
+          path: tibia-client
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Checkout Assets Editor CLI
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          repository: dudantas/Assets-Editor
+          ref: ${{ env.ASSETS_EDITOR_REF }}
+          path: assets-editor
+          fetch-depth: 1
+          persist-credentials: false
+
+      - name: Install .NET 10 SDK
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          $dotnetInstall = Join-Path $env:RUNNER_TEMP "dotnet-install.ps1"
+          Invoke-WebRequest "https://dot.net/v1/dotnet-install.ps1" -OutFile $dotnetInstall
+          & $dotnetInstall -Channel 10.0 -Quality ga -InstallDir "$env:ProgramFiles\dotnet"
+          dotnet --list-sdks
+
+      - name: Build Assets Editor CLI
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+          dotnet restore "assets-editor\Assets Editor\Assets Editor.sln"
+          dotnet publish "assets-editor\Assets Editor\AssetsEditor.csproj" `
+            --configuration Release `
+            --framework net10.0-windows7.0 `
+            --output "$env:RUNNER_TEMP\assets-editor"
+
+      - name: Package client and legacy assets
+        shell: pwsh
+        env:
+          CLIENT_RELEASE_TAG: ${{ steps.client.outputs.tag }}
+          CLIENT_COMMIT_SHA: ${{ steps.client.outputs.commit_sha }}
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          $dist = Join-Path $PWD "client-dist"
+          New-Item -ItemType Directory -Force -Path $dist | Out-Null
+
+          $clientRoot = (Resolve-Path "tibia-client").Path
+          $safeClientTag = $env:CLIENT_RELEASE_TAG -replace "[^A-Za-z0-9._-]", "-"
+
+          $mandatoryClientEntries = @(
+            "assets",
+            "assets.json",
+            "assets.json.sha256",
+            "bin",
+            "conf",
+            "package.json"
+          )
+          $optionalClientEntries = @(
+            "3rdpartylicences",
+            "docs",
+            "partial.package.json.version",
+            "sounds"
+          )
+
+          $clientPaths = @()
+          foreach ($entry in $mandatoryClientEntries) {
+            $path = Join-Path $clientRoot $entry
+            if (-not (Test-Path $path)) {
+              throw "Required Tibia client release entry is missing: $entry"
+            }
+            $clientPaths += $path
+          }
+          foreach ($entry in $optionalClientEntries) {
+            $path = Join-Path $clientRoot $entry
+            if (Test-Path $path) {
+              $clientPaths += $path
+            }
+          }
+
+          $clientManifest = @(
+            "client_repository=dudantas/tibia-client"
+            "client_tag=$env:CLIENT_RELEASE_TAG"
+            "client_commit_sha=$env:CLIENT_COMMIT_SHA"
+            "client_display=$env:CLIENT_DISPLAY"
+          )
+          $clientManifest | Set-Content -Path (Join-Path $clientRoot "CANARY_CLIENT_SOURCE.txt") -Encoding UTF8
+          $clientPaths += (Join-Path $clientRoot "CANARY_CLIENT_SOURCE.txt")
+
+          $clientZip = Join-Path $dist "tibia-client-$safeClientTag.zip"
+          Compress-Archive -Path $clientPaths -DestinationPath $clientZip -Force
+
+          $editorExe = (Resolve-Path "$env:RUNNER_TEMP\assets-editor\Assets Editor.exe").Path
+          $assetsInput = Join-Path $clientRoot "assets"
+          $profiles = @("cip860-extended", "client11-15x")
+          foreach ($profile in $profiles) {
+            $profileOutput = Join-Path $env:RUNNER_TEMP "legacy-assets\$profile"
+            New-Item -ItemType Directory -Force -Path $profileOutput | Out-Null
+
+            & $editorExe export-legacy `
+              --profile $profile `
+              --input $assetsInput `
+              --output $profileOutput `
+              --overwrite `
+              --no-backup
+            if ($LASTEXITCODE -ne 0) {
+              throw "Assets Editor export failed for profile $profile."
+            }
+
+            & $editorExe validate-legacy `
+              --profile $profile `
+              --dat (Join-Path $profileOutput "Tibia.dat") `
+              --spr (Join-Path $profileOutput "Tibia.spr")
+            if ($LASTEXITCODE -ne 0) {
+              throw "Assets Editor validation failed for profile $profile."
+            }
+
+            @(
+              "client_repository=dudantas/tibia-client"
+              "client_tag=$env:CLIENT_RELEASE_TAG"
+              "client_commit_sha=$env:CLIENT_COMMIT_SHA"
+              "client_display=$env:CLIENT_DISPLAY"
+              "assets_editor_repository=$env:ASSETS_EDITOR_REPOSITORY"
+              "assets_editor_ref=$env:ASSETS_EDITOR_REF"
+              "legacy_profile=$profile"
+            ) | Set-Content -Path (Join-Path $profileOutput "CANARY_CLIENT_SOURCE.txt") -Encoding UTF8
+
+            $legacyZip = Join-Path $dist "tibia-client-$safeClientTag-legacy-$profile.zip"
+            Compress-Archive -Path (Join-Path $profileOutput "*") -DestinationPath $legacyZip -Force
+          }
+
+          @(
+            "Prepared client release assets:"
+            ""
+            (Get-ChildItem -Path $dist -File | Sort-Object Name | ForEach-Object { "- $($_.Name)" })
+          ) | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+
+      - name: Upload client assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: canary-client-assets
+          path: client-dist/*
+          if-no-files-found: error
+
   publish:
     name: Publish Release
-    needs: [prepare-tag, validate, build-linux, build-windows, build-macos, build-docker]
+    needs: [prepare-tag, validate, build-linux, build-windows, build-macos, build-docker, build-client-assets]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -214,6 +410,7 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
       CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+      CLIENT_RELEASE_TAG: ${{ needs.build-client-assets.outputs.client_tag }}
       PREVIOUS_TAG: ${{ needs.validate.outputs.previous_tag }}
       RELEASE_COMMIT_SHA: ${{ needs.prepare-tag.outputs.commit_sha }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -253,7 +450,7 @@ jobs:
           - #### For tutorials and additional resources, visit our [documentation](https://docs.opentibiabr.com/home/welcome).
 
           ------------------------------------
-          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/latest)
+          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/tag/${CLIENT_RELEASE_TAG})
           ### [Download OTClient Redemption](https://github.com/opentibiabr/otclient), thanks for @mehah
 
           ------------------------------------
@@ -269,9 +466,9 @@ jobs:
           set -euo pipefail
           mkdir -p dist
 
-          download_artifact_zip() {
+          download_artifact_archive() {
             local artifact_name="$1"
-            local asset_name="$2"
+            local output_path="$2"
             local url
             url="$(gh api --paginate "repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts" \
               --jq '.artifacts[] | "\(.name)\t\(.archive_download_url)"' \
@@ -285,7 +482,25 @@ jobs:
               --header "Authorization: Bearer ${GITHUB_TOKEN}" \
               --header "X-GitHub-Api-Version: 2022-11-28" \
               "${url}" \
-              --output "dist/${asset_name}"
+              --output "${output_path}"
+          }
+
+          download_artifact_zip() {
+            local artifact_name="$1"
+            local asset_name="$2"
+            download_artifact_archive "${artifact_name}" "dist/${asset_name}"
+          }
+
+          download_artifact_contents() {
+            local artifact_name="$1"
+            local archive_path
+            local extract_dir
+            archive_path="$(mktemp --suffix=.zip)"
+            extract_dir="$(mktemp -d)"
+
+            download_artifact_archive "${artifact_name}" "${archive_path}"
+            python3 -m zipfile -e "${archive_path}" "${extract_dir}"
+            find "${extract_dir}" -maxdepth 1 -type f -exec mv -f {} dist/ \;
           }
 
           download_artifact_zip "canary-linux-release" "canary-linux-release.zip"
@@ -294,6 +509,7 @@ jobs:
           download_artifact_zip "canary-windows-solution-debug" "canary-windows-solution-debug.zip"
           download_artifact_zip "canary-macos-release" "canary-macos-release.zip"
           download_artifact_zip "canary-docker" "canary-docker.zip"
+          download_artifact_contents "canary-client-assets"
 
       - name: Copy map from latest published release
         id: map

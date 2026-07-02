@@ -304,6 +304,25 @@ jobs:
           $clientRoot = (Resolve-Path "tibia-client").Path
           $safeClientTag = $env:CLIENT_RELEASE_TAG -replace "[^A-Za-z0-9._-]", "-"
 
+          $archives = Get-ChildItem -Path $clientRoot -Recurse -File -Include "*.rar", "*.zip", "*.7z"
+          if ($archives.Count -gt 0) {
+            $sevenZip = (Get-Command 7z -ErrorAction SilentlyContinue).Source
+            if (-not $sevenZip) {
+              $sevenZip = Join-Path $env:ProgramFiles "7-Zip\7z.exe"
+            }
+            if (-not (Test-Path $sevenZip)) {
+              throw "7-Zip was not found; cannot extract archived Tibia client runtime files."
+            }
+
+            foreach ($archive in $archives) {
+              & $sevenZip x $archive.FullName "-o$($archive.Directory.FullName)" -y
+              if ($LASTEXITCODE -ne 0) {
+                throw "Failed to extract Tibia client archive: $($archive.FullName)"
+              }
+              Remove-Item -LiteralPath $archive.FullName -Force
+            }
+          }
+
           $mandatoryClientEntries = @(
             "assets",
             "assets.json",

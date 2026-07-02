@@ -52,6 +52,9 @@ enum class ItemMapperPolicy : uint8_t {
 
 enum class ProtocolFeature : uint64_t {
 	None = 0,
+	// When a feature is build/version-specific, document the first confirmed
+	// protocol version here. Use verified client parser evidence or captures;
+	// do not infer from the current profile alone.
 	CurrentPayload = 1ULL << 0,
 	OldProtocolCompat = 1ULL << 1,
 	LegacyPayload = 1ULL << 2,
@@ -66,6 +69,13 @@ enum class ProtocolFeature : uint64_t {
 	MarketPackets = 1ULL << 11,
 	ImbuementWindow = 1ULL << 12,
 	MemorialPackets = 1ULL << 13,
+	OfficialTaskboardPackets = 1ULL << 14,
+	OfficialVocationSpecificPlayerData = 1ULL << 15,
+	OfficialWeaponProficiencyPayload = 1ULL << 16,
+	GraphicalEffectSourceByte = 1ULL << 17,
+	OfficialSoulSealsPackets = 1ULL << 18,
+	OfficialGameEventPackets = 1ULL << 19, // 15.21+: 0x75 GameEvent payload; pre-15.21 was a single screenshot-type byte.
+	OfficialSkillWheelPayload = 1ULL << 20, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

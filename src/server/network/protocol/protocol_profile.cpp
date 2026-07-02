@@ -199,7 +199,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = currentInitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::CustomMonkPackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::MemorialPackets),
+		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::MemorialPackets | ProtocolFeature::OfficialTaskboardPackets | ProtocolFeature::OfficialVocationSpecificPlayerData | ProtocolFeature::OfficialWeaponProficiencyPayload | ProtocolFeature::GraphicalEffectSourceByte | ProtocolFeature::OfficialSoulSealsPackets | ProtocolFeature::OfficialGameEventPackets | ProtocolFeature::OfficialSkillWheelPayload),
 		.name = "current",
 		.supportLabel = "",
 	};

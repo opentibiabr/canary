@@ -21,6 +21,17 @@ local function isItsPacket(byte)
 	return false
 end
 
+local function skipUnread(msg)
+	if not msg then
+		return
+	end
+
+	local unreadBytes = msg:getUnreadBytes()
+	if unreadBytes > 0 then
+		msg:skipBytes(unreadBytes)
+	end
+end
+
 local function fuzzySearchOffer(searchString)
 	local results = {}
 	for i, category in ipairs(GameStore.Categories) do
@@ -67,6 +78,7 @@ local function onRecvbyte(player, msg, byte)
 		parseRequestTransactionHistory(playerId, msg)
 	end
 
+	skipUnread(msg)
 	return true
 end
 

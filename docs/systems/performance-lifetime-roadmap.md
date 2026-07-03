@@ -236,6 +236,12 @@ Additional safe cuts applied after the dispatcher profile became cleaner:
   reuse it for `canWalkTo`-equivalent neighbor checks. This avoids repeated
   `Creature::getTile()` weak-locks inside the node loop without storing borrowed
   tile pointers.
+- Pathfinding tile resolution now reuses a caller-owned `MapCacheFloorCursor`
+  inside a single synchronous A* or directional walk-check scope. The cursor
+  caches only resolved floors, still returns `shared_ptr<Tile>`, and still
+  materializes cached map tiles through `MapCache::getOrCreateTileFromCache`.
+  `Floor::getTileAndCache` reads the realized tile and pending `BasicTile`
+  cache under one shared lock, then releases the lock before materialization.
 - `Creature::goToFollowCreature` skips A* when the current position already
   satisfies the exact pathing condition, including line-of-sight checks. Flexible
   ranges such as flee or keep-distance still use A* because they may need a
@@ -291,7 +297,7 @@ include callees; do not add them together.
 
 | Priority | Profile signal | Interpretation | Next work class |
 | --- | --- | --- | --- |
-| 1 | `Map::getTile`: about 14.1% total, 6.6% own | Tile lookup is now the clearest self-cost. Pathfinding, sight checks, and movement repeatedly resolve sectors, floors, and `shared_ptr<Tile>` pins. | Larger Phase 4 work: scoped tile read view or dispatcher-only borrowed lookup, audited against `MapCache`, `Floor::setTile`, dynamic tiles, map reload, and `queryAdd` side effects. |
+| 1 | `Map::getTile`: about 14.1% total, 6.6% own | Tile lookup is now the clearest self-cost. Pathfinding, sight checks, and movement repeatedly resolve sectors, floors, and `shared_ptr<Tile>` pins. | Phase 4 v1 uses a local floor cursor while keeping `shared_ptr<Tile>`. Any later borrowed tile view must be separately audited against `MapCache`, `Floor::setTile`, dynamic tiles, map reload, and `queryAdd` side effects. |
 | 2 | `Spectators::getSpectators`: about 8.7% total, 6.2% own; `Spectators::find` appears inside `Map::moveCreature` | Sector walking and strong snapshot creation are still expensive under movement stress. The current snapshot model is safe but allocates and copies ownership in hot loops. | Larger Phase 2 work: per-tick immutable relevancy cache or synchronized spectator snapshot reuse. Do not enable the current global cache from `WalkParallel` without a synchronization design. |
 | 3 | `Creature::enqueueAsyncTask` closure path: about 45.2% total, 4.3% own | This is mostly a batch envelope now, not pure closure cost. Own cost remains worth trimming, but the large total means movement and monster work are executing inside the queued batch. | Medium-to-large scheduler work: typed pending movement/AI events or a per-creature ring instead of generic `std::function` batches. Requires ordering, removal, script, and requeue semantics. |
 | 4 | Movement fanout: `Creature::onCreatureWalk` about 21.5%, `Map::moveCreature` about 17.2%, `Monster::onCreatureMove` about 8.6% | Movement still fans out into client sends, old-stack checks, monster target refresh, idle updates, and async follow-up. | Larger Phase 2 work: fixed update phases, coalesced monster movement notifications, and deduplicated per-tick target refresh. Must preserve movement callback order and script-visible behavior. |
@@ -324,7 +330,7 @@ and measurement.
 | `Monster::targetList` and `friendList` | `targetList` stores `{creatureId, weak_ptr<Creature>}` and `friendList` is keyed by creature ID with weak values. The weak reference remains the lifetime gate. | Raw target lists are classic use-after-free risk after death, logout, teleport, despawn, or delayed AI. ID-only storage without generation can misidentify reused IDs if reuse semantics change. | Keep ID sidecars as lookup hints only. Replace with ID/generation handles only after removal/despawn/reuse semantics are specified. |
 | `Creature` follow/attack/master/tile | Stored as `weak_ptr`; accessors lock and return `shared_ptr`. | Raw member pointers can become stale when creatures are removed or moved. | Consider handle-backed access for hot AI paths, but keep public safety semantics. |
 | `Item::m_parent` | Stored as `weak_ptr<Cylinder>`; parent chain is resolved dynamically. | Raw parent can dangle after move, transform, trade, container removal, or depot/house transfer. | Keep weak parent. Optimize only local parent walks with a temporary pin or documented borrow. |
-| Pathfinding | `Map::getTile`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` use `shared_ptr`. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. | Candidate for a borrowed `Tile*` path once map/floor stability is documented and measured. |
+| Pathfinding | `Map::getTile`, `Map::getTileWithFloorCursor`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` still return or consume `shared_ptr<Tile>`. The floor cursor is a synchronous lookup hint, not tile ownership. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. Reusing a cursor outside one search can observe stale floor assumptions. | Keep cursor scope local to A* and directional checks. Consider borrowed `Tile*` only after map/floor stability is documented and measured. |
 | Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. Task context names are interned and held as stable `std::string_view` values. | Captured raw pointers can outlive their object by one cycle or by seconds. Per-creature task fanout can amplify allocator churn. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. Consider batched creature async execution after measurement. |
 | Lua userdata | Core userdata stores `shared_ptr` and has special finalizer rules. | Raw or borrowed userdata can outlive the C++ object; wrong finalizer leaks or corrupts lifetime. | Follow `docs/systems/lua-shared-userdata.md`; never move core polymorphic userdata mechanically. |
 | Protocol and network | Protocol events capture protocol self or player IDs before dispatching game actions. | Raw player/session pointers can outlive disconnects or connection release. | Keep protocol self pins and player ID re-resolution. Do not pass raw gameplay objects across network callbacks. |
@@ -488,11 +494,22 @@ Required tests:
 - Monster despawns while another monster still has it in target/friend data.
 - Target list exposed to Lua remains safe and deterministic.
 
-## Phase 4: pathfinding tile borrows
+## Phase 4: pathfinding tile cursor and future borrows
 
 Goal: reduce `shared_ptr<Tile>` churn in A* tile checks.
 
-Candidate work:
+Completed v1 work:
+
+- `Floor::getTileAndCache` reads the realized tile pointer and pending
+  `BasicTile` cache pointer under one shared lock.
+- `Map::getTileWithFloorCursor` reuses a caller-owned `MapCacheFloorCursor` for
+  repeated tile resolution inside one synchronous pathfinding or walk-check
+  scope.
+- `Map::getPathMatching`, `Map::getPathMatchingCond`, `Map::canWalkTo`,
+  `Monster` directional checks, and `ConditionFeared` directional checks use
+  local cursors while keeping `shared_ptr<Tile>` as the tile lifetime boundary.
+
+Candidate follow-up work:
 
 - Add a dispatcher-only or lock-backed borrowed tile lookup for pathfinding,
   such as `Map::getTileBorrowed` or a scoped floor/tile read view.
@@ -504,6 +521,13 @@ Candidate work:
 
 Contracts:
 
+- A `MapCacheFloorCursor` must be caller-owned, stack-local, and used only for
+  one synchronous search or directional walk-check batch.
+- The cursor caches only floor hits. Do not cache misses in v1, because a
+  later same-stack path may create or materialize map state.
+- The cursor does not own a tile. Callers must keep using the returned
+  `shared_ptr<Tile>` for `queryAdd`, tile property checks, and path cost
+  calculation.
 - A borrowed `Tile*` must not leave the pathfinding call stack.
 - No pathfinding borrow may call into code that can replace the tile, unload the
   map section, run Lua, or schedule delayed work.

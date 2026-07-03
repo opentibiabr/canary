@@ -17,6 +17,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/map.hpp"
 #include "map/spectators.hpp"
 #include "io/iobestiary.hpp"
 
@@ -1723,8 +1724,9 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 	};
 	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
+	MapCacheFloorCursor floorCursor;
 	for (const Direction &dir : dirList) {
-		if (canWalkTo(creaturePos, dir)) {
+		if (canWalkTo(creaturePos, dir, floorCursor)) {
 			moveDirection = dir;
 			return true;
 		}
@@ -1754,9 +1756,10 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	}
 
 	std::vector<Direction> dirList;
+	MapCacheFloorCursor floorCursor;
 	auto tryAddDirection = [&](Direction direction, int_fast32_t newX, int_fast32_t newY) {
 		uint32_t tmpDist = std::max<uint32_t>(std::abs(newX - centerPos.getX()), std::abs(newY - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction, floorCursor)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1795,6 +1798,10 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 
 bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirection, bool flee /* = false */) {
 	const Position &creaturePos = getPosition();
+	MapCacheFloorCursor floorCursor;
+	auto canWalkTo = [this, &floorCursor](const Position &pos, Direction direction) {
+		return this->canWalkTo(pos, direction, floorCursor);
+	};
 
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
@@ -2369,9 +2376,14 @@ void Monster::setSoulPitStack(uint8_t stack, bool isSummon /* = false */) {
 }
 
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
+	MapCacheFloorCursor floorCursor;
+	return canWalkTo(pos, moveDirection, floorCursor);
+}
+
+bool Monster::canWalkTo(Position pos, Direction moveDirection, MapCacheFloorCursor &floorCursor) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
-		const auto &tile = g_game().map.getTile(pos);
+		const auto &tile = g_game().map.getTileWithFloorCursor(pos, floorCursor);
 		if (tile && tile->getTopVisibleCreature(getMonster()) == nullptr && tile->queryAdd(0, getMonster(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;
 		}

@@ -12,6 +12,7 @@
 #include "lua/lua_definitions.hpp"
 
 struct spellBlock_t;
+struct MapCacheFloorCursor;
 class MonsterType;
 class Tile;
 class Creature;
@@ -30,6 +31,8 @@ private:
 		uint32_t creatureId = 0;
 		std::weak_ptr<Creature> creature;
 	};
+
+	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
 
 public:
 	static std::shared_ptr<Monster> createMonster(const std::string &name);

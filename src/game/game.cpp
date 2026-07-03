@@ -72,7 +72,7 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
-	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 64;
+	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 16;
 
 	std::shared_ptr<Npc> getInteractableShopOwner(const std::shared_ptr<Player> &player) {
 		if (!player) {
@@ -97,21 +97,23 @@ namespace {
 			return;
 		}
 
-		g_dispatcher().addEvent([creatureIds = std::move(creatureIds), startIndex] {
-			const size_t endIndex = std::min(creatureIds->size(), startIndex + MONSTER_POST_THINK_BATCH_SIZE);
-			for (size_t i = startIndex; i < endIndex; ++i) {
-				const auto &deferredCreature = g_game().getCreatureByID((*creatureIds)[i]);
-				if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
-					deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-					deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+		g_dispatcher().addDeferredGameplayEvent(
+			[creatureIds = std::move(creatureIds), startIndex] {
+				const size_t endIndex = std::min(creatureIds->size(), startIndex + MONSTER_POST_THINK_BATCH_SIZE);
+				for (size_t i = startIndex; i < endIndex; ++i) {
+					const auto &deferredCreature = g_game().getCreatureByID((*creatureIds)[i]);
+					if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
+						deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+						deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+					}
 				}
-			}
 
-			if (endIndex < creatureIds->size()) {
-				scheduleMonsterPostThinkBatch(creatureIds, endIndex);
-			}
-		},
-		                        "Game::checkCreaturesPostThink");
+				if (endIndex < creatureIds->size()) {
+					scheduleMonsterPostThinkBatch(creatureIds, endIndex);
+				}
+			},
+			"Game::checkCreaturesPostThink"
+		);
 	}
 }
 

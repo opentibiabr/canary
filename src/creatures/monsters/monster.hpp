@@ -363,7 +363,9 @@ private:
 	 *
 	 * Idle monsters clear their target/friend observer lists and are removed from
 	 * the creature check list. Non-idle monsters are reinserted into the game
-	 * creature check list through a shared owner, not a borrowed pointer.
+	 * creature check list through a shared owner, not a borrowed pointer. Calling
+	 * this with `false` is intentionally idempotent: it revalidates the periodic
+	 * check registration even if the local idle state is already active.
 	 */
 	void setIdle(bool idle);
 	/**

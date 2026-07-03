@@ -435,6 +435,10 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 				onCreatureLeave(movedCreature);
 			}
 
+			if (isIdle) {
+				updateIdleStatus();
+			}
+
 			if (!isSummon()) {
 				if (const auto &followCreature = getFollowCreature()) {
 					const Position &followPosition = followCreature->getPosition();
@@ -669,7 +673,7 @@ void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pu
 		listChanged = addTarget(creature, pushFront) || listChanged;
 	}
 
-	if (listChanged) {
+	if (listChanged || isIdle) {
 		updateIdleStatus();
 	}
 }
@@ -1049,6 +1053,7 @@ void Monster::setIdle(bool idle) {
 	}
 
 	if (!idle && !isIdle) {
+		g_game().addCreatureCheck(getMonster());
 		return;
 	}
 

@@ -3498,7 +3498,6 @@ void Player::addManaSpent(uint64_t amount) {
 		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;

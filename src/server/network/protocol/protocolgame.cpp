@@ -9285,7 +9285,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getLevel());
 	if (!oldProtocol) {
-		if (clientVersion >= 1513) {
+		if (hasProtocolFeature(protocolProfile, ProtocolFeature::PlayerDataLevelPercentU16)) {
 			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
 			msg.add<uint16_t>(levelPercent);
 		} else {
@@ -11146,7 +11146,60 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 
 	NetworkMessage msg;
 	msg.addByte(0x75);
+
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::GameEventPayload)) {
+		switch (screenshotType) {
+			case SCREENSHOT_TYPE_LEVELUP:
+				msg.addByte(0x04);
+				msg.add<uint16_t>(std::min<uint32_t>(player ? player->getLevel() : 0, 0xFFFF));
+				break;
+			case SCREENSHOT_TYPE_SKILLUP:
+				msg.addByte(0x05);
+				msg.addByte(0x00);
+				msg.add<uint16_t>(0x00);
+				break;
+			case SCREENSHOT_TYPE_BOSSDEFEATED:
+				msg.addByte(0x01);
+				msg.addByte(0x01);
+				break;
+			case SCREENSHOT_TYPE_DEATHPVE:
+				msg.addByte(0x01);
+				msg.addByte(0x02);
+				break;
+			case SCREENSHOT_TYPE_DEATHPVP:
+				msg.addByte(0x01);
+				msg.addByte(0x03);
+				break;
+			case SCREENSHOT_TYPE_PLAYERKILLASSIST:
+				msg.addByte(0x01);
+				msg.addByte(0x04);
+				break;
+			case SCREENSHOT_TYPE_PLAYERKILL:
+				msg.addByte(0x01);
+				msg.addByte(0x05);
+				break;
+			case SCREENSHOT_TYPE_PLAYERATTACKING:
+				msg.addByte(0x01);
+				msg.addByte(0x06);
+				break;
+			case SCREENSHOT_TYPE_TREASUREFOUND:
+				msg.addByte(0x01);
+				msg.addByte(0x07);
+				break;
+			case SCREENSHOT_TYPE_GIFTOFLIFE:
+				msg.addByte(0x01);
+				msg.addByte(0x08);
+				break;
+			default:
+				return;
+		}
+
+		writeToOutputBuffer(msg);
+		return;
+	}
+
 	msg.addByte(screenshotType);
+
 	writeToOutputBuffer(msg);
 }
 

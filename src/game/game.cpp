@@ -7440,13 +7440,14 @@ void Game::checkCreatures() {
 		if (const auto creature = weak.lock()) {
 			if (creature->creatureCheck && creature->isAlive()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-				if (creature->getMonster()) {
+				if (creature->getMonsterRaw()) {
 					// The monster's onThink is executed asynchronously,
 					// so the target is updated later, so we need to postpone the actions below.
-					g_dispatcher().addEvent([creature] {
-						if (creature->isAlive()) {
-							creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-							creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+					g_dispatcher().addEvent([creatureId = creature->getID()] {
+						const auto &deferredCreature = g_game().getCreatureByID(creatureId);
+						if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
+							deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+							deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
 						} }, __FUNCTION__);
 				} else {
 					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);

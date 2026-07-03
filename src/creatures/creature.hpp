@@ -95,6 +95,19 @@ public:
 	virtual std::shared_ptr<const Player> getPlayer() const {
 		return nullptr;
 	}
+	/**
+	 * @brief Returns a borrowed type view for immediate, non-owning use.
+	 *
+	 * Raw type accessors are intended for hotpath type checks and immediate
+	 * dispatch while the caller already has a valid creature owner for the
+	 * current synchronous scope. The returned pointer must not be stored,
+	 * cached, captured by a lambda, exposed to Lua, or carried across
+	 * dispatcher, scheduler, async, database, or network boundaries.
+	 *
+	 * Use the owning `getPlayer()`, `getNpc()`, `getMonster()`, or an audited
+	 * stable identity re-resolve when the reference must outlive the current
+	 * stack.
+	 */
 	virtual Player* getPlayerRaw() noexcept {
 		return nullptr;
 	}
@@ -107,6 +120,7 @@ public:
 	virtual std::shared_ptr<const Npc> getNpc() const {
 		return nullptr;
 	}
+	/// @copydoc getPlayerRaw()
 	virtual Npc* getNpcRaw() noexcept {
 		return nullptr;
 	}
@@ -119,6 +133,7 @@ public:
 	virtual std::shared_ptr<const Monster> getMonster() const {
 		return nullptr;
 	}
+	/// @copydoc getPlayerRaw()
 	virtual Monster* getMonsterRaw() noexcept {
 		return nullptr;
 	}

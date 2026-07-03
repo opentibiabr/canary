@@ -238,7 +238,7 @@ bool Map::placeCreature(
 	bool forceLogin /* = false*/,
 	const std::shared_ptr<Tile> &centerTile /* = nullptr */
 ) {
-	const auto &monster = creature ? creature->getMonster() : nullptr;
+	auto* monster = creature ? creature->getMonsterRaw() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -479,7 +479,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	}
 
 	if (forceTeleport) {
-		if (const auto &player = creature->getPlayer()) {
+		if (auto* player = creature->getPlayerRaw()) {
 			player->sendMagicEffect(oldPos, CONST_ME_TELEPORT);
 			player->sendMagicEffect(newPos, CONST_ME_TELEPORT);
 		}

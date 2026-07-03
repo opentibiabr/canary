@@ -18,14 +18,14 @@ void Spectators::clearCache() {
 	spectatorsCache.clear();
 }
 
-Spectators Spectators::insert(const std::shared_ptr<Creature> &creature) {
+Spectators &Spectators::insert(const std::shared_ptr<Creature> &creature) {
 	if (creature) {
 		creatures.emplace_back(creature);
 	}
 	return *this;
 }
 
-Spectators Spectators::insertAll(const CreatureVector &list) {
+Spectators &Spectators::insertAll(const CreatureVector &list) {
 	if (!list.empty()) {
 		const bool hasValue = !creatures.empty();
 
@@ -37,6 +37,27 @@ Spectators Spectators::insertAll(const CreatureVector &list) {
 			creatures.clear();
 			creatures.insert(creatures.end(), uset.begin(), uset.end());
 		}
+	}
+	return *this;
+}
+
+Spectators &Spectators::insertAll(CreatureVector &&list) {
+	if (!list.empty()) {
+		const bool hasValue = !creatures.empty();
+
+		if (!hasValue) {
+			creatures = std::move(list);
+			return *this;
+		}
+
+		creatures.reserve(creatures.size() + list.size());
+		for (auto &creature : list) {
+			creatures.emplace_back(std::move(creature));
+		}
+
+		std::unordered_set uset(creatures.begin(), creatures.end());
+		creatures.clear();
+		creatures.insert(creatures.end(), uset.begin(), uset.end());
 	}
 	return *this;
 }
@@ -70,7 +91,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 				spectators.emplace_back(creature);
 			}
 		}
-		insertAll(spectators);
+		insertAll(std::move(spectators));
 	} else {
 		insertAll(*list);
 	}
@@ -207,7 +228,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		}
 	}
 
-	const auto &spectators = getSpectators(centerPos, multifloor, onlyPlayers, onlyMonsters, onlyNpcs, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	auto spectators = getSpectators(centerPos, multifloor, onlyPlayers, onlyMonsters, onlyNpcs, minRangeX, maxRangeX, minRangeY, maxRangeY);
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .monsters = {}, .npcs = {}, .players = {} }).first->second;
@@ -223,9 +244,8 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	}
 
 	if (!spectators.empty()) {
-		insertAll(spectators);
-
 		creatureList->insert(creatureList->end(), spectators.begin(), spectators.end());
+		insertAll(std::move(spectators));
 	}
 
 	return *this;

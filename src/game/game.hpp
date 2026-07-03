@@ -181,6 +181,13 @@ public:
 
 	bool removeCreature(const std::shared_ptr<Creature> &creature, bool isLogout = true);
 
+	/**
+	 * Adds a creature to the periodic think/check list.
+	 *
+	 * The check list intentionally stores weak observers. Do not replace this
+	 * generic path with raw pointers or ID-only storage until player-session ID
+	 * reuse is covered by a generation-aware handle.
+	 */
 	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
 	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);
 
@@ -459,6 +466,13 @@ public:
 	void setGameState(GameState_t newState);
 
 	// Events
+	/**
+	 * Runs periodic creature think/check work.
+	 *
+	 * Delayed follow-up work may re-resolve by runtime ID only for creature
+	 * kinds with monotonic runtime IDs. Player IDs are derived from GUIDs and
+	 * must not be treated as a generation-safe async handle.
+	 */
 	void checkCreatures();
 	void checkLight();
 

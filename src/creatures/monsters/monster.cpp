@@ -577,7 +577,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 	}
 
 	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayerRaw()) {
 		totalPlayersOnScreen++;
 	}
 
@@ -595,7 +595,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	}
 
 	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayerRaw()) {
 		totalPlayersOnScreen--;
 	}
 
@@ -672,7 +672,7 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 		}
 	}
 
-	return creature->getMonster() && !creature->isSummon();
+	return creature->getMonsterRaw() && !creature->isSummon();
 }
 
 bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {

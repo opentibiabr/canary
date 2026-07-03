@@ -224,6 +224,21 @@ Good first audit targets:
 - `src/creatures/monsters/monster.cpp`
 - `src/creatures/creature.cpp`
 
+Current implementation note:
+
+- Raw type accessors such as `getPlayerRaw`, `getMonsterRaw`, and `getNpcRaw`
+  are documented as borrowed same-stack views. They can remove refcount churn
+  from immediate type checks, but they are not async handles.
+- `Game::checkCreatures` may re-resolve the delayed monster post-think follow-up
+  by monster runtime ID because monster IDs are assigned by a monotonic runtime
+  counter. This rule must not be generalized to players because player runtime
+  IDs are derived from GUIDs and can identify a later session for the same
+  character.
+- `Spectators::insert` and `Spectators::insertAll` return references and move
+  freshly built spectator snapshots into the result when no cache needs the same
+  vector first. Cached snapshots remain strongly owned and are not replaced with
+  raw pointers.
+
 ## Phase 2: movement and spectator fanout
 
 Goal: reduce work around `Map::moveCreature` and `Spectators::getSpectators`.

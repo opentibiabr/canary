@@ -373,17 +373,21 @@ work is sliced, coalesced, or delayed when load is high.
 Phase 2 v1 applies the conservative part of that plan:
 
 - Dispatcher groups log throttled slow-path queue latency when pending tasks
-  wait at least 250 ms, making `Walk` starvation visible without adding a public
-  API.
+  wait at least 250 ms after startup/init, making `Walk` starvation visible
+  without adding a public API or polluting startup map-load logs.
 - Creature async buckets process 32 creatures per slice instead of 64 while
   preserving the same `WalkParallel`, `weak_ptr`, and requeue contract.
 - `DeferredGameplay` processes 16 tasks per dispatcher pass. A lower value kept
   player walk protected, but let monster post-think queue age into multi-second
   delays under stress, making monster attacks and spells visibly late.
-- `Monster::onCreatureMove` still runs base movement and Lua callbacks
-  immediately, but coalesces internal AI refresh work. The first pending
-  movement keeps the original moved-creature snapshot; additional movements
-  before the async batch runs escalate to one full target/idle refresh.
+- Each monster post-think task handles 64 monsters before requeueing the
+  remainder. The previous 16-creature slice produced excessive task fanout and
+  let `DeferredGameplay` backlog grow during the stress run.
+- `Monster::onCreatureMove` coalesces internal movement-AI refresh work across
+  the async boundary while keeping script-visible movement, map mutation, player
+  sends, tile notifications, and zone changes immediate. Follow-up tests showed
+  the long reaction delay came from the artificial all-monsters-active backlog,
+  not from this coalescing alone.
 - Spectator cache and pathfinding ownership remain unchanged in this step.
 
 ### Follow-up priority from the validated monster-stress sample
@@ -627,17 +631,21 @@ Implementation plan:
 Current Phase 2 v1 implementation:
 
 - `Dispatcher` logs throttled queue-latency samples per task group when a queue
-  exceeds the slow-path threshold. These logs are diagnostic only and must not
-  affect scheduling order.
+  exceeds the slow-path threshold after startup/init. These logs are diagnostic
+  only and must not affect scheduling order.
 - `Creature::processAsyncTaskBucket` keeps 32 buckets but slices each bucket to
   32 creatures before requeueing the remainder.
 - `DeferredGameplay` drains 16 tasks per pass so delayed monster post-think does
   not accumulate seconds of attack/spell latency during stress.
+- Monster post-think deferred tasks process 64 monsters per task. This keeps the
+  same ID re-resolution and deferred ordering contract, but reduces scheduler
+  fanout when the all-monsters-active benchmark creates tens of thousands of
+  post-think entries per second.
 - `Monster::onCreatureMove` coalesces only internal AI bookkeeping across the
   async boundary. Script-visible callbacks, map movement, player sends, tile
-  notifications, and zone changes are not coalesced.
-- The coalesced movement state stores a `weak_ptr<Creature>` plus old/new
-  positions. It never stores raw creature, tile, or player pointers.
+  notifications, and zone changes are not coalesced. The coalesced state stores
+  only a `weak_ptr<Creature>` plus old/new positions; no raw creature, tile, or
+  player pointer crosses the boundary.
 
 Candidate work:
 
@@ -646,8 +654,9 @@ Candidate work:
 - Avoid repeated player visibility checks where the old stack position and move
   send use the same condition.
 - Avoid duplicate `Spectators` vectors when old and new viewports overlap.
-- Add an internal dirty/coalesced path for monster target/idle refresh triggered
-  by movement fanout, without changing script-visible movement callbacks.
+- Split player-visible monster movement/reaction from heavier attack, spell,
+  condition, yell, and sound work. The all-monsters-active benchmark should
+  degrade background monster combat before delaying movement near players.
 - Tune monster async bucket quotas so one wave of monster follow/pathfinding
   cannot monopolize a dispatcher pass.
 - Keep cached spectator data as strong references or re-resolvable identities,

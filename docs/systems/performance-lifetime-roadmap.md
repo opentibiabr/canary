@@ -370,6 +370,19 @@ the extreme benchmark perfectly smooth at any cost. It should make the server
 degrade gracefully by preserving player-visible responsiveness while monster
 work is sliced, coalesced, or delayed when load is high.
 
+Phase 2 v1 applies the conservative part of that plan:
+
+- Dispatcher groups log throttled slow-path queue latency when pending tasks
+  wait at least 250 ms, making `Walk` starvation visible without adding a public
+  API.
+- Creature async buckets process 16 creatures per slice instead of 64 while
+  preserving the same `WalkParallel`, `weak_ptr`, and requeue contract.
+- `Monster::onCreatureMove` still runs base movement and Lua callbacks
+  immediately, but coalesces internal AI refresh work. The first pending
+  movement keeps the original moved-creature snapshot; additional movements
+  before the async batch runs escalate to one full target/idle refresh.
+- Spectator cache and pathfinding ownership remain unchanged in this step.
+
 ### Follow-up priority from the validated monster-stress sample
 
 After fixing the benchmark idle/friendly-fire activation path, the profile
@@ -607,6 +620,19 @@ Implementation plan:
      position or already-satisfied follow distance.
    - Any path cache must fail closed and must not let monsters walk through
      forbidden tiles, fields, protection zones, teleports, or house rules.
+
+Current Phase 2 v1 implementation:
+
+- `Dispatcher` logs throttled queue-latency samples per task group when a queue
+  exceeds the slow-path threshold. These logs are diagnostic only and must not
+  affect scheduling order.
+- `Creature::processAsyncTaskBucket` keeps 32 buckets but slices each bucket to
+  16 creatures before requeueing the remainder.
+- `Monster::onCreatureMove` coalesces only internal AI bookkeeping across the
+  async boundary. Script-visible callbacks, map movement, player sends, tile
+  notifications, and zone changes are not coalesced.
+- The coalesced movement state stores a `weak_ptr<Creature>` plus old/new
+  positions. It never stores raw creature, tile, or player pointers.
 
 Candidate work:
 

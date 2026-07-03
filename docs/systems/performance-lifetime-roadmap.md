@@ -237,6 +237,10 @@ Current implementation note:
 - `Game::addCreatureCheck` keeps the generic check-list path as `weak_ptr`,
   including the scheduled insertion. It deliberately does not use raw pointers
   or ID-only storage for generic creatures.
+- `Creature::addAsyncTask`, `Creature::safeCall`, `Tile::safeCall`, and
+  `SaveManager::schedulePlayer` are documented async boundaries. Player save
+  scheduling keeps weak/strong ownership because GUID or player runtime ID
+  re-resolution can target a later session for the same character.
 - `Spectators::insert` and `Spectators::insertAll` return references and move
   freshly built spectator snapshots into the result when no cache needs the same
   vector first. Cached snapshots remain strongly owned and are not replaced with

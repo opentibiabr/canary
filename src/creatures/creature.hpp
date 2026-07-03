@@ -937,6 +937,13 @@ protected:
 	friend class Map;
 	friend class CreatureFunctions;
 
+	/**
+	 * Queues creature work for asynchronous execution.
+	 *
+	 * The callable may run after the current stack has returned. It must not
+	 * capture borrowed raw pointers or references to gameplay objects unless
+	 * another captured owner or stable handle explicitly covers that lifetime.
+	 */
 	void addAsyncTask(std::function<void()> &&fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
 		sendAsyncTasks();
@@ -957,7 +964,14 @@ protected:
 
 	virtual void onExecuteAsyncTasks() {};
 
-	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	/**
+	 * Runs an action immediately or defers it back to the dispatcher.
+	 *
+	 * Deferred execution is guarded by a weak self reference. The action must
+	 * not capture borrowed raw pointers from the caller's stack; use strong
+	 * ownership, weak ownership, or an audited stable identity for anything that
+	 * must survive the async boundary.
+	 */
 	void safeCall(std::function<void(void)> &&action) const;
 
 private:

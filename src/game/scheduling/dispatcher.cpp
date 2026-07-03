@@ -17,7 +17,7 @@
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
 namespace {
-	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 4;
+	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 16;
 	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS = 250;
 	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_INTERVAL_MS = 5000;
 

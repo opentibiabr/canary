@@ -33,7 +33,7 @@
 
 namespace {
 	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 32;
-	constexpr size_t CREATURE_ASYNC_TASK_BATCH_SIZE = 16;
+	constexpr size_t CREATURE_ASYNC_TASK_BATCH_SIZE = 32;
 
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;

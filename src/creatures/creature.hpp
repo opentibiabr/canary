@@ -977,7 +977,7 @@ protected:
 	template <typename AsyncTask>
 	void addAsyncTask(AsyncTask &&fnc) {
 		asyncTasks.emplace_back(std::forward<AsyncTask>(fnc));
-		if (!m_isExecutingAsyncTasks) {
+		if (!m_isExecutingAsyncTasks && !hasAsyncTaskFlag(AsyncTaskRunning)) {
 			sendAsyncTasks();
 		}
 	}
@@ -988,12 +988,15 @@ protected:
 
 	void setAsyncTaskFlag(FlagAsyncClass_t taskFlag, bool v) {
 		if (v) {
+			const bool isAsyncTaskAlreadyScheduled = hasAsyncTaskFlag(AsyncTaskRunning);
 			m_flagAsyncTask |= taskFlag;
 			if (m_isExecutingAsyncTasks && taskFlag != AsyncTaskRunning) {
 				m_deferredAsyncTaskFlags |= taskFlag;
 				return;
 			}
-			sendAsyncTasks();
+			if (!isAsyncTaskAlreadyScheduled) {
+				sendAsyncTasks();
+			}
 		} else {
 			m_flagAsyncTask &= ~taskFlag;
 		}

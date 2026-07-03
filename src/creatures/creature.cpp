@@ -1008,6 +1008,8 @@ void Creature::goToFollowCreature() {
 		return;
 	}
 
+	const Position followPosition = followCreature->getPosition();
+	const Position currentPosition = getPosition();
 	bool executeOnFollow = true;
 	std::vector<Direction> listDir;
 	listDir.reserve(128);
@@ -1019,8 +1021,8 @@ void Creature::goToFollowCreature() {
 		Direction dir = DIRECTION_NONE;
 
 		if (monster->isFleeing()) {
-			monster->getDistanceStep(followCreature->getPosition(), dir, true);
-		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
+			monster->getDistanceStep(followPosition, dir, true);
+		} else if (!monster->getDistanceStep(followPosition, dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
 			executeOnFollow = false;
 		} else if (dir != DIRECTION_NONE) {
@@ -1030,7 +1032,14 @@ void Creature::goToFollowCreature() {
 	}
 
 	if (listDir.empty()) {
-		hasFollowPath = getPathTo(followCreature->getPosition(), listDir, fpp);
+		bool currentPositionSatisfiesFollow = false;
+		if (fpp.minTargetDist == fpp.maxTargetDist) {
+			// Flexible ranges may still need A* to find a better distance.
+			int32_t bestMatch = 0;
+			currentPositionSatisfiesFollow = FrozenPathingConditionCall(followPosition)(currentPosition, currentPosition, fpp, bestMatch);
+		}
+
+		hasFollowPath = currentPositionSatisfiesFollow || getPathTo(followPosition, listDir, fpp);
 	}
 
 	startAutoWalk(listDir);

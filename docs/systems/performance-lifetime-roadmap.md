@@ -253,12 +253,25 @@ Additional safe cuts applied after the dispatcher profile became cleaner:
 - `Creature` keeps a small count of active condition types. `hasCondition` and
   related type lookups can reject missing types without scanning the condition
   list; sub-ID and timeout checks still use the existing condition objects.
+- `Creature::addAsyncTask` constructs the stored `std::function` directly from
+  the callable. This avoids an extra temporary `std::function` move/reset in hot
+  movement callbacks.
+- `Monster::onCreatureMove` no longer keeps a strong reference to the moved
+  creature across the async monster task. It captures a `weak_ptr` and resolves
+  it when the batch runs; if the moved creature disappeared, the task only
+  refreshes idle state and exits.
 
 Do not enable the global `Spectators` cache inside monster async target-list
 updates without adding synchronization or a per-tick immutable cache. That cache
 is a shared static map, while `Monster::updateTargetList` runs in
 `TaskGroup::WalkParallel`; using it directly from the parallel path can trade
 CPU for a data race.
+
+The next large hotspot after the low-risk async closure cuts is spectator and
+movement fanout. `Spectators::getSpectators` still builds strong snapshots by
+walking map sectors. Reducing that safely likely needs a per-tick immutable
+relevancy cache or another synchronization-aware design, not ad hoc raw
+spectator pointers.
 
 General game-server architecture favors fixed update phases, persistent
 relevancy/state structures, and batched per-tick work over per-entity

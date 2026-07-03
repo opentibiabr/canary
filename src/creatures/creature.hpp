@@ -835,6 +835,30 @@ protected:
 	std::vector<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
+	std::array<uint16_t, ConditionType_t::CONDITION_COUNT> conditionTypeCounts {};
+
+	static constexpr size_t getConditionTypeIndex(ConditionType_t type) noexcept {
+		return static_cast<size_t>(type);
+	}
+
+	bool hasTrackedConditionType(ConditionType_t type) const noexcept {
+		const auto index = getConditionTypeIndex(type);
+		return index < conditionTypeCounts.size() && conditionTypeCounts[index] > 0;
+	}
+
+	void trackAddedCondition(ConditionType_t type) noexcept {
+		const auto index = getConditionTypeIndex(type);
+		if (index < conditionTypeCounts.size()) {
+			++conditionTypeCounts[index];
+		}
+	}
+
+	void trackRemovedCondition(ConditionType_t type) noexcept {
+		const auto index = getConditionTypeIndex(type);
+		if (index < conditionTypeCounts.size() && conditionTypeCounts[index] > 0) {
+			--conditionTypeCounts[index];
+		}
+	}
 
 	std::vector<Direction> listWalkDir;
 

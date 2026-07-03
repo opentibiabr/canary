@@ -1303,10 +1303,11 @@ bool Creature::addCondition(const std::shared_ptr<Condition> &condition, bool at
 	if (condition == nullptr) {
 		return false;
 	}
-	if (isSuppress(condition->getType(), attackerPlayer)) {
+	const ConditionType_t type = condition->getType();
+	if (isSuppress(type, attackerPlayer)) {
 		return false;
 	}
-	const auto &prevCond = getCondition(condition->getType(), condition->getId(), condition->getSubId());
+	const auto &prevCond = getCondition(type, condition->getId(), condition->getSubId());
 	if (prevCond) {
 		prevCond->addCondition(getCreature(), condition);
 		return true;
@@ -1314,7 +1315,8 @@ bool Creature::addCondition(const std::shared_ptr<Condition> &condition, bool at
 
 	if (condition->startCondition(getCreature())) {
 		conditions.emplace_back(condition);
-		onAddCondition(condition->getType());
+		trackAddedCondition(type);
+		onAddCondition(type);
 		return true;
 	}
 
@@ -1338,6 +1340,10 @@ bool Creature::addCombatCondition(const std::shared_ptr<Condition> &condition, b
 
 void Creature::removeCondition(ConditionType_t type) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(type)) {
+		return;
+	}
+
 	auto it = conditions.begin(), end = conditions.end();
 	while (it != end) {
 		std::shared_ptr<Condition> condition = *it;
@@ -1347,6 +1353,7 @@ void Creature::removeCondition(ConditionType_t type) {
 		}
 
 		it = conditions.erase(it);
+		trackRemovedCondition(type);
 
 		condition->endCondition(getCreature());
 
@@ -1356,6 +1363,10 @@ void Creature::removeCondition(ConditionType_t type) {
 
 void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force /* = false*/) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(conditionType)) {
+		return;
+	}
+
 	auto it = conditions.begin();
 	const auto end = conditions.end();
 	while (it != end) {
@@ -1376,6 +1387,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		}
 
 		it = conditions.erase(it);
+		trackRemovedCondition(conditionType);
 
 		condition->endCondition(getCreature());
 
@@ -1384,6 +1396,10 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 }
 
 void Creature::removeCombatCondition(ConditionType_t type) {
+	if (!hasTrackedConditionType(type)) {
+		return;
+	}
+
 	std::vector<std::shared_ptr<Condition>> removeConditions;
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
@@ -1402,13 +1418,19 @@ void Creature::removeCondition(const std::shared_ptr<Condition> &condition) {
 		return;
 	}
 
+	const ConditionType_t type = condition->getType();
 	conditions.erase(it);
+	trackRemovedCondition(type);
 
 	condition->endCondition(getCreature());
-	onEndCondition(condition->getType());
+	onEndCondition(type);
 }
 
 std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type) const {
+	if (!hasTrackedConditionType(type)) {
+		return nullptr;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
 			return condition;
@@ -1419,6 +1441,10 @@ std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type) const {
 
 std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(type)) {
+		return nullptr;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type && condition->getId() == conditionId && condition->getSubId() == subId) {
 			return condition;
@@ -1453,6 +1479,10 @@ std::vector<std::shared_ptr<Condition>> Creature::getCleansableConditions() cons
 
 std::vector<std::shared_ptr<Condition>> Creature::getConditionsByType(ConditionType_t type) const {
 	std::vector<std::shared_ptr<Condition>> conditionsVec;
+	if (!hasTrackedConditionType(type)) {
+		return conditionsVec;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
 			conditionsVec.emplace_back(condition);
@@ -1470,6 +1500,7 @@ void Creature::executeConditions(uint32_t interval) {
 			ConditionType_t type = condition->getType();
 
 			it = conditions.erase(it);
+			trackRemovedCondition(type);
 
 			condition->endCondition(getCreature());
 
@@ -1483,6 +1514,9 @@ void Creature::executeConditions(uint32_t interval) {
 bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (isSuppress(type, false)) {
+		return false;
+	}
+	if (!hasTrackedConditionType(type)) {
 		return false;
 	}
 

@@ -319,6 +319,41 @@ document the remaining contracts. The next high-impact work is no longer a
 mechanical `shared_ptr` cleanup; it is a data-structure and update-phase
 problem around map tiles, spectator relevance, and movement fanout.
 
+The latest post-path-cursor monster-stress sample shifted again:
+
+| Signal | Current sample | Notes |
+| --- | --- | --- |
+| `Spectators::getSpectators` | about 9.0% total, 6.3% own | Sector walking and strong snapshot construction remain the largest direct movement-fanout cost. |
+| `Monster::onCreatureMove` | about 9.1% total, 5.8% own | A large part is repeated idle/target bookkeeping after every nearby move notification. |
+| `MapCache::getOrCreateTileFromCache` | about 5.5% total, 4.3% own | Tile cache materialization still appears after the path cursor work, but the remaining work is narrower than the original `Map::getTile` hotspot. |
+| `Map::getPathMatchingCond` | about 12.0% total, 4.1% own | Pathfinding is still relevant, but now overlaps more with combat and monster AI than with pure tile lookup. |
+| `__CheckForDebuggerJustMyCode` | about 4.8% own | Measurement noise; do not optimize code around this symbol. |
+
+Low-risk cuts for this sample:
+
+- `Monster::onCreatureMove` should not force an idle recomputation when a move
+  notification did not change the monster's friend or target lists.
+- `setIdle(false)` can be idempotent for already-active monsters; repeated
+  creature-check registration attempts do not add gameplay value.
+- `Creature::onCreatureMove` can use the condition-type cache before calling
+  the full `hasCondition(CONDITION_ROOTED)` path.
+- `Map::moveCreature` deferred notifications should not copy zone sets; strong
+  tile pins already keep the zone containers alive for the delayed callback.
+- `Spectators::getSpectators` can reserve by the number of scanned sectors to
+  reduce vector growth under dense monster stress.
+
+Remaining higher-impact work:
+
+- Design a movement-tick spectator/relevancy cache that is safe for
+  `TaskGroup::WalkParallel`. The current static `Spectators` cache must not be
+  reused from parallel monster target updates without synchronization.
+- Coalesce monster movement notifications so each monster recomputes target and
+  idle state once per movement batch instead of once per nearby creature move.
+- Explore a typed per-creature pending-event queue instead of generic
+  `std::function` closures for hot movement and AI notifications.
+- Audit a borrowed tile read path for pathfinding only after map/floor/tile
+  stability contracts are explicit enough to prevent stale tile access.
+
 General game-server architecture favors fixed update phases, persistent
 relevancy/state structures, and batched per-tick work over per-entity
 one-shot allocation in the hot loop. Canary can move in that direction, but the

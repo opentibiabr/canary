@@ -468,8 +468,7 @@ local probes = {
 	pingback = {
 		opcode = 0x1E,
 		usage = "/protocolprobe pingback",
-		build = function()
-		end,
+		build = function() end,
 	},
 	["pingback-candidate"] = {
 		opcode = 0x1E,
@@ -482,8 +481,7 @@ local probes = {
 	["close-trade"] = {
 		opcode = 0x7F,
 		usage = "/protocolprobe close-trade",
-		build = function()
-		end,
+		build = function() end,
 	},
 	["close-trade-candidate"] = {
 		opcode = 0x7F,
@@ -539,8 +537,7 @@ local probes = {
 	["close-imbuing"] = {
 		opcode = 0xEC,
 		usage = "/protocolprobe close-imbuing",
-		build = function()
-		end,
+		build = function() end,
 	},
 	["close-imbuing-candidate"] = {
 		opcode = 0xEC,
@@ -730,7 +727,7 @@ end
 local function sendUsage(player)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: /protocolprobe <name> [values] | /protocolprobe list")
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Local probes are read from " .. LOCAL_PROBE_FILE .. " on every command.")
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "JSON example: {\"probes\":{\"test\":{\"opcode\":\"0xA7\",\"fields\":[{\"type\":\"u8\",\"value\":0}]}}}")
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'JSON example: {"probes":{"test":{"opcode":"0xA7","fields":[{"type":"u8","value":0}]}}}')
 end
 
 local function sendProbeList(player)

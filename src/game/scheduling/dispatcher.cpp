@@ -9,6 +9,7 @@
 
 #include "game/scheduling/dispatcher.hpp"
 
+#include "game/game.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
@@ -17,6 +18,25 @@ thread_local DispatcherContext Dispatcher::dispacherContext;
 
 namespace {
 	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 4;
+	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS = 250;
+	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_INTERVAL_MS = 5000;
+
+	std::string_view getTaskGroupName(const uint8_t groupId) {
+		switch (static_cast<TaskGroup>(groupId)) {
+			case TaskGroup::Walk:
+				return "Walk";
+			case TaskGroup::WalkParallel:
+				return "WalkParallel";
+			case TaskGroup::Serial:
+				return "Serial";
+			case TaskGroup::DeferredGameplay:
+				return "DeferredGameplay";
+			case TaskGroup::GenericParallel:
+				return "GenericParallel";
+			default:
+				return "Unknown";
+		}
+	}
 }
 
 Dispatcher &Dispatcher::getInstance() {
@@ -58,6 +78,8 @@ void Dispatcher::executeSerialEvents(const uint8_t groupId) {
 		return;
 	}
 
+	logQueueLatency(groupId);
+
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
 	dispacherContext.type = DispatcherType::Event;
 
@@ -77,6 +99,8 @@ void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTa
 	if (tasks.empty() || maxTasks == 0) {
 		return;
 	}
+
+	logQueueLatency(groupId);
 
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
 	dispacherContext.type = DispatcherType::Event;
@@ -100,6 +124,8 @@ void Dispatcher::executeParallelEvents(const uint8_t groupId) {
 		return;
 	}
 
+	logQueueLatency(groupId);
+
 	asyncWait(tasks.size(), [groupId, &tasks](size_t i) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
 		dispacherContext.group = static_cast<TaskGroup>(groupId);
@@ -109,6 +135,44 @@ void Dispatcher::executeParallelEvents(const uint8_t groupId) {
 	});
 
 	tasks.clear();
+}
+
+void Dispatcher::logQueueLatency(const uint8_t groupId) const {
+	static std::array<int64_t, static_cast<uint8_t>(TaskGroup::Last)> nextLogAt {};
+
+	const auto &tasks = m_tasks[groupId];
+	if (tasks.empty()) {
+		return;
+	}
+
+	const auto gameState = g_game().getGameState();
+	if (gameState == GAME_STATE_STARTUP || gameState == GAME_STATE_INIT) {
+		return;
+	}
+
+	const auto now = OTSYS_TIME();
+	int64_t oldestAge = 0;
+	std::string_view oldestContext;
+	for (const auto &task : tasks) {
+		const auto age = now - task.getTime();
+		if (age > oldestAge) {
+			oldestAge = age;
+			oldestContext = task.getContext();
+		}
+	}
+
+	if (oldestAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS || now < nextLogAt[groupId]) {
+		return;
+	}
+
+	nextLogAt[groupId] = now + DISPATCHER_QUEUE_LATENCY_LOG_INTERVAL_MS;
+	g_logger().warn(
+		"Dispatcher queue latency: group={}, queued={}, oldest={} ms, oldestContext={}",
+		getTaskGroupName(groupId),
+		tasks.size(),
+		oldestAge,
+		oldestContext
+	);
 }
 
 void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f) {

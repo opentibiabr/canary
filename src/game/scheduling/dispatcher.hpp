@@ -178,6 +178,7 @@ private:
 	inline void executeSerialEvents(const uint8_t groupId);
 	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks);
 	inline void executeParallelEvents(const uint8_t groupId);
+	inline void logQueueLatency(const uint8_t groupId) const;
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {

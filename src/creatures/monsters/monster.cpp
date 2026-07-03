@@ -575,13 +575,17 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 
 	auto it = getTargetIterator(creature);
 	if (it != targetList.end()) {
-		return false;
+		if (!it->creature.expired()) {
+			return false;
+		}
+
+		targetList.erase(it);
 	}
 
 	if (pushFront) {
-		targetList.emplace_front(creature);
+		targetList.push_front(TargetReference { creature->getID(), creature });
 	} else {
-		targetList.emplace_back(creature);
+		targetList.push_back(TargetReference { creature->getID(), creature });
 	}
 
 	const auto &master = getMaster();
@@ -602,16 +606,18 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	const auto &target = it->creature.lock();
+	if (!target) {
+		targetList.erase(it);
+		return false;
+	}
+
 	const auto &master = getMaster();
 	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayerRaw()) {
 		totalPlayersOnScreen--;
 	}
 
-	if (auto shared = it->lock()) {
-		targetList.erase(it);
-	} else {
-		return false;
-	}
+	targetList.erase(it);
 
 	return true;
 }
@@ -627,8 +633,8 @@ void Monster::updateTargetList() {
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
-	std::erase_if(targetList, [this](const std::weak_ptr<Creature> &ref) {
-		const auto &target = ref.lock();
+	std::erase_if(targetList, [this](const TargetReference &ref) {
+		const auto &target = ref.creature.lock();
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
@@ -790,8 +796,8 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	const auto &currentAttacked = getAttackedCreature();
 	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
 
-	for (const auto &cref : targetList) {
-		const auto &creature = cref.lock();
+	for (const auto &targetRef : targetList) {
+		const auto &creature = targetRef.creature.lock();
 		if (creature && isTarget(creature, monsterPerfTestFriendlyFire)) {
 			if (skipCurrentUnreachable && creature == currentAttacked) {
 				continue;
@@ -1017,6 +1023,11 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monst
 	auto it = getTargetIterator(creature);
 	if (it == targetList.end()) {
 		// Target not found in our target list.
+		return false;
+	}
+
+	if (it->creature.expired()) {
+		targetList.erase(it);
 		return false;
 	}
 

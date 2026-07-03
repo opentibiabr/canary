@@ -21,6 +21,16 @@ class SpawnMonster;
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 class Monster final : public Creature {
+private:
+	/**
+	 * Target identity is stored beside the weak owner so hot membership checks
+	 * can compare ids before paying for weak_ptr::lock().
+	 */
+	struct TargetReference {
+		uint32_t creatureId = 0;
+		std::weak_ptr<Creature> creature;
+	};
+
 public:
 	static std::shared_ptr<Monster> createMonster(const std::string &name);
 	static int32_t despawnRange;
@@ -137,8 +147,8 @@ public:
 		CreatureVector list;
 		list.reserve(targetList.size());
 
-		std::erase_if(targetList, [&list](const std::weak_ptr<Creature> &ref) {
-			if (const auto &creature = ref.lock()) {
+		std::erase_if(targetList, [&list](const TargetReference &ref) {
+			if (const auto &creature = ref.creature.lock()) {
 				list.emplace_back(creature);
 				return false;
 			}
@@ -260,14 +270,13 @@ private:
 	void onThink_async();
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
-		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-			const auto &target = ref.lock();
-			return target && target->getID() == id;
+		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const TargetReference &ref) {
+			return ref.creatureId == id;
 		});
 	}
 
 	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
-	std::deque<std::weak_ptr<Creature>> targetList;
+	std::deque<TargetReference> targetList;
 
 	time_t timeToChangeFiendish = 0;
 

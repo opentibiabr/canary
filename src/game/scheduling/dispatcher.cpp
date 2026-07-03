@@ -15,6 +15,10 @@
 
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
+namespace {
+	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 4;
+}
+
 Dispatcher &Dispatcher::getInstance() {
 	return inject<Dispatcher>();
 }
@@ -64,6 +68,28 @@ void Dispatcher::executeSerialEvents(const uint8_t groupId) {
 		}
 	}
 	tasks.clear();
+
+	dispacherContext.reset();
+}
+
+void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks) {
+	auto &tasks = m_tasks[groupId];
+	if (tasks.empty() || maxTasks == 0) {
+		return;
+	}
+
+	dispacherContext.group = static_cast<TaskGroup>(groupId);
+	dispacherContext.type = DispatcherType::Event;
+
+	const auto tasksToExecute = std::min(tasks.size(), maxTasks);
+	for (size_t i = 0; i < tasksToExecute; ++i) {
+		const auto &task = tasks[i];
+		dispacherContext.taskName = task.getContext();
+		if (task.execute()) {
+			++dispatcherCycle;
+		}
+	}
+	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksToExecute));
 
 	dispacherContext.reset();
 }
@@ -124,10 +150,15 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 void Dispatcher::executeEvents(const TaskGroup startGroup) {
 	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
 		const auto isWalk = groupId == static_cast<uint8_t>(TaskGroup::Walk);
+		const auto isDeferredGameplay = groupId == static_cast<uint8_t>(TaskGroup::DeferredGameplay);
 
 		if (groupId == static_cast<uint8_t>(TaskGroup::Serial) || isWalk) {
 			mergeEvents();
 			executeSerialEvents(groupId);
+			mergeAsyncEvents();
+		} else if (isDeferredGameplay) {
+			mergeEvents();
+			executeBudgetedSerialEvents(groupId, DEFERRED_GAMEPLAY_TASKS_PER_CYCLE);
 			mergeAsyncEvents();
 		} else {
 			executeParallelEvents(groupId);
@@ -169,7 +200,7 @@ void Dispatcher::executeScheduledEvents() {
 	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
 }
 
-void Dispatcher::__mergeEvents(const std::array<uint8_t, 2> &groups, const bool mergeScheduledEvents) {
+void Dispatcher::__mergeEvents(std::span<const uint8_t> groups, const bool mergeScheduledEvents) {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		for (const auto group : groups) {
@@ -201,7 +232,11 @@ void Dispatcher::mergeAsyncEvents() {
 
 // Merge thread events with main dispatch events
 void Dispatcher::mergeEvents() {
-	static constexpr auto groups = std::to_array({ static_cast<uint8_t>(TaskGroup::Walk), static_cast<uint8_t>(TaskGroup::Serial) });
+	static constexpr auto groups = std::to_array({
+		static_cast<uint8_t>(TaskGroup::Walk),
+		static_cast<uint8_t>(TaskGroup::Serial),
+		static_cast<uint8_t>(TaskGroup::DeferredGameplay),
+	});
 	__mergeEvents(groups, true);
 	checkPendingTasks();
 }
@@ -238,6 +273,17 @@ void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
 	thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	notify();
+}
+
+void Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
+	thread->tasks[static_cast<uint8_t>(TaskGroup::DeferredGameplay)].emplace_back(expiresAfterMs, std::move(f), context);
 	notify();
 }
 

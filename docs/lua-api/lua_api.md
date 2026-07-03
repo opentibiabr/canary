@@ -1429,7 +1429,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/map/house_functions.cpp`
 
-#### `House:startTrade()`
+#### `House:startTrade(player: Player, tradePartner: Player)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/map/house_functions.cpp`

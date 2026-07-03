@@ -1176,8 +1176,10 @@ function House:setHouseOwner(guid, updateDatabase) end
 ---@return boolean|nil
 function House:setNewOwnerGuid(guid, updateDatabase) end
 
+---@param player Player
+---@param tradePartner Player
 ---@return number|nil
-function House:startTrade() end
+function House:startTrade(player, tradePartner) end
 
 ---@class Imbuement
 ---@operator eq(Imbuement):boolean

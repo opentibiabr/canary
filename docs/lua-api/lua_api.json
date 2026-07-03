@@ -2166,7 +2166,10 @@
       },
       {
         "name": "startTrade",
-        "params": [],
+        "params": [
+          "player: Player",
+          "tradePartner: Player"
+        ],
         "return": "number|nil",
         "source": "src/lua/functions/map/house_functions.cpp"
       }

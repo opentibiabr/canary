@@ -122,6 +122,7 @@ Any boundary where the current stack no longer controls lifetime:
 
 - `Dispatcher::addEvent`
 - `Dispatcher::addWalkEvent`
+- `Dispatcher::addDeferredGameplayEvent`
 - `Dispatcher::scheduleEvent`
 - `Dispatcher::cycleEvent`
 - `Dispatcher::asyncEvent`
@@ -178,6 +179,40 @@ The implementation must keep these contracts:
   work.
 - Treat runtime config toggles as best-effort for benchmarks; restarting or
   respawning monsters gives the most deterministic target-list population.
+
+## Production-oriented optimization guardrail
+
+The benchmark monster flags are a pressure tool, not a production requirement.
+An all-map scenario with tens of thousands of monsters forced active and allowed
+to fight each other is intentionally harsher than a real server workload. It is
+useful because it exposes contention, queue latency, and algorithmic cliffs, but
+it must not become the only reason for high-risk architecture changes.
+
+Before accepting a risky optimization, answer these questions:
+
+- Does the same code path run in a plausible player-heavy workload?
+- Does the change improve player-visible latency, such as walk/autowalk,
+  item-use retry, spell response, login, or viewport updates?
+- Does the change preserve gameplay semantics when monsters are active because
+  players are hunting, not because benchmark flags forced the whole map awake?
+- Is the expected gain still meaningful when only a realistic subset of
+  monsters is active around players?
+- Can the server degrade monster AI first while keeping player input responsive?
+
+Use stress profiles to find candidates, then validate candidates against
+production-like scenarios. A useful mental model is a high-concurrency server
+where thousands of players may be online, a smaller subset is actively hunting,
+and only the creatures around those players are awake. The priority order is:
+
+1. Keep player-visible work responsive.
+2. Reduce shared movement, spectator, pathfinding, and protocol costs that
+   occur in real hunts.
+3. Improve monster-only benchmark behavior when the same change also helps real
+   workloads or improves graceful degradation.
+
+Do not optimize blindly for the benchmark if the change adds significant
+lifetime, ordering, or gameplay risk and the benefit exists only when every
+monster on the map is forced out of idle.
 
 ## Monster stress profile interpretation
 
@@ -239,6 +274,20 @@ The batching contract is:
 - Keep script, movement, and removal callbacks on the same ownership boundaries
   used today.
 
+Dispatcher fairness now has a separate `TaskGroup::DeferredGameplay` lane.
+This lane is still serial dispatcher work, but only a small fixed number of
+tasks is executed per dispatcher pass. It is intended for gameplay follow-ups
+that can be delayed fairly behind player/network-critical work, not for login,
+protocol parsing, immediate player input, or same-tick movement contracts.
+Current monster post-think follow-ups use this lane, store only monster runtime
+IDs, and re-resolve each creature at execution time.
+
+Player autowalk retries that are scheduled after server-side `getPathTo` checks
+enter `TaskGroup::Walk` through `Game::queuePlayerAutoWalk`. The helper captures
+only the player runtime ID and the computed direction snapshot. It must not be
+rewritten to capture `Player`, `Creature`, or borrowed pathing objects across the
+dispatcher boundary.
+
 Additional safe cuts applied after the dispatcher profile became cleaner:
 
 - `Map` path searches capture the creature's current tile once per A* search and
@@ -297,6 +346,30 @@ walking map sectors. Reducing that safely likely needs a per-tick immutable
 relevancy cache or another synchronization-aware design, not ad hoc raw
 spectator pointers.
 
+### Post-fairness profile interpretation
+
+After delayed monster post-think moved to `DeferredGameplay`, the original
+combat/check-creature spike stopped being the dominant cause of player walk
+stutter. Recent samples show the remaining latency under monster stress is now
+mostly movement and monster-follow work:
+
+- `Creature::processAsyncTaskBucket` and `Creature::executeAsyncTasks`: about
+  42% total in the flat sample.
+- `Monster::onExecuteAsyncTasks` and `Creature::goToFollowCreature`: about 17%
+  each.
+- `Creature::getPathTo` / `Map::getPathMatchingCond`: about 12%.
+- `Map::moveCreature`: about 21%.
+- `Monster::onCreatureMove`: about 11%.
+- `Spectators::getSpectators`: about 10% total with high own cost.
+
+These numbers are amplified by the artificial all-monsters-active benchmark.
+The production-relevant conclusion is narrower: monster AI, pathfinding,
+movement fanout, and spectator snapshots can still occupy dispatcher cycles long
+enough for player movement to feel stepped. The next work should not try to make
+the extreme benchmark perfectly smooth at any cost. It should make the server
+degrade gracefully by preserving player-visible responsiveness while monster
+work is sliced, coalesced, or delayed when load is high.
+
 ### Follow-up priority from the validated monster-stress sample
 
 After fixing the benchmark idle/friendly-fire activation path, the profile
@@ -307,7 +380,7 @@ callees; do not add them together.
 
 | Priority | Profile signal | Interpretation | Next work class |
 | --- | --- | --- | --- |
-| 1 | `Game::checkCreatures` deferred monster post-think: about 35% total; `Creature::onAttacking` about 31%; `Monster::doAttacking` about 29%; `CombatSpell::castSpell` about 22% | The stutter is mainly dispatcher queue latency. Monster attack/combat work is serial and can hold the same dispatcher queue that must parse player input and start walk/autowalk. | Applied v1: batch delayed monster post-think by monster runtime ID in small serial slices. Larger follow-up: a budgeted attack/combat phase with explicit fairness and ordering contracts. |
+| 1 | `Game::checkCreatures` deferred monster post-think: about 35% total; `Creature::onAttacking` about 31%; `Monster::doAttacking` about 29%; `CombatSpell::castSpell` about 22% | The stutter is mainly dispatcher queue latency. Monster attack/combat work is serial and can hold the same dispatcher queue that must parse player input and start walk/autowalk. | Applied v2: route delayed monster post-think through the budgeted `DeferredGameplay` lane and queue player autowalk retries on the `Walk` lane. Larger follow-up: a budgeted attack/combat phase with explicit fairness and ordering contracts. |
 | 2 | Movement fanout: `Creature::onCreatureWalk` about 19%; `Game::internalMoveCreature` about 13%; `Map::moveCreature` about 13%; `Spectators::find` about 12% | Movement is still expensive and also serial. Even with attack batching, large monster walk bursts can delay player-visible movement. | Larger Phase 2 work: fixed update phases, coalesced monster movement notifications, and deduplicated per-tick target refresh. Must preserve movement callback order and script-visible behavior. |
 | 3 | Combat/Lua/GC: `LuaScriptInterface::callFunction` about 11.5%; `lua_newuserdata` about 8.1%; `lj_gc_step` about 11.8%; `EventCallback::pushArgument`/`Lua::pushUserdata` visible inside combat | Friendly-fire stress causes many combat callbacks and userdata pushes. This is real cost, not just C++ pathfinding. | Larger combat-script work: reduce per-hit Lua userdata churn, cache immutable combat area data, and audit callback frequency. Do not bypass script-visible callbacks without compatibility gates. |
 | 4 | `MapCache::getOrCreateTileFromCache` about 5.4%; `Map::getPathMatchingCond` about 4.4%; `Map::getTile` about 5.7% | Tile/pathfinding improved versus the earlier pathfinding-heavy samples, but still contributes under movement and sight checks. | Continue Phase 4 only after dispatcher fairness is remeasured. Avoid global tile/raw-pointer rewrites. |
@@ -316,10 +389,11 @@ callees; do not add them together.
 
 Low-risk cuts already applied in response to these profiles are intentionally
 small: avoid redundant async scheduling calls, reduce spectator merge churn,
-batch delayed monster post-think, and document the remaining contracts. The next
-high-impact work is no longer a mechanical `shared_ptr` cleanup; it is an
-update-phase and dispatcher-fairness problem around combat, movement, spectator
-relevance, and map tiles.
+batch delayed monster post-think, add a budgeted deferred-gameplay lane, route
+server-side autowalk retries through the walk lane, and document the remaining
+contracts. The next high-impact work is no longer a mechanical `shared_ptr`
+cleanup; it is an update-phase and dispatcher-fairness problem around combat,
+movement, spectator relevance, and map tiles.
 
 An earlier post-path-cursor monster-stress sample, taken before the
 force-active/friendly-fire activation path was fixed, showed:
@@ -379,7 +453,7 @@ and measurement.
 | `Creature` follow/attack/master/tile | Stored as `weak_ptr`; accessors lock and return `shared_ptr`. | Raw member pointers can become stale when creatures are removed or moved. | Consider handle-backed access for hot AI paths, but keep public safety semantics. |
 | `Item::m_parent` | Stored as `weak_ptr<Cylinder>`; parent chain is resolved dynamically. | Raw parent can dangle after move, transform, trade, container removal, or depot/house transfer. | Keep weak parent. Optimize only local parent walks with a temporary pin or documented borrow. |
 | Pathfinding | `Map::getTile`, `Map::getTileWithFloorCursor`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` still return or consume `shared_ptr<Tile>`. The floor cursor is a synchronous lookup hint, not tile ownership. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. Reusing a cursor outside one search can observe stale floor assumptions. | Keep cursor scope local to A* and directional checks. Consider borrowed `Tile*` only after map/floor stability is documented and measured. |
-| Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. Task context names are interned and held as stable `std::string_view` values. | Captured raw pointers can outlive their object by one cycle or by seconds. Per-creature task fanout can amplify allocator churn. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. Consider batched creature async execution after measurement. |
+| Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. Task context names are interned and held as stable `std::string_view` values. `DeferredGameplay` is a budgeted serial lane for lower-urgency gameplay follow-ups. | Captured raw pointers can outlive their object by one cycle or by seconds. Per-creature task fanout can amplify allocator churn. Misusing `DeferredGameplay` for immediate input/login/protocol work can add latency or change same-tick behavior. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. Use `DeferredGameplay` only for reorder-tolerant gameplay follow-ups. Keep player-visible walk retries on the walk lane. |
 | Lua userdata | Core userdata stores `shared_ptr` and has special finalizer rules. | Raw or borrowed userdata can outlive the C++ object; wrong finalizer leaks or corrupts lifetime. | Follow `docs/systems/lua-shared-userdata.md`; never move core polymorphic userdata mechanically. |
 | Protocol and network | Protocol events capture protocol self or player IDs before dispatching game actions. | Raw player/session pointers can outlive disconnects or connection release. | Keep protocol self pins and player ID re-resolution. Do not pass raw gameplay objects across network callbacks. |
 | Database/save/decay/spawn tasks | Work can complete later on dispatcher or scheduled events. | Raw item/creature pointers can outlive transforms, removals, or shutdown. | Store IDs, GUIDs, positions, value snapshots, weak refs, or strong pins depending on semantics. |
@@ -451,6 +525,15 @@ Current implementation note:
   not store `shared_ptr<Creature>`, `Monster*`, or raw tile/creature borrows
   across dispatcher turns. Combat and condition execution remain serial on the
   dispatcher; batching is a fairness mechanism, not parallel combat.
+- `Game::checkCreatures` delayed monster post-think uses
+  `Dispatcher::addDeferredGameplayEvent` with small ID batches. The lane is
+  budgeted per dispatcher pass; do not use it for same-tick player input,
+  network protocol work, login/logout, or tasks that must run before the next
+  walk group.
+- `Game::queuePlayerAutoWalk` captures only a player runtime ID and a moved
+  `std::vector<Direction>`. It is for server-side autowalk retries after
+  `getPathTo`; do not capture `Player`/`Creature` ownership or borrowed map
+  objects in those queued walk tasks.
 - `Game::addCreatureCheck` keeps the generic check-list path as `weak_ptr`,
   including the scheduled insertion. It deliberately does not use raw pointers
   or ID-only storage for generic creatures.
@@ -469,7 +552,61 @@ Current implementation note:
 
 ## Phase 2: movement and spectator fanout
 
-Goal: reduce work around `Map::moveCreature` and `Spectators::getSpectators`.
+Goal: reduce player-visible movement latency around `Map::moveCreature`,
+`Monster::onCreatureMove`, monster async movement, and
+`Spectators::getSpectators`.
+
+This phase is production-oriented. The benchmark stress mode remains the
+pressure test, but the target is not to make tens of thousands of forced-active
+monsters perfectly smooth. The target is to keep player walk/autowalk and
+nearby viewport updates responsive when many players are hunting and activating
+large, but plausible, monster populations.
+
+Implementation plan:
+
+1. Add or collect latency signals before behavior changes:
+   - Dispatcher task age by group, especially `Walk`, `WalkParallel`,
+     `Serial`, and `DeferredGameplay`.
+   - Maximum queue depth and oldest pending task age per group.
+   - Long task samples for monster async buckets, `Map::moveCreature`,
+     `Monster::onCreatureMove`, and `Spectators::getSpectators`.
+   - Manual acceptance profiles for player walk/autowalk while benchmark flags
+     are enabled and while a production-like hunt scenario is active.
+2. Keep player-visible work ahead of monster-only work:
+   - Ensure server-side autowalk retries and movement actions stay on the
+     `Walk` lane.
+   - Audit direct protocol movement/autowalk paths separately before moving
+     them; do not add extra latency to packet parsing or login.
+   - When overloaded, monster AI should lose precision or cadence before player
+     input loses responsiveness.
+3. Slice monster async movement more aggressively:
+   - Review `Creature::processAsyncTaskBucket` and the number of monsters each
+     bucket can process before yielding.
+   - Consider a budget based on task count first; only consider time budgets if
+     measurement shows count-based slicing is insufficient.
+   - Requeue remaining monster work through existing async lifetime boundaries,
+     storing `weak_ptr` or stable IDs, never raw creature pointers.
+4. Coalesce redundant monster movement reactions:
+   - Treat repeated nearby movement notifications as dirty signals for target,
+     friend, and idle recomputation.
+   - Recompute at most once per monster per movement batch or short tick window
+     where semantics allow it.
+   - Keep script-visible movement callbacks and immediate tile/zone updates in
+     their current order. Only coalesce internal monster AI bookkeeping after
+     auditing each call path.
+5. Reduce spectator snapshot work without unsafe borrowing:
+   - Prefer reusing already-built strong snapshots inside one movement flow.
+   - Add per-tick immutable or dispatcher-owned spectator/relevancy caches only
+     with explicit synchronization rules.
+   - Do not reuse the current global `Spectators` cache from
+     `TaskGroup::WalkParallel` without making the cache thread-safe or
+     dispatcher-local.
+6. Revisit pathfinding only after fairness is measured:
+   - Avoid broad tile/raw-pointer rewrites.
+   - Prefer reducing unnecessary path recalculation, such as unchanged target
+     position or already-satisfied follow distance.
+   - Any path cache must fail closed and must not let monsters walk through
+     forbidden tiles, fields, protection zones, teleports, or house rules.
 
 Candidate work:
 
@@ -478,16 +615,33 @@ Candidate work:
 - Avoid repeated player visibility checks where the old stack position and move
   send use the same condition.
 - Avoid duplicate `Spectators` vectors when old and new viewports overlap.
+- Add an internal dirty/coalesced path for monster target/idle refresh triggered
+  by movement fanout, without changing script-visible movement callbacks.
+- Tune monster async bucket quotas so one wave of monster follow/pathfinding
+  cannot monopolize a dispatcher pass.
 - Keep cached spectator data as strong references or re-resolvable identities,
   not raw pointers.
 
 Contracts:
 
+- Player input, walk, autowalk, login, and protocol-critical tasks must not be
+  queued behind unbounded monster AI work.
+- Monster AI may be delayed or sliced under overload; gameplay safety checks may
+  not be skipped.
 - Raw player borrows are valid only while the owning `Spectators` snapshot is
   alive and no delayed boundary is crossed.
 - Deferred movement notifications must capture strong pins or stable IDs.
 - Any callback that can run scripts or remove objects ends the safe raw borrow
   scope unless the object was pinned separately.
+- Coalescing is allowed only for internal monster AI bookkeeping. It must not
+  reorder `Map::moveCreature`, tile add/remove, zone changes, player viewport
+  sends, Lua movement events, or combat legality checks.
+- Delayed monster target refresh must fail closed: if the moved creature
+  disappeared, changed floor, became invisible, entered protection, or otherwise
+  became invalid, the monster must not keep attacking because of stale state.
+- Any spectator cache used from `WalkParallel` must be immutable for the whole
+  read window or protected by synchronization. A mutable global cache is not
+  acceptable in parallel monster AI.
 
 Required tests:
 
@@ -496,6 +650,28 @@ Required tests:
 - Monster entering/leaving viewport while target lists update.
 - Scripted movement events that remove, teleport, or transform involved
   objects.
+- Player walk/autowalk while many nearby monsters move and retarget.
+- Item use, quick loot, push creature, push item, and spell cast while monsters
+  are moving nearby.
+- Monsters following, fleeing, changing target, losing line of sight, crossing
+  fields, and interacting with magic wall, wild growth, protection zones,
+  teleports, and house tiles.
+- Benchmark flags enabled as a pressure test, plus a production-like hunt load
+  where only monsters near active players are awake.
+
+Acceptance criteria:
+
+- Player walk/autowalk feels smoother or at least does not regress in the
+  production-like hunt profile.
+- Oldest pending `Walk` task age does not grow behind monster async buckets
+  during stress.
+- No login challenge, connection close, or player-visible action task expires
+  because monster AI monopolized a dispatcher pass.
+- `Monster::onCreatureMove`, `Spectators::getSpectators`, and
+  `Creature::processAsyncTaskBucket` do not increase in own cost after the
+  change.
+- No monster walks through illegal tiles, keeps a stale invalid target, stops
+  waking near players, or misses script-visible movement behavior.
 
 ## Phase 3: monster target and friend handles
 

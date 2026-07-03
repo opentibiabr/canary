@@ -835,6 +835,12 @@ protected:
 	std::vector<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
+	/**
+	 * Derived cache for quick "no condition of this type exists" checks.
+	 *
+	 * The conditions list remains the source of truth. Any direct mutation of
+	 * that list must update this cache in the same scope.
+	 */
 	std::array<uint16_t, ConditionType_t::CONDITION_COUNT> conditionTypeCounts {};
 
 	static constexpr size_t getConditionTypeIndex(ConditionType_t type) noexcept {
@@ -1047,7 +1053,9 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	// Flags set while executeAsyncTasks is processing a local task snapshot.
 	uint8_t m_deferredAsyncTaskFlags = 0;
+	// True only while new async work must be deferred to a follow-up batch.
 	bool m_isExecutingAsyncTasks = false;
 	CombatDamage m_combatDamage;
 	std::vector<uint16_t> attachedEffectList;

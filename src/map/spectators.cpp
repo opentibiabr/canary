@@ -157,8 +157,11 @@ CreatureVector Spectators::getSpectators(const Position &centerPos, bool multifl
 	const int32_t endx2 = x2 - (x2 & SECTOR_MASK);
 	const int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
+	const auto sectorColumns = static_cast<size_t>(((endx2 - startx1) / SECTOR_SIZE) + 1);
+	const auto sectorRows = static_cast<size_t>(((endy2 - starty1) / SECTOR_SIZE) + 1);
+
 	CreatureVector spectators;
-	spectators.reserve(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2);
+	spectators.reserve(std::max<size_t>(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2, sectorColumns * sectorRows * 8));
 
 	const MapSector* startSector = g_game().map.getMapSector(startx1, starty1);
 	const MapSector* sectorS = startSector;

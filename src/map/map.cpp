@@ -523,10 +523,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	auto events = [=] {
+	auto events = [creature, oldTile, newTile] {
 		oldTile->postRemoveNotification(creature, newTile, 0);
 		newTile->postAddNotification(creature, oldTile, 0);
-		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+		g_game().afterCreatureZoneChange(creature, oldTile->getZones(), newTile->getZones());
 	};
 
 	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {

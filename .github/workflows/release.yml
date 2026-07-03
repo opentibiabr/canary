@@ -399,12 +399,12 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
     steps:
-      - name: Checkout materialized release commit
+      - name: Checkout main for metadata PR
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.prepare-tag.outputs.commit_sha }}
+          ref: main
 
       - name: Push metadata branch
         id: branch
@@ -420,6 +420,69 @@ jobs:
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "GitHub Actions"
+
+          git fetch --force origin main
+          git switch -C "${branch}" origin/main
+
+          tracked_paths=(
+            src/core.hpp
+            config.lua.dist
+            docker/data/start.sh
+            docker/.env.dist
+            docker/docker-compose.yml
+            docker/DOCKER.md
+            docker/quickstart/myaac/bootstrap.php
+          )
+
+          current_client_version="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          core = Path("src/core.hpp").read_text(encoding="utf-8")
+          match = re.search(r"CLIENT_VERSION\s*=\s*(\d+)", core)
+          if not match:
+              raise SystemExit("CLIENT_VERSION was not found in src/core.hpp")
+          print(match.group(1))
+          PY
+          )"
+
+          python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
+
+          materialized_client_version="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          core = Path("src/core.hpp").read_text(encoding="utf-8")
+          match = re.search(r"CLIENT_VERSION\s*=\s*(\d+)", core)
+          if not match:
+              raise SystemExit("CLIENT_VERSION was not found in src/core.hpp")
+          print(match.group(1))
+          PY
+          )"
+
+          if [[ "${materialized_client_version}" != "${current_client_version}" ]]; then
+            echo "::error::Release metadata PR must preserve main CLIENT_VERSION (${current_client_version}); materialized ${materialized_client_version}."
+            exit 1
+          fi
+
+          unexpected_paths="$(comm -23 \
+            <(git diff --name-only | sort) \
+            <(printf '%s\n' "${tracked_paths[@]}" | sort))"
+          if [[ -n "${unexpected_paths}" ]]; then
+            echo "::error::Release metadata materialization changed unexpected paths:"
+            printf '%s\n' "${unexpected_paths}"
+            exit 1
+          fi
+
+          if git diff --quiet -- "${tracked_paths[@]}"; then
+            echo "Release metadata is already current on main."
+            echo "branch=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git add "${tracked_paths[@]}"
+          git commit -m "chore: update release metadata to ${RELEASE_VERSION}"
+
           branch_sha="$(git rev-parse HEAD)"
           if gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/${branch}" >/dev/null 2>&1; then
             gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/heads/${branch}" \
@@ -434,6 +497,7 @@ jobs:
           echo "branch=${branch}" >> "$GITHUB_OUTPUT"
 
       - name: Open or update pull request
+        if: steps.branch.outputs.branch != ''
         shell: bash
         env:
           BRANCH: ${{ steps.branch.outputs.branch }}
@@ -458,7 +522,7 @@ jobs:
 
           Release: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG}
 
-          This PR is based on the same materialized commit used by the release tag. Merging it keeps the default map URL, Docker quickstart defaults, MyAAC client version, and server release version aligned with the latest published release.
+          This PR is based on the current main branch and only materializes tracked release metadata. It preserves the current main client protocol while aligning the default map URL, Docker quickstart defaults, MyAAC client version, and server release version with the latest published release.
           EOF_PR
           )"
 

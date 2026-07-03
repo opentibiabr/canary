@@ -80,8 +80,6 @@ namespace {
 	constexpr uint8_t CLIENT_PACKET_TASKBOARD = 0x5F;
 	constexpr uint8_t CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER = 0xBA;
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
-	constexpr uint8_t RESOURCE_CURRENT_U32_BALANCE_3C = 0x3C;
-	constexpr uint8_t RESOURCE_CURRENT_U32_BALANCE_50 = 0x50;
 
 	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
 		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
@@ -152,8 +150,8 @@ namespace {
 			case RESOURCE_MINOR_CHARM:
 			case RESOURCE_MAX_CHARM:
 			case RESOURCE_MAX_MINOR_CHARM:
-			case RESOURCE_CURRENT_U32_BALANCE_3C:
-			case RESOURCE_CURRENT_U32_BALANCE_50:
+			case RESOURCE_NPC_TRADE_QUEST_FLAG_CURRENCY:
+			case RESOURCE_UNSPENT_SKILL_POINTS:
 			case RESOURCE_BOUNTY_POINTS:
 			case RESOURCE_SOULSEALS:
 				return true;
@@ -6462,8 +6460,8 @@ void ProtocolGame::sendClientCheck() {
 
 	NetworkMessage msg;
 	msg.addByte(0x63);
-	msg.add<uint32_t>(1);
-	msg.addByte(1);
+	msg.add<uint32_t>(1); // payload size
+	msg.addByte(1); // opaque one-byte client-check payload
 	writeToOutputBuffer(msg);
 }
 
@@ -6474,8 +6472,8 @@ void ProtocolGame::sendGameNews() {
 
 	NetworkMessage msg;
 	msg.addByte(0x98);
-	msg.add<uint32_t>(1); // unknown
-	msg.addByte(1); //(0 = open | 1 = highlight)
+	msg.add<uint32_t>(1); // game news category/group id
+	msg.addByte(1); // bool: 0 = open, 1 = highlight
 	writeToOutputBuffer(msg);
 }
 
@@ -11554,14 +11552,14 @@ void ProtocolGame::sendOpenWheelWindow(uint32_t ownerId) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendGemAtelierGemRevealed(uint16_t index) {
+void ProtocolGame::sendGemAtelierGemRevealed(uint16_t gemIndex) {
 	if (!player || oldProtocol || !hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
 		return;
 	}
 
 	NetworkMessage msg;
 	msg.addByte(0xC5);
-	msg.add<uint16_t>(index);
+	msg.add<uint16_t>(gemIndex);
 	writeToOutputBuffer(msg);
 }
 
@@ -12005,12 +12003,14 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 			case MonkData_t::Serenity:
 				msg.addByte(value != 0 ? 0x01 : 0x00);
 				break;
-			case MonkData_t::Virtue:
-				msg.addByte(value != 0 ? 0x01 : 0x00);
-				if (value != 0) {
+			case MonkData_t::Virtue: {
+				const uint8_t virtueCount = value != 0 ? 1 : 0;
+				msg.addByte(virtueCount);
+				if (virtueCount != 0) {
 					msg.add<uint16_t>(value);
 				}
 				break;
+			}
 		}
 	} else {
 		msg.addByte(value);

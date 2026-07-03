@@ -38,6 +38,11 @@ local OneBytePayloadActions = {
 	[ClientAction.TalismanUpgrade] = true,
 	[ClientAction.WeeklyDelivery] = true,
 	[ClientAction.WeeklyDifficulty] = true,
+}
+
+local OneU16PayloadActions = {
+	[ClientAction.ShopBuy] = true,
+	[ClientAction.UnlockPreferenceSlot] = true,
 	[ClientAction.ClearPreferred] = true,
 	[ClientAction.ClearUnwanted] = true,
 }
@@ -169,7 +174,7 @@ local function consumeActionPayload(msg, action)
 		return consumeU8(msg)
 	end
 
-	if action == ClientAction.ShopBuy then
+	if OneU16PayloadActions[action] then
 		return consumeU16(msg)
 	end
 

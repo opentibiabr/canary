@@ -572,7 +572,7 @@ private:
 	// Wheel
 	void parseOpenWheel(NetworkMessage &msg);
 	void sendOpenWheelWindow(uint32_t ownerId);
-	void sendGemAtelierGemRevealed(uint16_t index);
+	void sendGemAtelierGemRevealed(uint16_t gemIndex);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 

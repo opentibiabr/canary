@@ -345,7 +345,21 @@ private:
 	void death(const std::shared_ptr<Creature> &lastHitCreature) override;
 	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
+	/**
+	 * @brief Toggles whether the monster is registered for periodic AI checks.
+	 *
+	 * Idle monsters clear their target/friend observer lists and are removed from
+	 * the creature check list. Non-idle monsters are reinserted into the game
+	 * creature check list through a shared owner, not a borrowed pointer.
+	 */
 	void setIdle(bool idle);
+	/**
+	 * @brief Recomputes the idle state from the current AI context.
+	 *
+	 * The monsterPerfTestForceActive config is a benchmark-only override that
+	 * keeps monsters active even when normal gameplay would idle them because no
+	 * player or target is nearby.
+	 */
 	void updateIdleStatus();
 	bool getIdleStatus() const;
 
@@ -385,6 +399,13 @@ private:
 	void onThinkDefense(uint32_t interval);
 	void onThinkSound(uint32_t interval);
 
+	/**
+	 * @brief Classifies visible creatures for local friend and target observer lists.
+	 *
+	 * The monsterPerfTestFriendlyFire config only changes non-summon monster
+	 * classification for benchmark scenarios. It must not be used as a persistent
+	 * ownership or lifetime shortcut.
+	 */
 	bool isFriend(const std::shared_ptr<Creature> &creature) const;
 	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
 

@@ -25,6 +25,14 @@ int32_t Monster::despawnRadius;
 
 uint32_t Monster::monsterAutoID = 0x50000001;
 
+namespace {
+bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature) {
+	return g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE) && !monster.isSummon() && creature
+		&& creature.get() != static_cast<const Creature*>(&monster)
+		&& creature->getMonsterRaw() && !creature->isSummon();
+}
+}
+
 std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 	const auto &mType = g_monsters().getMonsterType(name);
 	if (!mType) {
@@ -672,6 +680,10 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 		}
 	}
 
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+		return false;
+	}
+
 	return creature->getMonsterRaw() && !creature->isSummon();
 }
 
@@ -689,6 +701,10 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	const auto &player = creature ? creature->getPlayer() : nullptr;
 	if (player && player->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
+	}
+
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+		return true;
 	}
 
 	if (getFaction() != FACTION_DEFAULT) {
@@ -943,6 +959,10 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+		return true;
+	}
+
 	if (!isSummon()) {
 		if (getFaction() != FACTION_DEFAULT) {
 			return isEnemyFaction(creature->getFaction());
@@ -1004,6 +1024,11 @@ void Monster::setIdle(bool idle) {
 void Monster::updateIdleStatus() {
 	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
+		return;
+	}
+
+	if (g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE)) {
+		setIdle(false);
 		return;
 	}
 
@@ -1128,7 +1153,8 @@ void Monster::onThink_async() {
 		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
 		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
 			if (!followCreature || !hasFollowPath) {
-				searchTarget(TARGETSEARCH_NEAREST);
+				const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+				searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
 			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
 				searchTarget(TARGETSEARCH_DEFAULT);
 			}
@@ -1301,11 +1327,9 @@ void Monster::onThinkTarget(uint32_t interval) {
 					}
 
 					if (m_monsterType->info.changeTargetChance >= uniform_random(1, 100)) {
-						if (m_monsterType->info.targetDistance <= 1) {
-							searchTarget(TARGETSEARCH_RANDOM);
-						} else {
-							searchTarget(TARGETSEARCH_NEAREST);
-						}
+						const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
+							|| m_monsterType->info.targetDistance <= 1;
+						searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
 					}
 				}
 			}

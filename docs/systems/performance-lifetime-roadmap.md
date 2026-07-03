@@ -155,6 +155,30 @@ Borrowed raw pointers must not cross these boundaries.
 - Do not introduce raw accessors that can be called from delayed or async code
   unless the accessor is only a local helper and all callers are audited.
 
+## Benchmark-only monster stress mode
+
+`config.lua.dist` exposes two disabled-by-default flags for local monster AI
+profiling:
+
+- `monsterPerfTestForceActive`: keeps monsters out of idle state even when no
+  player or target is nearby.
+- `monsterPerfTestFriendlyFire`: lets non-summon monsters classify other
+  non-summon monsters as valid opponents and use random target selection in the
+  stress path.
+
+These flags are not gameplay features. They are intended for controlled CPU and
+dispatcher profiling when player load is not available. Keep them disabled in
+production-like environments unless the benchmark explicitly requires them.
+
+The implementation must keep these contracts:
+
+- Do not make summons attack their masters or use the friendly-fire override.
+- Do not bypass protection zone, attackability, visibility, or z-level checks.
+- Do not store raw creature pointers or capture borrowed pointers in delayed
+  work.
+- Treat runtime config toggles as best-effort for benchmarks; restarting or
+  respawning monsters gives the most deterministic target-list population.
+
 ## Current contract map
 
 | Area | Current contract | Risk if changed blindly | Safe near-term direction |

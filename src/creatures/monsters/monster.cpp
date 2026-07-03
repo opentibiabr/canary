@@ -423,7 +423,6 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		auto action = [this, newPos, oldPos, creature = std::weak_ptr<Creature>(creature)] {
 			const auto movedCreature = creature.lock();
 			if (!movedCreature) {
-				updateIdleStatus();
 				return;
 			}
 
@@ -435,8 +434,6 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 			} else if (!canSeeNewPos && canSeeOldPos) {
 				onCreatureLeave(movedCreature);
 			}
-
-			updateIdleStatus();
 
 			if (!isSummon()) {
 				if (const auto &followCreature = getFollowCreature()) {
@@ -555,18 +552,18 @@ void Monster::onSpawn(const Position &position) {
 	}
 }
 
-void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
+bool Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
-		return;
+		return false;
 	}
 
 	assert(creature.get() != this);
-	friendList.try_emplace(creature->getID(), creature);
+	return friendList.try_emplace(creature->getID(), creature).second;
 }
 
-void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
-	friendList.erase(creature->getID());
+bool Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
+	return friendList.erase(creature->getID()) > 0;
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
@@ -663,15 +660,18 @@ void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pu
 }
 
 void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire) {
+	bool listChanged = false;
 	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
-		addFriend(creature);
+		listChanged = addFriend(creature) || listChanged;
 	}
 
 	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
-		addTarget(creature, pushFront);
+		listChanged = addTarget(creature, pushFront) || listChanged;
 	}
 
-	updateIdleStatus();
+	if (listChanged) {
+		updateIdleStatus();
+	}
 }
 
 void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
@@ -762,8 +762,7 @@ void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 
 	// update targetList
 	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
-		removeTarget(creature);
-		if (targetList.empty()) {
+		if (removeTarget(creature) && targetList.empty()) {
 			updateIdleStatus();
 		}
 	}
@@ -1046,6 +1045,10 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monst
 
 void Monster::setIdle(bool idle) {
 	if (isRemoved() || getHealth() <= 0) {
+		return;
+	}
+
+	if (!idle && !isIdle) {
 		return;
 	}
 

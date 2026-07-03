@@ -459,7 +459,7 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 
 void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
-	if (hasCondition(CONDITION_ROOTED)) {
+	if (hasTrackedConditionType(CONDITION_ROOTED) && hasCondition(CONDITION_ROOTED)) {
 		resetMovementState();
 		return;
 	}

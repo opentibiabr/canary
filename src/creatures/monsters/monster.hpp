@@ -350,8 +350,8 @@ private:
 
 	void updateLookDirection();
 
-	void addFriend(const std::shared_ptr<Creature> &creature);
-	void removeFriend(const std::shared_ptr<Creature> &creature);
+	bool addFriend(const std::shared_ptr<Creature> &creature);
+	bool removeFriend(const std::shared_ptr<Creature> &creature);
 	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 	bool removeTarget(const std::shared_ptr<Creature> &creature);
 

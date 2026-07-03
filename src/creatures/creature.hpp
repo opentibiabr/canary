@@ -946,7 +946,9 @@ protected:
 	 */
 	void addAsyncTask(std::function<void()> &&fnc) {
 		asyncTasks.emplace_back(std::move(fnc));
-		sendAsyncTasks();
+		if (!m_isExecutingAsyncTasks) {
+			sendAsyncTasks();
+		}
 	}
 
 	bool hasAsyncTaskFlag(FlagAsyncClass_t prop) const {
@@ -956,6 +958,10 @@ protected:
 	void setAsyncTaskFlag(FlagAsyncClass_t taskFlag, bool v) {
 		if (v) {
 			m_flagAsyncTask |= taskFlag;
+			if (m_isExecutingAsyncTasks && taskFlag != AsyncTaskRunning) {
+				m_deferredAsyncTaskFlags |= taskFlag;
+				return;
+			}
 			sendAsyncTasks();
 		} else {
 			m_flagAsyncTask &= ~taskFlag;
@@ -1017,6 +1023,8 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	uint8_t m_deferredAsyncTaskFlags = 0;
+	bool m_isExecutingAsyncTasks = false;
 	CombatDamage m_combatDamage;
 	std::vector<uint16_t> attachedEffectList;
 	std::string shader;

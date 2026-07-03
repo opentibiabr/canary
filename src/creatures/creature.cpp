@@ -1973,20 +1973,41 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 }
 
 void Creature::executeAsyncTasks() {
+	std::vector<std::function<void()>> currentTasks;
+	currentTasks.swap(asyncTasks);
+
+	const uint8_t currentFlags = m_flagAsyncTask & ~AsyncTaskRunning;
+	m_deferredAsyncTaskFlags = 0;
+	m_isExecutingAsyncTasks = true;
+
 	if (!isRemoved() && isAlive()) {
-		for (const auto &task : asyncTasks) {
+		for (auto &task : currentTasks) {
 			task();
 		}
 
-		if (hasAsyncTaskFlag(Pathfinder)) {
+		m_flagAsyncTask = AsyncTaskRunning | currentFlags;
+		if ((currentFlags & Pathfinder) != 0) {
 			goToFollowCreature();
 		}
 
 		onExecuteAsyncTasks();
 	}
 
-	asyncTasks.clear();
-	m_flagAsyncTask = 0;
+	m_isExecutingAsyncTasks = false;
+	currentTasks.clear();
+	if (asyncTasks.empty()) {
+		asyncTasks.swap(currentTasks);
+	}
+
+	const uint8_t deferredFlags = m_deferredAsyncTaskFlags;
+	m_deferredAsyncTaskFlags = 0;
+	m_flagAsyncTask = deferredFlags;
+
+	if (!asyncTasks.empty() || deferredFlags != 0) {
+		sendAsyncTasks();
+	} else {
+		m_flagAsyncTask = 0;
+	}
 }
 
 void Creature::sendAsyncTasks() {
@@ -1994,7 +2015,7 @@ void Creature::sendAsyncTasks() {
 		return;
 	}
 
-	setAsyncTaskFlag(AsyncTaskRunning, true);
+	m_flagAsyncTask |= AsyncTaskRunning;
 	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID());
 }
 

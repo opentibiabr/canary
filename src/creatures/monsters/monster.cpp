@@ -559,10 +559,7 @@ void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
-	std::erase_if(friendList, [id = creature->getID()](const auto &it) {
-		const auto &target = it.second.lock();
-		return !target || target->getID() == id;
-	});
+	friendList.erase(creature->getID());
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
@@ -787,6 +784,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	}
 
 	std::vector<std::shared_ptr<Creature>> resultList;
+	resultList.reserve(targetList.size());
 	const Position &myPos = getPosition();
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 

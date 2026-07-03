@@ -224,6 +224,9 @@ The batching contract is:
 - Preserve the existing "one pending async execution per creature" behavior.
 - If new async work is added while a creature is being processed, run it in a
   later batch rather than racing the current task vector.
+- `Creature::executeAsyncTasks` processes a swapped local vector snapshot. Work
+  queued during that snapshot remains on the creature and is scheduled as a
+  follow-up batch.
 - Keep script, movement, and removal callbacks on the same ownership boundaries
   used today.
 
@@ -240,6 +243,16 @@ Additional safe cuts applied after the dispatcher profile became cleaner:
 - Monster target classification reuses the benchmark friendly-fire config value
   within each target-list/search pass instead of reading config repeatedly for
   every candidate.
+- `Monster::targetList` stores the target runtime ID beside the `weak_ptr`.
+  Membership checks compare the ID first and only lock the weak reference for
+  the matched candidate or when the target object is actually used. The ID is an
+  index hint, not a lifetime guarantee.
+- `Monster::searchTarget` reserves its temporary candidate vector from
+  `targetList.size()`, and `friendList` removals use the existing ID key instead
+  of scanning and locking the whole map.
+- `Creature` keeps a small count of active condition types. `hasCondition` and
+  related type lookups can reject missing types without scanning the condition
+  list; sub-ID and timeout checks still use the existing condition objects.
 
 Do not enable the global `Spectators` cache inside monster async target-list
 updates without adding synchronization or a per-tick immutable cache. That cache
@@ -264,7 +277,7 @@ and measurement.
 | `Floor` and `MapSector` | `Floor::getTile` returns `shared_ptr<Tile>` under `shared_lock`; sectors store creature lists as `shared_ptr`. | Borrowing a `Tile*` without a lock or pin can race tile replacement/reload/cache changes. | Introduce tile borrow APIs only with clear lock or dispatcher-only lifetime rules. |
 | `Map::moveCreature` | Receives strong creature/tile pins, builds spectator snapshots, then may defer notifications. | Any raw pointer captured by the deferred `events` lambda can outlive the current stack. | Keep deferred captures strong or use IDs/positions and re-resolve. Raw `Player*` is acceptable only for immediate fanout. |
 | `Spectators` | Snapshots are `CreatureVector` of `shared_ptr<Creature>` and may be cached. | Raw spectator caches would dangle after logout/removal. | Reduce copies and allocations first. Add borrowed views only for immediate non-cached fanout. |
-| `Monster::targetList` and `friendList` | Store `weak_ptr<Creature>`, lock during reads, erase expired entries. | Raw target lists are classic use-after-free risk after death, logout, teleport, despawn, or delayed AI. | Replace with ID/generation handles only after removal/despawn/reuse semantics are specified. |
+| `Monster::targetList` and `friendList` | `targetList` stores `{creatureId, weak_ptr<Creature>}` and `friendList` is keyed by creature ID with weak values. The weak reference remains the lifetime gate. | Raw target lists are classic use-after-free risk after death, logout, teleport, despawn, or delayed AI. ID-only storage without generation can misidentify reused IDs if reuse semantics change. | Keep ID sidecars as lookup hints only. Replace with ID/generation handles only after removal/despawn/reuse semantics are specified. |
 | `Creature` follow/attack/master/tile | Stored as `weak_ptr`; accessors lock and return `shared_ptr`. | Raw member pointers can become stale when creatures are removed or moved. | Consider handle-backed access for hot AI paths, but keep public safety semantics. |
 | `Item::m_parent` | Stored as `weak_ptr<Cylinder>`; parent chain is resolved dynamically. | Raw parent can dangle after move, transform, trade, container removal, or depot/house transfer. | Keep weak parent. Optimize only local parent walks with a temporary pin or documented borrow. |
 | Pathfinding | `Map::getTile`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` use `shared_ptr`. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. | Candidate for a borrowed `Tile*` path once map/floor stability is documented and measured. |
@@ -282,6 +295,9 @@ Tasks:
 - Keep separate profiles for the dispatcher thread and total process CPU.
 - Capture movement-heavy and monster-heavy scenarios before each phase.
 - Record allocations and refcount symbols separately from game logic symbols.
+- For fine-grained Visual Studio samples, prefer a Release build with PDBs and
+  Just My Code disabled. Debug-only helpers such as
+  `__CheckForDebuggerJustMyCode` can otherwise pollute small hotpath decisions.
 - Add lightweight counters or trace points only when they can be removed or
   compiled out.
 - Identify whether each candidate hotpath is copy-heavy, weak-lock-heavy,
@@ -344,6 +360,10 @@ Current implementation note:
   freshly built spectator snapshots into the result when no cache needs the same
   vector first. Cached snapshots remain strongly owned and are not replaced with
   raw pointers.
+- `Creature::conditionTypeCounts` is a derived cache of the `conditions` list.
+  All current direct list mutations in `Creature` and `Player` update the count.
+  Do not add new direct `conditions.erase` or `conditions.emplace` sites without
+  updating the cache in the same change.
 
 ## Phase 2: movement and spectator fanout
 
@@ -394,11 +414,18 @@ handle must fail closed if the creature was removed and an ID was reused.
 
 Candidate work:
 
-- Replace `Monster::targetList` and `Monster::friendList` storage with handles
-  after defining removed/dead/logout/despawn semantics.
+- Replace `Monster::targetList` and `Monster::friendList` storage with
+  generation-aware handles after defining removed/dead/logout/despawn semantics.
 - Re-resolve handles through `Game` immediately before use.
 - Preserve current erase-on-expired behavior as erase-on-invalid-handle.
 - Keep Lua APIs returning `shared_ptr` snapshots, not raw pointers.
+
+Near-term work already done:
+
+- `targetList` has an ID sidecar to avoid `weak_ptr::lock()` in membership
+  checks such as `Monster::getTargetIterator`.
+- This is intentionally not the final handle model. The `weak_ptr` still decides
+  whether the target is alive before use.
 
 Open design questions:
 

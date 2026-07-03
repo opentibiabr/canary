@@ -26,8 +26,8 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
-bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature) {
-	return g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE) && !monster.isSummon() && creature
+bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
+	return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
 		&& creature.get() != static_cast<const Creature*>(&monster)
 		&& creature->getMonsterRaw() && !creature->isSummon();
 }
@@ -632,9 +632,10 @@ void Monster::updateTargetList() {
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	for (const auto &spectator : Spectators().find<Creature>(position, true, 0, 0, 0, 0, false)) {
 		if (spectator.get() != this && canSee(spectator->getPosition())) {
-			onCreatureFound(spectator);
+			onCreatureFound(spectator, false, monsterPerfTestFriendlyFire);
 		}
 	}
 }
@@ -648,11 +649,15 @@ void Monster::clearFriendList() {
 }
 
 void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	if (isFriend(creature)) {
+	onCreatureFound(creature, pushFront, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire) {
+	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
 		addFriend(creature);
 	}
 
-	if (isOpponent(creature)) {
+	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
 		addTarget(creature, pushFront);
 	}
 
@@ -664,6 +669,10 @@ void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
+	return isFriend(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isFriend(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const {
 	const auto &master = getMaster();
 	const auto &masterPlayer = master ? master->getPlayer() : nullptr;
 	if (isSummon() && masterPlayer) {
@@ -680,7 +689,7 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 		}
 	}
 
-	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
 		return false;
 	}
 
@@ -688,6 +697,10 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 }
 
 bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
+	return isOpponent(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isOpponent(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const {
 	if (!creature) {
 		return false;
 	}
@@ -703,7 +716,7 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 		return false;
 	}
 
-	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
 		return true;
 	}
 
@@ -730,13 +743,15 @@ uint16_t Monster::getLookCorpse() const {
 }
 
 void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+
 	// update friendList
-	if (isFriend(creature)) {
+	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
 		removeFriend(creature);
 	}
 
 	// update targetList
-	if (isOpponent(creature)) {
+	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
 		removeTarget(creature);
 		if (targetList.empty()) {
 			updateIdleStatus();
@@ -767,6 +782,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 	std::vector<std::shared_ptr<Creature>> resultList;
 	const Position &myPos = getPosition();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 
 	// When the current melee target is path-blocked (magic wall, untraversable field),
 	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
@@ -776,7 +792,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 	for (const auto &cref : targetList) {
 		const auto &creature = cref.lock();
-		if (creature && isTarget(creature)) {
+		if (creature && isTarget(creature, monsterPerfTestFriendlyFire)) {
 			if (skipCurrentUnreachable && creature == currentAttacked) {
 				continue;
 			}
@@ -816,7 +832,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			} else {
 				int32_t minRange = std::numeric_limits<int32_t>::max();
 				for (const auto &creature : getTargetList()) {
-					if (!isTarget(creature)) {
+					if (!isTarget(creature, monsterPerfTestFriendlyFire)) {
 						continue;
 					}
 
@@ -830,7 +846,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				}
 			}
 
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -853,7 +869,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					} while (++it != resultList.end());
 				}
 			}
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -875,7 +891,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					} while (++it != resultList.end());
 				}
 			}
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -885,18 +901,18 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			if (!resultList.empty()) {
 				auto it = resultList.begin();
 				std::advance(it, uniform_random(0, resultList.size() - 1));
-				return selectTarget(*it);
+				return selectTarget(*it, monsterPerfTestFriendlyFire);
 			}
 			break;
 		}
 	}
 
 	// lets just pick the first target in the list
-	return std::ranges::any_of(getTargetList(), [this, skipCurrentUnreachable, &currentAttacked](const std::shared_ptr<Creature> &creature) {
+	return std::ranges::any_of(getTargetList(), [this, skipCurrentUnreachable, &currentAttacked, monsterPerfTestFriendlyFire](const std::shared_ptr<Creature> &creature) {
 		if (skipCurrentUnreachable && creature == currentAttacked) {
 			return false;
 		}
-		return selectTarget(creature);
+		return selectTarget(creature, monsterPerfTestFriendlyFire);
 	});
 }
 
@@ -951,6 +967,10 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 }
 
 bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
+	return isTarget(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
 	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
@@ -959,7 +979,7 @@ bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	if (isMonsterPerfTestFriendlyFireTarget(*this, creature)) {
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
 		return true;
 	}
 
@@ -981,7 +1001,11 @@ bool Monster::isFleeing() const {
 }
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
-	if (!isTarget(creature)) {
+	return selectTarget(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
+	if (!isTarget(creature, monsterPerfTestFriendlyFire)) {
 		return false;
 	}
 

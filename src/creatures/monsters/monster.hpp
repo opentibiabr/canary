@@ -334,6 +334,7 @@ private:
 	void onCreatureEnter(const std::shared_ptr<Creature> &creature);
 	void onCreatureLeave(const std::shared_ptr<Creature> &creature);
 	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront = false);
+	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire);
 
 	void updateLookDirection();
 
@@ -407,7 +408,11 @@ private:
 	 * ownership or lifetime shortcut.
 	 */
 	bool isFriend(const std::shared_ptr<Creature> &creature) const;
+	bool isFriend(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const;
 	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
+	bool isOpponent(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const;
+	bool isTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire);
+	bool selectTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire);
 
 	uint64_t getLostExperience() const override;
 	uint16_t getLookCorpse() const override;

@@ -19,6 +19,33 @@ engineering decisions while avoiding noisy, non-reproducible raw profiler dumps.
   acceptance by themselves.
 - Startup queue-latency samples before the server reaches normal game state are
   diagnostic noise. Runtime queue latency after startup is the relevant signal.
+- CPU total is inclusive. Do not sum rows from the same call tree as if they were
+  independent costs.
+
+## Hotspot Percentage Movement
+
+Most rows below compare the first stress sample where the hotspot justified a
+change against a later monster-stress sample after the related change set. The
+majority of these samples came from the same "many active monsters" tuning
+scenario. The percentages are CPU-share movement inside Visual Studio samples,
+not absolute throughput or a formal benchmark.
+
+Read each row as: hotspot -> before -> after. Values are `CPU total / CPU own`.
+
+| Hotspot | Before | After | Delta | Note |
+| --- | --- | --- | --- | --- |
+| Async task fanout | 47.93% / 5.21% | 18.02% / 0.23% | -62.4% / -95.6% | Compare as a family: direct enqueue lambda became bucketed processing. |
+| `Creature::goToFollowCreature` | 21.72% / 0.42% | 6.77% / 0.09% | -68.8% / -78.6% | Follow pressure fell with path/tile lookup changes. |
+| `Creature::getPathTo` | 17.02% / 0.01% | 4.39% / ~0% | -74.2% / n/a | Own CPU was already tiny; total is the useful signal. |
+| `Map::getPathMatchingCond` | 16.99% / 4.56% | 4.38% / 0.91% | -74.2% / -80.0% | Main floor-cursor validation point. |
+| `Map::getTile` | 10.52% / 5.91% | 5.74% / 0.09% | -45.4% / -98.5% | Some cost moved into `MapCache` and cursor helpers. |
+| `Monster::updateTargetList` | 10.41% / 1.93% | 5.20% / 1.07% | -50.0% / -44.6% | Lower weak-lock/refcount churn. |
+| `Monster::getTargetIterator` | 2.99% / 2.93% | 1.70% / 1.67% | -43.1% / -43.0% | Target id avoids locking every weak entry. |
+| `Spectators::getSpectators` | 15.29% / 11.37% | 7.69% / 5.29% | -49.7% / -53.5% | Still a real next-stage hotspot. |
+| `Monster::onCreatureMove` | 9.51% / 4.25% | 6.75% / 4.33% | -29.0% / +1.9% | Total improved; own CPU stayed flat. |
+| `std::_Ref_count_base::_Decref` | 6.19% / 4.78% | 5.10% / 4.05% | -17.6% / -15.3% | Improved, but not eliminated. |
+| `Creature::hasCondition` | 1.93% / 1.86% | <=0.07% / <=0.05% | at least -96.4% / -97.3% | Dropped out of the top-level hotspot list. |
+| `Map::moveCreature` | 14.24% / 0.10% | 13.08% / 0.12% | -8.1% / +20.0% | Mostly orchestration; child fanout remains the cost. |
 
 ## Evidence Log
 

@@ -72,6 +72,8 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
+	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 64;
+
 	std::shared_ptr<Npc> getInteractableShopOwner(const std::shared_ptr<Player> &player) {
 		if (!player) {
 			return nullptr;
@@ -88,6 +90,28 @@ namespace {
 
 		[[maybe_unused]] const auto shopClosed = player->closeShopWindow();
 		return nullptr;
+	}
+
+	void scheduleMonsterPostThinkBatch(std::shared_ptr<const std::vector<uint32_t>> creatureIds, size_t startIndex = 0) {
+		if (!creatureIds || startIndex >= creatureIds->size()) {
+			return;
+		}
+
+		g_dispatcher().addEvent([creatureIds = std::move(creatureIds), startIndex] {
+			const size_t endIndex = std::min(creatureIds->size(), startIndex + MONSTER_POST_THINK_BATCH_SIZE);
+			for (size_t i = startIndex; i < endIndex; ++i) {
+				const auto &deferredCreature = g_game().getCreatureByID((*creatureIds)[i]);
+				if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
+					deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
+					deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+				}
+			}
+
+			if (endIndex < creatureIds->size()) {
+				scheduleMonsterPostThinkBatch(creatureIds, endIndex);
+			}
+		},
+		                        "Game::checkCreaturesPostThink");
 	}
 }
 
@@ -7436,19 +7460,17 @@ void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::erase_if(checkCreatureLists[index], [this](const std::weak_ptr<Creature> &weak) {
+	std::vector<uint32_t> deferredMonsterIds;
+	deferredMonsterIds.reserve(checkCreatureLists[index].size());
+
+	std::erase_if(checkCreatureLists[index], [this, &deferredMonsterIds](const std::weak_ptr<Creature> &weak) {
 		if (const auto creature = weak.lock()) {
 			if (creature->creatureCheck && creature->isAlive()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 				if (creature->getMonsterRaw()) {
 					// The monster's onThink is executed asynchronously,
 					// so the target is updated later, so we need to postpone the actions below.
-					g_dispatcher().addEvent([creatureId = creature->getID()] {
-						const auto &deferredCreature = g_game().getCreatureByID(creatureId);
-						if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
-							deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-							deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
-						} }, __FUNCTION__);
+					deferredMonsterIds.emplace_back(creature->getID());
 				} else {
 					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
@@ -7461,6 +7483,10 @@ void Game::checkCreatures() {
 
 		return true;
 	});
+
+	if (!deferredMonsterIds.empty()) {
+		scheduleMonsterPostThinkBatch(std::make_shared<std::vector<uint32_t>>(std::move(deferredMonsterIds)));
+	}
 
 	index = (index + 1) % EVENT_CREATURECOUNT;
 }

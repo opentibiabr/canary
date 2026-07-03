@@ -297,29 +297,32 @@ walking map sectors. Reducing that safely likely needs a per-tick immutable
 relevancy cache or another synchronization-aware design, not ad hoc raw
 spectator pointers.
 
-### Follow-up priority from the latest monster-stress sample
+### Follow-up priority from the validated monster-stress sample
 
-After the async batching and low-risk closure work, the profile shifted toward
-real map lookup and spectator fanout. The table below uses the latest observed
-sample as a prioritization guide. Totals overlap because call-tree percentages
-include callees; do not add them together.
+After fixing the benchmark idle/friendly-fire activation path, the profile
+shifted from apparently smooth movement to a real dispatcher-latency problem.
+The table below uses the validated force-active/friendly-fire sample as a
+prioritization guide. Totals overlap because call-tree percentages include
+callees; do not add them together.
 
 | Priority | Profile signal | Interpretation | Next work class |
 | --- | --- | --- | --- |
-| 1 | `Map::getTile`: about 14.1% total, 6.6% own | Tile lookup is now the clearest self-cost. Pathfinding, sight checks, and movement repeatedly resolve sectors, floors, and `shared_ptr<Tile>` pins. | Phase 4 v1 uses a local floor cursor while keeping `shared_ptr<Tile>`. Any later borrowed tile view must be separately audited against `MapCache`, `Floor::setTile`, dynamic tiles, map reload, and `queryAdd` side effects. |
-| 2 | `Spectators::getSpectators`: about 8.7% total, 6.2% own; `Spectators::find` appears inside `Map::moveCreature` | Sector walking and strong snapshot creation are still expensive under movement stress. The current snapshot model is safe but allocates and copies ownership in hot loops. | Larger Phase 2 work: per-tick immutable relevancy cache or synchronized spectator snapshot reuse. Do not enable the current global cache from `WalkParallel` without a synchronization design. |
-| 3 | `Creature::enqueueAsyncTask` closure path: about 45.2% total, 4.3% own | This is mostly a batch envelope now, not pure closure cost. Own cost remains worth trimming, but the large total means movement and monster work are executing inside the queued batch. | Medium-to-large scheduler work: typed pending movement/AI events or a per-creature ring instead of generic `std::function` batches. Requires ordering, removal, script, and requeue semantics. |
-| 4 | Movement fanout: `Creature::onCreatureWalk` about 21.5%, `Map::moveCreature` about 17.2%, `Monster::onCreatureMove` about 8.6% | Movement still fans out into client sends, old-stack checks, monster target refresh, idle updates, and async follow-up. | Larger Phase 2 work: fixed update phases, coalesced monster movement notifications, and deduplicated per-tick target refresh. Must preserve movement callback order and script-visible behavior. |
-| 5 | `Game::checkCreatures` dispatcher lambda: about 13.5% total in the sample | The check-creature loop is visible, but it overlaps with movement and AI work. It should not be optimized blindly before the higher self-cost map/spectator paths. | Later scheduler cleanup: typed check queue and fewer generic task allocations, after movement/spectator changes are measured. |
-| 6 | `__CheckForDebuggerJustMyCode`: about 5.4% own | This is profiler/build instrumentation noise, not a Canary gameplay cost. | Measurement cleanup: use a Release profile with PDBs and Just My Code disabled before making fine-grained decisions. |
+| 1 | `Game::checkCreatures` deferred monster post-think: about 35% total; `Creature::onAttacking` about 31%; `Monster::doAttacking` about 29%; `CombatSpell::castSpell` about 22% | The stutter is mainly dispatcher queue latency. Monster attack/combat work is serial and can hold the same dispatcher queue that must parse player input and start walk/autowalk. | Applied v1: batch delayed monster post-think by monster runtime ID in small serial slices. Larger follow-up: a budgeted attack/combat phase with explicit fairness and ordering contracts. |
+| 2 | Movement fanout: `Creature::onCreatureWalk` about 19%; `Game::internalMoveCreature` about 13%; `Map::moveCreature` about 13%; `Spectators::find` about 12% | Movement is still expensive and also serial. Even with attack batching, large monster walk bursts can delay player-visible movement. | Larger Phase 2 work: fixed update phases, coalesced monster movement notifications, and deduplicated per-tick target refresh. Must preserve movement callback order and script-visible behavior. |
+| 3 | Combat/Lua/GC: `LuaScriptInterface::callFunction` about 11.5%; `lua_newuserdata` about 8.1%; `lj_gc_step` about 11.8%; `EventCallback::pushArgument`/`Lua::pushUserdata` visible inside combat | Friendly-fire stress causes many combat callbacks and userdata pushes. This is real cost, not just C++ pathfinding. | Larger combat-script work: reduce per-hit Lua userdata churn, cache immutable combat area data, and audit callback frequency. Do not bypass script-visible callbacks without compatibility gates. |
+| 4 | `MapCache::getOrCreateTileFromCache` about 5.4%; `Map::getPathMatchingCond` about 4.4%; `Map::getTile` about 5.7% | Tile/pathfinding improved versus the earlier pathfinding-heavy samples, but still contributes under movement and sight checks. | Continue Phase 4 only after dispatcher fairness is remeasured. Avoid global tile/raw-pointer rewrites. |
+| 5 | `Spectators::getSpectators`: about 7.7% total, 5.3% own | Sector walking and strong snapshot construction remain one of the largest direct movement-fanout self-costs. | Larger Phase 2 work: per-tick immutable relevancy cache or synchronized spectator snapshot reuse. Do not enable the current global cache from `WalkParallel` without a synchronization design. |
+| 6 | `__CheckForDebuggerJustMyCode`: about 4.3% own | This is profiler/build instrumentation noise, not a Canary gameplay cost. | Measurement cleanup: use a Release profile with PDBs and Just My Code disabled before making fine-grained decisions. |
 
-Low-risk cuts already applied in response to this profile are intentionally
-small: avoid redundant async scheduling calls, reduce spectator merge churn, and
-document the remaining contracts. The next high-impact work is no longer a
-mechanical `shared_ptr` cleanup; it is a data-structure and update-phase
-problem around map tiles, spectator relevance, and movement fanout.
+Low-risk cuts already applied in response to these profiles are intentionally
+small: avoid redundant async scheduling calls, reduce spectator merge churn,
+batch delayed monster post-think, and document the remaining contracts. The next
+high-impact work is no longer a mechanical `shared_ptr` cleanup; it is an
+update-phase and dispatcher-fairness problem around combat, movement, spectator
+relevance, and map tiles.
 
-The latest post-path-cursor monster-stress sample shifted again:
+An earlier post-path-cursor monster-stress sample, taken before the
+force-active/friendly-fire activation path was fixed, showed:
 
 | Signal | Current sample | Notes |
 | --- | --- | --- |
@@ -329,12 +332,13 @@ The latest post-path-cursor monster-stress sample shifted again:
 | `Map::getPathMatchingCond` | about 12.0% total, 4.1% own | Pathfinding is still relevant, but now overlaps more with combat and monster AI than with pure tile lookup. |
 | `__CheckForDebuggerJustMyCode` | about 4.8% own | Measurement noise; do not optimize code around this symbol. |
 
-Low-risk cuts for this sample:
+Low-risk cuts from that sample:
 
 - `Monster::onCreatureMove` should not force an idle recomputation when a move
   notification did not change the monster's friend or target lists.
-- `setIdle(false)` can be idempotent for already-active monsters; repeated
-  creature-check registration attempts do not add gameplay value.
+- `setIdle(false)` can be idempotent for already-active monsters, but it must
+  still revalidate creature-check registration because `isIdle == false` and
+  `creatureCheck == true` are separate pieces of state.
 - `Creature::onCreatureMove` can use the condition-type cache before calling
   the full `hasCondition(CONDITION_ROOTED)` path.
 - `Map::moveCreature` deferred notifications should not copy zone sets; strong
@@ -443,6 +447,10 @@ Current implementation note:
   counter. This rule must not be generalized to players because player runtime
   IDs are derived from GUIDs and can identify a later session for the same
   character.
+- The delayed monster post-think batch stores only monster runtime IDs. It must
+  not store `shared_ptr<Creature>`, `Monster*`, or raw tile/creature borrows
+  across dispatcher turns. Combat and condition execution remain serial on the
+  dispatcher; batching is a fairness mechanism, not parallel combat.
 - `Game::addCreatureCheck` keeps the generic check-list path as `weak_ptr`,
   including the scheduled insertion. It deliberately does not use raw pointers
   or ID-only storage for generic creatures.

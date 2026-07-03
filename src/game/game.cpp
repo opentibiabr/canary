@@ -72,7 +72,7 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
-	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 16;
+	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 64;
 
 	std::shared_ptr<Npc> getInteractableShopOwner(const std::shared_ptr<Player> &player) {
 		if (!player) {

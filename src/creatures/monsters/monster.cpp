@@ -419,14 +419,20 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		auto action = [this, newPos, oldPos, creature] {
+		auto action = [this, newPos, oldPos, creature = std::weak_ptr<Creature>(creature)] {
+			const auto movedCreature = creature.lock();
+			if (!movedCreature) {
+				updateIdleStatus();
+				return;
+			}
+
 			bool canSeeNewPos = canSee(newPos);
 			bool canSeeOldPos = canSee(oldPos);
 
 			if (canSeeNewPos && !canSeeOldPos) {
-				onCreatureEnter(creature);
+				onCreatureEnter(movedCreature);
 			} else if (!canSeeNewPos && canSeeOldPos) {
-				onCreatureLeave(creature);
+				onCreatureLeave(movedCreature);
 			}
 
 			updateIdleStatus();
@@ -449,9 +455,9 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 							}
 						}
 					}
-				} else if (isOpponent(creature)) {
+				} else if (isOpponent(movedCreature)) {
 					// we have no target lets try pick this one
-					selectTarget(creature);
+					selectTarget(movedCreature);
 				}
 			}
 		};

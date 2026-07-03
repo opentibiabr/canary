@@ -974,8 +974,9 @@ protected:
 	 * capture borrowed raw pointers or references to gameplay objects unless
 	 * another captured owner or stable handle explicitly covers that lifetime.
 	 */
-	void addAsyncTask(std::function<void()> &&fnc) {
-		asyncTasks.emplace_back(std::move(fnc));
+	template <typename AsyncTask>
+	void addAsyncTask(AsyncTask &&fnc) {
+		asyncTasks.emplace_back(std::forward<AsyncTask>(fnc));
 		if (!m_isExecutingAsyncTasks) {
 			sendAsyncTasks();
 		}

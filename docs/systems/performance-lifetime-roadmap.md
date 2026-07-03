@@ -256,10 +256,19 @@ Additional safe cuts applied after the dispatcher profile became cleaner:
 - `Creature::addAsyncTask` constructs the stored `std::function` directly from
   the callable. This avoids an extra temporary `std::function` move/reset in hot
   movement callbacks.
+- `Creature::addAsyncTask` and `Creature::setAsyncTaskFlag` now skip redundant
+  scheduler entry attempts while `AsyncTaskRunning` is already set. New work
+  added to an already queued or executing creature remains on the existing
+  async batch contract instead of re-entering `sendAsyncTasks` only to hit the
+  guard.
 - `Monster::onCreatureMove` no longer keeps a strong reference to the moved
   creature across the async monster task. It captures a `weak_ptr` and resolves
   it when the batch runs; if the moved creature disappeared, the task only
   refreshes idle state and exits.
+- `Spectators::insertAll` reserves capacity before copied snapshot merges and
+  deduplicates merged snapshots with transient creature identity keys while the
+  stored snapshot remains a `shared_ptr` vector. Cached filter paths reserve
+  from the source cache size instead of the destination size.
 
 Do not enable the global `Spectators` cache inside monster async target-list
 updates without adding synchronization or a per-tick immutable cache. That cache
@@ -272,6 +281,28 @@ movement fanout. `Spectators::getSpectators` still builds strong snapshots by
 walking map sectors. Reducing that safely likely needs a per-tick immutable
 relevancy cache or another synchronization-aware design, not ad hoc raw
 spectator pointers.
+
+### Follow-up priority from the latest monster-stress sample
+
+After the async batching and low-risk closure work, the profile shifted toward
+real map lookup and spectator fanout. The table below uses the latest observed
+sample as a prioritization guide. Totals overlap because call-tree percentages
+include callees; do not add them together.
+
+| Priority | Profile signal | Interpretation | Next work class |
+| --- | --- | --- | --- |
+| 1 | `Map::getTile`: about 14.1% total, 6.6% own | Tile lookup is now the clearest self-cost. Pathfinding, sight checks, and movement repeatedly resolve sectors, floors, and `shared_ptr<Tile>` pins. | Larger Phase 4 work: scoped tile read view or dispatcher-only borrowed lookup, audited against `MapCache`, `Floor::setTile`, dynamic tiles, map reload, and `queryAdd` side effects. |
+| 2 | `Spectators::getSpectators`: about 8.7% total, 6.2% own; `Spectators::find` appears inside `Map::moveCreature` | Sector walking and strong snapshot creation are still expensive under movement stress. The current snapshot model is safe but allocates and copies ownership in hot loops. | Larger Phase 2 work: per-tick immutable relevancy cache or synchronized spectator snapshot reuse. Do not enable the current global cache from `WalkParallel` without a synchronization design. |
+| 3 | `Creature::enqueueAsyncTask` closure path: about 45.2% total, 4.3% own | This is mostly a batch envelope now, not pure closure cost. Own cost remains worth trimming, but the large total means movement and monster work are executing inside the queued batch. | Medium-to-large scheduler work: typed pending movement/AI events or a per-creature ring instead of generic `std::function` batches. Requires ordering, removal, script, and requeue semantics. |
+| 4 | Movement fanout: `Creature::onCreatureWalk` about 21.5%, `Map::moveCreature` about 17.2%, `Monster::onCreatureMove` about 8.6% | Movement still fans out into client sends, old-stack checks, monster target refresh, idle updates, and async follow-up. | Larger Phase 2 work: fixed update phases, coalesced monster movement notifications, and deduplicated per-tick target refresh. Must preserve movement callback order and script-visible behavior. |
+| 5 | `Game::checkCreatures` dispatcher lambda: about 13.5% total in the sample | The check-creature loop is visible, but it overlaps with movement and AI work. It should not be optimized blindly before the higher self-cost map/spectator paths. | Later scheduler cleanup: typed check queue and fewer generic task allocations, after movement/spectator changes are measured. |
+| 6 | `__CheckForDebuggerJustMyCode`: about 5.4% own | This is profiler/build instrumentation noise, not a Canary gameplay cost. | Measurement cleanup: use a Release profile with PDBs and Just My Code disabled before making fine-grained decisions. |
+
+Low-risk cuts already applied in response to this profile are intentionally
+small: avoid redundant async scheduling calls, reduce spectator merge churn, and
+document the remaining contracts. The next high-impact work is no longer a
+mechanical `shared_ptr` cleanup; it is a data-structure and update-phase
+problem around map tiles, spectator relevance, and movement fanout.
 
 General game-server architecture favors fixed update phases, persistent
 relevancy/state structures, and batched per-tick work over per-entity

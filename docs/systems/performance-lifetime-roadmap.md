@@ -210,9 +210,15 @@ stable `std::string_view`, while a process-local string table owns one copy of
 each distinct context name. This keeps current logging and metrics semantics
 without allocating a new context string for every short-lived task.
 
-If allocator and task lifecycle symbols remain high after that change, the next
-candidate is batching creature async execution by dispatcher tick rather than
-creating one generic task per creature. That design must keep these contracts:
+Creature async execution has since moved from one generic dispatcher task per
+creature to a bounded bucketed queue. `Creature::sendAsyncTasks` still keeps the
+per-creature `AsyncTaskRunning` guard, but the dispatcher sees at most a small
+fixed set of `WalkParallel` bucket tasks per wave. The queue stores
+`weak_ptr<Creature>` entries and resolves them only when the batch executes.
+This keeps the async lifetime boundary explicit while reducing task allocation
+and merge churn.
+
+The batching contract is:
 
 - Queue a stable creature identity or `weak_ptr`, not a raw `Creature*`.
 - Preserve the existing "one pending async execution per creature" behavior.
@@ -220,14 +226,33 @@ creating one generic task per creature. That design must keep these contracts:
   later batch rather than racing the current task vector.
 - Keep script, movement, and removal callbacks on the same ownership boundaries
   used today.
-- Measure before replacing `Creature::sendAsyncTasks`; this is a scheduler
-  design change, not a local borrow cleanup.
+
+Additional safe cuts applied after the dispatcher profile became cleaner:
+
+- `Map` path searches capture the creature's current tile once per A* search and
+  reuse it for `canWalkTo`-equivalent neighbor checks. This avoids repeated
+  `Creature::getTile()` weak-locks inside the node loop without storing borrowed
+  tile pointers.
+- `Creature::goToFollowCreature` skips A* when the current position already
+  satisfies the exact pathing condition, including line-of-sight checks. Flexible
+  ranges such as flee or keep-distance still use A* because they may need a
+  better position, not merely any valid one.
+- Monster target classification reuses the benchmark friendly-fire config value
+  within each target-list/search pass instead of reading config repeatedly for
+  every candidate.
+
+Do not enable the global `Spectators` cache inside monster async target-list
+updates without adding synchronization or a per-tick immutable cache. That cache
+is a shared static map, while `Monster::updateTargetList` runs in
+`TaskGroup::WalkParallel`; using it directly from the parallel path can trade
+CPU for a data race.
 
 General game-server architecture favors fixed update phases, persistent
 relevancy/state structures, and batched per-tick work over per-entity
 one-shot allocation in the hot loop. Canary can move in that direction, but the
-safe path is incremental: intern cheap metadata first, then design an audited
-batched creature async queue, then revisit spectator and pathfinding data.
+safe path is incremental: intern cheap metadata first, batch creature async
+work, then revisit spectator and pathfinding data with explicit synchronization
+and measurement.
 
 ## Current contract map
 

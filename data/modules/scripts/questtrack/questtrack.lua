@@ -24,6 +24,12 @@ function onRecvbyte(player, msg, byte)
 	local autoTrackNewQuests = msg:getByte() == 1
 	local autoUntrackCompletedQuests = msg:getByte() == 1
 
+	local trailingBytes = msg:getUnreadBytes()
+	if trailingBytes > 0 then
+		logger.debug("[QuestTracker] ignored malformed 0xD0 packet from player='{}': unexpected trailing bytes={}", player:getName(), trailingBytes)
+		return
+	end
+
 	local isInitialSync = player.isQuestTrackerInitialSync and player:isQuestTrackerInitialSync()
 	if isInitialSync then
 		if player.reconcileInitialTrackedMissions then

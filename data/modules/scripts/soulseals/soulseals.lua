@@ -18,13 +18,6 @@ local function readU16(msg)
 	return msg:getU16()
 end
 
-local function skipUnread(msg)
-	local unreadBytes = msg:getUnreadBytes()
-	if unreadBytes > 0 then
-		msg:skipBytes(unreadBytes)
-	end
-end
-
 local function sendSoulSealsDialog(player, raceIds)
 	local msg = NetworkMessage()
 	msg:addByte(ServerPackets.SoulSealsDialog)
@@ -46,7 +39,12 @@ function onRecvbyte(player, msg, byte)
 		return
 	end
 
-	skipUnread(msg)
+	local trailingBytes = msg:getUnreadBytes()
+	if trailingBytes > 0 then
+		logger.debug("[SoulSeals] ignored malformed 0xBA packet from player='{}': unexpected trailing bytes={}", player:getName(), trailingBytes)
+		return
+	end
+
 	sendSoulSealsDialog(player, {})
 	logger.debug("[SoulSeals] player='{}' requested raceId={} with placeholder official payload.", player:getName(), raceId)
 end

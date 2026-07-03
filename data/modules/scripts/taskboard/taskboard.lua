@@ -201,6 +201,12 @@ function onRecvbyte(player, msg, byte)
 		return
 	end
 
+	local trailingBytes = msg:getUnreadBytes()
+	if trailingBytes > 0 then
+		logger.debug("[Taskboard] ignored malformed 0x5F packet from player='{}': action={} unexpected trailing bytes={}", player:getName(), action, trailingBytes)
+		return
+	end
+
 	if BountyResponseActions[action] then
 		sendWindow(player, OutboundWindow.Bounty)
 	elseif WeeklyResponseActions[action] then

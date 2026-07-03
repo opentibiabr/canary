@@ -13,6 +13,7 @@
 #include "lib/thread/thread_pool.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <atomic>
 	#include <span>
 #endif
 
@@ -164,9 +165,12 @@ private:
 
 	void init();
 	void shutdown() {
+		setQueueLatencyLoggingEnabled(false);
 		signalSchedule.notify_all();
 		shuttingDown = true;
 	}
+
+	void setQueueLatencyLoggingEnabled(bool enabled);
 
 	inline void mergeAsyncEvents();
 	inline void mergeEvents();
@@ -245,6 +249,8 @@ private:
 	bool asyncWaitDisabled = false;
 
 	bool shuttingDown = false;
+	std::atomic_bool queueLatencyLoggingEnabled = false;
+	std::atomic<int64_t> queueLatencyLoggingStartedAt = 0;
 
 	friend class CanaryServer;
 };

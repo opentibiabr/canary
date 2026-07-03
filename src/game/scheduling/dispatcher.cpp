@@ -145,15 +145,26 @@ void Dispatcher::logQueueLatency(const uint8_t groupId) const {
 		return;
 	}
 
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_acquire)) {
+		return;
+	}
+
 	const auto gameState = g_game().getGameState();
-	if (gameState == GAME_STATE_STARTUP || gameState == GAME_STATE_INIT) {
+	if (gameState != GAME_STATE_NORMAL) {
 		return;
 	}
 
 	const auto now = OTSYS_TIME();
+	const auto loggingStartedAt = queueLatencyLoggingStartedAt.load(std::memory_order_relaxed);
 	int64_t oldestAge = 0;
+	size_t queuedAfterLoggingStart = 0;
 	std::string_view oldestContext;
 	for (const auto &task : tasks) {
+		if (task.getTime() < loggingStartedAt) {
+			continue;
+		}
+
+		++queuedAfterLoggingStart;
 		const auto age = now - task.getTime();
 		if (age > oldestAge) {
 			oldestAge = age;
@@ -161,7 +172,7 @@ void Dispatcher::logQueueLatency(const uint8_t groupId) const {
 		}
 	}
 
-	if (oldestAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS || now < nextLogAt[groupId]) {
+	if (queuedAfterLoggingStart == 0 || oldestAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS || now < nextLogAt[groupId]) {
 		return;
 	}
 
@@ -169,10 +180,21 @@ void Dispatcher::logQueueLatency(const uint8_t groupId) const {
 	g_logger().warn(
 		"Dispatcher queue latency: group={}, queued={}, oldest={} ms, oldestContext={}",
 		getTaskGroupName(groupId),
-		tasks.size(),
+		queuedAfterLoggingStart,
 		oldestAge,
 		oldestContext
 	);
+}
+
+void Dispatcher::setQueueLatencyLoggingEnabled(const bool enabled) {
+	if (!enabled) {
+		queueLatencyLoggingEnabled.store(false, std::memory_order_release);
+		queueLatencyLoggingStartedAt.store(0, std::memory_order_relaxed);
+		return;
+	}
+
+	queueLatencyLoggingStartedAt.store(OTSYS_TIME(), std::memory_order_relaxed);
+	queueLatencyLoggingEnabled.store(true, std::memory_order_release);
 }
 
 void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f) {

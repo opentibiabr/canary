@@ -18,7 +18,8 @@ engineering decisions while avoiding noisy, non-reproducible raw profiler dumps.
   an unrealistic all-monsters-active workload and should not define production
   acceptance by themselves.
 - Startup queue-latency samples before the server reaches normal game state are
-  diagnostic noise. Runtime queue latency after startup is the relevant signal.
+  diagnostic noise. Runtime queue latency after the server-online log, while the
+  game state is `GAME_STATE_NORMAL`, is the relevant signal.
 - CPU total is inclusive. Do not sum rows from the same call tree as if they were
   independent costs.
 
@@ -59,7 +60,7 @@ Read each row as: hotspot -> before -> after. Values are `CPU total / CPU own`.
 | Deferred monster post-think sample | `monsterPerfTestForceActive=true` and `monsterPerfTestFriendlyFire=true` | `DeferredGameplay` backlog grew steadily: queued samples increased from tens to over one thousand pending tasks, and oldest age reached seconds. Monster attacks/spells/reactions became visibly late. | Increase monster post-think work per deferred task and document that the all-monsters-active benchmark must degrade background combat before delaying player-visible movement. |
 | Coalesced movement AI follow-up | Same all-monsters-active stress after `Monster::onCreatureMove` coalescing | The apparent follow/target delay was initially suspected to be coalescing, but later tests showed the root cause was excessive artificial monster backlog. With production flags disabled, monsters attacked normally. | Keep internal `Monster::onCreatureMove` coalescing, but do not use the extreme benchmark as the sole product acceptance target. |
 | Production-like sanity check | `monsterPerfTestForceActive=false` and `monsterPerfTestFriendlyFire=false` | Monsters attacked and reacted normally. The severe delays reproduced under benchmark flags did not reproduce in the normal player scenario. | Current changes are acceptable for production-like player hunting; future high-impact work should prioritize realistic player-visible movement fairness. |
-| Startup queue-latency sample | Server startup before "server online" | Queue-latency warnings showed old `WalkParallel` and `Serial` tasks while map/load/startup work was still running. These samples appeared before the server reached normal runtime. | Suppress queue-latency warnings during startup/init so runtime profiling is not polluted by expected startup backlog. |
+| Startup queue-latency sample | Server startup before "server online" | Queue-latency warnings showed old `WalkParallel` and `Serial` tasks while map/load/startup work was still running. Some stale startup tasks could also be reported immediately after `GAME_STATE_NORMAL`, before the main server-online log. | Enable queue-latency telemetry only after the server-online log, require `GAME_STATE_NORMAL`, and ignore tasks queued before telemetry was enabled, so runtime profiling is not polluted by expected startup backlog. |
 
 ## Decision Matrix
 

@@ -378,8 +378,9 @@ work is sliced, coalesced, or delayed when load is high.
 Phase 2 v1 applies the conservative part of that plan:
 
 - Dispatcher groups log throttled slow-path queue latency when pending tasks
-  wait at least 250 ms after startup/init, making `Walk` starvation visible
-  without adding a public API or polluting startup map-load logs.
+  wait at least 250 ms after the server-online log while the game state is
+  `GAME_STATE_NORMAL`, making `Walk` starvation visible without adding a public
+  API or polluting startup map-load logs.
 - Creature async buckets process 32 creatures per slice instead of 64 while
   preserving the same `WalkParallel`, `weak_ptr`, and requeue contract.
 - `DeferredGameplay` processes 16 tasks per dispatcher pass. A lower value kept
@@ -636,8 +637,10 @@ Implementation plan:
 Current Phase 2 v1 implementation:
 
 - `Dispatcher` logs throttled queue-latency samples per task group when a queue
-  exceeds the slow-path threshold after startup/init. These logs are diagnostic
-  only and must not affect scheduling order.
+  exceeds the slow-path threshold after the server-online log and while the game
+  state is `GAME_STATE_NORMAL`. Tasks queued before queue-latency telemetry is
+  enabled are ignored so stale startup backlog does not pollute runtime samples.
+  These logs are diagnostic only and must not affect scheduling order.
 - `Creature::processAsyncTaskBucket` keeps 32 buckets but slices each bucket to
   32 creatures before requeueing the remainder.
 - `DeferredGameplay` drains 16 tasks per pass so delayed monster post-think does

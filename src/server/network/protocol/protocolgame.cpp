@@ -80,6 +80,8 @@ namespace {
 	constexpr uint8_t CLIENT_PACKET_TASKBOARD = 0x5F;
 	constexpr uint8_t CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER = 0xBA;
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
+	constexpr uint8_t RESOURCE_CURRENT_U32_BALANCE_3C = 0x3C;
+	constexpr uint8_t RESOURCE_CURRENT_U32_BALANCE_50 = 0x50;
 
 	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
 		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
@@ -106,8 +108,12 @@ namespace {
 	[[nodiscard]] bool supportsWeaponProficiencyDetailList(std::string_view versionString) {
 		// 15.25 builds are not byte-identical here. Unknown builds keep the
 		// shorter shape until a capture proves the trailing list is required.
-		return hasClientBuildPrefix(versionString, "15.25.794c2e")
+		const bool known = hasClientBuildPrefix(versionString, "15.25.794c2e")
 			|| hasClientBuildPrefix(versionString, "15.25.d96c64");
+		if (!known && hasClientBuildPrefix(versionString, "15.25.")) {
+			g_logger().debug("[WeaponProficiency] unrecognized 15.25 build '{}'; detail list will not be sent.", versionString);
+		}
+		return known;
 	}
 
 	/**
@@ -146,8 +152,8 @@ namespace {
 			case RESOURCE_MINOR_CHARM:
 			case RESOURCE_MAX_CHARM:
 			case RESOURCE_MAX_MINOR_CHARM:
-			case 0x3C:
-			case 0x50:
+			case RESOURCE_CURRENT_U32_BALANCE_3C:
+			case RESOURCE_CURRENT_U32_BALANCE_50:
 			case RESOURCE_BOUNTY_POINTS:
 			case RESOURCE_SOULSEALS:
 				return true;
@@ -1527,13 +1533,12 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 		return;
 	}
 
-	// Modules system
-	if (player && recvbyte != 0xD3 && shouldDispatchRecvbyteModuleForProfile(protocolProfile, recvbyte)) {
-		const auto &module = g_modules().getEventByRecvbyte(recvbyte, false);
-		if (module) {
-			module->executeOnRecvbyte(player, msg);
-			return;
-		}
+	// Recvbyte modules own the byte once they run; the dispatcher must not parse it again.
+	if (player
+	    && recvbyte != 0xD3
+	    && shouldDispatchRecvbyteModuleForProfile(protocolProfile, recvbyte)
+	    && g_modules().executeOnRecvbyte(player, msg, recvbyte)) {
+		return;
 	}
 
 	parsePacketFromDispatcher(msg, recvbyte);
@@ -1910,11 +1915,7 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 			parseWeaponProficiency(msg);
 			break;
 		case 0xBA:
-			if (hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialSoulSealsPackets)) {
-				parseSoulSealsFightMonster(msg);
-			} else {
-				parseTaskHuntingAction(msg);
-			}
+			parseTaskHuntingAction(msg);
 			break;
 		case 0xBE:
 			g_game().playerCancelAttackAndFollow(player->getID());
@@ -2416,10 +2417,7 @@ void ProtocolGame::parseSetOutfit(NetworkMessage &msg) {
 	}
 
 	uint16_t startBufferPosition = msg.getBufferPosition();
-	const auto &outfitModule = g_modules().getEventByRecvbyte(0xD3, false);
-	if (outfitModule) {
-		outfitModule->executeOnRecvbyte(player, msg);
-	}
+	(void)g_modules().executeOnRecvbyte(player, msg, 0xD3);
 
 	if (msg.getBufferPosition() == startBufferPosition) {
 		uint8_t outfitType = !oldProtocol ? msg.getByte() : 0;
@@ -3198,10 +3196,6 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 
 void ProtocolGame::parseJoinAggression(NetworkMessage &msg) {
 	msg.get<uint32_t>();
-}
-
-void ProtocolGame::parseSoulSealsFightMonster(NetworkMessage &msg) {
-	msg.get<uint16_t>();
 }
 
 void ProtocolGame::parseEditGuildMessage(NetworkMessage &msg) {
@@ -4667,7 +4661,8 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
-	msg.add<uint16_t>(std::min<uint16_t>(player->getLevelPercent(), 10000));
+	const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
+	msg.add<uint16_t>(levelPercent);
 	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
 	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // LowLevelBonus
 	msg.add<uint16_t>(player->getDisplayXpBoostPercent()); // XPBoost
@@ -11381,10 +11376,6 @@ void ProtocolGame::sendBosstiaryCooldownTimer() {
 		bossesCount++;
 	}
 	auto endBosses = msg.getBufferPosition();
-	if (bossesCount == 0) {
-		return;
-	}
-
 	msg.setBufferPosition(startBosses);
 	msg.add<uint16_t>(bossesCount);
 	msg.setBufferPosition(endBosses);

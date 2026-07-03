@@ -201,7 +201,6 @@ private:
 	void parseContainerAction(NetworkMessage &msg);
 	void parseCharacterTradeConfigurationAction(NetworkMessage &msg);
 	void parseJoinAggression(NetworkMessage &msg);
-	void parseSoulSealsFightMonster(NetworkMessage &msg);
 	void parseEditGuildMessage(NetworkMessage &msg);
 	void parseGetTextForReport(NetworkMessage &msg);
 	void parseClientDetails(NetworkMessage &msg);

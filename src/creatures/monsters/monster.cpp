@@ -1177,6 +1177,7 @@ void Monster::onThink_async() {
 
 	const auto &attackedCreature = getAttackedCreature();
 	const auto &followCreature = getFollowCreature();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	if (isSummon()) {
 		const auto &master = getMaster();
 		if (attackedCreature.get() == this) {
@@ -1191,15 +1192,20 @@ void Monster::onThink_async() {
 			// Our master has not ordered us to attack anything, lets follow him around instead.
 			setFollowCreature(master);
 		}
-	} else if (!targetList.empty()) {
-		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
-		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
-		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath) {
-				const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
-				searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
-			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
-				searchTarget(TARGETSEARCH_DEFAULT);
+	} else {
+		if (monsterPerfTestFriendlyFire && targetList.empty()) {
+			updateTargetList();
+		}
+
+		if (!targetList.empty()) {
+			const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
+			const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
+			if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
+				if (!followCreature || !hasFollowPath) {
+					searchTarget(monsterPerfTestFriendlyFire ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
+				} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
+					searchTarget(TARGETSEARCH_DEFAULT);
+				}
 			}
 		}
 	}

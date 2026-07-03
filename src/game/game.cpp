@@ -1414,7 +1414,7 @@ bool Game::placeCreature(const std::shared_ptr<Creature> &creature, const Positi
 		spectator->onCreatureAppear(creature, true);
 	}
 
-	if (hasPlayerSpectators) {
+	if (hasPlayerSpectators || (creature->getMonsterRaw() && g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE))) {
 		addCreatureCheck(creature);
 	}
 

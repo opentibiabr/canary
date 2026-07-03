@@ -977,6 +977,16 @@ protected:
 private:
 	bool canFollowMaster() const;
 	bool isLostSummon();
+	/**
+	 * Queues this creature in a bounded set of shared async buckets.
+	 *
+	 * The queue stores only weak references. `AsyncTaskRunning` remains the
+	 * per-creature guard that prevents duplicate entries while a batch is
+	 * pending or executing.
+	 */
+	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId);
+	static void processAsyncTaskBucket(size_t bucketIndex);
+	void executeAsyncTasks();
 	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);
 

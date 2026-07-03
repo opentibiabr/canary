@@ -35,6 +35,7 @@
 #include <fstream>
 #include <forward_list>
 #include <functional>
+#include <iterator>
 #include <limits>
 #include <list>
 #include <map>

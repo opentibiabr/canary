@@ -23,6 +23,28 @@
 #include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <iterator>
+	#include <mutex>
+#endif
+
+namespace {
+	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 8;
+
+	struct CreatureAsyncTaskBucket {
+		std::mutex mutex;
+		std::vector<std::weak_ptr<Creature>> creatures;
+		bool scheduled = false;
+	};
+
+	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> creatureAsyncTaskBuckets;
+
+	size_t getCreatureAsyncTaskBucketIndex(uint32_t creatureId) noexcept {
+		return creatureId % CREATURE_ASYNC_TASK_BUCKET_COUNT;
+	}
+}
+
 Creature::Creature() {
 	Creature::onIdleStatus();
 }
@@ -1892,31 +1914,79 @@ void Creature::iconChanged() {
 	}
 }
 
+void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId) {
+	const auto bucketIndex = getCreatureAsyncTaskBucketIndex(creatureId);
+	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+
+	bool shouldSchedule = false;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		bucket.creatures.emplace_back(std::move(self));
+		if (!bucket.scheduled) {
+			bucket.scheduled = true;
+			shouldSchedule = true;
+		}
+	}
+
+	if (shouldSchedule) {
+		g_dispatcher().asyncEvent([bucketIndex] {
+			Creature::processAsyncTaskBucket(bucketIndex);
+		},
+		                          TaskGroup::WalkParallel);
+	}
+}
+
+void Creature::processAsyncTaskBucket(size_t bucketIndex) {
+	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+
+	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
+	pendingCreatures.clear();
+
+	{
+		std::scoped_lock lock(bucket.mutex);
+		pendingCreatures.reserve(bucket.creatures.size());
+		pendingCreatures.insert(
+			pendingCreatures.end(),
+			std::make_move_iterator(bucket.creatures.begin()),
+			std::make_move_iterator(bucket.creatures.end())
+		);
+		bucket.creatures.clear();
+		bucket.scheduled = false;
+	}
+
+	for (auto &weakCreature : pendingCreatures) {
+		if (const auto &creature = weakCreature.lock()) {
+			creature->executeAsyncTasks();
+		}
+	}
+
+	pendingCreatures.clear();
+}
+
+void Creature::executeAsyncTasks() {
+	if (!isRemoved() && isAlive()) {
+		for (const auto &task : asyncTasks) {
+			task();
+		}
+
+		if (hasAsyncTaskFlag(Pathfinder)) {
+			goToFollowCreature();
+		}
+
+		onExecuteAsyncTasks();
+	}
+
+	asyncTasks.clear();
+	m_flagAsyncTask = 0;
+}
+
 void Creature::sendAsyncTasks() {
 	if (hasAsyncTaskFlag(AsyncTaskRunning)) {
 		return;
 	}
 
 	setAsyncTaskFlag(AsyncTaskRunning, true);
-	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
-		if (const auto &creature = self.lock()) {
-			if (!creature->isRemoved() && creature->isAlive()) {
-				for (const auto &task : creature->asyncTasks) {
-					task();
-				}
-
-				if (creature->hasAsyncTaskFlag(Pathfinder)) {
-					creature->goToFollowCreature();
-				}
-
-				creature->onExecuteAsyncTasks();
-			}
-
-			creature->asyncTasks.clear();
-			creature->m_flagAsyncTask = 0;
-		}
-	},
-	                          TaskGroup::WalkParallel);
+	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID());
 }
 
 void Creature::safeCall(std::function<void(void)> &&action) const {

@@ -42,10 +42,10 @@ Refresh the profile before each phase. The exact percentages are workload
 dependent, but the contracts below should remain valid unless the ownership
 model is deliberately redesigned.
 
-The compact validation trail for the profiling sessions is kept in
-[`performance-profile-evidence.md`](performance-profile-evidence.md). Keep raw
-profiler dumps out of this roadmap; summarize only workload, signal, and the
-decision validated.
+The compact validation trail for the profiling sessions behind this roadmap is
+kept in [`evidence.md`](evidence.md).
+Keep raw profiler dumps out of this roadmap; summarize only workload, signal,
+and the decision validated.
 
 ## Vocabulary
 

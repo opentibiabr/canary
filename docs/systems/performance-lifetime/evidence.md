@@ -1,7 +1,7 @@
-# Performance profile evidence
+# Performance lifetime roadmap evidence
 
-This document summarizes the profiling samples used to guide
-`performance-lifetime-roadmap.md`.
+This document summarizes the profiling samples used to guide the performance
+lifetime roadmap.
 
 It intentionally does not store full Visual Studio exports, screenshots, or
 machine-local attachment paths. The goal is to keep portable evidence for the

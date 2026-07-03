@@ -1971,11 +1971,11 @@ void ProtocolGame::parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvby
 		case 0xD6:
 			parseClearImbuement(msg);
 			break;
-		case 0xDB:
-			parseCyclopediaMapAction(msg);
-			break;
 		case 0xD7:
 			parseCloseImbuementWindow(msg);
+			break;
+		case 0xDB:
+			parseCyclopediaMapAction(msg);
 			break;
 		case 0xDC:
 			parseAddVip(msg);
@@ -2365,7 +2365,7 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const {
 void ProtocolGame::parseChannelInvite(NetworkMessage &msg) {
 	const std::string name = msg.getString();
 	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload) && getUnreadBytes(msg) >= sizeof(uint16_t)) {
-		msg.get<uint16_t>();
+		static_cast<void>(msg.get<uint16_t>());
 	}
 	g_game().playerChannelInvite(player->getID(), name);
 }
@@ -2373,7 +2373,7 @@ void ProtocolGame::parseChannelInvite(NetworkMessage &msg) {
 void ProtocolGame::parseChannelExclude(NetworkMessage &msg) {
 	const std::string name = msg.getString();
 	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload) && getUnreadBytes(msg) >= sizeof(uint16_t)) {
-		msg.get<uint16_t>();
+		static_cast<void>(msg.get<uint16_t>());
 	}
 	g_game().playerChannelExclude(player->getID(), name);
 }
@@ -2909,6 +2909,8 @@ void ProtocolGame::sendItemInspection(uint16_t itemId, uint8_t itemCount, const 
 
 void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg) {
 	const auto state = msg.getByte(true);
+	const auto isCurrentPayload = hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload);
+
 	switch (state) {
 		case 0x03:
 		case 0x05:
@@ -2916,19 +2918,27 @@ void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg) {
 		case 0x07:
 		case 0x08:
 		case 0x09:
-			msg.get<uint32_t>();
+			if (isCurrentPayload) {
+				static_cast<void>(msg.get<uint32_t>());
+			}
 			break;
 		case 0x04:
 		case 0x0A:
-			msg.get<uint32_t>();
-			msg.getByte(true);
+			if (isCurrentPayload) {
+				static_cast<void>(msg.get<uint32_t>());
+				msg.getByte(true);
+			}
 			break;
 		case 0x0B:
-			msg.getString();
+			if (isCurrentPayload) {
+				msg.getString();
+			}
 			break;
 		case 0x0D:
-			msg.get<uint32_t>();
-			msg.getByte(true);
+			if (isCurrentPayload) {
+				static_cast<void>(msg.get<uint32_t>());
+				msg.getByte(true);
+			}
 			break;
 		case 0x0E: {
 			const auto titleId = msg.getByte(true);
@@ -2936,10 +2946,12 @@ void ProtocolGame::parseFriendSystemAction(NetworkMessage &msg) {
 			break;
 		}
 		case 0x10:
-			msg.getByte(true);
-			msg.getByte(true);
-			msg.getByte(true);
-			msg.getByte(true);
+			if (isCurrentPayload) {
+				msg.getByte(true);
+				msg.getByte(true);
+				msg.getByte(true);
+				msg.getByte(true);
+			}
 			break;
 		default:
 			break;
@@ -4226,12 +4238,16 @@ void ProtocolGame::parseSendResourceBalance() {
 }
 
 void ProtocolGame::parseSendResourceBalance(NetworkMessage &msg) {
-	msg.getByte(true);
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		msg.getByte(true);
+	}
 	parseSendResourceBalance();
 }
 
 void ProtocolGame::parseGetTransactionDetails(NetworkMessage &msg) {
-	msg.get<uint32_t>();
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		static_cast<void>(msg.get<uint32_t>());
+	}
 }
 
 void ProtocolGame::parseGetObjectInfo(NetworkMessage &msg) {
@@ -4686,7 +4702,7 @@ void ProtocolGame::sendCyclopediaCharacterGeneralStats() {
 
 	msg.add<uint64_t>(player->getExperience());
 	msg.add<uint16_t>(player->getLevel());
-	const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
+	const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent() * 100), 10000);
 	msg.add<uint16_t>(levelPercent);
 	msg.add<uint16_t>(player->getBaseXpGain()); // BaseXPGainRate
 	msg.add<uint16_t>(player->getDisplayGrindingXpBoost()); // LowLevelBonus
@@ -9684,7 +9700,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getLevel());
 	if (!oldProtocol) {
 		if (clientVersion >= 1513) {
-			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent()) * 100, 10000);
+			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent() * 100), 10000);
 			msg.add<uint16_t>(levelPercent);
 		} else {
 			msg.addByte(std::min<uint8_t>(player->getLevelPercent(), 100));

@@ -162,7 +162,9 @@ local function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local stringParam = msg:getString()
-		msg:getString()
+		if player:getClient().version >= 1525 then
+			msg:getString()
+		end
 		local category = GameStore.getCategoryByName(stringParam)
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
@@ -248,12 +250,6 @@ local function parseBuyStoreOffer(playerId, msg)
 	local productType = msg:getByte()
 	local configuredString
 	local configuredByte
-	if productType == 1 or productType == 2 or productType == 4 then
-		configuredString = msg:getString()
-	elseif productType == 3 then
-		configuredString = msg:getString()
-		configuredByte = msg:getByte()
-	end
 	if not offer then
 		return false
 	end
@@ -313,6 +309,13 @@ local function parseBuyStoreOffer(playerId, msg)
 	-- Handled errors are thrown to indicate that the purchase has failed;
 	-- Handled errors have a code index and unhandled errors do not
 	local pcallOk, pcallError = pcall(function()
+		if productType == 1 or productType == 2 or productType == 4 then
+			configuredString = msg:getString()
+		elseif productType == 3 then
+			configuredString = msg:getString()
+			configuredByte = msg:getByte()
+		end
+
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count or 1, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
@@ -406,8 +409,8 @@ local function parseOpenTransactionHistory(playerId, msg)
 	end
 
 	local page = 1
-	GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE = msg:getByte()
-	sendStoreTransactionHistory(playerId, page, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	local entriesPerPage = msg:getByte()
+	sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	player:updateUIExhausted()
 end
 
@@ -418,8 +421,8 @@ local function parseRequestTransactionHistory(playerId, msg)
 	end
 
 	local page = msg:getU32()
-	GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE = msg:getByte()
-	sendStoreTransactionHistory(playerId, page + 1, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	local entriesPerPage = msg:getByte()
+	sendStoreTransactionHistory(playerId, page + 1, entriesPerPage)
 	player:updateUIExhausted()
 end
 

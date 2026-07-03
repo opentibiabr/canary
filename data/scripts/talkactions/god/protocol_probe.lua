@@ -3,6 +3,9 @@ local protocolProbe = TalkAction("/protocolprobe", "/probeopcode")
 local LOCAL_PROBE_FILE = "data/scripts/talkactions/god/protocol_probe.local.json"
 local EXAMPLE_PROBE_FILE = "data/scripts/talkactions/god/protocol_probe.example.json"
 local JSON_NULL = {}
+local U64_MAX = 18446744073709551615
+local I64_MIN = -9223372036854775808
+local I64_MAX = 9223372036854775807
 
 local function trim(value)
 	return (value or ""):match("^%s*(.-)%s*$")
@@ -409,7 +412,7 @@ local function addTypedValue(msg, fieldType, value)
 		end
 		msg:addU32(number)
 	elseif fieldType == "u64" then
-		local number, error = requireInteger(value, 0, 0xFFFFFFFF)
+		local number, error = requireInteger(value, 0, U64_MAX)
 		if not number then
 			return false, error
 		end
@@ -433,7 +436,7 @@ local function addTypedValue(msg, fieldType, value)
 		end
 		msg:add32(number)
 	elseif fieldType == "i64" then
-		local number, error = requireInteger(value, -0x80000000, 0x7FFFFFFF)
+		local number, error = requireInteger(value, I64_MIN, I64_MAX)
 		if not number then
 			return false, error
 		end

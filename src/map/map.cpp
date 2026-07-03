@@ -21,6 +21,26 @@
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
 
+namespace {
+	// Path searches call this for every candidate node; pass the creature's
+	// current tile captured once per search to avoid repeated weak_ptr locks.
+	std::shared_ptr<Tile> getPathfindingTile(
+		Map &map,
+		const std::shared_ptr<Creature> &creature,
+		const std::shared_ptr<Tile> &creatureTile,
+		const Position &pos
+	) {
+		const auto &tile = map.getTile(pos.x, pos.y, pos.z);
+		if (creatureTile != tile) {
+			if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
+				return nullptr;
+			}
+		}
+
+		return tile;
+	}
+}
+
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {
 		path = identifier;
@@ -675,14 +695,7 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 		return nullptr;
 	}
 
-	const auto &tile = getTile(pos.x, pos.y, pos.z);
-	if (creature->getTile() != tile) {
-		if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
-			return nullptr;
-		}
-	}
-
-	return tile;
+	return getPathfindingTile(*this, creature, creature->getTile(), pos);
 }
 
 bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &_targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
@@ -702,11 +715,16 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	};
 
 	const bool withoutCreature = creature == nullptr;
+	if (!withoutCreature && creature->isRemoved()) {
+		return false;
+	}
 
 	Position pos = withoutCreature ? _targetPos : creature->getPosition();
 	Position endPos;
 
-	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+	const auto creatureTile = withoutCreature ? std::shared_ptr<Tile>() : creature->getTile();
+	const auto startTile = withoutCreature || !creatureTile ? getTile(pos.x, pos.y, pos.z) : creatureTile;
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, startTile));
 
 	int32_t bestMatch = 0;
 
@@ -786,7 +804,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto &tile = withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
+				const auto &tile = withoutCreature ? getTile(pos.x, pos.y, pos.z) : getPathfindingTile(*this, creature, creatureTile, pos);
 				if (!tile) {
 					continue;
 				}
@@ -869,10 +887,16 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::vector
 }
 
 bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	if (!creature || creature->isRemoved()) {
+		return false;
+	}
+
 	Position pos = creature->getPosition();
 	Position endPos;
 
-	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+	const auto creatureTile = creature->getTile();
+	const auto startTile = creatureTile ? creatureTile : getTile(pos.x, pos.y, pos.z);
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, startTile));
 
 	int32_t bestMatch = 0;
 
@@ -973,7 +997,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto &tile = Map::canWalkTo(creature, pos);
+				const auto &tile = getPathfindingTile(*this, creature, creatureTile, pos);
 				if (!tile) {
 					continue;
 				}

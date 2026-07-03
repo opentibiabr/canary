@@ -2366,11 +2366,17 @@ bool ProtocolGame::canSee(int32_t x, int32_t y, int32_t z) const {
 // Parse methods
 void ProtocolGame::parseChannelInvite(NetworkMessage &msg) {
 	const std::string name = msg.getString();
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload) && getUnreadBytes(msg) >= sizeof(uint16_t)) {
+		msg.get<uint16_t>();
+	}
 	g_game().playerChannelInvite(player->getID(), name);
 }
 
 void ProtocolGame::parseChannelExclude(NetworkMessage &msg) {
 	const std::string name = msg.getString();
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload) && getUnreadBytes(msg) >= sizeof(uint16_t)) {
+		msg.get<uint16_t>();
+	}
 	g_game().playerChannelExclude(player->getID(), name);
 }
 
@@ -2480,8 +2486,13 @@ void ProtocolGame::parseToggleMount(NetworkMessage &msg) {
 
 void ProtocolGame::parseApplyImbuement(NetworkMessage &msg) {
 	uint8_t slot = msg.getByte();
-	auto imbuementId = msg.get<uint16_t>();
-	g_game().playerApplyImbuement(player->getID(), imbuementId, slot);
+	const uint32_t imbuementId = hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)
+		? msg.get<uint32_t>()
+		: msg.get<uint16_t>();
+	if (imbuementId > std::numeric_limits<uint16_t>::max()) {
+		return;
+	}
+	g_game().playerApplyImbuement(player->getID(), static_cast<uint16_t>(imbuementId), slot);
 }
 
 void ProtocolGame::parseClearImbuement(NetworkMessage &msg) {
@@ -3142,7 +3153,23 @@ void ProtocolGame::parseSetClientOptions(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseClientCheck(NetworkMessage &msg) {
-	msg.get<uint32_t>();
+	const auto payloadSize = msg.get<uint32_t>();
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		return;
+	}
+
+	const auto unreadBytes = getUnreadBytes(msg);
+	if (payloadSize > unreadBytes) {
+		g_logger().debug("[ProtocolGame::parseClientCheck] truncated client check payload: expected {} bytes, got {}.", payloadSize, unreadBytes);
+		return;
+	}
+
+	// Current clients send ClientCheck as u32 payload length + opaque bytes.
+	// The payload has no confirmed server-side gameplay semantics yet, so keep
+	// packet boundaries correct without inventing validation rules.
+	for (uint32_t i = 0; i < payloadSize; ++i) {
+		msg.getByte(true);
+	}
 }
 
 void ProtocolGame::parseSetVocation(NetworkMessage &msg) {
@@ -8424,7 +8451,9 @@ void ProtocolGame::sendFightModes() {
 	msg.addByte(player->fightMode);
 	msg.addByte(player->chaseMode);
 	msg.addByte(player->secureMode);
-	msg.addByte(PVP_MODE_DOVE);
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		msg.addByte(PVP_MODE_DOVE);
+	}
 	writeToOutputBuffer(msg);
 }
 

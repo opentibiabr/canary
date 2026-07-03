@@ -3151,20 +3151,20 @@ void ProtocolGame::parseSetClientOptions(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseClientCheck(NetworkMessage &msg) {
-	const auto payloadSize = msg.get<uint32_t>();
 	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
 		return;
 	}
 
+	const auto payloadSize = msg.get<uint32_t>();
 	const auto unreadBytes = getUnreadBytes(msg);
 	if (payloadSize > unreadBytes) {
 		g_logger().debug("[ProtocolGame::parseClientCheck] truncated client check payload: expected {} bytes, got {}.", payloadSize, unreadBytes);
 		return;
 	}
 
-	// Current clients send ClientCheck as u32 payload length + opaque bytes.
-	// The payload has no confirmed server-side gameplay semantics yet, so keep
-	// packet boundaries correct without inventing validation rules.
+	// Confirmed wire shape: u32 payload byte count followed by that many raw
+	// bytes. With the current login probe byte 0x01, official 15.25 clients
+	// answer with a two-byte payload: 0x01 0x01.
 	for (uint32_t i = 0; i < payloadSize; ++i) {
 		msg.getByte(true);
 	}
@@ -6461,7 +6461,7 @@ void ProtocolGame::sendClientCheck() {
 	NetworkMessage msg;
 	msg.addByte(0x63);
 	msg.add<uint32_t>(1); // payload size
-	msg.addByte(1); // opaque one-byte client-check payload
+	msg.addByte(1); // raw client-check probe byte
 	writeToOutputBuffer(msg);
 }
 

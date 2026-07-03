@@ -179,6 +179,56 @@ The implementation must keep these contracts:
 - Treat runtime config toggles as best-effort for benchmarks; restarting or
   respawning monsters gives the most deterministic target-list population.
 
+## Monster stress profile interpretation
+
+A Visual Studio CPU sample with both benchmark flags enabled showed the
+dispatcher path as the first-order cost. The strongest symbols were allocator
+and task lifecycle work:
+
+- `operator new`, `_malloc_base`, `_free_base`
+- `Task` construction/destruction
+- `Dispatcher::__mergeEvents`
+- `std::vector<Task>::clear`
+- `std::basic_string` construction for task context names
+
+Movement and monster work were the gameplay drivers behind that churn:
+
+- `Map::moveCreature`
+- `Creature::sendAsyncTasks`
+- `Monster::onCreatureMove`
+- `Spectators::find` and `Spectators::getSpectators`
+- `Monster::updateTargetList`
+
+Pathfinding still appeared, but it was not the dominant cost in this artificial
+stress profile. `shared_ptr` and `weak_ptr` costs were visible, but below the
+task/allocation pressure. This profile should not be interpreted as evidence
+for a broad raw-pointer ownership rewrite.
+
+The first safe dispatcher-side experiment is to remove per-task allocation for
+task context strings. `Task` contexts are now interned: the task stores a
+stable `std::string_view`, while a process-local string table owns one copy of
+each distinct context name. This keeps current logging and metrics semantics
+without allocating a new context string for every short-lived task.
+
+If allocator and task lifecycle symbols remain high after that change, the next
+candidate is batching creature async execution by dispatcher tick rather than
+creating one generic task per creature. That design must keep these contracts:
+
+- Queue a stable creature identity or `weak_ptr`, not a raw `Creature*`.
+- Preserve the existing "one pending async execution per creature" behavior.
+- If new async work is added while a creature is being processed, run it in a
+  later batch rather than racing the current task vector.
+- Keep script, movement, and removal callbacks on the same ownership boundaries
+  used today.
+- Measure before replacing `Creature::sendAsyncTasks`; this is a scheduler
+  design change, not a local borrow cleanup.
+
+General game-server architecture favors fixed update phases, persistent
+relevancy/state structures, and batched per-tick work over per-entity
+one-shot allocation in the hot loop. Canary can move in that direction, but the
+safe path is incremental: intern cheap metadata first, then design an audited
+batched creature async queue, then revisit spectator and pathfinding data.
+
 ## Current contract map
 
 | Area | Current contract | Risk if changed blindly | Safe near-term direction |
@@ -193,7 +243,7 @@ The implementation must keep these contracts:
 | `Creature` follow/attack/master/tile | Stored as `weak_ptr`; accessors lock and return `shared_ptr`. | Raw member pointers can become stale when creatures are removed or moved. | Consider handle-backed access for hot AI paths, but keep public safety semantics. |
 | `Item::m_parent` | Stored as `weak_ptr<Cylinder>`; parent chain is resolved dynamically. | Raw parent can dangle after move, transform, trade, container removal, or depot/house transfer. | Keep weak parent. Optimize only local parent walks with a temporary pin or documented borrow. |
 | Pathfinding | `Map::getTile`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` use `shared_ptr`. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. | Candidate for a borrowed `Tile*` path once map/floor stability is documented and measured. |
-| Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. | Captured raw pointers can outlive their object by one cycle or by seconds. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. |
+| Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. Task context names are interned and held as stable `std::string_view` values. | Captured raw pointers can outlive their object by one cycle or by seconds. Per-creature task fanout can amplify allocator churn. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. Consider batched creature async execution after measurement. |
 | Lua userdata | Core userdata stores `shared_ptr` and has special finalizer rules. | Raw or borrowed userdata can outlive the C++ object; wrong finalizer leaks or corrupts lifetime. | Follow `docs/systems/lua-shared-userdata.md`; never move core polymorphic userdata mechanically. |
 | Protocol and network | Protocol events capture protocol self or player IDs before dispatching game actions. | Raw player/session pointers can outlive disconnects or connection release. | Keep protocol self pins and player ID re-resolution. Do not pass raw gameplay objects across network callbacks. |
 | Database/save/decay/spawn tasks | Work can complete later on dispatcher or scheduled events. | Raw item/creature pointers can outlive transforms, removals, or shutdown. | Store IDs, GUIDs, positions, value snapshots, weak refs, or strong pins depending on semantics. |

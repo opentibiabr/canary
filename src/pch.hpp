@@ -26,6 +26,7 @@
 // --------------------
 
 #include <atomic>
+#include <array>
 #include <bitset>
 #include <charconv>
 #include <cstdint>

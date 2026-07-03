@@ -8,3 +8,4 @@ points.
 - [Lua API documentation generator](lua-api-docgen.md)
 - [Lua shared userdata ownership](lua-shared-userdata.md)
 - [Multiprotocol runtime profiles](multiprotocol.md)
+- [Performance and lifetime roadmap](performance-lifetime-roadmap.md)

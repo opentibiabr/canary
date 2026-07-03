@@ -184,9 +184,10 @@ public:
 	/**
 	 * Adds a creature to the periodic think/check list.
 	 *
-	 * The check list intentionally stores weak observers. Do not replace this
-	 * generic path with raw pointers or ID-only storage until player-session ID
-	 * reuse is covered by a generation-aware handle.
+	 * The scheduled insertion and the check list intentionally store weak
+	 * observers. Do not replace this generic path with raw pointers or ID-only
+	 * storage until player-session ID reuse is covered by a generation-aware
+	 * handle.
 	 */
 	void addCreatureCheck(const std::shared_ptr<Creature> &creature);
 	static void removeCreatureCheck(const std::shared_ptr<Creature> &creature);

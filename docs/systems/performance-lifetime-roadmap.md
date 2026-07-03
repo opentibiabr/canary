@@ -234,6 +234,9 @@ Current implementation note:
   counter. This rule must not be generalized to players because player runtime
   IDs are derived from GUIDs and can identify a later session for the same
   character.
+- `Game::addCreatureCheck` keeps the generic check-list path as `weak_ptr`,
+  including the scheduled insertion. It deliberately does not use raw pointers
+  or ID-only storage for generic creatures.
 - `Spectators::insert` and `Spectators::insertAll` return references and move
   freshly built spectator snapshots into the result when no cache needs the same
   vector first. Cached snapshots remain strongly owned and are not replaced with

@@ -7419,7 +7419,7 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 		return;
 	}
 
-	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature] {
+	g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature = std::weak_ptr<Creature>(creature)] {
 		checkCreatureLists[index].emplace_back(creature);
 	},
 	                        "Game::addCreatureCheck");

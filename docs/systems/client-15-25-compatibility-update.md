@@ -43,7 +43,7 @@ That keeps older profiles from receiving current-only bytes while allowing the
 current profile to match the 15.25 client shape.
 
 Some runtime flags used by the current profile can predate 15.25. For example,
-`OfficialGameEventPackets` is a 15.21+ payload contract for server packet
+`GameEventPayload` is a 15.13+ payload contract for server packet
 `0x75`; it is enabled here because the 15.25 current profile also requires that
 shape. Keep the first confirmed version documented in
 [Multiprotocol runtime profiles](multiprotocol.md).

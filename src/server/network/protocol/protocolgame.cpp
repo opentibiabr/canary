@@ -9699,7 +9699,7 @@ void ProtocolGame::AddPlayerStats(NetworkMessage &msg) {
 
 	msg.add<uint16_t>(player->getLevel());
 	if (!oldProtocol) {
-		if (clientVersion >= 1513) {
+		if (hasProtocolFeature(protocolProfile, ProtocolFeature::PlayerDataLevelPercentU16)) {
 			const auto levelPercent = std::min<uint16_t>(static_cast<uint16_t>(player->getLevelPercent() * 100), 10000);
 			msg.add<uint16_t>(levelPercent);
 		} else {
@@ -11599,25 +11599,44 @@ void ProtocolGame::sendDisableLoginMusic() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
+void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId, uint16_t skillLevel, const std::string &achievementName, uint16_t raceId, uint8_t bestiaryStep) {
 	if (screenshotType == SCREENSHOT_TYPE_NONE || oldProtocol) {
 		return;
 	}
 
 	NetworkMessage msg;
 	msg.addByte(0x75);
-	if (hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialGameEventPackets)) {
-		// 15.21+ repurposes 0x75 from a single screenshot-type byte into
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::GameEventPayload)) {
+		// 15.13+ repurposes 0x75 from a single screenshot-type byte into
 		// a GameEvent payload with an event selector and event-specific fields.
 		switch (screenshotType) {
+			case SCREENSHOT_TYPE_ACHIEVEMENT:
+				if (achievementName.empty()) {
+					return;
+				}
+				msg.addByte(0x02);
+				msg.addString(achievementName);
+				break;
+			case SCREENSHOT_TYPE_BESTIARYENTRYCOMPLETED:
+			case SCREENSHOT_TYPE_BESTIARYENTRYUNLOCKED:
+				if (raceId == 0) {
+					return;
+				}
+				msg.addByte(0x06);
+				msg.add<uint16_t>(raceId);
+				msg.addByte(bestiaryStep);
+				break;
 			case SCREENSHOT_TYPE_LEVELUP:
 				msg.addByte(0x04);
 				msg.add<uint16_t>(std::min<uint32_t>(player ? player->getLevel() : 0, 0xFFFF));
 				break;
 			case SCREENSHOT_TYPE_SKILLUP:
+				if (skillId == 0 || skillLevel == 0) {
+					return;
+				}
 				msg.addByte(0x05);
-				msg.addByte(0x00);
-				msg.add<uint16_t>(0x00);
+				msg.addByte(skillId);
+				msg.add<uint16_t>(skillLevel);
 				break;
 			case SCREENSHOT_TYPE_BOSSDEFEATED:
 				msg.addByte(0x01);
@@ -11654,12 +11673,10 @@ void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType) {
 			default:
 				return;
 		}
-
-		writeToOutputBuffer(msg);
-		return;
+	} else {
+		msg.addByte(screenshotType);
 	}
 
-	msg.addByte(screenshotType);
 	writeToOutputBuffer(msg);
 }
 

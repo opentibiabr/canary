@@ -66,7 +66,7 @@ Known versioned payload flags:
 
 | Feature | First confirmed version | Contract |
 | --- | --- | --- |
-| `OfficialGameEventPackets` | `15.21+` | Server packet `0x75` is a variable-length game event payload. Earlier clients use a single screenshot-type byte. |
+| `GameEventPayload` | `15.13+` | Server packet `0x75` is a variable-length game event payload. Earlier clients use a single screenshot-type byte. |
 | `OfficialSkillWheelPayload` | `15.25` | Server packet `0x5F` uses the current quest-bonus and gem-list layout before grade modifier lists. |
 
 `TransportProfile` already describes outer length, encrypted payload layout,

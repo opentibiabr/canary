@@ -69,13 +69,16 @@ enum class ProtocolFeature : uint64_t {
 	MarketPackets = 1ULL << 11,
 	ImbuementWindow = 1ULL << 12,
 	MemorialPackets = 1ULL << 13,
-	OfficialTaskboardPackets = 1ULL << 14,
-	OfficialVocationSpecificPlayerData = 1ULL << 15,
-	OfficialWeaponProficiencyPayload = 1ULL << 16,
-	GraphicalEffectSourceByte = 1ULL << 17,
-	OfficialSoulSealsPackets = 1ULL << 18,
-	OfficialGameEventPackets = 1ULL << 19, // 15.21+: 0x75 GameEvent payload; pre-15.21 was a single screenshot-type byte.
-	OfficialSkillWheelPayload = 1ULL << 20, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
+	// Modern 0xA0 player data sends level percent as centesimal u16 instead of u8.
+	PlayerDataLevelPercentU16 = 1ULL << 14,
+	// 0x75 uses a client event selector before event-specific fields.
+	GameEventPayload = 1ULL << 15,
+	OfficialTaskboardPackets = 1ULL << 16,
+	OfficialVocationSpecificPlayerData = 1ULL << 17,
+	OfficialWeaponProficiencyPayload = 1ULL << 18,
+	GraphicalEffectSourceByte = 1ULL << 19,
+	OfficialSoulSealsPackets = 1ULL << 20,
+	OfficialSkillWheelPayload = 1ULL << 21, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

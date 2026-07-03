@@ -32,6 +32,19 @@ private:
 		std::weak_ptr<Creature> creature;
 	};
 
+	/**
+	 * Movement fanout can notify the same monster many times before its async AI
+	 * batch runs. Keep only a re-resolvable snapshot here; no raw creature or
+	 * tile borrow may cross the async boundary.
+	 */
+	struct PendingMovementAiRefresh {
+		std::weak_ptr<Creature> creature;
+		Position oldPos;
+		Position newPos;
+		bool scheduled = false;
+		bool needsFullRefresh = false;
+	};
+
 	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
 
 public:
@@ -280,6 +293,7 @@ private:
 
 	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
 	std::deque<TargetReference> targetList;
+	PendingMovementAiRefresh pendingMovementAiRefresh;
 
 	time_t timeToChangeFiendish = 0;
 
@@ -347,6 +361,9 @@ private:
 	void onCreatureLeave(const std::shared_ptr<Creature> &creature);
 	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire);
+	void queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos);
+	void executeMovementAiRefresh();
+	void processMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos);
 
 	void updateLookDirection();
 

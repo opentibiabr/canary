@@ -420,55 +420,88 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		auto action = [this, newPos, oldPos, creature = std::weak_ptr<Creature>(creature)] {
-			const auto movedCreature = creature.lock();
-			if (!movedCreature) {
-				return;
-			}
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+			queueMovementAiRefresh(creature, oldPos, newPos);
+		} else {
+			processMovementAiRefresh(creature, oldPos, newPos);
+		}
+	}
+}
 
-			bool canSeeNewPos = canSee(newPos);
-			bool canSeeOldPos = canSee(oldPos);
+void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
+	if (pendingMovementAiRefresh.scheduled) {
+		pendingMovementAiRefresh.needsFullRefresh = true;
+		return;
+	}
 
-			if (canSeeNewPos && !canSeeOldPos) {
-				onCreatureEnter(movedCreature);
-			} else if (!canSeeNewPos && canSeeOldPos) {
-				onCreatureLeave(movedCreature);
-			}
+	pendingMovementAiRefresh.creature = creature;
+	pendingMovementAiRefresh.oldPos = oldPos;
+	pendingMovementAiRefresh.newPos = newPos;
+	pendingMovementAiRefresh.scheduled = true;
+	pendingMovementAiRefresh.needsFullRefresh = false;
 
-			if (isIdle) {
-				updateIdleStatus();
-			}
+	addAsyncTask([this] {
+		executeMovementAiRefresh();
+	});
+}
 
-			if (!isSummon()) {
-				if (const auto &followCreature = getFollowCreature()) {
-					const Position &followPosition = followCreature->getPosition();
-					const Position &pos = getPosition();
+void Monster::executeMovementAiRefresh() {
+	const bool needsFullRefresh = pendingMovementAiRefresh.needsFullRefresh;
+	const auto movedCreature = pendingMovementAiRefresh.creature.lock();
+	const Position oldPos = pendingMovementAiRefresh.oldPos;
+	const Position newPos = pendingMovementAiRefresh.newPos;
 
-					int32_t offset_x = Position::getDistanceX(followPosition, pos);
-					int32_t offset_y = Position::getDistanceY(followPosition, pos);
-					if ((offset_x > 1 || offset_y > 1) && m_monsterType->info.changeTargetChance > 0) {
-						Direction dir = getDirectionTo(pos, followPosition);
-						const auto &checkPosition = getNextPosition(dir, pos);
+	pendingMovementAiRefresh.creature.reset();
+	pendingMovementAiRefresh.scheduled = false;
+	pendingMovementAiRefresh.needsFullRefresh = false;
 
-						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
-							const auto &topCreature = nextTile->getTopCreature();
-							if (followCreature != topCreature && isOpponent(topCreature)) {
-								selectTarget(topCreature);
-							}
-						}
-					}
-				} else if (isOpponent(movedCreature)) {
-					// we have no target lets try pick this one
-					selectTarget(movedCreature);
+	if (needsFullRefresh || !movedCreature) {
+		updateTargetList();
+		updateIdleStatus();
+		return;
+	}
+
+	processMovementAiRefresh(movedCreature, oldPos, newPos);
+}
+
+void Monster::processMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
+	const bool canSeeNewPos = canSee(newPos);
+	const bool canSeeOldPos = canSee(oldPos);
+
+	if (canSeeNewPos && !canSeeOldPos) {
+		onCreatureEnter(creature);
+	} else if (!canSeeNewPos && canSeeOldPos) {
+		onCreatureLeave(creature);
+	}
+
+	if (isIdle) {
+		updateIdleStatus();
+	}
+
+	if (isSummon()) {
+		return;
+	}
+
+	if (const auto &followCreature = getFollowCreature()) {
+		const Position &followPosition = followCreature->getPosition();
+		const Position &pos = getPosition();
+
+		int32_t offset_x = Position::getDistanceX(followPosition, pos);
+		int32_t offset_y = Position::getDistanceY(followPosition, pos);
+		if ((offset_x > 1 || offset_y > 1) && m_monsterType->info.changeTargetChance > 0) {
+			Direction dir = getDirectionTo(pos, followPosition);
+			const auto &checkPosition = getNextPosition(dir, pos);
+
+			if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
+				const auto &topCreature = nextTile->getTopCreature();
+				if (followCreature != topCreature && isOpponent(topCreature)) {
+					selectTarget(topCreature);
 				}
 			}
-		};
-
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-			addAsyncTask(std::move(action));
-		} else {
-			action();
 		}
+	} else if (isOpponent(creature)) {
+		// We have no target, so try to pick this one.
+		selectTarget(creature);
 	}
 }
 

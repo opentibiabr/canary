@@ -14,6 +14,25 @@
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 
+namespace {
+	void deduplicateCreatureSnapshot(CreatureVector &creatures) {
+		// Transient identity keys only; the snapshot keeps owning shared_ptrs.
+		phmap::flat_hash_set<const Creature*> seenCreatures;
+		seenCreatures.reserve(creatures.size());
+
+		CreatureVector uniqueCreatures;
+		uniqueCreatures.reserve(creatures.size());
+
+		for (auto &creature : creatures) {
+			if (seenCreatures.emplace(creature.get()).second) {
+				uniqueCreatures.emplace_back(std::move(creature));
+			}
+		}
+
+		creatures = std::move(uniqueCreatures);
+	}
+}
+
 void Spectators::clearCache() {
 	spectatorsCache.clear();
 }
@@ -29,13 +48,12 @@ Spectators &Spectators::insertAll(const CreatureVector &list) {
 	if (!list.empty()) {
 		const bool hasValue = !creatures.empty();
 
+		creatures.reserve(creatures.size() + list.size());
 		creatures.insert(creatures.end(), list.begin(), list.end());
 
 		// Remove duplicate
 		if (hasValue) {
-			std::unordered_set uset(creatures.begin(), creatures.end());
-			creatures.clear();
-			creatures.insert(creatures.end(), uset.begin(), uset.end());
+			deduplicateCreatureSnapshot(creatures);
 		}
 	}
 	return *this;
@@ -55,9 +73,7 @@ Spectators &Spectators::insertAll(CreatureVector &&list) {
 			creatures.emplace_back(std::move(creature));
 		}
 
-		std::unordered_set uset(creatures.begin(), creatures.end());
-		creatures.clear();
-		creatures.insert(creatures.end(), uset.begin(), uset.end());
+		deduplicateCreatureSnapshot(creatures);
 	}
 	return *this;
 }
@@ -76,7 +92,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 
 	if (checkDistance) {
 		CreatureVector spectators;
-		spectators.reserve(creatures.size());
+		spectators.reserve(list->size());
 		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if ((centerPos.x - specPos.x >= minRangeX

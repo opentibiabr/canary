@@ -218,6 +218,15 @@ fixed set of `WalkParallel` bucket tasks per wave. The queue stores
 This keeps the async lifetime boundary explicit while reducing task allocation
 and merge churn.
 
+The bucket queue must stay sliced into bounded batches. Monster stress can put
+thousands of creatures into `WalkParallel`; draining an entire bucket in one
+task can delay the later `Serial` group long enough for network tasks such as
+`ProtocolGame::sendLoginChallenge` and `Connection::close` to expire. When a
+bucket has remaining entries, schedule a follow-up `WalkParallel` task instead
+of continuing in the same dispatcher pass. This preserves the async lifetime
+contract while preventing login/network starvation during artificial monster
+stress.
+
 The batching contract is:
 
 - Queue a stable creature identity or `weak_ptr`, not a raw `Creature*`.

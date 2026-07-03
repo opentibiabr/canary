@@ -24,13 +24,16 @@
 #include "server/network/protocol/protocolgame.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
 	#include <array>
+	#include <cstddef>
 	#include <iterator>
 	#include <mutex>
 #endif
 
 namespace {
-	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 8;
+	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 32;
+	constexpr size_t CREATURE_ASYNC_TASK_BATCH_SIZE = 64;
 
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;
@@ -1985,16 +1988,22 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
 	pendingCreatures.clear();
 
+	bool shouldReschedule = false;
 	{
 		std::scoped_lock lock(bucket.mutex);
-		pendingCreatures.reserve(bucket.creatures.size());
+		// Keep creature async work in bounded slices so Serial dispatcher tasks
+		// such as login challenge and connection close cannot starve behind a
+		// large monster movement batch.
+		const auto batchSize = std::min(bucket.creatures.size(), CREATURE_ASYNC_TASK_BATCH_SIZE);
+		pendingCreatures.reserve(batchSize);
 		pendingCreatures.insert(
 			pendingCreatures.end(),
 			std::make_move_iterator(bucket.creatures.begin()),
-			std::make_move_iterator(bucket.creatures.end())
+			std::make_move_iterator(bucket.creatures.begin() + static_cast<std::ptrdiff_t>(batchSize))
 		);
-		bucket.creatures.clear();
-		bucket.scheduled = false;
+		bucket.creatures.erase(bucket.creatures.begin(), bucket.creatures.begin() + static_cast<std::ptrdiff_t>(batchSize));
+		shouldReschedule = !bucket.creatures.empty();
+		bucket.scheduled = shouldReschedule;
 	}
 
 	for (auto &weakCreature : pendingCreatures) {
@@ -2004,6 +2013,13 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	}
 
 	pendingCreatures.clear();
+
+	if (shouldReschedule) {
+		g_dispatcher().asyncEvent([bucketIndex] {
+			Creature::processAsyncTaskBucket(bucketIndex);
+		},
+		                          TaskGroup::WalkParallel);
+	}
 }
 
 void Creature::executeAsyncTasks() {

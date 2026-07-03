@@ -375,8 +375,11 @@ Phase 2 v1 applies the conservative part of that plan:
 - Dispatcher groups log throttled slow-path queue latency when pending tasks
   wait at least 250 ms, making `Walk` starvation visible without adding a public
   API.
-- Creature async buckets process 16 creatures per slice instead of 64 while
+- Creature async buckets process 32 creatures per slice instead of 64 while
   preserving the same `WalkParallel`, `weak_ptr`, and requeue contract.
+- `DeferredGameplay` processes 16 tasks per dispatcher pass. A lower value kept
+  player walk protected, but let monster post-think queue age into multi-second
+  delays under stress, making monster attacks and spells visibly late.
 - `Monster::onCreatureMove` still runs base movement and Lua callbacks
   immediately, but coalesces internal AI refresh work. The first pending
   movement keeps the original moved-creature snapshot; additional movements
@@ -627,7 +630,9 @@ Current Phase 2 v1 implementation:
   exceeds the slow-path threshold. These logs are diagnostic only and must not
   affect scheduling order.
 - `Creature::processAsyncTaskBucket` keeps 32 buckets but slices each bucket to
-  16 creatures before requeueing the remainder.
+  32 creatures before requeueing the remainder.
+- `DeferredGameplay` drains 16 tasks per pass so delayed monster post-think does
+  not accumulate seconds of attack/spell latency during stress.
 - `Monster::onCreatureMove` coalesces only internal AI bookkeeping across the
   async boundary. Script-visible callbacks, map movement, player sends, tile
   notifications, and zone changes are not coalesced.

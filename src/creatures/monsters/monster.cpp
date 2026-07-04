@@ -27,11 +27,11 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
-bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
-	return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
-		&& creature.get() != static_cast<const Creature*>(&monster)
-		&& creature->getMonsterRaw() && !creature->isSummon();
-}
+	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
+		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
+			&& creature.get() != static_cast<const Creature*>(&monster)
+			&& creature->getMonsterRaw() && !creature->isSummon();
+	}
 }
 
 std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {

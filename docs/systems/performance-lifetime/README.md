@@ -295,19 +295,19 @@ dispatcher boundary.
 
 Additional safe cuts applied after the dispatcher profile became cleaner:
 
-- `Map` path searches capture the creature's current tile once per A* search and
+- `Map` path searches capture the creature's current tile once per `A*` search and
   reuse it for `canWalkTo`-equivalent neighbor checks. This avoids repeated
   `Creature::getTile()` weak-locks inside the node loop without storing borrowed
   tile pointers.
 - Pathfinding tile resolution now reuses a caller-owned `MapCacheFloorCursor`
-  inside a single synchronous A* or directional walk-check scope. The cursor
+  inside a single synchronous `A*` or directional walk-check scope. The cursor
   caches only resolved floors, still returns `shared_ptr<Tile>`, and still
   materializes cached map tiles through `MapCache::getOrCreateTileFromCache`.
   `Floor::getTileAndCache` reads the realized tile and pending `BasicTile`
   cache under one shared lock, then releases the lock before materialization.
-- `Creature::goToFollowCreature` skips A* when the current position already
+- `Creature::goToFollowCreature` skips `A*` when the current position already
   satisfies the exact pathing condition, including line-of-sight checks. Flexible
-  ranges such as flee or keep-distance still use A* because they may need a
+  ranges such as flee or keep-distance still use `A*` because they may need a
   better position, not merely any valid one.
 - Monster target classification reuses the benchmark friendly-fire config value
   within each target-list/search pass instead of reading config repeatedly for
@@ -475,10 +475,10 @@ and measurement.
 | `Floor` and `MapSector` | `Floor::getTile` returns `shared_ptr<Tile>` under `shared_lock`; sectors store creature lists as `shared_ptr`. | Borrowing a `Tile*` without a lock or pin can race tile replacement/reload/cache changes. | Introduce tile borrow APIs only with clear lock or dispatcher-only lifetime rules. |
 | `Map::moveCreature` | Receives strong creature/tile pins, builds spectator snapshots, then may defer notifications. | Any raw pointer captured by the deferred `events` lambda can outlive the current stack. | Keep deferred captures strong or use IDs/positions and re-resolve. Raw `Player*` is acceptable only for immediate fanout. |
 | `Spectators` | Snapshots are `CreatureVector` of `shared_ptr<Creature>` and may be cached. | Raw spectator caches would dangle after logout/removal. | Reduce copies and allocations first. Add borrowed views only for immediate non-cached fanout. |
-| `Monster::targetList` and `friendList` | `targetList` stores `{creatureId, weak_ptr<Creature>}` and `friendList` is keyed by creature ID with weak values. The weak reference remains the lifetime gate. | Raw target lists are classic use-after-free risk after death, logout, teleport, despawn, or delayed AI. ID-only storage without generation can misidentify reused IDs if reuse semantics change. | Keep ID sidecars as lookup hints only. Replace with ID/generation handles only after removal/despawn/reuse semantics are specified. |
+| `Monster::targetList` and `friendList` | `targetList` stores `{creatureId, weak_ptr<Creature>, countsAsPlayerOnScreen}` and `friendList` is keyed by creature ID with weak values. The weak reference remains the lifetime gate. | Raw target lists are classic use-after-free risk after death, logout, teleport, despawn, or delayed AI. ID-only storage without generation can misidentify reused IDs if reuse semantics change. Count sidecars can drift if removals bypass the target-list helpers. | Keep ID sidecars as lookup hints only, and update count sidecars through the same add/remove helpers. Replace with ID/generation handles only after removal/despawn/reuse semantics are specified. |
 | `Creature` follow/attack/master/tile | Stored as `weak_ptr`; accessors lock and return `shared_ptr`. | Raw member pointers can become stale when creatures are removed or moved. | Consider handle-backed access for hot AI paths, but keep public safety semantics. |
 | `Item::m_parent` | Stored as `weak_ptr<Cylinder>`; parent chain is resolved dynamically. | Raw parent can dangle after move, transform, trade, container removal, or depot/house transfer. | Keep weak parent. Optimize only local parent walks with a temporary pin or documented borrow. |
-| Pathfinding | `Map::getTile`, `Map::getTileWithFloorCursor`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` still return or consume `shared_ptr<Tile>`. The floor cursor is a synchronous lookup hint, not tile ownership. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. Reusing a cursor outside one search can observe stale floor assumptions. | Keep cursor scope local to A* and directional checks. Consider borrowed `Tile*` only after map/floor stability is documented and measured. |
+| Pathfinding | `Map::getTile`, `Map::getTileWithFloorCursor`, `Map::canWalkTo`, and `AStarNodes::getTileWalkCost` still return or consume `shared_ptr<Tile>`. The floor cursor is a synchronous lookup hint, not tile ownership. | Raw tile reads can become invalid if tile lifetime is not tied to the search scope. Reusing a cursor outside one search can observe stale floor assumptions. | Keep cursor scope local to `A*` and directional checks. Consider borrowed `Tile*` only after map/floor stability is documented and measured. |
 | Dispatcher and scheduler | Delayed work is stored as `std::function`, `Task`, and scheduled events. Task context names are interned and held as stable `std::string_view` values. `DeferredGameplay` is a budgeted serial lane for lower-urgency gameplay follow-ups. | Captured raw pointers can outlive their object by one cycle or by seconds. Per-creature task fanout can amplify allocator churn. Misusing `DeferredGameplay` for immediate input/login/protocol work can add latency or change same-tick behavior. | Capture IDs, weak pointers, or strong pins. Re-resolve at execution. Use `DeferredGameplay` only for reorder-tolerant gameplay follow-ups. Keep player-visible walk retries on the walk lane. |
 | Lua userdata | Core userdata stores `shared_ptr` and has special finalizer rules. | Raw or borrowed userdata can outlive the C++ object; wrong finalizer leaks or corrupts lifetime. | Follow `docs/systems/lua-shared-userdata.md`; never move core polymorphic userdata mechanically. |
 | Protocol and network | Protocol events capture protocol self or player IDs before dispatching game actions. | Raw player/session pointers can outlive disconnects or connection release. | Keep protocol self pins and player ID re-resolution. Do not pass raw gameplay objects across network callbacks. |
@@ -772,7 +772,7 @@ Required tests:
 
 ## Phase 4: pathfinding tile cursor and future borrows
 
-Goal: reduce `shared_ptr<Tile>` churn in A* tile checks.
+Goal: reduce `shared_ptr<Tile>` churn in `A*` tile checks.
 
 Completed v1 work:
 

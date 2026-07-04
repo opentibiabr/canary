@@ -51,7 +51,8 @@ Spectators &Spectators::insertAll(const CreatureVector &list) {
 		creatures.reserve(creatures.size() + list.size());
 		creatures.insert(creatures.end(), list.begin(), list.end());
 
-		// Remove duplicate
+		// Current getSpectators callers build already unique snapshots; only
+		// merged snapshots need deduplication.
 		if (hasValue) {
 			deduplicateCreatureSnapshot(creatures);
 		}
@@ -64,6 +65,8 @@ Spectators &Spectators::insertAll(CreatureVector &&list) {
 		const bool hasValue = !creatures.empty();
 
 		if (!hasValue) {
+			// Current getSpectators callers build already unique snapshots; only
+			// merged snapshots need deduplication.
 			creatures = std::move(list);
 			return *this;
 		}

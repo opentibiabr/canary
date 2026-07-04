@@ -636,7 +636,7 @@ private:
 	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
 	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
-	void sendTakeScreenshot(Screenshot_t screenshotType);
+	void sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId = 0, uint16_t skillLevel = 0, const std::string &achievementName = "", uint16_t raceId = 0, uint8_t bestiaryStep = 0);
 	void sendDisableLoginMusic();
 
 	uint8_t m_playerDeathTime = 0;

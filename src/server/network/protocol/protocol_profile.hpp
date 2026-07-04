@@ -66,6 +66,10 @@ enum class ProtocolFeature : uint64_t {
 	MarketPackets = 1ULL << 11,
 	ImbuementWindow = 1ULL << 12,
 	MemorialPackets = 1ULL << 13,
+	// Modern 0xA0 player data sends level percent as centesimal u16 instead of u8.
+	PlayerDataLevelPercentU16 = 1ULL << 14,
+	// 0x75 uses a client event selector before event-specific fields.
+	GameEventPayload = 1ULL << 15,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

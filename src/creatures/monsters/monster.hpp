@@ -11,6 +11,10 @@
 #include "creatures/creature.hpp"
 #include "lua/lua_definitions.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <deque>
+#endif
+
 struct spellBlock_t;
 struct MapCacheFloorCursor;
 class MonsterType;
@@ -30,6 +34,7 @@ private:
 	struct TargetReference {
 		uint32_t creatureId = 0;
 		std::weak_ptr<Creature> creature;
+		bool countsAsPlayerOnScreen = false;
 	};
 
 	/**
@@ -286,10 +291,13 @@ private:
 	void onThink_async();
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
-		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const TargetReference &ref) {
-			return ref.creatureId == id;
+		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
+			return ref.creatureId == creatureId;
 		});
 	}
+
+	bool countsAsPlayerOnScreenTarget(const std::shared_ptr<Creature> &creature) const;
+	void forgetTargetReference(const TargetReference &ref);
 
 	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
 	std::deque<TargetReference> targetList;

@@ -603,6 +603,17 @@ bool Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
 	return friendList.erase(creature->getID()) > 0;
 }
 
+bool Monster::countsAsPlayerOnScreenTarget(const std::shared_ptr<Creature> &creature) const {
+	const auto &master = getMaster();
+	return !master && getFaction() != FACTION_DEFAULT && creature && creature->getPlayerRaw();
+}
+
+void Monster::forgetTargetReference(const TargetReference &ref) {
+	if (ref.countsAsPlayerOnScreen && totalPlayersOnScreen > 0) {
+		totalPlayersOnScreen--;
+	}
+}
+
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
 	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
@@ -617,17 +628,18 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 			return false;
 		}
 
+		forgetTargetReference(*it);
 		targetList.erase(it);
 	}
 
+	const bool countsAsPlayer = countsAsPlayerOnScreenTarget(creature);
 	if (pushFront) {
-		targetList.push_front(TargetReference { creature->getID(), creature });
+		targetList.push_front(TargetReference { creature->getID(), creature, countsAsPlayer });
 	} else {
-		targetList.push_back(TargetReference { creature->getID(), creature });
+		targetList.push_back(TargetReference { creature->getID(), creature, countsAsPlayer });
 	}
 
-	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayerRaw()) {
+	if (countsAsPlayer) {
 		totalPlayersOnScreen++;
 	}
 
@@ -646,15 +658,12 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 
 	const auto &target = it->creature.lock();
 	if (!target) {
+		forgetTargetReference(*it);
 		targetList.erase(it);
 		return false;
 	}
 
-	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayerRaw()) {
-		totalPlayersOnScreen--;
-	}
-
+	forgetTargetReference(*it);
 	targetList.erase(it);
 
 	return true;
@@ -673,7 +682,11 @@ void Monster::updateTargetList() {
 
 	std::erase_if(targetList, [this](const TargetReference &ref) {
 		const auto &target = ref.creature.lock();
-		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
+		const bool shouldErase = !target || target->getHealth() <= 0 || !canSee(target->getPosition());
+		if (shouldErase) {
+			forgetTargetReference(ref);
+		}
+		return shouldErase;
 	});
 
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
@@ -686,6 +699,7 @@ void Monster::updateTargetList() {
 
 void Monster::clearTargetList() {
 	targetList.clear();
+	totalPlayersOnScreen = 0;
 }
 
 void Monster::clearFriendList() {
@@ -1068,6 +1082,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monst
 	}
 
 	if (it->creature.expired()) {
+		forgetTargetReference(*it);
 		targetList.erase(it);
 		return false;
 	}

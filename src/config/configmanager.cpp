@@ -91,6 +91,9 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, DISABLE_MONSTER_ARMOR, "disableMonsterArmor", false);
 	loadBoolConfig(L, MONSTER_PERF_TEST_FORCE_ACTIVE, "monsterPerfTestForceActive", false);
 	loadBoolConfig(L, MONSTER_PERF_TEST_FRIENDLY_FIRE, "monsterPerfTestFriendlyFire", false);
+	if (getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE) || getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)) {
+		g_logger().warn("[ConfigManager::load] - Monster perf-test flags are enabled; this benchmark-only stress mode should not be used in production.");
+	}
 	loadBoolConfig(L, DISCORD_SEND_FOOTER, "discordSendFooter", true);
 	loadBoolConfig(L, EMOTE_SPELLS, "emoteSpells", false);
 	loadBoolConfig(L, LEARN_SPELLS, "toggleLearnSpells", true);

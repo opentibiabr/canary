@@ -40,8 +40,8 @@ function trap.onStepIn(creature, item, position, fromPosition)
 			position:sendMagicEffect(CONST_ME_STUN)
 			creature:remove()
 			Game.createItem(12369, 1, position)
+			return true
 		end
-		return true
 	end
 
 	if trap.damage then

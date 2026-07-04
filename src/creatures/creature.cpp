@@ -27,7 +27,7 @@
 	#include <algorithm>
 	#include <array>
 	#include <cstddef>
-	#include <iterator>
+	#include <deque>
 	#include <mutex>
 #endif
 
@@ -37,7 +37,7 @@ namespace {
 
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;
-		std::vector<std::weak_ptr<Creature>> creatures;
+		std::deque<std::weak_ptr<Creature>> creatures;
 		bool scheduled = false;
 	};
 
@@ -1996,12 +1996,10 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		// large monster movement batch.
 		const auto batchSize = std::min(bucket.creatures.size(), CREATURE_ASYNC_TASK_BATCH_SIZE);
 		pendingCreatures.reserve(batchSize);
-		pendingCreatures.insert(
-			pendingCreatures.end(),
-			std::make_move_iterator(bucket.creatures.begin()),
-			std::make_move_iterator(bucket.creatures.begin() + static_cast<std::ptrdiff_t>(batchSize))
-		);
-		bucket.creatures.erase(bucket.creatures.begin(), bucket.creatures.begin() + static_cast<std::ptrdiff_t>(batchSize));
+		for (size_t i = 0; i < batchSize; ++i) {
+			pendingCreatures.emplace_back(std::move(bucket.creatures.front()));
+			bucket.creatures.pop_front();
+		}
 		shouldReschedule = !bucket.creatures.empty();
 		bucket.scheduled = shouldReschedule;
 	}

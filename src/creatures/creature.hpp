@@ -999,6 +999,9 @@ protected:
 			}
 		} else {
 			m_flagAsyncTask &= ~taskFlag;
+			if (m_isExecutingAsyncTasks) {
+				m_deferredAsyncTaskFlags &= ~taskFlag;
+			}
 		}
 	}
 

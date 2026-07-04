@@ -31,6 +31,7 @@
 #include <charconv>
 #include <cstdint>
 #include <cstddef>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>

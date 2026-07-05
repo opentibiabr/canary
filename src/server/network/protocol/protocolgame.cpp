@@ -543,6 +543,21 @@ namespace {
 				return MESSAGE_NONE;
 		}
 	}
+
+	[[nodiscard]] uint16_t getViewerAwareItemId(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Item> &item) {
+		if (!viewer || !item || !ExpertPvp::isEnabled()) {
+			return item ? item->getID() : 0;
+		}
+
+		const auto fieldContext = ExpertPvp::getFieldContext(item);
+		const auto relation = ExpertPvp::classifyFieldRelation(fieldContext, viewer);
+		const auto decision = ExpertPvp::getFieldClientId(fieldContext, relation.facts);
+		if (!decision.handled || decision.clientItemId == 0) {
+			return item->getID();
+		}
+
+		return decision.clientItemId;
+	}
 } // namespace
 
 ProtocolGame::ProtocolGame(const Connection_ptr &initConnection) :
@@ -686,7 +701,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 		return;
 	}
 
-	const ItemType &it = Item::items[item->getID()];
+	const auto clientItemId = getViewerAwareItemId(player, item);
+	const ItemType &it = Item::items[clientItemId];
 
 	msg.add<uint16_t>(it.id);
 

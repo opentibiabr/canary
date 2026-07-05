@@ -30,6 +30,7 @@
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -2575,7 +2576,10 @@ void ProtocolGame::parseFightModes(NetworkMessage &msg) {
 	uint8_t rawFightMode = msg.getByte(); // 1 - offensive, 2 - balanced, 3 - defensive
 	uint8_t rawChaseMode = msg.getByte(); // 0 - stand while fightning, 1 - chase opponent
 	uint8_t rawSecureMode = msg.getByte(); // 0 - can't attack unmarked, 1 - can attack unmarked
-	// uint8_t rawPvpMode = msg.getByte(); // pvp mode introduced in 10.0
+	ExpertPvpModeResult pvpMode = ExpertPvp::defaultModeForClient();
+	if (msg.canRead(1)) {
+		pvpMode = ExpertPvp::modeFromClientByte(msg.getByte()); // pvp mode introduced in 10.0
+	}
 
 	FightMode_t fightMode;
 	if (rawFightMode == 1) {
@@ -2586,7 +2590,7 @@ void ProtocolGame::parseFightModes(NetworkMessage &msg) {
 		fightMode = FIGHTMODE_DEFENSE;
 	}
 
-	g_game().playerSetFightModes(player->getID(), fightMode, rawChaseMode != 0, rawSecureMode != 0);
+	g_game().playerSetFightModes(player->getID(), fightMode, rawChaseMode != 0, rawSecureMode != 0, pvpMode.mode);
 }
 
 void ProtocolGame::parseAttack(NetworkMessage &msg) {
@@ -8055,7 +8059,7 @@ void ProtocolGame::sendFightModes() {
 	msg.addByte(player->fightMode);
 	msg.addByte(player->chaseMode);
 	msg.addByte(player->secureMode);
-	msg.addByte(PVP_MODE_DOVE);
+	msg.addByte(ExpertPvp::isEnabled() ? player->getPvpMode() : PVP_MODE_DOVE);
 	writeToOutputBuffer(msg);
 }
 

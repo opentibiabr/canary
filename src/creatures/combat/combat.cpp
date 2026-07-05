@@ -1178,6 +1178,9 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 		const auto &item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster);
+			if (ExpertPvp::isEnabled()) {
+				[[maybe_unused]] const auto fieldContext = ExpertPvp::attachFieldContext(item, caster);
+			}
 		}
 
 		ReturnValue ret = g_game().internalAddItem(tile, item);

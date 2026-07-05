@@ -84,6 +84,9 @@ struct ExpertPvpModeResult {
 };
 
 struct ExpertPvpRelationContext {
+	uint32_t actorGuid = 0;
+	uint32_t subjectGuid = 0;
+	PvpMode_t actorMode = PVP_MODE_DOVE;
 	bool actorIsAccessPlayer = false;
 	bool subjectIsAccessPlayer = false;
 	bool isSelf = false;

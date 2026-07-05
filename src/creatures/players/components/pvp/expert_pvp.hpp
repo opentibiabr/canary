@@ -11,6 +11,13 @@
 
 #include "creatures/players/components/pvp/expert_pvp_definitions.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
+
+class Creature;
+class Player;
+
 class ExpertPvp {
 public:
 	ExpertPvp() = delete;
@@ -23,6 +30,7 @@ public:
 	[[nodiscard]] static ExpertPvpModeResult normalizeMode(PvpMode_t requestedMode, ExpertPvpModeSource source = ExpertPvpModeSource::StoredPlayerState);
 
 	[[nodiscard]] static ExpertPvpRelationResult classifyRelation(const ExpertPvpRelationContext &context);
+	[[nodiscard]] static ExpertPvpRelationResult classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<Creature> &subject);
 	[[nodiscard]] static ExpertPvpDecision evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpWalkthroughDecision canWalkThrough(const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldStepDecision evaluateFieldStep(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);

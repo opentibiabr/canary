@@ -10,8 +10,34 @@
 #include "creatures/players/components/pvp/expert_pvp.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/creature.hpp"
+#include "creatures/players/grouping/groups.hpp"
+#include "creatures/players/player.hpp"
 
 namespace {
+	[[nodiscard]] bool isAccessPlayer(const std::shared_ptr<Player> &player) {
+		if (!player) {
+			return false;
+		}
+
+		const auto &group = player->getGroup();
+		return group && group->access;
+	}
+
+	[[nodiscard]] std::shared_ptr<Player> getMasterPlayer(const std::shared_ptr<Creature> &creature) {
+		const auto &master = creature ? creature->getMaster() : nullptr;
+		return master ? master->getPlayer() : nullptr;
+	}
+
+	[[nodiscard]] bool isSkulledClientTarget(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
+		if (!actor || !subjectPlayer) {
+			return false;
+		}
+
+		const auto skull = actor->getSkullClient(subjectPlayer);
+		return skull != SKULL_NONE && skull != SKULL_GREEN;
+	}
+
 	ExpertPvpModeResult makeModeResult(PvpMode_t mode, ExpertPvpModeSource source) {
 		ExpertPvpModeResult result;
 		result.mode = mode;
@@ -125,6 +151,42 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 	}
 
 	return result;
+}
+
+ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<Creature> &subject) {
+	ExpertPvpRelationContext context;
+	if (!actor || !subject) {
+		return classifyRelation(context);
+	}
+
+	context.actorGuid = actor->getGUID();
+	context.actorMode = actor->getPvpMode();
+	context.actorIsAccessPlayer = isAccessPlayer(actor);
+
+	const auto subjectPlayer = subject->getPlayer();
+	const auto subjectMonster = subject->getMonster();
+	const auto subjectOwnerPlayer = subjectPlayer ? subjectPlayer : getMasterPlayer(subject);
+	if (subjectOwnerPlayer) {
+		context.subjectGuid = subjectOwnerPlayer->getGUID();
+	}
+
+	context.subjectIsPlayer = subjectPlayer != nullptr;
+	context.subjectIsMonster = subjectMonster != nullptr;
+	context.subjectIsPlayerSummon = !subjectPlayer && subject->isSummon() && subjectOwnerPlayer != nullptr;
+	context.subjectIsNpc = subject->getNpc() != nullptr;
+	context.subjectIsAccessPlayer = isAccessPlayer(subjectPlayer);
+	context.isSelf = subjectPlayer == actor;
+
+	if (subjectPlayer && subjectPlayer != actor) {
+		context.partyAlly = actor->isPartner(subjectPlayer);
+		context.guildAlly = actor->isGuildMate(subjectPlayer);
+		context.warEnemy = actor->isInWar(subjectPlayer);
+		context.directAttacker = subjectPlayer->hasAttacked(actor) || subjectPlayer->getAttackedCreature() == actor;
+		context.directTarget = actor->hasAttacked(subjectPlayer) || actor->getAttackedCreature() == subject;
+		context.skulledTarget = isSkulledClientTarget(actor, subjectPlayer);
+	}
+
+	return classifyRelation(context);
 }
 
 ExpertPvpDecision ExpertPvp::evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext) {

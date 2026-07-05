@@ -13,6 +13,7 @@
 #include "creatures/creature.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
+#include "game/game.hpp"
 #include "items/item.hpp"
 
 namespace {
@@ -257,6 +258,39 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player
 	return classifyRelation(context);
 }
 
+ExpertPvpRelationResult ExpertPvp::classifyFieldRelation(const ExpertFieldContext &fieldContext, const std::shared_ptr<Creature> &subject) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = fieldContext.ownerGuid;
+	context.actorMode = fieldContext.ownerMode;
+
+	if (!fieldContext || fieldContext.ownerGuid == 0 || !subject) {
+		return classifyRelation(context);
+	}
+
+	if (const auto &ownerPlayer = g_game().getPlayerByGUID(fieldContext.ownerGuid)) {
+		auto relation = classifyRelation(ownerPlayer, subject);
+		relation.facts.actorGuid = fieldContext.ownerGuid;
+		relation.facts.actorMode = fieldContext.ownerMode;
+		return classifyRelation(relation.facts);
+	}
+
+	const auto subjectPlayer = subject->getPlayer();
+	const auto subjectMonster = subject->getMonster();
+	const auto subjectOwnerPlayer = subjectPlayer ? subjectPlayer : getMasterPlayer(subject);
+	if (subjectOwnerPlayer) {
+		context.subjectGuid = subjectOwnerPlayer->getGUID();
+	}
+
+	context.subjectIsPlayer = subjectPlayer != nullptr;
+	context.subjectIsMonster = subjectMonster != nullptr;
+	context.subjectIsPlayerSummon = !subjectPlayer && subject->isSummon() && subjectOwnerPlayer != nullptr;
+	context.subjectIsNpc = subject->getNpc() != nullptr;
+	context.subjectIsAccessPlayer = isAccessPlayer(subjectPlayer);
+	context.isSelf = subjectPlayer && subjectPlayer->getGUID() == fieldContext.ownerGuid;
+
+	return classifyRelation(context);
+}
+
 ExpertPvpDecision ExpertPvp::evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext) {
 	if (!isEnabled()) {
 		const auto relation = classifyRelation(relationContext);
@@ -409,11 +443,23 @@ ExpertPvpFieldStepDecision ExpertPvp::evaluateFieldStep(const ExpertFieldContext
 }
 
 ExpertPvpFieldDamageDecision ExpertPvp::evaluateFieldDamage(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext) {
-	const auto relation = classifyRelation(relationContext);
-
 	ExpertPvpFieldDamageDecision decision;
-	decision.relation = relation.relation;
-	decision.reason = fieldContext ? disabledOrPendingReason() : ExpertPvpDecisionReason::MissingFieldContext;
+	if (!fieldContext || fieldContext.ownerGuid == 0 || !fieldContext.ownerWasPlayerOrSummon) {
+		decision.reason = ExpertPvpDecisionReason::MissingFieldContext;
+		return decision;
+	}
+
+	const auto combatDecision = evaluateCombatAction(fieldContext.ownerMode, ExpertPvpActionKind::FieldDamage, relationContext);
+	decision.handled = true;
+	decision.applyDamage = combatDecision.allowed;
+	decision.relation = combatDecision.relation;
+	decision.reason = combatDecision.reason;
+
+	if (decision.applyDamage) {
+		decision.setConditionOwner = true;
+		decision.conditionOwnerGuid = fieldContext.ownerGuid;
+	}
+
 	return decision;
 }
 
@@ -429,6 +475,19 @@ ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContex
 
 bool ExpertPvp::isExpertFieldItem(uint16_t itemId) {
 	switch (itemId) {
+		case ITEM_FIREFIELD_PVP_FULL:
+		case ITEM_FIREFIELD_PVP_MEDIUM:
+		case ITEM_FIREFIELD_PVP_SMALL:
+		case ITEM_FIREFIELD_PERSISTENT_FULL:
+		case ITEM_FIREFIELD_PERSISTENT_MEDIUM:
+		case ITEM_FIREFIELD_PERSISTENT_SMALL:
+		case ITEM_FIREFIELD_NOPVP:
+		case ITEM_POISONFIELD_PVP:
+		case ITEM_POISONFIELD_PERSISTENT:
+		case ITEM_POISONFIELD_NOPVP:
+		case ITEM_ENERGYFIELD_PVP:
+		case ITEM_ENERGYFIELD_PERSISTENT:
+		case ITEM_ENERGYFIELD_NOPVP:
 		case ITEM_MAGICWALL:
 		case ITEM_MAGICWALL_PERSISTENT:
 		case ITEM_MAGICWALL_SAFE:
@@ -449,6 +508,23 @@ ExpertFieldContext ExpertPvp::makeFieldContext(uint32_t ownerGuid, PvpMode_t own
 	context.ownerWasPlayerOrSummon = ownerWasPlayerOrSummon;
 
 	switch (itemId) {
+		case ITEM_FIREFIELD_PVP_FULL:
+		case ITEM_FIREFIELD_PVP_MEDIUM:
+		case ITEM_FIREFIELD_PVP_SMALL:
+		case ITEM_FIREFIELD_PERSISTENT_FULL:
+		case ITEM_FIREFIELD_PERSISTENT_MEDIUM:
+		case ITEM_FIREFIELD_PERSISTENT_SMALL:
+		case ITEM_FIREFIELD_NOPVP:
+		case ITEM_POISONFIELD_PVP:
+		case ITEM_POISONFIELD_PERSISTENT:
+		case ITEM_POISONFIELD_NOPVP:
+		case ITEM_ENERGYFIELD_PVP:
+		case ITEM_ENERGYFIELD_PERSISTENT:
+		case ITEM_ENERGYFIELD_NOPVP:
+			context.canonicalItemId = itemId;
+			context.safeVisualItemId = itemId;
+			context.blockingVisualItemId = itemId;
+			break;
 		case ITEM_MAGICWALL:
 		case ITEM_MAGICWALL_PERSISTENT:
 		case ITEM_MAGICWALL_SAFE:
@@ -475,9 +551,10 @@ ExpertFieldContext ExpertPvp::getFieldContext(const std::shared_ptr<Item> &item)
 		return {};
 	}
 
-	const auto ownerGuid = getCustomAttributeU32(item, expertFieldOwnerGuidAttribute, item->getOwnerId());
+	const auto* ownerGuidAttribute = item->getCustomAttribute(expertFieldOwnerGuidAttribute);
+	const auto ownerGuid = ownerGuidAttribute ? ownerGuidAttribute->getAttribute<uint32_t>() : 0;
 	const auto ownerMode = static_cast<PvpMode_t>(getCustomAttributeU32(item, expertFieldOwnerModeAttribute, PVP_MODE_DOVE));
-	auto context = makeFieldContext(ownerGuid, ownerMode, item->getID(), getCustomAttributeBool(item, expertFieldOwnerWasPlayerOrSummonAttribute, ownerGuid != 0));
+	auto context = makeFieldContext(ownerGuid, ownerMode, item->getID(), getCustomAttributeBool(item, expertFieldOwnerWasPlayerOrSummonAttribute, ownerGuidAttribute != nullptr));
 	context.canonicalItemId = getCustomAttributeU16(item, expertFieldCanonicalItemIdAttribute, context.canonicalItemId);
 	context.safeVisualItemId = getCustomAttributeU16(item, expertFieldSafeVisualItemIdAttribute, context.safeVisualItemId);
 	context.blockingVisualItemId = getCustomAttributeU16(item, expertFieldBlockingVisualItemIdAttribute, context.blockingVisualItemId);

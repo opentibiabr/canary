@@ -229,8 +229,56 @@ TEST(ExpertPvpFieldContextTest, BuildsWildGrowthVisualIds) {
 }
 
 TEST(ExpertPvpFieldContextTest, IgnoresUnsupportedFieldItems) {
-	EXPECT_FALSE(ExpertPvp::isExpertFieldItem(ITEM_FIREFIELD_PVP_FULL));
+	EXPECT_FALSE(ExpertPvp::isExpertFieldItem(ITEM_GOLD_COIN));
 
-	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_FIREFIELD_PVP_FULL, true);
+	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_GOLD_COIN, true);
 	EXPECT_FALSE(context);
+}
+
+TEST(ExpertPvpFieldContextTest, BuildsDamagingFieldOwnershipContext) {
+	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_FIREFIELD_PVP_FULL, true);
+
+	EXPECT_TRUE(ExpertPvp::isExpertFieldItem(ITEM_FIREFIELD_PVP_FULL));
+	EXPECT_EQ(100, context.ownerGuid);
+	EXPECT_EQ(PVP_MODE_DOVE, context.ownerMode);
+	EXPECT_EQ(ITEM_FIREFIELD_PVP_FULL, context.canonicalItemId);
+	EXPECT_EQ(ITEM_FIREFIELD_PVP_FULL, context.safeVisualItemId);
+	EXPECT_EQ(ITEM_FIREFIELD_PVP_FULL, context.blockingVisualItemId);
+}
+
+TEST(ExpertPvpFieldDamageDecisionTest, DoveFieldDoesNotDamageNeutralPlayers) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_FIREFIELD_PVP_FULL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateFieldDamage(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.applyDamage);
+	EXPECT_FALSE(decision.setConditionOwner);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpFieldDamageDecisionTest, RedFieldDamagesNeutralPlayersWithOwnerGuid) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_FIREFIELD_PVP_FULL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateFieldDamage(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.applyDamage);
+	EXPECT_TRUE(decision.setConditionOwner);
+	EXPECT_EQ(100, decision.conditionOwnerGuid);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
 }

@@ -87,6 +87,30 @@ namespace {
 
 		return getExpertPvpCombatReturnValue(actionKind, caster, target) == RETURNVALUE_NOERROR;
 	}
+
+	bool applyExpertPvpFieldDamage(const std::shared_ptr<MagicField> &field, const std::shared_ptr<Condition> &condition, const std::shared_ptr<Creature> &creature) {
+		if (!field || !condition || !creature || !creature->getPlayer() || !ExpertPvp::isEnabled()) {
+			return false;
+		}
+
+		const auto fieldContext = ExpertPvp::getFieldContext(field);
+		const auto relation = ExpertPvp::classifyFieldRelation(fieldContext, creature);
+		const auto decision = ExpertPvp::evaluateFieldDamage(fieldContext, relation.facts);
+		if (!decision.handled) {
+			return false;
+		}
+
+		if (!decision.applyDamage) {
+			return true;
+		}
+
+		if (decision.setConditionOwner) {
+			condition->setParam(CONDITION_PARAM_OWNER, decision.conditionOwnerGuid);
+		}
+
+		creature->addCondition(condition);
+		return true;
+	}
 }
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
@@ -2519,6 +2543,10 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	const ItemType &it = items[getID()];
 	if (it.conditionDamage) {
 		const auto &conditionCopy = it.conditionDamage->clone();
+		if (applyExpertPvpFieldDamage(getMagicField(), conditionCopy, creature)) {
+			return;
+		}
+
 		auto ownerId = getOwnerId();
 		if (ownerId) {
 			bool harmfulField = true;

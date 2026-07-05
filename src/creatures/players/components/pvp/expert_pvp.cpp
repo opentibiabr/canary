@@ -554,7 +554,7 @@ void ExpertPvp::applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &deci
 	}
 
 	if (decision.appliesPzLock) {
-		owner->addInFightTicks(true);
+		owner->addPzLockTicks();
 	}
 
 	if (decision.skullAction == ExpertPvpSkullAction::White && owner->getSkull() == SKULL_NONE) {

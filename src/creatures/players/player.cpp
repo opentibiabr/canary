@@ -4375,6 +4375,41 @@ std::shared_ptr<Item> Player::getCorpse(const std::shared_ptr<Creature> &lastHit
 	return corpse;
 }
 
+void Player::addPzLockTicks() {
+	if (hasFlag(PlayerFlags_t::NotGainInFight)) {
+		return;
+	}
+
+	const auto duration = static_cast<uint32_t>(g_configManager().getNumber(PZ_LOCKED));
+	const auto expiresAt = OTSYS_TIME() + duration;
+	if (pzLockOnlyUntil < expiresAt) {
+		pzLockOnlyUntil = expiresAt;
+	}
+	pzLocked = true;
+	sendIcons();
+
+	const auto &task = createPlayerTask(
+		duration,
+		[playerId = getID()] {
+			const auto &player = g_game().getPlayerByID(playerId);
+			if (!player || player->hasCondition(CONDITION_INFIGHT) || player->pzLockOnlyUntil > OTSYS_TIME()) {
+				return;
+			}
+
+			player->pzLockOnlyUntil = 0;
+			if (player->pzLocked) {
+				player->pzLocked = false;
+				player->sendIcons();
+			}
+			if (player->getSkull() != SKULL_RED && player->getSkull() != SKULL_BLACK) {
+				player->setSkull(SKULL_NONE);
+			}
+		},
+		__FUNCTION__
+	);
+	[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
+}
+
 void Player::addInFightTicks(bool pzlock /*= false*/) {
 	wheel().checkAbilities();
 
@@ -4383,6 +4418,7 @@ void Player::addInFightTicks(bool pzlock /*= false*/) {
 	}
 
 	if (pzlock) {
+		pzLockOnlyUntil = 0;
 		pzLocked = true;
 		sendIcons();
 	}
@@ -6300,11 +6336,17 @@ void Player::onEndCondition(ConditionType_t type) {
 	const auto &conditionFight = getCondition(CONDITION_INFIGHT);
 	if (type == CONDITION_INFIGHT && !conditionFight) {
 		onIdleStatus();
-		pzLocked = false;
+		const bool hasPzLockOnly = pzLockOnlyUntil > OTSYS_TIME();
+		if (hasPzLockOnly) {
+			pzLocked = true;
+		} else {
+			pzLockOnlyUntil = 0;
+			pzLocked = false;
+		}
 		clearAttacked();
 		sendOpenPvpSituations();
 
-		if (getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
+		if (!hasPzLockOnly && getSkull() != SKULL_RED && getSkull() != SKULL_BLACK) {
 			setSkull(SKULL_NONE);
 		}
 	}

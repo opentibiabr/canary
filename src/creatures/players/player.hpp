@@ -881,6 +881,7 @@ public:
 	int32_t getPartyMantra() const;
 	void updatePartyMantra() const;
 
+	void addPzLockTicks();
 	void addInFightTicks(bool pzlock = false);
 
 	uint64_t getGainedExperience(const std::shared_ptr<Creature> &attacker) const override;
@@ -1844,6 +1845,7 @@ private:
 	bool wasMounted = false;
 	bool ghostMode = false;
 	bool pzLocked = false;
+	int64_t pzLockOnlyUntil = 0;
 	bool isConnecting = false;
 	bool addAttackSkillPoint = false;
 	bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};

@@ -317,6 +317,7 @@ bool IOLoginDataSave::savePlayerFirst(const std::shared_ptr<Player> &player) {
 		appendColumn("`skull` = {}", static_cast<int64_t>(skull));
 	}
 
+	appendColumn("`expert_pvp_mode` = {}", static_cast<uint16_t>(player->getPvpMode()));
 	appendColumn("`lastlogout` = {}", player->getLastLogout());
 	appendColumn("`balance` = {}", player->bankBalance);
 	appendColumn("`offlinetraining_time` = {}", player->getOfflineTrainingTime() / 1000);

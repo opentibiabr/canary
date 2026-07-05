@@ -2577,7 +2577,7 @@ void ProtocolGame::parseFightModes(NetworkMessage &msg) {
 	uint8_t rawChaseMode = msg.getByte(); // 0 - stand while fightning, 1 - chase opponent
 	uint8_t rawSecureMode = msg.getByte(); // 0 - can't attack unmarked, 1 - can attack unmarked
 	ExpertPvpModeResult pvpMode = ExpertPvp::defaultModeForClient();
-	if (msg.canRead(1)) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
 		pvpMode = ExpertPvp::modeFromClientByte(msg.getByte()); // pvp mode introduced in 10.0
 	}
 
@@ -8059,7 +8059,7 @@ void ProtocolGame::sendFightModes() {
 	msg.addByte(player->fightMode);
 	msg.addByte(player->chaseMode);
 	msg.addByte(player->secureMode);
-	msg.addByte(ExpertPvp::isEnabled() ? player->getPvpMode() : PVP_MODE_DOVE);
+	msg.addByte(ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte) ? player->getPvpMode() : PVP_MODE_DOVE);
 	writeToOutputBuffer(msg);
 }
 

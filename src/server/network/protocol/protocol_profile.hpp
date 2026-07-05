@@ -70,6 +70,7 @@ enum class ProtocolFeature : uint64_t {
 	PlayerDataLevelPercentU16 = 1ULL << 14,
 	// 0x75 uses a client event selector before event-specific fields.
 	GameEventPayload = 1ULL << 15,
+	ExpertPvpModeByte = 1ULL << 16,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

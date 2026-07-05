@@ -1198,7 +1198,10 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 				} else {
 					attachExpertFieldContext = ExpertPvp::isEnabled() && ExpertPvp::isExpertFieldItem(itemId);
 					if (itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP || itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH) {
-						casterPlayer->addInFightTicks();
+						const bool deferExpertFieldAggression = attachExpertFieldContext && (itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH);
+						if (!deferExpertFieldAggression) {
+							casterPlayer->addInFightTicks();
+						}
 					}
 				}
 			}

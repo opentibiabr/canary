@@ -20,7 +20,7 @@ local function getExpertPvpFieldOwner(creature)
 end
 
 local function attachExpertPvpFieldContext(item, creature)
-	if not item or not configManager.getBoolean(configKeys.EXPERT_PVP_ENABLED) then
+	if not item or not IsExpertPVP() then
 		return
 	end
 

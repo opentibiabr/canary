@@ -12,6 +12,24 @@
 
 #include <gtest/gtest.h>
 
+TEST(ExpertPvpWorldTypeTest, EnablesExpertOnlyForExpertPvpWorldType) {
+	EXPECT_TRUE(ExpertPvp::isExpertPvpWorldTypeName("expert-pvp"));
+	EXPECT_TRUE(ExpertPvp::isExpertPvpWorldTypeName("EXPERT-PVP"));
+	EXPECT_FALSE(ExpertPvp::isExpertPvpWorldTypeName("retro-pvp"));
+	EXPECT_FALSE(ExpertPvp::isExpertPvpWorldTypeName("pvp"));
+	EXPECT_FALSE(ExpertPvp::isExpertPvpWorldTypeName("no-pvp"));
+	EXPECT_FALSE(ExpertPvp::isExpertPvpWorldTypeName("pvp-enforced"));
+}
+
+TEST(ExpertPvpWorldTypeTest, TreatsLegacyPvpAsRetroCompatibilityAlias) {
+	EXPECT_TRUE(ExpertPvp::isRetroPvpWorldTypeName("retro-pvp"));
+	EXPECT_TRUE(ExpertPvp::isRetroPvpWorldTypeName("RETRO-PVP"));
+	EXPECT_TRUE(ExpertPvp::isRetroPvpWorldTypeName("pvp"));
+	EXPECT_FALSE(ExpertPvp::isRetroPvpWorldTypeName("expert-pvp"));
+	EXPECT_FALSE(ExpertPvp::isRetroPvpWorldTypeName("no-pvp"));
+	EXPECT_FALSE(ExpertPvp::isRetroPvpWorldTypeName("pvp-enforced"));
+}
+
 TEST(ExpertPvpModeTest, AcceptsKnownClientModes) {
 	const auto dove = ExpertPvp::modeFromClientByte(0);
 	EXPECT_EQ(PVP_MODE_DOVE, dove.mode);

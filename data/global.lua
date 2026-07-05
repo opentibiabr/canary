@@ -16,7 +16,12 @@ function IsRunningGlobalDatapack()
 end
 
 function IsRetroPVP()
-	return configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO)
+	local worldType = string.lower(configManager.getString(configKeys.WORLD_TYPE) or "")
+	return worldType == "retro-pvp" or worldType == "pvp"
+end
+
+function IsExpertPVP()
+	return string.lower(configManager.getString(configKeys.WORLD_TYPE) or "") == "expert-pvp"
 end
 
 function IsTravelFree()

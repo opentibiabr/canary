@@ -15,6 +15,11 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "utils/tools.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string>
+#endif
 
 namespace {
 	constexpr auto expertFieldOwnerGuidAttribute = "expertPvpOwnerGuid";
@@ -23,6 +28,13 @@ namespace {
 	constexpr auto expertFieldSafeVisualItemIdAttribute = "expertPvpSafeVisualItemId";
 	constexpr auto expertFieldBlockingVisualItemIdAttribute = "expertPvpBlockingVisualItemId";
 	constexpr auto expertFieldOwnerWasPlayerOrSummonAttribute = "expertPvpOwnerWasPlayerOrSummon";
+	constexpr auto expertPvpWorldType = "expert-pvp";
+	constexpr auto legacyRetroPvpWorldType = "pvp";
+	constexpr auto retroPvpWorldType = "retro-pvp";
+
+	[[nodiscard]] std::string getConfiguredWorldType() {
+		return asLowerCaseString(g_configManager().getString(WORLD_TYPE));
+	}
 
 	[[nodiscard]] bool isAccessPlayer(const std::shared_ptr<Player> &player) {
 		if (!player) {
@@ -125,7 +137,24 @@ namespace {
 } // namespace
 
 bool ExpertPvp::isEnabled() {
-	return g_configManager().getBoolean(EXPERT_PVP_ENABLED);
+	return isExpertPvpWorldType();
+}
+
+bool ExpertPvp::isExpertPvpWorldType() {
+	return isExpertPvpWorldTypeName(getConfiguredWorldType());
+}
+
+bool ExpertPvp::isRetroPvpWorldType() {
+	return isRetroPvpWorldTypeName(getConfiguredWorldType());
+}
+
+bool ExpertPvp::isExpertPvpWorldTypeName(std::string_view worldType) {
+	return asLowerCaseString(std::string(worldType)) == expertPvpWorldType;
+}
+
+bool ExpertPvp::isRetroPvpWorldTypeName(std::string_view worldType) {
+	const auto normalizedWorldType = asLowerCaseString(std::string(worldType));
+	return normalizedWorldType == retroPvpWorldType || normalizedWorldType == legacyRetroPvpWorldType;
 }
 
 bool ExpertPvp::isValidMode(PvpMode_t mode) {

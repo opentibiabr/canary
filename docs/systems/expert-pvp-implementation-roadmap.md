@@ -2,13 +2,17 @@
 
 This roadmap turns the contracts from the
 [Expert PvP porting plan](expert-pvp-porting-plan.md) into small implementation
-steps. The goal is to keep each commit reviewable, atomic, and safe while the
-feature remains disabled by default.
+steps. The goal is to keep each commit reviewable, atomic, and safe while
+Expert PvP is selected explicitly through `worldType = "expert-pvp"`.
 
 ## Ground Rules
 
-- Keep `expertPvpEnabled = false` as the default until the behavior is complete.
-- With the feature disabled, current Canary PvP behavior must not change.
+- Keep `worldType = "retro-pvp"` as the explicit default; keep `worldType = "pvp"`
+  as a compatibility alias for Retro PvP.
+- `worldType` is the source of truth for Retro PvP versus Expert PvP; do not add
+  parallel boolean gates for either mode.
+- With `worldType = "retro-pvp"` or legacy `"pvp"`, current Retro PvP behavior
+  must not change.
 - Keep existing functions as thin call sites; put Expert PvP decisions in
   `src/creatures/players/components/pvp/`.
 - Do not apply old Shadowborn or TibiaDuality patches directly.
@@ -23,8 +27,8 @@ feature remains disabled by default.
 
 Each commit should answer these points in its message or PR notes:
 
-- What behavior changes when `expertPvpEnabled = false`?
-- What behavior changes when `expertPvpEnabled = true`?
+- What behavior changes when `worldType` is `retro-pvp` or legacy `pvp`?
+- What behavior changes when `worldType` is `expert-pvp`?
 - Which existing call site became thinner?
 - Which helper now owns the decision?
 - Which regression scenario from the porting plan is covered or prepared?
@@ -34,9 +38,9 @@ split the commit or document why the exception is necessary.
 
 ## Phase 1: Foundation, No Behavior Change
 
-### `feat(pvp): add expert pvp feature gate`
+### `feat(pvp): add expert pvp world type`
 
-Add the initial config gate, disabled by default.
+Add the explicit Expert PvP world type while preserving Retro PvP compatibility.
 
 Expected files:
 
@@ -46,14 +50,15 @@ Expected files:
 
 Rules:
 
-- Add one top-level flag, such as `expertPvpEnabled`.
+- Add `worldType = "expert-pvp"` as the Expert PvP gate.
+- Keep `worldType = "pvp"` as a compatibility alias for `retro-pvp`.
 - Do not add granular rollout flags yet.
-- Do not change world-type behavior.
 
 Validation:
 
 - Static diff review.
-- Confirm the new config key is loaded as `false` by default.
+- Confirm the default `worldType` is `retro-pvp`.
+- Confirm legacy `worldType = "pvp"` maps to Retro PvP.
 
 ### `feat(pvp): add expert pvp decision skeleton`
 
@@ -474,20 +479,22 @@ Rules:
 - Debug talkactions such as PvP mark testing or reset commands.
 - Wild growth caster-only cutting rule.
 - Top-stack aggressive PvP rule, unless selected before Phase 3.
-- New world-type enum changes.
-- Broad `WORLD_TYPE_PVP` behavior changes without `expertPvpEnabled`.
+- New C++ world-type enum changes; map `expert-pvp` and `retro-pvp` onto the
+  existing PvP enum unless a later PR proves a separate enum is required.
+- Broad `WORLD_TYPE_PVP` behavior changes outside `worldType = "expert-pvp"`.
 
 ## Recommended First PR
 
 The first PR should include only Phase 1:
 
-1. `feat(pvp): add expert pvp feature gate`
+1. `feat(pvp): add expert pvp world type`
 2. `feat(pvp): add expert pvp decision skeleton`
 3. `test(pvp): cover expert pvp pure helpers`
 
 Expected result:
 
-- `expertPvpEnabled` exists and defaults to `false`.
+- `worldType = "expert-pvp"` enables Expert PvP.
+- `worldType = "retro-pvp"` and legacy `"pvp"` keep Retro PvP behavior.
 - The helper layer exists.
 - A `PlayerPvp` component shell exists for the later player-state slice.
 - Maintained build manifests know about the new `.cpp`.

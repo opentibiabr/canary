@@ -559,16 +559,15 @@ Current call-site map:
 
 Before implementing code, decide these contracts explicitly:
 
-- Whether Expert PvP replaces `WORLD_TYPE_PVP`, or whether it is guarded by a
-  new config flag such as `expertPvpEnabled`.
-- Whether current `WORLD_TYPE_PVP` should keep existing Canary behavior when
-  the feature is disabled.
-- Whether a new Retro Open PvP world type is needed to preserve old behavior
-  separately from Expert Open PvP.
+- Expert PvP is selected by `worldType = "expert-pvp"`.
+- Retro Open PvP is selected by `worldType = "retro-pvp"`.
+- `worldType = "pvp"` remains as a compatibility alias for `retro-pvp`.
+- The C++ `WORLD_TYPE_PVP` enum remains the shared Open PvP baseline for both
+  Retro and Expert modes unless a later PR proves a separate enum is required.
 - Whether PvP mode is runtime-only, client-stored, or persisted server-side.
-- Which old granular flags represent real contracts. Start with one feature gate
-  and avoid config sprawl unless a separate flag is required for rollout or
-  compatibility.
+- Which old granular flags represent real contracts. Prefer `worldType` as the
+  mode gate and avoid config sprawl unless a separate flag is required for
+  rollout or compatibility.
 - Which default hand applies when a client does not send a PvP byte. This must
   be explicit and should not be hidden behind an `oldProtocol` check.
 - How invalid or unknown PvP mode bytes are handled. Older code allowed unknown
@@ -604,12 +603,13 @@ Before implementing code, decide these contracts explicitly:
 - Whether Open PvP 2014 unfair-frag share and `player_kills.weight` are in scope.
   Recommended answer for the first port: keep it out of scope.
 
-Recommended default for upstream-safe work: add an explicit feature gate and
-leave existing `WORLD_TYPE_PVP` behavior unchanged while the gate is disabled.
+Recommended default for upstream-safe work: keep `retro-pvp` and legacy `pvp`
+behavior unchanged while Expert behavior is limited to `worldType =
+"expert-pvp"`.
 
-Recommended default for this port: add the feature gate first, then implement
-the component/helper layer while the gate is disabled by default. That lets the
-first code PR be mostly additive.
+Recommended default for this port: add the `expert-pvp` world type first, then
+implement the component/helper layer while `retro-pvp` remains the default. That
+lets the first code PR be mostly additive.
 
 Suggested decision record for the implementation PR:
 
@@ -790,7 +790,8 @@ already decided to be a PvP action. In particular:
 1. Add failing tests or debug-only assertions for the desired contract.
 2. Add `src/creatures/players/components/pvp/` with pure decision helpers and
    no side effects except where explicitly named.
-3. Add the feature gate and, if needed, the new world-type mapping.
+3. Add the `expert-pvp` world-type mapping and keep `pvp` as a `retro-pvp`
+   compatibility alias.
 4. Add `Player` PvP mode state with clamped setter and explicit default.
 5. Parse and send PvP mode through `ProtocolGame::parseFightModes()` and
    `ProtocolGame::sendFightModes()` using protocol feature gates.
@@ -814,8 +815,9 @@ already decided to be a PvP action. In particular:
 
 Suggested PR slices:
 
-- PR 1: Add the feature gate, `ExpertPvp` definitions, value result types, and
-  no-op helpers. Feature disabled means no behavior change.
+- PR 1: Add the `expert-pvp` world type, `ExpertPvp` definitions, value result
+  types, and no-op helpers. `retro-pvp` and legacy `pvp` mean no behavior
+  change.
 - PR 2: Add player PvP mode state, defaulting, clamping, protocol parse/send, and
   optional persistence. Do not wire combat behavior yet.
 - PR 3: Wire direct attacks, area spells, and rune target permission through the
@@ -839,7 +841,8 @@ Minimum scenarios to cover:
 - Legacy client logs in and does not desync when fight modes are sent.
 - Client with Expert PvP support can switch each hand mode and the server stores
   the selected mode.
-- Feature disabled: current `WORLD_TYPE_PVP` behavior remains unchanged.
+- `worldType = "retro-pvp"` and legacy `"pvp"` behavior remains unchanged.
+- `worldType = "expert-pvp"` enables Expert Open PvP behavior.
 - Dove area spell does not damage unrelated players.
 - White Hand protects self, party, and guild, but does not open unrelated PvP.
 - Yellow Hand can target skulled players and applies pz lock.
@@ -970,8 +973,8 @@ Out-of-scope touch points from the TibiaDuality patch unless explicitly chosen:
 
 - Do not copy old Shadowborn code without adapting it to current protocol
   profiles and world-type names.
-- Do not add a broad `WORLD_TYPE_PVP` behavior change without a feature gate or
-  migration decision.
+- Do not add a broad `WORLD_TYPE_PVP` behavior change that affects `retro-pvp`
+  or legacy `pvp`.
 - Do not store field owner as a runtime creature ID.
 - Do not mutate the tile item only to change one viewer's field color.
 - Do not let Lua rune scripts choose the shared safe/blocking item ID as a
@@ -1010,8 +1013,8 @@ goal is to reproduce the behavior in current Canary with a cleaner shape:
 
 - Use new helper/component files wherever practical.
 - Keep existing functions as thin call sites.
-- Add a feature gate so the current PvP behavior can remain unchanged while the
-  port is incomplete.
+- Use `worldType = "expert-pvp"` as the gate so Retro PvP behavior can remain
+  unchanged while the port is incomplete.
 - Make PvP decisions deterministic before applying side effects.
 - Separate server collision from per-viewer client visuals.
 - Store field ownership by player GUID.
@@ -1024,7 +1027,7 @@ Useful first patch target:
 
 1. Create `src/creatures/players/components/pvp/` with definitions and pure
    decision result structs.
-2. Add no-op integration behind a disabled feature gate.
+2. Add no-op integration behind `worldType = "expert-pvp"`.
 3. Add tests for the helper with simple player relation fixtures if the test
    harness supports it.
 4. Only then wire protocol state, walkthrough, MW/WG visuals, and side effects.

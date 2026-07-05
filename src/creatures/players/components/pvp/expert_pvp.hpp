@@ -13,6 +13,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <memory>
+	#include <string_view>
 #endif
 
 class Creature;
@@ -24,6 +25,10 @@ public:
 	ExpertPvp() = delete;
 
 	[[nodiscard]] static bool isEnabled();
+	[[nodiscard]] static bool isExpertPvpWorldType();
+	[[nodiscard]] static bool isRetroPvpWorldType();
+	[[nodiscard]] static bool isExpertPvpWorldTypeName(std::string_view worldType);
+	[[nodiscard]] static bool isRetroPvpWorldTypeName(std::string_view worldType);
 	[[nodiscard]] static bool isValidMode(PvpMode_t mode);
 
 	[[nodiscard]] static ExpertPvpModeResult defaultModeForClient();

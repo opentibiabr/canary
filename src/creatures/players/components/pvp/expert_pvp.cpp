@@ -118,6 +118,10 @@ namespace {
 	ExpertPvpDecisionReason disabledOrPendingReason() {
 		return ExpertPvp::isEnabled() ? ExpertPvpDecisionReason::NotEvaluated : ExpertPvpDecisionReason::FeatureDisabled;
 	}
+
+	[[nodiscard]] bool isMagicWallOrWildGrowthField(const ExpertFieldContext &fieldContext) {
+		return fieldContext.canonicalItemId == ITEM_MAGICWALL || fieldContext.canonicalItemId == ITEM_WILDGROWTH;
+	}
 } // namespace
 
 bool ExpertPvp::isEnabled() {
@@ -438,7 +442,63 @@ ExpertPvpFieldStepDecision ExpertPvp::evaluateFieldStep(const ExpertFieldContext
 
 	ExpertPvpFieldStepDecision decision;
 	decision.relation = relation.relation;
-	decision.reason = fieldContext ? disabledOrPendingReason() : ExpertPvpDecisionReason::MissingFieldContext;
+	if (!fieldContext || fieldContext.ownerGuid == 0 || !fieldContext.ownerWasPlayerOrSummon || !isMagicWallOrWildGrowthField(fieldContext)) {
+		decision.reason = ExpertPvpDecisionReason::MissingFieldContext;
+		return decision;
+	}
+
+	decision.handled = true;
+	decision.reason = ExpertPvpDecisionReason::Neutral;
+
+	const auto mode = normalizeMode(fieldContext.ownerMode, fieldContext.ownerModeSource);
+	if (!mode.accepted) {
+		decision.canStep = false;
+		decision.reason = ExpertPvpDecisionReason::InvalidMode;
+		return decision;
+	}
+
+	switch (relation.relation) {
+		case ExpertPvpRelation::Self:
+			decision.canStep = false;
+			decision.reason = ExpertPvpDecisionReason::Self;
+			break;
+		case ExpertPvpRelation::AccessPlayer:
+			decision.canStep = true;
+			decision.reason = ExpertPvpDecisionReason::AccessPlayer;
+			break;
+		case ExpertPvpRelation::PartyAlly:
+		case ExpertPvpRelation::GuildAlly:
+			decision.canStep = true;
+			decision.reason = ExpertPvpDecisionReason::Ally;
+			break;
+		case ExpertPvpRelation::DirectAttacker:
+		case ExpertPvpRelation::DirectTarget:
+			decision.canStep = false;
+			decision.reason = ExpertPvpDecisionReason::DirectCombat;
+			break;
+		case ExpertPvpRelation::WarEnemy:
+			decision.canStep = false;
+			decision.reason = ExpertPvpDecisionReason::War;
+			break;
+		case ExpertPvpRelation::SkulledTarget:
+			decision.canStep = false;
+			decision.reason = ExpertPvpDecisionReason::SkulledTarget;
+			break;
+		case ExpertPvpRelation::NeutralPlayer:
+			decision.canStep = mode.mode != PVP_MODE_RED_FIST;
+			decision.reason = ExpertPvpDecisionReason::Neutral;
+			if (!decision.canStep) {
+				decision.sideEffectOwnerGuid = fieldContext.ownerGuid;
+				decision.skullAction = ExpertPvpSkullAction::White;
+				decision.appliesPzLock = true;
+			}
+			break;
+		default:
+			decision.canStep = false;
+			decision.reason = ExpertPvpDecisionReason::MissingPlayer;
+			break;
+	}
+
 	return decision;
 }
 

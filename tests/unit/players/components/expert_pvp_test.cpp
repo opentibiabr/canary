@@ -282,3 +282,77 @@ TEST(ExpertPvpFieldDamageDecisionTest, RedFieldDamagesNeutralPlayersWithOwnerGui
 	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
 }
+
+TEST(ExpertPvpFieldStepDecisionTest, DoveFieldLetsNeutralPlayersStep) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.canStep);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpFieldStepDecisionTest, FieldOwnerIsBlockedByOwnWall) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 100;
+	context.subjectIsPlayer = true;
+	context.isSelf = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.canStep);
+	EXPECT_EQ(ExpertPvpRelation::Self, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Self, decision.reason);
+}
+
+TEST(ExpertPvpFieldStepDecisionTest, ActiveCombatPlayersAreBlockedByWall) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.directAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.canStep);
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}
+
+TEST(ExpertPvpFieldStepDecisionTest, RedFieldBlocksNeutralPlayersWithSideEffectDescription) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.canStep);
+	EXPECT_EQ(100, decision.sideEffectOwnerGuid);
+	EXPECT_EQ(ExpertPvpSkullAction::White, decision.skullAction);
+	EXPECT_TRUE(decision.appliesPzLock);
+	EXPECT_FALSE(decision.startsFight);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}

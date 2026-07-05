@@ -42,6 +42,11 @@ local function getQuestTrackerKV(player)
 	return player:kv():scoped(QuestTrackerServerConfig.kvScope)
 end
 
+local function supportsQuestTrackerPackets(player)
+	local client = player:getClient()
+	return client and client.version >= 1200
+end
+
 local function makeTrackedMissionKey(questId, missionId)
 	return string.format("%s:%s", tostring(questId), tostring(missionId))
 end
@@ -1197,6 +1202,10 @@ function Player.sendQuestLine(self, questId)
 end
 
 function Player.sendTrackedQuests(self, remainingQuests, missions)
+	if not supportsQuestTrackerPackets(self) then
+		return false
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(0xD0)
 	msg:addByte(0x01)
@@ -1211,9 +1220,14 @@ function Player.sendTrackedQuests(self, remainingQuests, missions)
 	end
 	msg:sendToPlayer(self)
 	msg:delete()
+	return true
 end
 
 function Player.sendUpdateTrackedQuest(self, mission)
+	if not supportsQuestTrackerPackets(self) then
+		return false
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(0xD0)
 	msg:addByte(0x00)
@@ -1224,6 +1238,7 @@ function Player.sendUpdateTrackedQuest(self, mission)
 	msg:addString(mission.missionDesc, "Player.sendUpdateTrackedQuest - mission.missionDesc")
 	msg:sendToPlayer(self)
 	msg:delete()
+	return true
 end
 
 function Player.updateStorage(self, key, value, oldValue, currentFrameTime)

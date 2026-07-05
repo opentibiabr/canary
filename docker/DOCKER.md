@@ -167,11 +167,15 @@ MyAAC. MyAAC's own login webservice file is removed from the quickstart image to
 avoid accidental use.
 
 The login-server advertises `CANARY_SERVER_IP` and `CANARY_GAME_PORT` to the
-client. For local quickstart, keep:
+current client. Legacy account login uses Canary's login port and advertises the
+legacy world port that matches the resolved client profile. For local
+quickstart, keep:
 
 ```env
 CANARY_SERVER_IP=127.0.0.1
 CANARY_GAME_PORT=7172
+CANARY_LEGACY_1100_GAME_PORT=7174
+CANARY_LEGACY_860_GAME_PORT=7175
 ```
 
 If the client runs on another machine, change `CANARY_SERVER_IP` to the LAN or
@@ -208,6 +212,8 @@ CANARY_SERVER_IP=127.0.0.1
 CANARY_SERVER_LOCATION=BRA
 CANARY_LOGIN_PORT=7171
 CANARY_GAME_PORT=7172
+CANARY_LEGACY_1100_GAME_PORT=7174
+CANARY_LEGACY_860_GAME_PORT=7175
 CANARY_STATUS_PORT=7173
 CANARY_STATUS_TIMEOUT=5000
 ```
@@ -217,7 +223,8 @@ experience. That tag can change over time. For reproducible support, demos, or
 shared environments, set `CANARY_IMAGE` to a specific published tag or digest
 when one is available.
 
-The quickstart publishes `CANARY_LOGIN_PORT`, `CANARY_GAME_PORT`, and
+The quickstart publishes `CANARY_LOGIN_PORT`, `CANARY_GAME_PORT`,
+`CANARY_LEGACY_1100_GAME_PORT`, `CANARY_LEGACY_860_GAME_PORT`, and
 `CANARY_STATUS_PORT` to the host using the same port values configured in
 `.env`. Keep these values distinct unless you intentionally add a Compose
 override for custom port mappings.
@@ -230,7 +237,7 @@ the Docker service name.
 ```env
 CANARY_TEST_ACCOUNTS=true
 CANARY_DATA_PACK=data-otservbr-global
-CANARY_MAP_URL=https://github.com/opentibiabr/canary/releases/download/v3.6.0/otservbr.otbm
+CANARY_MAP_URL=https://github.com/opentibiabr/canary/releases/download/v3.6.1/otservbr.otbm
 ```
 
 The Docker image intentionally does not embed the large `.otbm` map file. On the
@@ -255,7 +262,7 @@ MYAAC_ADMIN_ACCOUNT=myaacadmin
 MYAAC_ADMIN_EMAIL=admin@localhost.local
 MYAAC_ADMIN_PASSWORD=admin123
 MYAAC_ADMIN_PLAYER=ADM1
-MYAAC_CLIENT_VERSION=1511
+MYAAC_CLIENT_VERSION=1513
 MYAAC_TIMEZONE=America/Fortaleza
 ```
 
@@ -352,6 +359,8 @@ If the client receives the character list but cannot enter the game, check:
 
 - `CANARY_SERVER_IP` is reachable from the client machine.
 - `CANARY_GAME_PORT` is open on the host.
+- For 11.00 clients, `CANARY_LEGACY_1100_GAME_PORT` is open on the host.
+- For 8.60 clients, `CANARY_LEGACY_860_GAME_PORT` is open on the host.
 - The `server` container is running: `docker compose ps`.
 - The `login-server` container is running: `docker compose ps login-server`.
 - The MyAAC container is running: `docker compose ps myaac`.

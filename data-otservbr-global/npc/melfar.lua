@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "banker",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_BANKER
 npcConfig.shop = {
 	{ itemName = "broken crossbow", clientId = 11451, sell = 30 },
 	{ itemName = "flask with beaver bait", clientId = 9843, sell = 100 },

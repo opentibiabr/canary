@@ -1192,7 +1192,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		if (skill == SKILL_LEVEL) {
 			sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 		} else {
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(skill)), skills[skill].level);
 		}
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), skill, (skills[skill].level - 1), skills[skill].level);
@@ -3496,10 +3496,9 @@ void Player::addManaSpent(uint64_t amount) {
 		std::ostringstream ss;
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
 
 		sendUpdateStats = true;
 		currReqMana = nextReqMana;
@@ -5880,9 +5879,9 @@ void Player::getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMa
 	}
 }
 
-std::shared_ptr<Item> Player::getForgeItemFromId(uint16_t itemId, uint8_t tier) const {
+std::shared_ptr<Item> Player::getForgeItemFromId(uint16_t itemId, uint8_t tier, const std::shared_ptr<Item> &exclude /*= nullptr*/) const {
 	for (const auto &item : getAllInventoryItems(true)) {
-		if (!item) {
+		if (!item || item == exclude) {
 			continue;
 		}
 		if (item->hasImbuements()) {
@@ -8001,7 +8000,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to magic level " << magLevel << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
 		}
 
 		uint8_t newPercent;
@@ -8061,7 +8060,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			if (skill == SKILL_LEVEL) {
 				sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 			} else {
-				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP);
+				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(skill)), skills[skill].level);
 			}
 		}
 
@@ -8373,9 +8372,9 @@ void Player::sendOpenStash(bool isNpc) const {
 	}
 }
 
-void Player::sendTakeScreenshot(Screenshot_t screenshotType) const {
+void Player::sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId, uint16_t skillLevel, const std::string &achievementName, uint16_t raceId, uint8_t bestiaryStep) const {
 	if (client) {
-		client->sendTakeScreenshot(screenshotType);
+		client->sendTakeScreenshot(screenshotType, skillId, skillLevel, achievementName, raceId, bestiaryStep);
 	}
 }
 
@@ -10999,7 +10998,7 @@ void Player::forgeFuseItems(ForgeAction_t actionType, uint16_t firstItemId, uint
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
-	const auto &secondForgingItem = getForgeItemFromId(secondItemId, tier);
+	const auto &secondForgingItem = getForgeItemFromId(secondItemId, tier, firstForgingItem);
 	if (!secondForgingItem) {
 		g_logger().error("[Log 2] Player with name {} failed to fuse item with id {}", getName(), secondItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
@@ -11295,7 +11294,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0);
+	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0, donorItem);
 	if (!receiveItem) {
 		g_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
@@ -11966,8 +11965,24 @@ void Player::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool is
 			bed->wakeUp(static_self_cast<Player>());
 		}
 
-		auto version = client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
-		g_logger().info("{} has logged in. (Protocol: {})", name, version);
+		auto version = client && client->oldProtocol ? getProtocolVersion() : CLIENT_VERSION;
+		const auto* protocolProfile = client ? client->getProtocolProfile() : nullptr;
+		if (protocolProfile
+		    && (protocolProfile->assetSignatures.dat != 0 || protocolProfile->assetSignatures.spr != 0 || protocolProfile->assetSignatures.pic != 0)) {
+			g_logger().info(
+				"{} has logged in. (Protocol: {}, Profile: {}, Assets: dat=0x{:08X} spr=0x{:08X} pic=0x{:08X})",
+				name,
+				version,
+				protocolProfile->name,
+				protocolProfile->assetSignatures.dat,
+				protocolProfile->assetSignatures.spr,
+				protocolProfile->assetSignatures.pic
+			);
+		} else if (protocolProfile) {
+			g_logger().info("{} has logged in. (Protocol: {}, Profile: {})", name, version, protocolProfile->name);
+		} else {
+			g_logger().info("{} has logged in. (Protocol: {})", name, version);
+		}
 
 		std::string livestreamPassword;
 		if (auto passwordValue = kv()->scoped("livestream-system")->get("password")) {

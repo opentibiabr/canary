@@ -12,44 +12,27 @@
 #include "config/configmanager.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/transport_codec.hpp"
 #include "security/rsa.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "utils/tools.hpp"
 
 Protocol::Protocol(const Connection_ptr &initConnection) :
-	connectionPtr(initConnection) { }
+	connectionPtr(initConnection) {
+	if (initConnection) {
+		initConnection->setTransportCodec(TransportCodecs::currentModern());
+	}
+}
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 	if (!rawMessages) {
-		const uint32_t sendMessageChecksum = msg->getLength() >= 128 && compression(*msg) ? (1U << 31) : 0;
-
-		if (!encryptionEnabled) {
-			msg->writeMessageLength();
-			return;
-		}
-
-		msg->writePaddingAmount();
-
-		XTEA_encrypt(*msg);
-		if (checksumMethod == CHECKSUM_METHOD_NONE) {
-			msg->addCryptoHeader(false, 0);
-		} else if (checksumMethod == CHECKSUM_METHOD_ADLER32) {
-			msg->addCryptoHeader(true, adlerChecksum(msg->getOutputBuffer(), msg->getLength()));
-		} else if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-			msg->addCryptoHeader(true, sendMessageChecksum | (++serverSequenceNumber));
-			if (serverSequenceNumber >= 0x7FFFFFFF) {
-				serverSequenceNumber = 0;
-			}
+		if (const auto &connection = getConnection()) {
+			connection->getTransportCodec().encodeOutbound(*this, *msg);
 		}
 	}
 }
 
 bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
-	if (encryptionEnabled && !XTEA_decrypt(msg)) {
-		g_logger().error("[Protocol::onRecvMessage] - XTEA_decrypt Failed");
-		return false;
-	}
-
 	g_dispatcher().addEvent(
 		[&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
 			if (const auto &protocol = protocolWeak.lock()) {
@@ -66,41 +49,16 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 }
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {
-	if (checksumMethod != CHECKSUM_METHOD_NONE) {
-		const auto recvChecksum = msg.get<uint32_t>();
-		if (checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-			if (recvChecksum == 0) {
-				// checksum 0 indicate that the packet should be connection ping - 0x1C packet header
-				// since we don't need that packet skip it
-				return false;
-			}
-
-			const uint32_t checksum = ++clientSequenceNumber;
-			if (clientSequenceNumber >= 0x7FFFFFFF) {
-				clientSequenceNumber = 0;
-			}
-
-			if (recvChecksum != checksum) {
-				// incorrect packet - skip it
-				return false;
-			}
-		} else {
-			uint32_t checksum;
-			if (const int32_t len = msg.getLength() - msg.getBufferPosition();
-			    len > 0) {
-				checksum = adlerChecksum(msg.getBuffer() + msg.getBufferPosition(), len);
-			} else {
-				checksum = 0;
-			}
-
-			if (recvChecksum != checksum) {
-				// incorrect packet - skip it
-				return false;
-			}
-		}
+	const auto &connection = getConnection();
+	if (!connection || !connection->getTransportCodec().prepareInbound(*this, msg)) {
+		return false;
 	}
 
 	return sendRecvMessageCallback(msg);
+}
+
+void Protocol::onConnectionAccepted() {
+	sendLoginChallenge();
 }
 
 OutputMessage_ptr Protocol::getOutputBuffer(int32_t size) {

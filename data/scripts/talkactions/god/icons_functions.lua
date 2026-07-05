@@ -10,15 +10,28 @@ local function convertIconsToBitValue(iconList)
 	return bitObj:getNumber()
 end
 
+local function usesModernIconPayload(player)
+	local client = player:getClient()
+	return client and client.version > 1100
+end
+
 function Player:sendNormalIcons(icons)
 	local msg = NetworkMessage()
 	msg:addByte(0xA2)
-	msg:addU64(icons)
-	msg:addByte(0)
+	if usesModernIconPayload(self) then
+		msg:addU64(icons)
+		msg:addByte(0)
+	else
+		msg:addU16(icons)
+	end
 	msg:sendToPlayer(self)
 end
 
 function Player:sendIconBakragore(specialIcon)
+	if not usesModernIconPayload(self) then
+		return
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(0xA2)
 	msg:addU64(0)

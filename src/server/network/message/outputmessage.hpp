@@ -37,6 +37,18 @@ public:
 		add_header(static_cast<uint16_t>((info.length - 4) / 8));
 	}
 
+	void writeRawMessageLength() {
+		add_header(static_cast<uint16_t>(info.length));
+	}
+
+	void writeLegacyInnerLength() {
+		add_header(static_cast<uint16_t>(info.length));
+	}
+
+	void writeChecksum(uint32_t checksum) {
+		add_header(checksum);
+	}
+
 	void addCryptoHeader(bool addChecksum, uint32_t checksum) {
 		if (addChecksum) {
 			add_header(checksum);

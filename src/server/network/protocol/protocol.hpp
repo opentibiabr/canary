@@ -35,6 +35,7 @@ public:
 	bool onRecvMessage(NetworkMessage &msg);
 	bool sendRecvMessageCallback(NetworkMessage &msg);
 	virtual void onRecvFirstMessage(NetworkMessage &msg) = 0;
+	virtual void onConnectionAccepted();
 	virtual void sendLoginChallenge() { }
 
 	bool isConnectionExpired() const;
@@ -105,4 +106,5 @@ private:
 	bool rawMessages = false;
 
 	friend class Connection;
+	friend class TransportCodec;
 };

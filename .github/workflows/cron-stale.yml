@@ -20,9 +20,10 @@ jobs:
       - uses: actions/stale@v6
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          stale-issue-message: "This issue is stale because it has been open 120 days with no activity."
-          stale-pr-message: "This PR is stale because it has been open 45 days with no activity."
+          stale-issue-message: "This issue is stale because it has been open for 90 days with no activity."
+          stale-pr-message: "This PR is stale because it has had no activity for 23 days."
+          close-pr-message: "This PR is closed because it had no branch updates or review fixes after the stale notice. If you want to continue, please open a new PR with the required fixes."
           days-before-issue-stale: 90
-          days-before-pr-stale: 30
+          days-before-pr-stale: 23
           days-before-issue-close: -1
-          days-before-pr-close: -1
+          days-before-pr-close: 7

@@ -1,4 +1,5 @@
 dofile(CORE_DIRECTORY .. "/npclib/npc.lua")
+dofile(CORE_DIRECTORY .. "/modules/scripts/npc/npc_dialog.lua")
 dofile(CORE_DIRECTORY .. "/npclib/npc_system/npc_handler.lua")
 dofile(CORE_DIRECTORY .. "/npclib/npc_system/keyword_handler.lua")
 dofile(CORE_DIRECTORY .. "/npclib/npc_system/modules.lua")

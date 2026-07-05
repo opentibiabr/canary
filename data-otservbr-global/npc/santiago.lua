@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 npcConfig.voices = {
 	interval = 15000,
@@ -140,7 +142,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog, 2)
 			player:sendTutorial(3)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif storeTalkCid[playerId] == 2 then
 			if player:getItemCount(3562) > 0 then
 				local coatSlot = player:getSlotItem(CONST_SLOT_ARMOR)
@@ -165,7 +167,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			Position(32036, 32277, 6):sendMagicEffect(CONST_ME_TUTORIALARROW)
 			player:addItem(3270, 1)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif storeTalkCid[playerId] == 4 then
 			npcHandler:say("That's just great! Now you have more health points, can carry more stuff and walk faster. Talking about health, did you get {hurt} by those cockroaches?", npc, creature)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.SantiagoNpcGreetStorage, 8)
@@ -206,7 +208,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.SantiagoQuestLog, 11)
 			player:addMapMark(Position(32045, 32270, 6), MAPMARK_GREENSOUTH, "To Zirella")
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	elseif MsgContains(message, "hurt") then
 		if storeTalkCid[playerId] == 6 then
@@ -226,7 +228,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			Position(32036, 32277, 6):sendMagicEffect(CONST_ME_TUTORIALARROW)
 			player:addItem(3270, 1)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	elseif MsgContains(message, "easy") then
 		if storeTalkCid[playerId] == 8 then

@@ -22,11 +22,10 @@ public:
 	virtual ~NetworkMessage() = default;
 
 	using MsgSize_t = uint16_t;
-	// Headers:
-	// 2 bytes for unencrypted message size
-	// 4 bytes for checksum
-	// 1 byte for padding message size
-	static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 7;
+	// Header staging space for the largest supported outbound envelope:
+	// 2 bytes for outer message size, 4 bytes for checksum/sequence, and
+	// either 1 modern padding byte or 2 legacy encrypted inner-length bytes.
+	static constexpr MsgSize_t INITIAL_BUFFER_POSITION = 8;
 
 	int32_t decodeHeader();
 

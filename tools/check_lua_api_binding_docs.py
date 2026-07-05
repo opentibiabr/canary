@@ -14,6 +14,15 @@ WEAK_PARAM_PATTERNS = (
     re.compile(r":\s*any\b"),
     re.compile(r"\barg\d+\b"),
 )
+GIT_REF_PATTERN = re.compile(r"^(?:[0-9a-fA-F]{7,40}|[A-Za-z0-9][A-Za-z0-9._/\\-]*)$")
+INVALID_REF_CHARS = set(" ~^:?*[]\\\x00\n\r")
+
+
+def _has_invalid_ref_segment(value):
+    for part in value.split("/"):
+        if part in {".", "..", ""} or part.startswith(".") or part.endswith(".") or part.endswith(".lock"):
+            return True
+    return False
 
 @dataclass(frozen=True)
 class Binding:
@@ -29,13 +38,41 @@ def run_git(args):
     return completed.stdout
 
 
+def validate_git_ref(value):
+    if not isinstance(value, str):
+        raise ValueError(f"invalid git ref: {value!r}")
+
+    value = value.strip()
+    if (
+        not value
+        or value.startswith("-")
+        or value.startswith("/")
+        or value.endswith("/")
+        or ".." in value
+        or "//" in value
+        or any(ch in INVALID_REF_CHARS for ch in value)
+        or not GIT_REF_PATTERN.fullmatch(value)
+        or _has_invalid_ref_segment(value)
+    ):
+        raise ValueError(f"invalid git ref: {value!r}")
+    return value
+
+
 def resolve_base_ref(explicit_base):
     candidates = []
     if explicit_base:
-        candidates.append(explicit_base)
+        try:
+            candidates.append(validate_git_ref(explicit_base))
+        except ValueError as error:
+            raise ValueError(f"invalid --base value: {error}") from None
+
     github_base_ref = os.environ.get("GITHUB_BASE_REF")
     if github_base_ref:
-        candidates.extend([f"origin/{github_base_ref}", github_base_ref])
+        try:
+            base_ref = validate_git_ref(github_base_ref)
+            candidates.extend([f"origin/{base_ref}", base_ref])
+        except ValueError:
+            pass
     candidates.extend(["origin/main", "main"])
 
     for candidate in candidates:
@@ -317,7 +354,7 @@ def main():
         base_ref = resolve_base_ref(args.base)
         bindings = parse_added_bindings(base_ref)
         docs = load_docs()
-    except (OSError, RuntimeError, subprocess.CalledProcessError, json.JSONDecodeError) as error:
+    except (OSError, RuntimeError, subprocess.CalledProcessError, ValueError) as error:
         print(f"::error::failed to run Lua API binding documentation check: {error}")
         return 1
 

@@ -543,6 +543,25 @@ ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContex
 	return decision;
 }
 
+void ExpertPvp::applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision) {
+	if (!isEnabled() || !decision.handled || decision.canStep || decision.sideEffectOwnerGuid == 0) {
+		return;
+	}
+
+	const auto &owner = g_game().getPlayerByGUID(decision.sideEffectOwnerGuid);
+	if (!owner) {
+		return;
+	}
+
+	if (decision.appliesPzLock) {
+		owner->addInFightTicks(true);
+	}
+
+	if (decision.skullAction == ExpertPvpSkullAction::White && owner->getSkull() == SKULL_NONE) {
+		owner->setSkull(SKULL_WHITE);
+	}
+}
+
 bool ExpertPvp::isExpertFieldItem(uint16_t itemId) {
 	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:

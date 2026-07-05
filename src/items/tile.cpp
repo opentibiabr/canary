@@ -30,7 +30,7 @@ auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
 
 namespace {
-	bool queryExpertPvpFieldStep(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &ground, const TileItemVector* items, ReturnValue &ret) {
+	bool queryExpertPvpFieldStep(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &ground, const TileItemVector* items, uint32_t tileFlags, ReturnValue &ret) {
 		const auto &player = creature ? creature->getPlayer() : nullptr;
 		if (!player || !ExpertPvp::isEnabled()) {
 			return false;
@@ -59,6 +59,9 @@ namespace {
 					handledExpertField = true;
 					handledItem = true;
 					if (!decision.canStep) {
+						if (!hasBitSet(FLAG_PATHFINDING, tileFlags)) {
+							ExpertPvp::applyFieldStepSideEffects(decision);
+						}
 						ret = RETURNVALUE_NOTENOUGHROOM;
 						return true;
 					}
@@ -803,7 +806,7 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			// If the FLAG_IGNOREBLOCKITEM bit isn't set we dont have to iterate every single item
 			if (hasFlag(TILESTATE_BLOCKSOLID)) {
 				ReturnValue expertPvpFieldStepRet = RETURNVALUE_NOERROR;
-				if (queryExpertPvpFieldStep(creature, ground, getItemList(), expertPvpFieldStepRet)) {
+				if (queryExpertPvpFieldStep(creature, ground, getItemList(), tileFlags, expertPvpFieldStepRet)) {
 					return expertPvpFieldStepRet;
 				}
 

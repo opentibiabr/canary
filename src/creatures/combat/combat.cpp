@@ -1172,6 +1172,7 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 				break;
 		}
 
+		bool attachExpertFieldContext = false;
 		if (caster) {
 			std::shared_ptr<Player> casterPlayer;
 			if (caster->isSummon()) {
@@ -1181,7 +1182,8 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 			}
 
 			if (casterPlayer) {
-				if (g_game().getWorldType() == WORLD_TYPE_NO_PVP || tile->hasFlag(TILESTATE_NOPVPZONE)) {
+				const bool noPvpField = g_game().getWorldType() == WORLD_TYPE_NO_PVP || tile->hasFlag(TILESTATE_NOPVPZONE);
+				if (noPvpField) {
 					if (itemId == ITEM_FIREFIELD_PVP_FULL) {
 						itemId = ITEM_FIREFIELD_NOPVP;
 					} else if (itemId == ITEM_POISONFIELD_PVP) {
@@ -1193,8 +1195,11 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 					} else if (itemId == ITEM_WILDGROWTH) {
 						itemId = ITEM_WILDGROWTH_SAFE;
 					}
-				} else if (itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP || itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH) {
-					casterPlayer->addInFightTicks();
+				} else {
+					attachExpertFieldContext = ExpertPvp::isEnabled() && ExpertPvp::isExpertFieldItem(itemId);
+					if (itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP || itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH) {
+						casterPlayer->addInFightTicks();
+					}
 				}
 			}
 		}
@@ -1202,7 +1207,7 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 		const auto &item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster);
-			if (ExpertPvp::isEnabled()) {
+			if (attachExpertFieldContext) {
 				[[maybe_unused]] const auto fieldContext = ExpertPvp::attachFieldContext(item, caster);
 			}
 		}

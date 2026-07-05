@@ -18,10 +18,13 @@ public:
 	explicit PlayerPvp(Player &initPlayer);
 
 	[[nodiscard]] bool isExpertPvpEnabled() const;
+	[[nodiscard]] PvpMode_t getMode() const;
 	[[nodiscard]] ExpertPvpModeResult defaultModeForClient() const;
 	[[nodiscard]] ExpertPvpModeResult modeFromClientByte(uint8_t rawMode) const;
 	[[nodiscard]] ExpertPvpModeResult normalizeMode(PvpMode_t requestedMode, ExpertPvpModeSource source = ExpertPvpModeSource::StoredPlayerState) const;
+	ExpertPvpModeResult setMode(PvpMode_t requestedMode, ExpertPvpModeSource source = ExpertPvpModeSource::StoredPlayerState);
 
 private:
 	Player &m_player;
+	PvpMode_t m_mode = PVP_MODE_DOVE;
 };

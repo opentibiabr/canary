@@ -26,6 +26,7 @@
 #include "creatures/players/components/player_forge_history.hpp"
 #include "creatures/players/components/player_storage.hpp"
 #include "creatures/players/components/player_title.hpp"
+#include "creatures/players/components/pvp/player_pvp.hpp"
 #include "creatures/players/components/wheel/player_wheel.hpp"
 #include "creatures/players/components/player_vip.hpp"
 #include "creatures/players/components/wheel/wheel_gems.hpp"
@@ -743,6 +744,8 @@ public:
 	void setChaseMode(bool mode);
 	void setFightMode(FightMode_t mode);
 	void setSecureMode(bool mode);
+	void setPvpMode(PvpMode_t mode);
+	[[nodiscard]] PvpMode_t getPvpMode() const;
 
 	Faction_t getFaction() const override;
 
@@ -1929,6 +1932,7 @@ private:
 	friend class PlayerForgeHistory;
 
 	PlayerWheel m_wheelPlayer;
+	PlayerPvp m_pvpPlayer;
 	PlayerAchievement m_playerAchievement;
 	PlayerBadge m_playerBadge;
 	PlayerCyclopedia m_playerCyclopedia;

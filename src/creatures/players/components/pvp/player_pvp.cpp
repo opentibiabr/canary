@@ -18,6 +18,10 @@ bool PlayerPvp::isExpertPvpEnabled() const {
 	return ExpertPvp::isEnabled();
 }
 
+PvpMode_t PlayerPvp::getMode() const {
+	return m_mode;
+}
+
 ExpertPvpModeResult PlayerPvp::defaultModeForClient() const {
 	return ExpertPvp::defaultModeForClient();
 }
@@ -28,4 +32,10 @@ ExpertPvpModeResult PlayerPvp::modeFromClientByte(uint8_t rawMode) const {
 
 ExpertPvpModeResult PlayerPvp::normalizeMode(PvpMode_t requestedMode, ExpertPvpModeSource source) const {
 	return ExpertPvp::normalizeMode(requestedMode, source);
+}
+
+ExpertPvpModeResult PlayerPvp::setMode(PvpMode_t requestedMode, ExpertPvpModeSource source) {
+	auto result = normalizeMode(requestedMode, source);
+	m_mode = result.mode;
+	return result;
 }

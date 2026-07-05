@@ -13,8 +13,16 @@
 #include "creatures/creature.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "creatures/players/player.hpp"
+#include "items/item.hpp"
 
 namespace {
+	constexpr auto expertFieldOwnerGuidAttribute = "expertPvpOwnerGuid";
+	constexpr auto expertFieldOwnerModeAttribute = "expertPvpOwnerMode";
+	constexpr auto expertFieldCanonicalItemIdAttribute = "expertPvpCanonicalItemId";
+	constexpr auto expertFieldSafeVisualItemIdAttribute = "expertPvpSafeVisualItemId";
+	constexpr auto expertFieldBlockingVisualItemIdAttribute = "expertPvpBlockingVisualItemId";
+	constexpr auto expertFieldOwnerWasPlayerOrSummonAttribute = "expertPvpOwnerWasPlayerOrSummon";
+
 	[[nodiscard]] bool isAccessPlayer(const std::shared_ptr<Player> &player) {
 		if (!player) {
 			return false;
@@ -27,6 +35,33 @@ namespace {
 	[[nodiscard]] std::shared_ptr<Player> getMasterPlayer(const std::shared_ptr<Creature> &creature) {
 		const auto &master = creature ? creature->getMaster() : nullptr;
 		return master ? master->getPlayer() : nullptr;
+	}
+
+	[[nodiscard]] std::shared_ptr<Player> getOwnerPlayer(const std::shared_ptr<Creature> &creature) {
+		if (!creature) {
+			return nullptr;
+		}
+
+		if (const auto &player = creature->getPlayer()) {
+			return player;
+		}
+
+		return getMasterPlayer(creature);
+	}
+
+	[[nodiscard]] uint32_t getCustomAttributeU32(const std::shared_ptr<Item> &item, const char* attributeName, uint32_t fallback = 0) {
+		const auto* attribute = item ? item->getCustomAttribute(attributeName) : nullptr;
+		return attribute ? attribute->getAttribute<uint32_t>() : fallback;
+	}
+
+	[[nodiscard]] uint16_t getCustomAttributeU16(const std::shared_ptr<Item> &item, const char* attributeName, uint16_t fallback = 0) {
+		const auto* attribute = item ? item->getCustomAttribute(attributeName) : nullptr;
+		return attribute ? attribute->getAttribute<uint16_t>() : fallback;
+	}
+
+	[[nodiscard]] bool getCustomAttributeBool(const std::shared_ptr<Item> &item, const char* attributeName, bool fallback = false) {
+		const auto* attribute = item ? item->getCustomAttribute(attributeName) : nullptr;
+		return attribute ? attribute->getAttribute<bool>() : fallback;
 	}
 
 	[[nodiscard]] bool isSkulledClientTarget(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
@@ -390,4 +425,81 @@ ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContex
 	decision.relation = relation.relation;
 	decision.reason = fieldContext ? disabledOrPendingReason() : ExpertPvpDecisionReason::MissingFieldContext;
 	return decision;
+}
+
+bool ExpertPvp::isExpertFieldItem(uint16_t itemId) {
+	switch (itemId) {
+		case ITEM_MAGICWALL:
+		case ITEM_MAGICWALL_PERSISTENT:
+		case ITEM_MAGICWALL_SAFE:
+		case ITEM_WILDGROWTH:
+		case ITEM_WILDGROWTH_PERSISTENT:
+		case ITEM_WILDGROWTH_SAFE:
+			return true;
+		default:
+			return false;
+	}
+}
+
+ExpertFieldContext ExpertPvp::makeFieldContext(uint32_t ownerGuid, PvpMode_t ownerMode, uint16_t itemId, bool ownerWasPlayerOrSummon) {
+	ExpertFieldContext context;
+	context.ownerGuid = ownerGuid;
+	context.ownerModeSource = ExpertPvpModeSource::CastTimeFieldContext;
+	context.ownerMode = normalizeMode(ownerMode, ExpertPvpModeSource::CastTimeFieldContext).mode;
+	context.ownerWasPlayerOrSummon = ownerWasPlayerOrSummon;
+
+	switch (itemId) {
+		case ITEM_MAGICWALL:
+		case ITEM_MAGICWALL_PERSISTENT:
+		case ITEM_MAGICWALL_SAFE:
+			context.canonicalItemId = ITEM_MAGICWALL;
+			context.safeVisualItemId = ITEM_MAGICWALL_SAFE;
+			context.blockingVisualItemId = ITEM_MAGICWALL;
+			break;
+		case ITEM_WILDGROWTH:
+		case ITEM_WILDGROWTH_PERSISTENT:
+		case ITEM_WILDGROWTH_SAFE:
+			context.canonicalItemId = ITEM_WILDGROWTH;
+			context.safeVisualItemId = ITEM_WILDGROWTH_SAFE;
+			context.blockingVisualItemId = ITEM_WILDGROWTH;
+			break;
+		default:
+			break;
+	}
+
+	return context;
+}
+
+ExpertFieldContext ExpertPvp::getFieldContext(const std::shared_ptr<Item> &item) {
+	if (!item || !isExpertFieldItem(item->getID())) {
+		return {};
+	}
+
+	const auto ownerGuid = getCustomAttributeU32(item, expertFieldOwnerGuidAttribute, item->getOwnerId());
+	const auto ownerMode = static_cast<PvpMode_t>(getCustomAttributeU32(item, expertFieldOwnerModeAttribute, PVP_MODE_DOVE));
+	auto context = makeFieldContext(ownerGuid, ownerMode, item->getID(), getCustomAttributeBool(item, expertFieldOwnerWasPlayerOrSummonAttribute, ownerGuid != 0));
+	context.canonicalItemId = getCustomAttributeU16(item, expertFieldCanonicalItemIdAttribute, context.canonicalItemId);
+	context.safeVisualItemId = getCustomAttributeU16(item, expertFieldSafeVisualItemIdAttribute, context.safeVisualItemId);
+	context.blockingVisualItemId = getCustomAttributeU16(item, expertFieldBlockingVisualItemIdAttribute, context.blockingVisualItemId);
+	return context;
+}
+
+ExpertFieldContext ExpertPvp::attachFieldContext(const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &owner) {
+	if (!item || !isExpertFieldItem(item->getID())) {
+		return {};
+	}
+
+	const auto ownerPlayer = getOwnerPlayer(owner);
+	if (!ownerPlayer) {
+		return {};
+	}
+
+	auto context = makeFieldContext(ownerPlayer->getGUID(), ownerPlayer->getPvpMode(), item->getID(), true);
+	item->setCustomAttribute(expertFieldOwnerGuidAttribute, static_cast<int64_t>(context.ownerGuid));
+	item->setCustomAttribute(expertFieldOwnerModeAttribute, static_cast<int64_t>(context.ownerMode));
+	item->setCustomAttribute(expertFieldCanonicalItemIdAttribute, static_cast<int64_t>(context.canonicalItemId));
+	item->setCustomAttribute(expertFieldSafeVisualItemIdAttribute, static_cast<int64_t>(context.safeVisualItemId));
+	item->setCustomAttribute(expertFieldBlockingVisualItemIdAttribute, static_cast<int64_t>(context.blockingVisualItemId));
+	item->setCustomAttribute(expertFieldOwnerWasPlayerOrSummonAttribute, context.ownerWasPlayerOrSummon);
+	return context;
 }

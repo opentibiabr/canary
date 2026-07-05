@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/components/pvp/expert_pvp.hpp"
+#include "utils/utils_definitions.hpp"
 
 #include <gtest/gtest.h>
 
@@ -205,4 +206,31 @@ TEST(ExpertPvpWalkthroughDecisionTest, ActiveCombatBlocksWalkthrough) {
 	EXPECT_FALSE(decision.canWalkThrough);
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}
+
+TEST(ExpertPvpFieldContextTest, BuildsMagicWallVisualIds) {
+	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_MAGICWALL_SAFE, true);
+
+	EXPECT_EQ(100, context.ownerGuid);
+	EXPECT_EQ(PVP_MODE_RED_FIST, context.ownerMode);
+	EXPECT_EQ(ITEM_MAGICWALL, context.canonicalItemId);
+	EXPECT_EQ(ITEM_MAGICWALL_SAFE, context.safeVisualItemId);
+	EXPECT_EQ(ITEM_MAGICWALL, context.blockingVisualItemId);
+	EXPECT_TRUE(context.ownerWasPlayerOrSummon);
+}
+
+TEST(ExpertPvpFieldContextTest, BuildsWildGrowthVisualIds) {
+	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_WHITE_HAND, ITEM_WILDGROWTH_PERSISTENT, true);
+
+	EXPECT_EQ(PVP_MODE_WHITE_HAND, context.ownerMode);
+	EXPECT_EQ(ITEM_WILDGROWTH, context.canonicalItemId);
+	EXPECT_EQ(ITEM_WILDGROWTH_SAFE, context.safeVisualItemId);
+	EXPECT_EQ(ITEM_WILDGROWTH, context.blockingVisualItemId);
+}
+
+TEST(ExpertPvpFieldContextTest, IgnoresUnsupportedFieldItems) {
+	EXPECT_FALSE(ExpertPvp::isExpertFieldItem(ITEM_FIREFIELD_PVP_FULL));
+
+	const auto context = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_FIREFIELD_PVP_FULL, true);
+	EXPECT_FALSE(context);
 }

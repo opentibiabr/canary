@@ -38,6 +38,39 @@ namespace {
 		return skull != SKULL_NONE && skull != SKULL_GREEN;
 	}
 
+	[[nodiscard]] bool isAlwaysAllowedRelation(ExpertPvpRelation relation) {
+		switch (relation) {
+			case ExpertPvpRelation::Self:
+			case ExpertPvpRelation::AccessPlayer:
+			case ExpertPvpRelation::Monster:
+			case ExpertPvpRelation::Npc:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	[[nodiscard]] ExpertPvpDecisionReason reasonForAllowedRelation(ExpertPvpRelation relation) {
+		switch (relation) {
+			case ExpertPvpRelation::Self:
+				return ExpertPvpDecisionReason::Self;
+			case ExpertPvpRelation::AccessPlayer:
+				return ExpertPvpDecisionReason::AccessPlayer;
+			case ExpertPvpRelation::Monster:
+				return ExpertPvpDecisionReason::Monster;
+			case ExpertPvpRelation::Npc:
+				return ExpertPvpDecisionReason::Npc;
+			default:
+				return ExpertPvpDecisionReason::Neutral;
+		}
+	}
+
+	void describePvpPressure(ExpertPvpDecision &decision, const ExpertPvpRelationContext &relationContext) {
+		decision.sideEffectOwnerGuid = relationContext.actorGuid;
+		decision.startsFight = true;
+		decision.appliesPzLock = true;
+	}
+
 	ExpertPvpModeResult makeModeResult(PvpMode_t mode, ExpertPvpModeSource source) {
 		ExpertPvpModeResult result;
 		result.mode = mode;
@@ -106,16 +139,6 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 		return result;
 	}
 
-	if (context.subjectIsPlayerSummon) {
-		result.relation = ExpertPvpRelation::PlayerSummon;
-		return result;
-	}
-
-	if (context.subjectIsMonster) {
-		result.relation = ExpertPvpRelation::Monster;
-		return result;
-	}
-
 	if (context.directAttacker) {
 		result.relation = ExpertPvpRelation::DirectAttacker;
 		return result;
@@ -143,6 +166,16 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 
 	if (context.guildAlly) {
 		result.relation = ExpertPvpRelation::GuildAlly;
+		return result;
+	}
+
+	if (context.subjectIsPlayerSummon) {
+		result.relation = ExpertPvpRelation::PlayerSummon;
+		return result;
+	}
+
+	if (context.subjectIsMonster) {
+		result.relation = ExpertPvpRelation::Monster;
 		return result;
 	}
 
@@ -174,28 +207,106 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player
 	context.subjectIsMonster = subjectMonster != nullptr;
 	context.subjectIsPlayerSummon = !subjectPlayer && subject->isSummon() && subjectOwnerPlayer != nullptr;
 	context.subjectIsNpc = subject->getNpc() != nullptr;
-	context.subjectIsAccessPlayer = isAccessPlayer(subjectPlayer);
-	context.isSelf = subjectPlayer == actor;
+	context.subjectIsAccessPlayer = isAccessPlayer(subjectOwnerPlayer);
+	context.isSelf = subjectOwnerPlayer == actor;
 
-	if (subjectPlayer && subjectPlayer != actor) {
-		context.partyAlly = actor->isPartner(subjectPlayer);
-		context.guildAlly = actor->isGuildMate(subjectPlayer);
-		context.warEnemy = actor->isInWar(subjectPlayer);
-		context.directAttacker = subjectPlayer->hasAttacked(actor) || subjectPlayer->getAttackedCreature() == actor;
-		context.directTarget = actor->hasAttacked(subjectPlayer) || actor->getAttackedCreature() == subject;
-		context.skulledTarget = isSkulledClientTarget(actor, subjectPlayer);
+	if (subjectOwnerPlayer && subjectOwnerPlayer != actor) {
+		context.partyAlly = actor->isPartner(subjectOwnerPlayer);
+		context.guildAlly = actor->isGuildMate(subjectOwnerPlayer);
+		context.warEnemy = actor->isInWar(subjectOwnerPlayer);
+		context.directAttacker = subjectOwnerPlayer->hasAttacked(actor);
+		context.directTarget = actor->hasAttacked(subjectOwnerPlayer);
+		context.skulledTarget = isSkulledClientTarget(actor, subjectOwnerPlayer);
 	}
 
 	return classifyRelation(context);
 }
 
 ExpertPvpDecision ExpertPvp::evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext) {
+	if (!isEnabled()) {
+		const auto relation = classifyRelation(relationContext);
+
+		ExpertPvpDecision decision;
+		decision.actionKind = actionKind;
+		decision.relation = relation.relation;
+		decision.reason = ExpertPvpDecisionReason::FeatureDisabled;
+		return decision;
+	}
+
+	return evaluateCombatAction(relationContext.actorMode, actionKind, relationContext);
+}
+
+ExpertPvpDecision ExpertPvp::evaluateCombatAction(PvpMode_t actorMode, ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext) {
+	const auto mode = normalizeMode(actorMode, ExpertPvpModeSource::StoredPlayerState);
 	const auto relation = classifyRelation(relationContext);
 
 	ExpertPvpDecision decision;
+	decision.handled = true;
+	decision.allowed = false;
 	decision.actionKind = actionKind;
 	decision.relation = relation.relation;
-	decision.reason = disabledOrPendingReason();
+
+	if (!mode.accepted) {
+		decision.reason = ExpertPvpDecisionReason::InvalidMode;
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::Unknown) {
+		decision.reason = ExpertPvpDecisionReason::MissingPlayer;
+		return decision;
+	}
+
+	if (isAlwaysAllowedRelation(relation.relation)) {
+		decision.allowed = true;
+		decision.reason = reasonForAllowedRelation(relation.relation);
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::PartyAlly || relation.relation == ExpertPvpRelation::GuildAlly) {
+		decision.reason = ExpertPvpDecisionReason::Ally;
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::WarEnemy) {
+		decision.allowed = true;
+		decision.reason = ExpertPvpDecisionReason::War;
+		describePvpPressure(decision, relationContext);
+		decision.appliesPzLock = false;
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::DirectAttacker) {
+		decision.allowed = true;
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+		describePvpPressure(decision, relationContext);
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::DirectTarget) {
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+		if (mode.mode == PVP_MODE_YELLOW_HAND || mode.mode == PVP_MODE_RED_FIST) {
+			decision.allowed = true;
+			describePvpPressure(decision, relationContext);
+		}
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::SkulledTarget) {
+		decision.reason = ExpertPvpDecisionReason::SkulledTarget;
+		if (mode.mode == PVP_MODE_YELLOW_HAND || mode.mode == PVP_MODE_RED_FIST) {
+			decision.allowed = true;
+			describePvpPressure(decision, relationContext);
+		}
+		return decision;
+	}
+
+	decision.reason = ExpertPvpDecisionReason::Neutral;
+	if (mode.mode == PVP_MODE_RED_FIST) {
+		decision.allowed = true;
+		decision.skullAction = ExpertPvpSkullAction::White;
+		decision.countsUnjustified = true;
+		describePvpPressure(decision, relationContext);
+	}
 	return decision;
 }
 

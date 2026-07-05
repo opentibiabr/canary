@@ -66,6 +66,17 @@ TEST(ExpertPvpRelationTest, ClassifiesPlayerSummonBeforeMonster) {
 	EXPECT_EQ(ExpertPvpRelation::PlayerSummon, result.relation);
 }
 
+TEST(ExpertPvpRelationTest, ClassifiesPlayerSummonOwnerCombatBeforeSummonFallback) {
+	ExpertPvpRelationContext context;
+	context.subjectIsMonster = true;
+	context.subjectIsPlayerSummon = true;
+	context.directAttacker = true;
+
+	const auto result = ExpertPvp::classifyRelation(context);
+
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, result.relation);
+}
+
 TEST(ExpertPvpRelationTest, ClassifiesNeutralPlayerAsFallback) {
 	ExpertPvpRelationContext context;
 	context.subjectIsPlayer = true;
@@ -73,4 +84,96 @@ TEST(ExpertPvpRelationTest, ClassifiesNeutralPlayerAsFallback) {
 	const auto result = ExpertPvp::classifyRelation(context);
 
 	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, result.relation);
+}
+
+TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerCombat) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(PVP_MODE_DOVE, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.allowed);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, DoveAllowsDirectDefense) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.directAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(PVP_MODE_DOVE, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.allowed);
+	EXPECT_TRUE(decision.startsFight);
+	EXPECT_TRUE(decision.appliesPzLock);
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerSummonCombat) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsMonster = true;
+	context.subjectIsPlayerSummon = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(PVP_MODE_DOVE, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.allowed);
+	EXPECT_EQ(ExpertPvpRelation::PlayerSummon, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, YellowAllowsSkulledTargets) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.skulledTarget = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(PVP_MODE_YELLOW_HAND, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.allowed);
+	EXPECT_EQ(ExpertPvpRelation::SkulledTarget, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::SkulledTarget, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, RedAllowsNeutralPlayerWithSideEffectDescription) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(PVP_MODE_RED_FIST, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.allowed);
+	EXPECT_TRUE(decision.startsFight);
+	EXPECT_TRUE(decision.appliesPzLock);
+	EXPECT_TRUE(decision.countsUnjustified);
+	EXPECT_EQ(100, decision.sideEffectOwnerGuid);
+	EXPECT_EQ(ExpertPvpSkullAction::White, decision.skullAction);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, InvalidModeFailsClosed) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateCombatAction(static_cast<PvpMode_t>(99), ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.allowed);
+	EXPECT_EQ(ExpertPvpDecisionReason::InvalidMode, decision.reason);
 }

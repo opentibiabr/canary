@@ -34,6 +34,7 @@ public:
 	[[nodiscard]] static ExpertPvpDecision evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpDecision evaluateCombatAction(PvpMode_t actorMode, ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpWalkthroughDecision canWalkThrough(const ExpertPvpRelationContext &relationContext);
+	[[nodiscard]] static ExpertPvpWalkthroughDecision evaluateWalkthrough(const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldStepDecision evaluateFieldStep(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldDamageDecision evaluateFieldDamage(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldVisualDecision getFieldClientId(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);

@@ -24,6 +24,7 @@
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/storages/storages.hpp"
 #include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #include "enums/account_errors.hpp"
 #include "enums/account_group_type.hpp"
@@ -1424,7 +1425,20 @@ bool Player::canWalkthrough(const std::shared_ptr<Creature> &creature) {
 
 	if (player) {
 		const auto &playerTile = player->getTile();
-		if (!playerTile || (!playerTile->hasFlag(TILESTATE_NOPVPZONE) && !playerTile->hasFlag(TILESTATE_PROTECTIONZONE) && player->getLevel() > static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) && g_game().getWorldType() != WORLD_TYPE_NO_PVP)) {
+		const bool legacyWalkthroughZone = playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
+		if (!playerTile) {
+			return false;
+		}
+
+		if (!legacyWalkthroughZone && ExpertPvp::isEnabled()) {
+			const auto relation = ExpertPvp::classifyRelation(getPlayer(), creature);
+			const auto decision = ExpertPvp::canWalkThrough(relation.facts);
+			if (decision.handled) {
+				return decision.canWalkThrough;
+			}
+		}
+
+		if (!legacyWalkthroughZone) {
 			return false;
 		}
 
@@ -1472,7 +1486,17 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) const {
 	const auto &npc = creature->getNpc();
 	if (player) {
 		const auto &playerTile = player->getTile();
-		return playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
+		const bool legacyWalkthroughZone = playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
+		if (playerTile && !legacyWalkthroughZone && ExpertPvp::isEnabled()) {
+			const auto self = std::const_pointer_cast<Player>(getPlayer());
+			const auto relation = ExpertPvp::classifyRelation(self, creature);
+			const auto decision = ExpertPvp::canWalkThrough(relation.facts);
+			if (decision.handled) {
+				return decision.canWalkThrough;
+			}
+		}
+
+		return legacyWalkthroughZone;
 	} else if (npc) {
 		const auto &tile = npc->getTile();
 		const auto &houseTile = std::dynamic_pointer_cast<HouseTile>(tile);

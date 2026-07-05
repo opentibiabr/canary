@@ -177,3 +177,32 @@ TEST(ExpertPvpCombatDecisionTest, InvalidModeFailsClosed) {
 	EXPECT_FALSE(decision.allowed);
 	EXPECT_EQ(ExpertPvpDecisionReason::InvalidMode, decision.reason);
 }
+
+TEST(ExpertPvpWalkthroughDecisionTest, NeutralPlayersCanWalkThrough) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_TRUE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, ActiveCombatBlocksWalkthrough) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.directAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_FALSE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
+	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}

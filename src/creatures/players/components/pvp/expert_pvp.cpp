@@ -311,11 +311,56 @@ ExpertPvpDecision ExpertPvp::evaluateCombatAction(PvpMode_t actorMode, ExpertPvp
 }
 
 ExpertPvpWalkthroughDecision ExpertPvp::canWalkThrough(const ExpertPvpRelationContext &relationContext) {
+	if (!isEnabled()) {
+		const auto relation = classifyRelation(relationContext);
+
+		ExpertPvpWalkthroughDecision decision;
+		decision.relation = relation.relation;
+		decision.reason = ExpertPvpDecisionReason::FeatureDisabled;
+		return decision;
+	}
+
+	return evaluateWalkthrough(relationContext);
+}
+
+ExpertPvpWalkthroughDecision ExpertPvp::evaluateWalkthrough(const ExpertPvpRelationContext &relationContext) {
 	const auto relation = classifyRelation(relationContext);
 
 	ExpertPvpWalkthroughDecision decision;
+	decision.handled = true;
 	decision.relation = relation.relation;
-	decision.reason = disabledOrPendingReason();
+	decision.reason = ExpertPvpDecisionReason::Neutral;
+
+	switch (relation.relation) {
+		case ExpertPvpRelation::Self:
+		case ExpertPvpRelation::AccessPlayer:
+			decision.canWalkThrough = true;
+			decision.reason = reasonForAllowedRelation(relation.relation);
+			break;
+		case ExpertPvpRelation::NeutralPlayer:
+			decision.canWalkThrough = true;
+			decision.reason = ExpertPvpDecisionReason::Neutral;
+			break;
+		case ExpertPvpRelation::PartyAlly:
+		case ExpertPvpRelation::GuildAlly:
+			decision.canWalkThrough = true;
+			decision.reason = ExpertPvpDecisionReason::Ally;
+			break;
+		case ExpertPvpRelation::DirectAttacker:
+		case ExpertPvpRelation::DirectTarget:
+			decision.reason = ExpertPvpDecisionReason::DirectCombat;
+			break;
+		case ExpertPvpRelation::WarEnemy:
+			decision.reason = ExpertPvpDecisionReason::War;
+			break;
+		case ExpertPvpRelation::SkulledTarget:
+			decision.reason = ExpertPvpDecisionReason::SkulledTarget;
+			break;
+		default:
+			decision.reason = ExpertPvpDecisionReason::MissingPlayer;
+			break;
+	}
+
 	return decision;
 }
 

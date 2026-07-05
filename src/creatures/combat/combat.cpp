@@ -16,6 +16,7 @@
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -29,6 +30,16 @@
 #include "map/spectators.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
+
+namespace {
+	ReturnValue getExpertPvpTargetReturnValue(const ExpertPvpDecision &decision, const std::shared_ptr<Creature> &target) {
+		if (!decision.handled || decision.allowed) {
+			return RETURNVALUE_NOERROR;
+		}
+
+		return target && target->getPlayer() ? RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER : RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+	}
+}
 
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
@@ -255,8 +266,19 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 		if (isProtected(player, target->getPlayer())) {
 			return RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER;
 		}
+	}
 
-		if (player->hasSecureMode() && !Combat::isInPvpZone(player, target) && player->getSkullClient(target->getPlayer()) == SKULL_NONE) {
+	if (target && ExpertPvp::isEnabled() && isPlayerCombat(target)) {
+		const auto relation = ExpertPvp::classifyRelation(player, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::DirectAttack, relation.facts);
+		const auto ret = getExpertPvpTargetReturnValue(decision, target);
+		if (ret != RETURNVALUE_NOERROR) {
+			return ret;
+		}
+	}
+
+	if (target->getPlayer()) {
+		if (!ExpertPvp::isEnabled() && player->hasSecureMode() && !Combat::isInPvpZone(player, target) && player->getSkullClient(target->getPlayer()) == SKULL_NONE) {
 			return RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS;
 		}
 	}

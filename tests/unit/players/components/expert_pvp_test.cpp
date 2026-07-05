@@ -356,3 +356,53 @@ TEST(ExpertPvpFieldStepDecisionTest, RedFieldBlocksNeutralPlayersWithSideEffectD
 	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
 }
+
+TEST(ExpertPvpFieldVisualDecisionTest, NeutralPlayersSeeSafeWallVisual) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::getFieldClientId(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_EQ(ITEM_MAGICWALL_SAFE, decision.clientItemId);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+}
+
+TEST(ExpertPvpFieldVisualDecisionTest, OwnerSeesBlockingWallVisual) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 100;
+	context.subjectIsPlayer = true;
+	context.isSelf = true;
+
+	const auto decision = ExpertPvp::getFieldClientId(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_EQ(ITEM_MAGICWALL, decision.clientItemId);
+	EXPECT_EQ(ExpertPvpRelation::Self, decision.relation);
+}
+
+TEST(ExpertPvpFieldVisualDecisionTest, ActiveCombatPlayersSeeBlockingWallVisual) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.directAttacker = true;
+
+	const auto decision = ExpertPvp::getFieldClientId(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_EQ(ITEM_MAGICWALL, decision.clientItemId);
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
+}

@@ -524,12 +524,22 @@ ExpertPvpFieldDamageDecision ExpertPvp::evaluateFieldDamage(const ExpertFieldCon
 }
 
 ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext) {
-	const auto relation = classifyRelation(relationContext);
-
 	ExpertPvpFieldVisualDecision decision;
 	decision.clientItemId = fieldContext.canonicalItemId;
-	decision.relation = relation.relation;
-	decision.reason = fieldContext ? disabledOrPendingReason() : ExpertPvpDecisionReason::MissingFieldContext;
+	if (!fieldContext || !isMagicWallOrWildGrowthField(fieldContext)) {
+		decision.reason = ExpertPvpDecisionReason::MissingFieldContext;
+		return decision;
+	}
+
+	const auto stepDecision = evaluateFieldStep(fieldContext, relationContext);
+	decision.handled = stepDecision.handled;
+	decision.relation = stepDecision.relation;
+	decision.reason = stepDecision.reason;
+
+	if (stepDecision.handled) {
+		decision.clientItemId = stepDecision.canStep ? fieldContext.safeVisualItemId : fieldContext.blockingVisualItemId;
+	}
+
 	return decision;
 }
 

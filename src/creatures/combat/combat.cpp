@@ -32,12 +32,60 @@
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 namespace {
+	std::shared_ptr<Player> getExpertPvpActorPlayer(const std::shared_ptr<Creature> &actor) {
+		if (!actor) {
+			return nullptr;
+		}
+
+		if (const auto &player = actor->getPlayer()) {
+			return player;
+		}
+
+		const auto &master = actor->getMaster();
+		return master ? master->getPlayer() : nullptr;
+	}
+
+	ExpertPvpActionKind getExpertPvpTargetActionKind(const CombatParams &params) {
+		switch (params.origin) {
+			case ORIGIN_MELEE:
+			case ORIGIN_RANGED:
+			case ORIGIN_FIST:
+			case ORIGIN_WEAPON_PROFICIENCY:
+				return ExpertPvpActionKind::DirectAttack;
+			default:
+				return ExpertPvpActionKind::RuneTarget;
+		}
+	}
+
 	ReturnValue getExpertPvpTargetReturnValue(const ExpertPvpDecision &decision, const std::shared_ptr<Creature> &target) {
 		if (!decision.handled || decision.allowed) {
 			return RETURNVALUE_NOERROR;
 		}
 
 		return target && target->getPlayer() ? RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER : RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+	}
+
+	ReturnValue getExpertPvpCombatReturnValue(ExpertPvpActionKind actionKind, const std::shared_ptr<Creature> &actor, const std::shared_ptr<Creature> &target) {
+		if (!target || !ExpertPvp::isEnabled() || !Combat::isPlayerCombat(target)) {
+			return RETURNVALUE_NOERROR;
+		}
+
+		const auto actorPlayer = getExpertPvpActorPlayer(actor);
+		if (!actorPlayer) {
+			return RETURNVALUE_NOERROR;
+		}
+
+		const auto relation = ExpertPvp::classifyRelation(actorPlayer, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(actionKind, relation.facts);
+		return getExpertPvpTargetReturnValue(decision, target);
+	}
+
+	bool canDoCombatWithExpertPvp(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive, ExpertPvpActionKind actionKind) {
+		if (Combat::canDoCombat(caster, target, aggressive) != RETURNVALUE_NOERROR) {
+			return false;
+		}
+
+		return getExpertPvpCombatReturnValue(actionKind, caster, target) == RETURNVALUE_NOERROR;
 	}
 }
 
@@ -268,13 +316,9 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 		}
 	}
 
-	if (target && ExpertPvp::isEnabled() && isPlayerCombat(target)) {
-		const auto relation = ExpertPvp::classifyRelation(player, target);
-		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::DirectAttack, relation.facts);
-		const auto ret = getExpertPvpTargetReturnValue(decision, target);
-		if (ret != RETURNVALUE_NOERROR) {
-			return ret;
-		}
+	const auto expertPvpRet = getExpertPvpCombatReturnValue(ExpertPvpActionKind::DirectAttack, player, target);
+	if (expertPvpRet != RETURNVALUE_NOERROR) {
+		return expertPvpRet;
 	}
 
 	if (target->getPlayer()) {
@@ -1454,7 +1498,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 					}
 				}
 
-				if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
+				if (!params.aggressive || (caster != creature && canDoCombatWithExpertPvp(caster, creature, params.aggressive, ExpertPvpActionKind::AreaSpell))) {
 					affectedTargets.push_back(creature);
 				}
 			}
@@ -1502,7 +1546,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 					}
 				}
 
-				if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
+				if (!params.aggressive || (caster != creature && canDoCombatWithExpertPvp(caster, creature, params.aggressive, ExpertPvpActionKind::AreaSpell))) {
 					// Wheel of destiny update beam mastery damage
 					if (casterPlayer) {
 						casterPlayer->wheel().updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
@@ -1539,7 +1583,7 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 }
 
 void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
-	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
+	bool canCombat = !params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)));
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
@@ -1608,7 +1652,7 @@ void Combat::doCombatMana(const std::shared_ptr<Creature> &caster, const std::sh
 }
 
 void Combat::doCombatMana(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, CombatDamage &damage, const CombatParams &params) {
-	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
+	bool canCombat = !params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)));
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
@@ -1648,7 +1692,7 @@ void Combat::doCombatCondition(const std::shared_ptr<Creature> &caster, const Po
 }
 
 void Combat::doCombatCondition(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params) {
-	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
+	bool canCombat = !params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)));
 	if ((caster == target || canCombat) && params.impactEffect != CONST_ME_NONE) {
 		Combat::sendCombatEffect(caster, target->getPosition(), params.impactEffect);
 	}
@@ -1677,7 +1721,7 @@ void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const Posit
 }
 
 void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params) {
-	bool canCombat = !params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR);
+	bool canCombat = !params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)));
 	if ((caster && target)
 	    && (caster == target || canCombat)
 	    && (params.impactEffect != CONST_ME_NONE)) {
@@ -1707,7 +1751,7 @@ void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const std::
 }
 
 void Combat::doCombatDefault(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, const CombatParams &params) {
-	if (!params.aggressive || (caster != target && Combat::canDoCombat(caster, target, params.aggressive) == RETURNVALUE_NOERROR)) {
+	if (!params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)))) {
 		auto spectators = Spectators().find<Player>(target->getPosition(), true);
 
 		CombatNullFunc(caster, target, params, nullptr);

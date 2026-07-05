@@ -8151,7 +8151,8 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 	}
 
 	if (version >= 1058) {
-		msg.addByte(0x00); // expert mode button enabled
+		const bool expertModeButtonEnabled = ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte);
+		msg.addByte(expertModeButtonEnabled ? 0x00 : 0x01); // 0x00 enables, 0x01 disables expert mode button
 	}
 
 	if (version >= 1080) {

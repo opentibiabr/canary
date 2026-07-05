@@ -1,3 +1,42 @@
+local function getExpertPvpFieldOwner(creature)
+	if not creature then
+		return nil
+	end
+
+	if creature.getPvpMode then
+		return creature
+	end
+
+	if not creature.getMaster then
+		return nil
+	end
+
+	local master = creature:getMaster()
+	if master and master.getPvpMode then
+		return master
+	end
+
+	return nil
+end
+
+local function attachExpertPvpFieldContext(item, creature)
+	if not item or not configManager.getBoolean(configKeys.EXPERT_PVP_ENABLED) then
+		return
+	end
+
+	local owner = getExpertPvpFieldOwner(creature)
+	if not owner then
+		return
+	end
+
+	item:setCustomAttribute("expertPvpOwnerGuid", owner:getGuid())
+	item:setCustomAttribute("expertPvpOwnerMode", owner:getPvpMode() or 0)
+	item:setCustomAttribute("expertPvpCanonicalItemId", ITEM_WILDGROWTH)
+	item:setCustomAttribute("expertPvpSafeVisualItemId", ITEM_WILDGROWTH_SAFE)
+	item:setCustomAttribute("expertPvpBlockingVisualItemId", ITEM_WILDGROWTH)
+	item:setCustomAttribute("expertPvpOwnerWasPlayerOrSummon", true)
+end
+
 function onCreateWildGrowth(creature, position)
 	local tile = Tile(position)
 	if not tile then
@@ -21,6 +60,7 @@ function onCreateWildGrowth(creature, position)
 
 	local item = Game.createItem(wildGrowth, 1, position)
 	if item then
+		attachExpertPvpFieldContext(item, creature)
 		item:setDuration(30)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
 	end

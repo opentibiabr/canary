@@ -67,6 +67,16 @@ namespace {
 		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::RuneTarget, relation.facts);
 		return decision.handled && decision.allowed;
 	}
+
+	bool shouldApplyLegacySpellPzLock(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target, ExpertPvpActionKind actionKind) {
+		if (!player || !target || !ExpertPvp::isEnabled() || !Combat::isPlayerCombat(target)) {
+			return true;
+		}
+
+		const auto relation = ExpertPvp::classifyRelation(player, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(actionKind, relation.facts);
+		return !decision.handled || decision.appliesPzLock;
+	}
 }
 
 Spells::Spells() = default;
@@ -1165,6 +1175,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	LuaVariant var;
 	var.instantName = getName();
 	std::shared_ptr<Player> playerTarget = nullptr;
+	std::shared_ptr<Creature> pzLockTarget = nullptr;
 
 	if (selfTarget) {
 		var.type = VARIANT_NUMBER;
@@ -1218,6 +1229,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
+			pzLockTarget = target;
 		} else {
 			var.type = VARIANT_POSITION;
 			var.pos = Spells::getCasterPosition(player, player->getDirection());
@@ -1266,7 +1278,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	}
 
 	auto worldType = g_game().getWorldType();
-	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED) && shouldApplyLegacySpellPzLock(player, pzLockTarget, ExpertPvpActionKind::AreaSpell)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();
 	}
@@ -1497,6 +1509,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	LuaVariant var;
 	var.runeName = getName();
+	std::shared_ptr<Creature> pzLockTarget = nullptr;
 
 	if (needTarget) {
 		var.type = VARIANT_NUMBER;
@@ -1507,10 +1520,13 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 				const auto &visibleCreature = toTile->getBottomVisibleCreature(player);
 				if (visibleCreature) {
 					var.number = visibleCreature->getID();
+					pzLockTarget = visibleCreature;
 				}
 			}
 		} else {
-			var.number = target->getCreature()->getID();
+			const auto &targetCreature = target->getCreature();
+			var.number = targetCreature->getID();
+			pzLockTarget = targetCreature;
 		}
 	} else {
 		var.type = VARIANT_POSITION;
@@ -1529,7 +1545,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	}
 
 	auto worldType = g_game().getWorldType();
-	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED) && shouldApplyLegacySpellPzLock(player, pzLockTarget, ExpertPvpActionKind::RuneTarget)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();
 	}

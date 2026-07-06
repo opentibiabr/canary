@@ -6413,7 +6413,38 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	const auto &targetPlayer = target->getPlayer();
 	const auto &targetMaster = target->getMaster();
 	const auto targetSummonOwnerPlayer = (!targetPlayer && target->isSummon() && targetMaster) ? targetMaster->getPlayer() : nullptr;
-	if (targetPlayer && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
+	const auto self = static_self_cast<Player>();
+	const auto applyExpertPvpAttackSideEffects = [this, &self](const std::shared_ptr<Player> &subjectPlayer, const std::shared_ptr<Creature> &subjectCreature) {
+		if (!subjectPlayer || !subjectCreature || !ExpertPvp::isEnabled()) {
+			return false;
+		}
+
+		const auto relation = ExpertPvp::classifyRelation(self, subjectCreature);
+		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::DirectAttack, relation.facts);
+		if (!decision.handled) {
+			return false;
+		}
+
+		if (decision.allowed) {
+			if (decision.startsFight && !Combat::isInPvpZone(self, subjectPlayer) && !isInWar(subjectPlayer)) {
+				addAttacked(subjectPlayer);
+			}
+
+			if (decision.appliesPzLock && !pzLocked) {
+				pzLocked = true;
+				sendIcons();
+			}
+
+			if (decision.skullAction == ExpertPvpSkullAction::White && subjectPlayer->getSkull() == SKULL_NONE && getSkull() == SKULL_NONE && !subjectPlayer->hasKilled(self)) {
+				setSkull(SKULL_WHITE);
+			}
+		}
+
+		return true;
+	};
+
+	const bool handledExpertPvpTarget = targetPlayer && applyExpertPvpAttackSideEffects(targetPlayer, target);
+	if (targetPlayer && !handledExpertPvpTarget && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
 		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 			pzLocked = true;
 			sendIcons();
@@ -6440,24 +6471,8 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 				}
 			}
 		}
-	} else if (targetSummonOwnerPlayer && ExpertPvp::isEnabled() && !isPartner(targetSummonOwnerPlayer) && !isGuildMate(targetSummonOwnerPlayer)) {
-		const auto self = static_self_cast<Player>();
-		const auto relation = ExpertPvp::classifyRelation(self, target);
-		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::DirectAttack, relation.facts);
-		if (decision.handled && decision.allowed) {
-			if (decision.startsFight && !Combat::isInPvpZone(self, targetSummonOwnerPlayer) && !isInWar(targetSummonOwnerPlayer)) {
-				addAttacked(targetSummonOwnerPlayer);
-			}
-
-			if (decision.appliesPzLock && !pzLocked) {
-				pzLocked = true;
-				sendIcons();
-			}
-
-			if (decision.skullAction == ExpertPvpSkullAction::White && targetSummonOwnerPlayer->getSkull() == SKULL_NONE && getSkull() == SKULL_NONE && !targetSummonOwnerPlayer->hasKilled(self)) {
-				setSkull(SKULL_WHITE);
-			}
-		}
+	} else if (targetSummonOwnerPlayer) {
+		applyExpertPvpAttackSideEffects(targetSummonOwnerPlayer, target);
 	}
 
 	addInFightTicks();

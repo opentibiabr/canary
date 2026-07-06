@@ -15,7 +15,9 @@
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
+#include "map/spectators.hpp"
 #include "utils/tools.hpp"
+#include "utils/utils_definitions.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
@@ -132,6 +134,76 @@ namespace {
 		return std::find(guids.begin(), guids.end(), guid) != guids.end();
 	}
 
+	[[nodiscard]] bool hasPvpSituationBetween(const std::shared_ptr<Player> &left, const std::shared_ptr<Player> &right) {
+		return left && right && left != right && (left->hasAttacked(right) || right->hasAttacked(left));
+	}
+
+	[[nodiscard]] bool isViewerAlly(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &player) {
+		return viewer && player && viewer != player && (viewer->isPartner(player) || viewer->isGuildMate(player));
+	}
+
+	[[nodiscard]] bool hasAllyInSituationWithSubject(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject) {
+		if (!viewer || !subject) {
+			return false;
+		}
+
+		for (const auto &playerEntry : g_game().getPlayers()) {
+			const auto &player = playerEntry.second;
+			if (!player || !isViewerAlly(viewer, player)) {
+				continue;
+			}
+
+			if (hasPvpSituationBetween(subject, player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	[[nodiscard]] bool hasAnyPvpSituation(const std::shared_ptr<Player> &subject) {
+		if (!subject) {
+			return false;
+		}
+
+		for (const auto &playerEntry : g_game().getPlayers()) {
+			const auto &player = playerEntry.second;
+			if (!player || player == subject) {
+				continue;
+			}
+
+			if (hasPvpSituationBetween(subject, player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	[[nodiscard]] CreatureMark_t toCreatureMark(ExpertPvpSituationMark mark) {
+		switch (mark) {
+			case ExpertPvpSituationMark::Yellow:
+				return CREATURE_MARK_YELLOW;
+			case ExpertPvpSituationMark::Orange:
+				return CREATURE_MARK_ORANGE;
+			case ExpertPvpSituationMark::Brown:
+				return CREATURE_MARK_BROWN;
+			default:
+				return CREATURE_MARK_UNMARKED;
+		}
+	}
+
+	void addVisiblePlayers(std::vector<std::shared_ptr<Player>> &players, const std::shared_ptr<Player> &center) {
+		if (!center) {
+			return;
+		}
+
+		for (const auto &spectator : Spectators().find<Player>(center->getPosition(), true)) {
+			const auto &spectatorPlayer = spectator ? spectator->getPlayer() : nullptr;
+			if (spectatorPlayer && std::find(players.begin(), players.end(), spectatorPlayer) == players.end()) {
+				players.emplace_back(spectatorPlayer);
+			}
+		}
+	}
+
 	void snapshotFieldRelationsAtCast(ExpertFieldContext &context, const std::shared_ptr<Player> &ownerPlayer) {
 		if (!ownerPlayer) {
 			return;
@@ -235,6 +307,7 @@ namespace {
 			return;
 		}
 
+		const bool ownerAlreadyAttacked = owner->hasAttacked(subject);
 		if (!owner->isInWar(subject)) {
 			owner->addAttacked(subject);
 		}
@@ -249,6 +322,9 @@ namespace {
 
 		owner->sendOpenPvpSituations();
 		subject->sendCreatureSkull(owner);
+		if (!ownerAlreadyAttacked || skullAction != ExpertPvpSkullAction::None) {
+			ExpertPvp::refreshVisibleSituationMarks(owner, subject);
+		}
 	}
 
 	[[nodiscard]] bool isMagicWallOrWildGrowthField(const ExpertFieldContext &fieldContext) {
@@ -696,6 +772,71 @@ ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContex
 	}
 
 	return decision;
+}
+
+ExpertPvpSituationMark ExpertPvp::getSituationMark(const std::shared_ptr<Player> &subject, const std::shared_ptr<Player> &viewer) {
+	if (!isEnabled() || !subject || !viewer || subject == viewer) {
+		return ExpertPvpSituationMark::None;
+	}
+
+	if (hasPvpSituationBetween(subject, viewer)) {
+		return ExpertPvpSituationMark::Yellow;
+	}
+
+	if (hasAllyInSituationWithSubject(viewer, subject)) {
+		return ExpertPvpSituationMark::Orange;
+	}
+
+	if (hasAnyPvpSituation(subject)) {
+		return ExpertPvpSituationMark::Brown;
+	}
+
+	return ExpertPvpSituationMark::None;
+}
+
+CreatureMark_t ExpertPvp::getSituationCreatureMark(const std::shared_ptr<Player> &subject, const std::shared_ptr<Player> &viewer) {
+	return toCreatureMark(getSituationMark(subject, viewer));
+}
+
+void ExpertPvp::refreshCreatureMarkForViewer(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject) {
+	if (!viewer || !subject) {
+		return;
+	}
+
+	viewer->sendCreatureMark(subject, getSituationCreatureMark(subject, viewer));
+}
+
+void ExpertPvp::refreshVisibleSituationMarks(const std::shared_ptr<Player> &first, const std::shared_ptr<Player> &second) {
+	if (!isEnabled()) {
+		return;
+	}
+
+	std::vector<std::shared_ptr<Player>> viewers;
+	addVisiblePlayers(viewers, first);
+	addVisiblePlayers(viewers, second);
+
+	for (const auto &viewer : viewers) {
+		refreshCreatureMarkForViewer(viewer, first);
+		refreshCreatureMarkForViewer(viewer, second);
+	}
+}
+
+void ExpertPvp::refreshAllVisibleSituationMarks() {
+	if (!isEnabled()) {
+		return;
+	}
+
+	for (const auto &viewerEntry : g_game().getPlayers()) {
+		const auto &viewer = viewerEntry.second;
+		if (!viewer) {
+			continue;
+		}
+
+		for (const auto &subjectEntry : g_game().getPlayers()) {
+			const auto &subject = subjectEntry.second;
+			refreshCreatureMarkForViewer(viewer, subject);
+		}
+	}
 }
 
 void ExpertPvp::applyCombatSideEffects(const ExpertPvpDecision &decision, const ExpertPvpRelationContext &relationContext) {

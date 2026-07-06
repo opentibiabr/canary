@@ -1021,7 +1021,12 @@ bool Player::hasSecureMode() const {
 }
 
 void Player::setParty(std::shared_ptr<Party> newParty) {
+	if (m_party == newParty) {
+		return;
+	}
+
 	m_party = std::move(newParty);
+	ExpertPvp::refreshAllVisibleSituationMarks();
 }
 
 std::shared_ptr<Party> Player::getParty() const {
@@ -6427,7 +6432,11 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 
 		if (decision.allowed) {
 			if (decision.startsFight && !Combat::isInPvpZone(self, subjectPlayer) && !isInWar(subjectPlayer)) {
+				const bool alreadyAttacked = hasAttacked(subjectPlayer);
 				addAttacked(subjectPlayer);
+				if (!alreadyAttacked) {
+					ExpertPvp::refreshVisibleSituationMarks(self, subjectPlayer);
+				}
 			}
 
 			if (decision.appliesPzLock && !pzLocked) {
@@ -6563,7 +6572,7 @@ bool Player::onKilledPlayer(const std::shared_ptr<Player> &target, bool lastHit)
 				for (auto &kill : target->unjustifiedKills) {
 					if (kill.target == getGUID() && kill.unavenged) {
 						kill.unavenged = false;
-						attackedSet.erase(target->guid);
+						removeAttacked(target);
 						break;
 					}
 				}
@@ -7184,11 +7193,17 @@ void Player::removeAttacked(const std::shared_ptr<Player> &attacked) {
 		return;
 	}
 
-	attackedSet.erase(attacked->guid);
+	if (attackedSet.erase(attacked->guid) > 0 && ExpertPvp::isEnabled()) {
+		ExpertPvp::refreshVisibleSituationMarks(static_self_cast<Player>(), attacked);
+	}
 }
 
 void Player::clearAttacked() {
+	const bool shouldRefreshExpertMarks = ExpertPvp::isEnabled() && !attackedSet.empty();
 	attackedSet.clear();
+	if (shouldRefreshExpertMarks) {
+		ExpertPvp::refreshAllVisibleSituationMarks();
+	}
 }
 
 void Player::addUnjustifiedDead(const std::shared_ptr<Player> &attacked) {
@@ -8783,6 +8798,12 @@ void Player::sendCreatureSquare(const std::shared_ptr<Creature> &creature, Squar
 	}
 }
 
+void Player::sendCreatureMark(const std::shared_ptr<Creature> &creature, CreatureMark_t mark) const {
+	if (client) {
+		client->sendCreatureMark(creature, mark);
+	}
+}
+
 void Player::sendCreatureChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) const {
 	if (client) {
 		client->sendCreatureOutfit(creature, outfit);
@@ -9185,6 +9206,7 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 		return;
 	}
 
+	const auto oldGuild = guild;
 	if (guild) {
 		guild->removeMember(static_self_cast<Player>());
 		guild = nullptr;
@@ -9196,12 +9218,19 @@ void Player::setGuild(const std::shared_ptr<Guild> &newGuild) {
 	if (newGuild) {
 		const auto &rank = newGuild->getRankByLevel(1);
 		if (!rank) {
+			if (oldGuild != guild) {
+				ExpertPvp::refreshAllVisibleSituationMarks();
+			}
 			return;
 		}
 
 		guild = newGuild;
 		guildRank = rank;
 		newGuild->addMember(static_self_cast<Player>());
+	}
+
+	if (oldGuild != guild) {
+		ExpertPvp::refreshAllVisibleSituationMarks();
 	}
 }
 

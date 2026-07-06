@@ -11331,6 +11331,7 @@ void Game::removePlayer(const std::shared_ptr<Player> &player) {
 	mappedPlayerNames.erase(lowercase_name);
 	wildcardTree->remove(lowercase_name);
 	players.erase(player->getID());
+	ExpertPvp::refreshAllVisibleSituationMarks();
 }
 
 void Game::addNpc(const std::shared_ptr<Npc> &npc) {

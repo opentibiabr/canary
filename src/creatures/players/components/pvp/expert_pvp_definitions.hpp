@@ -76,6 +76,13 @@ enum class ExpertPvpSkullAction : uint8_t {
 	Red,
 };
 
+enum class ExpertPvpSituationMark : uint8_t {
+	None = 0,
+	Yellow,
+	Orange,
+	Brown,
+};
+
 struct ExpertPvpModeResult {
 	PvpMode_t mode = PVP_MODE_DOVE;
 	ExpertPvpModeSource source = ExpertPvpModeSource::DefaultForClient;

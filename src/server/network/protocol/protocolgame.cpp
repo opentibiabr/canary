@@ -76,6 +76,8 @@
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
 	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+	constexpr uint8_t CREATURE_MARK_TIMED_SQUARE_TYPE = 0x01;
+	constexpr uint8_t CREATURE_MARK_PERSISTENT_SQUARE_TYPE = 0x02;
 
 	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
 		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
@@ -406,6 +408,10 @@ namespace {
 
 	[[nodiscard]] bool isTibia1100Profile(const ProtocolProfile* profile) {
 		return profile && profile->id == ProtocolProfileId::Tibia1100;
+	}
+
+	[[nodiscard]] bool isCurrentProtocolProfile(const ProtocolProfile* profile) {
+		return profile && profile->id == ProtocolProfileId::Current;
 	}
 
 	[[nodiscard]] bool hasProtocolFeature(const ProtocolProfile* profile, ProtocolFeature feature) {
@@ -4253,9 +4259,22 @@ void ProtocolGame::sendCreatureSquare(const std::shared_ptr<Creature> &creature,
 	} else {
 		msg.addByte(0x93);
 		msg.add<uint32_t>(creature->getID());
-		msg.addByte(0x01);
+		msg.addByte(CREATURE_MARK_TIMED_SQUARE_TYPE);
 		msg.addByte(color);
 	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCreatureMark(const std::shared_ptr<Creature> &creature, CreatureMark_t mark) {
+	if (!canSee(creature) || !isCurrentProtocolProfile(protocolProfile)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x93);
+	msg.add<uint32_t>(creature->getID());
+	msg.addByte(CREATURE_MARK_PERSISTENT_SQUARE_TYPE);
+	msg.addByte(mark);
 	writeToOutputBuffer(msg);
 }
 
@@ -9241,7 +9260,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 
 	auto bubble = creature->getSpeechBubble();
 	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? static_cast<uint8_t>(SPEECHBUBBLE_NONE) : bubble);
-	msg.addByte(0xFF); // MARK_UNMARKED
+	msg.addByte(ExpertPvp::getSituationCreatureMark(otherPlayer, player));
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type
 	} else if (otherPlayer) {

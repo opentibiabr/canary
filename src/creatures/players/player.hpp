@@ -90,6 +90,7 @@ enum PreySlot_t : uint8_t;
 enum SpeakClasses : uint8_t;
 enum ChannelEvent_t : uint8_t;
 enum SquareColor_t : uint8_t;
+enum CreatureMark_t : uint8_t;
 enum Resource_t : uint8_t;
 
 using GuildWarVector = std::vector<uint32_t>;
@@ -963,6 +964,7 @@ public:
 	void sendCreatureReload(const std::shared_ptr<Creature> &creature) const;
 	void sendPrivateMessage(const std::shared_ptr<Player> &speaker, SpeakClasses type, const std::string &text) const;
 	void sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color) const;
+	void sendCreatureMark(const std::shared_ptr<Creature> &creature, CreatureMark_t mark) const;
 	void sendCreatureChangeOutfit(const std::shared_ptr<Creature> &creature, const Outfit_t &outfit) const;
 	void sendCreatureChangeVisible(const std::shared_ptr<Creature> &creature, bool visible);
 	void sendCreatureLight(const std::shared_ptr<Creature> &creature) const;

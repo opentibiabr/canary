@@ -19,6 +19,7 @@
 class Creature;
 class Item;
 class Player;
+enum CreatureMark_t : uint8_t;
 
 class ExpertPvp {
 public:
@@ -45,6 +46,11 @@ public:
 	[[nodiscard]] static ExpertPvpFieldStepDecision evaluateFieldStep(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldDamageDecision evaluateFieldDamage(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldVisualDecision getFieldClientId(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
+	[[nodiscard]] static ExpertPvpSituationMark getSituationMark(const std::shared_ptr<Player> &subject, const std::shared_ptr<Player> &viewer);
+	[[nodiscard]] static CreatureMark_t getSituationCreatureMark(const std::shared_ptr<Player> &subject, const std::shared_ptr<Player> &viewer);
+	static void refreshCreatureMarkForViewer(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject);
+	static void refreshVisibleSituationMarks(const std::shared_ptr<Player> &first, const std::shared_ptr<Player> &second);
+	static void refreshAllVisibleSituationMarks();
 	static void applyCombatSideEffects(const ExpertPvpDecision &decision, const ExpertPvpRelationContext &relationContext);
 	static void applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision, const ExpertPvpRelationContext &relationContext);
 

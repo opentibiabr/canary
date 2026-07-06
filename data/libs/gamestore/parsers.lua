@@ -40,6 +40,30 @@ local function queueSendStoreAlertToUser(message, delay, playerId, storeErrorCod
 	addPlayerEvent(sendStoreError, delay, playerId, storeErrorCode, message)
 end
 
+local function parseGetOfferDescription(playerId, msg)
+	msg:getU32()
+end
+
+local function parseStoreEvent(playerId, msg)
+	local eventType = msg:getByte()
+	if eventType == 0 or eventType == 3 then
+		msg:getU32()
+	elseif eventType == 1 then
+		msg:getString()
+	elseif eventType == 2 then
+		msg:getByte()
+	end
+end
+
+local function parseRequestStoreOffersTail(oldProtocol, msg)
+	if oldProtocol then
+		return
+	end
+
+	msg:getByte()
+	msg:getByte()
+end
+
 local function onRecvbyte(player, msg, byte)
 	if player:getVocation():getId() == 0 and not GameStore.haveCategoryRook() then
 		player:sendCancelMessage("Store don't have offers for rookgaard citizen.")
@@ -53,7 +77,11 @@ local function onRecvbyte(player, msg, byte)
 
 	local playerId = player:getId()
 
-	if byte == GameStore.RecivedPackets.C_TransferCoins then
+	if byte == GameStore.RecivedPackets.C_GetOfferDescription then
+		parseGetOfferDescription(playerId, msg)
+	elseif byte == GameStore.RecivedPackets.C_StoreEvent then
+		parseStoreEvent(playerId, msg)
+	elseif byte == GameStore.RecivedPackets.C_TransferCoins then
 		parseTransferableCoins(playerId, msg)
 	elseif byte == GameStore.RecivedPackets.C_OpenStore then
 		parseOpenStore(playerId, msg)
@@ -113,7 +141,7 @@ local function parseOpenStore(playerId, msg)
 
 	local category = GameStore.Categories and GameStore.Categories[1] or nil
 	if category then
-		addPlayerEvent(parseRequestStoreOffers, 50, playerId)
+		addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
 	end
 end
 
@@ -134,6 +162,9 @@ local function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_CATEGORY then
 		local stringParam = msg:getString()
+		if player:getClient().version >= 1525 then
+			msg:getString()
+		end
 		local category = GameStore.getCategoryByName(stringParam)
 		if category then
 			addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
@@ -186,6 +217,7 @@ local function parseRequestStoreOffers(playerId, msg)
 		local searchString = msg:getString()
 		local results = GameStore.fuzzySearchOffer(searchString)
 		if not results or #results == 0 then
+			parseRequestStoreOffersTail(oldProtocol, msg)
 			return addPlayerEvent(sendStoreError, 250, playerId, GameStore.StoreErrors.STORE_ERROR_INFORMATION, 'No results found for "' .. searchString .. '".')
 		end
 
@@ -196,6 +228,7 @@ local function parseRequestStoreOffers(playerId, msg)
 
 		addPlayerEvent(sendShowStoreOffers, 250, playerId, searchResultsCategory)
 	end
+	parseRequestStoreOffersTail(oldProtocol, msg)
 	player:updateUIExhausted()
 end
 
@@ -215,6 +248,8 @@ local function parseBuyStoreOffer(playerId, msg)
 	local id = msg:getU32()
 	local offer = GameStore.getOfferById(id)
 	local productType = msg:getByte()
+	local configuredString
+	local configuredByte
 	if not offer then
 		return false
 	end
@@ -274,6 +309,13 @@ local function parseBuyStoreOffer(playerId, msg)
 	-- Handled errors are thrown to indicate that the purchase has failed;
 	-- Handled errors have a code index and unhandled errors do not
 	local pcallOk, pcallError = pcall(function()
+		if productType == 1 or productType == 2 or productType == 4 then
+			configuredString = msg:getString()
+		elseif productType == 3 then
+			configuredString = msg:getString()
+			configuredByte = msg:getByte()
+		end
+
 		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count or 1, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
@@ -295,7 +337,7 @@ local function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
 			GameStore.processMountPurchase(player, offer.id)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE then
-			local newName = msg:getString()
+			local newName = configuredString or ""
 			GameStore.processNameChangePurchase(player, offer, productType, newName)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE then
 			GameStore.processSexChangePurchase(player)
@@ -312,11 +354,11 @@ local function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_CHARGES then
 			GameStore.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING then
-			local hirelingName = msg:getString()
-			local sex = msg:getByte()
+			local hirelingName = configuredString or ""
+			local sex = configuredByte or 0
 			GameStore.processHirelingPurchase(player, offer, productType, hirelingName, sex)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_NAMECHANGE then
-			local hirelingName = msg:getString()
+			local hirelingName = configuredString or ""
 			GameStore.processHirelingChangeNamePurchase(player, offer, productType, hirelingName)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HIRELING_SEXCHANGE then
 			GameStore.processHirelingChangeSexPurchase(player, offer)
@@ -367,8 +409,8 @@ local function parseOpenTransactionHistory(playerId, msg)
 	end
 
 	local page = 1
-	GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE = msg:getByte()
-	sendStoreTransactionHistory(playerId, page, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	local entriesPerPage = msg:getByte()
+	sendStoreTransactionHistory(playerId, page, entriesPerPage)
 	player:updateUIExhausted()
 end
 
@@ -379,13 +421,16 @@ local function parseRequestTransactionHistory(playerId, msg)
 	end
 
 	local page = msg:getU32()
-	sendStoreTransactionHistory(playerId, page + 1, GameStore.DefaultValues.DEFAULT_VALUE_ENTRIES_PER_PAGE)
+	local entriesPerPage = msg:getByte()
+	sendStoreTransactionHistory(playerId, page + 1, entriesPerPage)
 	player:updateUIExhausted()
 end
 
 parsing.isItsPacket = isItsPacket
 parsing.fuzzySearchOffer = fuzzySearchOffer
 parsing.onRecvbyte = onRecvbyte
+parsing.parseGetOfferDescription = parseGetOfferDescription
+parsing.parseStoreEvent = parseStoreEvent
 parsing.parseTransferableCoins = parseTransferableCoins
 parsing.parseOpenStore = parseOpenStore
 parsing.parseRequestStoreOffers = parseRequestStoreOffers

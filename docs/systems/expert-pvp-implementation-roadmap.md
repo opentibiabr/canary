@@ -267,14 +267,17 @@ Rules:
 
 ## Phase 4: Player Walkthrough
 
-### Product Decision Required
+### Selected Contract
 
-Before implementing this phase, choose one contract:
+Implement player-player body blocking from the blocker hand mode and relation,
+not from a blanket active-battle rule:
 
-- active-battle blocking: neutral players can pass, but players in the same
-  active battle block each other; or
-- TibiaDuality-style pass-through: Open PvP players never block each other, and
-  active PvP situations affect fields and marks instead.
+- Dove blocks only characters that have been aggressive towards the blocker.
+- White Hand blocks only characters that attacked the blocker or the blocker's
+  party/guild members.
+- Yellow Hand blocks skulled non-allies.
+- Red Fist generally blocks non-allies and can open PvP pressure when a neutral
+  player tries to pass through.
 
 ### `feat(pvp): evaluate expert pvp walkthrough`
 
@@ -284,6 +287,8 @@ Rules:
 
 - Preserve precedence for access players, ghost mode, protection zones,
   no-PvP zones, depot or house restrictions, and low-level walkthrough.
+- Do not derive player-player body blocking only from active PvP situation
+  membership.
 - Pathfinding and actual movement must be able to share the same result.
 
 ### `feat(player): route walkthrough through expert pvp helper`
@@ -308,15 +313,17 @@ Rules:
 
 ## Phase 5: Magic Wall And Wild Growth Field Context
 
-### Product Decision Required
+### Selected Contract
 
-Before implementing this phase, decide:
+Use cast-time field mode and stable owner identity:
 
-- field owner mode is captured at cast time or read from live owner state;
-- owner can or cannot walk through their own MW/WG;
-- MW/WG cast outside active PvP becomes a PvE wall or remains owner-blocking;
-- Red Fist field block creates only skull and pz-lock or also fight ticks and a
-  square update.
+- field owner mode is captured at cast time;
+- owner cannot walk through their own MW/WG;
+- neutral non-owners outside a PvP situation with the caster see/pass the safe
+  field;
+- active PvP opponents see/collide with the blocking field;
+- Red Fist field block may apply skull and pz-lock, but should not force fight
+  ticks or a yellow square unless that block is later selected as a real attack.
 
 ### `feat(pvp): add expert pvp field context`
 
@@ -390,7 +397,9 @@ Rules:
 
 - Compute side effects before mutating state.
 - A failed movement attempt must not pollute `hasAttacked()` state.
-- Monsters should remain covered by the selected field contract.
+- Evaluate MW/WG by field owner, cast-time owner mode, and caster/viewer PvP
+  situation; do not reuse player-player body-blocking shortcuts here.
+- Monsters should remain covered by the locked field contract.
 
 ### `feat(tile): route mw wg movement through expert pvp decisions`
 
@@ -409,7 +418,8 @@ Add per-viewer item id selection for MW/WG.
 
 Rules:
 
-- Tile keeps one canonical item.
+- Tile keeps stable Expert field context. If the physical backing item is safe
+  so bystanders can pass, the canonical MW/WG id still lives in field metadata.
 - Viewer sees safe or blocking visual according to helper result.
 - Do not transform shared world item state for one viewer.
 
@@ -437,8 +447,10 @@ Add a pairwise situation map keyed by player GUIDs.
 Rules:
 
 - Situation expiry should align with the selected pz-lock or battle duration.
-- Situation data may affect fields, walkthrough, marks, and unjustified kill
-  logic, but each use must be explicit.
+- Situation data may affect fields, marks, and unjustified kill logic, but each
+  use must be explicit.
+- Player-player body blocking must continue to use the blocker hand mode and
+  relation target set, not situation membership alone.
 
 ### `feat(protocol): send expert pvp situation marks`
 

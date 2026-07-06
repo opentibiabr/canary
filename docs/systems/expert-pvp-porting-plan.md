@@ -21,6 +21,25 @@ existing secure mode behavior.
 Do not treat the older Shadowborn work as source code to copy. Use it only as
 evidence of failure modes and missing contracts.
 
+## Public Behavior References
+
+The current behavior contract should prefer public Tibia references over old
+porting attempts when they disagree:
+
+- [Tibia combat guide](https://www.tibia.com/gameguides/?section=combat&subtopic=manual)
+  and [Tibia interface guide](https://www.tibia.com/gameguides/?section=interface&subtopic=manual)
+  describe Expert PvP hand-mode attack and block rules.
+- [Magic Wall Rune](https://www.tibia.com/library/?spell=magicwallrune&subtopic=spells)
+  documents that Open PvP magic walls can appear yellow to characters that are
+  not in a PvP situation with the caster.
+- [TibiaWiki Combat Controls](https://tibia.fandom.com/wiki/Combat_Controls),
+  [Magic Wall Object](https://tibia.fandom.com/wiki/Magic_Wall_%28Object%29),
+  [TibiaWiki BR PvP Mode](https://www.tibiawiki.com.br/wiki/PvP_Mode),
+  [TibiaGoals hand-mode guide](https://www.tibiagoals.com/2020/10/the-use-of-pvp-hand-modes-hand-mode-and.html),
+  [TibiaDuality Open PvP](https://tibiaduality.com/pvp-openpvp), and
+  [TibiaQA PvP rules discussion](https://www.tibiaqa.com/34100/how-to-know-the-exact-frag-%25-ill-get-from-killing-a-player)
+  are secondary evidence for hand modes, PvP situations, and MW/WG behavior.
+
 ## Current Canary Baseline
 
 Current Canary already has partial building blocks:
@@ -115,10 +134,9 @@ Recovered Shadowborn notes and observed failures:
   `hasAttacked()` relationships. That can pollute attack state during a failed
   movement attempt and then make later decisions look justified.
 - Red Fist behavior oscillated between "owner Red Fist blocks everyone" and
-  "only direct attack blocks". The intended product contract must be locked
-  before code. The safest rule to start from is: neutral Dove players can pass
-  if they are not in active PvP with the owner; Red Fist or direct active combat
-  can block and can apply skull/pz-lock to the correct player.
+  "only direct attack blocks". Public references support Red Fist as the
+  aggressive mode for non-allied body blocking and field pressure, while Dove,
+  White Hand, and Yellow Hand narrow blocking to their documented target sets.
 - There was an attempt to change creature square packets globally for permanent
   PvP frames. Avoid changing the default `sendCreatureSquare()` packet shape for
   every caller. Add an explicit overload or helper only where Expert PvP needs
@@ -351,9 +369,11 @@ Risky or conflicting ideas from that patch:
 - It uses old world-type names such as `WORLDTYPE_OPEN` and
   `WORLDTYPE_OPTIONAL`; current Canary uses `WORLD_TYPE_PVP`,
   `WORLD_TYPE_NO_PVP`, and `WORLD_TYPE_PVP_ENFORCED`.
-- It says Open PvP characters never block each other, while this plan previously
-  kept "players in the same battle block each other" as a possible contract. Lock
-  this product decision before implementing walkthrough.
+- It says Open PvP characters never block each other, while public references
+  describe player body blocking as a hand-mode decision: Dove blocks only
+  aggressors, White Hand blocks aggressors against self/party/guild, Yellow Hand
+  blocks skulled non-allies, and Red Fist blocks non-allies. Do not implement a
+  blanket "same battle blocks each other" rule.
 - It marks MW/WG cast outside a PvP situation as `pveWall`, where every player,
   including the caster, walks through it. That conflicts with the earlier
   Tibia-like assumption that the owner sees a blocking wall.
@@ -555,16 +575,23 @@ Current call-site map:
   `data/scripts/runes/wild_growth.lua` should only provide canonical field
   creation and owner context. They should not decide final PvP legality.
 
-## Product Decisions First
+## Selected And Remaining Product Decisions
 
-Before implementing code, decide these contracts explicitly:
+Use these selected contracts unless a later capture proves a different current
+Tibia behavior:
 
 - Expert PvP is selected by `worldType = "expert-pvp"`.
 - Retro Open PvP is selected by `worldType = "retro-pvp"`.
 - `worldType = "pvp"` remains as a compatibility alias for `retro-pvp`.
 - The C++ `WORLD_TYPE_PVP` enum remains the shared Open PvP baseline for both
   Retro and Expert modes unless a later PR proves a separate enum is required.
-- Whether PvP mode is runtime-only, client-stored, or persisted server-side.
+- Player PvP mode is server-side state and may be persisted.
+- Field owner mode is captured at cast time.
+- MW/WG runes are non-aggressive at cast time; aggression is handled only when
+  the field actually blocks or damages a player.
+
+Remaining decisions:
+
 - Which old granular flags represent real contracts. Prefer `worldType` as the
   mode gate and avoid config sprawl unless a separate flag is required for
   rollout or compatibility.
@@ -574,29 +601,19 @@ Before implementing code, decide these contracts explicitly:
   modes by default; current code should normalize to a safe mode or fail closed.
 - Whether war relations are explicit exceptions for Dove, White Hand, and Yellow
   Hand. If they are, keep war classification inside the shared helper.
-- Whether the owner of a magic wall or wild growth can ever walk through their
-  own field. Tibia-like behavior says the owner sees a blocking field.
-- Whether viewer Red Fist alone should make a neutral field block the viewer.
-  Older work oscillated here; lock the rule before coding.
-- Whether MW/WG and damaging fields use the owner's PvP mode at cast time or the
-  owner's live PvP mode when another player steps on or sees the field. If the
-  answer is cast-time, store that as explicit field context and test it.
+- Whether a viewer's own Red Fist mode, without a PvP situation with the field
+  owner, should make a neutral field block that viewer. Public sources emphasize
+  the caster/viewer PvP situation for MW visual/pass-through, so avoid treating
+  viewer mode alone as sufficient without a capture-backed product decision.
 - Whether Red Fist field blocking creates only white skull and pz-lock, or also
   creates fight ticks and a yellow square. The recovered Antigravity fix favored
   no forced in-fight/yellow frame unless there was a real attack.
-- Whether MW/WG runes are non-aggressive at cast time, with aggression handled
-  only when the field actually blocks or damages a player.
 - Whether pathfinding should ignore creature-derived `TILESTATE_BLOCKPATH` after
   the player walkthrough helper has allowed pass-through, while still respecting
   real blocking items.
-- Whether current PvP involvement should be derived from existing attacked sets
-  or tracked as a dedicated runtime pairwise PvP situation with expiry.
-- Whether Open PvP players should always ghost through each other, or whether
-  players involved in the same battle should block each other. The local
-  TibiaDuality patch chooses always-pass for players.
-- Whether MW/WG cast outside a PvP situation becomes a PvE wall that every player
-  can walk through, including the caster. This conflicts with the earlier owner
-  blocking assumption.
+- Whether the runtime pairwise PvP situation should be a dedicated map or derived
+  from existing attacked sets. This affects MW/WG visuals, damage, marks, and
+  unjustified-kill attribution.
 - Whether a rune-cast wild growth can be cut only by its caster.
 - Whether the "top player in stack" rule belongs in this port: a player below
   another player cannot initiate aggressive PvP or aggressive area spells.
@@ -635,25 +652,30 @@ already superseded.
 Dove:
 
 - Can defend against direct aggressors.
-- Must not attack or block unrelated players.
+- Can attack or body-block only characters that have been aggressive towards the
+  player.
+- Must not attack or body-block unrelated players.
 - Area spells and runes must not hit unrelated players.
 - Should not cause protection zone lock for neutral-only actions.
 
 White Hand:
 
 - Can defend self, party, and guild members against aggressors.
+- Can attack or body-block only characters that have attacked the player or a
+  party/guild member.
 - Can show yellow skull to targets where appropriate.
 - Deaths caused only by valid defense should not count as unjustified.
 
 Yellow Hand:
 
-- Can attack and block skulled players, except protected allies.
+- Can attack and body-block skulled players, except protected party/guild
+  allies.
 - Applies battle state and protection zone lock when it starts PvP.
 - Uses yellow skull rules where the viewer contract requires it.
 
 Red Fist:
 
-- Can attack and block non-allied players.
+- Can attack and body-block non-allied players.
 - Must be unavailable or forced away for black skull players if the chosen
   product contract follows Tibia rules.
 - Starts battle state and protection zone lock when it creates PvP pressure.
@@ -668,16 +690,16 @@ Hardcore PvP:
 
 ### Walkthrough
 
-Expert PvP walkthrough must be viewer-relative:
+Expert PvP player-player walkthrough must use the blocking player's hand mode,
+not a blanket "same battle blocks each other" rule:
 
-- Neutral players in Expert Open PvP can walk through each other when not in
-  real PvP with each other.
-- Players involved in the same active battle must block each other.
-- Party or guild allies involved in the same battle should also block where the
-  product contract requires allied blocking.
-- If the TibiaDuality 2014 contract is selected instead, Open PvP players never
-  block each other and active PvP situations affect fields and marks rather than
-  player-player collision.
+- Dove blocks only characters that have been aggressive towards the blocker.
+- White Hand blocks only characters that have attacked the blocker or the
+  blocker's party/guild members.
+- Yellow Hand blocks skulled non-allies.
+- Red Fist generally blocks non-allies and can open PvP pressure, skull, and
+  protection-zone lock when a neutral player tries to pass through.
+- Party/guild allies remain protected according to the selected hand mode.
 - Protection zones, no-PvP zones, depot/house restrictions, access players, and
   ghost mode must keep their existing precedence.
 - Pathfinding and actual movement checks must use the same decision helper.
@@ -701,6 +723,12 @@ Use this helper from direct attacks, area spells, rune targeting, field damage,
 and magic wall or wild growth blocking. Do not let Lua scripts decide final PvP
 legality independently from C++ combat.
 
+Secure mode remains a client combat-control input, but it must not override a
+valid Expert PvP defense decision. In Dove mode, a player should be able to
+retaliate against a direct aggressor without disabling secure mode. Secure mode
+also cannot promise safety when the selected hand mode, field, area spell, or
+body-blocking action legitimately opens PvP pressure.
+
 War, guild, party, skull, direct-attacker, and direct-target relations should be
 computed once per decision. Unknown or invalid PvP modes should not silently
 fall through to "allowed".
@@ -719,32 +747,35 @@ Magic wall and wild growth need two independent concepts:
 
 Do not transform the world item just to change the color for one viewer. That
 creates shared-state bugs. Prefer a protocol serialization hook that can choose
-the displayed item ID per viewer while the tile keeps one canonical item.
+the displayed item ID per viewer while the tile keeps stable Expert field
+context. If the physical backing item must be the safe variant so bystanders can
+pass through, keep the canonical MW/WG id in explicit field metadata instead of
+using the backing item id as the behavior contract.
 
 Recovered Lua scripts chose safe or blocking MW/WG item IDs when the rune was
 cast. That reproduced some visuals, but it made one shared item carry a
-viewer-relative state. The cleaner port should create a canonical field, attach
-owner context, and let protocol serialization pick the visual for each viewer.
+viewer-relative state. The cleaner port should attach owner context and let
+protocol serialization pick the visual for each viewer.
 
 Recommended field rules:
 
 - The field owner is stored as the player's GUID, not a runtime creature ID.
 - Summon-cast fields should use the master player's GUID.
-- If the contract is cast-time based, the field also stores the owner's PvP mode
-  at creation time.
+- The field stores the owner's PvP mode at creation time. Public hand-mode
+  guides describe fields, bombs, and summons as carrying the mode used when the
+  action was created; do not switch field behavior to the owner's live mode.
 - Owner sees the normal blocking field visual.
-- Neutral non-owners see the safe/yellow field visual when the field is not
-  blocking them.
-- Opponents involved in active PvP with the owner or owner allies see the
-  blocking field visual.
+- Neutral non-owners that are not in a PvP situation with the caster see the
+  safe/yellow field visual and can pass through the field.
+- Opponents involved in active PvP with the owner see the blocking field visual
+  and can be blocked by MW/WG.
 - Monsters should remain blocked by magic wall and wild growth.
-- If the PvE-wall contract is selected, MW/WG cast outside active PvP should
-  block monsters only and should be passable by every player, including the
-  caster. This must be tested separately from fields cast during active PvP.
+- The owner cannot walk through their own MW/WG.
 - Harmful field conditions must use the same Expert PvP decision helper as
   direct attacks, so non-aggressive owners do not damage unrelated players.
-- A Red Fist field block may apply skull and pz-lock to the owner without
-  forcing fight ticks or a yellow frame, if that product decision is selected.
+- A Red Fist field can open PvP pressure when another player tries to cross it.
+  It may apply skull and pz-lock to the owner without forcing fight ticks or a
+  yellow frame unless the product decision says the block is a real attack.
 - Optional PvP safe-field behavior must remain scoped to Optional PvP and
   no-PvP zones.
 - Expert PvP safe-looking fields must not be removed merely because a player
@@ -848,13 +879,14 @@ Minimum scenarios to cover:
 - Yellow Hand can target skulled players and applies pz lock.
 - Red Fist cannot be selected by black skull players if that contract is chosen.
 - Neutral players can ghost through each other in Expert Open PvP.
-- Players in the same battle block each other.
-- Party or guild allies in the same battle block where required.
+- Player-player body blocking follows the blocker's hand mode, not a blanket
+  active-battle rule.
+- Dove, White Hand, Yellow Hand, and Red Fist body-block only the target sets
+  documented for those hand modes.
 - Optional PvP safe magic wall and wild growth behavior remains unchanged.
 - Expert safe-looking MW/WG is not removed when a player passes through.
 - Field owner always resolves by player GUID after logout/login or summon cast.
-- Field owner mode uses either cast-time metadata or live owner state
-  consistently, according to the chosen contract.
+- Field owner mode uses cast-time metadata consistently.
 - Owner sees a blocking MW/WG visual; neutral viewers see safe/yellow visual.
 - Active PvP opponents see a blocking MW/WG visual.
 - Red Fist field blocking applies pz lock and skull only to the correct player.
@@ -902,8 +934,8 @@ Minimum scenarios to cover:
 - A hidden player below another player cannot initiate aggressive direct PvP or
   area-spell PvP if the top-stack rule is selected.
 - A bystander can pass through or avoid damage from player-owned fields according
-  to the chosen field contract, while active PvP opponents and monsters still get
-  the blocking/damaging behavior.
+  to the caster/viewer PvP situation, while active PvP opponents and monsters
+  still get the blocking/damaging behavior.
 - Rune-cast wild growth can only be cut by its caster if that contract is
   selected.
 - Frag-share `player_kills.weight` remains unchanged and out of scope unless a
@@ -976,6 +1008,10 @@ Out-of-scope touch points from the TibiaDuality patch unless explicitly chosen:
 - Do not add a broad `WORLD_TYPE_PVP` behavior change that affects `retro-pvp`
   or legacy `pvp`.
 - Do not store field owner as a runtime creature ID.
+- Do not derive player-player body blocking only from active PvP situation
+  membership; use the blocker hand mode and relation target set.
+- Do not use the MW/WG viewer-specific visual rule as a shortcut for
+  player-player body blocking. These are separate contracts.
 - Do not mutate the tile item only to change one viewer's field color.
 - Do not let Lua rune scripts choose the shared safe/blocking item ID as a
   replacement for viewer-specific protocol serialization.
@@ -1018,8 +1054,7 @@ goal is to reproduce the behavior in current Canary with a cleaner shape:
 - Make PvP decisions deterministic before applying side effects.
 - Separate server collision from per-viewer client visuals.
 - Store field ownership by player GUID.
-- Decide cast-time field mode versus live owner mode before wiring MW/WG and
-  damaging fields.
+- Store field owner mode at cast time before wiring MW/WG and damaging fields.
 - Prefer one relation/combat decision helper over repeated local conditions.
 - Add tests around the regression matrix before expanding behavior.
 

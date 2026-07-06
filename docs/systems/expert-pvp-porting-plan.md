@@ -946,6 +946,138 @@ Minimum scenarios to cover:
 - Frag-share `player_kills.weight` remains unchanged and out of scope unless a
   separate PR explicitly implements Open PvP 2014 unfair-frag rules.
 
+## How To Test In Game
+
+Use this section as the manual test script for people helping with in-game QA.
+Run every scenario on a normal PvP tile, not inside protection zones, no-PvP
+zones, arenas, party-protection exceptions, or war-only areas unless the test
+explicitly says otherwise.
+
+Before testing:
+
+- Set `worldType = "expert-pvp"` in `config.lua` and restart the server.
+- Use a client/profile that shows the Expert PvP hand controls.
+- Prepare at least three normal characters:
+  - `Attacker`: starts aggression, commonly a druid/sorcerer for runes and MW.
+  - `Defender`: gets attacked first and tries to defend with secure mode on.
+  - `Spectator`: neutral bystander for MW/WG visual and pass-through checks.
+- Keep test characters out of the same party and guild unless the scenario says
+  to test party/guild behavior.
+- Start each scenario from a clean state: no skull, no PZ lock, no pending field
+  owner state, and no previous attack relation. Relog or wait for fight state to
+  clear if needed.
+- For every failure report, record: world type, each character hand mode, secure
+  mode state, who attacked first, visible skulls/frames/icons, whether the
+  character can enter protection zone, and screenshots from each viewer when
+  testing MW/WG.
+
+### Smoke Test
+
+1. Start the server and confirm the startup log reports Expert PvP as the world
+   type.
+2. Log in with `Attacker`, `Defender`, and `Spectator`.
+3. Confirm the Expert PvP hand control is enabled and each hand mode can be
+   selected: Dove, White Hand, Yellow Hand, and Red Fist.
+4. Toggle secure mode on and off, then select Dove again.
+
+Expected result: the client does not desync, the hand mode button remains
+usable, and Dove is safe as the default/neutral mode.
+
+### Dove And Secure Mode Defense
+
+1. `Defender`: Dove mode, secure mode on.
+2. `Attacker`: Red Fist mode, secure mode can be on or off.
+3. `Attacker` attacks `Defender` first with a direct attack.
+4. Without changing secure mode, `Defender` attacks `Attacker` back with a
+   direct attack.
+5. Repeat the retaliation with an offensive rune or targeted spell if available.
+
+Expected result: `Defender` can retaliate without disabling secure mode. The
+client must not show "You may not attack this player" for valid self-defense.
+`Defender` must not receive PZ lock for valid defense and must be able to enter
+protection zone if no other aggressive action was performed. `Attacker` is the
+aggressor and receives the relevant skull/PZ pressure.
+
+### Dove Neutral Safety
+
+1. `Defender`: Dove mode, secure mode on.
+2. `Spectator`: neutral, no previous combat with `Defender`.
+3. `Defender` tries to attack `Spectator`.
+
+Expected result: the attack is blocked. Dove must not allow unrelated neutral
+PvP, and the failed attempt must not create skull, PZ lock, or a stale battle
+relation.
+
+### Red Fist Aggression
+
+1. `Attacker`: Red Fist mode.
+2. `Defender`: Dove mode, secure mode on.
+3. `Attacker` attacks `Defender` with direct damage.
+4. `Defender` retaliates once.
+
+Expected result: Red Fist opens aggression against a neutral player. `Attacker`
+receives the expected aggressive PvP pressure, including PZ lock/skull where
+the current contract requires it. `Defender` can defend but does not become PZ
+locked merely for defending.
+
+### Magic Wall And Wild Growth Visuals
+
+Run the same steps for both Magic Wall and Wild Growth.
+
+1. `Attacker` attacks `Defender` first.
+2. Before `Defender` retaliates, `Attacker` casts MW/WG between or next to the
+   players.
+3. Observe the wall from `Attacker`, `Defender`, and `Spectator`.
+4. Try to walk through the wall with each character.
+5. Now let `Defender` retaliate.
+6. Try to walk through the same existing wall again.
+7. Cast a new MW/WG after `Defender` has already retaliated and repeat the
+   visual/pass-through checks.
+
+Expected result: the caster sees the blocking visual and cannot walk through
+their own MW/WG. A neutral spectator sees the safe/yellow visual and can pass.
+If the wall was cast before `Defender` retaliated, `Defender` keeps seeing the
+safe/yellow visual and can pass through that existing wall even after
+retaliating. A new wall cast after both players are already in direct combat can
+block active PvP opponents according to the current Expert PvP relation.
+
+### Field Damage
+
+1. `Attacker`: Dove mode.
+2. Cast damaging fields/bombs where `Spectator` can step on them.
+3. Repeat with White Hand, Yellow Hand, and Red Fist.
+
+Expected result: Dove/White should not damage unrelated neutral players through
+player-owned fields. Red Fist can create aggression through damaging fields when
+the current contract allows it, and side effects must be applied to the field
+owner, not to bystanders or the defender.
+
+### Player Walkthrough And Body Blocking
+
+1. Place two neutral players on adjacent tiles in Dove mode.
+2. Try to walk through each other.
+3. Repeat after one player has attacked the other.
+4. Repeat with the blocker in White Hand, Yellow Hand, and Red Fist.
+
+Expected result: neutral Expert PvP players should not be blanket-blocked by
+old Retro PvP body-blocking behavior. Body blocking should follow the Expert
+PvP relation/mode contract: neutral bystanders can pass, active PvP opponents
+can be blocked, and party/guild exceptions should behave according to the hand
+mode being tested.
+
+### Regression Checks For Other World Types
+
+Repeat a short smoke test with:
+
+- `worldType = "retro-pvp"`
+- legacy `worldType = "pvp"`
+- `worldType = "no-pvp"`
+- `worldType = "pvp-enforced"`
+
+Expected result: Expert PvP rules must not leak into other world types. Legacy
+`"pvp"` remains a compatibility alias for Retro PvP behavior, and `expert-pvp`
+is the only world type that enables the Expert PvP hand-mode rules.
+
 ## Files Likely To Change
 
 Expected C++ touch points:

@@ -18,7 +18,12 @@
 #include "utils/tools.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+	#include <charconv>
 	#include <string>
+	#include <string_view>
+	#include <system_error>
+	#include <vector>
 #endif
 
 namespace {
@@ -27,6 +32,8 @@ namespace {
 	constexpr auto expertFieldCanonicalItemIdAttribute = "expertPvpCanonicalItemId";
 	constexpr auto expertFieldSafeVisualItemIdAttribute = "expertPvpSafeVisualItemId";
 	constexpr auto expertFieldBlockingVisualItemIdAttribute = "expertPvpBlockingVisualItemId";
+	constexpr auto expertFieldOwnerTargetsAtCastAttribute = "expertPvpOwnerTargetsAtCast";
+	constexpr auto expertFieldOwnerAttackersAtCastAttribute = "expertPvpOwnerAttackersAtCast";
 	constexpr auto expertFieldOwnerWasPlayerOrSummonAttribute = "expertPvpOwnerWasPlayerOrSummon";
 	constexpr auto expertPvpWorldType = "expert-pvp";
 	constexpr auto legacyRetroPvpWorldType = "pvp";
@@ -75,6 +82,92 @@ namespace {
 	[[nodiscard]] bool getCustomAttributeBool(const std::shared_ptr<Item> &item, const char* attributeName, bool fallback = false) {
 		const auto* attribute = item ? item->getCustomAttribute(attributeName) : nullptr;
 		return attribute ? attribute->getAttribute<bool>() : fallback;
+	}
+
+	[[nodiscard]] std::string getCustomAttributeString(const std::shared_ptr<Item> &item, const char* attributeName) {
+		const auto* attribute = item ? item->getCustomAttribute(attributeName) : nullptr;
+		return attribute ? attribute->getAttribute<std::string>() : std::string {};
+	}
+
+	[[nodiscard]] std::vector<uint32_t> parseGuidList(std::string_view value) {
+		std::vector<uint32_t> guids;
+		size_t offset = 0;
+		while (offset < value.size()) {
+			const auto delimiter = value.find(',', offset);
+			const auto tokenEnd = delimiter == std::string_view::npos ? value.size() : delimiter;
+			const auto token = value.substr(offset, tokenEnd - offset);
+
+			uint32_t guid = 0;
+			const auto* begin = token.data();
+			const auto* end = begin + token.size();
+			const auto result = std::from_chars(begin, end, guid);
+			if (result.ec == std::errc {} && result.ptr == end && guid != 0) {
+				guids.emplace_back(guid);
+			}
+
+			if (delimiter == std::string_view::npos) {
+				break;
+			}
+			offset = delimiter + 1;
+		}
+		return guids;
+	}
+
+	[[nodiscard]] std::string serializeGuidList(const std::vector<uint32_t> &guids) {
+		std::string value;
+		for (const auto guid : guids) {
+			if (guid == 0) {
+				continue;
+			}
+
+			if (!value.empty()) {
+				value.push_back(',');
+			}
+			value.append(std::to_string(guid));
+		}
+		return value;
+	}
+
+	[[nodiscard]] bool containsGuid(const std::vector<uint32_t> &guids, uint32_t guid) {
+		return std::find(guids.begin(), guids.end(), guid) != guids.end();
+	}
+
+	void snapshotFieldRelationsAtCast(ExpertFieldContext &context, const std::shared_ptr<Player> &ownerPlayer) {
+		if (!ownerPlayer) {
+			return;
+		}
+
+		for (const auto &playerEntry : g_game().getPlayers()) {
+			const auto &player = playerEntry.second;
+			if (!player || player == ownerPlayer) {
+				continue;
+			}
+
+			if (ownerPlayer->hasAttacked(player)) {
+				context.ownerTargetsAtCast.emplace_back(player->getGUID());
+			}
+			if (player->hasAttacked(ownerPlayer)) {
+				context.ownerAttackersAtCast.emplace_back(player->getGUID());
+			}
+		}
+	}
+
+	void applyFieldRelationSnapshot(const ExpertFieldContext &fieldContext, ExpertPvpRelationContext &context) {
+		if (context.subjectGuid == 0 || context.subjectGuid == fieldContext.ownerGuid) {
+			return;
+		}
+
+		const bool subjectWasTargetAtCast = containsGuid(fieldContext.ownerTargetsAtCast, context.subjectGuid);
+		const bool subjectWasAttackerAtCast = containsGuid(fieldContext.ownerAttackersAtCast, context.subjectGuid);
+		if (subjectWasAttackerAtCast) {
+			context.directAttacker = true;
+			return;
+		}
+
+		if (subjectWasTargetAtCast) {
+			context.directTarget = true;
+			context.directAttacker = false;
+		}
 	}
 
 	[[nodiscard]] bool isSkulledClientTarget(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
@@ -331,6 +424,7 @@ ExpertPvpRelationResult ExpertPvp::classifyFieldRelation(const ExpertFieldContex
 		auto relation = classifyRelation(ownerPlayer, subject);
 		relation.facts.actorGuid = fieldContext.ownerGuid;
 		relation.facts.actorMode = fieldContext.ownerMode;
+		applyFieldRelationSnapshot(fieldContext, relation.facts);
 		return classifyRelation(relation.facts);
 	}
 
@@ -347,6 +441,7 @@ ExpertPvpRelationResult ExpertPvp::classifyFieldRelation(const ExpertFieldContex
 	context.subjectIsNpc = subject->getNpc() != nullptr;
 	context.subjectIsAccessPlayer = isAccessPlayer(subjectPlayer);
 	context.isSelf = subjectPlayer && subjectPlayer->getGUID() == fieldContext.ownerGuid;
+	applyFieldRelationSnapshot(fieldContext, context);
 
 	return classifyRelation(context);
 }
@@ -703,6 +798,8 @@ ExpertFieldContext ExpertPvp::getFieldContext(const std::shared_ptr<Item> &item)
 	context.canonicalItemId = getCustomAttributeU16(item, expertFieldCanonicalItemIdAttribute, context.canonicalItemId);
 	context.safeVisualItemId = getCustomAttributeU16(item, expertFieldSafeVisualItemIdAttribute, context.safeVisualItemId);
 	context.blockingVisualItemId = getCustomAttributeU16(item, expertFieldBlockingVisualItemIdAttribute, context.blockingVisualItemId);
+	context.ownerTargetsAtCast = parseGuidList(getCustomAttributeString(item, expertFieldOwnerTargetsAtCastAttribute));
+	context.ownerAttackersAtCast = parseGuidList(getCustomAttributeString(item, expertFieldOwnerAttackersAtCastAttribute));
 	return context;
 }
 
@@ -717,11 +814,14 @@ ExpertFieldContext ExpertPvp::attachFieldContext(const std::shared_ptr<Item> &it
 	}
 
 	auto context = makeFieldContext(ownerPlayer->getGUID(), ownerPlayer->getPvpMode(), item->getID(), true);
+	snapshotFieldRelationsAtCast(context, ownerPlayer);
 	item->setCustomAttribute(expertFieldOwnerGuidAttribute, static_cast<int64_t>(context.ownerGuid));
 	item->setCustomAttribute(expertFieldOwnerModeAttribute, static_cast<int64_t>(context.ownerMode));
 	item->setCustomAttribute(expertFieldCanonicalItemIdAttribute, static_cast<int64_t>(context.canonicalItemId));
 	item->setCustomAttribute(expertFieldSafeVisualItemIdAttribute, static_cast<int64_t>(context.safeVisualItemId));
 	item->setCustomAttribute(expertFieldBlockingVisualItemIdAttribute, static_cast<int64_t>(context.blockingVisualItemId));
+	item->setCustomAttribute(expertFieldOwnerTargetsAtCastAttribute, serializeGuidList(context.ownerTargetsAtCast));
+	item->setCustomAttribute(expertFieldOwnerAttackersAtCastAttribute, serializeGuidList(context.ownerAttackersAtCast));
 	item->setCustomAttribute(expertFieldOwnerWasPlayerOrSummonAttribute, context.ownerWasPlayerOrSummon);
 	return context;
 }

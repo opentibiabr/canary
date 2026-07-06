@@ -19,6 +19,28 @@ local function getExpertPvpFieldOwner(creature)
 	return nil
 end
 
+local function getExpertPvpFieldRelationSnapshot(owner)
+	local ownerTargets = {}
+	local ownerAttackers = {}
+
+	if not owner or not owner.hasAttacked then
+		return "", ""
+	end
+
+	for _, player in ipairs(Game.getPlayers()) do
+		if player ~= owner then
+			if owner:hasAttacked(player) then
+				ownerTargets[#ownerTargets + 1] = player:getGuid()
+			end
+			if player:hasAttacked(owner) then
+				ownerAttackers[#ownerAttackers + 1] = player:getGuid()
+			end
+		end
+	end
+
+	return table.concat(ownerTargets, ","), table.concat(ownerAttackers, ",")
+end
+
 local function attachExpertPvpFieldContext(item, creature)
 	if not item or not IsExpertPVP() then
 		return
@@ -29,11 +51,14 @@ local function attachExpertPvpFieldContext(item, creature)
 		return
 	end
 
+	local ownerTargetsAtCast, ownerAttackersAtCast = getExpertPvpFieldRelationSnapshot(owner)
 	item:setCustomAttribute("expertPvpOwnerGuid", owner:getGuid())
 	item:setCustomAttribute("expertPvpOwnerMode", owner:getPvpMode() or 0)
 	item:setCustomAttribute("expertPvpCanonicalItemId", ITEM_MAGICWALL)
 	item:setCustomAttribute("expertPvpSafeVisualItemId", ITEM_MAGICWALL_SAFE)
 	item:setCustomAttribute("expertPvpBlockingVisualItemId", ITEM_MAGICWALL)
+	item:setCustomAttribute("expertPvpOwnerTargetsAtCast", ownerTargetsAtCast)
+	item:setCustomAttribute("expertPvpOwnerAttackersAtCast", ownerAttackersAtCast)
 	item:setCustomAttribute("expertPvpOwnerWasPlayerOrSummon", true)
 end
 

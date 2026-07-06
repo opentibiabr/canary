@@ -13,6 +13,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>
+	#include <vector>
 #endif
 
 enum class ExpertPvpModeSource : uint8_t {
@@ -146,6 +147,8 @@ struct ExpertFieldContext {
 	uint16_t canonicalItemId = 0;
 	uint16_t safeVisualItemId = 0;
 	uint16_t blockingVisualItemId = 0;
+	std::vector<uint32_t> ownerTargetsAtCast {};
+	std::vector<uint32_t> ownerAttackersAtCast {};
 	bool ownerWasPlayerOrSummon = false;
 
 	explicit operator bool() const {

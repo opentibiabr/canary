@@ -373,6 +373,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "hasSecureMode", PlayerFunctions::luaPlayerHasSecureMode);
 	Lua::registerMethod(L, "Player", "getFightMode", PlayerFunctions::luaPlayerGetFightMode);
 	Lua::registerMethod(L, "Player", "getPvpMode", PlayerFunctions::luaPlayerGetPvpMode);
+	Lua::registerMethod(L, "Player", "hasAttacked", PlayerFunctions::luaPlayerHasAttacked);
 
 	Lua::registerMethod(L, "Player", "getBaseXpGain", PlayerFunctions::luaPlayerGetBaseXpGain);
 	Lua::registerMethod(L, "Player", "setBaseXpGain", PlayerFunctions::luaPlayerSetBaseXpGain);
@@ -3875,6 +3876,18 @@ int PlayerFunctions::luaPlayerGetPvpMode(lua_State* L) {
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
 		lua_pushnumber(L, player->getPvpMode());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerHasAttacked(lua_State* L) {
+	// player:hasAttacked(targetPlayer)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	const auto &targetPlayer = Lua::getUserdataShared<Player>(L, 2, "Player");
+	if (player && targetPlayer) {
+		Lua::pushBoolean(L, player->hasAttacked(targetPlayer));
 	} else {
 		lua_pushnil(L);
 	}

@@ -77,6 +77,7 @@ namespace {
 
 		const auto relation = ExpertPvp::classifyRelation(actorPlayer, target);
 		const auto decision = ExpertPvp::evaluateCombatAction(actionKind, relation.facts);
+		ExpertPvp::applyCombatSideEffects(decision, relation.facts);
 		return getExpertPvpTargetReturnValue(decision, target);
 	}
 
@@ -103,6 +104,9 @@ namespace {
 		if (!decision.applyDamage) {
 			return true;
 		}
+
+		const auto combatDecision = ExpertPvp::evaluateCombatAction(fieldContext.ownerMode, ExpertPvpActionKind::FieldDamage, relation.facts);
+		ExpertPvp::applyCombatSideEffects(combatDecision, relation.facts);
 
 		if (decision.setConditionOwner) {
 			condition->setParam(CONDITION_PARAM_OWNER, decision.conditionOwnerGuid);

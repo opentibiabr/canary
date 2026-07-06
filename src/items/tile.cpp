@@ -60,7 +60,7 @@ namespace {
 					handledItem = true;
 					if (!decision.canStep) {
 						if (!hasBitSet(FLAG_PATHFINDING, tileFlags)) {
-							ExpertPvp::applyFieldStepSideEffects(decision);
+							ExpertPvp::applyFieldStepSideEffects(decision, relation.facts);
 						}
 						ret = RETURNVALUE_NOTENOUGHROOM;
 						return true;

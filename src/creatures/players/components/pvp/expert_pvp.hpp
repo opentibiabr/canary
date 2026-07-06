@@ -45,7 +45,8 @@ public:
 	[[nodiscard]] static ExpertPvpFieldStepDecision evaluateFieldStep(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldDamageDecision evaluateFieldDamage(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpFieldVisualDecision getFieldClientId(const ExpertFieldContext &fieldContext, const ExpertPvpRelationContext &relationContext);
-	static void applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision);
+	static void applyCombatSideEffects(const ExpertPvpDecision &decision, const ExpertPvpRelationContext &relationContext);
+	static void applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision, const ExpertPvpRelationContext &relationContext);
 
 	[[nodiscard]] static bool isExpertFieldItem(uint16_t itemId);
 	[[nodiscard]] static ExpertFieldContext makeFieldContext(uint32_t ownerGuid, PvpMode_t ownerMode, uint16_t itemId, bool ownerWasPlayerOrSummon);

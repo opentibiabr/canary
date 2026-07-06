@@ -131,6 +131,33 @@ namespace {
 		return ExpertPvp::isEnabled() ? ExpertPvpDecisionReason::NotEvaluated : ExpertPvpDecisionReason::FeatureDisabled;
 	}
 
+	void applyPlayerSituationSideEffects(uint32_t ownerGuid, uint32_t subjectGuid, ExpertPvpSkullAction skullAction, bool appliesPzLock) {
+		if (ownerGuid == 0 || subjectGuid == 0 || ownerGuid == subjectGuid) {
+			return;
+		}
+
+		const auto &owner = g_game().getPlayerByGUID(ownerGuid);
+		const auto &subject = g_game().getPlayerByGUID(subjectGuid);
+		if (!owner || !subject) {
+			return;
+		}
+
+		if (!owner->isInWar(subject)) {
+			owner->addAttacked(subject);
+		}
+
+		if (appliesPzLock) {
+			owner->addPzLockTicks();
+		}
+
+		if (skullAction == ExpertPvpSkullAction::White && subject->getSkull() == SKULL_NONE && owner->getSkull() == SKULL_NONE && !subject->hasKilled(owner)) {
+			owner->setSkull(SKULL_WHITE);
+		}
+
+		owner->sendOpenPvpSituations();
+		subject->sendCreatureSkull(owner);
+	}
+
 	[[nodiscard]] bool isMagicWallOrWildGrowthField(const ExpertFieldContext &fieldContext) {
 		return fieldContext.canonicalItemId == ITEM_MAGICWALL || fieldContext.canonicalItemId == ITEM_WILDGROWTH;
 	}
@@ -572,23 +599,20 @@ ExpertPvpFieldVisualDecision ExpertPvp::getFieldClientId(const ExpertFieldContex
 	return decision;
 }
 
-void ExpertPvp::applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision) {
+void ExpertPvp::applyCombatSideEffects(const ExpertPvpDecision &decision, const ExpertPvpRelationContext &relationContext) {
+	if (!isEnabled() || !decision.handled || !decision.allowed || !decision.startsFight || decision.sideEffectOwnerGuid == 0) {
+		return;
+	}
+
+	applyPlayerSituationSideEffects(decision.sideEffectOwnerGuid, relationContext.subjectGuid, decision.skullAction, decision.appliesPzLock);
+}
+
+void ExpertPvp::applyFieldStepSideEffects(const ExpertPvpFieldStepDecision &decision, const ExpertPvpRelationContext &relationContext) {
 	if (!isEnabled() || !decision.handled || decision.canStep || decision.sideEffectOwnerGuid == 0) {
 		return;
 	}
 
-	const auto &owner = g_game().getPlayerByGUID(decision.sideEffectOwnerGuid);
-	if (!owner) {
-		return;
-	}
-
-	if (decision.appliesPzLock) {
-		owner->addPzLockTicks();
-	}
-
-	if (decision.skullAction == ExpertPvpSkullAction::White && owner->getSkull() == SKULL_NONE) {
-		owner->setSkull(SKULL_WHITE);
-	}
+	applyPlayerSituationSideEffects(decision.sideEffectOwnerGuid, relationContext.subjectGuid, decision.skullAction, decision.appliesPzLock);
 }
 
 bool ExpertPvp::isExpertFieldItem(uint16_t itemId) {

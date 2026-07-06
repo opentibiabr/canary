@@ -142,11 +142,156 @@ setup_canary() {
 	fi
 }
 
+cache_value() {
+	local variable_name=$1
+	local cache_file="build/${BUILD_TYPE}/CMakeCache.txt"
+
+	if [[ ! -f "$cache_file" ]]; then
+		return 1
+	fi
+
+	local cache_line
+	while IFS= read -r cache_line; do
+		if [[ $cache_line == "$variable_name":*=* || $cache_line == "$variable_name="* ]]; then
+			printf '%s\n' "${cache_line#*=}"
+			return 0
+		fi
+	done <"$cache_file"
+
+	return 1
+}
+
+cmake_arg_value() {
+	local variable_name=$1
+	local index=0
+	local found=0
+	local value=""
+
+	while ((index < ${#EXTRA_CMAKE_ARGS[@]})); do
+		local arg=${EXTRA_CMAKE_ARGS[$index]}
+
+		if [[ $arg == -D"$variable_name"=* || $arg == -D"$variable_name":*=* ]]; then
+			value=${arg#*=}
+			found=1
+		elif [[ $arg == "-D" ]]; then
+			((index += 1))
+			if ((index >= ${#EXTRA_CMAKE_ARGS[@]})); then
+				break
+			fi
+
+			arg=${EXTRA_CMAKE_ARGS[$index]}
+			if [[ $arg == "$variable_name"=* || $arg == "$variable_name":*=* ]]; then
+				value=${arg#*=}
+				found=1
+			fi
+		fi
+
+		((index += 1))
+	done
+
+	if [[ $found == 0 ]]; then
+		return 1
+	fi
+
+	printf '%s\n' "$value"
+}
+
+cmake_value() {
+	local variable_name=$1
+	local fallback=${2-}
+	local value
+
+	if value=$(cmake_arg_value "$variable_name"); then
+		printf '%s\n' "$value"
+	elif value=$(cache_value "$variable_name"); then
+		printf '%s\n' "$value"
+	elif [[ $# -ge 2 ]]; then
+		printf '%s\n' "$fallback"
+	else
+		return 1
+	fi
+}
+
+default_cmake_build_type() {
+	local preset_name=${BUILD_TYPE,,}
+
+	if [[ $preset_name == *debug* ]]; then
+		printf '%s\n' "Debug"
+	else
+		printf '%s\n' "RelWithDebInfo"
+	fi
+}
+
+cmake_enabled() {
+	local value=${1^^}
+	[[ $value == "1" || $value == "ON" || $value == "TRUE" || $value == "YES" ]]
+}
+
+executable_name() {
+	local build_type
+	build_type=$(cmake_value "CMAKE_BUILD_TYPE" "$(default_cmake_build_type)")
+
+	if [[ $build_type == "Debug" ]]; then
+		printf '%s\n' "canary-debug"
+	else
+		printf '%s\n' "canary"
+	fi
+}
+
+executable_suffix() {
+	local suffix
+	if suffix=$(cmake_value "CMAKE_EXECUTABLE_SUFFIX"); then
+		printf '%s\n' "$suffix"
+		return
+	fi
+
+	case "$(uname -s)" in
+		MINGW* | MSYS* | CYGWIN*)
+			printf '%s\n' ".exe"
+			;;
+		*)
+			printf '%s\n' ""
+			;;
+	esac
+}
+
+runtime_output_directory() {
+	local toggle_bin_folder
+	toggle_bin_folder=$(cmake_value "TOGGLE_BIN_FOLDER" "OFF")
+
+	if cmake_enabled "$toggle_bin_folder"; then
+		local cache_binary_dir
+		if cache_binary_dir=$(cache_value "CMAKE_CACHEFILE_DIR"); then
+			printf '%s\n' "${cache_binary_dir}/bin"
+		else
+			printf '%s\n' "build/${BUILD_TYPE}/bin"
+		fi
+	else
+		printf '%s\n' "."
+	fi
+}
+
+executable_path() {
+	local output_directory
+	output_directory=$(runtime_output_directory)
+
+	local executable_file
+	executable_file="$(executable_name)$(executable_suffix)"
+
+	if [[ $output_directory == "." ]]; then
+		printf '%s\n' "$executable_file"
+	else
+		printf '%s\n' "${output_directory}/${executable_file}"
+	fi
+}
+
 move_executable() {
-	local executable_name="canary"
-	if [[ -e "build/$executable_name" ]]; then
-		info "Saving previous build as ${executable_name}.old"
-		mv "build/$executable_name" "build/${executable_name}.old"
+	local current_executable
+	current_executable=$(executable_path)
+
+	if [[ -f "$current_executable" ]]; then
+		info "Saving previous build as ${current_executable}.old"
+		mv -f "$current_executable" "${current_executable}.old"
 	fi
 }
 

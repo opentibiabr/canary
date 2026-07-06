@@ -767,8 +767,12 @@ Recommended field rules:
 - Owner sees the normal blocking field visual.
 - Neutral non-owners that are not in a PvP situation with the caster see the
   safe/yellow field visual and can pass through the field.
-- Opponents involved in active PvP with the owner see the blocking field visual
-  and can be blocked by MW/WG.
+- A player that is only the target of the caster's aggression, and has not
+  retaliated or otherwise become a valid blocked target for the cast-time hand
+  mode, still sees the safe/yellow field visual and can pass through the field.
+- Players that have attacked the owner, war enemies, and valid blocked targets
+  for the cast-time hand mode see the blocking field visual and can be blocked
+  by MW/WG.
 - Monsters should remain blocked by magic wall and wild growth.
 - The owner cannot walk through their own MW/WG.
 - Harmful field conditions must use the same Expert PvP decision helper as

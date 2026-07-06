@@ -58,11 +58,14 @@ function onCreateMagicWall(creature, position)
 		magicWall = ITEM_MAGICWALL
 	end
 
-	local item = Game.createItem(magicWall, 1, position)
+	local item = Game.createItem(magicWall, 1)
 	if item then
 		attachExpertPvpFieldContext(item, creature)
 		item:setDuration(16, 24)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
+		if tile:addItemEx(item, FLAG_NOLIMIT) ~= RETURNVALUE_NOERROR then
+			return false
+		end
 	end
 end
 

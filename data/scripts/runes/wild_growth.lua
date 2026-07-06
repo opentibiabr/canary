@@ -58,11 +58,14 @@ function onCreateWildGrowth(creature, position)
 		wildGrowth = ITEM_WILDGROWTH
 	end
 
-	local item = Game.createItem(wildGrowth, 1, position)
+	local item = Game.createItem(wildGrowth, 1)
 	if item then
 		attachExpertPvpFieldContext(item, creature)
 		item:setDuration(30)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
+		if tile:addItemEx(item, FLAG_NOLIMIT) ~= RETURNVALUE_NOERROR then
+			return false
+		end
 	end
 end
 

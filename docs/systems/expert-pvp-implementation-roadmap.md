@@ -321,7 +321,10 @@ Use cast-time field mode and stable owner identity:
 - owner cannot walk through their own MW/WG;
 - neutral non-owners outside a PvP situation with the caster see/pass the safe
   field;
-- active PvP opponents see/collide with the blocking field;
+- players that are only targets of the caster's aggression and have not
+  retaliated still see/pass the safe field;
+- players that have attacked the owner, war enemies, and valid blocked targets
+  for the cast-time hand mode see/collide with the blocking field;
 - Red Fist field block may apply skull and pz-lock, but should not force fight
   ticks or a yellow square unless that block is later selected as a real attack.
 

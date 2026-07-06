@@ -12,6 +12,9 @@ BUILD_TYPE=${2:-"linux-release"}
 ARCHITECTURE=$(uname -m)
 EXTRA_CMAKE_ARGS=("${@:3}")
 IS_ARM64=0
+WORKTREE_ROOT=$PWD
+BACKED_UP_EXECUTABLE=""
+BACKED_UP_EXECUTABLE_OLD=""
 
 # ============================================================================
 # Logging helpers
@@ -142,6 +145,18 @@ setup_canary() {
 	fi
 }
 
+absolute_path() {
+	local path=$1
+	case "$path" in
+		/* | [A-Za-z]:/* | [A-Za-z]:\\*)
+			printf '%s\n' "$path"
+			;;
+		*)
+			printf '%s\n' "${WORKTREE_ROOT}/${path}"
+			;;
+	esac
+}
+
 cache_value() {
 	local variable_name=$1
 	local cache_file="build/${BUILD_TYPE}/CMakeCache.txt"
@@ -151,7 +166,8 @@ cache_value() {
 	fi
 
 	local cache_line
-	while IFS= read -r cache_line; do
+	while IFS= read -r cache_line || [[ -n "$cache_line" ]]; do
+		cache_line=${cache_line%$'\r'}
 		if [[ $cache_line == "$variable_name":*=* || $cache_line == "$variable_name="* ]]; then
 			printf '%s\n' "${cache_line#*=}"
 			return 0
@@ -168,7 +184,7 @@ cmake_arg_value() {
 	local value=""
 
 	while ((index < ${#EXTRA_CMAKE_ARGS[@]})); do
-		local arg=${EXTRA_CMAKE_ARGS[$index]}
+		local arg="${EXTRA_CMAKE_ARGS[$index]}"
 
 		if [[ $arg == -D"$variable_name"=* || $arg == -D"$variable_name":*=* ]]; then
 			value=${arg#*=}
@@ -179,7 +195,7 @@ cmake_arg_value() {
 				break
 			fi
 
-			arg=${EXTRA_CMAKE_ARGS[$index]}
+			arg="${EXTRA_CMAKE_ARGS[$index]}"
 			if [[ $arg == "$variable_name"=* || $arg == "$variable_name":*=* ]]; then
 				value=${arg#*=}
 				found=1
@@ -213,18 +229,25 @@ cmake_value() {
 }
 
 default_cmake_build_type() {
-	local preset_name=${BUILD_TYPE,,}
-
-	if [[ $preset_name == *debug* ]]; then
-		printf '%s\n' "Debug"
-	else
-		printf '%s\n' "RelWithDebInfo"
-	fi
+	case "$BUILD_TYPE" in
+		*[Dd][Ee][Bb][Uu][Gg]*)
+			printf '%s\n' "Debug"
+			;;
+		*)
+			printf '%s\n' "RelWithDebInfo"
+			;;
+	esac
 }
 
 cmake_enabled() {
-	local value=${1^^}
-	[[ $value == "1" || $value == "ON" || $value == "TRUE" || $value == "YES" ]]
+	case "${1-}" in
+		1 | [Oo][Nn] | [Tt][Rr][Uu][Ee] | [Yy][Ee][Ss])
+			return 0
+			;;
+		*)
+			return 1
+			;;
+	esac
 }
 
 executable_name() {
@@ -292,6 +315,40 @@ move_executable() {
 	if [[ -f "$current_executable" ]]; then
 		info "Saving previous build as ${current_executable}.old"
 		mv -f "$current_executable" "${current_executable}.old"
+		BACKED_UP_EXECUTABLE=$(absolute_path "$current_executable")
+		BACKED_UP_EXECUTABLE_OLD=$(absolute_path "${current_executable}.old")
+	fi
+}
+
+restore_executable_backup() {
+	if [[ -z $BACKED_UP_EXECUTABLE || -z $BACKED_UP_EXECUTABLE_OLD ]]; then
+		return 0
+	fi
+
+	if [[ ! -f $BACKED_UP_EXECUTABLE_OLD || -e $BACKED_UP_EXECUTABLE ]]; then
+		return 0
+	fi
+
+	info "Restoring previous build from ${BACKED_UP_EXECUTABLE_OLD}"
+	cp -p "$BACKED_UP_EXECUTABLE_OLD" "$BACKED_UP_EXECUTABLE"
+}
+
+fail_after_build_step() {
+	local message=$1
+	restore_executable_backup
+	error "$message"
+	exit 1
+}
+
+configure_or_restore() {
+	if ! configure_canary; then
+		fail_after_build_step "CMake configuration failed."
+	fi
+}
+
+compile_or_restore() {
+	if ! compile_canary; then
+		fail_after_build_step "Build failed."
 	fi
 }
 
@@ -349,8 +406,8 @@ main() {
 	move_executable
 	setup_canary
 
-	configure_canary || exit 1
-	compile_canary || exit 1
+	configure_or_restore
+	compile_or_restore
 }
 
 main

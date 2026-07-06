@@ -47,6 +47,28 @@ capture or fixture before adding new clients.
 client version, `ClientWireFamily`, `RSAKeyFamily`, support state, item mapper
 policy, initial behavior, optional asset signatures, and protocol feature flags.
 
+## Versioned payload features
+
+`ProtocolFeature` flags describe byte-contract capabilities, not only the
+numeric version of a profile. A current profile can include features that first
+appeared in an earlier current-client generation, and older enabled profiles
+must not receive those payloads unless they have the same confirmed contract.
+
+When adding or changing a payload feature:
+
+- document the first confirmed client version in the enum comment when known;
+- use client parser evidence, captured bytes, or fixtures instead of inferring
+  from `ProtocolProfileId::Current`;
+- keep the payload gate on `ProtocolFeature` or an explicit profile helper;
+- do not sort or compare hash-like build suffixes as ordered versions.
+
+Known versioned payload flags:
+
+| Feature | First confirmed version | Contract |
+| --- | --- | --- |
+| `GameEventPayload` | `15.13+` | Server packet `0x75` is a variable-length game event payload. Earlier clients use a single screenshot-type byte. |
+| `OfficialSkillWheelPayload` | `15.25` | Server packet `0x5F` uses the current quest-bonus and gem-list layout before grade modifier lists. |
+
 `TransportProfile` already describes outer length, encrypted payload layout,
 checksum, and compression intent. However, checksum/compression execution is not
 yet fully owned by `TransportProfile`: parts of the live behavior still follow
@@ -281,7 +303,8 @@ branches or broad raw version checks.
 8. Validate game-login hints before finalizing the profile.
 9. Gate payload differences with `ProtocolFeature` or explicit profile helpers.
    Prefer translation at the protocol boundary for message modes, effects, ids,
-   and legacy-only fields.
+   and legacy-only fields. If the feature has a known first client version,
+   update the versioned payload feature notes above.
 10. Add an item mapper or block world entry before sending map, inventory,
     containers, outfits, effects, or other item-dependent packets.
 

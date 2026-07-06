@@ -67,8 +67,9 @@ public:
 		return inject<Modules>();
 	}
 
+	bool executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg, uint8_t byte) const;
 	void executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const;
-	Module_ptr getEventByRecvbyte(uint8_t recvbyte, bool force);
+	Module_ptr getEventByRecvbyte(uint8_t recvbyte, bool force) const;
 
 protected:
 	LuaScriptInterface &getScriptInterface() override;

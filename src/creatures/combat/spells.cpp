@@ -13,6 +13,7 @@
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
@@ -55,6 +56,16 @@ namespace {
 		}
 
 		variant.pos = Spells::getCasterPosition(player, direction);
+	}
+
+	bool expertPvpAllowsSecureModeTarget(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
+		if (!player || !target || !ExpertPvp::isEnabled() || !Combat::isPlayerCombat(target)) {
+			return false;
+		}
+
+		const auto relation = ExpertPvp::classifyRelation(player, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::RuneTarget, relation.facts);
+		return decision.handled && decision.allowed;
 	}
 }
 
@@ -691,7 +702,8 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 
 	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
 		const auto &targetPlayer = topVisibleCreature->getPlayer();
-		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
+		if (!expertPvpAllowsSecureModeTarget(player, topVisibleCreature) && targetPlayer && targetPlayer != player
+			&& player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
 			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
 			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
 			return false;

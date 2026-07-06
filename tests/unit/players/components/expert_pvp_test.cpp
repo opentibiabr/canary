@@ -119,7 +119,7 @@ TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerCombat) {
 	EXPECT_EQ(ExpertPvpDecisionReason::Neutral, decision.reason);
 }
 
-TEST(ExpertPvpCombatDecisionTest, DoveAllowsDirectDefense) {
+TEST(ExpertPvpCombatDecisionTest, DoveAllowsDirectDefenseWithoutPzLock) {
 	ExpertPvpRelationContext context;
 	context.actorGuid = 100;
 	context.subjectGuid = 200;
@@ -131,7 +131,7 @@ TEST(ExpertPvpCombatDecisionTest, DoveAllowsDirectDefense) {
 	EXPECT_TRUE(decision.handled);
 	EXPECT_TRUE(decision.allowed);
 	EXPECT_TRUE(decision.startsFight);
-	EXPECT_TRUE(decision.appliesPzLock);
+	EXPECT_FALSE(decision.appliesPzLock);
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
 }

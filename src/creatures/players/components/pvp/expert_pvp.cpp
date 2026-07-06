@@ -503,6 +503,7 @@ ExpertPvpDecision ExpertPvp::evaluateCombatAction(PvpMode_t actorMode, ExpertPvp
 		decision.allowed = true;
 		decision.reason = ExpertPvpDecisionReason::DirectCombat;
 		describePvpPressure(decision, relationContext);
+		decision.appliesPzLock = false;
 		return decision;
 	}
 

@@ -8146,13 +8146,13 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		}
 	}
 
+	const bool expertPvpControlsEnabled = ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte);
 	if (version >= 1054) {
-		msg.addByte(0x00); // can change pvp framing option
+		msg.addByte(expertPvpControlsEnabled ? 0x01 : 0x00); // can change pvp framing option
 	}
 
 	if (version >= 1058) {
-		const bool expertModeButtonEnabled = ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte);
-		msg.addByte(expertModeButtonEnabled ? 0x00 : 0x01); // 0x00 enables, 0x01 disables expert mode button
+		msg.addByte(expertPvpControlsEnabled ? 0x01 : 0x00); // expert mode button enabled
 	}
 
 	if (version >= 1080) {

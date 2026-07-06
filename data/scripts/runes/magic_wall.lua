@@ -52,7 +52,7 @@ function onCreateMagicWall(creature, position)
 	end
 
 	local magicWall
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+	if IsExpertPVP() or Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		magicWall = ITEM_MAGICWALL_SAFE
 	else
 		magicWall = ITEM_MAGICWALL

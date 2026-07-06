@@ -424,3 +424,20 @@ TEST(ExpertPvpFieldVisualDecisionTest, ActiveCombatPlayersSeeBlockingWallVisual)
 	EXPECT_EQ(ITEM_MAGICWALL, decision.clientItemId);
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 }
+
+TEST(ExpertPvpFieldVisualDecisionTest, ActiveCombatPlayersSeeBlockingWallVisualFromSafeBackedField) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL_SAFE, true);
+
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.directAttacker = true;
+
+	const auto decision = ExpertPvp::getFieldClientId(field, context);
+
+	EXPECT_TRUE(decision.handled);
+	EXPECT_EQ(ITEM_MAGICWALL, decision.clientItemId);
+	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
+}

@@ -1200,12 +1200,16 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 						itemId = ITEM_WILDGROWTH_SAFE;
 					}
 				} else {
+					const bool expertPvpWall = ExpertPvp::isEnabled() && (itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH);
 					attachExpertFieldContext = ExpertPvp::isEnabled() && ExpertPvp::isExpertFieldItem(itemId);
-					if (itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP || itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH) {
-						const bool deferExpertFieldAggression = attachExpertFieldContext && (itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH);
-						if (!deferExpertFieldAggression) {
-							casterPlayer->addInFightTicks();
-						}
+					if (expertPvpWall) {
+						itemId = itemId == ITEM_MAGICWALL ? ITEM_MAGICWALL_SAFE : ITEM_WILDGROWTH_SAFE;
+					}
+
+					const bool pvpDamagingField = itemId == ITEM_FIREFIELD_PVP_FULL || itemId == ITEM_POISONFIELD_PVP || itemId == ITEM_ENERGYFIELD_PVP;
+					const bool legacyBlockingWall = !expertPvpWall && (itemId == ITEM_MAGICWALL || itemId == ITEM_WILDGROWTH);
+					if (pvpDamagingField || legacyBlockingWall) {
+						casterPlayer->addInFightTicks();
 					}
 				}
 			}
@@ -2544,7 +2548,11 @@ void AreaCombat::setupExtArea(const std::list<uint32_t> &list, uint32_t rows) {
 
 void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	// remove magic walls/wild growth
-	if ((!isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE) || id == ITEM_WILDGROWTH_SAFE) {
+	const auto expertFieldContext = ExpertPvp::isEnabled() ? ExpertPvp::getFieldContext(static_self_cast<Item>()) : ExpertFieldContext {};
+	const bool expertPvpOwnedField = expertFieldContext.ownerGuid != 0 && expertFieldContext.ownerWasPlayerOrSummon;
+	const bool removableNoPvpMagicWall = !isBlocking() && g_game().getWorldType() == WORLD_TYPE_NO_PVP && id == ITEM_MAGICWALL_SAFE;
+	const bool removableSafeField = removableNoPvpMagicWall || id == ITEM_WILDGROWTH_SAFE;
+	if (!expertPvpOwnedField && removableSafeField) {
 		if (!creature->isInGhostMode()) {
 			g_game().internalRemoveItem(static_self_cast<Item>(), 1);
 		}

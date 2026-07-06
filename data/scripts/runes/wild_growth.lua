@@ -52,7 +52,7 @@ function onCreateWildGrowth(creature, position)
 	end
 
 	local wildGrowth
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+	if IsExpertPVP() or Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		wildGrowth = ITEM_WILDGROWTH_SAFE
 	else
 		wildGrowth = ITEM_WILDGROWTH

@@ -354,8 +354,8 @@ TEST(ExpertPvpFieldStepDecisionTest, ActiveCombatPlayersAreBlockedByWall) {
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
 }
 
-TEST(ExpertPvpFieldStepDecisionTest, FieldVictimWhoHasNotRetaliatedCanStep) {
-	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL, true);
+TEST(ExpertPvpFieldStepDecisionTest, RedFieldVictimWhoHasNotRetaliatedCanStep) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_MAGICWALL, true);
 
 	ExpertPvpRelationContext context;
 	context.actorGuid = 100;
@@ -363,6 +363,7 @@ TEST(ExpertPvpFieldStepDecisionTest, FieldVictimWhoHasNotRetaliatedCanStep) {
 	context.subjectGuid = 200;
 	context.subjectIsPlayer = true;
 	context.directTarget = true;
+	context.skulledTarget = true;
 
 	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
 
@@ -460,8 +461,8 @@ TEST(ExpertPvpFieldVisualDecisionTest, ActiveCombatPlayersSeeBlockingWallVisual)
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 }
 
-TEST(ExpertPvpFieldVisualDecisionTest, FieldVictimWhoHasNotRetaliatedSeesSafeWallVisual) {
-	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_DOVE, ITEM_MAGICWALL_SAFE, true);
+TEST(ExpertPvpFieldVisualDecisionTest, RedFieldVictimWhoHasNotRetaliatedSeesSafeWallVisual) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_RED_FIST, ITEM_MAGICWALL_SAFE, true);
 
 	ExpertPvpRelationContext context;
 	context.actorGuid = 100;
@@ -469,6 +470,7 @@ TEST(ExpertPvpFieldVisualDecisionTest, FieldVictimWhoHasNotRetaliatedSeesSafeWal
 	context.subjectGuid = 200;
 	context.subjectIsPlayer = true;
 	context.directTarget = true;
+	context.skulledTarget = true;
 
 	const auto decision = ExpertPvp::getFieldClientId(field, context);
 

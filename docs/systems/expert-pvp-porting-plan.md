@@ -768,8 +768,9 @@ Recommended field rules:
 - Neutral non-owners that are not in a PvP situation with the caster see the
   safe/yellow field visual and can pass through the field.
 - A player that is only the target of the caster's aggression, and has not
-  retaliated or otherwise become a valid blocked target for the cast-time hand
-  mode, still sees the safe/yellow field visual and can pass through the field.
+  retaliated or become blocked for another relation such as war, still sees the
+  safe/yellow field visual and can pass through the field. This remains true for
+  a Red Fist field cast by the aggressor.
 - Players that have attacked the owner, war enemies, and valid blocked targets
   for the cast-time hand mode see the blocking field visual and can be blocked
   by MW/WG.

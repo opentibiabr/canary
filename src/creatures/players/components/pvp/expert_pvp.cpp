@@ -531,13 +531,10 @@ ExpertPvpFieldStepDecision ExpertPvp::evaluateFieldStep(const ExpertFieldContext
 			decision.canStep = false;
 			decision.reason = ExpertPvpDecisionReason::DirectCombat;
 			break;
-		case ExpertPvpRelation::DirectTarget: {
-			const bool redFieldBlocksTarget = mode.mode == PVP_MODE_RED_FIST;
-			const bool yellowFieldBlocksSkulledTarget = mode.mode == PVP_MODE_YELLOW_HAND && relationContext.skulledTarget;
-			decision.canStep = !redFieldBlocksTarget && !yellowFieldBlocksSkulledTarget;
+		case ExpertPvpRelation::DirectTarget:
+			decision.canStep = true;
 			decision.reason = ExpertPvpDecisionReason::DirectCombat;
 			break;
-		}
 		case ExpertPvpRelation::WarEnemy:
 			decision.canStep = false;
 			decision.reason = ExpertPvpDecisionReason::War;

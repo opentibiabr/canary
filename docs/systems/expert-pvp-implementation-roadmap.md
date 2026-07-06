@@ -322,7 +322,8 @@ Use cast-time field mode and stable owner identity:
 - neutral non-owners outside a PvP situation with the caster see/pass the safe
   field;
 - players that are only targets of the caster's aggression and have not
-  retaliated still see/pass the safe field;
+  retaliated still see/pass the safe field, including when the aggressor cast the
+  field in Red Fist;
 - players that have attacked the owner, war enemies, and valid blocked targets
   for the cast-time hand mode see/collide with the blocking field;
 - Red Fist field block may apply skull and pz-lock, but should not force fight

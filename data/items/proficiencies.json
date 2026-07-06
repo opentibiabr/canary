@@ -89,7 +89,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -104,7 +104,7 @@
     ],
     "Name": "Sanguine 1H Sword",
     "ProficiencyId": 6,
-    "Version": 6
+    "Version": 7
   },
   {
     "Levels": [
@@ -196,7 +196,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -211,7 +211,7 @@
     ],
     "Name": "Sanguine 1H Axe",
     "ProficiencyId": 8,
-    "Version": 6
+    "Version": 7
   },
   {
     "Levels": [
@@ -303,7 +303,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -318,7 +318,7 @@
     ],
     "Name": "Sanguine 1H Club",
     "ProficiencyId": 9,
-    "Version": 5
+    "Version": 6
   },
   {
     "Levels": [
@@ -412,7 +412,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -427,7 +427,7 @@
     ],
     "Name": "Sanguine 2H Sword",
     "ProficiencyId": 10,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -521,7 +521,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -536,7 +536,7 @@
     ],
     "Name": "Sanguine 2H Axe",
     "ProficiencyId": 11,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -630,7 +630,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -645,7 +645,7 @@
     ],
     "Name": "Sanguine 2H Club",
     "ProficiencyId": 12,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1178,7 +1178,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1193,7 +1193,7 @@
     ],
     "Name": "Grand Sanguine 1H Axe",
     "ProficiencyId": 17,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1285,7 +1285,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1300,7 +1300,7 @@
     ],
     "Name": "Grand Sanguine 1H Club",
     "ProficiencyId": 18,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1392,7 +1392,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1407,7 +1407,7 @@
     ],
     "Name": "Grand Sanguine 1H Sword",
     "ProficiencyId": 19,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1501,7 +1501,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1516,7 +1516,7 @@
     ],
     "Name": "Grand Sanguine 2H Sword",
     "ProficiencyId": 20,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1610,7 +1610,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1625,7 +1625,7 @@
     ],
     "Name": "Grand Sanguine 2H Club",
     "ProficiencyId": 21,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -1719,7 +1719,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 5.0
+            "Value": 10.0
           }
         ]
       },
@@ -1734,7 +1734,7 @@
     ],
     "Name": "Grand Sanguine 2H Axe",
     "ProficiencyId": 22,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -10514,7 +10514,7 @@
           {
             "SkillId": 9,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -10529,7 +10529,7 @@
     ],
     "Name": "Cobra 1H Club",
     "ProficiencyId": 134,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -10587,7 +10587,7 @@
           {
             "SkillId": 10,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -10602,7 +10602,7 @@
     ],
     "Name": "Cobra 1H Axe",
     "ProficiencyId": 135,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -10660,7 +10660,7 @@
           {
             "SkillId": 8,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -10675,7 +10675,7 @@
     ],
     "Name": "Cobra 1H Sword",
     "ProficiencyId": 136,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -10885,7 +10885,7 @@
           {
             "SkillId": 9,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -10900,7 +10900,7 @@
     ],
     "Name": "Lion 1H Club",
     "ProficiencyId": 139,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -10958,7 +10958,7 @@
           {
             "SkillId": 10,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -10973,7 +10973,7 @@
     ],
     "Name": "Lion 1H Axe",
     "ProficiencyId": 140,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -11031,7 +11031,7 @@
           {
             "SkillId": 8,
             "Type": 27,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },
@@ -11046,7 +11046,7 @@
     ],
     "Name": "Lion 1H Sword",
     "ProficiencyId": 141,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -11256,7 +11256,7 @@
           {
             "SkillId": 6,
             "Type": 27,
-            "Value": 0.14
+            "Value": 0.28
           }
         ]
       },
@@ -11271,7 +11271,7 @@
     ],
     "Name": "Falcon 1H Club",
     "ProficiencyId": 144,
-    "Version": 4
+    "Version": 5
   },
   {
     "Levels": [
@@ -11329,7 +11329,7 @@
           {
             "SkillId": 6,
             "Type": 27,
-            "Value": 0.14
+            "Value": 0.28
           }
         ]
       },
@@ -11344,7 +11344,7 @@
     ],
     "Name": "Falcon 2H Sword",
     "ProficiencyId": 145,
-    "Version": 5
+    "Version": 6
   },
   {
     "Levels": [
@@ -11402,7 +11402,7 @@
           {
             "SkillId": 6,
             "Type": 27,
-            "Value": 0.14
+            "Value": 0.28
           }
         ]
       },
@@ -11417,7 +11417,7 @@
     ],
     "Name": "Falcon 2H Axe",
     "ProficiencyId": 146,
-    "Version": 5
+    "Version": 6
   },
   {
     "Levels": [
@@ -14783,7 +14783,7 @@
             "AugmentType": 6,
             "SpellId": 158,
             "Type": 5,
-            "Value": -150.0
+            "Value": -30.0
           },
           {
             "Type": 2,
@@ -14815,7 +14815,7 @@
     ],
     "Name": "Sword 1H Magic Sword",
     "ProficiencyId": 238,
-    "Version": 2
+    "Version": 3
   },
   {
     "Levels": [
@@ -18187,7 +18187,7 @@
           {
             "SkillId": 1,
             "Type": 27,
-            "Value": 1.0
+            "Value": 2.0
           }
         ]
       },
@@ -18224,7 +18224,7 @@
     ],
     "Name": "Sword 2H Avenger",
     "ProficiencyId": 308,
-    "Version": 2
+    "Version": 3
   },
   {
     "Levels": [
@@ -20391,7 +20391,7 @@
           {
             "SkillId": 10,
             "Type": 27,
-            "Value": 0.08
+            "Value": 0.16
           },
           {
             "BestiaryId": 13,
@@ -20412,7 +20412,7 @@
     ],
     "Name": "Axe 2H Phantasmal Axe",
     "ProficiencyId": 349,
-    "Version": 3
+    "Version": 4
   },
   {
     "Levels": [
@@ -23320,7 +23320,7 @@
             "AugmentType": 6,
             "SpellId": 158,
             "Type": 5,
-            "Value": -150.0
+            "Value": -30.0
           }
         ]
       },
@@ -23365,7 +23365,7 @@
     ],
     "Name": "Axe 1H Plague Bite",
     "ProficiencyId": 407,
-    "Version": 1
+    "Version": 2
   },
   {
     "Levels": [
@@ -26277,5 +26277,814 @@
     "Name": "Draining Inferniarch 2H Crossbow",
     "ProficiencyId": 456,
     "Version": 1
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "SkillId": 8,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 25,
+            "Value": 1.0
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.05
+          },
+          {
+            "Type": 30,
+            "Value": 0.12
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 31,
+            "Value": 0.1
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.02
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.06
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 31,
+            "Value": 0.15
+          },
+          {
+            "Type": 0,
+            "Value": 1
+          },
+          {
+            "Type": 30,
+            "Value": 0.16
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 27,
+            "Value": 7.0
+          },
+          {
+            "Type": 30,
+            "Value": 0.2
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 31,
+            "Value": 0.2
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.08
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 2H Sword",
+    "ProficiencyId": 457,
+    "Version": 12
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "SkillId": 10,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 25,
+            "Value": 1.0
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.05
+          },
+          {
+            "Type": 30,
+            "Value": 0.12
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 31,
+            "Value": 0.1
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.02
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.06
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 31,
+            "Value": 0.15
+          },
+          {
+            "Type": 0,
+            "Value": 1
+          },
+          {
+            "Type": 30,
+            "Value": 0.16
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 27,
+            "Value": 7.0
+          },
+          {
+            "Type": 30,
+            "Value": 0.2
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 31,
+            "Value": 0.2
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.08
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 2H Axe",
+    "ProficiencyId": 458,
+    "Version": 6
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "SkillId": 9,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 25,
+            "Value": 1.0
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.05
+          },
+          {
+            "Type": 30,
+            "Value": 0.12
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 8,
+            "Type": 31,
+            "Value": 0.1
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 80,
+            "Type": 5,
+            "Value": 0.02
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.06
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 8,
+            "Type": 31,
+            "Value": 0.15
+          },
+          {
+            "Type": 0,
+            "Value": 1
+          },
+          {
+            "Type": 30,
+            "Value": 0.16
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 27,
+            "Value": 7.0
+          },
+          {
+            "Type": 30,
+            "Value": 0.2
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 8,
+            "Type": 31,
+            "Value": 0.2
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.08
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 2H Club",
+    "ProficiencyId": 459,
+    "Version": 6
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "Type": 30,
+            "Value": 0.15
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 25,
+            "Value": 0.2
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 287,
+            "Type": 5,
+            "Value": 0.05
+          },
+          {
+            "Type": 30,
+            "Value": 0.2
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.04
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 287,
+            "Type": 5,
+            "Value": 0.02
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.08
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 0,
+            "Value": 1
+          },
+          {
+            "SkillId": 1,
+            "Type": 27,
+            "Value": 0.7
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 12,
+            "Value": 0.1
+          },
+          {
+            "Type": 30,
+            "Value": 0.25
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.12
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 2H Fist",
+    "ProficiencyId": 460,
+    "Version": 13
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "SkillId": 7,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 26,
+            "Value": 0.1
+          },
+          {
+            "SkillId": 1,
+            "Type": 27,
+            "Value": 0.75
+          },
+          {
+            "SkillId": 1,
+            "Type": 25,
+            "Value": 0.1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 128,
+            "Type": 31,
+            "Value": 0.02
+          },
+          {
+            "Type": 24,
+            "Value": 1
+          },
+          {
+            "Type": 30,
+            "Value": 0.04
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 128,
+            "Type": 31,
+            "Value": 0.03
+          },
+          {
+            "Type": 30,
+            "Value": 0.06
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "DamageType": 128,
+            "Type": 4,
+            "Value": 1
+          },
+          {
+            "Type": 0,
+            "Value": 2
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 128,
+            "Type": 31,
+            "Value": 0.05
+          },
+          {
+            "Type": 30,
+            "Value": 0.1
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 2H Bow",
+    "ProficiencyId": 461,
+    "Version": 6
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "Type": 30,
+            "Value": 1.0
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 13,
+            "Value": 0.075
+          },
+          {
+            "SkillId": 1,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.04
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.4
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 119,
+            "Type": 5,
+            "Value": 0.35
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 31,
+            "Value": 0.02
+          },
+          {
+            "Type": 16,
+            "Value": 0.01
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 119,
+            "Type": 5,
+            "Value": 0.5
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "SkillId": 1,
+            "Type": 26,
+            "Value": 0.08
+          },
+          {
+            "Type": 16,
+            "Value": 0.015
+          },
+          {
+            "AugmentType": 2,
+            "SpellId": 119,
+            "Type": 5,
+            "Value": 0.1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 32,
+            "Type": 31,
+            "Value": 0.04
+          },
+          {
+            "ElementId": 1,
+            "Type": 13,
+            "Value": 1.0
+          },
+          {
+            "Type": 29,
+            "Value": 0.04
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 1H Wand",
+    "ProficiencyId": 462,
+    "Version": 4
+  },
+  {
+    "Levels": [
+      {
+        "Perks": [
+          {
+            "Type": 30,
+            "Value": 1.0
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 13,
+            "Value": 0.075
+          },
+          {
+            "SkillId": 1,
+            "Type": 3,
+            "Value": 1
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.04
+          },
+          {
+            "ElementId": 1,
+            "Type": 31,
+            "Value": 0.4
+          },
+          {
+            "AugmentType": 15,
+            "SpellId": 56,
+            "Type": 5,
+            "Value": 0.35
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "Type": 28,
+            "Value": 0.1
+          },
+          {
+            "BestiaryId": 18,
+            "BestiaryName": "Undead",
+            "Type": 6,
+            "Value": 0.03
+          },
+          {
+            "Type": 29,
+            "Value": 0.025
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 31,
+            "Value": 0.02
+          },
+          {
+            "Type": 16,
+            "Value": 0.01
+          },
+          {
+            "AugmentType": 14,
+            "SpellId": 56,
+            "Type": 5,
+            "Value": 0.5
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "DamageType": 1048576,
+            "Type": 4,
+            "Value": 2
+          },
+          {
+            "Type": 16,
+            "Value": 0.015
+          },
+          {
+            "AugmentType": 2,
+            "SpellId": 56,
+            "Type": 5,
+            "Value": 0.15
+          }
+        ]
+      },
+      {
+        "Perks": [
+          {
+            "ElementId": 16,
+            "Type": 31,
+            "Value": 0.04
+          },
+          {
+            "ElementId": 1,
+            "Type": 13,
+            "Value": 1.0
+          },
+          {
+            "Type": 29,
+            "Value": 0.04
+          }
+        ]
+      }
+    ],
+    "Name": "Crypt 1H Rod",
+    "ProficiencyId": 463,
+    "Version": 5
   }
 ]

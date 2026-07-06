@@ -10263,7 +10263,14 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
+	const auto* protocolProfile = client ? client->getProtocolProfile() : nullptr;
+	const bool usesOfficialTaskboardPackets = protocolProfile
+		&& protocolProfile->hasFeature(ProtocolFeature::OfficialTaskboardPackets);
+	const bool canSendLegacyTaskHuntingBaseData = client
+		&& g_configManager().getBoolean(TASK_HUNTING_ENABLED)
+		&& !client->oldProtocol
+		&& !usesOfficialTaskboardPackets;
+	if (canSendLegacyTaskHuntingBaseData) {
 		auto buffer = g_ioprey().getTaskHuntingBaseDate();
 		client->writeToOutputBuffer(buffer);
 	}

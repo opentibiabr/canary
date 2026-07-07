@@ -4118,8 +4118,13 @@ function Player:setXpBoostTime(timeLeft) end
 function Player:showTextDialog(idOrNameOrUserdata, text, canWrite, length) end
 
 ---@param screenshotType any
+---@param skillId? number
+---@param skillLevel? number
+---@param achievementName? string
+---@param raceId? number
+---@param bestiaryStep? number
 ---@return boolean|nil
-function Player:takeScreenshot(screenshotType) end
+function Player:takeScreenshot(screenshotType, skillId, skillLevel, achievementName, raceId, bestiaryStep) end
 
 ---@param arg2? boolean
 ---@return boolean|nil

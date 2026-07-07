@@ -12,11 +12,21 @@
 #include "lib/metrics/metrics.hpp"
 
 #include "utils/tools.hpp"
+#include "utils/transparent_string_hash.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
+	#include <functional>
+	#include <mutex>
+	#include <string>
+	#include <string_view>
+	#include <unordered_set>
+#endif
 
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
 Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME()),
+	func(std::move(f)), context(internContext(context)), utime(OTSYS_TIME()),
 	expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
@@ -27,7 +37,7 @@ Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_v
 }
 
 Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/) :
-	func(std::move(f)), context(context), utime(OTSYS_TIME() + delay), delay(delay),
+	func(std::move(f)), context(internContext(context)), utime(OTSYS_TIME() + delay), delay(delay),
 	cycle(cycle), log(log) {
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
@@ -35,6 +45,30 @@ Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t del
 	}
 
 	assert(!this->context.empty() && "Context cannot be empty!");
+}
+
+std::string_view Task::internContext(std::string_view context) {
+	static std::mutex contextMutex;
+	static std::unordered_set<std::string, TransparentStringHasher, std::equal_to<>> contexts;
+
+	static thread_local std::array<std::string_view, 8> localContexts {};
+	static thread_local size_t nextLocalContext = 0;
+
+	for (const auto localContext : localContexts) {
+		if (localContext == context) {
+			return localContext;
+		}
+	}
+
+	std::scoped_lock lock(contextMutex);
+	auto it = contexts.find(context);
+	if (it == contexts.end()) {
+		it = contexts.emplace(context).first;
+	}
+	const std::string_view internedContext = *it;
+
+	localContexts[nextLocalContext++ % localContexts.size()] = internedContext;
+	return internedContext;
 }
 
 [[nodiscard]] bool Task::hasExpired() const {

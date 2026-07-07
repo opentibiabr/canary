@@ -266,7 +266,14 @@ public:
 		}
 	}
 
-	// This method maintains safety in asynchronous calls, avoiding competition between threads.
+	/**
+	 * Runs an action immediately or defers it back to the dispatcher.
+	 *
+	 * Deferred execution is guarded by a weak tile self reference. The action
+	 * must not capture borrowed raw pointers from the caller's stack; use strong
+	 * ownership, weak ownership, or an audited stable identity for anything that
+	 * must survive the async boundary.
+	 */
 	void safeCall(std::function<void(void)> &&action) const;
 
 private:

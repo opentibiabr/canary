@@ -77,6 +77,18 @@ public:
 	std::shared_ptr<Tile> getTile(const Position &pos) {
 		return getTile(pos.x, pos.y, pos.z);
 	}
+	/**
+	 * Resolves a tile while reusing a caller-owned floor cursor.
+	 *
+	 * The cursor is only a synchronous hotpath hint. It does not own a tile,
+	 * must not cross dispatcher/Lua/async boundaries, and must not be stored in
+	 * members or global caches. Cached BasicTile materialization still goes
+	 * through getOrCreateTileFromCache().
+	 */
+	std::shared_ptr<Tile> getTileWithFloorCursor(uint16_t x, uint16_t y, uint8_t z, MapCacheFloorCursor &floorCursor);
+	std::shared_ptr<Tile> getTileWithFloorCursor(const Position &pos, MapCacheFloorCursor &floorCursor) {
+		return getTileWithFloorCursor(pos.x, pos.y, pos.z, floorCursor);
+	}
 
 	void refreshZones(uint16_t x, uint16_t y, uint8_t z);
 	void refreshZones(const Position &pos) {

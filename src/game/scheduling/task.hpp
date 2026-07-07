@@ -59,6 +59,14 @@ public:
 
 private:
 	static std::atomic_uint_fast64_t LAST_EVENT_ID;
+	/**
+	 * @brief Returns a stable context view shared by tasks with the same name.
+	 *
+	 * Dispatcher hotpaths create many short-lived Task objects. Interning keeps
+	 * the logging/metrics context stable without allocating a new string for
+	 * every task.
+	 */
+	static std::string_view internContext(std::string_view context);
 
 	void updateTime();
 
@@ -102,7 +110,7 @@ private:
 	};
 
 	std::function<void(void)> func;
-	std::string context;
+	std::string_view context;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

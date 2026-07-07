@@ -12,6 +12,11 @@
 #include "task.hpp"
 #include "lib/thread/thread_pool.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <atomic>
+	#include <span>
+#endif
+
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 
@@ -20,6 +25,7 @@ enum class TaskGroup : int8_t {
 	Walk,
 	WalkParallel,
 	Serial,
+	DeferredGameplay,
 	GenericParallel,
 	Last
 };
@@ -96,6 +102,7 @@ public:
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 	void addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0); // No need context name
+	void addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {
 		return scheduleEvent(delay, std::move(f), context, true);
@@ -158,19 +165,24 @@ private:
 
 	void init();
 	void shutdown() {
+		setQueueLatencyLoggingEnabled(false);
 		signalSchedule.notify_all();
 		shuttingDown = true;
 	}
 
+	void setQueueLatencyLoggingEnabled(bool enabled);
+
 	inline void mergeAsyncEvents();
 	inline void mergeEvents();
-	inline void __mergeEvents(const std::array<uint8_t, 2> &groups, const bool mergeScheduledEvents);
+	inline void __mergeEvents(std::span<const uint8_t> groups, const bool mergeScheduledEvents);
 
 	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Walk);
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(const uint8_t groupId);
+	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks);
 	inline void executeParallelEvents(const uint8_t groupId);
+	inline void logQueueLatency(const uint8_t groupId) const;
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -237,6 +249,8 @@ private:
 	bool asyncWaitDisabled = false;
 
 	bool shuttingDown = false;
+	std::atomic_bool queueLatencyLoggingEnabled = false;
+	std::atomic<int64_t> queueLatencyLoggingStartedAt = 0;
 
 	friend class CanaryServer;
 };

@@ -202,9 +202,72 @@ jobs:
       release_tag: ${{ needs.validate.outputs.tag }}
       checkout_ref: ${{ needs.prepare-tag.outputs.commit_sha }}
 
+  validate-client-release:
+    name: Validate Client Release
+    needs: [prepare-tag, validate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      client_tag: ${{ steps.client.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+    steps:
+      - name: Resolve and validate Tibia client release
+        id: client
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          prefix="${CLIENT_DISPLAY}."
+          releases="$(gh api "repos/dudantas/tibia-client/releases?per_page=100")"
+          client_tag="$(jq -r --arg prefix "${prefix}" '
+            [
+              .[]
+              | select(.draft | not)
+              | select(.prerelease | not)
+              | select(.tag_name | startswith($prefix))
+            ]
+            | sort_by(.published_at)
+            | last
+            | .tag_name // empty
+          ' <<<"${releases}")"
+
+          if [[ -z "${client_tag}" ]]; then
+            echo "No published dudantas/tibia-client release was found for client ${CLIENT_DISPLAY}." >&2
+            exit 1
+          fi
+
+          required_assets=(
+            "tibia-client-${client_tag}.zip"
+            "client-11.zip"
+            "tibia-8.6-extended.zip"
+          )
+          release_assets="$(gh release view "${client_tag}" \
+            --repo dudantas/tibia-client \
+            --json assets \
+            --jq '.assets[].name')"
+
+          for asset in "${required_assets[@]}"; do
+            if ! grep -Fxq "${asset}" <<<"${release_assets}"; then
+              echo "Client release ${client_tag} is missing required asset: ${asset}" >&2
+              exit 1
+            fi
+          done
+
+          echo "tag=${client_tag}" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "Resolved Tibia client release ${client_tag} for client ${CLIENT_DISPLAY}."
+            echo ""
+            echo "Validated required assets:"
+            printf -- "- %s\n" "${required_assets[@]}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   publish:
     name: Publish Release
-    needs: [prepare-tag, validate, build-linux, build-windows, build-macos, build-docker]
+    needs: [prepare-tag, validate, validate-client-release, build-linux, build-windows, build-macos, build-docker]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -214,6 +277,7 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
       CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+      CLIENT_RELEASE_TAG: ${{ needs.validate-client-release.outputs.client_tag }}
       PREVIOUS_TAG: ${{ needs.validate.outputs.previous_tag }}
       RELEASE_COMMIT_SHA: ${{ needs.prepare-tag.outputs.commit_sha }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -253,7 +317,8 @@ jobs:
           - #### For tutorials and additional resources, visit our [documentation](https://docs.opentibiabr.com/home/welcome).
 
           ------------------------------------
-          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/latest)
+          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/tag/${CLIENT_RELEASE_TAG})
+          ### Full client packages are published in the linked Tibia client release.
           ### [Download OTClient Redemption](https://github.com/opentibiabr/otclient), thanks for @mehah
 
           ------------------------------------

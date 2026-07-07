@@ -212,8 +212,13 @@ int HouseFunctions::luaHouseHasNewOwnership(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function House:startTrade
+ * @param player Player
+ * @param tradePartner Player
+ * @return number|nil
+ */
 int HouseFunctions::luaHouseStartTrade(lua_State* L) {
-	// house:startTrade(player, tradePartner)
 	const auto &house = Lua::getUserdataShared<House>(L, 1, "House");
 	const auto &player = Lua::getUserdataShared<Player>(L, 2, "Player");
 	const auto &tradePartner = Lua::getUserdataShared<Player>(L, 3, "Player");

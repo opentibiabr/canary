@@ -17,6 +17,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
+#include "map/map.hpp"
 #include "map/spectators.hpp"
 #include "io/iobestiary.hpp"
 
@@ -24,6 +25,14 @@ int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
 
 uint32_t Monster::monsterAutoID = 0x50000001;
+
+namespace {
+	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
+		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
+			&& creature.get() != static_cast<const Creature*>(&monster)
+			&& creature->getMonsterRaw() && !creature->isSummon();
+	}
+}
 
 std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
 	const auto &mType = g_monsters().getMonsterType(name);
@@ -411,48 +420,88 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		auto action = [this, newPos, oldPos, creature] {
-			bool canSeeNewPos = canSee(newPos);
-			bool canSeeOldPos = canSee(oldPos);
+		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+			queueMovementAiRefresh(creature, oldPos, newPos);
+		} else {
+			processMovementAiRefresh(creature, oldPos, newPos);
+		}
+	}
+}
 
-			if (canSeeNewPos && !canSeeOldPos) {
-				onCreatureEnter(creature);
-			} else if (!canSeeNewPos && canSeeOldPos) {
-				onCreatureLeave(creature);
-			}
+void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
+	if (pendingMovementAiRefresh.scheduled) {
+		pendingMovementAiRefresh.needsFullRefresh = true;
+		return;
+	}
 
-			updateIdleStatus();
+	pendingMovementAiRefresh.creature = creature;
+	pendingMovementAiRefresh.oldPos = oldPos;
+	pendingMovementAiRefresh.newPos = newPos;
+	pendingMovementAiRefresh.scheduled = true;
+	pendingMovementAiRefresh.needsFullRefresh = false;
 
-			if (!isSummon()) {
-				if (const auto &followCreature = getFollowCreature()) {
-					const Position &followPosition = followCreature->getPosition();
-					const Position &pos = getPosition();
+	addAsyncTask([this] {
+		executeMovementAiRefresh();
+	});
+}
 
-					int32_t offset_x = Position::getDistanceX(followPosition, pos);
-					int32_t offset_y = Position::getDistanceY(followPosition, pos);
-					if ((offset_x > 1 || offset_y > 1) && m_monsterType->info.changeTargetChance > 0) {
-						Direction dir = getDirectionTo(pos, followPosition);
-						const auto &checkPosition = getNextPosition(dir, pos);
+void Monster::executeMovementAiRefresh() {
+	const bool needsFullRefresh = pendingMovementAiRefresh.needsFullRefresh;
+	const auto movedCreature = pendingMovementAiRefresh.creature.lock();
+	const Position oldPos = pendingMovementAiRefresh.oldPos;
+	const Position newPos = pendingMovementAiRefresh.newPos;
 
-						if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
-							const auto &topCreature = nextTile->getTopCreature();
-							if (followCreature != topCreature && isOpponent(topCreature)) {
-								selectTarget(topCreature);
-							}
-						}
-					}
-				} else if (isOpponent(creature)) {
-					// we have no target lets try pick this one
-					selectTarget(creature);
+	pendingMovementAiRefresh.creature.reset();
+	pendingMovementAiRefresh.scheduled = false;
+	pendingMovementAiRefresh.needsFullRefresh = false;
+
+	if (needsFullRefresh || !movedCreature) {
+		updateTargetList();
+		updateIdleStatus();
+		return;
+	}
+
+	processMovementAiRefresh(movedCreature, oldPos, newPos);
+}
+
+void Monster::processMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
+	const bool canSeeNewPos = canSee(newPos);
+	const bool canSeeOldPos = canSee(oldPos);
+
+	if (canSeeNewPos && !canSeeOldPos) {
+		onCreatureEnter(creature);
+	} else if (!canSeeNewPos && canSeeOldPos) {
+		onCreatureLeave(creature);
+	}
+
+	if (isIdle) {
+		updateIdleStatus();
+	}
+
+	if (isSummon()) {
+		return;
+	}
+
+	if (const auto &followCreature = getFollowCreature()) {
+		const Position &followPosition = followCreature->getPosition();
+		const Position &pos = getPosition();
+
+		int32_t offset_x = Position::getDistanceX(followPosition, pos);
+		int32_t offset_y = Position::getDistanceY(followPosition, pos);
+		if ((offset_x > 1 || offset_y > 1) && m_monsterType->info.changeTargetChance > 0) {
+			Direction dir = getDirectionTo(pos, followPosition);
+			const auto &checkPosition = getNextPosition(dir, pos);
+
+			if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
+				const auto &topCreature = nextTile->getTopCreature();
+				if (followCreature != topCreature && isOpponent(topCreature)) {
+					selectTarget(topCreature);
 				}
 			}
-		};
-
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-			addAsyncTask(std::move(action));
-		} else {
-			action();
 		}
+	} else if (isOpponent(creature)) {
+		// We have no target, so try to pick this one.
+		selectTarget(creature);
 	}
 }
 
@@ -540,21 +589,29 @@ void Monster::onSpawn(const Position &position) {
 	}
 }
 
-void Monster::addFriend(const std::shared_ptr<Creature> &creature) {
+bool Monster::addFriend(const std::shared_ptr<Creature> &creature) {
 	if (creature.get() == this) {
 		g_logger().error("[{}]: adding creature is same of monster", __FUNCTION__);
-		return;
+		return false;
 	}
 
 	assert(creature.get() != this);
-	friendList.try_emplace(creature->getID(), creature);
+	return friendList.try_emplace(creature->getID(), creature).second;
 }
 
-void Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
-	std::erase_if(friendList, [id = creature->getID()](const auto &it) {
-		const auto &target = it.second.lock();
-		return !target || target->getID() == id;
-	});
+bool Monster::removeFriend(const std::shared_ptr<Creature> &creature) {
+	return friendList.erase(creature->getID()) > 0;
+}
+
+bool Monster::countsAsPlayerOnScreenTarget(const std::shared_ptr<Creature> &creature) const {
+	const auto &master = getMaster();
+	return !master && getFaction() != FACTION_DEFAULT && creature && creature->getPlayerRaw();
+}
+
+void Monster::forgetTargetReference(const TargetReference &ref) {
+	if (ref.countsAsPlayerOnScreen && totalPlayersOnScreen > 0) {
+		totalPlayersOnScreen--;
+	}
 }
 
 bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
@@ -567,17 +624,22 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 
 	auto it = getTargetIterator(creature);
 	if (it != targetList.end()) {
-		return false;
+		if (!it->creature.expired()) {
+			return false;
+		}
+
+		forgetTargetReference(*it);
+		targetList.erase(it);
 	}
 
+	const bool countsAsPlayer = countsAsPlayerOnScreenTarget(creature);
 	if (pushFront) {
-		targetList.emplace_front(creature);
+		targetList.push_front(TargetReference { creature->getID(), creature, countsAsPlayer });
 	} else {
-		targetList.emplace_back(creature);
+		targetList.push_back(TargetReference { creature->getID(), creature, countsAsPlayer });
 	}
 
-	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
+	if (countsAsPlayer) {
 		totalPlayersOnScreen++;
 	}
 
@@ -594,16 +656,15 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
-	const auto &master = getMaster();
-	if (!master && getFaction() != FACTION_DEFAULT && creature->getPlayer()) {
-		totalPlayersOnScreen--;
-	}
-
-	if (auto shared = it->lock()) {
+	const auto &target = it->creature.lock();
+	if (!target) {
+		forgetTargetReference(*it);
 		targetList.erase(it);
-	} else {
 		return false;
 	}
+
+	forgetTargetReference(*it);
+	targetList.erase(it);
 
 	return true;
 }
@@ -619,20 +680,26 @@ void Monster::updateTargetList() {
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
-	std::erase_if(targetList, [this](const std::weak_ptr<Creature> &ref) {
-		const auto &target = ref.lock();
-		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
+	std::erase_if(targetList, [this](const TargetReference &ref) {
+		const auto &target = ref.creature.lock();
+		const bool shouldErase = !target || target->getHealth() <= 0 || !canSee(target->getPosition());
+		if (shouldErase) {
+			forgetTargetReference(ref);
+		}
+		return shouldErase;
 	});
 
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	for (const auto &spectator : Spectators().find<Creature>(position, true, 0, 0, 0, 0, false)) {
 		if (spectator.get() != this && canSee(spectator->getPosition())) {
-			onCreatureFound(spectator);
+			onCreatureFound(spectator, false, monsterPerfTestFriendlyFire);
 		}
 	}
 }
 
 void Monster::clearTargetList() {
 	targetList.clear();
+	totalPlayersOnScreen = 0;
 }
 
 void Monster::clearFriendList() {
@@ -640,15 +707,22 @@ void Monster::clearFriendList() {
 }
 
 void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront /* = false*/) {
-	if (isFriend(creature)) {
-		addFriend(creature);
+	onCreatureFound(creature, pushFront, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire) {
+	bool listChanged = false;
+	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
+		listChanged = addFriend(creature) || listChanged;
 	}
 
-	if (isOpponent(creature)) {
-		addTarget(creature, pushFront);
+	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
+		listChanged = addTarget(creature, pushFront) || listChanged;
 	}
 
-	updateIdleStatus();
+	if (listChanged || isIdle) {
+		updateIdleStatus();
+	}
 }
 
 void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
@@ -656,6 +730,10 @@ void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
+	return isFriend(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isFriend(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const {
 	const auto &master = getMaster();
 	const auto &masterPlayer = master ? master->getPlayer() : nullptr;
 	if (isSummon() && masterPlayer) {
@@ -672,10 +750,18 @@ bool Monster::isFriend(const std::shared_ptr<Creature> &creature) const {
 		}
 	}
 
-	return creature->getMonster() && !creature->isSummon();
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
+		return false;
+	}
+
+	return creature->getMonsterRaw() && !creature->isSummon();
 }
 
 bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
+	return isOpponent(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isOpponent(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const {
 	if (!creature) {
 		return false;
 	}
@@ -689,6 +775,10 @@ bool Monster::isOpponent(const std::shared_ptr<Creature> &creature) const {
 	const auto &player = creature ? creature->getPlayer() : nullptr;
 	if (player && player->hasFlag(PlayerFlags_t::IgnoredByMonsters)) {
 		return false;
+	}
+
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
+		return true;
 	}
 
 	if (getFaction() != FACTION_DEFAULT) {
@@ -714,15 +804,16 @@ uint16_t Monster::getLookCorpse() const {
 }
 
 void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+
 	// update friendList
-	if (isFriend(creature)) {
+	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
 		removeFriend(creature);
 	}
 
 	// update targetList
-	if (isOpponent(creature)) {
-		removeTarget(creature);
-		if (targetList.empty()) {
+	if (isOpponent(creature, monsterPerfTestFriendlyFire)) {
+		if (removeTarget(creature) && targetList.empty()) {
 			updateIdleStatus();
 		}
 	}
@@ -750,7 +841,9 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	}
 
 	std::vector<std::shared_ptr<Creature>> resultList;
+	resultList.reserve(targetList.size());
 	const Position &myPos = getPosition();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 
 	// When the current melee target is path-blocked (magic wall, untraversable field),
 	// exclude it so a reachable alternative can be chosen instead of repeatedly picking
@@ -758,9 +851,9 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	const auto &currentAttacked = getAttackedCreature();
 	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
 
-	for (const auto &cref : targetList) {
-		const auto &creature = cref.lock();
-		if (creature && isTarget(creature)) {
+	for (const auto &targetRef : targetList) {
+		const auto &creature = targetRef.creature.lock();
+		if (creature && isTarget(creature, monsterPerfTestFriendlyFire)) {
 			if (skipCurrentUnreachable && creature == currentAttacked) {
 				continue;
 			}
@@ -800,7 +893,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			} else {
 				int32_t minRange = std::numeric_limits<int32_t>::max();
 				for (const auto &creature : getTargetList()) {
-					if (!isTarget(creature)) {
+					if (!isTarget(creature, monsterPerfTestFriendlyFire)) {
 						continue;
 					}
 
@@ -814,7 +907,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				}
 			}
 
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -837,7 +930,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					} while (++it != resultList.end());
 				}
 			}
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -859,7 +952,7 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 					} while (++it != resultList.end());
 				}
 			}
-			if (getTarget && selectTarget(getTarget)) {
+			if (getTarget && selectTarget(getTarget, monsterPerfTestFriendlyFire)) {
 				return true;
 			}
 			break;
@@ -869,18 +962,18 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 			if (!resultList.empty()) {
 				auto it = resultList.begin();
 				std::advance(it, uniform_random(0, resultList.size() - 1));
-				return selectTarget(*it);
+				return selectTarget(*it, monsterPerfTestFriendlyFire);
 			}
 			break;
 		}
 	}
 
 	// lets just pick the first target in the list
-	return std::ranges::any_of(getTargetList(), [this, skipCurrentUnreachable, &currentAttacked](const std::shared_ptr<Creature> &creature) {
+	return std::ranges::any_of(getTargetList(), [this, skipCurrentUnreachable, &currentAttacked, monsterPerfTestFriendlyFire](const std::shared_ptr<Creature> &creature) {
 		if (skipCurrentUnreachable && creature == currentAttacked) {
 			return false;
 		}
-		return selectTarget(creature);
+		return selectTarget(creature, monsterPerfTestFriendlyFire);
 	});
 }
 
@@ -935,12 +1028,20 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 }
 
 bool Monster::isTarget(const std::shared_ptr<Creature> &creature) {
+	return isTarget(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::isTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
 	if (creature->isRemoved() || !creature->isAttackable() || creature->getZoneType() == ZONE_PROTECTION || !canSeeCreature(creature)) {
 		return false;
 	}
 
 	if (creature->getPosition().z != getPosition().z) {
 		return false;
+	}
+
+	if (isMonsterPerfTestFriendlyFireTarget(*this, creature, monsterPerfTestFriendlyFire)) {
+		return true;
 	}
 
 	if (!isSummon()) {
@@ -961,7 +1062,11 @@ bool Monster::isFleeing() const {
 }
 
 bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
-	if (!isTarget(creature)) {
+	return selectTarget(creature, g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE));
+}
+
+bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
+	if (!isTarget(creature, monsterPerfTestFriendlyFire)) {
 		return false;
 	}
 
@@ -976,6 +1081,12 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 		return false;
 	}
 
+	if (it->creature.expired()) {
+		forgetTargetReference(*it);
+		targetList.erase(it);
+		return false;
+	}
+
 	if (isHostile() || isSummon()) {
 		if (setAttackedCreature(creature)) {
 			checkCreatureAttack();
@@ -986,6 +1097,11 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature) {
 
 void Monster::setIdle(bool idle) {
 	if (isRemoved() || getHealth() <= 0) {
+		return;
+	}
+
+	if (!idle && !isIdle) {
+		g_game().addCreatureCheck(getMonster());
 		return;
 	}
 
@@ -1004,6 +1120,11 @@ void Monster::setIdle(bool idle) {
 void Monster::updateIdleStatus() {
 	if (!g_dispatcher().context().isAsync()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
+		return;
+	}
+
+	if (g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE)) {
+		setIdle(false);
 		return;
 	}
 
@@ -1109,6 +1230,7 @@ void Monster::onThink_async() {
 
 	const auto &attackedCreature = getAttackedCreature();
 	const auto &followCreature = getFollowCreature();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	if (isSummon()) {
 		const auto &master = getMaster();
 		if (attackedCreature.get() == this) {
@@ -1123,14 +1245,20 @@ void Monster::onThink_async() {
 			// Our master has not ordered us to attack anything, lets follow him around instead.
 			setFollowCreature(master);
 		}
-	} else if (!targetList.empty()) {
-		const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
-		const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
-		if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
-			if (!followCreature || !hasFollowPath) {
-				searchTarget(TARGETSEARCH_NEAREST);
-			} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
-				searchTarget(TARGETSEARCH_DEFAULT);
+	} else {
+		if (monsterPerfTestFriendlyFire && targetList.empty()) {
+			updateTargetList();
+		}
+
+		if (!targetList.empty()) {
+			const bool attackedCreatureIsUnattackable = attackedCreature && !canUseAttack(getPosition(), attackedCreature);
+			const bool attackedCreatureIsUnreachable = targetDistance <= 1 && attackedCreature && followCreature && !hasFollowPath;
+			if (!attackedCreature || attackedCreatureIsUnattackable || attackedCreatureIsUnreachable) {
+				if (!followCreature || !hasFollowPath) {
+					searchTarget(monsterPerfTestFriendlyFire ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
+				} else if (attackedCreature && isFleeing() && !canUseAttack(getPosition(), attackedCreature)) {
+					searchTarget(TARGETSEARCH_DEFAULT);
+				}
 			}
 		}
 	}
@@ -1301,11 +1429,9 @@ void Monster::onThinkTarget(uint32_t interval) {
 					}
 
 					if (m_monsterType->info.changeTargetChance >= uniform_random(1, 100)) {
-						if (m_monsterType->info.targetDistance <= 1) {
-							searchTarget(TARGETSEARCH_RANDOM);
-						} else {
-							searchTarget(TARGETSEARCH_NEAREST);
-						}
+						const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
+							|| m_monsterType->info.targetDistance <= 1;
+						searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
 					}
 				}
 			}
@@ -1660,8 +1786,9 @@ bool Monster::getRandomStep(const Position &creaturePos, Direction &moveDirectio
 	};
 	[[maybe_unused]] auto last = std::ranges::shuffle(dirList, getRandomGenerator());
 
+	MapCacheFloorCursor floorCursor;
 	for (const Direction &dir : dirList) {
-		if (canWalkTo(creaturePos, dir)) {
+		if (canWalkTo(creaturePos, dir, floorCursor)) {
 			moveDirection = dir;
 			return true;
 		}
@@ -1691,9 +1818,10 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 	}
 
 	std::vector<Direction> dirList;
+	MapCacheFloorCursor floorCursor;
 	auto tryAddDirection = [&](Direction direction, int_fast32_t newX, int_fast32_t newY) {
 		uint32_t tmpDist = std::max<uint32_t>(std::abs(newX - centerPos.getX()), std::abs(newY - centerPos.getY()));
-		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction)) {
+		if (tmpDist == centerToDist && canWalkTo(creaturePos, direction, floorCursor)) {
 			bool result = true;
 
 			if (keepAttack) {
@@ -1732,6 +1860,10 @@ bool Monster::getDanceStep(const Position &creaturePos, Direction &moveDirection
 
 bool Monster::getDistanceStep(const Position &targetPos, Direction &moveDirection, bool flee /* = false */) {
 	const Position &creaturePos = getPosition();
+	MapCacheFloorCursor floorCursor;
+	auto canWalkTo = [this, &floorCursor](const Position &pos, Direction direction) {
+		return this->canWalkTo(pos, direction, floorCursor);
+	};
 
 	int_fast32_t dx = Position::getDistanceX(creaturePos, targetPos);
 	int_fast32_t dy = Position::getDistanceY(creaturePos, targetPos);
@@ -2306,9 +2438,14 @@ void Monster::setSoulPitStack(uint8_t stack, bool isSummon /* = false */) {
 }
 
 bool Monster::canWalkTo(Position pos, Direction moveDirection) {
+	MapCacheFloorCursor floorCursor;
+	return canWalkTo(pos, moveDirection, floorCursor);
+}
+
+bool Monster::canWalkTo(Position pos, Direction moveDirection, MapCacheFloorCursor &floorCursor) {
 	pos = getNextPosition(moveDirection, pos);
 	if (isInSpawnRange(pos)) {
-		const auto &tile = g_game().map.getTile(pos);
+		const auto &tile = g_game().map.getTileWithFloorCursor(pos, floorCursor);
 		if (tile && tile->getTopVisibleCreature(getMonster()) == nullptr && tile->queryAdd(0, getMonster(), 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) == RETURNVALUE_NOERROR) {
 			return true;
 		}

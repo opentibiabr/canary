@@ -4153,10 +4153,12 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			auto condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
 			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
+				const ConditionType_t type = condition->getType();
 				it = conditions.erase(it);
+				trackRemovedCondition(type);
 
 				condition->endCondition(static_self_cast<Player>());
-				onEndCondition(condition->getType());
+				onEndCondition(type);
 			} else {
 				++it;
 			}
@@ -4169,10 +4171,12 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		while (it != end) {
 			auto condition = *it;
 			if (condition->isPersistent()) {
+				const ConditionType_t type = condition->getType();
 				it = conditions.erase(it);
+				trackRemovedCondition(type);
 
 				condition->endCondition(static_self_cast<Player>());
-				onEndCondition(condition->getType());
+				onEndCondition(type);
 			} else {
 				++it;
 			}
@@ -12318,7 +12322,7 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
+			g_game().queuePlayerAutoWalk(getID(), std::move(listDir));
 			const auto &task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;

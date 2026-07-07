@@ -215,7 +215,9 @@ bool SpawnMonster::spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const
 	auto monster = std::make_shared<Monster>(monsterType);
 	if (startup) {
 		// No need to send out events to the surrounding since there is no one out there to listen!
-		if (!g_game().internalPlaceCreature(monster, sb.pos, true)) {
+		// Benchmark force-active mode still needs the creature check loop from boot.
+		const bool forceCreatureCheck = g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE);
+		if (!g_game().internalPlaceCreature(monster, sb.pos, true, false, forceCreatureCheck)) {
 			return false;
 		}
 	} else {

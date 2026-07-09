@@ -47,6 +47,10 @@ kept in [`evidence.md`](evidence.md).
 Keep raw profiler dumps out of this roadmap; summarize only workload, signal,
 and the decision validated.
 
+The follow-up roadmap for bounded barrier-parallel execution, dispatcher
+fairness, and eventual pure background worker jobs is kept in
+[`parallel-monster-ai-roadmap.md`](parallel-monster-ai-roadmap.md).
+
 ## Vocabulary
 
 ### Strong owner or pin

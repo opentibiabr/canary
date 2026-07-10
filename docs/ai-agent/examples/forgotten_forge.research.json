@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "documentId": "forgotten_forge_research",
+  "entities": [
+    {
+      "id": "forgotten_forge_quest",
+      "type": "quest",
+      "name": "Forgotten Forge",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "classification": "custom-ots-content",
+        "notes": "Original dry-run quest design. Not canonical Tibia content."
+      }
+    },
+    {
+      "id": "forge_keeper_npc",
+      "type": "npc",
+      "name": "Forge Keeper Ardan",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "role": "quest starter"
+      }
+    },
+    {
+      "id": "ashen_sentinel_boss",
+      "type": "monster",
+      "name": "The Ashen Sentinel",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "role": "quest boss"
+      }
+    }
+  ]
+}

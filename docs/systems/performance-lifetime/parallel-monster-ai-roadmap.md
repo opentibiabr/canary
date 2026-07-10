@@ -38,7 +38,8 @@ on it.
 | Combat intention | Workers return geometrically eligible spell indices only. The dispatcher repeats target, floor, range, line-of-sight, zone, cooldown, reload-epoch, and generation checks before RNG, Lua, damage, effects, or conditions. Requests are latest-only and capped at 256 spells. |
 | Relevance and control | Immutable relevance values with temporal hysteresis affect queue weight only. Adaptive budgets use player-visible p99/oldest age, 50 ms SLO, 100 ms emergency threshold, lane minimums, and four healthy windows before relaxation. |
 | Final scheduler | Fixed group draining and the legacy group abstraction were removed. Due scheduled tasks enter classified lanes. Weighted deficit round robin, aging, producer round robin, and bounded completion draining now choose ready work. |
-| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Saturation rejects explicitly, logs queued/rejected counts, and closes a connection when protocol input cannot be admitted. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens. |
+| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Immediate enqueue reserves before moving its closure, queued work releases admission when execution starts, canceled timers release immediately, and a one-shot scheduled callback releases before queuing its successor. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens. |
+| Overload recovery | Protocol work fails closed by closing the connection. Rejected player walk cancels its dependent action, rejected coalesced monster work releases its pending state, rejected tile materialization keeps the old tile, and serial movement/death commits retain an audited inline fallback. Worker exceptions return a dispatcher-side failure completion so monster request state cannot remain outstanding. |
 
 ### Production gate status
 
@@ -331,10 +332,23 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
 - Reject, replace, or defer new jobs when a queue is full. Never allow an
   unbounded queue to become the overload policy.
 - Dispatcher immediate and scheduled work share a hard 16,384-slot cap per
-  lane. A canceled timer keeps its slot until the canceled entry is consumed so
-  delayed wrappers cannot exceed the physical bound.
-- Protocol ingress rejection closes the connection instead of dropping a packet
-  while leaving its paused message buffer unresolved.
+  lane. Admission is reserved before an immediate closure is moved, so an
+  ordinary rejection leaves the caller-owned closure available for an audited
+  fallback.
+- Admission counts queued work, not callbacks that have started. A canceled
+  timer releases immediately, and a one-shot scheduled callback releases before
+  it queues a successor. This prevents cancellation churn or a full lane from
+  blocking a bounded recurring chain from replacing itself.
+- Protocol input, handshake, delayed protocol callbacks, and barrier-originated
+  output fail closed by closing the connection instead of dropping work while
+  leaving a paused buffer or partial session unresolved.
+- Rejection must unwind producer state. Player autowalk does not install its
+  dependent action, monster post-think consumes its pending token, creature
+  checks become retryable, and Lua timer registration releases registry
+  references when scheduler admission fails.
+- A worker exception is converted into a prebuilt failure completion. That
+  completion runs on the dispatcher, applies generation-aware cleanup, and
+  retains the compute token until the cleanup is consumed.
 - The compute service accepts at most 2,048 outstanding request/completion
   tokens. A token is released only when its completion is consumed or shutdown
   cancels the request.
@@ -1041,6 +1055,14 @@ Dispatcher and scheduler:
 - Per-actor admission so one player or monster cannot monopolize a protected
   lane.
 - Completion queue saturation, rejection, and later recovery.
+- Immediate closure preservation on rejection and lane-slot recovery after
+  cancel, task start, and one-shot successor scheduling at capacity.
+- Protocol fail-closed behavior and absence of dependent player actions after
+  rejected walk admission.
+- Worker-exception failure completions, generation-aware monster cleanup, and
+  token release only after the failure completion is consumed.
+- Lua timer rejection without registry-reference leaks, plus recurring global
+  event and raid scheduling after capacity is recovered.
 - Deterministic adaptive-budget tests with an injected clock and workload.
 
 Movement:

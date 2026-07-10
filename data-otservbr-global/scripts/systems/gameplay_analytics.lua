@@ -146,7 +146,6 @@ function login.onLogin(player)
 	player:registerEvent("GameplayAnalyticsMana")
 	player:registerEvent("GameplayAnalyticsDeath")
 	player:registerEvent("GameplayAnalyticsKill")
-	player:registerEvent("GameplayAnalyticsExperience")
 	Analytics.start(player)
 	return true
 end
@@ -179,14 +178,14 @@ function kill.onKill(player, target)
 end
 kill:register()
 
-local experience = CreatureEvent("GameplayAnalyticsExperience")
-function experience.onGainExperience(player, source, experienceValue, rawExperience)
+local experienceCallback = EventCallback("GameplayAnalyticsExperience")
+function experienceCallback.playerOnGainExperience(player, source, experienceValue, rawExperience)
 	if Analytics.isEnabled() and source then
 		Analytics.recordExperience(player, experienceValue, rawExperience)
 	end
 	return experienceValue
 end
-experience:register()
+experienceCallback:register()
 
 -- CreatureEvent health callbacks must be registered on individual creatures.
 -- Monster spawns do not expose a global EventCallback, so use the engine-wide

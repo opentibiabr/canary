@@ -21,7 +21,7 @@ def _stem(name: str) -> str:
 
 def _component_path(task_id: str, component: dict) -> str:
     component_type = component["type"]
-    extension = ".xml" if component_type in {"monster", "raid"} else ".lua"
+    extension = ".xml" if component_type == "raid" else ".lua"
     return f'artifacts/generated-content/{task_id}/{component_type}/{_stem(component["name"])}{extension}'
 
 
@@ -48,7 +48,7 @@ def plan(task, content, registry, reservations):
         "implementationOrder": [
             "validate task spec",
             "reserve identifiers",
-            "render preview",
+            "render Canary-compatible preview",
             "human review",
             "manual apply",
         ],
@@ -56,6 +56,7 @@ def plan(task, content, registry, reservations):
             "run unit tests",
             "validate content plan",
             "validate generated manifest",
+            "check Canary registration markers",
             "review generated previews",
         ],
         "rollbackPlan": [
@@ -71,9 +72,7 @@ def plan(task, content, registry, reservations):
 
     if task_type == "quest":
         quest = task.get("quest", {})
-        result["newFiles"] += [
-            f"artifacts/generated-content/{task_id}/quest/{_stem(name)}.lua",
-        ]
+        result["newFiles"] = [f"artifacts/generated-content/{task_id}/quest/{_stem(name)}.lua"]
         result["proposedStorage"] = [
             {
                 "id": quest.get("storage", {}).get(
@@ -129,7 +128,7 @@ def plan(task, content, registry, reservations):
         result["mapRequirements"] = task.get("instance", {}).get("mapRequirements", [])
         result["riskLevel"] = "medium"
     else:
-        extension = ".xml" if task_type in {"monster", "raid"} else ".lua"
+        extension = ".xml" if task_type == "raid" else ".lua"
         result["newFiles"] = [f"artifacts/generated-content/{task_id}/{task_type}/{_stem(name)}{extension}"]
     return result
 

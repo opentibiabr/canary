@@ -397,7 +397,9 @@ local function sessionInsert(session)
 	return string.format(
 		[[INSERT INTO `analytics_sessions`
         (`session_uuid`,`player_id`,`player_name`,`vocation_id`,`level_start`,`level_end`,`started_at`,`ended_at`,`duration_seconds`,`combat_seconds`,`experience_raw`,`experience_final`,`damage_dealt`,`damage_received`,`healing_self`,`healing_others`,`overhealing`,`mana_spent`,`monsters_killed`,`deaths`,`loot_value_npc`,`loot_value_market`,`supplies_value`,`party_size`,`shared_experience`,`detail_level`,`analytics_version`)
-        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)]],
+        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)
+        ON DUPLICATE KEY UPDATE
+        `player_id`=VALUES(`player_id`),`player_name`=VALUES(`player_name`),`vocation_id`=VALUES(`vocation_id`),`level_start`=VALUES(`level_start`),`level_end`=VALUES(`level_end`),`started_at`=VALUES(`started_at`),`ended_at`=VALUES(`ended_at`),`duration_seconds`=VALUES(`duration_seconds`),`combat_seconds`=VALUES(`combat_seconds`),`experience_raw`=VALUES(`experience_raw`),`experience_final`=VALUES(`experience_final`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`healing_self`=VALUES(`healing_self`),`healing_others`=VALUES(`healing_others`),`overhealing`=VALUES(`overhealing`),`mana_spent`=VALUES(`mana_spent`),`monsters_killed`=VALUES(`monsters_killed`),`deaths`=VALUES(`deaths`),`loot_value_npc`=VALUES(`loot_value_npc`),`loot_value_market`=VALUES(`loot_value_market`),`supplies_value`=VALUES(`supplies_value`),`party_size`=VALUES(`party_size`),`shared_experience`=VALUES(`shared_experience`),`detail_level`=VALUES(`detail_level`),`analytics_version`=VALUES(`analytics_version`)]],
 		escaped(session.uuid),
 		session.playerId,
 		nameSql,
@@ -428,6 +430,10 @@ local function sessionInsert(session)
 	)
 end
 
+local function runDetailQuery(query)
+	return db.query(query) == true
+end
+
 local function insertDetails(session)
 	local queryResult = db.storeQuery("SELECT `id` FROM `analytics_sessions` WHERE `session_uuid` = " .. escaped(session.uuid) .. " LIMIT 1")
 	if not queryResult then
@@ -436,32 +442,61 @@ local function insertDetails(session)
 	end
 	local sessionId = result.getNumber(queryResult, "id")
 	result.free(queryResult)
+	local success = true
+
 	if Analytics.config.trackMonsters then
 		for name, data in pairs(session.monsters) do
-			db.query(string.format("INSERT INTO `analytics_session_monsters` (`session_id`,`monster_name`,`kills`,`damage_dealt`,`damage_received`,`experience_raw`) VALUES (%d,%s,%d,%d,%d,%d)", sessionId, escaped(name), data.kills, data.damageDealt, data.damageReceived, data.experienceRaw))
+			local query = string.format(
+				"INSERT INTO `analytics_session_monsters` (`session_id`,`monster_name`,`kills`,`damage_dealt`,`damage_received`,`experience_raw`) VALUES (%d,%s,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `kills`=VALUES(`kills`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`experience_raw`=VALUES(`experience_raw`)",
+				sessionId,
+				escaped(name),
+				data.kills,
+				data.damageDealt,
+				data.damageReceived,
+				data.experienceRaw
+			)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackSpells then
 		for name, data in pairs(session.spells) do
-			db.query(string.format("INSERT INTO `analytics_session_spells` (`session_id`,`spell_name`,`casts`,`targets_hit`,`damage`,`healing`,`mana_spent`,`critical_hits`) VALUES (%d,%s,%d,%d,%d,%d,%d,%d)", sessionId, escaped(name), data.casts, data.targets, data.damage, data.healing, data.mana, data.critical))
+			local query = string.format(
+				"INSERT INTO `analytics_session_spells` (`session_id`,`spell_name`,`casts`,`targets_hit`,`damage`,`healing`,`mana_spent`,`critical_hits`) VALUES (%d,%s,%d,%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `casts`=VALUES(`casts`),`targets_hit`=VALUES(`targets_hit`),`damage`=VALUES(`damage`),`healing`=VALUES(`healing`),`mana_spent`=VALUES(`mana_spent`),`critical_hits`=VALUES(`critical_hits`)",
+				sessionId,
+				escaped(name),
+				data.casts,
+				data.targets,
+				data.damage,
+				data.healing,
+				data.mana,
+				data.critical
+			)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackDamageTypes then
 		for damageType, data in pairs(session.damageTypes) do
-			db.query(string.format("INSERT INTO `analytics_session_damage_types` (`session_id`,`damage_type`,`damage_dealt`,`damage_received`) VALUES (%d,%d,%d,%d)", sessionId, damageType, data.dealt, data.received))
+			local query = string.format("INSERT INTO `analytics_session_damage_types` (`session_id`,`damage_type`,`damage_dealt`,`damage_received`) VALUES (%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`)", sessionId, damageType, data.dealt, data.received)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackSupplies then
 		for itemId, data in pairs(session.supplies) do
-			db.query(string.format("INSERT INTO `analytics_session_supplies` (`session_id`,`item_id`,`amount_used`,`unit_value`,`total_value`) VALUES (%d,%d,%d,%d,%d)", sessionId, itemId, data.amount, data.unitValue, data.totalValue))
+			local query = string.format("INSERT INTO `analytics_session_supplies` (`session_id`,`item_id`,`amount_used`,`unit_value`,`total_value`) VALUES (%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `amount_used`=VALUES(`amount_used`),`unit_value`=VALUES(`unit_value`),`total_value`=VALUES(`total_value`)", sessionId, itemId, data.amount, data.unitValue, data.totalValue)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackLoot then
 		for itemId, data in pairs(session.loot) do
-			db.query(string.format("INSERT INTO `analytics_session_loot` (`session_id`,`item_id`,`amount`,`npc_value`,`market_value`) VALUES (%d,%d,%d,%d,%d)", sessionId, itemId, data.amount, data.npcValue, data.marketValue))
+			local query = string.format("INSERT INTO `analytics_session_loot` (`session_id`,`item_id`,`amount`,`npc_value`,`market_value`) VALUES (%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `amount`=VALUES(`amount`),`npc_value`=VALUES(`npc_value`),`market_value`=VALUES(`market_value`)", sessionId, itemId, data.amount, data.npcValue, data.marketValue)
+			success = runDetailQuery(query) and success
 		end
 	end
-	return true
+
+	if not success then
+		logger.error("[GameplayAnalytics] Failed to persist one or more details for session {}.", session.uuid)
+	end
+	return success
 end
 
 function Analytics.flush()
@@ -477,13 +512,13 @@ function Analytics.flush()
 	local pending = Analytics.queue
 	Analytics.queue = {}
 	for _, session in ipairs(pending) do
-		if db.query(sessionInsert(session)) then
-			insertDetails(session)
-		else
-			logger.error("[GameplayAnalytics] Failed to persist session {}", session.uuid)
-			if #Analytics.queue < clampInteger(Analytics.config.queueLimit, 100, nil, 10000) then
-				Analytics.queue[#Analytics.queue + 1] = session
-			end
+		local persisted = db.query(sessionInsert(session)) == true
+		if persisted then
+			persisted = insertDetails(session)
+		end
+		if not persisted then
+			logger.error("[GameplayAnalytics] Failed to persist session {}; scheduling retry.", session.uuid)
+			Analytics.enqueue(session)
 		end
 	end
 	Analytics.lastFlush = now()

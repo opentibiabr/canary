@@ -95,6 +95,13 @@ def validate_schema(text: str) -> None:
     require("UNIQUE KEY `analytics_sessions_uuid`" in text, "session UUID must be unique for retry safety")
 
 
+def function_body(text: str, signature: str, following: str) -> str:
+    start = text.find(signature)
+    end = text.find(following, start + len(signature))
+    require(start >= 0 and end > start, f"cannot isolate runtime function: {signature}")
+    return text[start:end]
+
+
 def validate_library(text: str) -> None:
     functions = set(re.findall(r"function\s+Analytics\.([A-Za-z0-9_]+)\s*\(", text))
     missing = sorted(REQUIRED_API - functions)
@@ -126,6 +133,19 @@ def validate_library(text: str) -> None:
         re.search(r"\blocal\s+result\s*=\s*db\.storeQuery", text) is None,
         "database query handles must not shadow Canary's global result API",
     )
+    require(
+        text.count("ON DUPLICATE KEY UPDATE") >= len(REQUIRED_TABLES),
+        "session and detail writes must be idempotent for safe retries",
+    )
+    flush_body = function_body(text, "function Analytics.flush()", "function Analytics.expireInactive()")
+    require(
+        "persisted = insertDetails(session)" in flush_body,
+        "detail persistence failures must affect the session result",
+    )
+    require(
+        "Analytics.enqueue(session)" in flush_body,
+        "failed session or detail writes must be requeued",
+    )
 
 
 def strip_lua_comment(line: str) -> str:
@@ -137,13 +157,6 @@ def lua_block_delta(line: str) -> int:
     opens = len(re.findall(r"\b(function|if|for|while|do)\b", code))
     closes = len(re.findall(r"\bend\b", code))
     return opens - closes
-
-
-def function_body(text: str, signature: str, following: str) -> str:
-    start = text.find(signature)
-    end = text.find(following, start + len(signature))
-    require(start >= 0 and end > start, f"cannot isolate runtime function: {signature}")
-    return text[start:end]
 
 
 def has_global_drain_health_registration(text: str) -> bool:

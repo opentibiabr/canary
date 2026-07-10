@@ -107,6 +107,25 @@ class GameplayAnalyticsLibraryValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "empty sessions"):
             validator.validate_library(broken)
 
+    def test_rejects_non_idempotent_persistence(self) -> None:
+        broken = self.library.replace("ON DUPLICATE KEY UPDATE", "RETRY_UNSAFE_INSERT", 1)
+        with self.assertRaisesRegex(AssertionError, "idempotent"):
+            validator.validate_library(broken)
+
+    def test_rejects_ignored_detail_failure(self) -> None:
+        broken = self.library.replace("persisted = insertDetails(session)", "insertDetails(session)", 1)
+        with self.assertRaisesRegex(AssertionError, "detail persistence failures"):
+            validator.validate_library(broken)
+
+    def test_rejects_missing_persistence_requeue(self) -> None:
+        broken = self.library.replace(
+            'logger.error("[GameplayAnalytics] Failed to persist session {}; scheduling retry.", session.uuid)\n\t\t\tAnalytics.enqueue(session)',
+            'logger.error("[GameplayAnalytics] Failed to persist session {}; retry disabled.", session.uuid)',
+            1,
+        )
+        with self.assertRaisesRegex(AssertionError, "must be requeued"):
+            validator.validate_library(broken)
+
 
 class GameplayAnalyticsRuntimeValidationTest(unittest.TestCase):
     def setUp(self) -> None:

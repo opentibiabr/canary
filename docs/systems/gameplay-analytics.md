@@ -14,7 +14,7 @@ data-otservbr-global/scripts/config/gameplay_analytics.lua
 4. Verify startup logs contain `[GameplayAnalytics] Enabled`.
 5. Run `/analytics status` as a gamemaster.
 
-The feature does not issue SQL writes for individual hits. Data is accumulated in memory and flushed as completed sessions.
+The feature does not issue SQL writes for individual hits. Data is accumulated in memory and flushed as completed sessions. A retry writes the complete in-memory session snapshot and upserts every aggregate by its natural key.
 
 ## Configuration
 
@@ -162,7 +162,8 @@ HAVING SUM(p.casts) >= 100;
 - PvP and player-summon combat are excluded by default.
 - Completed sessions are bounded by `queueLimit`.
 - Database-disabled mode does not accumulate an undrainable queue.
-- Failed session inserts are requeued while capacity remains.
+- Session and detail writes use idempotent upserts, so a retry does not duplicate aggregates.
+- Failed session or detail writes requeue the complete session while capacity remains.
 - Database failures do not stop the game server.
 - Player names can be omitted from analytics records.
 - Prometheus labels are intentionally not added per player, spell, or monster to avoid cardinality problems.

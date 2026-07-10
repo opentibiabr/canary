@@ -32,12 +32,13 @@
   "$defs": {
     "source": {
       "type": "object",
-      "required": ["path"],
+      "required": ["path", "role"],
       "properties": {
         "path": { "type": "string" },
         "line": { "type": "integer", "minimum": 1 },
         "symbol": { "type": "string" },
-        "context": { "type": "string" }
+        "context": { "type": "string" },
+        "role": { "enum": ["definition", "reference"] }
       },
       "additionalProperties": false
     },

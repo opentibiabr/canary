@@ -305,4 +305,5 @@ function selfReset.onSay(player, words, param)
 end
 
 selfReset:separator(" ")
+selfReset:groupType("normal")
 selfReset:register()

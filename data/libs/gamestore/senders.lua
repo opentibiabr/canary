@@ -142,16 +142,18 @@ local function sendShowStoreOffers(playerId, category, redirectId)
 		end
 
 		local canBuy = player:canBuyOffer(offer)
+		offer.disabledReadonIndex = nil
 		if canBuy.disabled == 1 then
-			for index, disableTable in ipairs(disableReasons) do
-				if canBuy.disabledReason == disableTable.reason then
-					offer.disabledReadonIndex = index
+			for index, reason in ipairs(disableReasons) do
+				if canBuy.disabledReason == reason then
+					offer.disabledReadonIndex = index - 1
+					break
 				end
 			end
 
 			if offer.disabledReadonIndex == nil then
-				offer.disabledReadonIndex = #disableReasons
 				table.insert(disableReasons, canBuy.disabledReason)
+				offer.disabledReadonIndex = #disableReasons - 1
 			end
 		end
 
@@ -565,16 +567,18 @@ local function sendHomePage(playerId)
 	local homeOffers = getHomeOffers(player:getId())
 	for _, offer in pairs(homeOffers) do
 		local canBuy = player:canBuyOffer(offer)
+		offer.disabledReadonIndex = nil
 		if canBuy.disabled == 1 then
-			for index, disableTable in ipairs(disableReasons) do
-				if canBuy.disabledReason == disableTable.reason then
-					offer.disabledReadonIndex = index
+			for index, reason in ipairs(disableReasons) do
+				if canBuy.disabledReason == reason then
+					offer.disabledReadonIndex = index - 1
+					break
 				end
 			end
 
 			if offer.disabledReadonIndex == nil then
-				offer.disabledReadonIndex = #disableReasons
 				table.insert(disableReasons, canBuy.disabledReason)
+				offer.disabledReadonIndex = #disableReasons - 1
 			end
 		end
 	end

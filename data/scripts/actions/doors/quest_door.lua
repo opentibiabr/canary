@@ -9,45 +9,31 @@ for index, value in ipairs(QuestDoorTable) do
 	end
 end
 
--- Account quest doors are defined by datapack-specific storages. Resolve each
--- path defensively so this core script does not crash on datapacks (e.g.
--- data-canary) that do not define the referenced quest storages.
-local function resolveStorage(path)
-	local node = Storage
-	for key in string.gmatch(path, "[^.]+") do
-		if type(node) ~= "table" then
-			return nil
-		end
-		node = node[key]
-	end
-	return node
-end
-
-local accountQuestDoorPaths = {
-	["Quest.U7_6.TheApeCity.DworcDoor"] = "the-ape-city",
-	["Quest.U7_6.TheApeCity.ChorDoor"] = "the-ape-city",
-	["Quest.U7_6.TheApeCity.FibulaDoor"] = "the-ape-city",
-	["Quest.U7_6.TheApeCity.CasksDoor"] = "the-ape-city",
-	["Quest.U8_1.SecretService.CGBMission01"] = "secret-service",
-	["Quest.U8_1.SecretService.TBIMission02"] = "secret-service",
-	["Quest.U8_1.SecretService.AVINMission02"] = "secret-service",
-	["Quest.U8_1.SecretService.CGBMission02"] = "secret-service",
-	["Quest.U8_1.SecretService.TBIMission03"] = "secret-service",
-	["Quest.U8_1.SecretService.TBIMission04"] = "secret-service",
-	["Quest.U8_1.SecretService.CGBMission04"] = "secret-service",
-	["Quest.U8_1.SecretService.AVINMission05"] = "secret-service",
-	["Quest.U8_1.SecretService.CGBMission05"] = "secret-service",
-	["Quest.U8_1.SecretService.Mission07"] = "secret-service",
-	["Quest.U8_1.SecretService.CGBMission06"] = "secret-service",
-}
-
 local accountQuestDoors = {}
-for path, accountQuestId in pairs(accountQuestDoorPaths) do
-	local storageValue = resolveStorage(path)
-	if storageValue ~= nil then
-		accountQuestDoors[storageValue] = accountQuestId
+local function addAccountQuestDoor(storageId, questId)
+	if storageId then
+		accountQuestDoors[storageId] = questId
 	end
 end
+
+local theApeCity = Storage.Quest.U7_6 and Storage.Quest.U7_6.TheApeCity or {}
+addAccountQuestDoor(theApeCity.DworcDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.ChorDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.FibulaDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.CasksDoor, "the-ape-city")
+
+local secretService = Storage.Quest.U8_1 and Storage.Quest.U8_1.SecretService or {}
+addAccountQuestDoor(secretService.CGBMission01, "secret-service")
+addAccountQuestDoor(secretService.TBIMission02, "secret-service")
+addAccountQuestDoor(secretService.AVINMission02, "secret-service")
+addAccountQuestDoor(secretService.CGBMission02, "secret-service")
+addAccountQuestDoor(secretService.TBIMission03, "secret-service")
+addAccountQuestDoor(secretService.TBIMission04, "secret-service")
+addAccountQuestDoor(secretService.CGBMission04, "secret-service")
+addAccountQuestDoor(secretService.AVINMission05, "secret-service")
+addAccountQuestDoor(secretService.CGBMission05, "secret-service")
+addAccountQuestDoor(secretService.Mission07, "secret-service")
+addAccountQuestDoor(secretService.CGBMission06, "secret-service")
 
 local questDoor = Action()
 function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)

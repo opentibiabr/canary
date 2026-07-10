@@ -109,7 +109,7 @@ def lua_block_delta(line: str) -> int:
     return opens - closes
 
 
-def has_spawn_health_registration(text: str) -> bool:
+def has_global_drain_health_registration(text: str) -> bool:
     callback_names = {
         match.group(1)
         for match in re.finditer(
@@ -124,7 +124,7 @@ def has_spawn_health_registration(text: str) -> bool:
     lines = text.splitlines()
     for index, line in enumerate(lines):
         function_match = re.match(
-            r"^\s*function\s+([A-Za-z_][A-Za-z0-9_]*)\.onSpawn\s*\(([^)]*)\)",
+            r"^\s*function\s+([A-Za-z_][A-Za-z0-9_]*)\.creatureOnDrainHealth\s*\(([^)]*)\)",
             line,
         )
         if not function_match:
@@ -133,7 +133,9 @@ def has_spawn_health_registration(text: str) -> bool:
         callback_name = function_match.group(1)
         if callback_name not in callback_names:
             continue
-        if "creature" not in {argument.strip() for argument in function_match.group(2).split(",")}:
+
+        arguments = {argument.strip() for argument in function_match.group(2).split(",")}
+        if not {"creature", "attacker"}.issubset(arguments):
             continue
 
         depth = lua_block_delta(line)
@@ -145,7 +147,7 @@ def has_spawn_health_registration(text: str) -> bool:
                 break
 
         body_text = "\n".join(body)
-        if 'creature:registerEvent("GameplayAnalyticsHealth")' not in body_text:
+        if "Analytics.recordDamageDealt" not in body_text:
             continue
         if re.search(rf"^\s*{re.escape(callback_name)}:register\(\)\s*$", text, flags=re.MULTILINE):
             return True
@@ -167,7 +169,7 @@ def validate_runtime(text: str) -> None:
     ):
         require(event in text, f"missing runtime event: {event}")
     require('TalkAction("/analytics")' in text, "missing administrative command")
-    require(has_spawn_health_registration(text), "spawned monsters must receive the health event")
+    require(has_global_drain_health_registration(text), "global drain-health analytics callback must record outgoing damage")
 
 
 def main() -> int:

@@ -6,113 +6,72 @@ import unittest
 import validate_gameplay_analytics as validator
 
 
-class GameplayAnalyticsRuntimeValidationTest(unittest.TestCase):
-    def test_requires_health_registration_inside_spawn_callback(self) -> None:
-        runtime = '''
-local login = CreatureEvent("GameplayAnalyticsLogin")
-function login.onLogin(player)
-    player:registerEvent("GameplayAnalyticsHealth")
-    return true
-end
-login:register()
-
-local spawnCallback = EventCallback
-function spawnCallback.onSpawn(creature, position, startup, artificial)
-    return true
-end
-spawnCallback:register()
+def runtime_with_callback(callback: str) -> str:
+    return f'''
+{callback}
 
 local analyticsCommand = TalkAction("/analytics")
-
 GameplayAnalyticsStartup = true
 GameplayAnalyticsShutdown = true
+GameplayAnalyticsLogin = true
 GameplayAnalyticsLogout = true
+GameplayAnalyticsHealth = true
 GameplayAnalyticsMana = true
 GameplayAnalyticsDeath = true
 GameplayAnalyticsKill = true
 GameplayAnalyticsExperience = true
 '''
 
-        with self.assertRaisesRegex(AssertionError, "spawned monsters"):
+
+class GameplayAnalyticsRuntimeValidationTest(unittest.TestCase):
+    def test_requires_drain_health_damage_tracking_callback(self) -> None:
+        runtime = runtime_with_callback(
+            '''
+local drainHealthCallback = EventCallback("GameplayAnalyticsDrainHealth")
+function drainHealthCallback.creatureOnDrainHealth(creature, attacker, primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor)
+    return primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor
+end
+drainHealthCallback:register()
+'''
+        )
+
+        with self.assertRaisesRegex(AssertionError, "drain-health"):
             validator.validate_runtime(runtime)
 
-    def test_accepts_health_registration_inside_spawn_callback(self) -> None:
-        runtime = '''
-local spawnCallback = EventCallback
-function spawnCallback.onSpawn(creature, position, startup, artificial)
-    if creature:isMonster() then
-        creature:registerEvent("GameplayAnalyticsHealth")
+    def test_accepts_named_drain_health_callback_constructor(self) -> None:
+        runtime = runtime_with_callback(
+            '''
+local drainHealthCallback = EventCallback("GameplayAnalyticsDrainHealth")
+function drainHealthCallback.creatureOnDrainHealth(creature, attacker, primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor)
+    if creature and attacker then
+        Analytics.recordDamageDealt(attacker, creature, math.abs(primaryValue), primaryType)
     end
-    return true
+    return primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor
 end
-spawnCallback:register()
-
-local analyticsCommand = TalkAction("/analytics")
-GameplayAnalyticsStartup = true
-GameplayAnalyticsShutdown = true
-GameplayAnalyticsLogin = true
-GameplayAnalyticsLogout = true
-GameplayAnalyticsHealth = true
-GameplayAnalyticsMana = true
-GameplayAnalyticsDeath = true
-GameplayAnalyticsKill = true
-GameplayAnalyticsExperience = true
+drainHealthCallback:register()
 '''
+        )
 
         validator.validate_runtime(runtime)
 
-    def test_accepts_named_spawn_callback_constructor(self) -> None:
-        runtime = '''
-local spawnCallback = EventCallback("GameplayAnalyticsSpawn")
-function spawnCallback.onSpawn(creature, position, startup, artificial)
-    if creature:isMonster() then
-        creature:registerEvent("GameplayAnalyticsHealth")
-    end
-    return true
+    def test_rejects_damage_tracking_on_unregistered_callback_variable(self) -> None:
+        runtime = runtime_with_callback(
+            '''
+local drainHealthCallback = EventCallback("GameplayAnalyticsDrainHealth")
+function drainHealthCallback.creatureOnDrainHealth(creature, attacker, primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor)
+    return primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor
 end
-spawnCallback:register()
+drainHealthCallback:register()
 
-local analyticsCommand = TalkAction("/analytics")
-GameplayAnalyticsStartup = true
-GameplayAnalyticsShutdown = true
-GameplayAnalyticsLogin = true
-GameplayAnalyticsLogout = true
-GameplayAnalyticsHealth = true
-GameplayAnalyticsMana = true
-GameplayAnalyticsDeath = true
-GameplayAnalyticsKill = true
-GameplayAnalyticsExperience = true
+local unrelatedCallback = EventCallback("Other")
+function unrelatedCallback.creatureOnDrainHealth(creature, attacker, primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor)
+    Analytics.recordDamageDealt(attacker, creature, math.abs(primaryValue), primaryType)
+    return primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor
+end
 '''
+        )
 
-        validator.validate_runtime(runtime)
-
-    def test_rejects_health_registration_on_unrelated_callback_variable(self) -> None:
-        runtime = '''
-local spawnCallback = EventCallback
-function spawnCallback.onSpawn(creature, position, startup, artificial)
-    return true
-end
-spawnCallback:register()
-
-local unrelatedCallback = EventCallback
-function unrelatedCallback.onSpawn(creature, position, startup, artificial)
-    creature:registerEvent("GameplayAnalyticsHealth")
-    return true
-end
-
-local analyticsCommand = TalkAction("/analytics")
-GameplayAnalyticsStartup = true
-GameplayAnalyticsShutdown = true
-GameplayAnalyticsLogin = true
-GameplayAnalyticsLogout = true
-GameplayAnalyticsHealth = true
-GameplayAnalyticsMana = true
-GameplayAnalyticsDeath = true
-GameplayAnalyticsKill = true
-GameplayAnalyticsExperience = true
-'''
-
-        with self.assertRaisesRegex(AssertionError, "spawned monsters"):
+        with self.assertRaisesRegex(AssertionError, "drain-health"):
             validator.validate_runtime(runtime)
 
 

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/ai-agent/id-registry.schema.json",
+  "title": "Canary AI Agent Identifier Registry",
+  "type": "object",
+  "required": ["schemaVersion", "generatedAt", "baseCommit", "namespaces", "conflicts"],
+  "properties": {
+    "schemaVersion": { "type": "integer", "const": 1 },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "baseCommit": { "type": "string", "minLength": 7 },
+    "namespaces": {
+      "type": "object",
+      "required": ["storage", "actionId", "uniqueId", "itemId"],
+      "properties": {
+        "storage": { "$ref": "#/$defs/namespace" },
+        "actionId": { "$ref": "#/$defs/namespace" },
+        "uniqueId": { "$ref": "#/$defs/namespace" },
+        "itemId": { "$ref": "#/$defs/namespace" }
+      },
+      "additionalProperties": false
+    },
+    "conflicts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/conflict" }
+    },
+    "reservations": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reservation" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "source": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "symbol": { "type": "string" },
+        "context": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "entry": {
+      "type": "object",
+      "required": ["value", "sources"],
+      "properties": {
+        "value": { "type": "integer", "minimum": 0 },
+        "name": { "type": "string" },
+        "category": { "type": "string" },
+        "sources": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/source" }
+        }
+      },
+      "additionalProperties": false
+    },
+    "namespace": {
+      "type": "object",
+      "required": ["entries"],
+      "properties": {
+        "entries": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/entry" }
+        },
+        "minimum": { "type": "integer" },
+        "maximum": { "type": "integer" }
+      },
+      "additionalProperties": false
+    },
+    "conflict": {
+      "type": "object",
+      "required": ["namespace", "value", "sources", "severity"],
+      "properties": {
+        "namespace": { "enum": ["storage", "actionId", "uniqueId", "itemId"] },
+        "value": { "type": "integer" },
+        "sources": {
+          "type": "array",
+          "minItems": 2,
+          "items": { "$ref": "#/$defs/source" }
+        },
+        "severity": { "enum": ["info", "warning", "error"] },
+        "reason": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "reservation": {
+      "type": "object",
+      "required": ["taskId", "namespace", "from", "to", "status"],
+      "properties": {
+        "taskId": { "type": "string" },
+        "namespace": { "enum": ["storage", "actionId", "uniqueId", "itemId"] },
+        "from": { "type": "integer", "minimum": 0 },
+        "to": { "type": "integer", "minimum": 0 },
+        "status": { "enum": ["reserved", "committed", "released"] },
+        "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

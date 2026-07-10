@@ -1485,7 +1485,7 @@ void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
 		}
 	};
 
-	if (g_dispatcher().context().isAsync()) {
+	if (g_dispatcher().context().isBarrierParallel()) {
 		g_dispatcher().addEvent(std::move(writeMessage), __FUNCTION__);
 	} else {
 		writeMessage();

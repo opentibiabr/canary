@@ -420,7 +420,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		if (g_dispatcher().context().isMovementCommit()) {
 			queueMovementAiRefresh(creature, oldPos, newPos);
 		} else {
 			processMovementAiRefresh(creature, oldPos, newPos);
@@ -670,7 +670,7 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 }
 
 void Monster::updateTargetList() {
-	if (!g_dispatcher().context().isAsync()) {
+	if (!g_dispatcher().context().isBarrierParallel()) {
 		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
@@ -1118,7 +1118,7 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (!g_dispatcher().context().isAsync()) {
+	if (!g_dispatcher().context().isBarrierParallel()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
@@ -1706,7 +1706,7 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 			}
 
 			if (canPushCreatures()) {
-				if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+				if (g_dispatcher().context().isMovementCommit()) {
 					Monster::pushCreatures(posTile);
 				} else {
 					g_dispatcher().addWalkEvent([=] {

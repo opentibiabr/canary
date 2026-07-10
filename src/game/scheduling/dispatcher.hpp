@@ -32,6 +32,18 @@ enum class TaskGroup : int8_t {
 	Last
 };
 
+[[nodiscard]] constexpr bool isMovementCommit(const TaskGroup group) {
+	return group == TaskGroup::Walk;
+}
+
+[[nodiscard]] constexpr bool isBarrierParallel(const TaskGroup group) {
+	return group == TaskGroup::WalkParallel || group == TaskGroup::GenericParallel;
+}
+
+[[nodiscard]] constexpr bool isPlayerVisible(const TaskGroup group) {
+	return group == TaskGroup::Walk || group == TaskGroup::Serial;
+}
+
 enum class DispatcherType : uint8_t {
 	None,
 	Event,
@@ -54,8 +66,20 @@ struct DispatcherContext {
 		return group == _group;
 	}
 
+	bool isMovementCommit() const {
+		return ::isMovementCommit(group);
+	}
+
+	bool isBarrierParallel() const {
+		return type == DispatcherType::AsyncEvent && ::isBarrierParallel(group);
+	}
+
+	bool isPlayerVisible() const {
+		return ::isPlayerVisible(group);
+	}
+
 	bool isAsync() const {
-		return type == DispatcherType::AsyncEvent;
+		return isBarrierParallel();
 	}
 
 	auto getGroup() const {

@@ -7,10 +7,26 @@
  * Website: https://docs.opentibiabr.com/
  */
 
-#include "game/scheduling/dispatcher_policy.hpp"
+#include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/dispatcher_telemetry.hpp"
 
 using namespace std::chrono_literals;
+
+TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
+	EXPECT_TRUE(isMovementCommit(TaskGroup::Walk));
+	EXPECT_FALSE(isMovementCommit(TaskGroup::Serial));
+	EXPECT_FALSE(isMovementCommit(TaskGroup::WalkParallel));
+
+	EXPECT_TRUE(isBarrierParallel(TaskGroup::WalkParallel));
+	EXPECT_TRUE(isBarrierParallel(TaskGroup::GenericParallel));
+	EXPECT_FALSE(isBarrierParallel(TaskGroup::Walk));
+	EXPECT_FALSE(isBarrierParallel(TaskGroup::Serial));
+
+	EXPECT_TRUE(isPlayerVisible(TaskGroup::Walk));
+	EXPECT_TRUE(isPlayerVisible(TaskGroup::Serial));
+	EXPECT_FALSE(isPlayerVisible(TaskGroup::DeferredGameplay));
+	EXPECT_FALSE(isPlayerVisible(TaskGroup::WalkParallel));
+}
 
 TEST(DispatcherPolicyTest, TracksMonotonicReadyTimesWithoutChangingWallClockScheduling) {
 	const auto enqueuedAt = Task::Clock::time_point(10s);

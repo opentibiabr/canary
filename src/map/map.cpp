@@ -529,8 +529,8 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		g_game().afterCreatureZoneChange(creature, oldTile->getZones(), newTile->getZones());
 	};
 
-	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-		// onCreatureMove for monster is asynchronous, so we need to defer the actions.
+	if (g_dispatcher().context().isMovementCommit()) {
+		// Monster movement observers enqueue barrier-parallel work, so post-move actions stay deferred.
 		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
 	} else {
 		events();

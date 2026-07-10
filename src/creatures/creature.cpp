@@ -2077,7 +2077,7 @@ void Creature::sendAsyncTasks() {
 }
 
 void Creature::safeCall(std::function<void(void)> &&action) const {
-	if (g_dispatcher().context().isAsync()) {
+	if (g_dispatcher().context().isBarrierParallel()) {
 		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
 			if (const auto self = weak_self.lock()) {
 				if (!self->isInternalRemoved) {

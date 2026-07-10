@@ -1955,7 +1955,7 @@ void Tile::clearZones() {
 }
 
 void Tile::safeCall(std::function<void(void)> &&action) const {
-	if (g_dispatcher().context().isAsync()) {
+	if (g_dispatcher().context().isBarrierParallel()) {
 		g_dispatcher().addEvent([weak_self = std::weak_ptr<const SharedObject>(shared_from_this()), action = std::move(action)] {
 			if (weak_self.lock()) {
 				action();

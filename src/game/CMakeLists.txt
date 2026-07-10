@@ -9,6 +9,7 @@ target_sources(
             scheduling/dispatcher.cpp
             scheduling/dispatcher_policy.hpp
             scheduling/dispatcher_telemetry.hpp
+            scheduling/dispatcher_types.hpp
             scheduling/task.cpp
             scheduling/save_manager.cpp
             zones/zone.cpp

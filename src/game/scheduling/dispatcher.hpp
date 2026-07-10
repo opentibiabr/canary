@@ -25,6 +25,7 @@ static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 enum class TaskGroup : int8_t {
 	ThreadPool = -1,
 	Walk,
+	CreatureWalk,
 	WalkParallel,
 	Serial,
 	DeferredGameplay,
@@ -32,16 +33,39 @@ enum class TaskGroup : int8_t {
 	Last
 };
 
+[[nodiscard]] constexpr DispatcherLane getDispatcherLane(const TaskGroup group) {
+	switch (group) {
+		case TaskGroup::Walk:
+			return DispatcherLane::PlayerWalk;
+		case TaskGroup::CreatureWalk:
+			return DispatcherLane::VisibleMonster;
+		case TaskGroup::WalkParallel:
+			return DispatcherLane::MonsterAI;
+		case TaskGroup::Serial:
+			return DispatcherLane::WorldCommit;
+		case TaskGroup::DeferredGameplay:
+			return DispatcherLane::Deferred;
+		case TaskGroup::GenericParallel:
+			return DispatcherLane::GenericParallel;
+		default:
+			return DispatcherLane::Maintenance;
+	}
+}
+
+[[nodiscard]] constexpr ExecutionMode getExecutionMode(const TaskGroup group) {
+	return group == TaskGroup::WalkParallel || group == TaskGroup::GenericParallel ? ExecutionMode::BarrierParallel : ExecutionMode::Serial;
+}
+
 [[nodiscard]] constexpr bool isMovementCommit(const TaskGroup group) {
-	return group == TaskGroup::Walk;
+	return ::isMovementCommit(getDispatcherLane(group));
 }
 
 [[nodiscard]] constexpr bool isBarrierParallel(const TaskGroup group) {
-	return group == TaskGroup::WalkParallel || group == TaskGroup::GenericParallel;
+	return getExecutionMode(group) == ExecutionMode::BarrierParallel;
 }
 
 [[nodiscard]] constexpr bool isPlayerVisible(const TaskGroup group) {
-	return group == TaskGroup::Walk || group == TaskGroup::Serial;
+	return ::isPlayerVisible(getDispatcherLane(group));
 }
 
 enum class DispatcherType : uint8_t {
@@ -84,6 +108,14 @@ struct DispatcherContext {
 
 	auto getGroup() const {
 		return group;
+	}
+
+	auto getLane() const {
+		return getDispatcherLane(group);
+	}
+
+	auto getExecutionMode() const {
+		return ::getExecutionMode(group);
 	}
 
 	auto getName() const {
@@ -135,6 +167,7 @@ public:
 
 	void addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 	void addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0); // No need context name
+	void addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0); // No need context name
 	void addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context) {

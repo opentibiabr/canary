@@ -25,6 +25,8 @@ namespace {
 		switch (static_cast<TaskGroup>(groupId)) {
 			case TaskGroup::Walk:
 				return "Walk";
+			case TaskGroup::CreatureWalk:
+				return "CreatureWalk";
 			case TaskGroup::WalkParallel:
 				return "WalkParallel";
 			case TaskGroup::Serial:
@@ -382,11 +384,20 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 }
 
 void Dispatcher::executeEvents(const TaskGroup startGroup) {
+	bool movementQueuesMerged = false;
 	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
-		const auto isWalk = groupId == static_cast<uint8_t>(TaskGroup::Walk);
+		const auto group = static_cast<TaskGroup>(groupId);
+		const auto isMovement = isMovementCommit(group);
 		const auto isDeferredGameplay = groupId == static_cast<uint8_t>(TaskGroup::DeferredGameplay);
 
-		if (groupId == static_cast<uint8_t>(TaskGroup::Serial) || isWalk) {
+		if (isMovement) {
+			if (!movementQueuesMerged) {
+				mergeEvents();
+				movementQueuesMerged = true;
+			}
+			executeSerialEvents(groupId);
+			mergeAsyncEvents();
+		} else if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			mergeEvents();
 			executeSerialEvents(groupId);
 			mergeAsyncEvents();
@@ -477,6 +488,7 @@ void Dispatcher::mergeAsyncEvents() {
 void Dispatcher::mergeEvents() {
 	static constexpr auto groups = std::to_array({
 		static_cast<uint8_t>(TaskGroup::Walk),
+		static_cast<uint8_t>(TaskGroup::CreatureWalk),
 		static_cast<uint8_t>(TaskGroup::Serial),
 		static_cast<uint8_t>(TaskGroup::DeferredGameplay),
 	});
@@ -504,7 +516,8 @@ void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
+	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
+	task.setLane(DispatcherLane::WorldCommit);
 	notify();
 }
 
@@ -515,7 +528,20 @@ void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	task.setLane(DispatcherLane::PlayerWalk);
+	notify();
+}
+
+void Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
+	if (shuttingDown) {
+		return;
+	}
+
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
+	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::CreatureWalk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	task.setLane(DispatcherLane::VisibleMonster);
 	notify();
 }
 
@@ -526,7 +552,8 @@ void Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::st
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(TaskGroup::DeferredGameplay)].emplace_back(expiresAfterMs, std::move(f), context);
+	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::DeferredGameplay)].emplace_back(expiresAfterMs, std::move(f), context);
+	task.setLane(DispatcherLane::Deferred);
 	notify();
 }
 
@@ -553,7 +580,8 @@ void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	auto &task = thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	task.setLane(getDispatcherLane(group));
 	notify();
 }
 

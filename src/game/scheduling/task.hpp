@@ -9,6 +9,8 @@
 
 #pragma once
 
+#include "game/scheduling/dispatcher_types.hpp"
+
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <atomic>
 	#include <chrono>
@@ -58,7 +60,11 @@ public:
 	}
 
 	[[nodiscard]] Clock::time_point getReadyAt() const {
-		return readyAt;
+		return meta.readyAt;
+	}
+
+	[[nodiscard]] const TaskMeta &getMeta() const {
+		return meta;
 	}
 
 	[[nodiscard]] bool hasExpired() const;
@@ -89,6 +95,9 @@ private:
 	static std::string_view internContext(std::string_view context);
 
 	void updateTime(Clock::time_point rescheduledAt = Clock::now());
+	void setLane(DispatcherLane lane) {
+		meta.lane = lane;
+	}
 
 	bool hasTraceableContext() const {
 		const static std::unordered_set<std::string_view> tasksContext = {
@@ -132,7 +141,7 @@ private:
 	std::function<void(void)> func;
 	std::string_view context;
 	Clock::time_point enqueuedAt;
-	Clock::time_point readyAt;
+	TaskMeta meta;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

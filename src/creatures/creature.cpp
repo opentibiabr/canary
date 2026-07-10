@@ -219,7 +219,7 @@ void Creature::onCreatureWalk() {
 
 	auto selfCreature = getCreature();
 
-	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(selfCreature), this] {
+	auto walkTask = [self = std::weak_ptr<Creature>(selfCreature), this] {
 		const auto &creatureEvent = self.lock();
 		if (!creatureEvent) {
 			return;
@@ -262,7 +262,13 @@ void Creature::onCreatureWalk() {
 			eventWalk = 0;
 			addEventWalk();
 		}
-	});
+	};
+
+	if (getPlayer()) {
+		g_dispatcher().addWalkEvent(std::move(walkTask));
+	} else {
+		g_dispatcher().addCreatureWalkEvent(std::move(walkTask));
+	}
 }
 
 void Creature::onWalk(Direction &dir) {

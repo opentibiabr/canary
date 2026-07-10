@@ -14,6 +14,7 @@ using namespace std::chrono_literals;
 
 TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
 	EXPECT_TRUE(isMovementCommit(TaskGroup::Walk));
+	EXPECT_TRUE(isMovementCommit(TaskGroup::CreatureWalk));
 	EXPECT_FALSE(isMovementCommit(TaskGroup::Serial));
 	EXPECT_FALSE(isMovementCommit(TaskGroup::WalkParallel));
 
@@ -24,8 +25,15 @@ TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
 
 	EXPECT_TRUE(isPlayerVisible(TaskGroup::Walk));
 	EXPECT_TRUE(isPlayerVisible(TaskGroup::Serial));
+	EXPECT_TRUE(isPlayerVisible(TaskGroup::CreatureWalk));
 	EXPECT_FALSE(isPlayerVisible(TaskGroup::DeferredGameplay));
 	EXPECT_FALSE(isPlayerVisible(TaskGroup::WalkParallel));
+
+	EXPECT_EQ(getDispatcherLane(TaskGroup::Walk), DispatcherLane::PlayerWalk);
+	EXPECT_EQ(getDispatcherLane(TaskGroup::CreatureWalk), DispatcherLane::VisibleMonster);
+	EXPECT_EQ(getDispatcherLane(TaskGroup::WalkParallel), DispatcherLane::MonsterAI);
+	EXPECT_EQ(getExecutionMode(TaskGroup::Walk), ExecutionMode::Serial);
+	EXPECT_EQ(getExecutionMode(TaskGroup::WalkParallel), ExecutionMode::BarrierParallel);
 }
 
 TEST(DispatcherPolicyTest, TracksMonotonicReadyTimesWithoutChangingWallClockScheduling) {
@@ -35,6 +43,8 @@ TEST(DispatcherPolicyTest, TracksMonotonicReadyTimesWithoutChangingWallClockSche
 
 	EXPECT_EQ(immediate.getEnqueuedAt(), enqueuedAt);
 	EXPECT_EQ(immediate.getReadyAt(), enqueuedAt);
+	EXPECT_EQ(immediate.getMeta().lane, DispatcherLane::WorldCommit);
+	EXPECT_EQ(immediate.getMeta().estimatedCost, 1);
 	EXPECT_EQ(scheduled.getEnqueuedAt(), enqueuedAt);
 	EXPECT_EQ(scheduled.getReadyAt(), enqueuedAt + 75ms);
 }

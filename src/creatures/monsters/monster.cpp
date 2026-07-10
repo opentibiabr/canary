@@ -1709,7 +1709,7 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 				if (g_dispatcher().context().isMovementCommit()) {
 					Monster::pushCreatures(posTile);
 				} else {
-					g_dispatcher().addWalkEvent([=] {
+					g_dispatcher().addCreatureWalkEvent([=] {
 						Monster::pushCreatures(posTile);
 					});
 				}

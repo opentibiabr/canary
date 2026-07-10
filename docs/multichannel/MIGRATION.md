@@ -30,13 +30,24 @@ migration's idempotency pattern):
   a column-existence check)
 - `ALTER TABLE market_history ADD COLUMN source_channel_id ...` (same)
 - `ALTER TABLE guildwar_kills ADD COLUMN channel_id ...` (same)
-- Seeds one row into `channels` for `id = 1` from the server's *current*
-  `config.lua` values (`SERVER_NAME`, `IP`, `GAME_PORT`, `STATUS_PORT`,
-  `worldType`), so an upgraded single-channel server has a valid Channel 1
-  row without any manual step, and `account_house_ownership` is backfilled
-  from every existing `houses.owner != 0` row (one INSERT per current
-  owner, skipped via `INSERT IGNORE` semantics if a row already exists —
-  this makes the migration safe to run twice).
+- Backfills `account_house_ownership` from every existing
+  `houses.owner != 0` row (one `INSERT IGNORE` per current owner — safe to
+  run twice).
+
+Channel 1 is **not** seeded by this Lua migration: migrations run in a
+restricted Lua sandbox (`CoreLibsFunctions` — `db`/`logger`/`Result`/
+`metrics`/`kv` only, deliberately not the full script API, so it has no
+`configManager` binding and cannot read `config.lua`). Seeding a
+meaningful Channel 1 row (name, IP, ports, `pvp_type` from the *current*
+`config.lua`) instead happens once, in C++, at `ChannelRegistry` startup
+(`ChannelRegistry::ensureBootstrapChannel`, ✅ implemented): if
+`multiChannelEnabled = true`, the resolved `channelId` is `1`, and the
+`channels` table has no row for id `1`, the registry inserts one from the
+live `ConfigManager` values (`SERVER_NAME`, `IP`, `GAME_PORT`,
+`STATUS_PORT`, `worldType`). This runs exactly once (guarded by the row's
+existence) and only ever creates the bootstrap row for id `1` — every
+other channel is expected to be configured explicitly by the operator, not
+auto-guessed.
 
 This migration is safe on any existing installation: it adds tables and
 nullable columns only, does not touch primary keys, and does not change

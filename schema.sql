@@ -380,6 +380,7 @@ CREATE TABLE IF NOT EXISTS `guildwar_kills` (
     `targetguild` int(11) NOT NULL DEFAULT '0',
     `warid` int(11) NOT NULL DEFAULT '0',
     `time` bigint(15) NOT NULL,
+    `channel_id` int(11) DEFAULT NULL,
     INDEX `warid` (`warid`),
     CONSTRAINT `guildwar_kills_pk` PRIMARY KEY (`id`),
     CONSTRAINT `guildwar_kills_warid_fk`
@@ -451,8 +452,13 @@ CREATE TABLE IF NOT EXISTS `guild_membership` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `houses`
+-- `id` is always assigned explicitly from map data (see iomapserialize.cpp),
+-- never relies on MySQL-generated values; `channel_id` (default 1) makes the
+-- physical identity of a house `(channel_id, id)` so the same map house id can
+-- eventually be owned independently per channel (see docs/multichannel).
 CREATE TABLE IF NOT EXISTS `houses` (
-    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `id` int(11) NOT NULL,
+    `channel_id` int(11) NOT NULL DEFAULT '1',
     `owner` int(11) NOT NULL,
     `new_owner` int(11) NOT NULL DEFAULT '-1',
     `paid` int(10) UNSIGNED NOT NULL DEFAULT '0',
@@ -472,7 +478,8 @@ CREATE TABLE IF NOT EXISTS `houses` (
     `transfer_status` tinyint(1) DEFAULT '0',
     INDEX `owner` (`owner`),
     INDEX `town_id` (`town_id`),
-    CONSTRAINT `houses_pk` PRIMARY KEY (`id`)
+    CONSTRAINT `houses_pk` PRIMARY KEY (`channel_id`, `id`),
+    CONSTRAINT `houses_id_unique` UNIQUE (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -488,13 +495,14 @@ DELIMITER ;
 -- Table structure `house_lists`
 CREATE TABLE IF NOT EXISTS `house_lists` (
   `house_id` int NOT NULL,
+  `channel_id` int NOT NULL DEFAULT '1',
   `listid` int NOT NULL,
   `version` bigint NOT NULL DEFAULT '0',
   `list` text NOT NULL,
   PRIMARY KEY (`house_id`, `listid`),
   KEY `house_id_index` (`house_id`),
   KEY `version` (`version`),
-  CONSTRAINT `houses_list_house_fk` FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`) ON DELETE CASCADE
+  CONSTRAINT `house_lists_channel_house_fk` FOREIGN KEY (`channel_id`, `house_id`) REFERENCES `houses` (`channel_id`, `id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- Table structure `ip_bans`
@@ -524,6 +532,7 @@ CREATE TABLE IF NOT EXISTS `market_history` (
     `inserted` bigint(20) UNSIGNED NOT NULL,
     `state` tinyint(1) UNSIGNED NOT NULL,
     `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
+    `source_channel_id` int(11) DEFAULT NULL,
     INDEX `player_id` (`player_id`,`sale`),
     CONSTRAINT `market_history_pk` PRIMARY KEY (`id`),
     CONSTRAINT `market_history_players_fk`
@@ -542,6 +551,7 @@ CREATE TABLE IF NOT EXISTS `market_offers` (
     `anonymous` tinyint(1) NOT NULL DEFAULT '0',
     `price` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `tier` tinyint UNSIGNED NOT NULL DEFAULT '0',
+    `source_channel_id` int(11) DEFAULT NULL,
     INDEX `sale` (`sale`,`itemtype`),
     INDEX `created` (`created`),
     INDEX `player_id` (`player_id`),
@@ -830,10 +840,11 @@ CREATE TABLE IF NOT EXISTS `store_history` (
 -- Table structure `tile_store`
 CREATE TABLE IF NOT EXISTS `tile_store` (
     `house_id` int(11) NOT NULL,
+    `channel_id` int(11) NOT NULL DEFAULT '1',
     `data` longblob NOT NULL,
     INDEX `house_id` (`house_id`),
-    CONSTRAINT `tile_store_account_fk`
-        FOREIGN KEY (`house_id`) REFERENCES `houses` (`id`)
+    CONSTRAINT `tile_store_channel_house_fk`
+        FOREIGN KEY (`channel_id`, `house_id`) REFERENCES `houses` (`channel_id`, `id`)
         ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -863,6 +874,157 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
   `timestamp` bigint NOT NULL,
   `value` longblob NOT NULL,
   PRIMARY KEY (`key_name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Multi-channel cluster tables (see docs/multichannel/ARCHITECTURE.md)
+
+-- Table structure `channels`
+CREATE TABLE IF NOT EXISTS `channels` (
+    `id` int(11) NOT NULL,
+    `name` varchar(64) NOT NULL,
+    `pvp_type` enum('no-pvp','pvp','pvp-enforced') NOT NULL DEFAULT 'pvp',
+    `external_host` varchar(255) NOT NULL DEFAULT '127.0.0.1',
+    `game_port` int(11) NOT NULL,
+    `status_port` int(11) NOT NULL,
+    `max_players` int(11) NOT NULL DEFAULT '0',
+    `enabled` tinyint(1) NOT NULL DEFAULT '1',
+    `sort_order` int(11) NOT NULL DEFAULT '0',
+    `temple_town_id` int(11) DEFAULT NULL,
+    `maintenance` tinyint(1) NOT NULL DEFAULT '0',
+    `maintenance_message` varchar(255) NOT NULL DEFAULT '',
+    `login_gateway` tinyint(1) NOT NULL DEFAULT '0',
+    `map_hash` varchar(64) NOT NULL DEFAULT '',
+    `created_at` bigint(20) NOT NULL,
+    `updated_at` bigint(20) NOT NULL,
+    CONSTRAINT `channels_pk` PRIMARY KEY (`id`),
+    CONSTRAINT `channels_name_unique` UNIQUE (`name`),
+    CONSTRAINT `channels_endpoint_unique` UNIQUE (`external_host`, `game_port`),
+    CONSTRAINT `channels_status_endpoint_unique` UNIQUE (`external_host`, `status_port`),
+    CONSTRAINT `channels_temple_town_fk`
+        FOREIGN KEY (`temple_town_id`) REFERENCES `towns` (`id`)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `channel_runtime_status`
+CREATE TABLE IF NOT EXISTS `channel_runtime_status` (
+    `channel_id` int(11) NOT NULL,
+    `instance_id` varchar(64) NOT NULL DEFAULT '',
+    `node_id` varchar(128) NOT NULL DEFAULT '',
+    `started_at` bigint(20) NOT NULL DEFAULT '0',
+    `last_heartbeat` bigint(20) NOT NULL DEFAULT '0',
+    `status` enum('STARTING','ONLINE','DRAINING','MAINTENANCE','OFFLINE') NOT NULL DEFAULT 'STARTING',
+    `players_online` int(11) NOT NULL DEFAULT '0',
+    `build_sha` varchar(64) NOT NULL DEFAULT '',
+    `map_hash` varchar(64) NOT NULL DEFAULT '',
+    `data_hash` varchar(64) NOT NULL DEFAULT '',
+    CONSTRAINT `channel_runtime_status_pk` PRIMARY KEY (`channel_id`),
+    CONSTRAINT `channel_runtime_status_channel_fk`
+        FOREIGN KEY (`channel_id`) REFERENCES `channels` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `cluster_sessions`
+-- Defense-in-depth persistent lock: PRIMARY KEY(account_id) AND UNIQUE(player_id)
+-- together guarantee at most one online character per account, cluster-wide,
+-- even if the Redis coordination layer (fast path) is unavailable or wrong.
+CREATE TABLE IF NOT EXISTS `cluster_sessions` (
+    `account_id` int(11) NOT NULL,
+    `player_id` int(11) NOT NULL,
+    `channel_id` int(11) NOT NULL,
+    `instance_id` varchar(64) NOT NULL DEFAULT '',
+    `session_id` varchar(64) NOT NULL DEFAULT '',
+    `fencing_token` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `status` enum('ACQUIRING','ONLINE','SAVING','DIRTY','OFFLINE') NOT NULL DEFAULT 'ACQUIRING',
+    `acquired_at` bigint(20) NOT NULL DEFAULT '0',
+    `last_heartbeat` bigint(20) NOT NULL DEFAULT '0',
+    `expires_at` bigint(20) NOT NULL DEFAULT '0',
+    CONSTRAINT `cluster_sessions_pk` PRIMARY KEY (`account_id`),
+    CONSTRAINT `cluster_sessions_player_unique` UNIQUE (`player_id`),
+    CONSTRAINT `cluster_sessions_account_fk`
+        FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+        ON DELETE CASCADE,
+    CONSTRAINT `cluster_sessions_player_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `channel_switch_audit`
+CREATE TABLE IF NOT EXISTS `channel_switch_audit` (
+    `id` bigint(20) NOT NULL AUTO_INCREMENT,
+    `player_id` int(11) NOT NULL,
+    `account_id` int(11) NOT NULL,
+    `source_channel_id` int(11) DEFAULT NULL,
+    `target_channel_id` int(11) NOT NULL,
+    `source_position` varchar(64) NOT NULL DEFAULT '',
+    `resolved_position` varchar(64) NOT NULL DEFAULT '',
+    `fallback_reason` varchar(64) NOT NULL DEFAULT '',
+    `session_id` varchar(64) NOT NULL DEFAULT '',
+    `fencing_token` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `result` enum('SUCCESS','DENIED','ERROR') NOT NULL,
+    `deny_reason` varchar(128) NOT NULL DEFAULT '',
+    `created_at` bigint(20) NOT NULL,
+    CONSTRAINT `channel_switch_audit_pk` PRIMARY KEY (`id`),
+    INDEX `player_id` (`player_id`),
+    INDEX `created_at` (`created_at`),
+    CONSTRAINT `channel_switch_audit_player_fk`
+        FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `economic_ledger`
+-- transaction_uuid as the PRIMARY KEY is the idempotency mechanism: a retried
+-- operation re-inserts the same UUID and fails the PK constraint instead of
+-- applying its effect twice.
+CREATE TABLE IF NOT EXISTS `economic_ledger` (
+    `transaction_uuid` char(36) NOT NULL,
+    `operation_type` varchar(64) NOT NULL,
+    `account_id` int(11) DEFAULT NULL,
+    `player_id` int(11) DEFAULT NULL,
+    `source_channel_id` int(11) DEFAULT NULL,
+    `target_channel_id` int(11) DEFAULT NULL,
+    `amount` bigint(20) NOT NULL DEFAULT '0',
+    `currency` varchar(32) NOT NULL DEFAULT 'gold',
+    `item_id` int(11) DEFAULT NULL,
+    `item_count` int(11) DEFAULT NULL,
+    `status` enum('PENDING','COMMITTED','FAILED','REPLAYED') NOT NULL DEFAULT 'PENDING',
+    `session_id` varchar(64) NOT NULL DEFAULT '',
+    `fencing_token` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
+    `created_at` bigint(20) NOT NULL,
+    `updated_at` bigint(20) NOT NULL,
+    CONSTRAINT `economic_ledger_pk` PRIMARY KEY (`transaction_uuid`),
+    INDEX `operation_type` (`operation_type`),
+    INDEX `account_id` (`account_id`),
+    INDEX `created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `mail_delivery_audit`
+CREATE TABLE IF NOT EXISTS `mail_delivery_audit` (
+    `transaction_uuid` char(36) NOT NULL,
+    `sender_player_id` int(11) DEFAULT NULL,
+    `recipient_player_id` int(11) NOT NULL,
+    `source_channel_id` int(11) DEFAULT NULL,
+    `delivered_at` bigint(20) NOT NULL,
+    CONSTRAINT `mail_delivery_audit_pk` PRIMARY KEY (`transaction_uuid`),
+    INDEX `recipient_player_id` (`recipient_player_id`),
+    CONSTRAINT `mail_delivery_audit_recipient_fk`
+        FOREIGN KEY (`recipient_player_id`) REFERENCES `players` (`id`)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Table structure `account_house_ownership`
+-- Single authoritative representation of "one house per account, cluster-wide":
+-- PRIMARY KEY(account_id) makes a second house for the same account a
+-- constraint violation rather than an application-level race.
+CREATE TABLE IF NOT EXISTS `account_house_ownership` (
+    `account_id` int(11) NOT NULL,
+    `channel_id` int(11) NOT NULL,
+    `house_id` int(11) NOT NULL,
+    `since` bigint(20) NOT NULL,
+    CONSTRAINT `account_house_ownership_pk` PRIMARY KEY (`account_id`),
+    CONSTRAINT `account_house_ownership_house_unique` UNIQUE (`channel_id`, `house_id`),
+    CONSTRAINT `account_house_ownership_account_fk`
+        FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`)
+        ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Create Account god/god

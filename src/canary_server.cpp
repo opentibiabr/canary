@@ -234,13 +234,14 @@ int CanaryServer::run() {
 				{
 					std::scoped_lock lock(loaderMutex);
 					loaderStatus = LoaderStatus::LOADED;
-					loaderCV.notify_all();
 				}
+				loaderCV.notify_all();
 			} catch (FailedToInitializeCanary &err) {
 				{
 					std::scoped_lock lock(loaderMutex);
 					loaderStatus = LoaderStatus::FAILED;
 				}
+				loaderCV.notify_all();
 				logger.error(err.what());
 			}
 		},
@@ -249,32 +250,35 @@ int CanaryServer::run() {
 
 	constexpr auto timeout = std::chrono::minutes(10);
 	constexpr auto warnEvery = std::chrono::seconds(120);
-	auto start = std::chrono::steady_clock::now();
-	auto lastLog = start;
+	const auto start = std::chrono::steady_clock::now();
+	const auto deadline = start + timeout;
+	auto nextWarning = start + warnEvery;
 
-	while (true) {
-		{
-			std::scoped_lock lock(loaderMutex);
-			if (loaderStatus != LoaderStatus::LOADING) {
-				break;
-			}
+	std::unique_lock loaderLock(loaderMutex);
+	while (loaderStatus == LoaderStatus::LOADING) {
+		const auto wakeAt = std::min(deadline, nextWarning);
+		loaderCV.wait_until(loaderLock, wakeAt, [this] {
+			return loaderStatus != LoaderStatus::LOADING;
+		});
+
+		if (loaderStatus != LoaderStatus::LOADING) {
+			break;
 		}
 
-		auto now = std::chrono::steady_clock::now();
-
-		if (now - lastLog >= warnEvery) {
-			logger.warn("Startup still running ({} s)...", std::chrono::duration_cast<std::chrono::seconds>(now - start).count());
-			lastLog = now;
-		}
-
-		if (now - start > timeout) {
+		const auto now = std::chrono::steady_clock::now();
+		if (now >= deadline) {
+			loaderLock.unlock();
 			logger.error("Startup exceeded {} minutes - aborting.", std::chrono::duration_cast<std::chrono::minutes>(timeout).count());
 			shutdown();
 			return EXIT_FAILURE;
 		}
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(10));
+		if (now >= nextWarning) {
+			logger.warn("Startup still running ({} s)...", std::chrono::duration_cast<std::chrono::seconds>(now - start).count());
+			nextWarning = now + warnEvery;
+		}
 	}
+	loaderLock.unlock();
 
 	if (loaderStatus == LoaderStatus::FAILED || !serviceManager.is_running()) {
 		logger.error("No services running. The server is NOT online!");

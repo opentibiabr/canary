@@ -1,0 +1,86 @@
+name: AI Agent Tools
+
+on:
+  push:
+    branches:
+      - "ai/**"
+    paths:
+      - "tools/ai-agent/**"
+      - "docs/ai-agent/**"
+      - ".github/workflows/ai-agent-tools.yml"
+  pull_request:
+    paths:
+      - "tools/ai-agent/**"
+      - "docs/ai-agent/**"
+      - ".github/workflows/ai-agent-tools.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-tools:
+    name: Validate AI agent tools
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tools/ai-agent -p "test_*.py" -v
+
+      - name: Generate identifier registry
+        run: python tools/ai-agent/scan_ids.py --root . --output artifacts/ID_REGISTRY.json
+
+      - name: Generate project structure index
+        run: python tools/ai-agent/scan_project.py --root . --output artifacts/PROJECT_STRUCTURE.json
+
+      - name: Validate generated JSON
+        run: |
+          python -m json.tool artifacts/ID_REGISTRY.json > /dev/null
+          python -m json.tool artifacts/PROJECT_STRUCTURE.json > /dev/null
+
+      - name: Create audit summary
+        shell: python
+        run: |
+          import json
+          import os
+          from pathlib import Path
+
+          registry = json.loads(Path("artifacts/ID_REGISTRY.json").read_text(encoding="utf-8"))
+          structure = json.loads(Path("artifacts/PROJECT_STRUCTURE.json").read_text(encoding="utf-8"))
+
+          lines = ["# AI agent repository audit", "", "## Identifier registry", ""]
+          for name, data in registry["namespaces"].items():
+              lines.append(f"- {name}: {len(data['entries'])}")
+          lines.append(f"- potential conflicts: {len(registry['conflicts'])}")
+          lines.extend([
+              "",
+              "## Project structure",
+              "",
+              f"- files: {structure['summary']['fileCount']}",
+              f"- total bytes: {structure['summary']['totalBytes']}",
+          ])
+          for name, count in structure["summary"]["categoryCounts"].items():
+              lines.append(f"- {name}: {count}")
+
+          report = "\n".join(lines) + "\n"
+          Path("artifacts/AI_AGENT_AUDIT_SUMMARY.md").write_text(report, encoding="utf-8")
+          Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(report, encoding="utf-8")
+
+      - name: Upload audit artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-agent-project-audit
+          path: |
+            artifacts/ID_REGISTRY.json
+            artifacts/PROJECT_STRUCTURE.json
+            artifacts/AI_AGENT_AUDIT_SUMMARY.md
+          if-no-files-found: error
+          retention-days: 14

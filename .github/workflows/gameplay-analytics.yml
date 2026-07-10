@@ -11,6 +11,7 @@ on:
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
       - "tools/analytics/test_gameplay_analytics_reliability.lua"
+      - "tools/analytics/test_mariadb_integration.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics.py"
@@ -26,6 +27,7 @@ on:
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
       - "tools/analytics/test_gameplay_analytics_reliability.lua"
+      - "tools/analytics/test_mariadb_integration.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics.py"
@@ -63,3 +65,39 @@ jobs:
           assert sql.count('ENGINE=InnoDB') == 7
           print('SQL schema structure passed')
           PY
+
+  mariadb-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: canary_test
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+      - name: Test schema and idempotent persistence
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+        run: |
+          set -o pipefail
+          bash tools/analytics/test_mariadb_integration.sh 2>&1 | tee mariadb-integration.log
+      - name: Upload MariaDB integration log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-mariadb-log
+          path: mariadb-integration.log
+          if-no-files-found: error
+          retention-days: 7

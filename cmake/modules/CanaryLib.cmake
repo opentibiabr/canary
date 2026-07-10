@@ -175,7 +175,8 @@ foreach(
         if(CANARY_NATIVE_ARCH)
             target_compile_options(
                 ${core_target}
-                PRIVATE $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-march=native>
+                PRIVATE
+                    $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>>:-march=native>
             )
         endif()
     elseif(MSVC)

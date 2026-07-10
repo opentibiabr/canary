@@ -5,7 +5,6 @@ import json
 import sys
 import tempfile
 import unittest
-import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -103,6 +102,7 @@ class PipelineTests(unittest.TestCase):
         plan = make_plan(self.bundle_task(), {}, self.registry(), self.reservations())
         self.assertEqual(len(plan["componentPlan"]), 3)
         self.assertEqual(len(plan["newFiles"]), 3)
+        self.assertTrue(plan["componentPlan"][2]["path"].endswith("the_ashen_sentinel.lua"))
         self.assertEqual([entry["id"] for entry in plan["proposedStorage"]], [390000, 390001, 390002])
         self.assertEqual([entry["id"] for entry in plan["proposedActionIds"]], [59000, 59001])
         self.assertTrue(plan["manualSteps"])
@@ -117,21 +117,26 @@ class PipelineTests(unittest.TestCase):
             self.assertEqual(len(manifest["files"]), 1)
             self.assertIn("sha256", manifest["files"][0])
 
-    def test_content_bundle_renderer_outputs_valid_previews(self):
+    def test_content_bundle_renderer_outputs_canary_previews(self):
         (ROOT / "artifacts").mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(dir=ROOT / "artifacts") as directory:
             task = self.bundle_task()
             plan = make_plan(task, {}, self.registry(), self.reservations())
             manifest = render(task, plan, directory)
             self.assertEqual(len(manifest["files"]), 3)
+            self.assertEqual(manifest["format"], "canary-preview-v1")
             generated = Path(directory) / task["taskId"]
             quest_preview = (generated / "quest/forgotten_forge.lua").read_text(encoding="utf-8")
             npc_preview = (generated / "npc/forge_keeper_ardan.lua").read_text(encoding="utf-8")
-            self.assertIn("return {", quest_preview)
-            self.assertIn("dryRun = true", quest_preview)
+            monster_preview = (generated / "monster/the_ashen_sentinel.lua").read_text(encoding="utf-8")
+            self.assertIn("return quest", quest_preview)
             self.assertIn("ashen_sentinel_boss", quest_preview)
-            self.assertIn("return {", npc_preview)
-            ET.parse(generated / "monster/the_ashen_sentinel.xml")
+            self.assertIn("Game.createNpcType", npc_preview)
+            self.assertIn("NpcHandler:new", npc_preview)
+            self.assertIn("npcType:register", npc_preview)
+            self.assertIn("Game.createMonsterType", monster_preview)
+            self.assertIn("mType:register", monster_preview)
+            self.assertIn("TODO", monster_preview)
             self.assertEqual(set(manifest["plannedFiles"]), set(plan["newFiles"]))
 
     def test_renderer_rejects_escaping_task_id(self):

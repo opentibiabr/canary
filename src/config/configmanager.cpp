@@ -52,6 +52,9 @@ bool ConfigManager::load() {
 		loadFloatConfig(L, HOUSE_PRICE_RENT_MULTIPLIER, "housePriceRentMultiplier", 1.0);
 		loadFloatConfig(L, HOUSE_RENT_RATE, "houseRentRate", 1.0);
 
+		loadIntConfig(L, DISCONNECT_PROTECTION_COOLDOWN, "disconnectProtectionCooldown", 30 * 60 * 1000);
+		loadIntConfig(L, DISCONNECT_PROTECTION_DETECTION_TIME, "disconnectProtectionDetectionTime", 10 * 1000);
+		loadIntConfig(L, DISCONNECT_PROTECTION_DURATION, "disconnectProtectionDuration", 30 * 1000);
 		loadIntConfig(L, DEPOT_BOXES, "depotBoxes", 20);
 		loadIntConfig(L, FREE_DEPOT_LIMIT, "freeDepotLimit", 2000);
 		loadIntConfig(L, GAME_PORT, "gameProtocolPort", 7172);
@@ -94,6 +97,9 @@ bool ConfigManager::load() {
 	if (getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE) || getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)) {
 		g_logger().warn("[ConfigManager::load] - Monster perf-test flags are enabled; this benchmark-only stress mode should not be used in production.");
 	}
+	loadBoolConfig(L, DISCONNECT_PROTECTION_ENABLED, "disconnectProtectionEnabled", false);
+	loadBoolConfig(L, DISCONNECT_PROTECTION_IN_PVP, "disconnectProtectionInPvp", false);
+	loadBoolConfig(L, DISCONNECT_PROTECTION_LOG_ENABLED, "disconnectProtectionLogEnabled", true);
 	loadBoolConfig(L, DISCORD_SEND_FOOTER, "discordSendFooter", true);
 	loadBoolConfig(L, EMOTE_SPELLS, "emoteSpells", false);
 	loadBoolConfig(L, LEARN_SPELLS, "toggleLearnSpells", true);

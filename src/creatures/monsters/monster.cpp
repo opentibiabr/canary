@@ -11,10 +11,12 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster_pathfinding.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/map.hpp"
@@ -27,11 +29,35 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
+	constexpr uint8_t MAX_BACKGROUND_FOLLOW_PATH_RADIUS = 12;
+
 	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
 		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
 			&& creature.get() != static_cast<const Creature*>(&monster)
 			&& creature->getMonsterRaw() && !creature->isSummon();
 	}
+
+	[[nodiscard]] bool pathReachesEndpoint(const NavRegionSnapshot &navigation, const Position &start, const std::vector<Direction> &directions, const Position &expectedEndpoint) {
+		Position position = start;
+		for (auto it = directions.rbegin(); it != directions.rend(); ++it) {
+			if (*it > DIRECTION_LAST) {
+				return false;
+			}
+			position = getNextPosition(*it, position);
+			if (!navigation.getCell(position)) {
+				return false;
+			}
+		}
+		return position == expectedEndpoint;
+	}
+}
+
+bool Monster::FollowPathComputeRequest::matches(const FollowPathComputeRequest &other) const {
+	return start == other.start && target == other.target && targetId == other.targetId && executeOnFollow == other.executeOnFollow
+		&& params.fullPathSearch == other.params.fullPathSearch && params.clearSight == other.params.clearSight
+		&& params.allowDiagonal == other.params.allowDiagonal && params.keepDistance == other.params.keepDistance
+		&& params.maxSearchDist == other.params.maxSearchDist && params.minTargetDist == other.params.minTargetDist
+		&& params.maxTargetDist == other.params.maxTargetDist;
 }
 
 std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
@@ -2824,6 +2850,246 @@ float Monster::getDefenseMultiplier() const {
 		multiplier *= (1 + (0.1 * stacks));
 	}
 	return multiplier;
+}
+
+bool Monster::requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow) {
+	if (!followCreature || followCreature->getID() == 0 || params.maxSearchDist <= 0 || params.maxSearchDist > MAX_BACKGROUND_FOLLOW_PATH_RADIUS) {
+		return false;
+	}
+
+	FollowPathComputeRequest request;
+	request.start = getPosition();
+	request.target = followCreature->getPosition();
+	request.params = params;
+	request.targetId = followCreature->getID();
+	request.executeOnFollow = executeOnFollow;
+	if (followPathComputeOutstanding && pendingFollowPathCompute && pendingFollowPathCompute->matches(request)) {
+		return true;
+	}
+
+	pendingFollowPathCompute = request;
+	const auto generation = nextFollowPathComputeGeneration();
+	followPathComputeSuperseded = false;
+	if (followPathComputeOutstanding) {
+		return true;
+	}
+
+	followPathComputeOutstanding = true;
+	activeFollowPathComputeGeneration = generation;
+	const auto monsterId = getID();
+	safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareFollowPathCompute(generation);
+		}
+	});
+	return true;
+}
+
+void Monster::supersedeFollowPathCompute() {
+	if (!followPathComputeOutstanding) {
+		pendingFollowPathCompute.reset();
+		followPathComputeSuperseded = false;
+		return;
+	}
+
+	nextFollowPathComputeGeneration();
+	pendingFollowPathCompute.reset();
+	followPathComputeSuperseded = true;
+}
+
+void Monster::prepareFollowPathCompute(uint64_t generation) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		activeFollowPathComputeGeneration = followPathComputeGeneration;
+		prepareFollowPathCompute(activeFollowPathComputeGeneration);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	if (isRemoved() || isDead() || getPosition() != request.start || !followCreature || followCreature->getID() != request.targetId || followCreature->getPosition() != request.target) {
+		discardFollowPathCompute(followCreature != nullptr);
+		return;
+	}
+
+	auto navigation = g_game().map.getNavigationSnapshot(request.start, MAX_BACKGROUND_FOLLOW_PATH_RADIUS);
+	MonsterPathRequest workerRequest;
+	workerRequest.navigation = navigation;
+	workerRequest.start = request.start;
+	workerRequest.target = request.target;
+	workerRequest.params = request.params;
+	workerRequest.traits = capturePathTraits(*navigation);
+
+	const auto monsterId = getID();
+	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterPathfinder::find(workerRequest, stopToken);
+			auto resultNavigation = std::move(workerRequest.navigation);
+			return [monsterId, generation, navigation = std::move(resultNavigation), result = std::move(result)]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeFollowPathCompute(generation, std::move(navigation), std::move(result));
+				}
+			};
+		},
+		"Monster::followPath"
+	);
+	if (!submission.accepted()) {
+		rejectFollowPathCompute(generation);
+	}
+}
+
+void Monster::completeFollowPathCompute(uint64_t generation, std::shared_ptr<const NavRegionSnapshot> navigation, MonsterPathResult result) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		discardFollowPathCompute(true);
+		return;
+	}
+	if (result.status == MonsterPathStatus::Cancelled) {
+		discardFollowPathCompute(false);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	const auto &resolvedTarget = g_game().getCreatureByID(request.targetId);
+	const bool identityIsCurrent = !isRemoved() && !isDead() && getPosition() == request.start && followCreature && resolvedTarget && followCreature == resolvedTarget && resolvedTarget->getPosition() == request.target;
+	if (!identityIsCurrent || !navigation || !g_game().map.isNavigationTopologyCurrent(*navigation)) {
+		discardFollowPathCompute(followCreature != nullptr);
+		return;
+	}
+
+	if (result.found()) {
+		int32_t bestMatchDistance = 0;
+		const bool endpointIsCurrent = FrozenPathingConditionCall(request.target)(request.start, result.endpoint, request.params, bestMatchDistance);
+		if (!endpointIsCurrent || !pathReachesEndpoint(*navigation, request.start, result.directions, result.endpoint)) {
+			discardFollowPathCompute(true);
+			return;
+		}
+	}
+
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	hasFollowPath = result.found();
+	startAutoWalk(result.directions);
+	if (request.executeOnFollow) {
+		onFollowCreatureComplete(resolvedTarget);
+	}
+}
+
+void Monster::rejectFollowPathCompute(uint64_t generation) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		activeFollowPathComputeGeneration = followPathComputeGeneration;
+		prepareFollowPathCompute(activeFollowPathComputeGeneration);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	hasFollowPath = false;
+	startAutoWalk({});
+	if (request.executeOnFollow && followCreature && followCreature->getID() == request.targetId) {
+		onFollowCreatureComplete(followCreature);
+	}
+}
+
+void Monster::discardFollowPathCompute(bool requestRefresh) {
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	if (requestRefresh && !isRemoved() && !isDead() && getFollowCreature()) {
+		goToFollowCreature_async();
+	}
+}
+
+MonsterPathTraits Monster::capturePathTraits(const NavRegionSnapshot &navigation) const {
+	MonsterPathTraits traits;
+	traits.canPushItems = canPushItems();
+	traits.canPushCreatures = canPushCreatures();
+	traits.isSummon = isSummon();
+	traits.canSeeInvisibility = canSeeInvisibility();
+	traits.moveLocked = isMoveLocked();
+	const auto &master = getMaster();
+	traits.canEnterProtectionZone = isFamiliar() && (!master || !master->getAttackedCreature());
+	if (traits.isSummon && master) {
+		if (const auto &masterPlayer = master->getPlayer()) {
+			std::vector<uint32_t> checkedHouseIds;
+			for (const auto &sector : navigation.getSectors()) {
+				for (const auto &cell : sector->getCells()) {
+					if (cell.houseId == 0 || std::ranges::find(checkedHouseIds, cell.houseId) != checkedHouseIds.end()) {
+						continue;
+					}
+					checkedHouseIds.emplace_back(cell.houseId);
+					if (const auto &house = g_game().map.houses.getHouse(cell.houseId); house && house->isInvited(masterPlayer)) {
+						traits.summonInvitedHouseIds.emplace_back(cell.houseId);
+					}
+				}
+			}
+			std::ranges::sort(traits.summonInvitedHouseIds);
+		}
+	}
+
+	const bool ignoresFieldDamage = getIgnoreFieldDamage();
+	for (size_t index = 0; index < COMBAT_COUNT; ++index) {
+		const auto combatType = static_cast<CombatType_t>(index);
+		const bool immune = isImmune(combatType);
+		const bool canWalk = canWalkOnFieldType(combatType);
+		traits.fieldAllowed[index] = immune || ignoresFieldDamage || canWalk;
+		traits.fieldPenalty[index] = !immune && !canWalk && !hasCondition(Combat::DamageToConditionType(combatType));
+	}
+	return traits;
+}
+
+uint64_t Monster::nextFollowPathComputeGeneration() {
+	if (++followPathComputeGeneration == 0) {
+		followPathComputeGeneration = 1;
+	}
+	return followPathComputeGeneration;
 }
 
 bool Monster::isDead() const {

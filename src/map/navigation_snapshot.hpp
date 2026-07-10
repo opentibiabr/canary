@@ -32,6 +32,8 @@ enum class NavCellFlag : uint16_t {
 	NoFieldBlockPath = 1 << 7,
 	HarmfulField = 1 << 8,
 	WalkableSea = 1 << 9,
+	BlockProjectile = 1 << 10,
+	FloorChangeWest = 1 << 11,
 };
 
 [[nodiscard]] constexpr NavCellFlag operator|(NavCellFlag left, NavCellFlag right) {
@@ -40,10 +42,13 @@ enum class NavCellFlag : uint16_t {
 
 struct NavCell {
 	NavCellFlag flags = NavCellFlag::None;
+	uint32_t houseId = 0;
 	uint16_t groundId = 0;
 	uint8_t harmfulFieldCombatType = 0;
 	uint8_t blockingCreatures = 0;
 	uint8_t pushableMonsters = 0;
+	bool hasNonInvisibleCreature = false;
+	bool hasUnpushableCreature = false;
 
 	[[nodiscard]] bool hasFlag(NavCellFlag flag) const {
 		return (static_cast<uint16_t>(flags) & static_cast<uint16_t>(flag)) != 0;

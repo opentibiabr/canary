@@ -9,6 +9,8 @@ target_sources(
             creature.cpp
             interactions/chat.cpp
             monsters/monster.cpp
+            monsters/monster_pathfinding.cpp
+            monsters/monster_pathfinding.hpp
             monsters/monsters.cpp
             monsters/spawns/spawn_monster.cpp
             npcs/npc.cpp

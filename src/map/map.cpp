@@ -341,14 +341,26 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 	const uint64_t occupancyRevision = sector ? sector->getOccupancyRevision(z) : 0;
 	const auto key = navigationSectorKey(sectorIndex, z);
 
+	std::shared_ptr<const NavSectorSnapshot> cached;
 	if (const auto it = navigationSnapshots.find(key); it != navigationSnapshots.end()) {
-		const auto &cached = it->second;
+		cached = it->second;
 		if (cached->getTopologyRevision() == topologyRevision && cached->getOccupancyRevision() == occupancyRevision) {
 			return cached;
 		}
 	}
 
 	NavSectorSnapshot::Cells cells;
+	const bool reuseTopology = cached && cached->getTopologyRevision() == topologyRevision;
+	if (reuseTopology) {
+		cells = cached->getCells();
+		for (auto &cell : cells) {
+			cell.blockingCreatures = 0;
+			cell.pushableMonsters = 0;
+			cell.hasNonInvisibleCreature = false;
+			cell.hasUnpushableCreature = false;
+		}
+	}
+
 	if (sector && sector->getFloor(z)) {
 		for (uint32_t localX = 0; localX < SECTOR_SIZE; ++localX) {
 			for (uint32_t localY = 0; localY < SECTOR_SIZE; ++localY) {
@@ -360,25 +372,32 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 				}
 
 				auto &cell = cells[localX * SECTOR_SIZE + localY];
-				const auto &ground = tile->getGround();
-				if (ground) {
-					cell.groundId = ground->getID();
-					setNavFlag(cell, NavCellFlag::HasGround, true);
-					setNavFlag(cell, NavCellFlag::WalkableSea, cell.groundId >= ITEM_WALKABLE_SEA_START && cell.groundId <= ITEM_WALKABLE_SEA_END);
-				}
+				if (!reuseTopology) {
+					if (const auto &house = tile->getHouse()) {
+						cell.houseId = house->getId();
+					}
+					const auto &ground = tile->getGround();
+					if (ground) {
+						cell.groundId = ground->getID();
+						setNavFlag(cell, NavCellFlag::HasGround, true);
+						setNavFlag(cell, NavCellFlag::WalkableSea, cell.groundId >= ITEM_WALKABLE_SEA_START && cell.groundId <= ITEM_WALKABLE_SEA_END);
+					}
 
-				setNavFlag(cell, NavCellFlag::ProtectionZone, tile->hasFlag(TILESTATE_PROTECTIONZONE));
-				setNavFlag(cell, NavCellFlag::FloorChange, tile->hasFlag(TILESTATE_FLOORCHANGE));
-				setNavFlag(cell, NavCellFlag::Teleport, tile->hasFlag(TILESTATE_TELEPORT));
-				setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID));
-				setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, tile->hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH));
-				setNavFlag(cell, NavCellFlag::BlockSolid, tile->hasFlag(TILESTATE_BLOCKSOLID));
-				setNavFlag(cell, NavCellFlag::NoFieldBlockPath, tile->hasFlag(TILESTATE_NOFIELDBLOCKPATH));
+					setNavFlag(cell, NavCellFlag::ProtectionZone, tile->hasFlag(TILESTATE_PROTECTIONZONE));
+					setNavFlag(cell, NavCellFlag::FloorChange, tile->hasFlag(TILESTATE_FLOORCHANGE));
+					setNavFlag(cell, NavCellFlag::FloorChangeWest, tile->hasFlag(TILESTATE_FLOORCHANGE_WEST));
+					setNavFlag(cell, NavCellFlag::Teleport, tile->hasFlag(TILESTATE_TELEPORT));
+					setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID));
+					setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, tile->hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH));
+					setNavFlag(cell, NavCellFlag::BlockSolid, tile->hasFlag(TILESTATE_BLOCKSOLID));
+					setNavFlag(cell, NavCellFlag::NoFieldBlockPath, tile->hasFlag(TILESTATE_NOFIELDBLOCKPATH));
+					setNavFlag(cell, NavCellFlag::BlockProjectile, tile->hasFlag(TILESTATE_BLOCKPROJECTILE));
 
-				if (tile->hasHarmfulField()) {
-					if (const auto &field = tile->getFieldItem()) {
-						setNavFlag(cell, NavCellFlag::HarmfulField, true);
-						cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
+					if (tile->hasHarmfulField()) {
+						if (const auto &field = tile->getFieldItem()) {
+							setNavFlag(cell, NavCellFlag::HarmfulField, true);
+							cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
+						}
 					}
 				}
 
@@ -390,11 +409,17 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 						if (cell.blockingCreatures < std::numeric_limits<uint8_t>::max()) {
 							++cell.blockingCreatures;
 						}
+						if (!creature->isInvisible()) {
+							cell.hasNonInvisibleCreature = true;
+						}
 
 						const auto &monster = creature->getMonster();
 						const auto &master = monster && monster->isSummon() ? monster->getMaster() : nullptr;
-						if (monster && monster->isPushable() && (!master || !master->getPlayerRaw()) && cell.pushableMonsters < std::numeric_limits<uint8_t>::max()) {
+						const bool pushableMonster = monster && monster->isPushable() && (!master || !master->getPlayerRaw());
+						if (pushableMonster && cell.pushableMonsters < std::numeric_limits<uint8_t>::max()) {
 							++cell.pushableMonsters;
+						} else if (!pushableMonster) {
+							cell.hasUnpushableCreature = true;
 						}
 					}
 				}
@@ -405,6 +430,10 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 	sector = getMapSector(baseX, baseY);
 	const auto builtTopologyRevision = sector ? sector->getTopologyRevision(z) : 0;
 	const auto builtOccupancyRevision = sector ? sector->getOccupancyRevision(z) : 0;
+	if (reuseTopology && builtTopologyRevision != topologyRevision) {
+		navigationSnapshots.erase(key);
+		return getOrBuildNavigationSector(sectorIndex, z);
+	}
 	auto snapshot = std::make_shared<const NavSectorSnapshot>(sectorIndex, z, builtTopologyRevision, builtOccupancyRevision, std::move(cells));
 	navigationSnapshots.insert_or_assign(key, snapshot);
 	return snapshot;

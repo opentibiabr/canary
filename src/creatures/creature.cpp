@@ -1012,6 +1012,7 @@ void Creature::goToFollowCreature() {
 	const auto &monster = getMonster();
 
 	if (isSummon() && !monster->isFamiliar() && !canFollowMaster()) {
+		monster->supersedeFollowPathCompute();
 		listWalkDir.clear();
 		return;
 	}
@@ -1047,9 +1048,18 @@ void Creature::goToFollowCreature() {
 			currentPositionSatisfiesFollow = FrozenPathingConditionCall(followPosition)(currentPosition, currentPosition, fpp, bestMatch);
 		}
 
-		hasFollowPath = currentPositionSatisfiesFollow || getPathTo(followPosition, listDir, fpp);
+		if (currentPositionSatisfiesFollow) {
+			hasFollowPath = true;
+		} else if (monster && monster->requestFollowPathCompute(followCreature, fpp, executeOnFollow)) {
+			return;
+		} else {
+			hasFollowPath = getPathTo(followPosition, listDir, fpp);
+		}
 	}
 
+	if (monster) {
+		monster->supersedeFollowPathCompute();
+	}
 	startAutoWalk(listDir);
 
 	if (executeOnFollow) {

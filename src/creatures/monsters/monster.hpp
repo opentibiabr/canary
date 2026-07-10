@@ -14,11 +14,15 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <deque>
+	#include <optional>
 #endif
 
 struct spellBlock_t;
 struct MapCacheFloorCursor;
+struct MonsterPathResult;
+struct MonsterPathTraits;
 class MonsterType;
+class NavRegionSnapshot;
 class Tile;
 class Creature;
 class Game;
@@ -49,6 +53,16 @@ private:
 		Position newPos;
 		CoalescedTaskState state;
 		bool needsFullRefresh = false;
+	};
+
+	struct FollowPathComputeRequest {
+		Position start;
+		Position target;
+		FindPathParams params;
+		uint32_t targetId = 0;
+		bool executeOnFollow = true;
+
+		[[nodiscard]] bool matches(const FollowPathComputeRequest &other) const;
 	};
 
 	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
@@ -150,6 +164,8 @@ public:
 	void onThink(uint32_t interval) override;
 	bool trySchedulePostThink();
 	void executePostThink(uint32_t interval);
+	bool requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow);
+	void supersedeFollowPathCompute();
 
 	bool challengeCreature(const std::shared_ptr<Creature> &creature, int targetChangeCooldown) override;
 
@@ -292,6 +308,12 @@ protected:
 
 private:
 	void onThink_async();
+	void prepareFollowPathCompute(uint64_t generation);
+	void completeFollowPathCompute(uint64_t generation, std::shared_ptr<const NavRegionSnapshot> navigation, MonsterPathResult result);
+	void rejectFollowPathCompute(uint64_t generation);
+	void discardFollowPathCompute(bool requestRefresh);
+	[[nodiscard]] MonsterPathTraits capturePathTraits(const NavRegionSnapshot &navigation) const;
+	[[nodiscard]] uint64_t nextFollowPathComputeGeneration();
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
@@ -306,6 +328,11 @@ private:
 	std::deque<TargetReference> targetList;
 	PendingMovementAiRefresh pendingMovementAiRefresh;
 	CoalescedTaskState pendingPostThink;
+	std::optional<FollowPathComputeRequest> pendingFollowPathCompute;
+	uint64_t followPathComputeGeneration = 0;
+	uint64_t activeFollowPathComputeGeneration = 0;
+	bool followPathComputeOutstanding = false;
+	bool followPathComputeSuperseded = false;
 
 	time_t timeToChangeFiendish = 0;
 

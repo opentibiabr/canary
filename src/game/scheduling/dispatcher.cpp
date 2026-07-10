@@ -315,6 +315,7 @@ void Dispatcher::observeTaskStart(const Task &task, DispatcherLane lane, Task::C
 
 void Dispatcher::logQueueLatency(DispatcherLane lane) const {
 	static std::array<Task::Clock::time_point, static_cast<size_t>(DispatcherLane::Last)> nextLogAt {};
+	static std::array<Task::Clock::time_point, static_cast<size_t>(DispatcherLane::Last)> nextProbeAt {};
 	const auto laneId = static_cast<size_t>(lane);
 
 	const auto &tasks = m_tasks[laneId];
@@ -332,9 +333,14 @@ void Dispatcher::logQueueLatency(DispatcherLane lane) const {
 	}
 
 	const auto now = policy.now();
+	if (now < nextLogAt[laneId] || now < nextProbeAt[laneId]) {
+		return;
+	}
+	nextProbeAt[laneId] = now + DISPATCHER_ADAPTIVE_BUDGET_INTERVAL;
+
 	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
 	const auto snapshot = DispatcherPolicy::inspectQueueAt(tasks, now, loggingStartedAt);
-	if (snapshot.queued == 0 || snapshot.oldestReadyAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD || now < nextLogAt[laneId]) {
+	if (snapshot.queued == 0 || snapshot.oldestReadyAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD) {
 		return;
 	}
 
@@ -714,17 +720,22 @@ void Dispatcher::executeReadyEvents() {
 	constexpr size_t laneCount = DispatcherWeightedDeficitRoundRobin::LANE_COUNT;
 	std::array<size_t, laneCount> tasksExecuted {};
 	std::array<bool, laneCount> exhausted {};
-	std::array<std::chrono::microseconds, laneCount> oldestReadyAge {};
+	std::array<std::chrono::microseconds, laneCount> nextReadyAge {};
 	std::array<std::chrono::microseconds, laneCount> serialRuntime {};
 	const auto now = policy.now();
 	const auto slo = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count()));
 	size_t remainingPassTasks = 0;
 	for (size_t laneId = 0; laneId < laneCount; ++laneId) {
-		oldestReadyAge[laneId] = DispatcherPolicy::inspectQueueAt(m_tasks[laneId], now).oldestReadyAge;
-		const auto budget = laneTaskBudget(static_cast<DispatcherLane>(laneId));
+		const auto lane = static_cast<DispatcherLane>(laneId);
+		const auto &tasks = m_tasks[laneId];
+		if (!tasks.empty()) {
+			const auto candidateIndex = usesProducerFairness(lane) ? DispatcherPolicy::selectProducerFairIndex(tasks, lastProducerTokens[laneId]) : 0;
+			nextReadyAge[laneId] = DispatcherPolicy::elapsed(tasks[candidateIndex].getReadyAt(), now);
+		}
+		const auto budget = laneTaskBudget(lane);
 		remainingPassTasks += std::min(budget, std::numeric_limits<size_t>::max() - remainingPassTasks);
 	}
-	oldestReadyAge[static_cast<size_t>(DispatcherLane::WorkerCompletion)] = g_monsterComputeService().getStats().oldestCompletionReadyAge;
+	nextReadyAge[static_cast<size_t>(DispatcherLane::WorkerCompletion)] = g_monsterComputeService().getStats().oldestCompletionReadyAge;
 
 	while (remainingPassTasks > 0) {
 		DispatcherWeightedDeficitRoundRobin::ReadySet ready {};
@@ -748,7 +759,7 @@ void Dispatcher::executeReadyEvents() {
 			}
 			quantums[laneId] = DispatcherWeightedDeficitRoundRobin::agedQuantum(
 				laneQuantum(lane),
-				oldestReadyAge[laneId],
+				nextReadyAge[laneId],
 				slo
 			);
 		}

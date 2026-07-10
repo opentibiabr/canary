@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "documentId": "dragon_research",
+  "entities": [
+    {
+      "id": "dragon_monster",
+      "type": "monster",
+      "name": "Dragon",
+      "canonical": true,
+      "sourceRefs": ["tibiawiki_creatures", "canary_repo"],
+      "facts": {
+        "classification": "creature",
+        "researchStatus": "example-only",
+        "notes": "Values must be checked against the cited source before implementation."
+      }
+    },
+    {
+      "id": "forgotten_forge_quest",
+      "type": "quest",
+      "name": "Forgotten Forge",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "classification": "custom-ots-content"
+      }
+    }
+  ]
+}

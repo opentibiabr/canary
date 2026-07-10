@@ -27,10 +27,21 @@ CATEGORY_DIRS = {
     "globalevent": {"globalevent", "globalevents"},
 }
 
-NAME_PATTERNS = [
-    re.compile(r"\bname\s*=\s*[\"']([^\"']+)[\"']", re.I),
-    re.compile(r"<\w+\b[^>]*\bname=[\"']([^\"']+)[\"']", re.I),
-]
+CATEGORY_NAME_PATTERNS: dict[str, list[re.Pattern[str]]] = {
+    "monster": [
+        re.compile(r"Game\.createMonsterType\s*\(\s*[\"']([^\"']+)[\"']", re.I),
+        re.compile(r"<monster\b[^>]*\bname=[\"']([^\"']+)[\"']", re.I),
+    ],
+    "npc": [
+        re.compile(r"Game\.createNpcType\s*\(\s*[\"']([^\"']+)[\"']", re.I),
+        re.compile(r"<npc\b[^>]*\bname=[\"']([^\"']+)[\"']", re.I),
+    ],
+    "raid": [re.compile(r"<raid\b[^>]*\bname=[\"']([^\"']+)[\"']", re.I)],
+    "spell": [
+        re.compile(r"\bspell\s*:\s*name\s*\(\s*[\"']([^\"']+)[\"']", re.I),
+        re.compile(r"<\w*spell\b[^>]*\bname=[\"']([^\"']+)[\"']", re.I),
+    ],
+}
 
 REFERENCE_PATTERNS = {
     "monster": [
@@ -76,8 +87,8 @@ def classify(path: Path) -> str | None:
     return None
 
 
-def extract_name(text: str, fallback: str) -> str:
-    for pattern in NAME_PATTERNS:
+def extract_name(category: str, text: str, fallback: str) -> str:
+    for pattern in CATEGORY_NAME_PATTERNS.get(category, []):
         match = pattern.search(text)
         if match:
             return match.group(1).strip()
@@ -92,6 +103,10 @@ def extract_references(text: str) -> dict[str, list[str | int]]:
                 raw = match.group(1)
                 refs[kind].add(int(raw) if raw.isdigit() else raw)
     return {key: sorted(values, key=str) for key, values in refs.items() if values}
+
+
+def datapack(path: str) -> str:
+    return path.split("/", 1)[0] if "/" in path else "root"
 
 
 def build_index(root: Path) -> dict[str, Any]:
@@ -109,11 +124,13 @@ def build_index(root: Path) -> dict[str, Any]:
         except OSError:
             continue
 
-        name = extract_name(text, path.stem.replace("_", " ").title())
+        fallback = path.stem.replace("_", " ").title()
+        name = extract_name(category, text, fallback)
         entry = {
             "type": category,
             "name": name,
             "path": rel,
+            "datapack": datapack(rel),
             "references": extract_references(text),
         }
         entries.append(entry)
@@ -124,10 +141,13 @@ def build_index(root: Path) -> dict[str, Any]:
     for category, names in definitions.items():
         for normalized_name, paths in names.items():
             if len(paths) > 1:
+                packs = sorted({datapack(path) for path in paths})
                 duplicates.append({
                     "type": category,
                     "name": normalized_name,
                     "paths": sorted(paths),
+                    "datapacks": packs,
+                    "crossDatapack": len(packs) > 1,
                 })
 
     return {
@@ -138,6 +158,7 @@ def build_index(root: Path) -> dict[str, Any]:
             "entryCount": len(entries),
             "countsByType": {key: len(value) for key, value in sorted(by_type.items())},
             "duplicateDefinitions": len(duplicates),
+            "crossDatapackDuplicates": sum(1 for item in duplicates if item["crossDatapack"]),
         },
         "entries": sorted(entries, key=lambda item: (item["type"], item["name"].lower(), item["path"])),
         "duplicates": sorted(duplicates, key=lambda item: (item["type"], item["name"])),

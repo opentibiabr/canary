@@ -17,22 +17,22 @@ TEXT_EXTENSIONS = {
 }
 SKIP_DIRS = {".git", "build", "vcpkg_installed", "node_modules", ".cache", ".idea", ".vscode"}
 
-PATTERNS: dict[str, list[re.Pattern[str]]] = {
+PATTERNS: dict[str, list[tuple[str, re.Pattern[str]]]] = {
     "storage": [
-        re.compile(r"\b(?:storage|storageValue|storageId|storageKey)\s*[=:,(]\s*(\d{3,})", re.I),
-        re.compile(r"\b(?:getStorageValue|setStorageValue)\s*\(\s*(\d{3,})", re.I),
+        ("definition", re.compile(r"\b(?:storage|storageValue|storageId|storageKey)\s*[=:]\s*(\d{3,})", re.I)),
+        ("reference", re.compile(r"\b(?:getStorageValue|setStorageValue)\s*\(\s*(\d{3,})", re.I)),
     ],
     "actionId": [
-        re.compile(r"\b(?:actionid|actionId|aid)\s*[=:]\s*[\"']?(\d+)", re.I),
-        re.compile(r"\b(?:action|Action)\s*\([^\n]*?\b(?:id|aid)\s*[=:]\s*(\d+)", re.I),
+        ("definition", re.compile(r"\b(?:actionid|actionId|aid)\s*[=:]\s*[\"']?(\d+)", re.I)),
+        ("definition", re.compile(r"\b(?:action|Action)\s*\([^\n]*?\b(?:id|aid)\s*[=:]\s*(\d+)", re.I)),
     ],
     "uniqueId": [
-        re.compile(r"\b(?:uniqueid|uniqueId|uid)\s*[=:]\s*[\"']?(\d+)", re.I),
+        ("definition", re.compile(r"\b(?:uniqueid|uniqueId|uid)\s*[=:]\s*[\"']?(\d+)", re.I)),
     ],
     "itemId": [
-        re.compile(r"\b(?:itemid|itemId|item_id|clientid|serverid)\s*[=:]\s*[\"']?(\d+)", re.I),
-        re.compile(r"\b(?:Item|Game\.createItem|player:addItem)\s*\(\s*(\d+)", re.I),
-        re.compile(r"<item\b[^>]*\bid=[\"'](\d+)[\"']", re.I),
+        ("reference", re.compile(r"\b(?:itemid|itemId|item_id|clientid|serverid)\s*[=:]\s*[\"']?(\d+)", re.I)),
+        ("reference", re.compile(r"\b(?:Item|Game\.createItem|player:addItem)\s*\(\s*(\d+)", re.I)),
+        ("definition", re.compile(r"<item\b[^>]*\bid=[\"'](\d+)[\"']", re.I)),
     ],
 }
 
@@ -64,18 +64,20 @@ def scan_file(path: Path, root: Path, results: dict[str, dict[int, list[dict[str
     rel = path.relative_to(root).as_posix()
     for line_no, line in enumerate(text.splitlines(), start=1):
         for namespace, patterns in PATTERNS.items():
-            seen_on_line: set[int] = set()
-            for pattern in patterns:
+            seen_on_line: set[tuple[int, str]] = set()
+            for role, pattern in patterns:
                 for match in pattern.finditer(line):
                     value = int(match.group(1))
-                    if value in seen_on_line:
+                    key = (value, role)
+                    if key in seen_on_line:
                         continue
-                    seen_on_line.add(value)
+                    seen_on_line.add(key)
                     results[namespace][value].append(
                         {
                             "path": rel,
                             "line": line_no,
                             "context": line.strip()[:300],
+                            "role": role,
                         }
                     )
 
@@ -95,15 +97,17 @@ def build_registry(root: Path) -> dict[str, Any]:
         for value in sorted(entries_by_value):
             sources = entries_by_value[value]
             entries.append({"value": value, "sources": sources})
-            unique_paths = {source["path"] for source in sources}
-            if len(unique_paths) > 1:
+
+            definition_sources = [source for source in sources if source["role"] == "definition"]
+            unique_definition_paths = {source["path"] for source in definition_sources}
+            if len(unique_definition_paths) > 1:
                 conflicts.append(
                     {
                         "namespace": namespace,
                         "value": value,
-                        "sources": sources,
+                        "sources": definition_sources,
                         "severity": "warning",
-                        "reason": "Identifier is referenced in multiple files; review whether reuse is intentional.",
+                        "reason": "Identifier is defined in multiple files; review whether duplication is intentional.",
                     }
                 )
 

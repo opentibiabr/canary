@@ -44,11 +44,28 @@ jobs:
       - name: Generate gameplay content index
         run: python tools/ai-agent/scan_content.py --root . --output artifacts/CONTENT_INDEX.json
 
+      - name: Validate gameplay references
+        run: |
+          python tools/ai-agent/validate_references.py \
+            --content artifacts/CONTENT_INDEX.json \
+            --registry artifacts/ID_REGISTRY.json \
+            --output artifacts/REFERENCE_REPORT.json
+
+      - name: Generate prioritized risk report
+        run: |
+          python tools/ai-agent/generate_risk_report.py \
+            --registry artifacts/ID_REGISTRY.json \
+            --content artifacts/CONTENT_INDEX.json \
+            --references artifacts/REFERENCE_REPORT.json \
+            --output artifacts/RISK_REPORT.md \
+            --max-items 50
+
       - name: Validate generated JSON
         run: |
           python -m json.tool artifacts/ID_REGISTRY.json > /dev/null
           python -m json.tool artifacts/PROJECT_STRUCTURE.json > /dev/null
           python -m json.tool artifacts/CONTENT_INDEX.json > /dev/null
+          python -m json.tool artifacts/REFERENCE_REPORT.json > /dev/null
 
       - name: Create audit summary
         shell: python
@@ -60,11 +77,12 @@ jobs:
           registry = json.loads(Path("artifacts/ID_REGISTRY.json").read_text(encoding="utf-8"))
           structure = json.loads(Path("artifacts/PROJECT_STRUCTURE.json").read_text(encoding="utf-8"))
           content = json.loads(Path("artifacts/CONTENT_INDEX.json").read_text(encoding="utf-8"))
+          references = json.loads(Path("artifacts/REFERENCE_REPORT.json").read_text(encoding="utf-8"))
 
           lines = ["# AI agent repository audit", "", "## Identifier registry", ""]
           for name, data in registry["namespaces"].items():
               lines.append(f"- {name}: {len(data['entries'])}")
-          lines.append(f"- potential conflicts: {len(registry['conflicts'])}")
+          lines.append(f"- potential definition conflicts: {len(registry['conflicts'])}")
           lines.extend([
               "",
               "## Project structure",
@@ -79,10 +97,17 @@ jobs:
           for name, count in content["summary"]["countsByType"].items():
               lines.append(f"- {name}: {count}")
           lines.append(f"- duplicate definitions: {content['summary']['duplicateDefinitions']}")
+          lines.append(f"- cross-datapack duplicates: {content['summary'].get('crossDatapackDuplicates', 0)}")
+
+          lines.extend(["", "## Reference validation", ""])
+          lines.append(f"- findings: {references['summary']['findingCount']}")
+          for name, count in references["summary"]["countsByType"].items():
+              lines.append(f"- {name}: {count}")
 
           report = "\n".join(lines) + "\n"
           Path("artifacts/AI_AGENT_AUDIT_SUMMARY.md").write_text(report, encoding="utf-8")
-          Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(report, encoding="utf-8")
+          risk = Path("artifacts/RISK_REPORT.md").read_text(encoding="utf-8")
+          Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(report + "\n" + risk, encoding="utf-8")
 
       - name: Upload audit artifacts
         uses: actions/upload-artifact@v4
@@ -92,6 +117,8 @@ jobs:
             artifacts/ID_REGISTRY.json
             artifacts/PROJECT_STRUCTURE.json
             artifacts/CONTENT_INDEX.json
+            artifacts/REFERENCE_REPORT.json
+            artifacts/RISK_REPORT.md
             artifacts/AI_AGENT_AUDIT_SUMMARY.md
           if-no-files-found: error
           retention-days: 14

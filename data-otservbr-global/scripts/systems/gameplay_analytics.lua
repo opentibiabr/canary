@@ -1,4 +1,5 @@
 local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")
 
 local function registerPlayerEvents(player)
 	player:registerEvent("GameplayAnalyticsHealth")
@@ -161,8 +162,16 @@ function analyticsCommand.onSay(player, words, param)
 
 	local command = param:trim():lower()
 	if command == "flush" then
-		Analytics.flush()
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Gameplay Analytics queue flushed.")
+		local success = Analytics.flush(true)
+		local status = Analytics.status()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Gameplay Analytics forced flush: success=%s, queued=%d, retrying=%d, deadLetters=%d.", tostring(success), status.queuedSessions, status.retryingSessions, status.deadLetterQueueSize))
+		return false
+	end
+
+	if command == "deadletters" then
+		local persisted = Analytics.persistDeadLetters()
+		local status = Analytics.status()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Gameplay Analytics dead letters: persisted=%d, pending=%d, totalPersisted=%d, dropped=%d.", persisted, status.deadLetterQueueSize, status.persistedDeadLetters, status.droppedDeadLetters))
 		return false
 	end
 
@@ -184,7 +193,25 @@ function analyticsCommand.onSay(player, words, param)
 	end
 
 	local status = Analytics.status()
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Gameplay Analytics: enabled=%s, running=%s, active=%d, queued=%d, detail=%d, lastFlush=%d", tostring(status.enabled), tostring(status.running), status.activeSessions, status.queuedSessions, status.detailLevel, status.lastFlush))
+	player:sendTextMessage(
+		MESSAGE_EVENT_ADVANCE,
+		string.format(
+			"Gameplay Analytics: enabled=%s, running=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, lastFlush=%d",
+			tostring(status.enabled),
+			tostring(status.running),
+			status.activeSessions,
+			status.queuedSessions,
+			status.retryingSessions,
+			status.deadLetterQueueSize,
+			status.retriedSessions,
+			status.successfulFlushes,
+			status.failedFlushes,
+			status.lastFlushDurationMs,
+			status.oldestQueuedAgeSeconds,
+			status.detailLevel,
+			status.lastFlush
+		)
+	)
 	return false
 end
 analyticsCommand:separator(" ")

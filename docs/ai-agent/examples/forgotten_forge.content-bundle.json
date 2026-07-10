@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0",
+  "taskId": "forgotten_forge_bundle",
+  "type": "content_bundle",
+  "name": "Forgotten Forge Content Pack",
+  "description": "Dry-run pack containing a quest controller, starter NPC, and forge guardian boss preview.",
+  "targetDatapack": "data-otservbr-global",
+  "dryRun": true,
+  "requestedBy": "ai-agent",
+  "tags": [
+    "first-real-pack",
+    "quest",
+    "npc",
+    "boss",
+    "dry-run"
+  ],
+  "contentBundle": {
+    "components": [
+      {
+        "id": "forgotten_forge_quest",
+        "type": "quest",
+        "name": "Forgotten Forge",
+        "dependsOn": [
+          "forge_keeper_npc",
+          "ashen_sentinel_boss"
+        ]
+      },
+      {
+        "id": "forge_keeper_npc",
+        "type": "npc",
+        "name": "Forge Keeper Ardan",
+        "dependsOn": []
+      },
+      {
+        "id": "ashen_sentinel_boss",
+        "type": "monster",
+        "name": "The Ashen Sentinel",
+        "dependsOn": []
+      }
+    ],
+    "requestedIds": [
+      {
+        "namespace": "storage",
+        "count": 3,
+        "min": 390000,
+        "max": 399999,
+        "purpose": "quest progress and reward state"
+      },
+      {
+        "namespace": "actionId",
+        "count": 2,
+        "min": 59000,
+        "max": 59999,
+        "purpose": "forge lever and reward chest"
+      }
+    ],
+    "mapRequirements": [
+      "Create a sealed forge chamber with a boss arena.",
+      "Place one entrance lever and one reward chest manually in the map editor.",
+      "Assign the reserved action IDs only after human review."
+    ],
+    "manualSteps": [
+      "Confirm monster outfit, loot, and combat values against Canary conventions.",
+      "Review NPC dialogue and quest state transitions before implementation.",
+      "Run the reference validator after any manual datapack integration."
+    ]
+  }
+}

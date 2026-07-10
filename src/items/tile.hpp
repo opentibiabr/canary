@@ -256,15 +256,7 @@ public:
 	std::shared_ptr<Item> getGround() const {
 		return ground;
 	}
-	void setGround(const std::shared_ptr<Item> &item) {
-		if (ground) {
-			resetTileFlags(ground);
-		}
-
-		if ((ground = item)) {
-			setTileFlags(item);
-		}
-	}
+	void setGround(const std::shared_ptr<Item> &item);
 
 	/**
 	 * Runs an action immediately or defers it back to the dispatcher.

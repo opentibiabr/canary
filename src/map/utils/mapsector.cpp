@@ -11,7 +11,40 @@
 
 #include "creatures/creature.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <limits>
+#endif
+
 bool MapSector::newSector = false;
+
+MapSector::MapSector() {
+	for (auto &revision : topologyRevisions) {
+		revision.store(1, std::memory_order_relaxed);
+	}
+	for (auto &revision : occupancyRevisions) {
+		revision.store(1, std::memory_order_relaxed);
+	}
+}
+
+namespace {
+	uint64_t incrementRevision(std::atomic_uint64_t &revision) {
+		auto current = revision.load(std::memory_order_relaxed);
+		while (true) {
+			const auto next = current == std::numeric_limits<uint64_t>::max() ? 1 : current + 1;
+			if (revision.compare_exchange_weak(current, next, std::memory_order_relaxed)) {
+				return next;
+			}
+		}
+	}
+}
+
+uint64_t MapSector::markTopologyChanged(uint8_t z) {
+	return z < MAP_MAX_LAYERS ? incrementRevision(topologyRevisions[z]) : 0;
+}
+
+uint64_t MapSector::markOccupancyChanged(uint8_t z) {
+	return z < MAP_MAX_LAYERS ? incrementRevision(occupancyRevisions[z]) : 0;
+}
 
 void MapSector::addCreature(const std::shared_ptr<Creature> &c) {
 	creature_list.emplace_back(c);

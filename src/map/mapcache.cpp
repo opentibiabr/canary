@@ -339,6 +339,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
+	map->markNavigationTopologyChanged(pos);
 
 	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
 		for (const auto &creature : movedOldCreatureList) {
@@ -394,6 +395,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &
 
 	if (floor) {
 		floor->setTileCache(x, y, tile);
+		static_cast<Map*>(this)->markNavigationTopologyChanged(Position(x, y, z));
 	}
 }
 

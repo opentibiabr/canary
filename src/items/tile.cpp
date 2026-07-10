@@ -386,6 +386,7 @@ void Tile::onAddTileItem(const std::shared_ptr<Item> &item) {
 	}
 
 	setTileFlags(item);
+	g_game().map.markNavigationTopologyChanged(getPosition());
 
 	const Position &cylinderMapPos = getPosition();
 
@@ -451,6 +452,7 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 		g_logger().error("Tile::onUpdateTileItem: oldItem or newItem is nullptr");
 		return;
 	}
+	g_game().map.markNavigationTopologyChanged(getPosition());
 
 	if ((newItem->hasProperty(CONST_PROP_MOVABLE) || newItem->getContainer()) || (newItem->isWrapable() && newItem->hasProperty(CONST_PROP_MOVABLE) && !oldItem->hasProperty(CONST_PROP_BLOCKPATH))) {
 		const auto it = g_game().browseFields.find(getTile());
@@ -513,6 +515,7 @@ void Tile::onRemoveTileItem(const CreatureVector &spectators, const std::vector<
 	}
 
 	resetTileFlags(item);
+	g_game().map.markNavigationTopologyChanged(getPosition());
 
 	const Position &cylinderMapPos = getPosition();
 	const ItemType &iType = Item::items[item->getID()];
@@ -1030,6 +1033,7 @@ void Tile::addThing(int32_t, const std::shared_ptr<Thing> &thing) {
 
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
+		g_game().map.markNavigationOccupancyChanged(getPosition());
 	} else {
 		const auto &item = thing->getItem();
 		if (item == nullptr) {
@@ -1243,6 +1247,7 @@ void Tile::removeThing(const std::shared_ptr<Thing> &thing, uint32_t count) {
 			if (it != creatures->end()) {
 				Spectators::clearCache();
 				creatures->erase(it);
+				g_game().map.markNavigationOccupancyChanged(getPosition());
 			}
 		}
 		return;
@@ -1659,6 +1664,7 @@ void Tile::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) {
 
 		CreatureVector* creatures = makeCreatures();
 		creatures->insert(creatures->begin(), creature);
+		g_game().map.markNavigationOccupancyChanged(getPosition());
 	} else {
 		const auto &item = thing->getItem();
 		if (item == nullptr) {
@@ -1670,6 +1676,7 @@ void Tile::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) {
 			if (ground == nullptr) {
 				ground = item;
 				setTileFlags(item);
+				g_game().map.markNavigationTopologyChanged(getPosition());
 			}
 			return;
 		}
@@ -1698,12 +1705,25 @@ void Tile::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) {
 		}
 
 		setTileFlags(item);
+		g_game().map.markNavigationTopologyChanged(getPosition());
 	}
 }
 
 void Tile::updateTileFlags(const std::shared_ptr<Item> &item) {
 	resetTileFlags(item);
 	setTileFlags(item);
+	g_game().map.markNavigationTopologyChanged(getPosition());
+}
+
+void Tile::setGround(const std::shared_ptr<Item> &item) {
+	if (ground) {
+		resetTileFlags(ground);
+	}
+
+	if ((ground = item)) {
+		setTileFlags(item);
+	}
+	g_game().map.markNavigationTopologyChanged(getPosition());
 }
 
 void Tile::setTileFlags(const std::shared_ptr<Item> &item) {

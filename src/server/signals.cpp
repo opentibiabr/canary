@@ -122,6 +122,7 @@ void Signals::sighupHandler() {
 	g_logger().info("Reloaded raids");
 
 	Item::items.reload();
+	g_game().map.invalidateNavigationEpoch();
 	g_logger().info("Reloaded items");
 
 	g_game().mounts->reload();

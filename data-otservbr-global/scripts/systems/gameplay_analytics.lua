@@ -188,17 +188,11 @@ function experience.onGainExperience(player, source, experienceValue, rawExperie
 end
 experience:register()
 
--- Every monster must carry the health-change event so outgoing player damage can
--- be measured after final combat reductions. EventCallback.onSpawn is global and
--- does not require editing individual monster definitions.
-local spawnCallback = EventCallback
-function spawnCallback.onSpawn(creature, position, startup, artificial)
-	if Analytics.isEnabled() and creature:isMonster() then
-		creature:registerEvent("GameplayAnalyticsHealth")
-	end
-	return true
-end
-spawnCallback:register()
+-- CreatureEvent health-change callbacks are registered for players on login.
+-- Canary does not expose a global monster-spawn EventCallback, so attempting to
+-- assign EventCallback.onSpawn is invalid and prevents the datapack from loading.
+-- Monster damage tracking must be added through a supported core callback or
+-- explicit monster event registration in a separate implementation change.
 
 local analyticsCommand = TalkAction("/analytics")
 function analyticsCommand.onSay(player, words, param)

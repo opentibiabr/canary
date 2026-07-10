@@ -23,9 +23,15 @@ def _safe_stem(name: str) -> str:
     return stem
 
 
+def _lua_string(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
 def _write_preview(base: Path, output_root: Path, task_id: str, component: dict) -> Path:
     component_type = component["type"]
     component_name = component["name"]
+    component_id = component.get("id", task_id)
+    dependencies = component.get("dependsOn", [])
     extension = ".xml" if component_type in {"monster", "raid"} else ".lua"
     path = base / component_type / f"{_safe_stem(component_name)}{extension}"
     require_safe_write(path, output_root=output_root)
@@ -33,20 +39,24 @@ def _write_preview(base: Path, output_root: Path, task_id: str, component: dict)
 
     if extension == ".xml":
         body = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
             "<!-- Generated preview — not active game content -->\n"
-            f"<!-- Task: {task_id}; Component: {component.get('id', task_id)}; "
-            f"Type: {component_type}; Name: {component_name} -->\n"
+            f'<preview taskId="{task_id}" componentId="{component_id}" '
+            f'type="{component_type}" name="{component_name}" dryRun="true" />\n'
         )
     else:
-        preview = {
-            "taskId": task_id,
-            "componentId": component.get("id", task_id),
-            "type": component_type,
-            "name": component_name,
-            "dependsOn": component.get("dependsOn", []),
-            "dryRun": True,
-        }
-        body = HEADER + "return " + json.dumps(preview, ensure_ascii=False, sort_keys=True) + "\n"
+        dependency_values = ", ".join(_lua_string(value) for value in dependencies)
+        body = (
+            HEADER
+            + "return {\n"
+            + f"    taskId = {_lua_string(task_id)},\n"
+            + f"    componentId = {_lua_string(component_id)},\n"
+            + f"    type = {_lua_string(component_type)},\n"
+            + f"    name = {_lua_string(component_name)},\n"
+            + f"    dependsOn = {{{dependency_values}}},\n"
+            + "    dryRun = true,\n"
+            + "}\n"
+        )
 
     path.write_text(body, encoding="utf-8")
     return path

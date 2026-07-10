@@ -56,7 +56,19 @@ jobs:
           pip install cmakelang PyYAML
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
+      - name: Detect formatter changes
+        id: formatter-changes
+        shell: bash
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+            git status --short
+          fi
+
       - name: Apply formatting with autofix.ci
+        if: steps.formatter-changes.outputs.has_changes == 'true'
         uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a
         with:
           commit-message: "style: auto-formatting (clang/stylua/cmake)"

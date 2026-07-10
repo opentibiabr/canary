@@ -1,0 +1,72 @@
+name: Research Normalization
+
+on:
+  push:
+    branches:
+      - "ai/**"
+    paths:
+      - "tools/ai-agent/normalize_research.py"
+      - "tools/ai-agent/test_research_normalization.py"
+      - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
+      - "docs/ai-agent/examples/*.research.json"
+      - ".github/workflows/research-normalization.yml"
+  pull_request:
+    paths:
+      - "tools/ai-agent/normalize_research.py"
+      - "tools/ai-agent/test_research_normalization.py"
+      - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
+      - "docs/ai-agent/examples/*.research.json"
+      - ".github/workflows/research-normalization.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  normalize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run normalization tests
+        run: python -m unittest tools/ai-agent/test_research_normalization.py -v
+
+      - name: Validate research JSON files
+        run: |
+          python -m json.tool docs/ai-agent/RESEARCH_ENTITY.schema.json > /dev/null
+          python -m json.tool docs/ai-agent/examples/dragon.research.json > /dev/null
+
+      - name: Build Canary content index
+        run: python tools/ai-agent/scan_content.py --root . --output artifacts/CONTENT_INDEX.json
+
+      - name: Normalize example research
+        run: |
+          python tools/ai-agent/normalize_research.py \
+            --input docs/ai-agent/examples/dragon.research.json \
+            --content-index artifacts/CONTENT_INDEX.json \
+            --output artifacts/NORMALIZED_RESEARCH.json
+
+      - name: Verify comparison result
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          result = json.loads(Path("artifacts/NORMALIZED_RESEARCH.json").read_text(encoding="utf-8"))
+          entities = {item["id"]: item for item in result["entities"]}
+          assert entities["dragon_monster"]["canary"]["status"] == "matched"
+          assert entities["forgotten_forge_quest"]["canary"]["status"] == "missing"
+          assert entities["forgotten_forge_quest"]["canonical"] is False
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: normalized-research-example
+          path: |
+            artifacts/CONTENT_INDEX.json
+            artifacts/NORMALIZED_RESEARCH.json
+          if-no-files-found: error
+          retention-days: 14

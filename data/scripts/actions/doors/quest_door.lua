@@ -14,6 +14,17 @@ local accountQuestDoors = {
 	[Storage.Quest.U7_6.TheApeCity.ChorDoor] = "the-ape-city",
 	[Storage.Quest.U7_6.TheApeCity.FibulaDoor] = "the-ape-city",
 	[Storage.Quest.U7_6.TheApeCity.CasksDoor] = "the-ape-city",
+	[Storage.Quest.U8_1.SecretService.CGBMission01] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.TBIMission02] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.AVINMission02] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.CGBMission02] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.TBIMission03] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.TBIMission04] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.CGBMission04] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.AVINMission05] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.CGBMission05] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.Mission07] = "secret-service",
+	[Storage.Quest.U8_1.SecretService.CGBMission06] = "secret-service",
 }
 
 local questDoor = Action()

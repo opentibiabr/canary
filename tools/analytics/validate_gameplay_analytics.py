@@ -29,6 +29,8 @@ REQUIRED_CONFIG = {
     "queueLimit",
     "detailLevel",
     "levelBrackets",
+    "excludedPlayerNames",
+    "excludedAccountTypes",
 }
 
 REQUIRED_TABLES = {
@@ -101,6 +103,25 @@ def validate_library(text: str) -> None:
     require("Queue limit reached" in text, "queue overflow must be logged")
     require("minimumSessionSeconds" in text, "minimum session threshold is not enforced")
     require("combatTimeoutSeconds" in text, "combat timeout is not enforced")
+    require("local function sessionHasData(session)" in text, "empty sessions must be filtered")
+    require("runtimeId = player:getId()" in text, "online lookup must retain the runtime player id")
+    require(
+        "combatEnd = math.min(combatEnd, session.lastCombatAt)" in text,
+        "combat duration must end at the last combat event, not at timeout processing",
+    )
+    require(
+        re.search(r"function\s+Analytics\.recordExperience\([^)]*source[^)]*\)", text) is not None,
+        "experience recording must retain the source monster",
+    )
+    require("monster.experienceRaw = monster.experienceRaw + rawAmount" in text, "per-monster raw experience is not populated")
+    require(
+        "if Analytics.config.databaseEnabled ~= true then\n\t\treturn true\n\tend" in text,
+        "database-disabled mode must not retain completed sessions in memory",
+    )
+    require(
+        "Analytics.recordManaSpent(player, mana)" not in text,
+        "spell reporting must not double-count mana already captured by mana-change events",
+    )
     require(
         re.search(r"\blocal\s+result\s*=\s*db\.storeQuery", text) is None,
         "database query handles must not shadow Canary's global result API",
@@ -116,6 +137,13 @@ def lua_block_delta(line: str) -> int:
     opens = len(re.findall(r"\b(function|if|for|while|do)\b", code))
     closes = len(re.findall(r"\bend\b", code))
     return opens - closes
+
+
+def function_body(text: str, signature: str, following: str) -> str:
+    start = text.find(signature)
+    end = text.find(following, start + len(signature))
+    require(start >= 0 and end > start, f"cannot isolate runtime function: {signature}")
+    return text[start:end]
 
 
 def has_global_drain_health_registration(text: str) -> bool:
@@ -180,6 +208,34 @@ def validate_runtime(text: str) -> None:
     require('TalkAction("/analytics")' in text, "missing administrative command")
     require(has_global_drain_health_registration(text), "global drain-health analytics callback must record outgoing damage")
 
+    login_body = function_body(text, "function login.onLogin(player)", "login:register()")
+    require("Analytics.start(player)" not in login_body, "login must not create an empty analytics session")
+    require("registerPlayerEvents(player)" in login_body, "login must register analytics creature events")
+
+    experience_body = function_body(
+        text,
+        "function experienceCallback.playerOnGainExperience",
+        "experienceCallback:register()",
+    )
+    require(
+        "Analytics.recordExperience(player, experienceValue, rawExperience, source)" in experience_body,
+        "experience source must be passed to per-monster analytics",
+    )
+
+    require("Game.getPlayers()" in text, "runtime enable must register events for players already online")
+    require(
+        "Analytics.config.trackPvP or not sourcePlayer" in text,
+        "incoming damage from players and their summons must obey the PvP switch",
+    )
+    require(
+        "Analytics.config.trackPvP or not targetPlayer" in text,
+        "damage to player-owned summons must obey the PvP switch",
+    )
+    require(
+        "Analytics.recordDamageDealt(sourcePlayer, creature, secondaryDamage, secondaryType)" in text,
+        "secondary damage must retain its own combat type",
+    )
+
 
 def main() -> int:
     try:
@@ -190,6 +246,7 @@ def main() -> int:
         docs = read(DOCS)
         require("## Installation" in docs, "documentation lacks installation section")
         require("## Example balance queries" in docs, "documentation lacks balance queries")
+        require("engine-wide drain-health callback" in docs, "documentation describes an obsolete monster spawn hook")
     except AssertionError as error:
         print(f"gameplay analytics validation failed: {error}", file=sys.stderr)
         return 1

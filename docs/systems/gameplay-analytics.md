@@ -21,39 +21,45 @@ The feature does not issue SQL writes for individual hits. Data is accumulated i
 | Setting | Default | Purpose |
 |---|---:|---|
 | `enabled` | `false` | Master switch. |
-| `databaseEnabled` | `true` | Persist completed sessions. |
+| `databaseEnabled` | `true` | Persist completed sessions. When disabled, completed sessions are discarded instead of retained in memory. |
 | `flushIntervalSeconds` | `300` | Queue flush interval; minimum runtime value is 30 seconds. |
 | `minimumSessionSeconds` | `60` | Discard shorter sessions. |
-| `combatTimeoutSeconds` | `120` | Split hunts after inactivity. |
-| `includeStaff` | `false` | Include staff characters. |
-| `trackPvP` | `false` | Include player-versus-player damage. |
+| `combatTimeoutSeconds` | `120` | Split hunts after inactivity. Idle timeout time is not added to `combat_seconds`. |
+| `includeStaff` | `false` | Allow staff characters to be considered. Account types listed in `excludedAccountTypes` remain excluded. |
+| `trackPvP` | `false` | Include player-versus-player and player-summon damage. |
 | `trackSpells` | `true` | Store spell aggregates reported through the API. |
 | `trackMonsters` | `true` | Store per-monster aggregates. |
-| `trackDamageTypes` | `true` | Store elemental damage aggregates. |
+| `trackDamageTypes` | `true` | Store primary and secondary combat damage under their own combat types. |
 | `trackSupplies` | `false` | Store supply use reported through the API. |
 | `trackLoot` | `false` | Store loot reported through the API. |
 | `anonymizePlayers` | `false` | Do not persist character names. Player IDs remain for relational integrity. |
 | `queueLimit` | `10000` | Maximum completed sessions awaiting persistence. |
 | `detailLevel` | `1` | Reserved detail tier from 0 to 2. |
+| `excludedPlayerNames` | `{}` | Character names excluded from collection. |
+| `excludedAccountTypes` | GM/God | Account types excluded even when staff collection is allowed. |
 
 ## Automatically collected data
 
 The runtime hooks collect:
 
-- raw and final experience,
-- outgoing damage after combat calculation,
-- incoming damage after combat calculation,
-- effective self-healing and healing of others,
-- overhealing,
-- mana loss,
-- monster kills,
-- deaths,
-- vocation and level,
-- party size and shared-experience state,
-- damage grouped by combat type,
+- raw and final experience, including per-monster raw experience;
+- outgoing damage after combat calculation;
+- incoming damage after combat calculation;
+- effective self-healing and healing of others;
+- overhealing;
+- negative mana changes;
+- monster kills;
+- deaths;
+- vocation and level;
+- party size and shared-experience state;
+- damage grouped by primary and secondary combat type;
 - combat and session duration.
 
-Monsters receive the health-change event on spawn, allowing player and summon damage to be attributed to the owning player.
+Outgoing damage to monsters is collected through the engine-wide drain-health callback, including damage caused by player-owned summons. Damage involving another player or a player-owned summon is excluded unless `trackPvP = true`.
+
+Sessions are created lazily on the first recorded metric. Merely logging in and remaining online does not create an empty database row. When a combat timeout closes a session, `combat_seconds` ends at the last recorded combat event rather than when the timeout worker runs.
+
+The `mana_spent` aggregate represents all negative mana changes observed by the mana-change event. Depending on server mechanics, this can include mana shield damage in addition to spell and rune costs.
 
 ## Optional integration API
 
@@ -64,6 +70,8 @@ GameplayAnalytics.recordSpell(player, spellName, damage, healing, mana, targets,
 GameplayAnalytics.recordSupply(player, itemId, amount, unitValue)
 GameplayAnalytics.recordLoot(player, itemId, amount, npcValue, marketValue)
 ```
+
+`recordSpell` stores the spell's own mana aggregate but does not add it again to the session-wide `mana_spent` value, because generic mana-change events already collect that value.
 
 Supply and loot collection remain disabled until enabled in the configuration.
 
@@ -76,7 +84,7 @@ Supply and loot collection remain disabled until enabled in the configuration.
 /analytics disable
 ```
 
-Runtime enable/disable does not edit the Lua configuration and resets after restart.
+Runtime enable/disable does not edit the Lua configuration and resets after restart. Runtime enable registers the required creature events for players who are already online.
 
 ## Recommended rollout
 
@@ -149,10 +157,12 @@ HAVING SUM(p.casts) >= 100;
 ## Operational safeguards
 
 - Disabled mode returns before creating sessions.
+- Sessions are created only after a metric is recorded.
 - Staff characters are excluded by default.
-- PvP is excluded by default.
+- PvP and player-summon combat are excluded by default.
 - Completed sessions are bounded by `queueLimit`.
-- Failed inserts are requeued while capacity remains.
+- Database-disabled mode does not accumulate an undrainable queue.
+- Failed session inserts are requeued while capacity remains.
 - Database failures do not stop the game server.
 - Player names can be omitted from analytics records.
 - Prometheus labels are intentionally not added per player, spell, or monster to avoid cardinality problems.

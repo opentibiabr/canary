@@ -60,6 +60,22 @@ jobs:
             --output artifacts/RISK_REPORT.md \
             --max-items 50
 
+      - name: Validate content authoring schemas
+        run: |
+          python -m json.tool docs/ai-agent/TASK_SPEC.schema.json > /dev/null
+          python -m json.tool docs/ai-agent/ID_RESERVATIONS.schema.json > /dev/null
+          python -m json.tool docs/ai-agent/ID_RESERVATIONS.json > /dev/null
+
+      - name: Run example content pipeline
+        run: |
+          cp docs/ai-agent/ID_RESERVATIONS.json artifacts/ID_RESERVATIONS.ci.json
+          python tools/ai-agent/run_content_pipeline.py \
+            --task docs/ai-agent/examples/forgotten_forge.quest.json \
+            --registry artifacts/ID_REGISTRY.json \
+            --content-index artifacts/CONTENT_INDEX.json \
+            --reservations artifacts/ID_RESERVATIONS.ci.json \
+            --output artifacts/content-pipeline
+
       - name: Validate generated JSON
         run: |
           python -m json.tool artifacts/ID_REGISTRY.json > /dev/null
@@ -120,5 +136,17 @@ jobs:
             artifacts/REFERENCE_REPORT.json
             artifacts/RISK_REPORT.md
             artifacts/AI_AGENT_AUDIT_SUMMARY.md
+
+      - name: Upload content pipeline artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-agent-content-pipeline
+          path: |
+            docs/ai-agent/examples/forgotten_forge.quest.json
+            artifacts/content-pipeline/CONTENT_PLAN.json
+            artifacts/content-pipeline/CONTENT_PLAN_VALIDATION.json
+            artifacts/content-pipeline/generated-content/**
+            artifacts/content-pipeline/CONTENT_PIPELINE_SUMMARY.md
+            artifacts/RISK_REPORT.md
           if-no-files-found: error
           retention-days: 14

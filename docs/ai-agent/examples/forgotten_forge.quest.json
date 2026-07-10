@@ -1,0 +1,29 @@
+{
+  "description": "A dry-run quest preview for recovering plans from the Forgotten Forge.",
+  "dryRun": true,
+  "name": "Forgotten Forge",
+  "quest": {
+    "cooldown": "none",
+    "dependsOnQuests": [],
+    "requiredActionIds": [45001],
+    "requiredLevel": 80,
+    "requiredUniqueIds": [],
+    "requiredVocations": ["knight", "paladin", "sorcerer", "druid"],
+    "repeatable": false,
+    "rewards": [{"count": 1, "itemId": 2160, "name": "crystal coin"}],
+    "starterNpc": "Eldric",
+    "storage": {"progress": 300001},
+    "stages": [
+      {"id": "start", "type": "npc_dialog", "npc": "Eldric"},
+      {"dependsOn": ["start"], "id": "embers", "monsters": ["Demon Skeleton", "Dragon"], "requiredKills": 8, "type": "kill_monsters"},
+      {"dependsOn": ["embers"], "id": "anvil", "actionId": 45001, "type": "use_action_id"},
+      {"dependsOn": ["anvil"], "id": "reward", "type": "collect_reward"}
+    ]
+  },
+  "requestedBy": "ai-agent",
+  "schemaVersion": "1.0",
+  "tags": ["example", "dry-run", "quest"],
+  "targetDatapack": "data-otservbr-global",
+  "taskId": "forgotten_forge",
+  "type": "quest"
+}

@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "reservations": {"items": {"additionalProperties": false, "properties": {"createdAt": {"type": "string"}, "description": {"type": "string"}, "from": {"minimum": 1, "type": "integer"}, "namespace": {"enum": ["storage", "actionId", "uniqueId", "itemId"]}, "status": {"enum": ["reserved", "committed", "released"]}, "targetDatapack": {"type": "string"}, "taskId": {"type": "string"}, "to": {"minimum": 1, "type": "integer"}}, "required": ["taskId", "namespace", "from", "to", "status", "createdAt", "description", "targetDatapack"], "type": "object"}, "type": "array"},
+    "schemaVersion": {"type": "string"}
+  },
+  "required": ["schemaVersion", "reservations"],
+  "type": "object"
+}

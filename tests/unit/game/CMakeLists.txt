@@ -3,6 +3,7 @@ target_sources(
     PRIVATE dispatcher_policy_test.cpp
             events_scheduler_test.cpp
             highscores_test.cpp
+            monster_combat_intention_test.cpp
             monster_compute_service_test.cpp
             monster_pathfinding_test.cpp
             monster_targeting_test.cpp

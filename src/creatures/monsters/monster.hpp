@@ -21,6 +21,7 @@ struct spellBlock_t;
 struct MapCacheFloorCursor;
 struct MonsterPathResult;
 struct MonsterPathTraits;
+struct MonsterCombatIntentionResult;
 struct MonsterTargetRankingResult;
 class MonsterType;
 class NavRegionSnapshot;
@@ -70,6 +71,18 @@ private:
 		TargetSearchType_t searchType = TARGETSEARCH_DEFAULT;
 		uint64_t stateEpoch = 0;
 		uint64_t decisionEpoch = 0;
+	};
+
+	struct CombatIntentionComputeRequest {
+		uint64_t generation = 0;
+		uint64_t targetDecisionEpoch = 0;
+		uint64_t monsterReloadEpoch = 0;
+		uint32_t interval = 0;
+		uint32_t targetId = 0;
+		uint32_t attackTicksSnapshot = 0;
+		Position origin;
+		Position target;
+		bool fleeing = false;
 	};
 
 	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
@@ -339,6 +352,14 @@ private:
 	[[nodiscard]] uint64_t nextTargetSearchComputeGeneration();
 	void updateSummonTarget();
 	void deferTargetSelection(uint32_t creatureId);
+	void requestCombatIntention(uint32_t interval, const std::shared_ptr<Creature> &target);
+	void startPendingCombatIntention();
+	void prepareCombatIntention(uint64_t generation);
+	void completeCombatIntention(uint64_t generation, MonsterCombatIntentionResult result);
+	void deferPendingCombatIntention();
+	void clearCombatIntention();
+	void commitCombatIntention(const CombatIntentionComputeRequest &request, const std::shared_ptr<Creature> &target, const std::vector<uint32_t> &geometricallyEligibleSpellIndices, bool requireGeometryHint);
+	[[nodiscard]] uint64_t nextCombatIntentionGeneration();
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
@@ -364,6 +385,10 @@ private:
 	uint64_t targetSearchComputeGeneration = 0;
 	uint64_t activeTargetSearchComputeGeneration = 0;
 	bool targetSearchComputeOutstanding = false;
+	std::optional<CombatIntentionComputeRequest> pendingCombatIntention;
+	uint64_t combatIntentionGeneration = 0;
+	uint64_t activeCombatIntentionGeneration = 0;
+	bool combatIntentionOutstanding = false;
 
 	time_t timeToChangeFiendish = 0;
 

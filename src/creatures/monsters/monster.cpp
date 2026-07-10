@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster_combat_intention.hpp"
 #include "creatures/monsters/monster_pathfinding.hpp"
 #include "creatures/monsters/monster_targeting.hpp"
 #include "creatures/monsters/monsters.hpp"
@@ -31,6 +32,7 @@ uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
 	constexpr uint8_t MAX_BACKGROUND_FOLLOW_PATH_RADIUS = 12;
+	constexpr size_t MAX_COMBAT_INTENTION_SPELLS = 256;
 	constexpr size_t MAX_TARGET_RANK_CANDIDATES = 256;
 
 	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
@@ -1657,21 +1659,199 @@ void Monster::doAttacking(uint32_t interval) {
 		return;
 	}
 
-	bool updateLook = true;
-	bool resetTicks = interval != 0;
 	attackTicks += interval;
+	requestCombatIntention(interval, attackedCreature);
+}
 
-	const Position &myPos = getPosition();
-	const Position &targetPos = attackedCreature->getPosition();
+void Monster::requestCombatIntention(uint32_t interval, const std::shared_ptr<Creature> &target) {
+	CombatIntentionComputeRequest request;
+	request.generation = nextCombatIntentionGeneration();
+	request.targetDecisionEpoch = targetDecisionEpoch;
+	request.monsterReloadEpoch = g_monsters().getReloadEpoch();
+	request.interval = interval;
+	request.targetId = target->getID();
+	request.attackTicksSnapshot = attackTicks;
+	request.origin = getPosition();
+	request.target = target->getPosition();
+	request.fleeing = isFleeing();
+	pendingCombatIntention = request;
 
-	for (const spellBlock_t &spellBlock : attackSpells) {
+	if (!combatIntentionOutstanding) {
+		startPendingCombatIntention();
+	}
+}
+
+void Monster::startPendingCombatIntention() {
+	if (combatIntentionOutstanding || !pendingCombatIntention) {
+		return;
+	}
+
+	combatIntentionOutstanding = true;
+	activeCombatIntentionGeneration = pendingCombatIntention->generation;
+	const auto monsterId = getID();
+	const auto generation = activeCombatIntentionGeneration;
+	safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareCombatIntention(generation);
+		}
+	});
+}
+
+void Monster::prepareCombatIntention(uint64_t generation) {
+	if (!combatIntentionOutstanding || activeCombatIntentionGeneration != generation || !pendingCombatIntention) {
+		return;
+	}
+	if (pendingCombatIntention->generation != generation || combatIntentionGeneration != generation) {
+		combatIntentionOutstanding = false;
+		activeCombatIntentionGeneration = 0;
+		startPendingCombatIntention();
+		return;
+	}
+
+	const auto request = *pendingCombatIntention;
+	const auto &target = g_game().getCreatureByID(request.targetId);
+	const auto &currentTarget = getAttackedCreature();
+	const bool invalid = isRemoved() || isDead() || !target || target != currentTarget
+		|| target->isLifeless() || targetDecisionEpoch != request.targetDecisionEpoch
+		|| g_monsters().getReloadEpoch() != request.monsterReloadEpoch
+		|| getPosition() != request.origin || target->getPosition() != request.target
+		|| attackTicks != request.attackTicksSnapshot || isFleeing() != request.fleeing;
+	if (invalid) {
+		clearCombatIntention();
+		return;
+	}
+
+	if (attackSpells.empty() || attackSpells.size() > MAX_COMBAT_INTENTION_SPELLS) {
+		clearCombatIntention();
+		commitCombatIntention(request, target, {}, false);
+		return;
+	}
+
+	MonsterCombatIntentionRequest workerRequest;
+	workerRequest.origin = request.origin;
+	workerRequest.target = request.target;
+	workerRequest.fleeing = request.fleeing;
+	workerRequest.spells.reserve(attackSpells.size());
+	for (size_t index = 0; index < attackSpells.size(); ++index) {
+		const auto &spell = attackSpells[index];
+		workerRequest.spells.emplace_back(MonsterCombatSpellGeometry {
+			.index = static_cast<uint32_t>(index),
+			.range = spell.range,
+			.enabled = spell.spell != nullptr,
+			.melee = spell.isMelee,
+		});
+	}
+
+	const auto monsterId = getID();
+	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterCombatIntentionEvaluator::evaluate(workerRequest, stopToken);
+			return [monsterId, generation, result = std::move(result)]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeCombatIntention(generation, std::move(result));
+				}
+			};
+		},
+		"Monster::combatIntention"
+	);
+	if (!submission.accepted()) {
+		clearCombatIntention();
+		updateLookDirection();
+	}
+}
+
+void Monster::completeCombatIntention(uint64_t generation, MonsterCombatIntentionResult result) {
+	if (!combatIntentionOutstanding || activeCombatIntentionGeneration != generation || !pendingCombatIntention) {
+		return;
+	}
+	if (pendingCombatIntention->generation != generation || combatIntentionGeneration != generation) {
+		deferPendingCombatIntention();
+		return;
+	}
+	if (result.canceled) {
+		clearCombatIntention();
+		return;
+	}
+
+	const auto request = *pendingCombatIntention;
+	const auto &target = g_game().getCreatureByID(request.targetId);
+	const auto &currentTarget = getAttackedCreature();
+	const auto &player = target ? target->getPlayer() : nullptr;
+	const bool invalid = isRemoved() || isDead() || !target || target != currentTarget
+		|| target->isLifeless() || (player && player->isLoginProtected())
+		|| targetDecisionEpoch != request.targetDecisionEpoch
+		|| g_monsters().getReloadEpoch() != request.monsterReloadEpoch
+		|| getPosition() != request.origin || target->getPosition() != request.target
+		|| attackTicks != request.attackTicksSnapshot || isFleeing() != request.fleeing
+		|| getZoneType() == ZONE_PROTECTION || target->getZoneType() == ZONE_PROTECTION
+		|| !isTarget(target) || !g_game().isSightClear(request.origin, request.target, true);
+	if (invalid) {
+		clearCombatIntention();
+		return;
+	}
+
+	uint32_t previousIndex = 0;
+	bool firstIndex = true;
+	for (const auto index : result.geometricallyEligibleSpellIndices) {
+		if (index >= attackSpells.size() || (!firstIndex && index <= previousIndex)) {
+			clearCombatIntention();
+			return;
+		}
+		firstIndex = false;
+		previousIndex = index;
+	}
+
+	clearCombatIntention();
+	commitCombatIntention(request, target, result.geometricallyEligibleSpellIndices, true);
+}
+
+void Monster::deferPendingCombatIntention() {
+	combatIntentionOutstanding = false;
+	activeCombatIntentionGeneration = 0;
+	if (pendingCombatIntention) {
+		setAsyncTaskFlag(CombatIntention, true);
+	}
+}
+
+void Monster::clearCombatIntention() {
+	combatIntentionOutstanding = false;
+	activeCombatIntentionGeneration = 0;
+	pendingCombatIntention.reset();
+}
+
+void Monster::commitCombatIntention(const CombatIntentionComputeRequest &request, const std::shared_ptr<Creature> &target, const std::vector<uint32_t> &geometricallyEligibleSpellIndices, bool requireGeometryHint) {
+	bool updateLook = true;
+	bool resetTicks = request.interval != 0;
+	size_t eligibleIndex = 0;
+
+	for (size_t spellIndex = 0; spellIndex < attackSpells.size(); ++spellIndex) {
+		if (combatIntentionGeneration != request.generation || isRemoved() || isDead() || !target || target->isLifeless() || getAttackedCreature() != target) {
+			break;
+		}
+		if (targetDecisionEpoch != request.targetDecisionEpoch || g_monsters().getReloadEpoch() != request.monsterReloadEpoch || getPosition() != request.origin || target->getPosition() != request.target || isFleeing() != request.fleeing) {
+			break;
+		}
+		const auto &player = target->getPlayer();
+		if ((player && player->isLoginProtected()) || getZoneType() == ZONE_PROTECTION || target->getZoneType() == ZONE_PROTECTION || !isTarget(target) || !g_game().isSightClear(getPosition(), target->getPosition(), true)) {
+			break;
+		}
+
+		const spellBlock_t &spellBlock = attackSpells[spellIndex];
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
 			continue;
 		}
 
-		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
+		while (eligibleIndex < geometricallyEligibleSpellIndices.size() && geometricallyEligibleSpellIndices[eligibleIndex] < spellIndex) {
+			++eligibleIndex;
+		}
+		const bool geometrySuggested = !requireGeometryHint
+			|| (eligibleIndex < geometricallyEligibleSpellIndices.size() && geometricallyEligibleSpellIndices[eligibleIndex] == spellIndex);
+
+		if (canUseSpell(getPosition(), target->getPosition(), spellBlock, request.interval, inRange, resetTicks) && geometrySuggested) {
 			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 				if (updateLook) {
 					updateLookDirection();
@@ -1685,7 +1865,7 @@ void Monster::doAttacking(uint32_t interval) {
 					continue;
 				}
 
-				spellBlock.spell->castSpell(getMonster(), attackedCreature);
+				spellBlock.spell->castSpell(getMonster(), target);
 
 				if (spellBlock.isMelee) {
 					extraMeleeAttack = false;
@@ -1699,13 +1879,20 @@ void Monster::doAttacking(uint32_t interval) {
 		}
 	}
 
-	if (updateLook) {
+	if (updateLook && !isRemoved()) {
 		updateLookDirection();
 	}
 
-	if (resetTicks) {
+	if (resetTicks && combatIntentionGeneration == request.generation) {
 		attackTicks = 0;
 	}
+}
+
+uint64_t Monster::nextCombatIntentionGeneration() {
+	if (++combatIntentionGeneration == 0) {
+		combatIntentionGeneration = 1;
+	}
+	return combatIntentionGeneration;
 }
 
 bool Monster::hasExtraSwing() {
@@ -3578,6 +3765,10 @@ void Monster::onExecuteAsyncTasks() {
 		const auto searchType = pendingTargetSearchCompute->searchType;
 		pendingTargetSearchCompute.reset();
 		requestTargetSearchCompute(searchType);
+	}
+
+	if (hasAsyncTaskFlag(CombatIntention)) {
+		startPendingCombatIntention();
 	}
 
 	if (hasAsyncTaskFlag(OnThink)) {

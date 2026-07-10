@@ -823,6 +823,7 @@ protected:
 		Pathfinder = 1 << 3,
 		OnThink = 1 << 4,
 		TargetRanking = 1 << 5,
+		CombatIntention = 1 << 6,
 	};
 
 	virtual bool isDead() const {

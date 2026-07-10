@@ -48,6 +48,11 @@ class ResearchPipelineTests(unittest.TestCase):
             self.assertEqual(summary["generatedComponents"], 3)
             self.assertEqual(summary["previewFiles"], 3)
             self.assertEqual(summary["reservedIdentifiers"], 5)
+            self.assertEqual(summary["stagingVerificationStatus"], "blocked")
+            self.assertFalse(summary["stagingVerified"])
+            self.assertGreater(summary["stagingVerificationBlockers"], 0)
+            self.assertFalse(summary["stagingRollbackVerified"])
+            self.assertEqual(summary["finalStatus"], "blocked-before-human-implementation")
 
             root = Path(directory)
             task = json.loads((root / "TASK_SPEC.generated.json").read_text(encoding="utf-8"))
@@ -55,9 +60,14 @@ class ResearchPipelineTests(unittest.TestCase):
             manifest = json.loads(
                 (root / "generated-content" / task["taskId"] / "MANIFEST.json").read_text(encoding="utf-8")
             )
+            verification = json.loads((root / "STAGING_VERIFICATION.json").read_text(encoding="utf-8"))
             self.assertTrue(task["dryRun"])
             self.assertTrue(conflicts["summary"]["readyForPipeline"])
             self.assertEqual(manifest["format"], "canary-preview-v1")
+            self.assertFalse(verification["verified"])
+            self.assertEqual(verification["scope"], "temporary isolated filesystem only")
+            self.assertFalse(verification["automaticApplyAllowed"])
+            self.assertTrue(verification["manualApprovalRequired"])
 
     def test_existing_canary_entity_blocks_before_planning_or_rendering(self):
         research = {
@@ -96,6 +106,7 @@ class ResearchPipelineTests(unittest.TestCase):
             self.assertEqual(summary["blockedConflicts"], 1)
             self.assertFalse((output / "CONTENT_PLAN.json").exists())
             self.assertFalse((output / "generated-content").exists())
+            self.assertFalse((output / "STAGING_VERIFICATION.json").exists())
 
 
 if __name__ == "__main__":

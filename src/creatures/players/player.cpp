@@ -2933,6 +2933,10 @@ void Player::setNextWalkActionTask(const std::shared_ptr<Task> &task) {
 		walkTaskEvent = 0;
 	}
 
+	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
+	}
 	walkTask = task;
 }
 
@@ -2943,6 +2947,8 @@ void Player::setNextWalkTask(const std::shared_ptr<Task> &task) {
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerWalk);
+		task->setProducerToken(getID());
 		nextStepEvent = g_dispatcher().scheduleEvent(task);
 		resetIdleTime();
 	}
@@ -2959,6 +2965,8 @@ void Player::setNextActionTask(const std::shared_ptr<Task> &task, bool resetIdle
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionTaskEvent = g_dispatcher().scheduleEvent(task);
 		if (resetIdleTime) {
 			this->resetIdleTime();
@@ -2973,6 +2981,8 @@ void Player::setNextActionPushTask(const std::shared_ptr<Task> &task) {
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionTaskEventPush = g_dispatcher().scheduleEvent(task);
 	}
 }
@@ -2986,6 +2996,8 @@ void Player::setNextPotionActionTask(const std::shared_ptr<Task> &task) {
 	cancelPush();
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionPotionTaskEvent = g_dispatcher().scheduleEvent(task);
 		// resetIdleTime();
 	}
@@ -3313,7 +3325,9 @@ void Player::updateImbuementTrackerStats() const {
 					player->m_pendingImbuementTrackerEventId = 0;
 					player->updateImbuementTrackerStats();
 				},
-				__FUNCTION__
+				__FUNCTION__,
+				DispatcherLane::PlayerAction,
+				getID()
 			);
 		}
 		return;
@@ -3932,6 +3946,8 @@ void Player::doAttacking(uint32_t interval) {
 					creature->checkCreatureAttack(true);
 				} }, __FUNCTION__
 		);
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
@@ -6124,6 +6140,8 @@ void Player::onWalkComplete() {
 	}
 
 	if (walkTask) {
+		walkTask->setLane(DispatcherLane::PlayerAction);
+		walkTask->setProducerToken(getID());
 		walkTaskEvent = g_dispatcher().scheduleEvent(walkTask);
 		walkTask = nullptr;
 	}
@@ -10978,6 +10996,8 @@ void Player::triggerTranscendence() {
 			},
 			__FUNCTION__
 		);
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
 
 		wheel().sendGiftOfLifeCooldown();

@@ -188,14 +188,15 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	// make the player walk onto the bed
 	g_dispatcher().addWalkEvent([player, this] {
 		g_game().map.moveCreature(player, getTile());
-	});
+	},
+	                            0, player->getID());
 
 	// display 'Zzzz'/sleep effect
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
 
 	// logout player after he sees himself walk onto the bed and it change id
 	g_dispatcher().scheduleEvent(
-		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout"
+		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout", DispatcherLane::PlayerAction, player->getID()
 	);
 
 	// change self and partner's appearance

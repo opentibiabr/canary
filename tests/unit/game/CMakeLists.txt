@@ -2,6 +2,7 @@ target_sources(
     canary_ut
     PRIVATE dispatcher_budget_test.cpp
             dispatcher_policy_test.cpp
+            dispatcher_wdrr_test.cpp
             events_scheduler_test.cpp
             highscores_test.cpp
             monster_combat_intention_test.cpp

@@ -264,7 +264,7 @@ void Creature::onCreatureWalk() {
 	};
 
 	if (getPlayer()) {
-		g_dispatcher().addWalkEvent(std::move(walkTask));
+		g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID());
 	} else {
 		g_dispatcher().addCreatureWalkEvent(std::move(walkTask));
 	}
@@ -352,7 +352,7 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 					creature->onCreatureWalk();
 				}
 			},
-			"Game::checkCreatureWalk"
+			"Game::checkCreatureWalk", getPlayerRaw() ? DispatcherLane::PlayerWalk : DispatcherLane::VisibleMonster, getPlayerRaw() ? getID() : 0
 		);
 	});
 }
@@ -1990,10 +1990,10 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 
 	if (shouldSchedule) {
-		g_dispatcher().asyncEvent([bucketIndex] {
+		g_dispatcher().addBarrierEvent([bucketIndex] {
 			Creature::processAsyncTaskBucket(bucketIndex);
 		},
-		                          TaskGroup::WalkParallel);
+		                               DispatcherLane::MonsterAI);
 	}
 }
 
@@ -2050,10 +2050,10 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	pendingCreatures.clear();
 
 	if (shouldReschedule) {
-		g_dispatcher().asyncEvent([bucketIndex] {
+		g_dispatcher().addBarrierEvent([bucketIndex] {
 			Creature::processAsyncTaskBucket(bucketIndex);
 		},
-		                          TaskGroup::WalkParallel);
+		                               DispatcherLane::MonsterAI);
 	}
 
 	g_dispatcher().observeInternalWork(

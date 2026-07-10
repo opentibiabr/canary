@@ -12,6 +12,7 @@
 #include "game/scheduling/dispatcher_types.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
 	#include <atomic>
 	#include <chrono>
 	#include <cstdint>
@@ -69,6 +70,23 @@ public:
 
 	void setLane(DispatcherLane lane) {
 		meta.lane = lane;
+		meta.executionMode = defaultExecutionMode(lane);
+	}
+
+	void setExecutionMode(ExecutionMode executionMode) {
+		meta.executionMode = executionMode;
+	}
+
+	void setProducerToken(uint64_t producerToken) {
+		meta.producerToken = producerToken;
+	}
+
+	void setGeneration(uint64_t generation) {
+		meta.generation = generation;
+	}
+
+	void setEstimatedCost(uint32_t estimatedCost) {
+		meta.estimatedCost = std::clamp<uint32_t>(estimatedCost, 1, DISPATCHER_MAX_TASK_COST);
 	}
 
 	[[nodiscard]] bool hasExpired() const;
@@ -102,7 +120,6 @@ private:
 	bool hasTraceableContext() const {
 		const static std::unordered_set<std::string_view> tasksContext = {
 			"Decay::checkDecay",
-			"Dispatcher::asyncEvent",
 			"Creature::checkCreatureAttack",
 			"Game::checkCreatureWalk",
 			"Game::checkCreatures",

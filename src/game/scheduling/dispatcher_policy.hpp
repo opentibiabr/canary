@@ -18,6 +18,7 @@
 	#include <cstdint>
 	#include <deque>
 	#include <functional>
+	#include <limits>
 	#include <optional>
 	#include <span>
 	#include <string_view>
@@ -142,6 +143,31 @@ public:
 
 	[[nodiscard]] static size_t selectTaskCount(size_t available, size_t budget) {
 		return std::min(available, budget);
+	}
+
+	[[nodiscard]] static size_t selectProducerFairIndex(std::span<const Task> tasks, uint64_t lastProducerToken) {
+		if (tasks.empty()) {
+			return 0;
+		}
+
+		size_t nextIndex = 0;
+		size_t wrappedIndex = 0;
+		uint64_t nextToken = std::numeric_limits<uint64_t>::max();
+		uint64_t wrappedToken = std::numeric_limits<uint64_t>::max();
+		bool foundNext = false;
+		for (size_t index = 0; index < tasks.size(); ++index) {
+			const auto producerToken = tasks[index].getMeta().producerToken;
+			if (producerToken > lastProducerToken && (!foundNext || producerToken < nextToken)) {
+				nextToken = producerToken;
+				nextIndex = index;
+				foundNext = true;
+			}
+			if (producerToken <= lastProducerToken && producerToken < wrappedToken) {
+				wrappedToken = producerToken;
+				wrappedIndex = index;
+			}
+		}
+		return foundNext ? nextIndex : wrappedIndex;
 	}
 
 	template <typename T>

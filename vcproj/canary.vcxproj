@@ -80,6 +80,7 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher_budget.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher_policy.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher_telemetry.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_wdrr.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher_types.hpp" />
     <ClInclude Include="..\src\game\scheduling\monster_compute_service.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
@@ -317,6 +318,7 @@
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher_budget.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher_wdrr.cpp" />
     <ClCompile Include="..\src\game\scheduling\monster_compute_service.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />

@@ -13,27 +13,25 @@
 using namespace std::chrono_literals;
 
 TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
-	EXPECT_TRUE(isMovementCommit(TaskGroup::Walk));
-	EXPECT_TRUE(isMovementCommit(TaskGroup::CreatureWalk));
-	EXPECT_FALSE(isMovementCommit(TaskGroup::Serial));
-	EXPECT_FALSE(isMovementCommit(TaskGroup::WalkParallel));
+	EXPECT_TRUE(isMovementCommit(DispatcherLane::PlayerWalk));
+	EXPECT_TRUE(isMovementCommit(DispatcherLane::VisibleMonster));
+	EXPECT_FALSE(isMovementCommit(DispatcherLane::WorldCommit));
+	EXPECT_FALSE(isMovementCommit(DispatcherLane::MonsterAI));
 
-	EXPECT_TRUE(isBarrierParallel(TaskGroup::WalkParallel));
-	EXPECT_TRUE(isBarrierParallel(TaskGroup::GenericParallel));
-	EXPECT_FALSE(isBarrierParallel(TaskGroup::Walk));
-	EXPECT_FALSE(isBarrierParallel(TaskGroup::Serial));
+	EXPECT_EQ(defaultExecutionMode(DispatcherLane::MonsterAI), ExecutionMode::BarrierParallel);
+	EXPECT_EQ(defaultExecutionMode(DispatcherLane::GenericParallel), ExecutionMode::BarrierParallel);
+	EXPECT_EQ(defaultExecutionMode(DispatcherLane::PlayerWalk), ExecutionMode::Serial);
+	EXPECT_EQ(defaultExecutionMode(DispatcherLane::WorkerCompletion), ExecutionMode::BackgroundCompletion);
 
-	EXPECT_TRUE(isPlayerVisible(TaskGroup::Walk));
-	EXPECT_TRUE(isPlayerVisible(TaskGroup::Serial));
-	EXPECT_TRUE(isPlayerVisible(TaskGroup::CreatureWalk));
-	EXPECT_FALSE(isPlayerVisible(TaskGroup::DeferredGameplay));
-	EXPECT_FALSE(isPlayerVisible(TaskGroup::WalkParallel));
+	EXPECT_TRUE(isPlayerVisible(DispatcherLane::PlayerWalk));
+	EXPECT_TRUE(isPlayerVisible(DispatcherLane::WorldCommit));
+	EXPECT_TRUE(isPlayerVisible(DispatcherLane::VisibleMonster));
+	EXPECT_FALSE(isPlayerVisible(DispatcherLane::Deferred));
+	EXPECT_FALSE(isPlayerVisible(DispatcherLane::MonsterAI));
 
-	EXPECT_EQ(getDispatcherLane(TaskGroup::Walk), DispatcherLane::PlayerWalk);
-	EXPECT_EQ(getDispatcherLane(TaskGroup::CreatureWalk), DispatcherLane::VisibleMonster);
-	EXPECT_EQ(getDispatcherLane(TaskGroup::WalkParallel), DispatcherLane::MonsterAI);
-	EXPECT_EQ(getExecutionMode(TaskGroup::Walk), ExecutionMode::Serial);
-	EXPECT_EQ(getExecutionMode(TaskGroup::WalkParallel), ExecutionMode::BarrierParallel);
+	EXPECT_TRUE(usesProducerFairness(DispatcherLane::ProtocolInput));
+	EXPECT_TRUE(usesProducerFairness(DispatcherLane::PlayerAction));
+	EXPECT_FALSE(usesProducerFairness(DispatcherLane::WorldCommit));
 }
 
 TEST(DispatcherPolicyTest, TracksMonotonicReadyTimesWithoutChangingWallClockScheduling) {
@@ -102,6 +100,19 @@ TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 	EXPECT_EQ(DispatcherPolicy::requeueUnprocessed(queue, slice, 1), 2);
 	EXPECT_EQ(queue, (std::deque<int> { 2, 3, 4, 5 }));
 	EXPECT_EQ(DispatcherPolicy::requeueUnprocessed(queue, slice, slice.size()), 0);
+}
+
+TEST(DispatcherPolicyTest, RotatesProducersWhilePreservingEachProducerFifo) {
+	std::vector<Task> tasks;
+	for (const auto producerToken : { 10, 10, 20, 20, 30 }) {
+		tasks.emplace_back(0, [] { }, "producer-task");
+		tasks.back().setProducerToken(producerToken);
+	}
+
+	EXPECT_EQ(DispatcherPolicy::selectProducerFairIndex(tasks, 10), 2);
+	EXPECT_EQ(DispatcherPolicy::selectProducerFairIndex(tasks, 20), 4);
+	EXPECT_EQ(DispatcherPolicy::selectProducerFairIndex(tasks, 30), 0);
+	EXPECT_EQ(DispatcherPolicy::selectProducerFairIndex(tasks, 15), 2);
 }
 
 TEST(DispatcherPolicyTest, CoalescesPendingTicksAndPreservesTheOldestReadyTime) {

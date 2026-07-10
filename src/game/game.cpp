@@ -791,22 +791,22 @@ void Game::start(ServiceManager* manager) {
 	lightHour = (minutes * LIGHT_DAY_LENGTH) / 60;
 
 	[[maybe_unused]] auto eventId1 = g_dispatcher().scheduleEvent(
-		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters"
+		EVENT_MS + 1000, [this] { createFiendishMonsters(); }, "Game::createFiendishMonsters", DispatcherLane::Maintenance
 	);
 	[[maybe_unused]] auto eventId2 = g_dispatcher().scheduleEvent(
-		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters"
+		EVENT_MS + 1000, [this] { createInfluencedMonsters(); }, "Game::createInfluencedMonsters", DispatcherLane::Maintenance
 	);
 	[[maybe_unused]] auto eventId3 = g_dispatcher().cycleEvent(
-		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters"
+		EVENT_MS, [this] { updateForgeableMonsters(); }, "Game::updateForgeableMonsters", DispatcherLane::Maintenance
 	);
 	[[maybe_unused]] auto eventId4 = g_dispatcher().cycleEvent(
-		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight"
+		EVENT_LIGHTINTERVAL_MS, [this] { checkLight(); }, "Game::checkLight", DispatcherLane::Maintenance
 	);
 	[[maybe_unused]] auto eventId5 = g_dispatcher().cycleEvent(
 		EVENT_CHECK_CREATURE_INTERVAL, [this] { checkCreatures(); }, "Game::checkCreatures"
 	);
 	[[maybe_unused]] auto eventId6 = g_dispatcher().cycleEvent(
-		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC"
+		EVENT_LUA_GARBAGE_COLLECTION, [this] { g_luaEnvironment().collectGarbage(); }, "Calling GC", DispatcherLane::Maintenance
 	);
 	auto marketItemsPriceIntervalMinutes = g_configManager().getNumber(MARKET_REFRESH_PRICES);
 	if (marketItemsPriceIntervalMinutes > 0) {
@@ -815,12 +815,12 @@ void Game::start(ServiceManager* manager) {
 			marketItemsPriceIntervalMS = 60000;
 		}
 		[[maybe_unused]] auto eventId7 = g_dispatcher().cycleEvent(
-			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice"
+			marketItemsPriceIntervalMS, [this] { loadItemsPrice(); }, "Game::loadItemsPrice", DispatcherLane::Maintenance
 		);
 	}
 
 	[[maybe_unused]] auto eventId8 = g_dispatcher().cycleEvent(
-		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
+		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline", DispatcherLane::Maintenance
 	);
 }
 
@@ -1802,7 +1802,8 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 			player->sendCancelMessage(ret);
 		}
 		player->setLastPosition(player->getPosition());
-	});
+	},
+	                            0, player->getID());
 }
 
 ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, Direction direction, uint32_t flags /*= 0*/) {
@@ -4373,7 +4374,8 @@ void Game::playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listD
 void Game::queuePlayerAutoWalk(uint32_t playerId, std::vector<Direction> listDir) {
 	g_dispatcher().addWalkEvent([this, playerId, listDir = std::move(listDir)] {
 		playerAutoWalk(playerId, listDir);
-	});
+	},
+	                            0, playerId);
 }
 
 void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir) {
@@ -11765,6 +11767,7 @@ uint32_t Game::makeFiendishMonster(uint32_t forgeableMonsterId /* = 0*/, bool cr
 			[this, monster] { updateFiendishMonsterStatus(monster->getID(), monster->getName()); },
 			__FUNCTION__
 		);
+		schedulerTask->setLane(DispatcherLane::Maintenance);
 		forgeMonsterEventIds[monster->getID()] = g_dispatcher().scheduleEvent(schedulerTask);
 		return monster->getID();
 	}
@@ -11802,7 +11805,7 @@ bool Game::removeInfluencedMonster(uint32_t id, bool create /* = false*/) {
 
 		if (create) {
 			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-				10 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster"
+				10 * 1000, [this] { makeInfluencedMonster(); }, "Game::makeInfluencedMonster", DispatcherLane::Maintenance
 			);
 		}
 	} else {
@@ -11820,7 +11823,7 @@ bool Game::removeFiendishMonster(uint32_t id, bool create /* = true*/) {
 
 		if (create) {
 			[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-				270 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster"
+				270 * 1000, [this] { makeFiendishMonster(0, false); }, "Game::makeFiendishMonster", DispatcherLane::Maintenance
 			);
 		}
 	} else {
@@ -12019,7 +12022,7 @@ void Game::playerCheckActivity(const std::string &playerName, int interval) {
 	}
 
 	[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity"
+		1000, [this, playerName, interval] { playerCheckActivity(playerName, interval); }, "Game::playerCheckActivity", DispatcherLane::PlayerAction, player->getID()
 	);
 }
 

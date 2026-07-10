@@ -285,11 +285,12 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 			return;
 		}
 
-		g_dispatcher().addEvent(
+		g_dispatcher().addProtocolEvent(
 			[self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), password] {
 				self->getLivestreamCharacterList(password);
 			},
-			"ProtocolLogin::getLivestreamCharacterList"
+			"ProtocolLogin::getLivestreamCharacterList",
+			reinterpret_cast<uintptr_t>(this)
 		);
 		return;
 	}
@@ -299,11 +300,12 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
-	g_dispatcher().addEvent(
+	g_dispatcher().addProtocolEvent(
 		[self = std::static_pointer_cast<ProtocolLogin>(shared_from_this()), accountDescriptor, password] {
 			self->getCharacterList(accountDescriptor, password);
 		},
-		__FUNCTION__
+		__FUNCTION__,
+		reinterpret_cast<uintptr_t>(this)
 	);
 }
 

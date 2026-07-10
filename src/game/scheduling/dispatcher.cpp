@@ -54,23 +54,32 @@ namespace {
 		return "unknown";
 	}
 
-	std::string_view getTaskGroupName(const uint8_t groupId) {
-		switch (static_cast<TaskGroup>(groupId)) {
-			case TaskGroup::Walk:
-				return "Walk";
-			case TaskGroup::CreatureWalk:
-				return "CreatureWalk";
-			case TaskGroup::WalkParallel:
-				return "WalkParallel";
-			case TaskGroup::Serial:
-				return "Serial";
-			case TaskGroup::DeferredGameplay:
-				return "DeferredGameplay";
-			case TaskGroup::GenericParallel:
+	std::string_view getDispatcherLaneName(const DispatcherLane lane) {
+		switch (lane) {
+			case DispatcherLane::ProtocolInput:
+				return "ProtocolInput";
+			case DispatcherLane::PlayerWalk:
+				return "PlayerWalk";
+			case DispatcherLane::PlayerAction:
+				return "PlayerAction";
+			case DispatcherLane::WorldCommit:
+				return "WorldCommit";
+			case DispatcherLane::WorkerCompletion:
+				return "WorkerCompletion";
+			case DispatcherLane::VisibleMonster:
+				return "VisibleMonster";
+			case DispatcherLane::MonsterAI:
+				return "MonsterAI";
+			case DispatcherLane::Deferred:
+				return "Deferred";
+			case DispatcherLane::Maintenance:
+				return "Maintenance";
+			case DispatcherLane::GenericParallel:
 				return "GenericParallel";
-			default:
-				return "Unknown";
+			case DispatcherLane::Last:
+				break;
 		}
+		return "Unknown";
 	}
 
 	std::string_view getInternalWorkName(const uint8_t workId) {
@@ -101,6 +110,7 @@ Dispatcher &Dispatcher::getInstance() {
 
 void Dispatcher::init() {
 	UPDATE_OTSYS_TIME();
+	g_monsterComputeService().setCompletionNotifier([this] { notify(); });
 
 	auto dispatcherStarted = std::make_shared<std::promise<void>>();
 	auto futureStarted = dispatcherStarted->get_future();
@@ -110,16 +120,18 @@ void Dispatcher::init() {
 
 		dispatcherStarted->set_value();
 
-		while (!threadPool.isStopped()) {
+		while (!threadPool.isStopped() && !shuttingDown.load(std::memory_order_acquire)) {
 			UPDATE_OTSYS_TIME();
 			const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
 			const auto passStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 
-			refreshAdaptiveBudgets();
-			executeEvents();
-			executeScheduledEvents();
-			executeWorkerCompletions();
 			mergeEvents();
+			promoteScheduledEvents();
+			refreshAdaptiveBudgets();
+			executeReadyEvents();
+			mergeEvents();
+			promoteScheduledEvents();
+			checkPendingTasks();
 			if (telemetryEnabled) {
 				observeInternalWork(DispatcherInternalWork::DispatcherPass, 1, policy.elapsedSince(passStartedAt));
 			}
@@ -127,7 +139,9 @@ void Dispatcher::init() {
 
 			if (!hasPendingTasks) {
 				const auto idleStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
-				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
+				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask(), [this] {
+					return hasPendingTasks.load(std::memory_order_acquire) || shuttingDown.load(std::memory_order_acquire) || threadPool.isStopped();
+				});
 				if (telemetryEnabled) {
 					observeInternalWork(DispatcherInternalWork::DispatcherIdle, 1, policy.elapsedSince(idleStartedAt));
 				}
@@ -140,132 +154,152 @@ void Dispatcher::init() {
 	}
 }
 
-void Dispatcher::executeSerialEvents(const uint8_t groupId) {
-	auto &tasks = m_tasks[groupId];
-	if (tasks.empty()) {
-		return;
-	}
-
-	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
-	logQueueLatency(groupId);
-
-	dispacherContext.group = static_cast<TaskGroup>(groupId);
-	dispacherContext.type = DispatcherType::Event;
-
-	for (const auto &task : tasks) {
-		dispacherContext.taskName = task.getContext();
-		if (executeTask(task, groupId)) {
-			++dispatcherCycle;
-		}
-	}
-	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasks.size());
-	}
-	tasks.clear();
-
-	dispacherContext.reset();
-}
-
-void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks, std::chrono::microseconds maxRuntime) {
-	auto &tasks = m_tasks[groupId];
-	if (tasks.empty() || maxTasks == 0) {
-		return;
+Dispatcher::LaneExecutionResult Dispatcher::executeSerialLane(DispatcherLane lane, size_t maxTasks, uint32_t maxCost, std::chrono::microseconds maxRuntime) {
+	const auto laneId = static_cast<size_t>(lane);
+	auto &tasks = m_tasks[laneId];
+	LaneExecutionResult result;
+	if (tasks.empty() || maxTasks == 0 || maxCost == 0) {
+		return result;
 	}
 
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
 	const auto hasRuntimeBudget = maxRuntime != std::chrono::microseconds::max();
-	const auto groupStartedAt = telemetryEnabled || hasRuntimeBudget ? policy.now() : Task::Clock::time_point {};
-	const auto deadline = hasRuntimeBudget ? groupStartedAt + maxRuntime : Task::Clock::time_point::max();
-	logQueueLatency(groupId);
-
-	dispacherContext.group = static_cast<TaskGroup>(groupId);
+	const auto laneStartedAt = telemetryEnabled || hasRuntimeBudget ? policy.now() : Task::Clock::time_point {};
+	const auto deadline = hasRuntimeBudget ? laneStartedAt + maxRuntime : Task::Clock::time_point::max();
+	logQueueLatency(lane);
 	dispacherContext.type = DispatcherType::Event;
 
-	const auto taskLimit = DispatcherPolicy::selectTaskCount(tasks.size(), maxTasks);
-	size_t tasksExecuted = 0;
-	for (; tasksExecuted < taskLimit; ++tasksExecuted) {
-		if (tasksExecuted > 0 && hasRuntimeBudget && policy.deadlineReached(deadline)) {
+	while (!tasks.empty() && result.tasks < maxTasks) {
+		if (result.tasks > 0 && hasRuntimeBudget && policy.deadlineReached(deadline)) {
 			break;
 		}
 
-		const auto &task = tasks[tasksExecuted];
-		dispacherContext.taskName = task.getContext();
-		if (executeTask(task, groupId)) {
+		const size_t taskIndex = usesProducerFairness(lane) ? DispatcherPolicy::selectProducerFairIndex(tasks, lastProducerTokens[laneId]) : 0;
+		const auto taskCost = std::clamp<uint32_t>(tasks[taskIndex].getMeta().estimatedCost, 1, DISPATCHER_MAX_TASK_COST);
+		if (taskCost > maxCost - result.cost) {
+			break;
+		}
+
+		dispacherContext.taskName = tasks[taskIndex].getContext();
+		dispacherContext.type = DispatcherType::Event;
+		lastProducerTokens[laneId] = tasks[taskIndex].getMeta().producerToken;
+		if (executeTask(tasks[taskIndex], lane)) {
 			++dispatcherCycle;
 		}
+		tasks.erase(tasks.begin() + static_cast<std::ptrdiff_t>(taskIndex));
+		++result.tasks;
+		result.cost += taskCost;
 	}
+
 	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksExecuted);
+		laneTelemetry[laneId].groupRuntime.observe(policy.elapsedSince(laneStartedAt), result.tasks);
 	}
-	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksExecuted));
-
+	if (hasRuntimeBudget) {
+		result.runtime = policy.elapsedSince(laneStartedAt);
+	}
 	dispacherContext.reset();
+	return result;
 }
 
-void Dispatcher::executeParallelEvents(const uint8_t groupId) {
-	executeBudgetedParallelEvents(groupId, m_tasks[groupId].size());
-}
-
-void Dispatcher::executeBudgetedParallelEvents(const uint8_t groupId, size_t maxTasks) {
-	auto &tasks = m_tasks[groupId];
-	if (tasks.empty() || maxTasks == 0) {
-		return;
+Dispatcher::LaneExecutionResult Dispatcher::executeBarrierLane(DispatcherLane lane, size_t maxTasks, uint32_t maxCost) {
+	const auto laneId = static_cast<size_t>(lane);
+	auto &tasks = m_tasks[laneId];
+	LaneExecutionResult result;
+	if (tasks.empty() || maxTasks == 0 || maxCost == 0) {
+		return result;
 	}
-	const auto tasksToExecute = DispatcherPolicy::selectTaskCount(tasks.size(), maxTasks);
+
+	while (result.tasks < tasks.size() && result.tasks < maxTasks) {
+		const auto taskCost = std::clamp<uint32_t>(tasks[result.tasks].getMeta().estimatedCost, 1, DISPATCHER_MAX_TASK_COST);
+		if (taskCost > maxCost - result.cost) {
+			break;
+		}
+		result.cost += taskCost;
+		++result.tasks;
+	}
+	if (result.tasks == 0) {
+		return result;
+	}
 
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
-	logQueueLatency(groupId);
-
+	const auto laneStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+	logQueueLatency(lane);
 	const auto barrierStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
-	asyncWait(tasksToExecute, [this, groupId, &tasks](size_t i) {
+	asyncWait(result.tasks, [this, lane, &tasks](size_t index) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
-		dispacherContext.group = static_cast<TaskGroup>(groupId);
-		executeTask(tasks[i], groupId);
-
+		dispacherContext.taskName = tasks[index].getContext();
+		executeTask(tasks[index], lane);
 		dispacherContext.reset();
 	});
 	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), tasksToExecute);
-		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksToExecute);
+		laneTelemetry[laneId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), result.tasks);
+		laneTelemetry[laneId].groupRuntime.observe(policy.elapsedSince(laneStartedAt), result.tasks);
 	}
-
-	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksToExecute));
+	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(result.tasks));
+	return result;
 }
 
-bool Dispatcher::executeTask(const Task &task, const uint8_t groupId) {
+Dispatcher::LaneExecutionResult Dispatcher::executeWorkerCompletionLane(size_t maxTasks, uint32_t maxCost) {
+	LaneExecutionResult result;
+	if (maxTasks == 0 || maxCost == 0) {
+		return result;
+	}
+
+	auto &computeService = g_monsterComputeService();
+	dispacherContext.type = DispatcherType::WorkerCompletion;
+	dispacherContext.lane = DispatcherLane::WorkerCompletion;
+	dispacherContext.executionMode = ExecutionMode::BackgroundCompletion;
+	const auto startedAt = policy.now();
+	const auto taskLimit = std::min<size_t>({ maxTasks, maxCost, computeService.getCompletionCount() });
+	result.tasks = computeService.drainCompletions(
+		taskLimit,
+		[](std::string_view context, MonsterComputeService::Completion &completion) {
+			dispacherContext.taskName = context;
+			if (completion) {
+				completion();
+			}
+		}
+	);
+	result.cost = static_cast<uint32_t>(result.tasks);
+	observeInternalWork(DispatcherInternalWork::WorkerCompletionBatch, result.tasks, policy.elapsedSince(startedAt));
+	dispatcherCycle += result.tasks;
+	dispacherContext.reset();
+	return result;
+}
+
+bool Dispatcher::executeTask(const Task &task, DispatcherLane lane) {
 	dispacherContext.lane = task.getMeta().lane;
-	dispacherContext.executionMode = getExecutionMode(static_cast<TaskGroup>(groupId));
+	dispacherContext.executionMode = task.getMeta().executionMode;
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
 	if (!telemetryEnabled && !isPlayerVisible(task.getMeta().lane)) {
 		return task.execute();
 	}
 
 	const auto startedAt = policy.now();
-	observeTaskStart(task, groupId, startedAt);
+	observeTaskStart(task, lane, startedAt);
 	const auto executed = task.execute();
 	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].taskRuntime.observe(policy.elapsedSince(startedAt), 1, task.getContext());
+		laneTelemetry[static_cast<size_t>(lane)].taskRuntime.observe(policy.elapsedSince(startedAt), 1, task.getContext());
 	}
 	return executed;
 }
 
-void Dispatcher::observeTaskStart(const Task &task, const uint8_t groupId, Task::Clock::time_point startedAt) {
+void Dispatcher::observeTaskStart(const Task &task, DispatcherLane lane, Task::Clock::time_point startedAt) {
 	const auto queueWait = DispatcherPolicy::elapsed(task.getReadyAt(), startedAt);
 	if (isPlayerVisible(task.getMeta().lane)) {
 		playerVisibleReadyLatency.observe(queueWait);
 	}
 
 	if (queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
-		taskGroupTelemetry[groupId].queueWait.observe(queueWait, 1, task.getContext());
+		laneTelemetry[static_cast<size_t>(lane)].queueWait.observe(queueWait, 1, task.getContext());
 	}
 }
 
-void Dispatcher::logQueueLatency(const uint8_t groupId) const {
-	static std::array<Task::Clock::time_point, static_cast<uint8_t>(TaskGroup::Last)> nextLogAt {};
+void Dispatcher::logQueueLatency(DispatcherLane lane) const {
+	static std::array<Task::Clock::time_point, static_cast<size_t>(DispatcherLane::Last)> nextLogAt {};
+	const auto laneId = static_cast<size_t>(lane);
 
-	const auto &tasks = m_tasks[groupId];
+	const auto &tasks = m_tasks[laneId];
 	if (tasks.empty()) {
 		return;
 	}
@@ -282,14 +316,14 @@ void Dispatcher::logQueueLatency(const uint8_t groupId) const {
 	const auto now = policy.now();
 	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
 	const auto snapshot = DispatcherPolicy::inspectQueueAt(tasks, now, loggingStartedAt);
-	if (snapshot.queued == 0 || snapshot.oldestReadyAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD || now < nextLogAt[groupId]) {
+	if (snapshot.queued == 0 || snapshot.oldestReadyAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD || now < nextLogAt[laneId]) {
 		return;
 	}
 
-	nextLogAt[groupId] = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
+	nextLogAt[laneId] = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
 	g_logger().warn(
-		"Dispatcher queue latency: group={}, queued={}, oldest={} ms, oldestContext={}",
-		getTaskGroupName(groupId),
+		"Dispatcher queue latency: lane={}, queued={}, oldest={} ms, oldestContext={}",
+		getDispatcherLaneName(lane),
 		snapshot.queued,
 		std::chrono::duration_cast<std::chrono::milliseconds>(snapshot.oldestReadyAge).count(),
 		snapshot.oldestContext
@@ -334,8 +368,8 @@ void Dispatcher::logRuntimeTelemetry() {
 	}
 	nextLogAt = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
 
-	for (uint8_t groupId = 0; groupId < taskGroupTelemetry.size(); ++groupId) {
-		auto &telemetry = taskGroupTelemetry[groupId];
+	for (size_t laneId = 0; laneId < laneTelemetry.size(); ++laneId) {
+		auto &telemetry = laneTelemetry[laneId];
 		const auto queue = telemetry.queueWait.snapshotAndReset();
 		const auto task = telemetry.taskRuntime.snapshotAndReset();
 		const auto group = telemetry.groupRuntime.snapshotAndReset();
@@ -346,8 +380,8 @@ void Dispatcher::logRuntimeTelemetry() {
 		const auto longestTaskContext = task.longestContext.empty() ? std::string_view { "none" } : task.longestContext;
 
 		g_logger().debug(
-			"Dispatcher telemetry: group={}, queueSamples={}, queueP50={} us, queueP95={} us, queueP99={} us, taskSamples={}, taskP50={} us, taskP95={} us, taskP99={} us, groupP99={} us, barrierP99={} us, longestTask={} us, longestTaskContext={}",
-			getTaskGroupName(groupId),
+			"Dispatcher telemetry: lane={}, queueSamples={}, queueP50={} us, queueP95={} us, queueP99={} us, taskSamples={}, taskP50={} us, taskP95={} us, taskP99={} us, laneP99={} us, barrierP99={} us, longestTask={} us, longestTaskContext={}",
+			getDispatcherLaneName(static_cast<DispatcherLane>(laneId)),
 			queue.latency.samples,
 			queue.latency.percentile(0.50).count(),
 			queue.latency.percentile(0.95).count(),
@@ -417,7 +451,7 @@ void Dispatcher::logRuntimeTelemetry() {
 }
 
 void Dispatcher::resetRuntimeTelemetry() {
-	for (auto &telemetry : taskGroupTelemetry) {
+	for (auto &telemetry : laneTelemetry) {
 		telemetry.queueWait.reset();
 		telemetry.taskRuntime.reset();
 		telemetry.groupRuntime.reset();
@@ -533,162 +567,224 @@ void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f
 	}
 }
 
-void Dispatcher::executeEvents(const TaskGroup startGroup) {
-	bool movementQueuesMerged = false;
-	for (uint_fast8_t groupId = static_cast<uint8_t>(startGroup); groupId < static_cast<uint8_t>(TaskGroup::Last); ++groupId) {
-		const auto group = static_cast<TaskGroup>(groupId);
-		const auto isMovement = isMovementCommit(group);
-		const auto isDeferredGameplay = groupId == static_cast<uint8_t>(TaskGroup::DeferredGameplay);
+size_t Dispatcher::laneTaskBudget(DispatcherLane lane) const {
+	switch (lane) {
+		case DispatcherLane::ProtocolInput:
+		case DispatcherLane::PlayerWalk:
+		case DispatcherLane::PlayerAction:
+		case DispatcherLane::WorldCommit:
+			return 256;
+		case DispatcherLane::WorkerCompletion:
+			return activeBudgets.workerCompletions;
+		case DispatcherLane::VisibleMonster:
+			return activeBudgets.creatureWalkTasks;
+		case DispatcherLane::MonsterAI:
+		case DispatcherLane::GenericParallel:
+			return activeBudgets.walkParallelTasks;
+		case DispatcherLane::Deferred:
+			return activeBudgets.deferredGameplayTasks;
+		case DispatcherLane::Maintenance:
+			return 16;
+		case DispatcherLane::Last:
+			return 0;
+	}
+	return 1;
+}
 
-		if (isMovement) {
-			if (!movementQueuesMerged) {
-				mergeEvents();
-				movementQueuesMerged = true;
+uint32_t Dispatcher::laneQuantum(DispatcherLane lane) const {
+	switch (lane) {
+		case DispatcherLane::ProtocolInput:
+		case DispatcherLane::PlayerWalk:
+			return 8;
+		case DispatcherLane::PlayerAction:
+		case DispatcherLane::WorldCommit:
+			return 6;
+		case DispatcherLane::WorkerCompletion:
+		case DispatcherLane::VisibleMonster:
+			return 4;
+		case DispatcherLane::MonsterAI:
+		case DispatcherLane::Deferred:
+			return 2;
+		case DispatcherLane::Maintenance:
+		case DispatcherLane::GenericParallel:
+			return 1;
+		case DispatcherLane::Last:
+			return 0;
+	}
+	return 1;
+}
+
+void Dispatcher::executeReadyEvents() {
+	constexpr size_t laneCount = DispatcherWeightedDeficitRoundRobin::LANE_COUNT;
+	std::array<size_t, laneCount> tasksExecuted {};
+	std::array<bool, laneCount> exhausted {};
+	std::array<std::chrono::microseconds, laneCount> oldestReadyAge {};
+	std::array<std::chrono::microseconds, laneCount> serialRuntime {};
+	const auto now = policy.now();
+	const auto slo = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS));
+	size_t remainingPassTasks = 0;
+	for (size_t laneId = 0; laneId < laneCount; ++laneId) {
+		oldestReadyAge[laneId] = DispatcherPolicy::inspectQueueAt(m_tasks[laneId], now).oldestReadyAge;
+		const auto budget = laneTaskBudget(static_cast<DispatcherLane>(laneId));
+		remainingPassTasks += std::min(budget, std::numeric_limits<size_t>::max() - remainingPassTasks);
+	}
+	oldestReadyAge[static_cast<size_t>(DispatcherLane::WorkerCompletion)] = g_monsterComputeService().getStats().oldestCompletionReadyAge;
+
+	while (remainingPassTasks > 0) {
+		DispatcherWeightedDeficitRoundRobin::ReadySet ready {};
+		DispatcherWeightedDeficitRoundRobin::ValueSet quantums {};
+		DispatcherWeightedDeficitRoundRobin::ValueSet nextCosts {};
+		std::array<size_t, laneCount> candidateIndices {};
+		for (size_t laneId = 0; laneId < laneCount; ++laneId) {
+			const auto lane = static_cast<DispatcherLane>(laneId);
+			const auto budget = laneTaskBudget(lane);
+			if (exhausted[laneId] || tasksExecuted[laneId] >= budget) {
+				continue;
 			}
-			if (group == TaskGroup::CreatureWalk && !m_tasks[groupId].empty()) {
-				executeBudgetedSerialEvents(
-					groupId,
-					activeBudgets.creatureWalkTasks,
-					activeBudgets.sliceRuntime
-				);
-			} else {
-				executeSerialEvents(groupId);
+
+			if (lane == DispatcherLane::WorkerCompletion) {
+				ready[laneId] = g_monsterComputeService().getCompletionCount() > 0;
+				nextCosts[laneId] = 1;
+			} else if (!m_tasks[laneId].empty()) {
+				candidateIndices[laneId] = usesProducerFairness(lane) ? DispatcherPolicy::selectProducerFairIndex(m_tasks[laneId], lastProducerTokens[laneId]) : 0;
+				ready[laneId] = true;
+				nextCosts[laneId] = std::clamp<uint32_t>(m_tasks[laneId][candidateIndices[laneId]].getMeta().estimatedCost, 1, DISPATCHER_MAX_TASK_COST);
 			}
-			mergeAsyncEvents();
-		} else if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
-			mergeEvents();
-			executeSerialEvents(groupId);
-			mergeAsyncEvents();
-		} else if (isDeferredGameplay) {
-			mergeEvents();
-			if (!m_tasks[groupId].empty()) {
-				executeBudgetedSerialEvents(groupId, activeBudgets.deferredGameplayTasks);
-			}
-			mergeAsyncEvents();
-		} else if (group == TaskGroup::WalkParallel) {
-			if (!m_tasks[groupId].empty()) {
-				executeBudgetedParallelEvents(groupId, activeBudgets.walkParallelTasks);
-			}
-		} else {
-			executeParallelEvents(groupId);
+			quantums[laneId] = DispatcherWeightedDeficitRoundRobin::agedQuantum(
+				laneQuantum(lane),
+				oldestReadyAge[laneId],
+				slo
+			);
 		}
+
+		const auto selectedLane = weightedScheduler.selectLane(ready, quantums, nextCosts);
+		if (!selectedLane) {
+			break;
+		}
+		const auto lane = *selectedLane;
+		const auto laneId = static_cast<size_t>(lane);
+		const auto remainingTasks = laneTaskBudget(lane) - tasksExecuted[laneId];
+		const auto availableCost = weightedScheduler.getDeficit(lane);
+
+		LaneExecutionResult result;
+		if (lane == DispatcherLane::WorkerCompletion) {
+			result = executeWorkerCompletionLane(remainingTasks, availableCost);
+		} else if (m_tasks[laneId][candidateIndices[laneId]].getMeta().executionMode == ExecutionMode::BarrierParallel) {
+			result = executeBarrierLane(lane, remainingTasks, availableCost);
+		} else {
+			const auto runtime = isPlayerVisible(lane) ? std::chrono::microseconds::max() : activeBudgets.sliceRuntime - std::min(activeBudgets.sliceRuntime, serialRuntime[laneId]);
+			result = executeSerialLane(lane, remainingTasks, availableCost, runtime);
+			serialRuntime[laneId] += result.runtime;
+		}
+
+		if (result.tasks == 0 || result.cost == 0) {
+			exhausted[laneId] = true;
+			weightedScheduler.resetLane(lane);
+			continue;
+		}
+		tasksExecuted[laneId] += result.tasks;
+		remainingPassTasks -= std::min(remainingPassTasks, result.tasks);
+		weightedScheduler.consume(lane, result.cost);
+		if (!isPlayerVisible(lane) && serialRuntime[laneId] >= activeBudgets.sliceRuntime) {
+			exhausted[laneId] = true;
+			weightedScheduler.resetLane(lane);
+		}
+		mergeEvents();
 	}
 }
 
-void Dispatcher::executeScheduledEvents() {
-	auto &threadScheduledTasks = getThreadTask()->scheduledTasks;
-
+void Dispatcher::promoteScheduledEvents() {
 	auto it = scheduledTasks.begin();
 	while (it != scheduledTasks.end()) {
-		const auto &task = *it;
+		const auto task = *it;
 		if (task->getTime() > OTSYS_TIME()) {
 			break;
 		}
-		const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-		const auto taskStartedAt = policy.now();
-		const auto scheduledLateness = DispatcherPolicy::elapsed(task->getReadyAt(), taskStartedAt);
-		if (isPlayerVisible(task->getMeta().lane)) {
-			playerVisibleReadyLatency.observe(scheduledLateness);
-		}
-		if (telemetryEnabled) {
-			scheduledLatenessTelemetry.observe(scheduledLateness, 1, task->getContext());
-		}
 
-		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
-		dispacherContext.group = TaskGroup::Serial;
-		dispacherContext.lane = task->getMeta().lane;
-		dispacherContext.executionMode = ExecutionMode::Serial;
-		dispacherContext.taskName = task->getContext();
-
-		const auto executed = task->execute();
-		if (telemetryEnabled) {
-			taskGroupTelemetry[static_cast<uint8_t>(TaskGroup::Serial)].taskRuntime.observe(policy.elapsedSince(taskStartedAt), 1, task->getContext());
-		}
-		if (executed && task->isCycle()) {
-			task->updateTime();
-			threadScheduledTasks.emplace_back(task);
-		} else {
-			scheduledTasksRef.erase(task->getId());
-		}
-
+		Task readyTask(0, [this, task] { executeScheduledTask(task); }, task->getContext(), task->getReadyAt());
+		const auto requestedLaneId = static_cast<size_t>(task->getMeta().lane);
+		const auto lane = requestedLaneId < m_tasks.size() ? task->getMeta().lane : DispatcherLane::Maintenance;
+		readyTask.setLane(lane);
+		readyTask.setExecutionMode(task->getMeta().executionMode);
+		readyTask.setProducerToken(task->getMeta().producerToken);
+		readyTask.setGeneration(task->getMeta().generation);
+		readyTask.setEstimatedCost(task->getMeta().estimatedCost);
+		readyTask.log = task->log;
+		m_tasks[static_cast<size_t>(lane)].emplace_back(std::move(readyTask));
 		++it;
 	}
-
 	if (it != scheduledTasks.begin()) {
 		scheduledTasks.erase(scheduledTasks.begin(), it);
 	}
-
-	dispacherContext.reset();
-
-	mergeAsyncEvents(); // merge async events requested by scheduled events
-	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
 }
 
-void Dispatcher::executeWorkerCompletions() {
-	auto &computeService = g_monsterComputeService();
-	if (computeService.getCompletionCount() == 0) {
-		return;
+void Dispatcher::executeScheduledTask(const std::shared_ptr<Task> &task) {
+	const auto startedAt = policy.now();
+	const auto lateness = DispatcherPolicy::elapsed(task->getReadyAt(), startedAt);
+	if (queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+		scheduledLatenessTelemetry.observe(lateness, 1, task->getContext());
 	}
 
-	dispacherContext.type = DispatcherType::WorkerCompletion;
-	dispacherContext.group = TaskGroup::Serial;
-	dispacherContext.lane = DispatcherLane::WorkerCompletion;
-	dispacherContext.executionMode = ExecutionMode::BackgroundCompletion;
-	const auto startedAt = policy.now();
-	const auto completed = computeService.drainCompletions(
-		activeBudgets.workerCompletions,
-		[](std::string_view context, MonsterComputeService::Completion &completion) {
-			dispacherContext.taskName = context;
-			if (completion) {
-				completion();
-			}
+	dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
+	bool executed = false;
+	if (!task->isCanceled()) {
+		if (task->hasExpired()) {
+			g_logger().info("The task '{}' has expired, it has not been executed in {}.", task->getContext(), task->expiration - task->utime);
+		} else {
+			task->func();
+			executed = true;
 		}
-	);
-	observeInternalWork(DispatcherInternalWork::WorkerCompletionBatch, completed, policy.elapsedSince(startedAt));
-	dispatcherCycle += completed;
-	dispacherContext.reset();
+	}
+
+	if (executed && task->isCycle()) {
+		task->updateTime();
+		scheduledTasks.insert(task);
+	} else {
+		scheduledTasksRef.erase(task->getId());
+	}
 }
 
-void Dispatcher::__mergeEvents(std::span<const uint8_t> groups, const bool mergeScheduledEvents) {
+void Dispatcher::mergeEvents() {
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
-		for (const auto group : groups) {
-			auto &threadTasks = thread->tasks[group];
-			auto &tasks = m_tasks[group];
-
-			if (threadTasks.size() > tasks.size()) {
-				tasks.swap(threadTasks);
-			}
-
+		for (size_t laneId = 0; laneId < m_tasks.size(); ++laneId) {
+			auto &threadTasks = thread->tasks[laneId];
+			auto &tasks = m_tasks[laneId];
 			if (!threadTasks.empty()) {
 				tasks.insert(tasks.end(), make_move_iterator(threadTasks.begin()), make_move_iterator(threadTasks.end()));
 				threadTasks.clear();
 			}
 		}
 
-		if (mergeScheduledEvents && !thread->scheduledTasks.empty()) {
+		if (!thread->scheduledTasks.empty()) {
 			scheduledTasks.insert(make_move_iterator(thread->scheduledTasks.begin()), make_move_iterator(thread->scheduledTasks.end()));
 			thread->scheduledTasks.clear();
 		}
 	}
 }
 
-// Merge only async thread events with main dispatch events
-void Dispatcher::mergeAsyncEvents() {
-	static constexpr auto groups = std::to_array({ static_cast<uint8_t>(TaskGroup::WalkParallel), static_cast<uint8_t>(TaskGroup::GenericParallel) });
-	__mergeEvents(groups, false);
-}
-
-// Merge thread events with main dispatch events
-void Dispatcher::mergeEvents() {
-	static constexpr auto groups = std::to_array({
-		static_cast<uint8_t>(TaskGroup::Walk),
-		static_cast<uint8_t>(TaskGroup::CreatureWalk),
-		static_cast<uint8_t>(TaskGroup::Serial),
-		static_cast<uint8_t>(TaskGroup::DeferredGameplay),
-	});
-	__mergeEvents(groups, true);
-	checkPendingTasks();
+void Dispatcher::checkPendingTasks() {
+	hasPendingTasks.store(false, std::memory_order_release);
+	bool pending = g_monsterComputeService().getCompletionCount() > 0;
+	for (const auto &tasks : m_tasks) {
+		if (!tasks.empty()) {
+			pending = true;
+			break;
+		}
+	}
+	if (!pending) {
+		for (const auto &thread : threads) {
+			std::scoped_lock lock(thread->mutex);
+			const bool hasThreadTasks = std::ranges::any_of(thread->tasks, [](const auto &tasks) { return !tasks.empty(); });
+			if (hasThreadTasks || !thread->scheduledTasks.empty()) {
+				pending = true;
+				break;
+			}
+		}
+	}
+	if (pending) {
+		hasPendingTasks.store(true, std::memory_order_release);
+	}
 }
 
 std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
@@ -704,57 +800,96 @@ std::chrono::milliseconds Dispatcher::timeUntilNextScheduledTask() const {
 	return std::max<std::chrono::milliseconds>(timeRemaining, CHRONO_0);
 }
 
-void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	if (shuttingDown) {
+void Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs, DispatcherLane lane, uint64_t producerToken) {
+	if (shuttingDown.load(std::memory_order_acquire)) {
 		return;
+	}
+	if (lane == DispatcherLane::Last || lane == DispatcherLane::WorkerCompletion || defaultExecutionMode(lane) != ExecutionMode::Serial) {
+		lane = DispatcherLane::WorldCommit;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::Serial)].emplace_back(expiresAfterMs, std::move(f), context);
-	task.setLane(DispatcherLane::WorldCommit);
+	auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
+	task.setLane(lane);
+	task.setProducerToken(producerToken);
 	notify();
 }
 
-void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
-	if (shuttingDown) {
+void Dispatcher::addProtocolEvent(std::function<void(void)> &&f, std::string_view context, uint64_t producerToken, uint32_t expiresAfterMs) {
+	addEvent(std::move(f), context, expiresAfterMs, DispatcherLane::ProtocolInput, producerToken);
+}
+
+void Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs, uint64_t producerToken) {
+	if (shuttingDown.load(std::memory_order_acquire)) {
 		return;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::Walk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::PlayerWalk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
 	task.setLane(DispatcherLane::PlayerWalk);
+	task.setProducerToken(producerToken);
 	notify();
 }
 
 void Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
-	if (shuttingDown) {
+	if (shuttingDown.load(std::memory_order_acquire)) {
 		return;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::CreatureWalk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::VisibleMonster)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
 	task.setLane(DispatcherLane::VisibleMonster);
 	notify();
 }
 
 void Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs) {
-	if (shuttingDown) {
+	if (shuttingDown.load(std::memory_order_acquire)) {
 		return;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<uint8_t>(TaskGroup::DeferredGameplay)].emplace_back(expiresAfterMs, std::move(f), context);
+	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::Deferred)].emplace_back(expiresAfterMs, std::move(f), context);
 	task.setLane(DispatcherLane::Deferred);
 	notify();
 }
 
+void Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane) {
+	if (shuttingDown.load(std::memory_order_acquire)) {
+		return;
+	}
+	if (lane != DispatcherLane::MonsterAI && lane != DispatcherLane::GenericParallel) {
+		lane = DispatcherLane::GenericParallel;
+	}
+
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
+	auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(0, std::move(f), dispacherContext.taskName);
+	task.setLane(lane);
+	task.setExecutionMode(ExecutionMode::BarrierParallel);
+	notify();
+}
+
+uint64_t Dispatcher::scheduleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, bool cycle, bool log, DispatcherLane lane, uint64_t producerToken) {
+	auto task = std::make_shared<Task>(std::move(f), context, delay, cycle, log);
+	if (lane == DispatcherLane::Last || lane == DispatcherLane::WorkerCompletion || defaultExecutionMode(lane) != ExecutionMode::Serial) {
+		lane = DispatcherLane::WorldCommit;
+	}
+	task->setLane(lane);
+	task->setProducerToken(producerToken);
+	return scheduleEvent(task);
+}
+
 uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
-	if (shuttingDown) {
+	if (shuttingDown.load(std::memory_order_acquire) || !task) {
 		return 0;
+	}
+	const auto lane = task->getMeta().lane;
+	if (lane == DispatcherLane::Last || lane == DispatcherLane::WorkerCompletion || task->getMeta().executionMode != ExecutionMode::Serial) {
+		task->setLane(DispatcherLane::WorldCommit);
 	}
 
 	const auto &thread = getThreadTask();
@@ -767,19 +902,6 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 	notify();
 	return eventId;
 }
-
-void Dispatcher::asyncEvent(std::function<void(void)> &&f, TaskGroup group) {
-	if (shuttingDown) {
-		return;
-	}
-
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<uint8_t>(group)].emplace_back(0, std::move(f), dispacherContext.taskName);
-	task.setLane(getDispatcherLane(group));
-	notify();
-}
-
 void Dispatcher::stopEvent(uint64_t eventId) {
 	auto it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {

@@ -83,6 +83,7 @@ public:
 	// the returned completion, which the dispatcher consumes later.
 	using Work = std::function<Completion(MonsterComputeToken, std::stop_token)>;
 	using CompletionExecutor = std::function<void(std::string_view, Completion &)>;
+	using CompletionNotifier = std::function<void()>;
 
 	MonsterComputeService() = default;
 	~MonsterComputeService();
@@ -94,6 +95,7 @@ public:
 
 	void start(MonsterComputeConfig config);
 	void shutdown();
+	void setCompletionNotifier(CompletionNotifier notifier);
 
 	[[nodiscard]] MonsterComputeSubmission submit(MonsterComputePriority priority, Work work, std::string_view context);
 	size_t drainCompletions(size_t maxCompletions, CompletionExecutor executor = {});
@@ -137,6 +139,7 @@ private:
 	std::deque<Request> backgroundRequests;
 	std::deque<CompletionRecord> completions;
 	std::vector<std::jthread> workers;
+	CompletionNotifier completionNotifier;
 
 	State state = State::Stopped;
 	size_t capacity = 0;

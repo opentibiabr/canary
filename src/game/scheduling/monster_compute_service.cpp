@@ -30,6 +30,11 @@ MonsterComputeService &MonsterComputeService::getInstance() {
 	return inject<MonsterComputeService>();
 }
 
+void MonsterComputeService::setCompletionNotifier(CompletionNotifier notifier) {
+	std::scoped_lock lock(mutex);
+	completionNotifier = std::move(notifier);
+}
+
 size_t MonsterComputeService::resolveWorkerCount(uint32_t configuredThreads, uint32_t hardwareConcurrency) {
 	if (hardwareConcurrency <= 2) {
 		return 0;
@@ -293,13 +298,20 @@ MonsterComputeService::Request MonsterComputeService::popNextRequest() {
 }
 
 void MonsterComputeService::enqueueCompletion(CompletionRecord completion) {
-	std::scoped_lock lock(mutex);
-	assert(completions.size() < capacity);
-	completion.readyAt = std::chrono::steady_clock::now();
-	completions.emplace_back(std::move(completion));
-	assert(activeRequests > 0);
-	--activeRequests;
-	lifecycleChanged.notify_all();
+	CompletionNotifier notifier;
+	{
+		std::scoped_lock lock(mutex);
+		assert(completions.size() < capacity);
+		completion.readyAt = std::chrono::steady_clock::now();
+		completions.emplace_back(std::move(completion));
+		assert(activeRequests > 0);
+		--activeRequests;
+		notifier = completionNotifier;
+		lifecycleChanged.notify_all();
+	}
+	if (notifier) {
+		notifier();
+	}
 }
 
 MonsterComputeToken MonsterComputeService::nextToken() {

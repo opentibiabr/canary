@@ -9,6 +9,7 @@ on:
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - ".github/workflows/gameplay-analytics.yml"
   push:
@@ -19,6 +20,7 @@ on:
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - ".github/workflows/gameplay-analytics.yml"
 
@@ -35,6 +37,8 @@ jobs:
           python-version: "3.12"
       - name: Validate gameplay analytics contract
         run: python tools/analytics/validate_gameplay_analytics.py
+      - name: Run gameplay analytics validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_*.py" -v
       - name: Parse SQL schema
         run: |
           python - <<'PY'

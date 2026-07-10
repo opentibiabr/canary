@@ -386,12 +386,13 @@ local function sessionInsert(session)
 end
 
 local function insertDetails(session)
-	local result = db.storeQuery("SELECT `id` FROM `analytics_sessions` WHERE `session_uuid` = " .. escaped(session.uuid) .. " LIMIT 1")
-	if not result then
-		return
+	local queryResult = db.storeQuery("SELECT `id` FROM `analytics_sessions` WHERE `session_uuid` = " .. escaped(session.uuid) .. " LIMIT 1")
+	if not queryResult then
+		logger.error("[GameplayAnalytics] Could not resolve persisted session {} for detail writes.", session.uuid)
+		return false
 	end
-	local sessionId = result.getNumber(result, "id")
-	result.free(result)
+	local sessionId = result.getNumber(queryResult, "id")
+	result.free(queryResult)
 	if Analytics.config.trackMonsters then
 		for name, data in pairs(session.monsters) do
 			db.query(string.format("INSERT INTO `analytics_session_monsters` (`session_id`,`monster_name`,`kills`,`damage_dealt`,`damage_received`,`experience_raw`) VALUES (%d,%s,%d,%d,%d,%d)", sessionId, escaped(name), data.kills, data.damageDealt, data.damageReceived, data.experienceRaw))
@@ -417,6 +418,7 @@ local function insertDetails(session)
 			db.query(string.format("INSERT INTO `analytics_session_loot` (`session_id`,`item_id`,`amount`,`npc_value`,`market_value`) VALUES (%d,%d,%d,%d,%d)", sessionId, itemId, data.amount, data.npcValue, data.marketValue))
 		end
 	end
+	return true
 end
 
 function Analytics.flush()

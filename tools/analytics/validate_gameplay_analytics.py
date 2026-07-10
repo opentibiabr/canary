@@ -72,20 +72,25 @@ def validate_config(text: str) -> None:
     keys = set(re.findall(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*=", text, flags=re.MULTILINE))
     missing = sorted(REQUIRED_CONFIG - keys)
     require(not missing, f"missing config keys: {', '.join(missing)}")
-    require(re.search(r"^\s*enabled\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
-            "analytics must be disabled by default")
-    require(re.search(r"^\s*trackPvP\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
-            "PvP analytics must be disabled by default")
+    require(
+        re.search(r"^\s*enabled\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
+        "analytics must be disabled by default",
+    )
+    require(
+        re.search(r"^\s*trackPvP\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
+        "PvP analytics must be disabled by default",
+    )
 
 
 def validate_schema(text: str) -> None:
     tables = set(re.findall(r"CREATE TABLE IF NOT EXISTS\s+`([^`]+)`", text, flags=re.IGNORECASE))
     missing = sorted(REQUIRED_TABLES - tables)
     require(not missing, f"missing schema tables: {', '.join(missing)}")
-    require("FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)" in text,
-            "sessions must retain player referential integrity")
-    require("UNIQUE KEY `analytics_sessions_uuid`" in text,
-            "session UUID must be unique for retry safety")
+    require(
+        "FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)" in text,
+        "sessions must retain player referential integrity",
+    )
+    require("UNIQUE KEY `analytics_sessions_uuid`" in text, "session UUID must be unique for retry safety")
 
 
 def validate_library(text: str) -> None:
@@ -96,6 +101,10 @@ def validate_library(text: str) -> None:
     require("Queue limit reached" in text, "queue overflow must be logged")
     require("minimumSessionSeconds" in text, "minimum session threshold is not enforced")
     require("combatTimeoutSeconds" in text, "combat timeout is not enforced")
+    require(
+        re.search(r"\blocal\s+result\s*=\s*db\.storeQuery", text) is None,
+        "database query handles must not shadow Canary's global result API",
+    )
 
 
 def strip_lua_comment(line: str) -> str:
@@ -140,7 +149,7 @@ def has_global_drain_health_registration(text: str) -> bool:
 
         depth = lua_block_delta(line)
         body = []
-        for body_line in lines[index + 1:]:
+        for body_line in lines[index + 1 :]:
             body.append(body_line)
             depth += lua_block_delta(body_line)
             if depth <= 0:

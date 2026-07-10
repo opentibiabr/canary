@@ -23,6 +23,30 @@ GameplayAnalyticsExperience = true
 '''
 
 
+class GameplayAnalyticsLibraryValidationTest(unittest.TestCase):
+    def test_repository_library_does_not_shadow_result_api(self) -> None:
+        validator.validate_library(validator.LIBRARY.read_text(encoding="utf-8"))
+
+    def test_rejects_store_query_handle_named_result(self) -> None:
+        library = validator.LIBRARY.read_text(encoding="utf-8")
+        broken = library.replace(
+            "local queryResult = db.storeQuery",
+            "local result = db.storeQuery",
+            1,
+        ).replace(
+            'result.getNumber(queryResult, "id")',
+            'result.getNumber(result, "id")',
+            1,
+        ).replace(
+            "result.free(queryResult)",
+            "result.free(result)",
+            1,
+        )
+
+        with self.assertRaisesRegex(AssertionError, "must not shadow"):
+            validator.validate_library(broken)
+
+
 class GameplayAnalyticsRuntimeValidationTest(unittest.TestCase):
     def test_requires_drain_health_damage_tracking_callback(self) -> None:
         runtime = runtime_with_callback(

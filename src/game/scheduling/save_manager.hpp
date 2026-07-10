@@ -36,7 +36,20 @@ private:
 	void saveMap();
 	void saveKV();
 
+	/**
+	 * Schedules saving the current online player object.
+	 *
+	 * The weak pointer is intentional: GUID or player runtime ID re-resolution
+	 * can point at a later session for the same character, while the save must
+	 * target the object that requested it or skip if that object is gone.
+	 */
 	void schedulePlayer(std::weak_ptr<Player> player);
+	/**
+	 * Saves a pinned player object.
+	 *
+	 * Keep the strong owner for the duration of serialization. Replacing this
+	 * with GUID-only lookup would change which player generation is saved.
+	 */
 	bool doSavePlayer(std::shared_ptr<Player> player);
 
 	std::atomic<std::chrono::steady_clock::time_point> m_scheduledAt;

@@ -289,6 +289,7 @@ int CanaryServer::run() {
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
+	g_dispatcher().setQueueLatencyLoggingEnabled(true);
 
 	serviceManager.run();
 

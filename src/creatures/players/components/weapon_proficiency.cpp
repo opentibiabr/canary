@@ -139,7 +139,7 @@ static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &pro
 		uint64_t shiftedValue = 0;
 		if (proficiencyPerk.type == SPECIALIZED_MAGIC_LEVEL) {
 			shiftedValue = perkJson["DamageType"].get<uint64_t>();
-		} else if (proficiencyPerk.type == ELEMENTAL_HIT_CHANCE || proficiencyPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE) {
+		} else if (proficiencyPerk.type == ELEMENTAL_HIT_CHANCE || proficiencyPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE || proficiencyPerk.type == ELEMENTAL_PIERCE) {
 			shiftedValue = perkJson["ElementId"].get<uint64_t>();
 		}
 

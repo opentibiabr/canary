@@ -10,7 +10,7 @@ function onRecvbyte(player, msg, byte)
 
 	local trackedMissions = {}
 	local missionCount = msg:getByte()
-	local requiredBytes = (missionCount * 2) + 3
+	local requiredBytes = (missionCount * 2) + 2
 
 	if msg:getUnreadBytes() < requiredBytes then
 		logger.debug("[QuestTracker] ignored malformed 0xD0 packet from player='{}': missions={} remaining={} required={}", player:getName(), missionCount, msg:getUnreadBytes(), requiredBytes)
@@ -21,11 +21,14 @@ function onRecvbyte(player, msg, byte)
 		trackedMissions[#trackedMissions + 1] = msg:getU16()
 	end
 
-	-- Client oficial envia 3 bytes extras após a lista:
-	-- autoTrackNewQuests, autoUntrackCompletedQuests, extra/desconhecido.
 	local autoTrackNewQuests = msg:getByte() == 1
 	local autoUntrackCompletedQuests = msg:getByte() == 1
-	local extra = msg:getByte()
+
+	local trailingBytes = msg:getUnreadBytes()
+	if trailingBytes > 0 then
+		logger.debug("[QuestTracker] ignored malformed 0xD0 packet from player='{}': unexpected trailing bytes={}", player:getName(), trailingBytes)
+		return
+	end
 
 	local isInitialSync = player.isQuestTrackerInitialSync and player:isQuestTrackerInitialSync()
 	if isInitialSync then
@@ -33,7 +36,7 @@ function onRecvbyte(player, msg, byte)
 			player:reconcileInitialTrackedMissions(trackedMissions)
 		end
 
-		logger.debug("[QuestTracker] reconciled initial client cache player='{}' missions={} autoTrack={} autoUntrack={} extra={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false", extra)
+		logger.debug("[QuestTracker] reconciled initial client cache player='{}' missions={} autoTrack={} autoUntrack={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false")
 	else
 		player:resetTrackedMissions(trackedMissions)
 
@@ -46,5 +49,5 @@ function onRecvbyte(player, msg, byte)
 	-- Não chame processAutomaticQuestTracker aqui.
 	-- Essa função deve rodar apenas quando storage de quest muda,
 	-- dentro de Player.updateStorage.
-	logger.debug("[QuestTracker] player='{}' missions={} autoTrack={} autoUntrack={} extra={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false", extra)
+	logger.debug("[QuestTracker] player='{}' missions={} autoTrack={} autoUntrack={}", player:getName(), missionCount, autoTrackNewQuests and "true" or "false", autoUntrackCompletedQuests and "true" or "false")
 end

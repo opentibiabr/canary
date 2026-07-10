@@ -60,8 +60,29 @@ public:
 	Spectators excludeMaster() const;
 	Spectators excludePlayerMaster() const;
 
-	Spectators insert(const std::shared_ptr<Creature> &creature);
-	Spectators insertAll(const CreatureVector &list);
+	/**
+	 * Adds a strong spectator reference to this snapshot.
+	 *
+	 * Spectator snapshots own `shared_ptr<Creature>` entries so immediate
+	 * fanout code may derive short-lived raw type views from them without
+	 * risking dangling spectators.
+	 */
+	Spectators &insert(const std::shared_ptr<Creature> &creature);
+	/**
+	 * Appends a spectator list by copying strong references.
+	 *
+	 * Use this overload for cached or shared lists that must remain intact
+	 * after insertion.
+	 */
+	Spectators &insertAll(const CreatureVector &list);
+	/**
+	 * Appends a freshly built spectator list by moving strong references.
+	 *
+	 * This avoids extra refcount churn for temporary snapshots while preserving
+	 * the same ownership contract: stored spectators are still `shared_ptr`
+	 * entries, not borrowed raw pointers.
+	 */
+	Spectators &insertAll(CreatureVector &&list);
 	Spectators join(const Spectators &anotherSpectators) {
 		return insertAll(anotherSpectators.creatures);
 	}

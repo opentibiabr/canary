@@ -21,6 +21,27 @@
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
 
+namespace {
+	// Path searches call this for every candidate node; pass the creature's
+	// current tile captured once per search to avoid repeated weak_ptr locks.
+	std::shared_ptr<Tile> getPathfindingTile(
+		Map &map,
+		const std::shared_ptr<Creature> &creature,
+		const std::shared_ptr<Tile> &creatureTile,
+		const Position &pos,
+		MapCacheFloorCursor &floorCursor
+	) {
+		const auto &tile = map.getTileWithFloorCursor(pos.x, pos.y, pos.z, floorCursor);
+		if (creatureTile != tile) {
+			if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
+				return nullptr;
+			}
+		}
+
+		return tile;
+	}
+}
+
 void Map::load(const std::string &identifier, const Position &pos) {
 	try {
 		path = identifier;
@@ -205,6 +226,43 @@ std::shared_ptr<Tile> Map::getTile(uint16_t x, uint16_t y, uint8_t z) {
 	return getOrCreateTileFromCache(floor, x, y);
 }
 
+std::shared_ptr<Tile> Map::getTileWithFloorCursor(uint16_t x, uint16_t y, uint8_t z, MapCacheFloorCursor &floorCursor) {
+	// Check if the coordinates are valid
+	if (x == 0 && y == 0 && z == 0) {
+		return nullptr;
+	}
+
+	if (z >= MAP_MAX_LAYERS) {
+		return nullptr;
+	}
+
+	const auto sectorIndex = static_cast<uint32_t>(x / SECTOR_SIZE) | (static_cast<uint32_t>(y / SECTOR_SIZE) << 16);
+	std::shared_ptr<Floor> floor;
+
+	if (floorCursor.valid && floorCursor.sectorIndex == sectorIndex && floorCursor.z == z) {
+		floor = floorCursor.floor;
+	}
+
+	if (!floor) {
+		const auto &sector = getMapSector(x, y);
+		if (!sector) {
+			return nullptr;
+		}
+
+		floor = sector->getFloor(z);
+		if (!floor) {
+			return nullptr;
+		}
+
+		floorCursor.valid = true;
+		floorCursor.sectorIndex = sectorIndex;
+		floorCursor.z = z;
+		floorCursor.floor = floor;
+	}
+
+	return getOrCreateTileFromCache(floor, x, y);
+}
+
 void Map::refreshZones(uint16_t x, uint16_t y, uint8_t z) {
 	const auto &tile = getLoadedTile(x, y, z);
 	if (!tile) {
@@ -238,7 +296,7 @@ bool Map::placeCreature(
 	bool forceLogin /* = false*/,
 	const std::shared_ptr<Tile> &centerTile /* = nullptr */
 ) {
-	const auto &monster = creature ? creature->getMonster() : nullptr;
+	auto* monster = creature ? creature->getMonsterRaw() : nullptr;
 	if (monster) {
 		monster->ignoreFieldDamage = true;
 	}
@@ -465,10 +523,10 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	auto events = [=] {
+	auto events = [creature, oldTile, newTile] {
 		oldTile->postRemoveNotification(creature, newTile, 0);
 		newTile->postAddNotification(creature, oldTile, 0);
-		g_game().afterCreatureZoneChange(creature, fromZones, toZones);
+		g_game().afterCreatureZoneChange(creature, oldTile->getZones(), newTile->getZones());
 	};
 
 	if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
@@ -479,7 +537,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 	}
 
 	if (forceTeleport) {
-		if (const auto &player = creature->getPlayer()) {
+		if (auto* player = creature->getPlayerRaw()) {
 			player->sendMagicEffect(oldPos, CONST_ME_TELEPORT);
 			player->sendMagicEffect(newPos, CONST_ME_TELEPORT);
 		}
@@ -675,14 +733,8 @@ std::shared_ptr<Tile> Map::canWalkTo(const std::shared_ptr<Creature> &creature, 
 		return nullptr;
 	}
 
-	const auto &tile = getTile(pos.x, pos.y, pos.z);
-	if (creature->getTile() != tile) {
-		if (!tile || tile->queryAdd(0, creature, 1, FLAG_PATHFINDING | FLAG_IGNOREFIELDDAMAGE) != RETURNVALUE_NOERROR) {
-			return nullptr;
-		}
-	}
-
-	return tile;
+	MapCacheFloorCursor floorCursor;
+	return getPathfindingTile(*this, creature, creature->getTile(), pos, floorCursor);
 }
 
 bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Position &_targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
@@ -702,11 +754,17 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 	};
 
 	const bool withoutCreature = creature == nullptr;
+	if (!withoutCreature && creature->isRemoved()) {
+		return false;
+	}
 
 	Position pos = withoutCreature ? _targetPos : creature->getPosition();
 	Position endPos;
+	MapCacheFloorCursor floorCursor;
 
-	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+	const auto creatureTile = withoutCreature ? std::shared_ptr<Tile>() : creature->getTile();
+	const auto startTile = withoutCreature || !creatureTile ? getTileWithFloorCursor(pos.x, pos.y, pos.z, floorCursor) : creatureTile;
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, startTile));
 
 	int32_t bestMatch = 0;
 
@@ -786,7 +844,7 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, const Posit
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto &tile = withoutCreature ? getTile(pos.x, pos.y, pos.z) : canWalkTo(creature, pos);
+				const auto &tile = withoutCreature ? getTileWithFloorCursor(pos.x, pos.y, pos.z, floorCursor) : getPathfindingTile(*this, creature, creatureTile, pos, floorCursor);
 				if (!tile) {
 					continue;
 				}
@@ -869,10 +927,17 @@ bool Map::getPathMatching(const std::shared_ptr<Creature> &creature, std::vector
 }
 
 bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp) {
+	if (!creature || creature->isRemoved()) {
+		return false;
+	}
+
 	Position pos = creature->getPosition();
 	Position endPos;
+	MapCacheFloorCursor floorCursor;
 
-	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, getTile(pos.x, pos.y, pos.z)));
+	const auto creatureTile = creature->getTile();
+	const auto startTile = creatureTile ? creatureTile : getTileWithFloorCursor(pos.x, pos.y, pos.z, floorCursor);
+	AStarNodes nodes(pos.x, pos.y, AStarNodes::getTileWalkCost(creature, startTile));
 
 	int32_t bestMatch = 0;
 
@@ -973,7 +1038,7 @@ bool Map::getPathMatchingCond(const std::shared_ptr<Creature> &creature, const P
 			if (neighborNode) {
 				extraCost = neighborNode->c;
 			} else {
-				const auto &tile = Map::canWalkTo(creature, pos);
+				const auto &tile = getPathfindingTile(*this, creature, creatureTile, pos, floorCursor);
 				if (!tile) {
 					continue;
 				}

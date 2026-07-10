@@ -23,12 +23,29 @@ struct Floor {
 	using TileGrid = std::array<std::array<std::shared_ptr<Tile>, SECTOR_SIZE>, SECTOR_SIZE>;
 	using BasicTileGrid = std::array<std::array<const BasicTile*, SECTOR_SIZE>, SECTOR_SIZE>;
 
+	struct TileAndCache {
+		std::shared_ptr<Tile> tile;
+		const BasicTile* cachedTile = nullptr;
+	};
+
 	explicit Floor(uint8_t z) :
 		z(z) { }
 
 	std::shared_ptr<Tile> getTile(uint16_t x, uint16_t y) const {
 		std::shared_lock<std::shared_mutex> sl(mutex);
 		return tiles[x & SECTOR_MASK][y & SECTOR_MASK];
+	}
+
+	// Reads both slots under one shared lock; callers must materialize cached
+	// tiles after this lock has been released.
+	TileAndCache getTileAndCache(uint16_t x, uint16_t y) const {
+		std::shared_lock<std::shared_mutex> sl(mutex);
+		const auto maskedX = x & SECTOR_MASK;
+		const auto maskedY = y & SECTOR_MASK;
+		return {
+			.tile = tiles[maskedX][maskedY],
+			.cachedTile = tileCache[maskedX][maskedY],
+		};
 	}
 
 	void setTile(uint16_t x, uint16_t y, std::shared_ptr<Tile> tile) {

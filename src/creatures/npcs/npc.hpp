@@ -43,6 +43,14 @@ public:
 		return this;
 	}
 
+	/**
+	 * Assigns a process-local monotonic NPC runtime ID.
+	 *
+	 * NPC IDs are not reused during normal runtime, so short delayed dispatcher
+	 * follow-up work may carry the ID and re-resolve through `Game` instead of
+	 * keeping an extra strong reference alive. Long-lived storage still needs an
+	 * explicit ownership or handle contract.
+	 */
 	void setID() override;
 
 	void removeList() override;

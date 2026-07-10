@@ -26,14 +26,17 @@
 // --------------------
 
 #include <atomic>
+#include <array>
 #include <bitset>
 #include <charconv>
 #include <cstdint>
 #include <cstddef>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
 #include <functional>
+#include <iterator>
 #include <limits>
 #include <list>
 #include <map>

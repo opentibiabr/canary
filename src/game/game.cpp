@@ -7505,10 +7505,17 @@ void Game::addCreatureCheck(const std::shared_ptr<Creature> &creature) {
 		return;
 	}
 
-	const bool accepted = g_dispatcher().addEvent([this, index = uniform_random(0, EVENT_CREATURECOUNT - 1), creature = std::weak_ptr<Creature>(creature)] {
+	auto commit = [this, creature = std::weak_ptr<Creature>(creature)] {
+		const auto index = uniform_random(0, EVENT_CREATURECOUNT - 1);
 		checkCreatureLists[index].emplace_back(creature);
-	},
-	                                              "Game::addCreatureCheck");
+	};
+	const auto &dispatcherContext = g_dispatcher().context();
+	if (dispatcherContext.getType() != DispatcherType::None && !dispatcherContext.isBarrierParallel()) {
+		commit();
+		return;
+	}
+
+	const bool accepted = g_dispatcher().addEvent(std::move(commit), "Game::addCreatureCheck");
 	if (!accepted) {
 		creature->inCheckCreaturesVector.store(false);
 	}

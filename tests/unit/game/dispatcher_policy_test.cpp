@@ -115,6 +115,22 @@ TEST(DispatcherPolicyTest, RotatesProducersWhilePreservingEachProducerFifo) {
 	EXPECT_EQ(DispatcherPolicy::selectProducerFairIndex(tasks, 15), 2);
 }
 
+TEST(DispatcherAdmissionCounterTest, RejectsAtCapacityAndRecoversAfterRelease) {
+	DispatcherAdmissionCounter counter;
+
+	EXPECT_TRUE(counter.tryReserve(2));
+	EXPECT_TRUE(counter.tryReserve(2));
+	EXPECT_FALSE(counter.tryReserve(2));
+	EXPECT_EQ(counter.size(), 2);
+
+	EXPECT_TRUE(counter.release());
+	EXPECT_TRUE(counter.tryReserve(2));
+	EXPECT_EQ(counter.size(), 2);
+	EXPECT_TRUE(counter.release());
+	EXPECT_TRUE(counter.release());
+	EXPECT_FALSE(counter.release());
+}
+
 TEST(DispatcherPolicyTest, CoalescesPendingTicksAndPreservesTheOldestReadyTime) {
 	const auto firstReadyAt = CoalescedTaskState::TimePoint(10s);
 	const auto replacementReadyAt = firstReadyAt + 5s;

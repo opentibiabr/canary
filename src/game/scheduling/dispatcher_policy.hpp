@@ -32,6 +32,36 @@ struct DispatcherQueueSnapshot {
 	std::string_view oldestContext;
 };
 
+class DispatcherAdmissionCounter final {
+public:
+	[[nodiscard]] bool tryReserve(size_t capacity) {
+		auto current = reserved.load(std::memory_order_relaxed);
+		while (current < capacity) {
+			if (reserved.compare_exchange_weak(current, current + 1, std::memory_order_acq_rel, std::memory_order_relaxed)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	[[nodiscard]] bool release() {
+		auto current = reserved.load(std::memory_order_relaxed);
+		while (current > 0) {
+			if (reserved.compare_exchange_weak(current, current - 1, std::memory_order_acq_rel, std::memory_order_relaxed)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	[[nodiscard]] size_t size() const {
+		return reserved.load(std::memory_order_relaxed);
+	}
+
+private:
+	std::atomic_size_t reserved = 0;
+};
+
 class CoalescedTaskState {
 public:
 	using Clock = std::chrono::steady_clock;

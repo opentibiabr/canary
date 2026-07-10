@@ -69,23 +69,38 @@ public:
 	}
 
 	void setLane(DispatcherLane lane) {
+		if (dispatcherSlotReserved) {
+			return;
+		}
 		meta.lane = lane;
 		meta.executionMode = defaultExecutionMode(lane);
 	}
 
 	void setExecutionMode(ExecutionMode executionMode) {
+		if (dispatcherSlotReserved) {
+			return;
+		}
 		meta.executionMode = executionMode;
 	}
 
 	void setProducerToken(uint64_t producerToken) {
+		if (dispatcherSlotReserved) {
+			return;
+		}
 		meta.producerToken = producerToken;
 	}
 
 	void setGeneration(uint64_t generation) {
+		if (dispatcherSlotReserved) {
+			return;
+		}
 		meta.generation = generation;
 	}
 
 	void setEstimatedCost(uint32_t estimatedCost) {
+		if (dispatcherSlotReserved) {
+			return;
+		}
 		meta.estimatedCost = std::clamp<uint32_t>(estimatedCost, 1, DISPATCHER_MAX_TASK_COST);
 	}
 
@@ -166,6 +181,8 @@ private:
 	uint32_t delay = 0;
 	bool cycle = false;
 	bool log = true;
+	bool dispatcherSlotReserved = false;
+	DispatcherLane reservedLane = DispatcherLane::WorldCommit;
 
 	friend class Dispatcher;
 };

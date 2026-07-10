@@ -33,7 +33,7 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 }
 
 bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
-	g_dispatcher().addProtocolEvent(
+	const bool accepted = g_dispatcher().addProtocolEvent(
 		[&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
 			if (const auto &protocol = protocolWeak.lock()) {
 				if (const auto &protocolConnection = protocol->getConnection()) {
@@ -45,8 +45,13 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 		__FUNCTION__,
 		reinterpret_cast<uintptr_t>(this)
 	);
+	if (!accepted) {
+		if (const auto &connection = getConnection()) {
+			connection->close(FORCE_CLOSE);
+		}
+	}
 
-	return true;
+	return accepted;
 }
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {

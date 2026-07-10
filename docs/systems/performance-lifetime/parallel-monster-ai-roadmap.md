@@ -12,10 +12,104 @@ Workers may compute candidates and intentions.
 The dispatcher remains the single writer for gameplay state.
 ```
 
-This is a target architecture, not a description of every current
-`WalkParallel` call path. Existing barrier-parallel creature work still mutates
-some creature and monster-local AI state. It must be audited and migrated before
-it can run concurrently with dispatcher world mutation.
+The implementation described below is code-complete, but that does not make it
+production-approved. Existing barrier-parallel creature work still mutates some
+creature and monster-local AI state. It remains bounded behind a barrier and
+must not overlap dispatcher world commits until each remaining mutable call
+graph is migrated to an immutable request/result contract.
+
+## Implementation status
+
+The roadmap was implemented as one review branch with independently revertible
+commits. There is no feature flag or alternate scheduler fallback. Rollback must
+revert the first failing behavioral commit and every later commit that depends
+on it.
+
+| Area | Implemented state |
+| --- | --- |
+| Measurement | `Task` uses a monotonic ready timestamp. Dispatcher telemetry separates queue wait, scheduled lateness, task runtime, lane runtime, barrier runtime, internal work, and worker completion age. The policy and clock-dependent logic are unit-testable. |
+| Movement fairness | Player walk, visible creature walk, barrier monster AI, deferred gameplay, and world commits use distinct lanes. Player, bed, push, autowalk, protocol, and scheduled movement producers are classified explicitly. |
+| Bounded compatibility work | Visible creature walk, barrier tasks, deferred work, worker completions, and work inside creature buckets have per-pass or per-slice limits. `BarrierParallel` still waits before dispatcher commits continue. |
+| Cadence and coalescing | Monster movement refresh and post-think work keep at most one pending request per monster/work kind, preserve the oldest ready time, and never replay missed attack or movement ticks as a burst. |
+| Compute service | A dedicated `std::jthread` pool has bounded visible/background request queues, a bounded completion queue, a 3:1 visible/background policy, cancellation, token accounting, and dispatcher wakeup without workers calling gameplay APIs. |
+| Navigation reads | Lazy immutable 16x16 sector snapshots separate topology and occupancy revisions. Topology changes invalidate a result. Occupancy changes remain a hint because every committed step is checked again on the dispatcher. |
+| Follow pathfinding | Monster follow paths with search radius up to 12 can run from immutable `NavCell` and `MonsterPathTraits` values. The dispatcher re-resolves IDs/generations and commits each step only through existing movement legality APIs. |
+| AI intention | Workers rank copied target candidates only. Target mutation, final selection, relevance, and gameplay RNG remain on the dispatcher. Requests are latest-only and capped at 256 candidates. |
+| Combat intention | Workers return geometrically eligible spell indices only. The dispatcher repeats target, floor, range, line-of-sight, zone, cooldown, reload-epoch, and generation checks before RNG, Lua, damage, effects, or conditions. Requests are latest-only and capped at 256 spells. |
+| Relevance and control | Immutable relevance values with temporal hysteresis affect queue weight only. Adaptive budgets use player-visible p99/oldest age, 50 ms SLO, 100 ms emergency threshold, lane minimums, and four healthy windows before relaxation. |
+| Final scheduler | Fixed group draining and the legacy group abstraction were removed. Due scheduled tasks enter classified lanes. Weighted deficit round robin, aging, producer round robin, and bounded completion draining now choose ready work. |
+| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Saturation rejects explicitly, logs queued/rejected counts, and closes a connection when protocol input cannot be admitted. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens. |
+
+### Production gate status
+
+Implementation completion is not an acceptance result. Before merge or
+production rollout, all of the following remain mandatory:
+
+- Run the supported release build and unit-test workflow on Windows and Linux.
+- Run movement, pathfinding, AI, combat, reload, shutdown, and saturation
+  integration suites listed later in this document.
+- Record production-like hunt p50, p95, and p99 separately from the artificial
+  all-monsters-active stress workload.
+- Keep added player-visible p99 at or below 50 ms in the accepted hunt workload
+  and below 100 ms in the stress workload.
+- Keep stale paths below 20%, compute saturation below 1%, and all queue/memory
+  growth within the documented hard bounds.
+- Promote behavioral commits in dependency order and hold each checkpoint for
+  at least 72 hours in canary. Stop promotion and revert the failing checkpoint
+  when any gate fails.
+- Keep `monsterPerfTestForceActive` and `monsterPerfTestFriendlyFire` disabled
+  outside controlled benchmarks.
+
+The implementation session intentionally did not run builds or executable
+tests because repository policy requires explicit authorization. Static checks
+and source formatting do not replace these gates.
+
+## Implemented scheduler model
+
+`TaskMeta` carries `DispatcherLane`, `ExecutionMode`, producer token, monotonic
+`readyAt`, generation, and estimated cost. Metadata is frozen after admission.
+Estimated cost is clamped to 1 through 32.
+
+| Lane | Mode | Base quantum | Default pass limit |
+| --- | --- | ---: | ---: |
+| `ProtocolInput` | `Serial` | 8 | 256 tasks |
+| `PlayerWalk` | `Serial` | 8 | 256 tasks |
+| `PlayerAction` | `Serial` | 6 | 256 tasks |
+| `WorldCommit` | `Serial` | 6 | 256 tasks |
+| `WorkerCompletion` | `BackgroundCompletion` | 4 | `workerCompletionsPerPass` |
+| `VisibleMonster` | `Serial` | 4 | `creatureWalkTasksPerPass` |
+| `MonsterAI` | `BarrierParallel` | 2 | `walkParallelTasksPerPass` |
+| `Deferred` | `Serial` | 2 | `deferredGameplayTasksPerPass` |
+| `Maintenance` | `Serial` | 1 | 16 tasks |
+| `GenericParallel` | `BarrierParallel` | 1 | `walkParallelTasksPerPass` |
+
+The scheduler consumes a lane's deficit before advancing. When oldest ready age
+reaches the SLO, the lane quantum doubles up to 32. `ProtocolInput`,
+`PlayerWalk`, and `PlayerAction` rotate over active producer tokens while
+preserving FIFO inside each producer. Non-player-visible serial lanes share a
+cumulative `dispatcherSliceDurationMs` runtime limit for the pass. Scheduled
+callbacks reserve the same lane capacity as immediate work and are promoted only
+when due.
+
+### Runtime defaults
+
+| Setting | Default | Reload contract |
+| --- | ---: | --- |
+| `creatureWalkTasksPerPass` | 128 | Applies after config reload |
+| `walkParallelTasksPerPass` | 8 | Applies after config reload |
+| `creatureAsyncTasksPerBucket` | 16 | Applies after config reload |
+| `deferredGameplayTasksPerPass` | 16 | Applies after config reload |
+| `workerCompletionsPerPass` | 64 | Applies after config reload |
+| `dispatcherSliceDurationMs` | 2 | Applies after config reload |
+| `dispatcherSloMs` | 50 | Applies after config reload |
+| `dispatcherEmergencyMs` | 100 | Applies after config reload |
+| `monsterComputeThreads` | 0 | Requires restart |
+| `monsterComputeQueueCapacity` | 2048 | Requires restart; hard maximum 2048 |
+
+With `monsterComputeThreads = 0`, hosts with at most two hardware threads run
+the same request/completion algorithm inline. Larger hosts use
+`clamp((hardware_concurrency - 2) / 2, 1, 4)` dedicated workers. Worker count and
+queue capacity are fixed when the service starts.
 
 ## Problem statement
 
@@ -27,35 +121,36 @@ callbacks.
 
 Existing performance-lifetime work already reduced several hot costs:
 
-- Creature async work is bucketed into `TaskGroup::WalkParallel`.
-- Monster post-think follow-up runs through budgeted `TaskGroup::DeferredGameplay`.
+- Creature async work is bucketed into the `MonsterAI` lane in
+  `BarrierParallel` mode.
+- Monster post-think follow-up runs through the budgeted `Deferred` lane.
 - Pathfinding and tile lookup reuse scoped local cursors.
 - Monster target lists and condition checks avoid some repeated weak-lock and
   scan costs.
 - Monster movement AI refresh is coalesced for internal bookkeeping.
 
 The remaining architecture issue is not only CPU throughput. It is queue
-fairness and player-visible latency. `WalkParallel` runs work on multiple
-threads, but the dispatcher still waits for the parallel batch to finish before
-continuing. `TaskGroup::Walk` also still mixes player-visible walk with generic
-creature walk in some paths.
+fairness and player-visible latency. `BarrierParallel` runs work on multiple
+threads, but the dispatcher still waits for the selected batch to finish before
+continuing. Player-visible walk and generic creature walk now use `PlayerWalk`
+and `VisibleMonster`, respectively.
 
 ## Current execution model
 
 Canary already uses multiple CPU cores. The shared `ThreadPool` defaults to
 `std::thread::hardware_concurrency()`, the dispatcher runs as a long-lived task
-in that pool, and `Dispatcher::asyncWait` partitions parallel groups across the
+in that pool, and `Dispatcher::asyncWait` partitions parallel slices across the
 dispatcher thread and available workers.
 
-`WalkParallel` is therefore parallel for throughput, but it is still a
+`BarrierParallel` is therefore parallel for throughput, but it is still a
 dispatcher barrier:
 
 ```text
-dispatcher starts WalkParallel batch
+dispatcher starts BarrierParallel batch
   -> dispatcher executes one partition
   -> worker threads execute the other partitions
   -> dispatcher waits for every partition
-  -> dispatcher advances to Serial and later groups
+  -> dispatcher advances to serial world commits and later lanes
 ```
 
 The barrier currently has two effects:
@@ -76,12 +171,12 @@ gameplay:
 ```text
 Dispatcher code owns world commits.
 Audited actor-local AI mutation may run in a barrier-parallel phase.
-The dispatcher does not overlap that phase with later gameplay groups.
+The dispatcher does not overlap that phase with later gameplay lanes.
 ```
 
 This barrier reduces overlap; it is not proof that every existing async field
 access is race-free. New work must not remove the wait or detach current
-`WalkParallel` tasks without first replacing mutable reads and writes with an
+`BarrierParallel` tasks without first replacing mutable reads and writes with an
 explicit ownership, snapshot, or synchronization contract.
 
 ## Design principles
@@ -109,7 +204,7 @@ explicit ownership, snapshot, or synchronization contract.
 ## Non-goals
 
 - Do not rewrite the whole dispatcher as the first step.
-- Do not remove the `WalkParallel` wait as a shortcut to concurrency.
+- Do not remove the `BarrierParallel` wait as a shortcut to concurrency.
 - Do not move Lua execution to worker threads.
 - Do not run `Map::moveCreature`, `Game::internalMoveCreature`, combat damage
   application, tile notifications, zone changes, or client sends from worker
@@ -124,7 +219,7 @@ explicit ownership, snapshot, or synchronization contract.
 
 ### Execution mode A: barrier-parallel compatibility
 
-This is the current `WalkParallel` model. The dispatcher starts a bounded wave,
+This is the current `BarrierParallel` model. The dispatcher starts a bounded wave,
 participates in it, waits for all partitions, and only then advances.
 
 Rules:
@@ -235,12 +330,26 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
 - Bound dispatcher completion processing per pass.
 - Reject, replace, or defer new jobs when a queue is full. Never allow an
   unbounded queue to become the overload policy.
+- Dispatcher immediate and scheduled work share a hard 16,384-slot cap per
+  lane. A canceled timer keeps its slot until the canceled entry is consumed so
+  delayed wrappers cannot exceed the physical bound.
+- Protocol ingress rejection closes the connection instead of dropping a packet
+  while leaving its paused message buffer unresolved.
+- The compute service accepts at most 2,048 outstanding request/completion
+  tokens. A token is released only when its completion is consumed or shutdown
+  cancels the request.
+- Target, path, and combat requests are latest-only per monster and kind. A full
+  compute queue rejects the request and returns control to the dispatcher; it
+  never creates an unbounded fallback queue.
 - Leave CPU headroom for the dispatcher, network, database, and operating
   system. Do not assume all hardware threads should run monster AI.
 
 ## Roadmap
 
 ### Phase 0: measurement and guardrails
+
+Status: implemented in code; production baselines and executable validation are
+still pending.
 
 Priority: highest.
 
@@ -252,11 +361,11 @@ Work:
 - Build a deterministic dispatcher test harness with an injectable clock or
   equivalent control over enqueue time, due time, and execution order.
 - Track queue depth, enqueue-to-start age, oldest age, and oldest context per
-  dispatcher group.
+  dispatcher lane.
 - Track scheduled-event lateness as `actualStart - dueTime`. Player walk may be
-  late before `Creature::onCreatureWalk` creates a `Walk` task, so `Walk` queue
-  age alone is not sufficient.
-- Track per-group wall time, parallel-barrier wall time, longest task, and long
+  late before `Creature::onCreatureWalk` creates a `PlayerWalk` task, so
+  `PlayerWalk` queue age alone is not sufficient.
+- Track per-lane wall time, parallel-barrier wall time, longest task, and long
   task context.
 - Track nested work units in addition to task count:
   - creatures processed by each async bucket task;
@@ -282,7 +391,7 @@ Work:
   - dispatcher idle and busy time.
 - Keep startup backlog out of runtime telemetry.
 - Use `std::chrono::steady_clock` or the existing latency metrics for sub-cycle
-  runtime. Do not use cached `OTSYS_TIME()` to measure a group or task inside one
+  runtime. Do not use cached `OTSYS_TIME()` to measure a lane or task inside one
   dispatcher cycle.
 - Record separate p50, p95, and p99 baselines for a production-like hunt and
   the artificial all-monsters-active stress profile. Set numeric SLOs from the
@@ -290,12 +399,12 @@ Work:
 
 Acceptance:
 
-- A profile can show whether latency was spent waiting in `Serial`, waiting for
-  a scheduled walk event, executing `Walk`, waiting at the `WalkParallel`
-  barrier, or committing movement.
-- A slow `WalkParallel` wave identifies both the outer task count and the inner
+- A profile can show whether latency was spent waiting in `WorldCommit`, waiting
+  for a scheduled walk event, executing `PlayerWalk`, waiting at a
+  `BarrierParallel` barrier, or committing movement.
+- A slow `BarrierParallel` wave identifies both the outer task count and the inner
   creature work that caused it.
-- Deterministic tests cover FIFO within a group, expiration, continuation,
+- Deterministic tests cover FIFO within a lane and producer, expiration, continuation,
   requeue, scheduled due order, and no task loss after a budgeted slice.
 - A production-like hunt profile and the artificial monster stress profile are
   recorded separately.
@@ -319,6 +428,8 @@ Mitigation:
 
 ### Phase 1: bounded fairness in the current barrier model
 
+Status: implemented. The compatibility barrier remains intentionally intact.
+
 Priority: highest.
 
 Goal: protect player-visible walk and serial protocol work from unbounded
@@ -326,25 +437,25 @@ monster movement batches without removing the synchronization barrier.
 
 Work:
 
-- Separate task priority from movement-phase semantics. Introduce audited
-  predicates or context helpers such as `isMovementCommitGroup()` instead of
-  relying on exact `TaskGroup::Walk` comparisons.
-- Update every behavior that currently depends on the walk group, including:
+- Separate task priority from movement-phase semantics. Use audited predicates
+  such as `isMovementCommit()`, `isBarrierParallel()`, and `isPlayerVisible()`
+  instead of relying on a concrete queue identifier.
+- Update every behavior that currently depends on movement classification, including:
   - deferred tile post notifications and zone changes in `Map::moveCreature`;
   - coalesced movement AI refresh in `Monster::onCreatureMove`;
   - monster push-creature behavior;
   - async context and `safeCall` assumptions.
 - Separate player-visible walk from generic creature walk.
-- Keep player walk and server-side player autowalk retries on the walk lane.
+- Keep player walk and server-side player autowalk retries on `PlayerWalk`.
 - Route non-player creature walk through a distinct creature-walk lane or an
   equivalent budgeted path.
 - Audit every direct `addWalkEvent` call instead of assuming all calls originate
   from `Creature::onCreatureWalk`. Bed movement, player push, autowalk retry,
   and monster push follow different gameplay contracts.
 - Execute creature walk with a fixed per-pass budget.
-- Execute `WalkParallel` in bounded slices instead of draining all pending
+- Execute `BarrierParallel` work in bounded slices instead of draining all pending
   tasks before the dispatcher can continue.
-- Keep the wait for each selected `WalkParallel` slice. This phase reduces the
+- Keep the wait for each selected `BarrierParallel` slice. This phase reduces the
   maximum barrier; it does not make current mutable async work concurrent with
   the dispatcher.
 - Bound work inside each `Creature::processAsyncTaskBucket` task. A slice of
@@ -353,7 +464,7 @@ Work:
 - Check an elapsed-time or work-unit limit between creatures and requeue a
   continuation. Time checks do not preempt one creature call graph, so long
   individual tasks must still be split at explicit safe points.
-- Keep `DeferredGameplay` budgeted and tune only from measured latency.
+- Keep `Deferred` budgeted and tune only from measured latency.
 - Measure due player-walk event lateness. If it exceeds the player SLO, add a
   classified scheduled-walk path that can become runnable before the next
   monster barrier without executing arbitrary scheduled callbacks early.
@@ -363,9 +474,9 @@ Work:
 Acceptance:
 
 - Player walk no longer shares an unbounded queue with general creature walk.
-- `WalkParallel` cannot monopolize one dispatcher pass.
-- Remaining `WalkParallel` work is preserved and continues in later passes.
-- A new creature-walk group preserves the old movement deferral, notification,
+- `BarrierParallel` cannot monopolize one dispatcher pass.
+- Remaining barrier work is preserved and continues in later passes.
+- The `VisibleMonster` lane preserves the old movement deferral, notification,
   coalescing, and `safeCall` behavior.
 - Player scheduled-walk lateness and protocol input queue age stay within the
   recorded production SLO.
@@ -374,10 +485,10 @@ Acceptance:
 Risks:
 
 - Too low a creature-walk budget can make monsters move in visible waves.
-- Changing task group order can alter same-tick behavior.
-- Existing async context checks may depend on `TaskGroup::WalkParallel`.
-- Code that tests exactly `TaskGroup::Walk` can silently take a different path
-  after the lane split.
+- Changing lane order can alter same-tick behavior.
+- Existing async context checks may depend on barrier execution semantics.
+- Code that infers movement semantics from a concrete lane can silently take a
+  different path after lane classification changes.
 - A task-count budget can hide expensive nested work.
 
 Mitigation:
@@ -389,6 +500,9 @@ Mitigation:
 - Keep changes narrow and measure queue age before tuning.
 
 ### Phase 2: static backpressure and cadence control
+
+Status: implemented for movement refresh, post-think, latest-only worker kinds,
+lane admission, and no-catch-up attack/movement semantics.
 
 Priority: high.
 
@@ -445,6 +559,9 @@ Mitigation:
 - Test attack cadence and condition cadence independently.
 
 ### Phase 3: worker substrate, payloads, and immutable read contracts
+
+Status: implemented with a dedicated bounded compute service and immutable
+navigation snapshots.
 
 Priority: high after Phase 1 and Phase 2 are stable.
 
@@ -541,6 +658,8 @@ Mitigation:
 
 ### Phase 4: parallel path candidate jobs
 
+Status: implemented for bounded monster follow paths with radius up to 12.
+
 Priority: high after Phase 3.
 
 Goal: move expensive path candidate computation off the dispatcher while
@@ -583,6 +702,9 @@ Mitigation:
 
 ### Phase 5: parallel monster AI intention jobs
 
+Status: implemented for copied target-candidate ranking. Final selection and all
+mutation remain dispatcher-owned.
+
 Priority: medium.
 
 Goal: move heavier monster decision work off the dispatcher without applying
@@ -595,7 +717,7 @@ Work:
 - Keep target-list mutation, final target selection, follow-state mutation, and
   random gameplay choices on the dispatcher.
 - Migrate one audited call graph at a time. Existing mutable
-  `WalkParallel` AI remains barrier-parallel until its inputs and outputs are
+  `BarrierParallel` AI remains behind the barrier until its inputs and outputs are
   converted.
 - Coalesce multiple invalidations into one pending generation per monster.
 - Use cheap existing relevance state where possible. Do not perform a new
@@ -625,6 +747,9 @@ Mitigation:
 - Apply minimum service and aging to every background lane.
 
 ### Phase 6: monster combat intention split
+
+Status: implemented for pure spell geometry. Combat legality, RNG, Lua,
+cooldowns, and effects remain dispatcher-owned.
 
 Priority: medium-low.
 
@@ -674,6 +799,10 @@ Mitigation:
 
 ### Phase 7: spectator and relevancy snapshots
 
+Status: implemented for immutable relevance snapshots and hysteresis. A general
+cross-event spectator cache was deliberately not added because it is not needed
+for the current worker contracts and still requires separate measurement.
+
 Priority: medium-low.
 
 Goal: reduce repeated spectator work and provide cheap relevance hints without
@@ -719,6 +848,9 @@ Mitigation:
 - Revalidate all gameplay legality on the dispatcher.
 
 ### Phase 8: adaptive budgets and aging
+
+Status: implemented with static bounds, SLO/emergency thresholds, hysteresis,
+lane minimums, and WDRR aging.
 
 Priority: medium-low.
 
@@ -766,6 +898,10 @@ Mitigation:
 
 ### Phase 9: dispatcher lane rework
 
+Status: implemented. The legacy group abstraction and obsolete async wrappers
+were removed only after lane classification was complete. Focused enqueue
+wrappers remain as lane-classification APIs.
+
 Priority: last.
 
 Goal: replace fixed group draining with an explicit latency/fairness scheduler.
@@ -780,38 +916,37 @@ phases will have produced:
 - Scheduled-event lateness and classification.
 - Known budgets and workload classes.
 
-Candidate lane model:
+Implemented lane model:
 
-- `ProtocolCritical`
+- `ProtocolInput`
 - `PlayerWalk`
 - `PlayerAction`
 - `WorldCommit`
-- `VisibleCombat`
-- `MonsterCombat`
+- `WorkerCompletion`
+- `VisibleMonster`
 - `MonsterAI`
-- `MonsterPathfinding`
-- `MonsterDeferred`
-- `ScheduledCritical`
+- `Deferred`
 - `Maintenance`
 - `GenericParallel`
 
 Scheduling policy:
 
-- Weighted round robin or deficit round robin by lane.
+- Weighted deficit round robin by lane and estimated task cost.
 - Aging based on oldest enqueue time.
-- Actor-level fairness or admission control inside player-produced lanes.
+- Producer-token round robin inside protocol and player-produced lanes.
 - Explicit minimum progress for monster lanes.
-- Emergency protection for player-visible lanes.
+- SLO and emergency protection for player-visible lanes with hysteresis.
 - Budgeted worker completion processing.
-- Classified due scheduled work instead of one unbounded scheduled phase after
-  all gameplay groups.
+- Classified due scheduled work instead of one unbounded scheduled phase.
+- Hard lane admission and explicit saturation rejection.
 - No unbounded parallel batch barrier before player-visible work.
 
 Acceptance:
 
 - The scheduler can express latency targets and progress guarantees directly.
 - Player-visible work is protected without starving monsters.
-- The old task groups can be migrated incrementally.
+- The legacy group abstraction and obsolete async wrappers have no remaining
+  source callsites.
 - Same-tick gameplay contracts are documented where they must remain stable.
 
 Risks:
@@ -819,27 +954,25 @@ Risks:
 - High blast radius across protocol, movement, combat, Lua, scheduler, and
   shutdown behavior.
 - Same-tick ordering changes can create subtle gameplay regressions.
-- Existing code may infer behavior from the old `TaskGroup` order.
+- Pre-migration code may still infer behavior from old fixed-drain ordering.
 - Moving scheduled callbacks earlier can violate same-tick assumptions.
 
 Mitigation:
 
-- Do not start here.
-- Migrate one lane at a time.
-- Keep compatibility wrappers for old `addEvent`, `addWalkEvent`,
-  `asyncEvent`, and `addDeferredGameplayEvent` APIs.
-- Add integration tests and queue-latency acceptance tests before removing old
-  group behavior.
+- Keep the implementation commits independently revertible.
+- Do not remove the compatibility barrier from mutable actor-local work.
+- Require integration tests and queue-latency acceptance before production
+  rollout.
 
-## Recommended change sets
+## Implementation commit sequence
 
-Keep the implementation history reviewable. Do not combine all early fairness
-work into one large patch.
+Keep the implementation in one review branch and one pull request, with each
+step as an independently reviewable and revertible commit.
 
 1. Metrics and deterministic dispatcher tests, with no scheduling change.
-2. Movement-context predicates and an audit of exact `TaskGroup::Walk` checks.
+2. Movement-context predicates and an audit of concrete movement-lane checks.
 3. Player-walk and creature-walk lane split with behavior-preserving routing.
-4. Bounded `WalkParallel` outer slices and bounded inner creature-bucket work.
+4. Bounded barrier outer slices and bounded inner creature-bucket work.
 5. Static backpressure, post-think cadence, and no-catch-up rules.
 6. Worker request/completion substrate and shutdown tests with a synthetic job.
 7. Immutable spatial read model and parallel path candidates.
@@ -850,15 +983,16 @@ work into one large patch.
 
 ## Worker pool sizing
 
-Canary already creates its shared pool from hardware concurrency by default,
-and the dispatcher occupies one long-lived pool task. Existing
-`WalkParallel` waves use the remaining workers while the dispatcher executes
-one partition and waits.
+Canary creates its shared pool from hardware concurrency by default, and the
+dispatcher occupies one long-lived shared-pool task. Barrier-parallel waves use
+the remaining shared-pool workers while the dispatcher executes one partition
+and waits.
 
-Adding a second pool without reducing or reserving capacity can oversubscribe
-the machine. Adding detached monster jobs to the shared pool can instead starve
-database, save, webhook, or other pool users. Pool topology is therefore part
-of the design, not a tuning detail.
+Pure monster compute uses a separate bounded pool. The automatic worker formula
+leaves two hardware threads out of its calculation and caps the result at four,
+but the shared pool still exists. Simultaneous shared-pool and monster-compute
+load can therefore oversubscribe a host and must be measured in canary. Pool
+topology is part of the production gate, not a tuning detail.
 
 Requirements:
 
@@ -876,15 +1010,10 @@ Requirements:
   enqueue path unless they are explicitly registered and storage sizing is
   proven safe.
 
-Two acceptable directions are:
-
-1. Shared pool with admission control and a mechanism that preserves dispatcher
-   and service progress under monster saturation.
-2. Dedicated monster-compute pool with bounded multi-producer request and
-   completion queues, plus explicit shutdown ordering.
-
-Choose between them from measurements and lifecycle complexity. Do not rely on
-the operating-system scheduler alone to provide gameplay fairness.
+The implemented direction is a dedicated monster-compute pool with bounded
+multi-producer requests, bounded completions, and explicit shutdown before the
+shared pool. Do not rely on the operating-system scheduler alone to provide
+gameplay fairness.
 
 A machine with many cores still needs headroom for:
 
@@ -955,10 +1084,10 @@ Performance:
 
 - Production-like hunt load.
 - Artificial all-monsters-active stress as a degradation test.
-- Queue-age comparison for `Walk`, `Serial`, `WalkParallel`,
-  `DeferredGameplay`, and any new lanes.
+- Queue-age comparison for `PlayerWalk`, `WorldCommit`, `MonsterAI`,
+  `Deferred`, and every other active lane.
 - Scheduled-walk due lateness and input-to-walk-commit p50, p95, and p99.
-- `WalkParallel` barrier wall time, longest inner creature call, and work units
+- Barrier wall time, longest inner creature call, and work units
   per slice.
 - Dispatcher CPU time versus worker CPU time.
 - Snapshot construction cost versus reused computation.
@@ -1000,8 +1129,8 @@ Use this checklist for every patch that adds worker or dispatcher fairness work:
   `OTSYS_TIME()`?
 - Can a player walk event be late in the scheduled queue before it reaches its
   dispatcher lane?
-- Does a new task group preserve all semantic checks that previously tested
-  exactly `TaskGroup::Walk` or `TaskGroup::WalkParallel`?
+- Does a new lane preserve every movement and barrier semantic check used by the
+  previous route?
 - Can an unregistered worker call thread-indexed dispatcher queue storage?
 - Is there a per-monster or per-lane backpressure rule?
 - Is there an explicit full-queue policy?

@@ -10,6 +10,8 @@ target_sources(
             scheduling/dispatcher_policy.hpp
             scheduling/dispatcher_telemetry.hpp
             scheduling/dispatcher_types.hpp
+            scheduling/monster_compute_service.cpp
+            scheduling/monster_compute_service.hpp
             scheduling/task.cpp
             scheduling/save_manager.cpp
             zones/zone.cpp

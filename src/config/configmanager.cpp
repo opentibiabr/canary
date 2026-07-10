@@ -320,6 +320,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
 	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, "minTownIdToBankTransferFromMain", 4);
+	loadIntConfig(L, MONSTER_COMPUTE_QUEUE_CAPACITY, "monsterComputeQueueCapacity", 2048);
+	loadIntConfig(L, MONSTER_COMPUTE_THREADS, "monsterComputeThreads", 0);
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
 	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
@@ -370,6 +372,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION, "vipFamiliarTimeCooldownReduction", 0);
 	loadIntConfig(L, WALK_PARALLEL_TASKS_PER_PASS, "walkParallelTasksPerPass", 8);
 	loadIntConfig(L, WEEK_KILLS_TO_RED, "weekKillsToRedSkull", 5);
+	loadIntConfig(L, WORKER_COMPLETIONS_PER_PASS, "workerCompletionsPerPass", 64);
 	loadIntConfig(L, MONK_QUEST_TOTAL_SHRINES, "monkQuestTotalShrines", 11);
 	loadIntConfig(L, WHEEL_MONK_QUEST_BONUS, "wheelMonkQuestBonus", 10);
 	loadIntConfig(L, WHEEL_ATELIER_REVEAL_GREATER_COST, "wheelAtelierRevealGreaterCost", 6000000);

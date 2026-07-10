@@ -73,7 +73,8 @@ enum class DispatcherType : uint8_t {
 	Event,
 	AsyncEvent,
 	ScheduledEvent,
-	CycleEvent
+	CycleEvent,
+	WorkerCompletion
 };
 
 enum class DispatcherInternalWork : uint8_t {
@@ -81,6 +82,7 @@ enum class DispatcherInternalWork : uint8_t {
 	CreatureAsyncRequeue,
 	MonsterMovementRefreshLateness,
 	MonsterPostThinkLateness,
+	WorkerCompletionBatch,
 	DispatcherPass,
 	DispatcherIdle,
 	Last
@@ -99,15 +101,15 @@ struct DispatcherContext {
 	}
 
 	bool isMovementCommit() const {
-		return ::isMovementCommit(group);
+		return ::isMovementCommit(lane);
 	}
 
 	bool isBarrierParallel() const {
-		return type == DispatcherType::AsyncEvent && ::isBarrierParallel(group);
+		return type == DispatcherType::AsyncEvent && executionMode == ExecutionMode::BarrierParallel;
 	}
 
 	bool isPlayerVisible() const {
-		return ::isPlayerVisible(group);
+		return ::isPlayerVisible(lane);
 	}
 
 	bool isAsync() const {
@@ -119,11 +121,11 @@ struct DispatcherContext {
 	}
 
 	auto getLane() const {
-		return getDispatcherLane(group);
+		return lane;
 	}
 
 	auto getExecutionMode() const {
-		return ::getExecutionMode(group);
+		return executionMode;
 	}
 
 	auto getName() const {
@@ -140,11 +142,15 @@ private:
 	void reset() {
 		group = TaskGroup::ThreadPool;
 		type = DispatcherType::None;
+		lane = DispatcherLane::Maintenance;
+		executionMode = ExecutionMode::Serial;
 		taskName = defaultTaskName;
 	}
 
 	DispatcherType type = DispatcherType::None;
 	TaskGroup group = TaskGroup::ThreadPool;
+	DispatcherLane lane = DispatcherLane::Maintenance;
+	ExecutionMode executionMode = ExecutionMode::Serial;
 	std::string_view taskName = defaultTaskName;
 
 	friend class Dispatcher;
@@ -258,6 +264,7 @@ private:
 
 	inline void executeEvents(const TaskGroup startGroup = TaskGroup::Walk);
 	inline void executeScheduledEvents();
+	inline void executeWorkerCompletions();
 
 	inline void executeSerialEvents(const uint8_t groupId);
 	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks, std::chrono::microseconds maxRuntime = std::chrono::microseconds::max());

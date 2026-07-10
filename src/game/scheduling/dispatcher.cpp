@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
@@ -58,6 +59,8 @@ namespace {
 				return "MonsterMovementRefreshLateness";
 			case DispatcherInternalWork::MonsterPostThinkLateness:
 				return "MonsterPostThinkLateness";
+			case DispatcherInternalWork::WorkerCompletionBatch:
+				return "WorkerCompletionBatch";
 			case DispatcherInternalWork::DispatcherPass:
 				return "DispatcherPass";
 			case DispatcherInternalWork::DispatcherIdle:
@@ -90,6 +93,7 @@ void Dispatcher::init() {
 
 			executeEvents();
 			executeScheduledEvents();
+			executeWorkerCompletions();
 			mergeEvents();
 			if (telemetryEnabled) {
 				observeInternalWork(DispatcherInternalWork::DispatcherPass, 1, policy.elapsedSince(passStartedAt));
@@ -206,6 +210,8 @@ void Dispatcher::executeBudgetedParallelEvents(const uint8_t groupId, size_t max
 }
 
 bool Dispatcher::executeTask(const Task &task, const uint8_t groupId) {
+	dispacherContext.lane = task.getMeta().lane;
+	dispacherContext.executionMode = getExecutionMode(static_cast<TaskGroup>(groupId));
 	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
 		return task.execute();
 	}
@@ -357,6 +363,25 @@ void Dispatcher::logRuntimeTelemetry() {
 			work.latency.maxUs
 		);
 	}
+
+	const auto computeStats = g_monsterComputeService().getStats();
+	if (computeStats.running) {
+		g_logger().debug(
+			"Monster compute telemetry: visibleQueued={}, backgroundQueued={}, completionsQueued={}, outstanding={}, active={}, completionsInFlight={}, capacity={}, accepted={}, rejected={}, completed={}, failed={}, canceled={}",
+			computeStats.visibleQueued,
+			computeStats.backgroundQueued,
+			computeStats.completionsQueued,
+			computeStats.outstanding,
+			computeStats.active,
+			computeStats.completionsInFlight,
+			computeStats.capacity,
+			computeStats.accepted,
+			computeStats.rejected,
+			computeStats.completed,
+			computeStats.failed,
+			computeStats.canceled
+		);
+	}
 }
 
 void Dispatcher::resetRuntimeTelemetry() {
@@ -474,6 +499,8 @@ void Dispatcher::executeScheduledEvents() {
 
 		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
 		dispacherContext.group = TaskGroup::Serial;
+		dispacherContext.lane = task->getMeta().lane;
+		dispacherContext.executionMode = ExecutionMode::Serial;
 		dispacherContext.taskName = task->getContext();
 
 		const auto executed = task->execute();
@@ -498,6 +525,31 @@ void Dispatcher::executeScheduledEvents() {
 
 	mergeAsyncEvents(); // merge async events requested by scheduled events
 	executeEvents(TaskGroup::GenericParallel); // execute async events requested by scheduled events
+}
+
+void Dispatcher::executeWorkerCompletions() {
+	auto &computeService = g_monsterComputeService();
+	if (computeService.getCompletionCount() == 0) {
+		return;
+	}
+
+	dispacherContext.type = DispatcherType::WorkerCompletion;
+	dispacherContext.group = TaskGroup::Serial;
+	dispacherContext.lane = DispatcherLane::WorkerCompletion;
+	dispacherContext.executionMode = ExecutionMode::BackgroundCompletion;
+	const auto startedAt = policy.now();
+	const auto completed = computeService.drainCompletions(
+		getPositiveConfig(WORKER_COMPLETIONS_PER_PASS),
+		[](std::string_view context, MonsterComputeService::Completion &completion) {
+			dispacherContext.taskName = context;
+			if (completion) {
+				completion();
+			}
+		}
+	);
+	observeInternalWork(DispatcherInternalWork::WorkerCompletionBatch, completed, policy.elapsedSince(startedAt));
+	dispatcherCycle += completed;
+	dispacherContext.reset();
 }
 
 void Dispatcher::__mergeEvents(std::span<const uint8_t> groups, const bool mergeScheduledEvents) {

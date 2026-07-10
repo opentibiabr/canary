@@ -29,6 +29,8 @@
 #include <array>
 #include <bitset>
 #include <charconv>
+#include <cassert>
+#include <condition_variable>
 #include <cstdint>
 #include <cstddef>
 #include <deque>
@@ -59,6 +61,7 @@
 #include <mutex>
 #include <optional>
 #include <stack>
+#include <stdexcept>
 #include <source_location>
 #include <span>
 #include <compare>

@@ -32,6 +32,11 @@ class ResearchPipelineTests(unittest.TestCase):
             (ROOT / "docs/ai-agent/examples/forgotten_forge.research.json").read_text(encoding="utf-8")
         )
 
+    def ready_research(self):
+        return json.loads(
+            (ROOT / "docs/ai-agent/examples/ember_archive_ready.research.json").read_text(encoding="utf-8")
+        )
+
     def test_complete_pipeline_generates_three_previews_and_five_ids(self):
         (ROOT / "artifacts").mkdir(exist_ok=True)
         with tempfile.TemporaryDirectory(dir=ROOT / "artifacts") as directory:
@@ -68,6 +73,38 @@ class ResearchPipelineTests(unittest.TestCase):
             self.assertEqual(verification["scope"], "temporary isolated filesystem only")
             self.assertFalse(verification["automaticApplyAllowed"])
             self.assertTrue(verification["manualApprovalRequired"])
+
+    def test_complete_npc_and_monster_pack_reaches_verified_ready_status(self):
+        (ROOT / "artifacts").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=ROOT / "artifacts") as directory:
+            output = Path(directory)
+            code, summary = run(
+                self.ready_research(),
+                self.registry(),
+                {"entries": []},
+                self.reservations(),
+                output,
+                repository_root=output / "empty-repository",
+            )
+
+            self.assertEqual(code, 0)
+            self.assertTrue(summary["ok"])
+            self.assertEqual(summary["generatedComponents"], 2)
+            self.assertEqual(summary["reservedIdentifiers"], 0)
+            self.assertEqual(summary["promotionStatus"], "ready-for-human-promotion")
+            self.assertEqual(summary["handoffStatus"], "ready-for-manual-review")
+            self.assertEqual(summary["stagingPatchStatus"], "ready-for-manual-application")
+            self.assertTrue(summary["stagingPatchGenerated"])
+            self.assertTrue(summary["stagingVerified"])
+            self.assertTrue(summary["stagingRollbackVerified"])
+            self.assertEqual(summary["finalStatus"], "verified-ready-for-human-implementation")
+
+            verification = json.loads((output / "STAGING_VERIFICATION.json").read_text(encoding="utf-8"))
+            self.assertEqual(verification["summary"]["verifiedFileCount"], 2)
+            patch = (output / "STAGING_CONTENT.patch").read_text(encoding="utf-8")
+            self.assertIn("Ember Archivist", patch)
+            self.assertIn("Cinderbound Colossus", patch)
+            self.assertNotIn("TODO:", patch)
 
     def test_existing_canary_entity_blocks_before_planning_or_rendering(self):
         research = {

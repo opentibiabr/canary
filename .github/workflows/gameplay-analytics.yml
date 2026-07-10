@@ -10,6 +10,7 @@ on:
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/test_gameplay_analytics_reliability.lua"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics.py"
@@ -24,6 +25,7 @@ on:
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
       - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/test_gameplay_analytics_reliability.lua"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics.py"
@@ -47,6 +49,11 @@ jobs:
         run: python tools/analytics/validate_gameplay_analytics_reliability.py
       - name: Run gameplay analytics validator tests
         run: python -m unittest discover -s tools/analytics -p "test_*.py" -v
+      - name: Run gameplay analytics Lua reliability test
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit
+          luajit tools/analytics/test_gameplay_analytics_reliability.lua
       - name: Parse SQL schema
         run: |
           python - <<'PY'

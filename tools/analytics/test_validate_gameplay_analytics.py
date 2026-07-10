@@ -61,6 +61,31 @@ GameplayAnalyticsExperience = true
 
         validator.validate_runtime(runtime)
 
+    def test_accepts_named_spawn_callback_constructor(self) -> None:
+        runtime = '''
+local spawnCallback = EventCallback("GameplayAnalyticsSpawn")
+function spawnCallback.onSpawn(creature, position, startup, artificial)
+    if creature:isMonster() then
+        creature:registerEvent("GameplayAnalyticsHealth")
+    end
+    return true
+end
+spawnCallback:register()
+
+local analyticsCommand = TalkAction("/analytics")
+GameplayAnalyticsStartup = true
+GameplayAnalyticsShutdown = true
+GameplayAnalyticsLogin = true
+GameplayAnalyticsLogout = true
+GameplayAnalyticsHealth = true
+GameplayAnalyticsMana = true
+GameplayAnalyticsDeath = true
+GameplayAnalyticsKill = true
+GameplayAnalyticsExperience = true
+'''
+
+        validator.validate_runtime(runtime)
+
     def test_rejects_health_registration_on_unrelated_callback_variable(self) -> None:
         runtime = '''
 local spawnCallback = EventCallback

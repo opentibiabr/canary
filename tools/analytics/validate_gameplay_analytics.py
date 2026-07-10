@@ -113,7 +113,7 @@ def has_spawn_health_registration(text: str) -> bool:
     callback_names = {
         match.group(1)
         for match in re.finditer(
-            r"^\s*(?:local\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*EventCallback\s*$",
+            r"^\s*(?:local\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*EventCallback(?:\([^)]*\))?\s*$",
             text,
             flags=re.MULTILINE,
         )

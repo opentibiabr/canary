@@ -320,7 +320,12 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 
 	ItemList moveItemList;
 	if (const TileItemVector* items = tile->getItemList()) {
-		for (const auto &item : *items) {
+		const auto itemsSnapshot = *items;
+		for (const auto &item : itemsSnapshot) {
+			if (!item || item->getParent().get() != tile.get()) {
+				continue;
+			}
+
 			if (item->isWrapable()) {
 				handleWrapableItem(moveItemList, item, player, tile);
 			} else if (item->isPickupable()) {
@@ -332,7 +337,12 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 	}
 
 	std::unordered_set<std::shared_ptr<Player>> playersToSave = { player };
+	std::unordered_set<const Item*> processedItems;
 	for (const auto &item : moveItemList) {
+		if (!item || !processedItems.insert(item.get()).second) {
+			continue;
+		}
+
 		std::shared_ptr<Player> targetPlayer = player;
 
 		if (item->hasOwner() && !item->isOwner(targetPlayer)) {
@@ -446,9 +456,10 @@ void House::handleWrapableItem(ItemList &moveItemList, const std::shared_ptr<Ite
 		collectMovableItemsFromContainer(moveItemList, item->getContainer(), player, houseTile);
 	}
 
+	const auto originalItemId = item->getID();
 	const auto &newItem = g_game().wrapItem(item, houseTile->getHouse());
-	if (newItem->isRemoved() && !newItem->getParent()) {
-		g_logger().warn("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), item->getID(), houseTile->getPosition().toString());
+	if (!newItem || newItem->isRemoved() || !newItem->getParent()) {
+		g_logger().warn("[{}] item removed during wrapping - check ground type - player name: {} item id: {} position: {}", __FUNCTION__, player->getName(), originalItemId, houseTile->getPosition().toString());
 		return;
 	}
 
@@ -460,8 +471,9 @@ void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::
 		return;
 	}
 
-	for (const auto &item : container->getItemList()) {
-		if (!item) {
+	const auto itemsSnapshot = container->getItemList();
+	for (const auto &item : itemsSnapshot) {
+		if (!item || item->getParent().get() != container.get()) {
 			continue;
 		}
 

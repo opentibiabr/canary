@@ -10,6 +10,7 @@
 #include "map/map.hpp"
 
 #include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
@@ -36,6 +37,58 @@ namespace {
 	void setNavFlag(NavCell &cell, NavCellFlag flag, bool enabled) {
 		if (enabled) {
 			cell.flags = cell.flags | flag;
+		}
+	}
+
+	[[nodiscard]] bool hasTileFlag(uint32_t flags, TileFlags_t flag) {
+		return (flags & static_cast<uint32_t>(flag)) != 0;
+	}
+
+	void addCachedItemNavigationTopology(NavCell &cell, const std::shared_ptr<BasicItem> &item) {
+		if (!item || !Item::items.hasItemType(item->id)) {
+			return;
+		}
+
+		const auto &itemType = Item::items[item->id];
+		const auto floorChange = static_cast<uint32_t>(itemType.floorChange);
+		const bool movable = itemType.movable && item->uniqueId == 0 && item->actionId != IMMOVABLE_ACTION_ID;
+		const bool noFieldBlockPath = !itemType.isMagicField() && itemType.blockPathFind;
+		setNavFlag(cell, NavCellFlag::FloorChange, floorChange != 0);
+		setNavFlag(cell, NavCellFlag::FloorChangeWest, hasTileFlag(floorChange, TILESTATE_FLOORCHANGE_WEST));
+		setNavFlag(cell, NavCellFlag::Teleport, itemType.isTeleport());
+		setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, itemType.blockSolid && !movable);
+		setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, noFieldBlockPath && !movable);
+		setNavFlag(cell, NavCellFlag::BlockSolid, itemType.blockSolid);
+		setNavFlag(cell, NavCellFlag::NoFieldBlockPath, noFieldBlockPath);
+		setNavFlag(cell, NavCellFlag::BlockProjectile, itemType.blockProjectile);
+
+		if (!cell.hasFlag(NavCellFlag::HarmfulField) && itemType.isMagicField() && !itemType.blockSolid && itemType.conditionDamage && itemType.conditionDamage->getTotalDamage() > 0) {
+			setNavFlag(cell, NavCellFlag::HarmfulField, true);
+			cell.harmfulFieldCombatType = static_cast<uint8_t>(itemType.combatType);
+		}
+	}
+
+	void populateCachedTileNavigationTopology(NavCell &cell, const BasicTile &tile) {
+		cell.houseId = tile.houseId;
+		if (tile.ground) {
+			cell.groundId = tile.ground->id;
+			setNavFlag(cell, NavCellFlag::HasGround, true);
+			setNavFlag(cell, NavCellFlag::WalkableSea, cell.groundId >= ITEM_WALKABLE_SEA_START && cell.groundId <= ITEM_WALKABLE_SEA_END);
+			addCachedItemNavigationTopology(cell, tile.ground);
+		}
+
+		setNavFlag(cell, NavCellFlag::ProtectionZone, tile.houseId != 0 || hasTileFlag(tile.flags, TILESTATE_PROTECTIONZONE));
+		setNavFlag(cell, NavCellFlag::FloorChange, hasTileFlag(tile.flags, TILESTATE_FLOORCHANGE));
+		setNavFlag(cell, NavCellFlag::FloorChangeWest, hasTileFlag(tile.flags, TILESTATE_FLOORCHANGE_WEST));
+		setNavFlag(cell, NavCellFlag::Teleport, hasTileFlag(tile.flags, TILESTATE_TELEPORT));
+		setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, hasTileFlag(tile.flags, TILESTATE_IMMOVABLEBLOCKSOLID));
+		setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, hasTileFlag(tile.flags, TILESTATE_IMMOVABLENOFIELDBLOCKPATH));
+		setNavFlag(cell, NavCellFlag::BlockSolid, hasTileFlag(tile.flags, TILESTATE_BLOCKSOLID));
+		setNavFlag(cell, NavCellFlag::NoFieldBlockPath, hasTileFlag(tile.flags, TILESTATE_NOFIELDBLOCKPATH));
+		setNavFlag(cell, NavCellFlag::BlockProjectile, hasTileFlag(tile.flags, TILESTATE_BLOCKPROJECTILE));
+
+		for (const auto &item : tile.items) {
+			addCachedItemNavigationTopology(cell, item);
 		}
 	}
 
@@ -362,44 +415,52 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 		}
 	}
 
-	if (sector && sector->getFloor(z)) {
+	const auto floor = sector ? sector->getFloor(z) : nullptr;
+	if (floor) {
 		for (uint32_t localX = 0; localX < SECTOR_SIZE; ++localX) {
 			for (uint32_t localY = 0; localY < SECTOR_SIZE; ++localY) {
 				const auto x = static_cast<uint16_t>(baseX + localX);
 				const auto y = static_cast<uint16_t>(baseY + localY);
-				const auto &tile = getTile(x, y, z);
-				if (!tile) {
+				const auto [tile, cachedTile] = floor->getTileAndCache(x, y);
+				if (!tile && !cachedTile) {
 					continue;
 				}
 
 				auto &cell = cells[localX * SECTOR_SIZE + localY];
 				if (!reuseTopology) {
-					if (const auto &house = tile->getHouse()) {
-						cell.houseId = house->getId();
-					}
-					const auto &ground = tile->getGround();
-					if (ground) {
-						cell.groundId = ground->getID();
-						setNavFlag(cell, NavCellFlag::HasGround, true);
-						setNavFlag(cell, NavCellFlag::WalkableSea, cell.groundId >= ITEM_WALKABLE_SEA_START && cell.groundId <= ITEM_WALKABLE_SEA_END);
-					}
+					if (tile) {
+						if (const auto &house = tile->getHouse()) {
+							cell.houseId = house->getId();
+						}
+						const auto &ground = tile->getGround();
+						if (ground) {
+							cell.groundId = ground->getID();
+							setNavFlag(cell, NavCellFlag::HasGround, true);
+							setNavFlag(cell, NavCellFlag::WalkableSea, cell.groundId >= ITEM_WALKABLE_SEA_START && cell.groundId <= ITEM_WALKABLE_SEA_END);
+						}
 
-					setNavFlag(cell, NavCellFlag::ProtectionZone, tile->hasFlag(TILESTATE_PROTECTIONZONE));
-					setNavFlag(cell, NavCellFlag::FloorChange, tile->hasFlag(TILESTATE_FLOORCHANGE));
-					setNavFlag(cell, NavCellFlag::FloorChangeWest, tile->hasFlag(TILESTATE_FLOORCHANGE_WEST));
-					setNavFlag(cell, NavCellFlag::Teleport, tile->hasFlag(TILESTATE_TELEPORT));
-					setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID));
-					setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, tile->hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH));
-					setNavFlag(cell, NavCellFlag::BlockSolid, tile->hasFlag(TILESTATE_BLOCKSOLID));
-					setNavFlag(cell, NavCellFlag::NoFieldBlockPath, tile->hasFlag(TILESTATE_NOFIELDBLOCKPATH));
-					setNavFlag(cell, NavCellFlag::BlockProjectile, tile->hasFlag(TILESTATE_BLOCKPROJECTILE));
+						setNavFlag(cell, NavCellFlag::ProtectionZone, tile->hasFlag(TILESTATE_PROTECTIONZONE));
+						setNavFlag(cell, NavCellFlag::FloorChange, tile->hasFlag(TILESTATE_FLOORCHANGE));
+						setNavFlag(cell, NavCellFlag::FloorChangeWest, tile->hasFlag(TILESTATE_FLOORCHANGE_WEST));
+						setNavFlag(cell, NavCellFlag::Teleport, tile->hasFlag(TILESTATE_TELEPORT));
+						setNavFlag(cell, NavCellFlag::ImmovableBlockSolid, tile->hasFlag(TILESTATE_IMMOVABLEBLOCKSOLID));
+						setNavFlag(cell, NavCellFlag::ImmovableNoFieldBlockPath, tile->hasFlag(TILESTATE_IMMOVABLENOFIELDBLOCKPATH));
+						setNavFlag(cell, NavCellFlag::BlockSolid, tile->hasFlag(TILESTATE_BLOCKSOLID));
+						setNavFlag(cell, NavCellFlag::NoFieldBlockPath, tile->hasFlag(TILESTATE_NOFIELDBLOCKPATH));
+						setNavFlag(cell, NavCellFlag::BlockProjectile, tile->hasFlag(TILESTATE_BLOCKPROJECTILE));
 
-					if (const auto &field = tile->getFieldItem(); field && !field->isBlocking() && field->getDamage() > 0) {
-						setNavFlag(cell, NavCellFlag::HarmfulField, true);
-						cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
+						if (const auto &field = tile->getFieldItem(); field && !field->isBlocking() && field->getDamage() > 0) {
+							setNavFlag(cell, NavCellFlag::HarmfulField, true);
+							cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
+						}
+					} else {
+						populateCachedTileNavigationTopology(cell, *cachedTile);
 					}
 				}
 
+				if (!tile) {
+					continue;
+				}
 				if (const auto* creatures = tile->getCreatures()) {
 					for (const auto &creature : *creatures) {
 						if (!creature || creature->isInGhostMode()) {

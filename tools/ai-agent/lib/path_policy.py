@@ -39,14 +39,20 @@ def is_safe_write(
     if allow_reservations and relative.endswith("ID_RESERVATIONS.json"):
         return True, "allowed reservations file"
 
-    if output_root:
+    # An explicitly supplied output root is a hard sandbox boundary. Do not
+    # fall through to broader writable-root rules when the path escapes it.
+    if output_root is not None:
         resolved_output_root = _resolve(output_root, root_path)
         try:
             resolved_output_root.relative_to(root_path)
+        except ValueError:
+            return False, f"output root escapes repository root: {resolved_output_root.as_posix()}"
+
+        try:
             resolved_path.relative_to(resolved_output_root)
             return True, "allowed output root"
         except ValueError:
-            pass
+            return False, f"path escapes output root: {resolved_path.as_posix()}"
 
     if relative.startswith("artifacts/"):
         return True, "allowed artifacts path"

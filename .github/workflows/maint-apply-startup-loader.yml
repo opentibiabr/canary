@@ -1,0 +1,86 @@
+name: Maintenance apply startup loader fix
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/maint-apply-startup-loader.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: fix/startup-loader-wait
+      - name: Apply startup loader fix to PR branch
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('src/canary_server.cpp')
+          lines = path.read_text(encoding='utf-8').splitlines()
+
+          catch_index = next(i for i, line in enumerate(lines) if 'catch (FailedToInitializeCanary &err)' in line)
+          logger_index = next(i for i in range(catch_index, catch_index + 12) if 'logger.error(err.what())' in lines[i])
+          if not any('loaderCV.notify_all()' in line for line in lines[catch_index:logger_index]):
+              lines.insert(logger_index, '\t\t\t\tloaderCV.notify_all();')
+
+          start_index = next(i for i, line in enumerate(lines) if 'constexpr auto timeout = std::chrono::minutes(10);' in line)
+          sleep_index = next(i for i in range(start_index, start_index + 50) if 'std::this_thread::sleep_for(std::chrono::milliseconds(10));' in lines[i])
+          end_index = sleep_index + 2
+
+          replacement = '''\tconstexpr auto timeout = std::chrono::minutes(10);
+\tconstexpr auto warnEvery = std::chrono::seconds(120);
+\tconst auto start = std::chrono::steady_clock::now();
+\tconst auto deadline = start + timeout;
+\tauto nextWarning = start + warnEvery;
+
+\tstd::unique_lock loaderLock(loaderMutex);
+\twhile (loaderStatus == LoaderStatus::LOADING) {
+\t\tconst auto wakeAt = std::min(deadline, nextWarning);
+\t\tloaderCV.wait_until(loaderLock, wakeAt, [this] {
+\t\t\treturn loaderStatus != LoaderStatus::LOADING;
+\t\t});
+
+\t\tif (loaderStatus != LoaderStatus::LOADING) {
+\t\t\tbreak;
+\t\t}
+
+\t\tconst auto now = std::chrono::steady_clock::now();
+\t\tif (now >= deadline) {
+\t\t\tloaderLock.unlock();
+\t\t\tlogger.error("Startup exceeded {} minutes - aborting.", std::chrono::duration_cast<std::chrono::minutes>(timeout).count());
+\t\t\tshutdown();
+\t\t\treturn EXIT_FAILURE;
+\t\t}
+
+\t\tif (now >= nextWarning) {
+\t\t\tlogger.warn("Startup still running ({} s)...", std::chrono::duration_cast<std::chrono::seconds>(now - start).count());
+\t\t\tnextWarning = now + warnEvery;
+\t\t}
+\t}
+\tloaderLock.unlock();'''.splitlines()
+
+          lines[start_index:end_index] = replacement
+          path.write_text('\n'.join(lines) + '\n', encoding='utf-8')
+      - name: Commit PR branch
+        run: |
+          git config user.name "canary-maintenance-bot"
+          git config user.email "canary-maintenance-bot@users.noreply.github.com"
+          rm -f .github/workflows/apply-startup-loader-fix-v2.yml
+          git add src/canary_server.cpp .github/workflows/apply-startup-loader-fix-v2.yml
+          git commit -m "startup: wait on loader condition variable"
+          git push origin HEAD:fix/startup-loader-wait
+      - name: Remove temporary workflow from main
+        run: |
+          git checkout main
+          git pull --ff-only origin main
+          git rm .github/workflows/maint-apply-startup-loader.yml
+          git commit -m "ci: remove temporary startup maintenance workflow"
+          git push origin main

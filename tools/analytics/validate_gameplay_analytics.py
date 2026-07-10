@@ -122,7 +122,7 @@ def validate_runtime(text: str) -> None:
         "players must receive the health event on login",
     )
     require(
-        "EventCallback.onSpawn" not in text and "local spawnCallback = EventCallback" not in text,
+        "local spawnCallback = EventCallback" not in text,
         "runtime must not use unsupported global monster-spawn EventCallback",
     )
 

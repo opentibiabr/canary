@@ -504,6 +504,13 @@ disableMonsterArmor = false
 -- monsterPerfTestFriendlyFire lets non-summon monsters target other non-summon monsters and prefer random target selection.
 monsterPerfTestForceActive = false
 monsterPerfTestFriendlyFire = false
+
+-- Dispatcher fairness budgets. Changes apply after config reload.
+creatureWalkTasksPerPass = 128
+walkParallelTasksPerPass = 8
+creatureAsyncTasksPerBucket = 16
+deferredGameplayTasksPerPass = 16
+dispatcherSliceDurationMs = 2
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200

@@ -9,17 +9,25 @@
 
 #include "game/scheduling/dispatcher.hpp"
 
+#include "config/configmanager.hpp"
 #include "game/game.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lib/di/container.hpp"
 #include "utils/tools.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <limits>
+#endif
+
 thread_local DispatcherContext Dispatcher::dispacherContext;
 
 namespace {
-	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 16;
 	constexpr auto DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD = std::chrono::milliseconds(250);
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
+
+	size_t getPositiveConfig(const ConfigKey_t key) {
+		return static_cast<size_t>(std::max<int32_t>(1, g_configManager().getNumber(key)));
+	}
 
 	std::string_view getTaskGroupName(const uint8_t groupId) {
 		switch (static_cast<TaskGroup>(groupId)) {
@@ -44,6 +52,8 @@ namespace {
 		switch (static_cast<DispatcherInternalWork>(workId)) {
 			case DispatcherInternalWork::CreatureAsyncBucket:
 				return "CreatureAsyncBucket";
+			case DispatcherInternalWork::CreatureAsyncRequeue:
+				return "CreatureAsyncRequeue";
 			case DispatcherInternalWork::DispatcherPass:
 				return "DispatcherPass";
 			case DispatcherInternalWork::DispatcherIdle:
@@ -124,47 +134,59 @@ void Dispatcher::executeSerialEvents(const uint8_t groupId) {
 	dispacherContext.reset();
 }
 
-void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks) {
+void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks, std::chrono::microseconds maxRuntime) {
 	auto &tasks = m_tasks[groupId];
 	if (tasks.empty() || maxTasks == 0) {
 		return;
 	}
 
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+	const auto hasRuntimeBudget = maxRuntime != std::chrono::microseconds::max();
+	const auto groupStartedAt = telemetryEnabled || hasRuntimeBudget ? policy.now() : Task::Clock::time_point {};
+	const auto deadline = hasRuntimeBudget ? groupStartedAt + maxRuntime : Task::Clock::time_point::max();
 	logQueueLatency(groupId);
 
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
 	dispacherContext.type = DispatcherType::Event;
 
-	const auto tasksToExecute = std::min(tasks.size(), maxTasks);
-	for (size_t i = 0; i < tasksToExecute; ++i) {
-		const auto &task = tasks[i];
+	const auto taskLimit = DispatcherPolicy::selectTaskCount(tasks.size(), maxTasks);
+	size_t tasksExecuted = 0;
+	for (; tasksExecuted < taskLimit; ++tasksExecuted) {
+		if (tasksExecuted > 0 && hasRuntimeBudget && policy.deadlineReached(deadline)) {
+			break;
+		}
+
+		const auto &task = tasks[tasksExecuted];
 		dispacherContext.taskName = task.getContext();
 		if (executeTask(task, groupId)) {
 			++dispatcherCycle;
 		}
 	}
 	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksToExecute);
+		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksExecuted);
 	}
-	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksToExecute));
+	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksExecuted));
 
 	dispacherContext.reset();
 }
 
 void Dispatcher::executeParallelEvents(const uint8_t groupId) {
+	executeBudgetedParallelEvents(groupId, m_tasks[groupId].size());
+}
+
+void Dispatcher::executeBudgetedParallelEvents(const uint8_t groupId, size_t maxTasks) {
 	auto &tasks = m_tasks[groupId];
-	if (tasks.empty()) {
+	if (tasks.empty() || maxTasks == 0) {
 		return;
 	}
+	const auto tasksToExecute = DispatcherPolicy::selectTaskCount(tasks.size(), maxTasks);
 
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
 	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 	logQueueLatency(groupId);
 
 	const auto barrierStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
-	asyncWait(tasks.size(), [this, groupId, &tasks](size_t i) {
+	asyncWait(tasksToExecute, [this, groupId, &tasks](size_t i) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
 		dispacherContext.group = static_cast<TaskGroup>(groupId);
 		executeTask(tasks[i], groupId);
@@ -172,11 +194,11 @@ void Dispatcher::executeParallelEvents(const uint8_t groupId) {
 		dispacherContext.reset();
 	});
 	if (telemetryEnabled) {
-		taskGroupTelemetry[groupId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), tasks.size());
-		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasks.size());
+		taskGroupTelemetry[groupId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), tasksToExecute);
+		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksToExecute);
 	}
 
-	tasks.clear();
+	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksToExecute));
 }
 
 bool Dispatcher::executeTask(const Task &task, const uint8_t groupId) {
@@ -395,7 +417,15 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 				mergeEvents();
 				movementQueuesMerged = true;
 			}
-			executeSerialEvents(groupId);
+			if (group == TaskGroup::CreatureWalk && !m_tasks[groupId].empty()) {
+				executeBudgetedSerialEvents(
+					groupId,
+					getPositiveConfig(CREATURE_WALK_TASKS_PER_PASS),
+					std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS))
+				);
+			} else {
+				executeSerialEvents(groupId);
+			}
 			mergeAsyncEvents();
 		} else if (groupId == static_cast<uint8_t>(TaskGroup::Serial)) {
 			mergeEvents();
@@ -403,8 +433,20 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 			mergeAsyncEvents();
 		} else if (isDeferredGameplay) {
 			mergeEvents();
-			executeBudgetedSerialEvents(groupId, DEFERRED_GAMEPLAY_TASKS_PER_CYCLE);
+			if (!m_tasks[groupId].empty()) {
+				executeBudgetedSerialEvents(groupId, getPositiveConfig(DEFERRED_GAMEPLAY_TASKS_PER_PASS));
+			}
 			mergeAsyncEvents();
+		} else if (group == TaskGroup::WalkParallel) {
+			if (!m_tasks[groupId].empty()) {
+				const auto tasksPerBucket = std::min<size_t>(getPositiveConfig(CREATURE_ASYNC_TASKS_PER_BUCKET), std::numeric_limits<uint32_t>::max());
+				const auto maxRuntimeUs = std::min<int64_t>(
+					std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS))).count(),
+					std::numeric_limits<uint32_t>::max()
+				);
+				creatureAsyncSliceLimits.store((static_cast<uint64_t>(tasksPerBucket) << 32) | static_cast<uint32_t>(maxRuntimeUs), std::memory_order_relaxed);
+				executeBudgetedParallelEvents(groupId, getPositiveConfig(WALK_PARALLEL_TASKS_PER_PASS));
+			}
 		} else {
 			executeParallelEvents(groupId);
 		}

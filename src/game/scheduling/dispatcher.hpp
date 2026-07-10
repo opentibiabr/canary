@@ -78,9 +78,15 @@ enum class DispatcherType : uint8_t {
 
 enum class DispatcherInternalWork : uint8_t {
 	CreatureAsyncBucket,
+	CreatureAsyncRequeue,
 	DispatcherPass,
 	DispatcherIdle,
 	Last
+};
+
+struct CreatureAsyncSliceLimits {
+	size_t tasksPerBucket = 16;
+	std::chrono::microseconds maxRuntime { 2000 };
 };
 
 struct DispatcherContext {
@@ -183,6 +189,11 @@ public:
 	void asyncWait(size_t size, std::function<void(size_t i)> &&f);
 	void observeInternalWork(DispatcherInternalWork work, uint64_t units, std::chrono::microseconds runtime, std::string_view context = {}) noexcept;
 
+	[[nodiscard]] CreatureAsyncSliceLimits getCreatureAsyncSliceLimits() const noexcept {
+		const auto packed = creatureAsyncSliceLimits.load(std::memory_order_relaxed);
+		return { static_cast<size_t>(packed >> 32), std::chrono::microseconds(static_cast<uint32_t>(packed)) };
+	}
+
 	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
 		return scheduleEvent(
 			delay, [this, f = std::move(f), group] { asyncEvent([f] { f(); }, group); }, dispacherContext.taskName, true, false
@@ -247,8 +258,9 @@ private:
 	inline void executeScheduledEvents();
 
 	inline void executeSerialEvents(const uint8_t groupId);
-	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks);
+	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks, std::chrono::microseconds maxRuntime = std::chrono::microseconds::max());
 	inline void executeParallelEvents(const uint8_t groupId);
+	inline void executeBudgetedParallelEvents(const uint8_t groupId, size_t maxTasks);
 	inline bool executeTask(const Task &task, const uint8_t groupId);
 	inline void observeTaskStart(const Task &task, const uint8_t groupId, Task::Clock::time_point startedAt);
 	inline void logQueueLatency(const uint8_t groupId) const;
@@ -295,6 +307,7 @@ private:
 	DispatcherPolicy policy;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
+	std::atomic_uint64_t creatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 	// Thread Events

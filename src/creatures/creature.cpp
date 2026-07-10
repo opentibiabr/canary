@@ -33,7 +33,6 @@
 
 namespace {
 	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 32;
-	constexpr size_t CREATURE_ASYNC_TASK_BATCH_SIZE = 32;
 
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;
@@ -1990,6 +1989,9 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 
 void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	const auto startedAt = Task::Clock::now();
+	const auto limits = g_dispatcher().getCreatureAsyncSliceLimits();
+	const auto deadline = startedAt + limits.maxRuntime;
+	const auto batchLimit = limits.tasksPerBucket;
 	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
 
 	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
@@ -2001,7 +2003,7 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		// Keep creature async work in bounded slices so Serial dispatcher tasks
 		// such as login challenge and connection close cannot starve behind a
 		// large monster movement batch.
-		const auto batchSize = std::min(bucket.creatures.size(), CREATURE_ASYNC_TASK_BATCH_SIZE);
+		const auto batchSize = std::min(bucket.creatures.size(), batchLimit);
 		pendingCreatures.reserve(batchSize);
 		for (size_t i = 0; i < batchSize; ++i) {
 			pendingCreatures.emplace_back(std::move(bucket.creatures.front()));
@@ -2011,11 +2013,27 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		bucket.scheduled = shouldReschedule;
 	}
 
+	size_t consumedCreatures = 0;
 	size_t processedCreatures = 0;
-	for (auto &weakCreature : pendingCreatures) {
+	while (consumedCreatures < pendingCreatures.size()) {
+		if (consumedCreatures > 0 && Task::Clock::now() >= deadline) {
+			break;
+		}
+
+		auto &weakCreature = pendingCreatures[consumedCreatures++];
 		if (const auto &creature = weakCreature.lock()) {
 			++processedCreatures;
 			creature->executeAsyncTasks();
+		}
+	}
+
+	size_t requeuedCreatures = 0;
+	if (consumedCreatures < pendingCreatures.size()) {
+		std::scoped_lock lock(bucket.mutex);
+		requeuedCreatures = DispatcherPolicy::requeueUnprocessed(bucket.creatures, pendingCreatures, consumedCreatures);
+		if (!bucket.scheduled) {
+			bucket.scheduled = true;
+			shouldReschedule = true;
 		}
 	}
 
@@ -2033,6 +2051,9 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		processedCreatures,
 		std::chrono::duration_cast<std::chrono::microseconds>(Task::Clock::now() - startedAt)
 	);
+	if (requeuedCreatures > 0) {
+		g_dispatcher().observeInternalWork(DispatcherInternalWork::CreatureAsyncRequeue, requeuedCreatures, std::chrono::microseconds::zero());
+	}
 }
 
 void Creature::executeAsyncTasks() {

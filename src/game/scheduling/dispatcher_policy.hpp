@@ -16,10 +16,12 @@
 	#include <chrono>
 	#include <cstddef>
 	#include <cstdint>
+	#include <deque>
 	#include <functional>
 	#include <span>
 	#include <string_view>
 	#include <utility>
+	#include <vector>
 #endif
 
 struct DispatcherQueueSnapshot {
@@ -83,6 +85,19 @@ public:
 
 	[[nodiscard]] static size_t selectTaskCount(size_t available, size_t budget) {
 		return std::min(available, budget);
+	}
+
+	template <typename T>
+	static size_t requeueUnprocessed(std::deque<T> &queue, std::vector<T> &slice, size_t consumed) {
+		if (consumed >= slice.size()) {
+			return 0;
+		}
+
+		const auto unprocessed = slice.size() - consumed;
+		for (size_t index = slice.size(); index > consumed; --index) {
+			queue.emplace_front(std::move(slice[index - 1]));
+		}
+		return unprocessed;
 	}
 
 	[[nodiscard]] bool deadlineReached(TimePoint deadline) const {

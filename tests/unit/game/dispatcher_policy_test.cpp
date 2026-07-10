@@ -81,6 +81,15 @@ TEST(DispatcherPolicyTest, ClampsNegativeDurationsAndAppliesDeterministicBudgets
 	EXPECT_FALSE(policy.deadlineReached(now + 1us));
 }
 
+TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
+	std::deque<int> queue { 4, 5 };
+	std::vector<int> slice { 1, 2, 3 };
+
+	EXPECT_EQ(DispatcherPolicy::requeueUnprocessed(queue, slice, 1), 2);
+	EXPECT_EQ(queue, (std::deque<int> { 2, 3, 4, 5 }));
+	EXPECT_EQ(DispatcherPolicy::requeueUnprocessed(queue, slice, slice.size()), 0);
+}
+
 TEST(DispatcherTelemetryTest, ReportsBoundedPercentilesAndResetsTheWindow) {
 	dispatcher::telemetry::ConcurrentLatencyHistogram histogram;
 	histogram.observe(25us);

@@ -239,6 +239,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, COMBAT_CHAIN_DELAY, "combatChainDelay", 50);
 	loadIntConfig(L, COMBAT_CHAIN_TARGETS, "combatChainTargets", 5);
 	loadIntConfig(L, COMPRESSION_LEVEL, "packetCompressionLevel", 6);
+	loadIntConfig(L, CREATURE_ASYNC_TASKS_PER_BUCKET, "creatureAsyncTasksPerBucket", 16);
+	loadIntConfig(L, CREATURE_WALK_TASKS_PER_PASS, "creatureWalkTasksPerPass", 128);
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
 	loadIntConfig(L, DEATH_LOSE_PERCENT, "deathLosePercent", -1);
@@ -246,6 +248,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);
+	loadIntConfig(L, DEFERRED_GAMEPLAY_TASKS_PER_PASS, "deferredGameplayTasksPerPass", 16);
+	loadIntConfig(L, DISPATCHER_SLICE_DURATION_MS, "dispatcherSliceDurationMs", 2);
 	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 	loadIntConfig(L, EX_ACTIONS_DELAY_INTERVAL, "timeBetweenExActions", 1000);
 	loadIntConfig(L, EXP_FROM_PLAYERS_LEVEL_RANGE, "expFromPlayersLevelRange", 75);
@@ -364,6 +368,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, VIP_BONUS_LOOT, "vipBonusLoot", 0);
 	loadIntConfig(L, VIP_BONUS_SKILL, "vipBonusSkill", 0);
 	loadIntConfig(L, VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION, "vipFamiliarTimeCooldownReduction", 0);
+	loadIntConfig(L, WALK_PARALLEL_TASKS_PER_PASS, "walkParallelTasksPerPass", 8);
 	loadIntConfig(L, WEEK_KILLS_TO_RED, "weekKillsToRedSkull", 5);
 	loadIntConfig(L, MONK_QUEST_TOTAL_SHRINES, "monkQuestTotalShrines", 11);
 	loadIntConfig(L, WHEEL_MONK_QUEST_BONUS, "wheelMonkQuestBonus", 10);

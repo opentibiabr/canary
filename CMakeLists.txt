@@ -183,7 +183,9 @@ endif()
 if(CANARY_NATIVE_ARCH)
     log_option_enabled("native CPU optimizations (non-portable)")
 else()
-    log_option_disabled("native CPU optimizations; portable CPU baseline enabled")
+    log_option_disabled(
+        "native CPU optimizations; portable CPU baseline enabled"
+    )
 endif()
 
 # === CCACHE ===

@@ -1,5 +1,6 @@
 -- Gameplay Analytics schema for Canary
 -- Safe to execute repeatedly.
+-- This file installs baseline schema version 1. Run the migration script after import.
 
 CREATE TABLE IF NOT EXISTS `analytics_sessions` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -124,3 +125,15 @@ CREATE TABLE IF NOT EXISTS `analytics_dead_letters` (
     KEY `analytics_dead_letters_failed_at` (`failed_at`),
     KEY `analytics_dead_letters_player` (`player_id`, `failed_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `analytics_schema_migrations` (
+    `version` INT UNSIGNED NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `checksum` CHAR(64) NOT NULL DEFAULT '',
+    `applied_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `analytics_schema_migrations` (`version`, `name`, `checksum`)
+VALUES (1, 'baseline', '')
+ON DUPLICATE KEY UPDATE `name` = VALUES(`name`);

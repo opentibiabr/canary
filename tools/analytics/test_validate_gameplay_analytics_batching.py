@@ -34,14 +34,14 @@ class GameplayAnalyticsBatchingValidationTest(unittest.TestCase):
             validator.validate_batching(broken)
 
     def test_rejects_wrong_load_order(self) -> None:
-        core = 'local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")'
         batching = 'Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")'
         reliability = 'Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")'
         broken = self.runtime.replace(
-            f"{core}\n{batching}\n{reliability}",
-            f"{core}\n{reliability}\n{batching}",
+            f"{batching}\n{reliability}",
+            f"{reliability}\n{batching}",
             1,
         )
+        self.assertNotEqual(broken, self.runtime, "load-order mutation must alter the runtime fixture")
         with self.assertRaisesRegex(AssertionError, "load order"):
             validator.validate_runtime(broken)
 

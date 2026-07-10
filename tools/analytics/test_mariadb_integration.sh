@@ -31,6 +31,7 @@ DROP TABLE IF EXISTS `analytics_session_damage_types`;
 DROP TABLE IF EXISTS `analytics_session_spells`;
 DROP TABLE IF EXISTS `analytics_session_monsters`;
 DROP TABLE IF EXISTS `analytics_dead_letters`;
+DROP TABLE IF EXISTS `analytics_schema_migrations`;
 DROP TABLE IF EXISTS `analytics_sessions`;
 SET FOREIGN_KEY_CHECKS = 1;
 
@@ -135,8 +136,9 @@ assert_scalar() {
 	fi
 }
 
-assert_scalar "analytics table count" "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name LIKE 'analytics_%'" "7"
-assert_scalar "analytics InnoDB table count" "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name LIKE 'analytics_%' AND engine='InnoDB'" "7"
+assert_scalar "analytics table count" "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name LIKE 'analytics_%'" "8"
+assert_scalar "analytics InnoDB table count" "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name LIKE 'analytics_%' AND engine='InnoDB'" "8"
+assert_scalar "analytics baseline schema version" "SELECT MAX(version) FROM analytics_schema_migrations" "1"
 assert_scalar "analytics detail foreign keys" "SELECT COUNT(*) FROM information_schema.referential_constraints WHERE constraint_schema='${DB_NAME}' AND table_name IN ('analytics_session_monsters','analytics_session_spells','analytics_session_damage_types','analytics_session_supplies','analytics_session_loot')" "5"
 assert_scalar "idempotent session row" "SELECT COUNT(*) FROM analytics_sessions WHERE session_uuid='00000000-0000-0000-0000-000000000001'" "1"
 assert_scalar "session upsert values" "SELECT CONCAT(player_name,'|',experience_raw,'|',damage_dealt) FROM analytics_sessions WHERE session_uuid='00000000-0000-0000-0000-000000000001'" "Integration Player Updated|2000|3000"

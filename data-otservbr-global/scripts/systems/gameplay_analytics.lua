@@ -1,4 +1,5 @@
 local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")
 
@@ -176,9 +177,20 @@ function analyticsCommand.onSay(player, words, param)
 		return false
 	end
 
+	if command == "schema" then
+		local ready = Analytics.checkSchema()
+		local status = Analytics.status()
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Gameplay Analytics schema: ready=%s, current=%d, required=%d, error=%s.", tostring(ready), status.schemaVersion, status.requiredSchemaVersion, tostring(status.schemaError or "none")))
+		return false
+	end
+
 	if command == "enable" then
 		Analytics.config.enabled = true
-		Analytics.startRuntime()
+		if not Analytics.startRuntime() then
+			local status = Analytics.status()
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Gameplay Analytics was not enabled: schema ready=%s, current=%d, required=%d, error=%s.", tostring(status.schemaReady), status.schemaVersion, status.requiredSchemaVersion, tostring(status.schemaError or "unknown")))
+			return false
+		end
 		for _, onlinePlayer in ipairs(Game.getPlayers()) do
 			registerPlayerEvents(onlinePlayer)
 		end
@@ -197,9 +209,12 @@ function analyticsCommand.onSay(player, words, param)
 	player:sendTextMessage(
 		MESSAGE_EVENT_ADVANCE,
 		string.format(
-			"Gameplay Analytics: enabled=%s, running=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, batchSize=%d, batchQueries=%d, detailRows=%d, lastFlush=%d",
+			"Gameplay Analytics: enabled=%s, running=%s, schema=%d/%d ready=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, batchSize=%d, batchQueries=%d, detailRows=%d, lastFlush=%d",
 			tostring(status.enabled),
 			tostring(status.running),
+			status.schemaVersion,
+			status.requiredSchemaVersion,
+			tostring(status.schemaReady),
 			status.activeSessions,
 			status.queuedSessions,
 			status.retryingSessions,

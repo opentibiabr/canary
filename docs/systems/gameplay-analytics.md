@@ -9,10 +9,12 @@ data-otservbr-global/scripts/config/gameplay_analytics.lua
 ## Installation
 
 1. Apply `schema/gameplay_analytics.sql` to the Canary MariaDB database.
-2. Set `enabled = true` in the Lua configuration.
-3. Restart Canary.
-4. Verify startup logs contain `[GameplayAnalytics] Enabled`.
-5. Run `/analytics status` as a gamemaster.
+2. Run `tools/analytics/migrate_gameplay_analytics.sh` with the production database connection variables.
+3. Run `/analytics schema` as a gamemaster and confirm that the current version matches the required version.
+4. Set `enabled = true` in the Lua configuration.
+5. Restart Canary.
+6. Verify startup logs contain `[GameplayAnalytics] Enabled`.
+7. Run `/analytics status` as a gamemaster.
 
 The feature does not issue SQL writes for individual hits. Data is accumulated in memory and flushed as completed sessions. A retry writes the complete in-memory session snapshot and upserts every aggregate by its natural key.
 
@@ -34,6 +36,7 @@ The feature does not issue SQL writes for individual hits. Data is accumulated i
 | `trackLoot` | `false` | Store loot reported through the API. |
 | `anonymizePlayers` | `false` | Do not persist character names. Player IDs remain for relational integrity. |
 | `queueLimit` | `10000` | Maximum completed sessions awaiting persistence. |
+| `detailBatchSize` | `250` | Maximum detail rows per multi-row upsert; runtime range is 1–1000. |
 | `maxRetryAttempts` | `5` | Maximum retries after the initial failed persistence attempt. |
 | `retryBaseDelaySeconds` | `30` | Initial retry delay. |
 | `retryMaxDelaySeconds` | `900` | Maximum retry delay after exponential backoff. |
@@ -73,6 +76,23 @@ After `maxRetryAttempts` retries, the session leaves the normal queue and enters
 
 A database outage therefore does not block gameplay. Normal sessions remain bounded by `queueLimit`, dead letters remain bounded by `deadLetterQueueLimit`, and all overflows are logged and counted.
 
+## Schema compatibility
+
+The runtime checks `analytics_schema_migrations` before starting database-backed collection. Analytics remains stopped when the migration table is missing or its version is lower than the code requires. The game server itself continues to run normally.
+
+Run the migration command before enabling a newer runtime:
+
+```bash
+DB_HOST=127.0.0.1 \
+DB_PORT=3306 \
+DB_USER=canary \
+DB_PASSWORD='your-password' \
+DB_NAME=canary \
+bash tools/analytics/migrate_gameplay_analytics.sh
+```
+
+Applied migration files are protected by SHA-256 checksums. Add a new numbered migration instead of editing a migration that has already been deployed.
+
 ## Optional integration API
 
 Scripts can report domain-specific data that cannot be inferred reliably from generic combat events:
@@ -93,18 +113,21 @@ Supply and loot collection remain disabled until enabled in the configuration.
 /analytics status
 /analytics flush
 /analytics deadletters
+/analytics schema
 /analytics enable
 /analytics disable
 ```
 
-`/analytics flush` forces normal and delayed retry entries to run immediately. `/analytics deadletters` retries persistence of pending dead-letter records. Runtime enable/disable does not edit the Lua configuration and resets after restart. Runtime enable registers the required creature events for players who are already online.
+`/analytics flush` forces normal and delayed retry entries to run immediately. `/analytics deadletters` retries persistence of pending dead-letter records. `/analytics schema` rechecks the installed database version and reports the current and required versions. Runtime enable/disable does not edit the Lua configuration and resets after restart. Runtime enable registers the required creature events for players who are already online.
 
 The status output includes:
 
+- `schemaReady`, `schemaVersion`, `requiredSchemaVersion` and `schemaError`;
 - `activeSessions`, `queuedSessions`, `retryingSessions` and `deadLetterQueueSize`;
 - `successfulFlushes`, `failedFlushes` and `persistedSessions`;
 - `retriedSessions`, `deadLetteredSessions` and `persistedDeadLetters`;
 - `droppedSessions` and `droppedDeadLetters`;
+- `detailBatchSize`, `detailBatchQueries`, `detailRowsPersisted` and `largestDetailBatch`;
 - `lastFlushDurationMs`, `lastFlushProcessed`, `lastFlushFailed` and `oldestQueuedAgeSeconds`.
 
 These counters intentionally have no per-player, per-spell or per-monster labels.
@@ -124,7 +147,7 @@ trackLoot = false
 detailLevel = 1
 ```
 
-After validating CPU, memory, database queue size, retry counters and data quality, enable explicit spell, supply and loot reporting.
+After validating schema readiness, CPU, memory, database queue size, retry counters and data quality, enable explicit spell, supply and loot reporting.
 
 ## Example balance queries
 
@@ -183,7 +206,9 @@ HAVING SUM(p.casts) >= 100;
 - Sessions are created only after a metric is recorded.
 - Staff characters are excluded by default.
 - PvP and player-summon combat are excluded by default.
+- Database-backed Analytics does not start against an incompatible schema.
 - Completed sessions are bounded by `queueLimit`.
+- Detail SQL statements are bounded by `detailBatchSize`.
 - Retry attempts use bounded exponential backoff.
 - Failed sessions are moved to a bounded dead-letter queue.
 - Database-disabled mode does not accumulate an undrainable queue.

@@ -27,18 +27,27 @@ namespace {
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
 	constexpr auto DISPATCHER_ADAPTIVE_BUDGET_INTERVAL = std::chrono::milliseconds(250);
 
-	size_t getPositiveConfig(const ConfigKey_t key) {
+	const DispatcherBudgetSet defaultDispatcherBudgets;
+	constexpr auto DEFAULT_DISPATCHER_SLO = std::chrono::milliseconds(50);
+	constexpr auto DEFAULT_DISPATCHER_EMERGENCY = std::chrono::milliseconds(100);
+
+	size_t getPositiveConfig(const ConfigKey_t key, size_t defaultValue) {
+		if (!g_configManager().isLoaded()) {
+			return defaultValue;
+		}
+
 		return static_cast<size_t>(std::max<int32_t>(1, g_configManager().getNumber(key)));
 	}
 
 	DispatcherBudgetSet getConfiguredDispatcherBudgets() {
+		const auto defaultSliceDuration = std::chrono::duration_cast<std::chrono::milliseconds>(defaultDispatcherBudgets.sliceRuntime);
 		return {
-			.creatureWalkTasks = getPositiveConfig(CREATURE_WALK_TASKS_PER_PASS),
-			.walkParallelTasks = getPositiveConfig(WALK_PARALLEL_TASKS_PER_PASS),
-			.creatureAsyncTasksPerBucket = getPositiveConfig(CREATURE_ASYNC_TASKS_PER_BUCKET),
-			.deferredGameplayTasks = getPositiveConfig(DEFERRED_GAMEPLAY_TASKS_PER_PASS),
-			.workerCompletions = getPositiveConfig(WORKER_COMPLETIONS_PER_PASS),
-			.sliceRuntime = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS)),
+			.creatureWalkTasks = getPositiveConfig(CREATURE_WALK_TASKS_PER_PASS, defaultDispatcherBudgets.creatureWalkTasks),
+			.walkParallelTasks = getPositiveConfig(WALK_PARALLEL_TASKS_PER_PASS, defaultDispatcherBudgets.walkParallelTasks),
+			.creatureAsyncTasksPerBucket = getPositiveConfig(CREATURE_ASYNC_TASKS_PER_BUCKET, defaultDispatcherBudgets.creatureAsyncTasksPerBucket),
+			.deferredGameplayTasks = getPositiveConfig(DEFERRED_GAMEPLAY_TASKS_PER_PASS, defaultDispatcherBudgets.deferredGameplayTasks),
+			.workerCompletions = getPositiveConfig(WORKER_COMPLETIONS_PER_PASS, defaultDispatcherBudgets.workerCompletions),
+			.sliceRuntime = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS, static_cast<size_t>(defaultSliceDuration.count()))),
 		};
 	}
 
@@ -111,6 +120,7 @@ Dispatcher &Dispatcher::getInstance() {
 void Dispatcher::init() {
 	UPDATE_OTSYS_TIME();
 	g_monsterComputeService().setCompletionNotifier([this] { notify(); });
+	g_configManager().deferUntilLoaded([this] { notify(); });
 
 	auto dispatcherStarted = std::make_shared<std::promise<void>>();
 	auto futureStarted = dispatcherStarted->get_future();
@@ -497,8 +507,8 @@ void Dispatcher::refreshAdaptiveBudgets() {
 		configured,
 		visibleWindow.percentile(0.99),
 		oldestPlayerVisibleReadyAge(now),
-		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS)),
-		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS))
+		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count())),
+		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS, DEFAULT_DISPATCHER_EMERGENCY.count()))
 	);
 	activeBudgets = decision.budgets;
 
@@ -703,7 +713,7 @@ void Dispatcher::executeReadyEvents() {
 	std::array<std::chrono::microseconds, laneCount> oldestReadyAge {};
 	std::array<std::chrono::microseconds, laneCount> serialRuntime {};
 	const auto now = policy.now();
-	const auto slo = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS));
+	const auto slo = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count()));
 	size_t remainingPassTasks = 0;
 	for (size_t laneId = 0; laneId < laneCount; ++laneId) {
 		oldestReadyAge[laneId] = DispatcherPolicy::inspectQueueAt(m_tasks[laneId], now).oldestReadyAge;

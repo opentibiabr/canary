@@ -39,7 +39,7 @@ bool ConfigManager::load() {
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
-	if (!loaded) {
+	if (!loaded.load(std::memory_order_relaxed)) {
 		loadBoolConfig(L, BIND_ONLY_GLOBAL_ADDRESS, "bindOnlyGlobalAddress", false);
 		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
@@ -417,7 +417,15 @@ bool ConfigManager::load() {
 
 	loadLuaOTCFeatures(L);
 
-	loaded = true;
+	std::vector<std::function<void()>> callbacks;
+	{
+		std::scoped_lock lock(deferredCallbacksMutex);
+		loaded.store(true, std::memory_order_release);
+		callbacks = std::move(deferredCallbacks);
+	}
+	for (auto &callback : callbacks) {
+		callback();
+	}
 	lua_close(L);
 	return true;
 }
@@ -432,6 +440,22 @@ bool ConfigManager::reload() {
 		g_game().incrementMotdNum();
 	}
 	return result;
+}
+
+void ConfigManager::deferUntilLoaded(std::function<void()> callback) {
+	if (!callback) {
+		return;
+	}
+
+	{
+		std::scoped_lock lock(deferredCallbacksMutex);
+		if (!loaded.load(std::memory_order_acquire)) {
+			deferredCallbacks.emplace_back(std::move(callback));
+			return;
+		}
+	}
+
+	callback();
 }
 
 void ConfigManager::missingConfigWarning(const char* identifier) {

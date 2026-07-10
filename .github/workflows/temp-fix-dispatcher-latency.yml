@@ -1,0 +1,59 @@
+---
+name: Temporary Dispatcher Latency Fix
+
+on:
+  pull_request_target:
+    types:
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  apply:
+    if: >-
+      github.event.pull_request.base.ref == 'main' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.head.ref == 'fix/issue-3609-house-wrap-clean'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the pull request branch
+        uses: actions/checkout@v5
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          fetch-depth: 0
+
+      - name: Use a fresh timestamp when enabling queue latency logging
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('src/game/scheduling/dispatcher.cpp')
+          text = path.read_text(encoding='utf-8')
+          old = 'queueLatencyLoggingStartedAt.store(OTSYS_TIME(), std::memory_order_relaxed);'
+          new = 'queueLatencyLoggingStartedAt.store(OTSYS_TIME(true), std::memory_order_relaxed);'
+          count = text.count(old)
+          if count == 0 and new in text:
+              print('Dispatcher latency fix is already applied.')
+              raise SystemExit(0)
+          if count != 1:
+              raise SystemExit(f'Expected one exact timestamp assignment, found {count}')
+          path.write_text(text.replace(old, new, 1), encoding='utf-8')
+          PY
+
+      - name: Commit the source change
+        shell: bash
+        run: |
+          if git diff --quiet -- src/game/scheduling/dispatcher.cpp; then
+            echo 'No source change to commit.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/game/scheduling/dispatcher.cpp
+          git commit -m 'fix: start dispatcher latency logging from fresh time'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}

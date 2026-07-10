@@ -1,0 +1,69 @@
+name: AI Agent Tools
+
+on:
+  push:
+    branches:
+      - "ai/**"
+    paths:
+      - "tools/ai-agent/**"
+      - "docs/ai-agent/**"
+      - ".github/workflows/ai-agent-tools.yml"
+  pull_request:
+    paths:
+      - "tools/ai-agent/**"
+      - "docs/ai-agent/**"
+      - ".github/workflows/ai-agent-tools.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-tools:
+    name: Validate AI agent tools
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Run unit tests
+        run: python -m unittest discover -s tools/ai-agent -p "test_*.py" -v
+
+      - name: Generate identifier registry
+        run: python tools/ai-agent/scan_ids.py --root . --output artifacts/ID_REGISTRY.json
+
+      - name: Validate generated JSON
+        run: python -m json.tool artifacts/ID_REGISTRY.json > /dev/null
+
+      - name: Create registry summary
+        shell: python
+        run: |
+          import json
+          from pathlib import Path
+
+          registry = json.loads(Path("artifacts/ID_REGISTRY.json").read_text(encoding="utf-8"))
+          lines = ["# Identifier registry summary", ""]
+          for name, data in registry["namespaces"].items():
+              lines.append(f"- {name}: {len(data['entries'])}")
+          lines.append(f"- conflicts: {len(registry['conflicts'])}")
+          Path("artifacts/ID_REGISTRY_SUMMARY.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+          summary = Path(__import__("os").environ["GITHUB_STEP_SUMMARY"])
+          summary.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+      - name: Upload identifier registry
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-agent-id-registry
+          path: |
+            artifacts/ID_REGISTRY.json
+            artifacts/ID_REGISTRY_SUMMARY.md
+          if-no-files-found: error
+          retention-days: 14

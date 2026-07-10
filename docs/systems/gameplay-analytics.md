@@ -34,6 +34,10 @@ The feature does not issue SQL writes for individual hits. Data is accumulated i
 | `trackLoot` | `false` | Store loot reported through the API. |
 | `anonymizePlayers` | `false` | Do not persist character names. Player IDs remain for relational integrity. |
 | `queueLimit` | `10000` | Maximum completed sessions awaiting persistence. |
+| `maxRetryAttempts` | `5` | Maximum retries after the initial failed persistence attempt. |
+| `retryBaseDelaySeconds` | `30` | Initial retry delay. |
+| `retryMaxDelaySeconds` | `900` | Maximum retry delay after exponential backoff. |
+| `deadLetterQueueLimit` | `1000` | Maximum failed sessions waiting to be written to `analytics_dead_letters`. |
 | `detailLevel` | `1` | Reserved detail tier from 0 to 2. |
 | `excludedPlayerNames` | `{}` | Character names excluded from collection. |
 | `excludedAccountTypes` | GM/God | Account types excluded even when staff collection is allowed. |
@@ -61,6 +65,14 @@ Sessions are created lazily on the first recorded metric. Merely logging in and 
 
 The `mana_spent` aggregate represents all negative mana changes observed by the mana-change event. Depending on server mechanics, this can include mana shield damage in addition to spell and rune costs.
 
+## Reliability and retry behaviour
+
+A failed session or detail write is retried with exponential backoff. The delay starts at `retryBaseDelaySeconds` and is capped at `retryMaxDelaySeconds`. Manual `/analytics flush` and server shutdown force delayed entries to make one immediate attempt.
+
+After `maxRetryAttempts` retries, the session leaves the normal queue and enters a bounded in-memory dead-letter queue. The runtime then tries to upsert a compact failure record into `analytics_dead_letters`. The record contains the session UUID, player reference, retry count, last error and the main aggregate counters. Dead-letter writes are idempotent by `session_uuid`.
+
+A database outage therefore does not block gameplay. Normal sessions remain bounded by `queueLimit`, dead letters remain bounded by `deadLetterQueueLimit`, and all overflows are logged and counted.
+
 ## Optional integration API
 
 Scripts can report domain-specific data that cannot be inferred reliably from generic combat events:
@@ -80,11 +92,22 @@ Supply and loot collection remain disabled until enabled in the configuration.
 ```text
 /analytics status
 /analytics flush
+/analytics deadletters
 /analytics enable
 /analytics disable
 ```
 
-Runtime enable/disable does not edit the Lua configuration and resets after restart. Runtime enable registers the required creature events for players who are already online.
+`/analytics flush` forces normal and delayed retry entries to run immediately. `/analytics deadletters` retries persistence of pending dead-letter records. Runtime enable/disable does not edit the Lua configuration and resets after restart. Runtime enable registers the required creature events for players who are already online.
+
+The status output includes:
+
+- `activeSessions`, `queuedSessions`, `retryingSessions` and `deadLetterQueueSize`;
+- `successfulFlushes`, `failedFlushes` and `persistedSessions`;
+- `retriedSessions`, `deadLetteredSessions` and `persistedDeadLetters`;
+- `droppedSessions` and `droppedDeadLetters`;
+- `lastFlushDurationMs`, `lastFlushProcessed`, `lastFlushFailed` and `oldestQueuedAgeSeconds`.
+
+These counters intentionally have no per-player, per-spell or per-monster labels.
 
 ## Recommended rollout
 
@@ -101,7 +124,7 @@ trackLoot = false
 detailLevel = 1
 ```
 
-After validating CPU, memory, database queue size, and data quality, enable explicit spell, supply, and loot reporting.
+After validating CPU, memory, database queue size, retry counters and data quality, enable explicit spell, supply and loot reporting.
 
 ## Example balance queries
 
@@ -161,9 +184,10 @@ HAVING SUM(p.casts) >= 100;
 - Staff characters are excluded by default.
 - PvP and player-summon combat are excluded by default.
 - Completed sessions are bounded by `queueLimit`.
+- Retry attempts use bounded exponential backoff.
+- Failed sessions are moved to a bounded dead-letter queue.
 - Database-disabled mode does not accumulate an undrainable queue.
-- Session and detail writes use idempotent upserts, so a retry does not duplicate aggregates.
-- Failed session or detail writes requeue the complete session while capacity remains.
+- Session, detail and dead-letter writes use idempotent upserts.
 - Database failures do not stop the game server.
 - Player names can be omitted from analytics records.
-- Prometheus labels are intentionally not added per player, spell, or monster to avoid cardinality problems.
+- Prometheus labels are intentionally not added per player, spell or monster to avoid cardinality problems.

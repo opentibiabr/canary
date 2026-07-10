@@ -41,10 +41,14 @@ jobs:
       - name: Generate project structure index
         run: python tools/ai-agent/scan_project.py --root . --output artifacts/PROJECT_STRUCTURE.json
 
+      - name: Generate gameplay content index
+        run: python tools/ai-agent/scan_content.py --root . --output artifacts/CONTENT_INDEX.json
+
       - name: Validate generated JSON
         run: |
           python -m json.tool artifacts/ID_REGISTRY.json > /dev/null
           python -m json.tool artifacts/PROJECT_STRUCTURE.json > /dev/null
+          python -m json.tool artifacts/CONTENT_INDEX.json > /dev/null
 
       - name: Create audit summary
         shell: python
@@ -55,6 +59,7 @@ jobs:
 
           registry = json.loads(Path("artifacts/ID_REGISTRY.json").read_text(encoding="utf-8"))
           structure = json.loads(Path("artifacts/PROJECT_STRUCTURE.json").read_text(encoding="utf-8"))
+          content = json.loads(Path("artifacts/CONTENT_INDEX.json").read_text(encoding="utf-8"))
 
           lines = ["# AI agent repository audit", "", "## Identifier registry", ""]
           for name, data in registry["namespaces"].items():
@@ -70,6 +75,11 @@ jobs:
           for name, count in structure["summary"]["categoryCounts"].items():
               lines.append(f"- {name}: {count}")
 
+          lines.extend(["", "## Gameplay content", ""])
+          for name, count in content["summary"]["countsByType"].items():
+              lines.append(f"- {name}: {count}")
+          lines.append(f"- duplicate definitions: {content['summary']['duplicateDefinitions']}")
+
           report = "\n".join(lines) + "\n"
           Path("artifacts/AI_AGENT_AUDIT_SUMMARY.md").write_text(report, encoding="utf-8")
           Path(os.environ["GITHUB_STEP_SUMMARY"]).write_text(report, encoding="utf-8")
@@ -81,6 +91,7 @@ jobs:
           path: |
             artifacts/ID_REGISTRY.json
             artifacts/PROJECT_STRUCTURE.json
+            artifacts/CONTENT_INDEX.json
             artifacts/AI_AGENT_AUDIT_SUMMARY.md
           if-no-files-found: error
           retention-days: 14

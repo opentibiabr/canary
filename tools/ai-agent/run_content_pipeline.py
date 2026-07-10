@@ -11,6 +11,7 @@ from id_allocator import add_reservation
 from io_utils import atomic_write_json, dumps_json, read_json
 from plan_content import plan as make_plan
 from render_content import render
+from research_provenance import write_report
 from validate_content_plan import validate as validate_plan
 from validate_task_spec import validate as validate_task
 
@@ -57,6 +58,8 @@ def main():
     if not specification["ok"]:
         return 1
 
+    write_report(task, output / "RESEARCH_PROVENANCE.md")
+
     plan = make_plan(task, content, registry, reservations)
     atomic_write_json(output / "CONTENT_PLAN.json", plan)
 
@@ -76,6 +79,7 @@ def main():
         f'- task: {task["name"]}',
         "- status: passed",
         f"- preview files: {preview_count}",
+        f"- declared sources: {len(task.get('sources', []))}",
         f"- reserved identifiers: {sum(len(plan.get(key, [])) for key in ('proposedStorage', 'proposedActionIds', 'proposedUniqueIds'))}",
         f"- artifacts: {output.as_posix()}",
         "",
@@ -88,6 +92,7 @@ def main():
                 "ok": True,
                 "output": str(output),
                 "previewFiles": preview_count,
+                "sourceCount": len(task.get("sources", [])),
             }
         ),
         end="",

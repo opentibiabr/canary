@@ -183,10 +183,10 @@ Dispatcher::LaneExecutionResult Dispatcher::executeSerialLane(DispatcherLane lan
 		dispacherContext.taskName = tasks[taskIndex].getContext();
 		dispacherContext.type = DispatcherType::Event;
 		lastProducerTokens[laneId] = tasks[taskIndex].getMeta().producerToken;
+		releaseDispatcherSlot(tasks[taskIndex]);
 		if (executeTask(tasks[taskIndex], lane)) {
 			++dispatcherCycle;
 		}
-		releaseDispatcherSlot(tasks[taskIndex]);
 		tasks.erase(tasks.begin() + static_cast<std::ptrdiff_t>(taskIndex));
 		++result.tasks;
 		result.cost += taskCost;
@@ -226,6 +226,9 @@ Dispatcher::LaneExecutionResult Dispatcher::executeBarrierLane(DispatcherLane la
 	const auto laneStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 	logQueueLatency(lane);
 	const auto barrierStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+	for (size_t index = 0; index < result.tasks; ++index) {
+		releaseDispatcherSlot(tasks[index]);
+	}
 	asyncWait(result.tasks, [this, lane, &tasks](size_t index) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
 		dispacherContext.taskName = tasks[index].getContext();
@@ -235,9 +238,6 @@ Dispatcher::LaneExecutionResult Dispatcher::executeBarrierLane(DispatcherLane la
 	if (telemetryEnabled) {
 		laneTelemetry[laneId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), result.tasks);
 		laneTelemetry[laneId].groupRuntime.observe(policy.elapsedSince(laneStartedAt), result.tasks);
-	}
-	for (size_t index = 0; index < result.tasks; ++index) {
-		releaseDispatcherSlot(tasks[index]);
 	}
 	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(result.tasks));
 	return result;
@@ -620,22 +620,49 @@ uint32_t Dispatcher::laneQuantum(DispatcherLane lane) const {
 	return 1;
 }
 
-bool Dispatcher::reserveDispatcherSlot(Task &task) {
-	const auto lane = task.getMeta().lane;
+bool Dispatcher::tryReserveLaneSlot(DispatcherLane lane) {
 	const auto laneId = static_cast<size_t>(lane);
-	if (laneId >= reservedLaneSlots.size() || lane == DispatcherLane::WorkerCompletion || task.dispatcherSlotReserved) {
+	if (laneId >= reservedLaneSlots.size() || lane == DispatcherLane::WorkerCompletion) {
 		observeLaneRejection(laneId < reservedLaneSlots.size() ? lane : DispatcherLane::Maintenance);
 		return false;
 	}
 
 	if (reservedLaneSlots[laneId].tryReserve(DISPATCHER_LANE_QUEUE_CAPACITY)) {
-		task.dispatcherSlotReserved = true;
-		task.reservedLane = lane;
 		return true;
 	}
 
 	observeLaneRejection(lane);
 	return false;
+}
+
+void Dispatcher::adoptReservedLaneSlot(Task &task, DispatcherLane lane) {
+	task.dispatcherSlotReserved = true;
+	task.reservedLane = lane;
+}
+
+void Dispatcher::releaseLaneSlot(DispatcherLane lane) {
+	const auto laneId = static_cast<size_t>(lane);
+	if (laneId >= reservedLaneSlots.size()) {
+		return;
+	}
+
+	const bool released = reservedLaneSlots[laneId].release();
+	assert(released);
+	(void)released;
+}
+
+bool Dispatcher::reserveDispatcherSlot(Task &task) {
+	if (task.dispatcherSlotReserved) {
+		observeLaneRejection(task.getMeta().lane);
+		return false;
+	}
+
+	const auto lane = task.getMeta().lane;
+	if (!tryReserveLaneSlot(lane)) {
+		return false;
+	}
+	adoptReservedLaneSlot(task, lane);
+	return true;
 }
 
 void Dispatcher::releaseDispatcherSlot(Task &task) {
@@ -648,10 +675,7 @@ void Dispatcher::releaseDispatcherSlot(Task &task) {
 	if (laneId >= reservedLaneSlots.size()) {
 		return;
 	}
-
-	const bool released = reservedLaneSlots[laneId].release();
-	assert(released);
-	(void)released;
+	releaseLaneSlot(static_cast<DispatcherLane>(laneId));
 }
 
 void Dispatcher::observeLaneRejection(DispatcherLane lane) {
@@ -783,7 +807,16 @@ void Dispatcher::executeScheduledTask(const std::shared_ptr<Task> &task) {
 		scheduledLatenessTelemetry.observe(lateness, 1, task->getContext());
 	}
 
-	dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
+	const bool cycle = task->isCycle();
+	if (!cycle) {
+		// A one-shot event no longer occupies admission while its callback queues
+		// a successor. This lets bounded recurring chains replace themselves even
+		// when their lane is exactly at capacity.
+		scheduledTasksRef.erase(task->getId());
+		releaseDispatcherSlot(*task);
+	}
+
+	dispacherContext.type = cycle ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
 	bool executed = false;
 	if (!task->isCanceled()) {
 		if (task->hasExpired()) {
@@ -794,10 +827,10 @@ void Dispatcher::executeScheduledTask(const std::shared_ptr<Task> &task) {
 		}
 	}
 
-	if (executed && task->isCycle() && !task->isCanceled()) {
+	if (executed && cycle && !task->isCanceled()) {
 		task->updateTime();
 		scheduledTasks.insert(task);
-	} else {
+	} else if (cycle) {
 		scheduledTasksRef.erase(task->getId());
 		releaseDispatcherSlot(*task);
 	}
@@ -869,12 +902,17 @@ bool Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
-	task.setLane(lane);
-	task.setProducerToken(producerToken);
-	if (!reserveDispatcherSlot(task)) {
-		thread->tasks[static_cast<size_t>(lane)].pop_back();
+	if (!tryReserveLaneSlot(lane)) {
 		return false;
+	}
+	try {
+		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
+		task.setLane(lane);
+		task.setProducerToken(producerToken);
+		adoptReservedLaneSlot(task, lane);
+	} catch (...) {
+		releaseLaneSlot(lane);
+		throw;
 	}
 	notify();
 	return true;
@@ -891,12 +929,18 @@ bool Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::PlayerWalk)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
-	task.setLane(DispatcherLane::PlayerWalk);
-	task.setProducerToken(producerToken);
-	if (!reserveDispatcherSlot(task)) {
-		thread->tasks[static_cast<size_t>(DispatcherLane::PlayerWalk)].pop_back();
+	constexpr auto lane = DispatcherLane::PlayerWalk;
+	if (!tryReserveLaneSlot(lane)) {
 		return false;
+	}
+	try {
+		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+		task.setLane(lane);
+		task.setProducerToken(producerToken);
+		adoptReservedLaneSlot(task, lane);
+	} catch (...) {
+		releaseLaneSlot(lane);
+		throw;
 	}
 	notify();
 	return true;
@@ -909,11 +953,17 @@ bool Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t ex
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::VisibleMonster)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
-	task.setLane(DispatcherLane::VisibleMonster);
-	if (!reserveDispatcherSlot(task)) {
-		thread->tasks[static_cast<size_t>(DispatcherLane::VisibleMonster)].pop_back();
+	constexpr auto lane = DispatcherLane::VisibleMonster;
+	if (!tryReserveLaneSlot(lane)) {
 		return false;
+	}
+	try {
+		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
+		task.setLane(lane);
+		adoptReservedLaneSlot(task, lane);
+	} catch (...) {
+		releaseLaneSlot(lane);
+		throw;
 	}
 	notify();
 	return true;
@@ -926,11 +976,17 @@ bool Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::st
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<size_t>(DispatcherLane::Deferred)].emplace_back(expiresAfterMs, std::move(f), context);
-	task.setLane(DispatcherLane::Deferred);
-	if (!reserveDispatcherSlot(task)) {
-		thread->tasks[static_cast<size_t>(DispatcherLane::Deferred)].pop_back();
+	constexpr auto lane = DispatcherLane::Deferred;
+	if (!tryReserveLaneSlot(lane)) {
 		return false;
+	}
+	try {
+		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
+		task.setLane(lane);
+		adoptReservedLaneSlot(task, lane);
+	} catch (...) {
+		releaseLaneSlot(lane);
+		throw;
 	}
 	notify();
 	return true;
@@ -946,12 +1002,17 @@ bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane l
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(0, std::move(f), dispacherContext.taskName);
-	task.setLane(lane);
-	task.setExecutionMode(ExecutionMode::BarrierParallel);
-	if (!reserveDispatcherSlot(task)) {
-		thread->tasks[static_cast<size_t>(lane)].pop_back();
+	if (!tryReserveLaneSlot(lane)) {
 		return false;
+	}
+	try {
+		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(0, std::move(f), dispacherContext.taskName);
+		task.setLane(lane);
+		task.setExecutionMode(ExecutionMode::BarrierParallel);
+		adoptReservedLaneSlot(task, lane);
+	} catch (...) {
+		releaseLaneSlot(lane);
+		throw;
 	}
 	notify();
 	return true;
@@ -993,6 +1054,7 @@ void Dispatcher::stopEvent(uint64_t eventId) {
 	auto it = scheduledTasksRef.find(eventId);
 	if (it != scheduledTasksRef.end()) {
 		it->second->cancel();
+		releaseDispatcherSlot(*it->second);
 		scheduledTasksRef.erase(it);
 	}
 }

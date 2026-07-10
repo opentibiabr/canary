@@ -126,6 +126,8 @@ public:
 
 	static Dispatcher &getInstance();
 
+	// Immediate enqueue methods reserve admission before moving the closure. On
+	// rejection, a caller-owned std::function remains available for a safe fallback.
 	bool addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0, DispatcherLane lane = DispatcherLane::WorldCommit, uint64_t producerToken = 0);
 	bool addProtocolEvent(std::function<void(void)> &&f, std::string_view context, uint64_t producerToken, uint32_t expiresAfterMs = 0);
 	bool addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0, uint64_t producerToken = 0); // No need context name
@@ -215,6 +217,9 @@ private:
 	inline void checkPendingTasks();
 	[[nodiscard]] size_t laneTaskBudget(DispatcherLane lane) const;
 	[[nodiscard]] uint32_t laneQuantum(DispatcherLane lane) const;
+	bool tryReserveLaneSlot(DispatcherLane lane);
+	void adoptReservedLaneSlot(Task &task, DispatcherLane lane);
+	void releaseLaneSlot(DispatcherLane lane);
 	bool reserveDispatcherSlot(Task &task);
 	void releaseDispatcherSlot(Task &task);
 	void observeLaneRejection(DispatcherLane lane);

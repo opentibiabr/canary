@@ -1007,7 +1007,7 @@ protected:
 		}
 	}
 
-	virtual void onExecuteAsyncTasks() {};
+	virtual void onExecuteAsyncTasks() { };
 
 	/**
 	 * Runs an action immediately or defers it back to the dispatcher.
@@ -1016,8 +1016,11 @@ protected:
 	 * not capture borrowed raw pointers from the caller's stack; use strong
 	 * ownership, weak ownership, or an audited stable identity for anything that
 	 * must survive the async boundary.
+	 *
+	 * @return true when the action ran immediately or was admitted for deferred
+	 * execution; false when the creature is removed or dispatcher admission fails.
 	 */
-	void safeCall(std::function<void(void)> &&action) const;
+	bool safeCall(std::function<void(void)> &&action) const;
 
 private:
 	bool canFollowMaster() const;

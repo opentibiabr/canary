@@ -658,7 +658,7 @@ void ProtocolGame::onConnectionAccepted() {
 	}
 
 	if (initialConnectionBehavior.challenge.flow == GameHandshakeFlow::ServerChallengeBeforeLogin) {
-		g_dispatcher().addProtocolEvent([self = getThis()] { self->sendLoginChallenge(); }, "ProtocolGame::sendLoginChallenge", reinterpret_cast<uintptr_t>(this), std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+		dispatchProtocolTask([self = getThis()] { self->sendLoginChallenge(); }, "ProtocolGame::sendLoginChallenge", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 	}
 }
 
@@ -1050,10 +1050,14 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_dispatcher().scheduleEvent(
+			eventConnect = scheduleProtocolTask(
 				1000,
-				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }, "ProtocolGame::connect", DispatcherLane::ProtocolInput, reinterpret_cast<uintptr_t>(this)
+				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }, "ProtocolGame::connect"
 			);
+			if (eventConnect == 0) {
+				foundPlayer->isConnecting = false;
+				return;
+			}
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
@@ -1376,10 +1380,10 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	if (accountDescriptor == "@livestream") {
-		g_dispatcher().addProtocolEvent([self = getThis(), characterName, password, operatingSystem] {
+		dispatchProtocolTask([self = getThis(), characterName, password, operatingSystem] {
 			self->castViewerLogin(characterName, password, operatingSystem);
 		},
-		                                "ProtocolGame::castViewerLogin", reinterpret_cast<uintptr_t>(this));
+		                     "ProtocolGame::castViewerLogin");
 		return;
 	}
 
@@ -1396,13 +1400,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect", DispatcherLane::ProtocolInput, reinterpret_cast<uintptr_t>(this)
+		[[maybe_unused]] auto eventId = scheduleProtocolTask(
+			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect"
 		);
 		return;
 	}
 
-	g_dispatcher().addProtocolEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__, reinterpret_cast<uintptr_t>(this));
+	dispatchProtocolTask([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
 }
 
 void ProtocolGame::sendLoginChallenge() {
@@ -1486,7 +1490,7 @@ void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
 	};
 
 	if (g_dispatcher().context().isBarrierParallel()) {
-		g_dispatcher().addProtocolEvent(std::move(writeMessage), __FUNCTION__, reinterpret_cast<uintptr_t>(this));
+		dispatchProtocolTask(std::move(writeMessage), __FUNCTION__);
 	} else {
 		writeMessage();
 	}
@@ -1554,9 +1558,12 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-			100, [self = getThis()] { self->sendPing(); }, "ProtocolGame::sendPing", DispatcherLane::ProtocolInput, reinterpret_cast<uintptr_t>(this)
+		const auto eventId = scheduleProtocolTask(
+			100, [self = getThis()] { self->sendPing(); }, "ProtocolGame::sendPing"
 		);
+		if (eventId == 0) {
+			return;
+		}
 
 		if (!player->spawn()) {
 			disconnect();
@@ -1572,8 +1579,8 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
-			100, [self = getThis()] { self->sendPingBack(); }, "ProtocolGame::sendPingBack", DispatcherLane::ProtocolInput, reinterpret_cast<uintptr_t>(this)
+		[[maybe_unused]] auto eventId = scheduleProtocolTask(
+			100, [self = getThis()] { self->sendPingBack(); }, "ProtocolGame::sendPingBack"
 		);
 		return;
 	}

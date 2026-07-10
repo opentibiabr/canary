@@ -263,10 +263,20 @@ void Creature::onCreatureWalk() {
 		}
 	};
 
-	if (getPlayer()) {
-		g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID());
-	} else {
-		g_dispatcher().addCreatureWalkEvent(std::move(walkTask));
+	const bool playerWalk = getPlayerRaw() != nullptr;
+	const bool accepted = playerWalk
+		? g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID())
+		: g_dispatcher().addCreatureWalkEvent(std::move(walkTask));
+	if (!accepted) {
+		checkingWalkCreature = false;
+		eventWalk = 0;
+		if (playerWalk) {
+			listWalkDir.clear();
+			cancelNextWalk = false;
+			onWalkAborted();
+		} else {
+			forceUpdateFollowPath = true;
+		}
 	}
 }
 
@@ -812,13 +822,19 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		std::function<void()> deathEvent = [self = std::weak_ptr<Creature>(getCreature())] {
 			if (const auto &creature = self.lock()) {
 				if (!creature->isRemoved()) {
 					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
 					creature->onDeath();
 				}
-			} }, "Game::executeDeath");
+			}
+		};
+		if (!g_dispatcher().addEvent(std::move(deathEvent), "Game::executeDeath")
+		    && g_dispatcher().context().getType() != DispatcherType::None
+		    && !g_dispatcher().context().isBarrierParallel()) {
+			deathEvent();
+		}
 	}
 }
 
@@ -1990,10 +2006,14 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 
 	if (shouldSchedule) {
-		g_dispatcher().addBarrierEvent([bucketIndex] {
+		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex] {
 			Creature::processAsyncTaskBucket(bucketIndex);
 		},
-		                               DispatcherLane::MonsterAI);
+		                                                     DispatcherLane::MonsterAI);
+		if (!accepted) {
+			std::scoped_lock lock(bucket.mutex);
+			bucket.scheduled = false;
+		}
 	}
 }
 
@@ -2050,10 +2070,14 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	pendingCreatures.clear();
 
 	if (shouldReschedule) {
-		g_dispatcher().addBarrierEvent([bucketIndex] {
+		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex] {
 			Creature::processAsyncTaskBucket(bucketIndex);
 		},
-		                               DispatcherLane::MonsterAI);
+		                                                     DispatcherLane::MonsterAI);
+		if (!accepted) {
+			std::scoped_lock lock(bucket.mutex);
+			bucket.scheduled = false;
+		}
 	}
 
 	g_dispatcher().observeInternalWork(
@@ -2113,19 +2137,23 @@ void Creature::sendAsyncTasks() {
 	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID());
 }
 
-void Creature::safeCall(std::function<void(void)> &&action) const {
+bool Creature::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isBarrierParallel()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
+		return g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
 			if (const auto self = weak_self.lock()) {
 				if (!self->isInternalRemoved) {
 					action();
 				}
 			}
 		},
-		                        g_dispatcher().context().getName());
-	} else if (!isInternalRemoved) {
-		action();
+		                               g_dispatcher().context().getName());
 	}
+	if (isInternalRemoved) {
+		return false;
+	}
+
+	action();
+	return true;
 }
 
 void Creature::setCombatDamage(const CombatDamage &damage) {

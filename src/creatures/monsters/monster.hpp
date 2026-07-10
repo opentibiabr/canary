@@ -186,6 +186,7 @@ public:
 
 	void onThink(uint32_t interval) override;
 	bool trySchedulePostThink();
+	void cancelScheduledPostThink();
 	void executePostThink(uint32_t interval);
 	bool requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow);
 	void supersedeFollowPathCompute();

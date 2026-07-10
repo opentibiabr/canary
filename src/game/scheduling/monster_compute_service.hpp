@@ -97,7 +97,7 @@ public:
 	void shutdown();
 	void setCompletionNotifier(CompletionNotifier notifier);
 
-	[[nodiscard]] MonsterComputeSubmission submit(MonsterComputePriority priority, Work work, std::string_view context);
+	[[nodiscard]] MonsterComputeSubmission submit(MonsterComputePriority priority, Work work, std::string_view context, Completion failureCompletion = {});
 	size_t drainCompletions(size_t maxCompletions, CompletionExecutor executor = {});
 
 	[[nodiscard]] MonsterComputeStats getStats() const;
@@ -116,6 +116,7 @@ private:
 	struct Request {
 		MonsterComputeToken token = 0;
 		Work work;
+		Completion failureCompletion;
 		std::string context;
 	};
 

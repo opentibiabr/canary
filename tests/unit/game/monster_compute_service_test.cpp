@@ -91,6 +91,31 @@ TEST(MonsterComputeServiceTest, ReleasesTokensForFailedAndEmptyCompletions) {
 	service.shutdown();
 }
 
+TEST(MonsterComputeServiceTest, RunsFailureCompletionOnTheCompletionConsumer) {
+	MonsterComputeService service;
+	MonsterComputeConfig config;
+	config.capacity = 1;
+	config.hardwareConcurrency = 1;
+	service.start(config);
+
+	bool recovered = false;
+	const auto submission = service.submit(
+		MonsterComputePriority::Visible,
+		[](MonsterComputeToken, std::stop_token) -> MonsterComputeService::Completion {
+			throw std::runtime_error("expected");
+		},
+		"MonsterComputeServiceTest::failureCompletion",
+		[&recovered] { recovered = true; }
+	);
+	ASSERT_TRUE(submission.accepted());
+	EXPECT_FALSE(recovered);
+
+	EXPECT_EQ(service.drainCompletions(1), 1);
+	EXPECT_TRUE(recovered);
+	EXPECT_EQ(service.getStats().outstanding, 0);
+	service.shutdown();
+}
+
 TEST(MonsterComputeServiceTest, CancelsQueuedAndRunningTokensDuringShutdown) {
 	MonsterComputeService service;
 	MonsterComputeConfig config;

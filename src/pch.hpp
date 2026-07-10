@@ -62,6 +62,7 @@
 #include <optional>
 #include <stack>
 #include <stdexcept>
+#include <stop_token>
 #include <source_location>
 #include <span>
 #include <compare>

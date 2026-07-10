@@ -2950,6 +2950,10 @@ void Player::setNextWalkTask(const std::shared_ptr<Task> &task) {
 		task->setLane(DispatcherLane::PlayerWalk);
 		task->setProducerToken(getID());
 		nextStepEvent = g_dispatcher().scheduleEvent(task);
+		if (nextStepEvent == 0) {
+			sendCancelWalk();
+			return;
+		}
 		resetIdleTime();
 	}
 }
@@ -2968,6 +2972,10 @@ void Player::setNextActionTask(const std::shared_ptr<Task> &task, bool resetIdle
 		task->setLane(DispatcherLane::PlayerAction);
 		task->setProducerToken(getID());
 		actionTaskEvent = g_dispatcher().scheduleEvent(task);
+		if (actionTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
 		if (resetIdleTime) {
 			this->resetIdleTime();
 		}
@@ -2984,6 +2992,9 @@ void Player::setNextActionPushTask(const std::shared_ptr<Task> &task) {
 		task->setLane(DispatcherLane::PlayerAction);
 		task->setProducerToken(getID());
 		actionTaskEventPush = g_dispatcher().scheduleEvent(task);
+		if (actionTaskEventPush == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 	}
 }
 
@@ -2999,6 +3010,9 @@ void Player::setNextPotionActionTask(const std::shared_ptr<Task> &task) {
 		task->setLane(DispatcherLane::PlayerAction);
 		task->setProducerToken(getID());
 		actionPotionTaskEvent = g_dispatcher().scheduleEvent(task);
+		if (actionPotionTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 		// resetIdleTime();
 	}
 }
@@ -3329,6 +3343,9 @@ void Player::updateImbuementTrackerStats() const {
 				DispatcherLane::PlayerAction,
 				getID()
 			);
+			if (m_pendingImbuementTrackerEventId == 0) {
+				m_hasPendingImbuementTrackerUpdate = false;
+			}
 		}
 		return;
 	}
@@ -6143,6 +6160,9 @@ void Player::onWalkComplete() {
 		walkTask->setLane(DispatcherLane::PlayerAction);
 		walkTask->setProducerToken(getID());
 		walkTaskEvent = g_dispatcher().scheduleEvent(walkTask);
+		if (walkTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 		walkTask = nullptr;
 	}
 }
@@ -12342,12 +12362,15 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_game().queuePlayerAutoWalk(getID(), std::move(listDir));
+			if (!g_game().queuePlayerAutoWalk(getID(), std::move(listDir))) {
+				return true;
+			}
 			const auto &task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {
 			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+			return true;
 		}
 	}
 	return false;

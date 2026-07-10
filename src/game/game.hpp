@@ -352,8 +352,10 @@ public:
 	 * Queue autowalk on the walk dispatcher lane.
 	 *
 	 * Captures only the player id and a path snapshot; do not capture Player or Creature ownership here.
+	 *
+	 * @return true when the walk was admitted; false after canceling dependent walk work.
 	 */
-	void queuePlayerAutoWalk(uint32_t playerId, std::vector<Direction> listDir);
+	bool queuePlayerAutoWalk(uint32_t playerId, std::vector<Direction> listDir);
 	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);

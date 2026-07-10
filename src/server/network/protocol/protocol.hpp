@@ -11,6 +11,11 @@
 
 #include "server/server_definitions.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <functional>
+	#include <string_view>
+#endif
+
 class OutputMessage;
 using OutputMessage_ptr = std::shared_ptr<OutputMessage>;
 class Connection;
@@ -55,6 +60,8 @@ public:
 
 protected:
 	void disconnect() const;
+	bool dispatchProtocolTask(std::function<void()> &&task, std::string_view context, uint32_t expiresAfterMs = 0) const;
+	uint64_t scheduleProtocolTask(uint32_t delay, std::function<void()> &&task, std::string_view context) const;
 
 	void enableXTEAEncryption() {
 		encryptionEnabled = true;

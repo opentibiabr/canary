@@ -1057,11 +1057,15 @@ bool Monster::requestTargetSearchCompute(TargetSearchType_t searchType) {
 	targetSearchComputeOutstanding = true;
 	activeTargetSearchComputeGeneration = generation;
 	const auto monsterId = getID();
-	safeCall([monsterId, generation] {
+	const bool accepted = safeCall([monsterId, generation] {
 		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
 			monster->prepareTargetSearchCompute(generation);
 		}
 	});
+	if (!accepted) {
+		clearTargetSearchCompute();
+		return false;
+	}
 	return true;
 }
 
@@ -1196,7 +1200,12 @@ void Monster::prepareTargetSearchCompute(uint64_t generation) {
 				}
 			};
 		},
-		"Monster::targetRanking"
+		"Monster::targetRanking",
+		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, {}, { .canceled = true });
+			}
+		}
 	);
 	if (!submission.accepted()) {
 		clearTargetSearchCompute();
@@ -1593,6 +1602,10 @@ bool Monster::trySchedulePostThink() {
 	return pendingPostThink.tryEnqueue();
 }
 
+void Monster::cancelScheduledPostThink() {
+	(void)pendingPostThink.consume();
+}
+
 void Monster::executePostThink(uint32_t interval) {
 	const auto readyAt = pendingPostThink.consume();
 	if (!readyAt) {
@@ -1701,11 +1714,14 @@ void Monster::startPendingCombatIntention() {
 	activeCombatIntentionGeneration = pendingCombatIntention->generation;
 	const auto monsterId = getID();
 	const auto generation = activeCombatIntentionGeneration;
-	safeCall([monsterId, generation] {
+	const bool accepted = safeCall([monsterId, generation] {
 		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
 			monster->prepareCombatIntention(generation);
 		}
 	});
+	if (!accepted) {
+		clearCombatIntention();
+	}
 }
 
 void Monster::prepareCombatIntention(uint64_t generation) {
@@ -1765,7 +1781,12 @@ void Monster::prepareCombatIntention(uint64_t generation) {
 				}
 			};
 		},
-		"Monster::combatIntention"
+		"Monster::combatIntention",
+		[monsterId, generation] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->completeCombatIntention(generation, { .canceled = true });
+			}
+		}
 	);
 	if (!submission.accepted()) {
 		clearCombatIntention();
@@ -3432,11 +3453,19 @@ bool Monster::requestFollowPathCompute(const std::shared_ptr<Creature> &followCr
 	followPathComputeOutstanding = true;
 	activeFollowPathComputeGeneration = generation;
 	const auto monsterId = getID();
-	safeCall([monsterId, generation] {
+	const bool accepted = safeCall([monsterId, generation] {
 		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
 			monster->prepareFollowPathCompute(generation);
 		}
 	});
+	if (!accepted) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		pendingFollowPathCompute.reset();
+		forceUpdateFollowPath = true;
+		return true;
+	}
 	return true;
 }
 
@@ -3500,7 +3529,12 @@ void Monster::prepareFollowPathCompute(uint64_t generation) {
 				}
 			};
 		},
-		"Monster::followPath"
+		"Monster::followPath",
+		[monsterId, generation] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->rejectFollowPathCompute(generation);
+			}
+		}
 	);
 	if (!submission.accepted()) {
 		rejectFollowPathCompute(generation);

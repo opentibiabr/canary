@@ -41,8 +41,12 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		if (result.second) {
 			if (timerEventId == 0) {
 				timerEventId = g_dispatcher().scheduleEvent(
-					SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer"
+					SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer", DispatcherLane::Maintenance
 				);
+				if (timerEventId == 0) {
+					timerMap.erase(result.first);
+					return false;
+				}
 			}
 			return true;
 		}
@@ -56,8 +60,12 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		if (result.second) {
 			if (thinkEventId == 0) {
 				thinkEventId = g_dispatcher().scheduleEvent(
-					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think"
+					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think", DispatcherLane::Maintenance
 				);
+				if (thinkEventId == 0) {
+					thinkMap.erase(result.first);
+					return false;
+				}
 			}
 			return true;
 		}
@@ -80,6 +88,7 @@ void GlobalEvents::save() const {
 }
 
 void GlobalEvents::timer() {
+	timerEventId = 0;
 	const time_t now = time(nullptr);
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -115,12 +124,13 @@ void GlobalEvents::timer() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		timerEventId = g_dispatcher().scheduleEvent(
-			std::max<int64_t>(1000, nextScheduledTime * 1000), [this] { timer(); }, __FUNCTION__
+			std::max<int64_t>(1000, nextScheduledTime * 1000), [this] { timer(); }, __FUNCTION__, DispatcherLane::Maintenance
 		);
 	}
 }
 
 void GlobalEvents::think() {
+	thinkEventId = 0;
 	const int64_t now = OTSYS_TIME();
 
 	int64_t nextScheduledTime = std::numeric_limits<int64_t>::max();
@@ -152,7 +162,7 @@ void GlobalEvents::think() {
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		const auto delay = static_cast<uint32_t>(nextScheduledTime);
 		thinkEventId = g_dispatcher().scheduleEvent(
-			delay, [this] { think(); }, "GlobalEvents::think"
+			delay, [this] { think(); }, "GlobalEvents::think", DispatcherLane::Maintenance
 		);
 	}
 }

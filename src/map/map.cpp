@@ -24,6 +24,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
+	#include <functional>
 	#include <limits>
 #endif
 
@@ -722,7 +723,7 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);
 	}
 
-	auto events = [creature, oldTile, newTile] {
+	std::function<void()> events = [creature, oldTile, newTile] {
 		oldTile->postRemoveNotification(creature, newTile, 0);
 		newTile->postAddNotification(creature, oldTile, 0);
 		g_game().afterCreatureZoneChange(creature, oldTile->getZones(), newTile->getZones());
@@ -730,7 +731,9 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 
 	if (g_dispatcher().context().isMovementCommit()) {
 		// Monster movement observers enqueue barrier-parallel work, so post-move actions stay deferred.
-		g_dispatcher().addEvent(std::move(events), "Map::moveCreature");
+		if (!g_dispatcher().addEvent(std::move(events), "Map::moveCreature")) {
+			events();
+		}
 	} else {
 		events();
 	}

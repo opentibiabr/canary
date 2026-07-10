@@ -33,7 +33,7 @@ void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
 }
 
 bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
-	const bool accepted = g_dispatcher().addProtocolEvent(
+	return dispatchProtocolTask(
 		[&msg, protocolWeak = std::weak_ptr<Protocol>(shared_from_this())]() {
 			if (const auto &protocol = protocolWeak.lock()) {
 				if (const auto &protocolConnection = protocol->getConnection()) {
@@ -42,16 +42,8 @@ bool Protocol::sendRecvMessageCallback(NetworkMessage &msg) {
 				}
 			}
 		},
-		__FUNCTION__,
-		reinterpret_cast<uintptr_t>(this)
+		__FUNCTION__
 	);
-	if (!accepted) {
-		if (const auto &connection = getConnection()) {
-			connection->close(FORCE_CLOSE);
-		}
-	}
-
-	return accepted;
 }
 
 bool Protocol::onRecvMessage(NetworkMessage &msg) {
@@ -82,6 +74,26 @@ void Protocol::send(OutputMessage_ptr msg) const {
 	if (auto connection = getConnection()) {
 		connection->send(msg);
 	}
+}
+
+bool Protocol::dispatchProtocolTask(std::function<void()> &&task, std::string_view context, uint32_t expiresAfterMs) const {
+	const bool accepted = g_dispatcher().addProtocolEvent(std::move(task), context, reinterpret_cast<uintptr_t>(this), expiresAfterMs);
+	if (!accepted) {
+		if (const auto &connection = getConnection()) {
+			connection->close(FORCE_CLOSE);
+		}
+	}
+	return accepted;
+}
+
+uint64_t Protocol::scheduleProtocolTask(uint32_t delay, std::function<void()> &&task, std::string_view context) const {
+	const auto eventId = g_dispatcher().scheduleEvent(delay, std::move(task), context, DispatcherLane::ProtocolInput, reinterpret_cast<uintptr_t>(this));
+	if (eventId == 0) {
+		if (const auto &connection = getConnection()) {
+			connection->close(FORCE_CLOSE);
+		}
+	}
+	return eventId;
 }
 
 void Protocol::disconnect() const {

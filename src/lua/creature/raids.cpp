@@ -103,14 +103,18 @@ bool Raids::startup() {
 	setLastRaidEnd(OTSYS_TIME());
 
 	checkRaidsEvent = g_dispatcher().scheduleEvent(
-		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids"
+		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids", DispatcherLane::Maintenance
 	);
+	if (checkRaidsEvent == 0) {
+		return false;
+	}
 
 	started = true;
 	return started;
 }
 
 void Raids::checkRaids() {
+	checkRaidsEvent = 0;
 	if (g_configManager().getBoolean(DISABLE_LEGACY_RAIDS)) {
 		return;
 	}
@@ -137,7 +141,7 @@ void Raids::checkRaids() {
 	}
 
 	checkRaidsEvent = g_dispatcher().scheduleEvent(
-		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids"
+		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids", DispatcherLane::Maintenance
 	);
 }
 
@@ -221,8 +225,11 @@ void Raid::startRaid() {
 	if (raidEvent) {
 		state = RAIDSTATE_EXECUTING;
 		nextEventEvent = g_dispatcher().scheduleEvent(
-			raidEvent->getDelay(), [this, raidEvent] { executeRaidEvent(raidEvent); }, "Raid::executeRaidEvent"
+			raidEvent->getDelay(), [this, raidEvent] { executeRaidEvent(raidEvent); }, "Raid::executeRaidEvent", DispatcherLane::Maintenance
 		);
+		if (nextEventEvent == 0) {
+			resetRaid();
+		}
 	} else {
 		g_logger().warn("[raids] Raid {} has no events", name);
 		resetRaid();
@@ -230,6 +237,7 @@ void Raid::startRaid() {
 }
 
 void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
+	nextEventEvent = 0;
 	if (raidEvent->executeEvent()) {
 		nextEvent++;
 		const auto newRaidEvent = getNextRaidEvent();
@@ -237,8 +245,11 @@ void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
 		if (newRaidEvent) {
 			const uint32_t ticks = static_cast<uint32_t>(std::max<int32_t>(RAID_MINTICKS, newRaidEvent->getDelay() - raidEvent->getDelay()));
 			nextEventEvent = g_dispatcher().scheduleEvent(
-				ticks, [this, newRaidEvent] { executeRaidEvent(newRaidEvent); }, __FUNCTION__
+				ticks, [this, newRaidEvent] { executeRaidEvent(newRaidEvent); }, __FUNCTION__, DispatcherLane::Maintenance
 			);
+			if (nextEventEvent == 0) {
+				resetRaid();
+			}
 		} else {
 			resetRaid();
 		}

@@ -96,13 +96,14 @@ void MonsterComputeService::start(MonsterComputeConfig config) {
 	}
 }
 
-MonsterComputeSubmission MonsterComputeService::submit(MonsterComputePriority priority, Work work, std::string_view context) {
+MonsterComputeSubmission MonsterComputeService::submit(MonsterComputePriority priority, Work work, std::string_view context, Completion failureCompletion) {
 	if (!work || context.empty()) {
 		return { MonsterComputeSubmitStatus::Invalid, 0 };
 	}
 
 	Request request;
 	request.work = std::move(work);
+	request.failureCompletion = std::move(failureCompletion);
 	request.context = context;
 	bool runInline = false;
 	MonsterComputeToken token = 0;
@@ -282,6 +283,7 @@ void MonsterComputeService::executeRequest(Request request, std::stop_token stop
 	} catch (...) {
 		std::scoped_lock lock(mutex);
 		++failedCount;
+		completion = std::move(request.failureCompletion);
 	}
 
 	enqueueCompletion({ request.token, std::move(completion), std::move(request.context), {} });

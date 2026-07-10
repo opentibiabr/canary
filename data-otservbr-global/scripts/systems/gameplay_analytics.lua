@@ -1,5 +1,57 @@
 local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")
 
+-- Sessions are keyed by persistent player GUIDs, but online player lookup must use
+-- the runtime creature ID. Keep both identifiers to close inactive sessions safely.
+local originalStart = Analytics.start
+function Analytics.start(player)
+    local session = originalStart(player)
+    if session then
+        session.runtimeId = player:getId()
+    end
+    return session
+end
+
+function Analytics.expireInactive()
+    local timestamp = os.time()
+    local timeout = math.max(10, math.floor(tonumber(Analytics.config.combatTimeoutSeconds) or 120))
+    for playerGuid, session in pairs(Analytics.sessions) do
+        if session.lastCombatAt > 0 and timestamp - session.lastCombatAt >= timeout then
+            local player = session.runtimeId and Player(session.runtimeId) or nil
+            if player then
+                Analytics.finish(player, "combat-timeout")
+                Analytics.start(player)
+            else
+                if session.combatStartedAt > 0 then
+                    session.combatSeconds = session.combatSeconds + math.max(0, timestamp - session.combatStartedAt)
+                    session.combatStartedAt = 0
+                end
+                session.endedAt = timestamp
+                Analytics.sessions[playerGuid] = nil
+                Analytics.enqueue(session)
+            end
+        end
+    end
+end
+
+function Analytics.stopRuntime()
+    Analytics.running = false
+    local online = {}
+    for playerGuid, session in pairs(Analytics.sessions) do
+        local player = session.runtimeId and Player(session.runtimeId) or nil
+        if player then
+            online[#online + 1] = player
+        else
+            session.endedAt = os.time()
+            Analytics.sessions[playerGuid] = nil
+            Analytics.enqueue(session)
+        end
+    end
+    for _, player in ipairs(online) do
+        Analytics.finish(player, "shutdown")
+    end
+    Analytics.flush()
+end
+
 local startup = GlobalEvent("GameplayAnalyticsStartup")
 function startup.onStartup()
     Analytics.startRuntime()

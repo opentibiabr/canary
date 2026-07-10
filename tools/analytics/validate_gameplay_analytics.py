@@ -72,20 +72,25 @@ def validate_config(text: str) -> None:
     keys = set(re.findall(r"^\s*([A-Za-z][A-Za-z0-9_]*)\s*=", text, flags=re.MULTILINE))
     missing = sorted(REQUIRED_CONFIG - keys)
     require(not missing, f"missing config keys: {', '.join(missing)}")
-    require(re.search(r"^\s*enabled\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
-            "analytics must be disabled by default")
-    require(re.search(r"^\s*trackPvP\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
-            "PvP analytics must be disabled by default")
+    require(
+        re.search(r"^\s*enabled\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
+        "analytics must be disabled by default",
+    )
+    require(
+        re.search(r"^\s*trackPvP\s*=\s*false\s*,?\s*$", text, flags=re.MULTILINE) is not None,
+        "PvP analytics must be disabled by default",
+    )
 
 
 def validate_schema(text: str) -> None:
     tables = set(re.findall(r"CREATE TABLE IF NOT EXISTS\s+`([^`]+)`", text, flags=re.IGNORECASE))
     missing = sorted(REQUIRED_TABLES - tables)
     require(not missing, f"missing schema tables: {', '.join(missing)}")
-    require("FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)" in text,
-            "sessions must retain player referential integrity")
-    require("UNIQUE KEY `analytics_sessions_uuid`" in text,
-            "session UUID must be unique for retry safety")
+    require(
+        "FOREIGN KEY (`player_id`) REFERENCES `players` (`id`)" in text,
+        "sessions must retain player referential integrity",
+    )
+    require("UNIQUE KEY `analytics_sessions_uuid`" in text, "session UUID must be unique for retry safety")
 
 
 def validate_library(text: str) -> None:
@@ -112,8 +117,14 @@ def validate_runtime(text: str) -> None:
     ):
         require(event in text, f"missing runtime event: {event}")
     require('TalkAction("/analytics")' in text, "missing administrative command")
-    require("creature:registerEvent(\"GameplayAnalyticsHealth\")" in text,
-            "spawned monsters must receive the health event")
+    require(
+        'player:registerEvent("GameplayAnalyticsHealth")' in text,
+        "players must receive the health event on login",
+    )
+    require(
+        "EventCallback.onSpawn" not in text and "local spawnCallback = EventCallback" not in text,
+        "runtime must not use unsupported global monster-spawn EventCallback",
+    )
 
 
 def main() -> int:

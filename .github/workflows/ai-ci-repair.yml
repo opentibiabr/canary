@@ -1,0 +1,140 @@
+---
+name: AI CI Repair
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: ai-ci-repair-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: false
+
+jobs:
+  repair:
+    if: >-
+      github.event.workflow_run.conclusion == 'failure' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      github.event.workflow_run.pull_requests[0].number != null
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out failed PR branch
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+          fetch-depth: 0
+
+      - name: Enforce repair attempt limit
+        id: attempts
+        shell: bash
+        run: |
+          git fetch origin main --quiet
+          attempts=$(git log origin/main..HEAD --format='%s' \
+            | grep -c '^fix(ci): automated repair' || true)
+          echo "count=$attempts" >> "$GITHUB_OUTPUT"
+          if [ "$attempts" -ge 3 ]; then
+            echo "allowed=false" >> "$GITHUB_OUTPUT"
+            echo "Automatic repair stopped after $attempts attempts." \
+              >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "allowed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Download failed CI logs
+        if: steps.attempts.outputs.allowed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+        shell: bash
+        run: |
+          {
+            echo "Failed workflow: $RUN_URL"
+            echo "Failed head SHA: ${{ github.event.workflow_run.head_sha }}"
+            echo
+            gh run view "$RUN_ID" --log-failed
+          } > ci-failure.log
+          test -s ci-failure.log
+
+      - name: Repair CI failure with Codex
+        if: steps.attempts.outputs.allowed == 'true'
+        id: codex
+        uses: openai/codex-action@v1
+        with:
+          openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+          prompt-file: .github/codex/prompts/repair-ci.md
+          sandbox: workspace-write
+          effort: high
+          output-file: codex-output.md
+          codex-args: '["--ephemeral"]'
+
+      - name: Validate proposed changes
+        if: steps.attempts.outputs.allowed == 'true'
+        id: changes
+        shell: bash
+        run: |
+          rm -f ci-failure.log codex-output.md
+
+          if git diff --quiet; then
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "Codex made no source changes." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          changed=$(git diff --name-only)
+          echo "$changed" >> "$GITHUB_STEP_SUMMARY"
+
+          protected='^(\.github/workflows/|\.github/CODEOWNERS$|SECURITY\.md$)'
+          if echo "$changed" | grep -Eq "$protected"; then
+            echo "Codex attempted to modify protected files." >&2
+            git restore .
+            exit 1
+          fi
+
+          echo "present=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push repair
+        if: >-
+          steps.attempts.outputs.allowed == 'true' &&
+          steps.changes.outputs.present == 'true'
+        env:
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          attempt=$(( ${{ steps.attempts.outputs.count }} + 1 ))
+          git add -A
+          git commit -m "fix(ci): automated repair (attempt $attempt)"
+          git push origin "HEAD:$BRANCH"
+          echo "Pushed an automated repair to PR #$PR_NUMBER." \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report no safe automatic fix
+        if: >-
+          steps.attempts.outputs.allowed == 'true' &&
+          steps.changes.outputs.present != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.workflow_run.pull_requests[0].number }}
+          CODEX_MESSAGE: ${{ steps.codex.outputs.final-message }}
+        shell: bash
+        run: |
+          message="### AI CI Repair
+
+          No safe automatic source-code fix was produced.
+
+          ${CODEX_MESSAGE}"
+          gh pr comment "$PR_NUMBER" --body "$message"

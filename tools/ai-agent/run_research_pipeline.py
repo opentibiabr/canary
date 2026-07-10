@@ -8,6 +8,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "lib"))
 
+from evaluate_promotion_readiness import evaluate as evaluate_readiness
+from evaluate_promotion_readiness import write_markdown as write_readiness_markdown
 from id_allocator import add_reservation
 from io_utils import atomic_write_json, dumps_json, read_json
 from normalize_research import normalize
@@ -97,7 +99,12 @@ def run(
         atomic_write_json(output / "RESEARCH_PIPELINE_RESULT.json", summary)
         return 5, summary
 
-    manifest = render(task, plan, output / "generated-content")
+    generated_root = output / "generated-content"
+    manifest = render(task, plan, generated_root)
+    readiness = evaluate_readiness(task, plan, manifest, generated_root)
+    atomic_write_json(output / "PROMOTION_READINESS.json", readiness)
+    write_readiness_markdown(readiness, output / "PROMOTION_READINESS.md")
+
     summary = {
         "ok": True,
         "stage": "complete",
@@ -108,6 +115,9 @@ def run(
         "reservedIdentifiers": sum(
             len(plan.get(key, [])) for key in ("proposedStorage", "proposedActionIds", "proposedUniqueIds")
         ),
+        "promotionStatus": readiness["status"],
+        "promotionBlockers": readiness["summary"]["blockerCount"],
+        "automaticPromotionAllowed": False,
     }
     atomic_write_json(output / "RESEARCH_PIPELINE_RESULT.json", summary)
     return 0, summary

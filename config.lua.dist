@@ -499,11 +499,6 @@ skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
 disableLegacyRaids = false
 disableMonsterArmor = false
--- Benchmark-only monster stress flags. Keep disabled in production.
--- monsterPerfTestForceActive keeps monsters out of idle state even without players or targets nearby.
--- monsterPerfTestFriendlyFire lets non-summon monsters target other non-summon monsters and prefer random target selection.
-monsterPerfTestForceActive = false
-monsterPerfTestFriendlyFire = false
 
 -- Dispatcher fairness budgets. Changes apply after config reload.
 creatureWalkTasksPerPass = 128
@@ -523,6 +518,12 @@ monsterComputeQueueCapacity = 2048
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200
+
+-- Benchmark-only monster stress flags. Keep disabled in production.
+-- monsterPerfTestForceActive keeps monsters out of idle state even without players or targets nearby.
+-- monsterPerfTestFriendlyFire lets non-summon monsters target other non-summon monsters and prefer random target selection.
+monsterPerfTestForceActive = false
+monsterPerfTestFriendlyFire = false
 
 -- Chain system
 -- NOTE: combatChainDelay: set to minimum 50 miliseconds

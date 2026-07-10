@@ -9,6 +9,7 @@
 
 #pragma once
 #include "creatures/creature.hpp"
+#include "game/scheduling/dispatcher_policy.hpp"
 #include "lua/lua_definitions.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
@@ -46,7 +47,7 @@ private:
 		std::weak_ptr<Creature> creature;
 		Position oldPos;
 		Position newPos;
-		bool scheduled = false;
+		CoalescedTaskState state;
 		bool needsFullRefresh = false;
 	};
 
@@ -147,6 +148,8 @@ public:
 	void onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) override;
 
 	void onThink(uint32_t interval) override;
+	bool trySchedulePostThink();
+	void executePostThink(uint32_t interval);
 
 	bool challengeCreature(const std::shared_ptr<Creature> &creature, int targetChangeCooldown) override;
 
@@ -302,6 +305,7 @@ private:
 	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
 	std::deque<TargetReference> targetList;
 	PendingMovementAiRefresh pendingMovementAiRefresh;
+	CoalescedTaskState pendingPostThink;
 
 	time_t timeToChangeFiendish = 0;
 

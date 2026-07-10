@@ -429,7 +429,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 }
 
 void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
-	if (pendingMovementAiRefresh.scheduled) {
+	if (!pendingMovementAiRefresh.state.tryEnqueue()) {
 		pendingMovementAiRefresh.needsFullRefresh = true;
 		return;
 	}
@@ -437,7 +437,6 @@ void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, 
 	pendingMovementAiRefresh.creature = creature;
 	pendingMovementAiRefresh.oldPos = oldPos;
 	pendingMovementAiRefresh.newPos = newPos;
-	pendingMovementAiRefresh.scheduled = true;
 	pendingMovementAiRefresh.needsFullRefresh = false;
 
 	addAsyncTask([this] {
@@ -446,14 +445,23 @@ void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, 
 }
 
 void Monster::executeMovementAiRefresh() {
+	const auto readyAt = pendingMovementAiRefresh.state.consume();
+	if (!readyAt) {
+		return;
+	}
+
 	const bool needsFullRefresh = pendingMovementAiRefresh.needsFullRefresh;
 	const auto movedCreature = pendingMovementAiRefresh.creature.lock();
 	const Position oldPos = pendingMovementAiRefresh.oldPos;
 	const Position newPos = pendingMovementAiRefresh.newPos;
 
 	pendingMovementAiRefresh.creature.reset();
-	pendingMovementAiRefresh.scheduled = false;
 	pendingMovementAiRefresh.needsFullRefresh = false;
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::MonsterMovementRefreshLateness,
+		1,
+		DispatcherPolicy::elapsed(*readyAt, Task::Clock::now())
+	);
 
 	if (needsFullRefresh || !movedCreature) {
 		updateTargetList();
@@ -1219,6 +1227,31 @@ void Monster::onThink(uint32_t interval) {
 
 	updateIdleStatus();
 	setAsyncTaskFlag(OnThink, true);
+}
+
+bool Monster::trySchedulePostThink() {
+	return pendingPostThink.tryEnqueue();
+}
+
+void Monster::executePostThink(uint32_t interval) {
+	const auto readyAt = pendingPostThink.consume();
+	if (!readyAt) {
+		return;
+	}
+
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::MonsterPostThinkLateness,
+		1,
+		DispatcherPolicy::elapsed(*readyAt, Task::Clock::now())
+	);
+	if (isRemoved() || !isAlive()) {
+		return;
+	}
+
+	// A coalesced tick advances combat and conditions once. Missed wall-clock
+	// intervals are intentionally not replayed as a catch-up burst.
+	onAttacking(interval);
+	executeConditions(interval);
 }
 
 void Monster::onThink_async() {

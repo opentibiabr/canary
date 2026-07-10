@@ -18,6 +18,7 @@
 	#include <cstdint>
 	#include <deque>
 	#include <functional>
+	#include <optional>
 	#include <span>
 	#include <string_view>
 	#include <utility>
@@ -28,6 +29,45 @@ struct DispatcherQueueSnapshot {
 	size_t queued = 0;
 	std::chrono::microseconds oldestReadyAge { 0 };
 	std::string_view oldestContext;
+};
+
+class CoalescedTaskState {
+public:
+	using Clock = std::chrono::steady_clock;
+	using TimePoint = Clock::time_point;
+
+	bool tryEnqueue(TimePoint readyAt = Clock::now()) {
+		if (pending) {
+			return false;
+		}
+
+		pending = true;
+		oldestReadyAt = readyAt;
+		return true;
+	}
+
+	[[nodiscard]] bool isPending() const {
+		return pending;
+	}
+
+	[[nodiscard]] TimePoint getOldestReadyAt() const {
+		return oldestReadyAt;
+	}
+
+	std::optional<TimePoint> consume() {
+		if (!pending) {
+			return std::nullopt;
+		}
+
+		pending = false;
+		const auto readyAt = oldestReadyAt;
+		oldestReadyAt = {};
+		return readyAt;
+	}
+
+private:
+	TimePoint oldestReadyAt {};
+	bool pending = false;
 };
 
 class DispatcherPolicy {

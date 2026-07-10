@@ -102,9 +102,10 @@ namespace {
 				const size_t endIndex = std::min(creatureIds->size(), startIndex + MONSTER_POST_THINK_BATCH_SIZE);
 				for (size_t i = startIndex; i < endIndex; ++i) {
 					const auto &deferredCreature = g_game().getCreatureByID((*creatureIds)[i]);
-					if (deferredCreature && deferredCreature->getMonsterRaw() && deferredCreature->isAlive()) {
-						deferredCreature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
-						deferredCreature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
+					if (deferredCreature) {
+						if (auto* monster = deferredCreature->getMonsterRaw()) {
+							monster->executePostThink(EVENT_CREATURE_THINK_INTERVAL);
+						}
 					}
 				}
 
@@ -7475,10 +7476,12 @@ void Game::checkCreatures() {
 		if (const auto creature = weak.lock()) {
 			if (creature->creatureCheck && creature->isAlive()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
-				if (creature->getMonsterRaw()) {
+				if (auto* monster = creature->getMonsterRaw()) {
 					// The monster's onThink is executed asynchronously,
 					// so the target is updated later, so we need to postpone the actions below.
-					deferredMonsterIds.emplace_back(creature->getID());
+					if (!creature->isRemoved() && creature->isAlive() && monster->trySchedulePostThink()) {
+						deferredMonsterIds.emplace_back(creature->getID());
+					}
 				} else {
 					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);

@@ -90,6 +90,24 @@ TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 	EXPECT_EQ(DispatcherPolicy::requeueUnprocessed(queue, slice, slice.size()), 0);
 }
 
+TEST(DispatcherPolicyTest, CoalescesPendingTicksAndPreservesTheOldestReadyTime) {
+	const auto firstReadyAt = CoalescedTaskState::TimePoint(10s);
+	const auto replacementReadyAt = firstReadyAt + 5s;
+	CoalescedTaskState state;
+
+	EXPECT_TRUE(state.tryEnqueue(firstReadyAt));
+	EXPECT_FALSE(state.tryEnqueue(replacementReadyAt));
+	EXPECT_TRUE(state.isPending());
+	EXPECT_EQ(state.getOldestReadyAt(), firstReadyAt);
+
+	const auto consumed = state.consume();
+	ASSERT_TRUE(consumed.has_value());
+	EXPECT_EQ(*consumed, firstReadyAt);
+	EXPECT_FALSE(state.isPending());
+	EXPECT_FALSE(state.consume().has_value());
+	EXPECT_TRUE(state.tryEnqueue(replacementReadyAt));
+}
+
 TEST(DispatcherTelemetryTest, ReportsBoundedPercentilesAndResetsTheWindow) {
 	dispatcher::telemetry::ConcurrentLatencyHistogram histogram;
 	histogram.observe(25us);

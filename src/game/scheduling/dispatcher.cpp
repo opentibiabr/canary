@@ -54,6 +54,10 @@ namespace {
 				return "CreatureAsyncBucket";
 			case DispatcherInternalWork::CreatureAsyncRequeue:
 				return "CreatureAsyncRequeue";
+			case DispatcherInternalWork::MonsterMovementRefreshLateness:
+				return "MonsterMovementRefreshLateness";
+			case DispatcherInternalWork::MonsterPostThinkLateness:
+				return "MonsterPostThinkLateness";
 			case DispatcherInternalWork::DispatcherPass:
 				return "DispatcherPass";
 			case DispatcherInternalWork::DispatcherIdle:

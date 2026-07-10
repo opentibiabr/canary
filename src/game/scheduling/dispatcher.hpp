@@ -79,6 +79,8 @@ enum class DispatcherType : uint8_t {
 enum class DispatcherInternalWork : uint8_t {
 	CreatureAsyncBucket,
 	CreatureAsyncRequeue,
+	MonsterMovementRefreshLateness,
+	MonsterPostThinkLateness,
 	DispatcherPass,
 	DispatcherIdle,
 	Last

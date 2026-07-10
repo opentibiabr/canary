@@ -102,12 +102,15 @@ jobs:
           validation = json.loads((root / "CONTENT_PLAN_VALIDATION.json").read_text(encoding="utf-8"))
           reservations = json.loads((root / "ID_RESERVATIONS.working.json").read_text(encoding="utf-8"))
           manifest = json.loads((generated / "MANIFEST.json").read_text(encoding="utf-8"))
+          provenance = (root / "RESEARCH_PROVENANCE.md").read_text(encoding="utf-8")
 
           assert validation["ok"] is True
           assert len(plan["componentPlan"]) == 3
           assert len(manifest["files"]) == 3
           assert manifest["format"] == "canary-preview-v1"
           assert len([item for item in reservations["reservations"] if item["taskId"] == "forgotten_forge_bundle"]) == 5
+          assert "custom OTS design, not canonical Tibia content" in provenance
+          assert "https://tibia.fandom.com/wiki/" in provenance
 
           quest = (generated / "quest/forgotten_forge.lua").read_text(encoding="utf-8")
           npc = (generated / "npc/forge_keeper_ardan.lua").read_text(encoding="utf-8")
@@ -128,6 +131,7 @@ jobs:
           content = json.loads(Path("artifacts/CONTENT_INDEX.json").read_text(encoding="utf-8"))
           references = json.loads(Path("artifacts/REFERENCE_REPORT.json").read_text(encoding="utf-8"))
           pack = json.loads(Path("artifacts/first-real-content-pack/CONTENT_PLAN.json").read_text(encoding="utf-8"))
+          task = json.loads(Path("artifacts/first-real-content-pack/TASK_SPEC.json").read_text(encoding="utf-8"))
 
           lines = ["# AI agent repository audit", "", "## Identifier registry", ""]
           for name, data in registry["namespaces"].items():
@@ -151,6 +155,7 @@ jobs:
           lines.extend(["", "## First realistic content pack", ""])
           lines.append(f"- components: {len(pack['componentPlan'])}")
           lines.append(f"- preview files: {len(pack['newFiles'])}")
+          lines.append(f"- declared sources: {len(task.get('sources', []))}")
           lines.append(f"- storage IDs: {len(pack['proposedStorage'])}")
           lines.append(f"- action IDs: {len(pack['proposedActionIds'])}")
           lines.append(f"- risk level: {pack['riskLevel']}")
@@ -184,6 +189,7 @@ jobs:
             artifacts/first-real-content-pack/CONTENT_PLAN.json
             artifacts/first-real-content-pack/CONTENT_PLAN_VALIDATION.json
             artifacts/first-real-content-pack/ID_RESERVATIONS.working.json
+            artifacts/first-real-content-pack/RESEARCH_PROVENANCE.md
             artifacts/first-real-content-pack/generated-content/**
             artifacts/first-real-content-pack/CONTENT_PIPELINE_SUMMARY.md
             artifacts/RISK_REPORT.md

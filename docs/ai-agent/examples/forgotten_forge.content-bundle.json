@@ -3,7 +3,7 @@
   "taskId": "forgotten_forge_bundle",
   "type": "content_bundle",
   "name": "Forgotten Forge Content Pack",
-  "description": "Dry-run pack containing a quest controller, starter NPC, and forge guardian boss preview.",
+  "description": "Dry-run custom content pack containing a quest controller, starter NPC, and forge guardian boss preview.",
   "targetDatapack": "data-otservbr-global",
   "dryRun": true,
   "requestedBy": "ai-agent",
@@ -12,7 +12,36 @@
     "quest",
     "npc",
     "boss",
+    "custom-design",
     "dry-run"
+  ],
+  "sources": [
+    {
+      "id": "custom-design-brief",
+      "kind": "manual",
+      "title": "Forgotten Forge custom design brief",
+      "checkedAt": "2026-07-10",
+      "confidence": "high",
+      "notes": "Original OTS content. This source does not claim canonical Tibia lore or mechanics."
+    },
+    {
+      "id": "canary-conventions",
+      "kind": "repository",
+      "title": "Canary Lua content conventions",
+      "url": "https://github.com/blakinio/canary",
+      "checkedAt": "2026-07-10",
+      "confidence": "high",
+      "notes": "Source of truth for implementation shape, registration APIs, paths, and Lua conventions."
+    },
+    {
+      "id": "tibiawiki-navigation",
+      "kind": "community-wiki",
+      "title": "TibiaWiki research index",
+      "url": "https://tibia.fandom.com/wiki/",
+      "checkedAt": "2026-07-10",
+      "confidence": "medium",
+      "notes": "Permitted as a research aid. No canonical Forgotten Forge facts are attributed to this source."
+    }
   ],
   "contentBundle": {
     "components": [
@@ -23,19 +52,31 @@
         "dependsOn": [
           "forge_keeper_npc",
           "ashen_sentinel_boss"
+        ],
+        "sourceRefs": [
+          "custom-design-brief",
+          "canary-conventions"
         ]
       },
       {
         "id": "forge_keeper_npc",
         "type": "npc",
         "name": "Forge Keeper Ardan",
-        "dependsOn": []
+        "dependsOn": [],
+        "sourceRefs": [
+          "custom-design-brief",
+          "canary-conventions"
+        ]
       },
       {
         "id": "ashen_sentinel_boss",
         "type": "monster",
         "name": "The Ashen Sentinel",
-        "dependsOn": []
+        "dependsOn": [],
+        "sourceRefs": [
+          "custom-design-brief",
+          "canary-conventions"
+        ]
       }
     ],
     "requestedIds": [

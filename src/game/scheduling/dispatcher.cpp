@@ -197,7 +197,11 @@ Dispatcher::LaneExecutionResult Dispatcher::executeSerialLane(DispatcherLane lan
 		if (executeTask(tasks[taskIndex], lane)) {
 			++dispatcherCycle;
 		}
-		tasks.erase(tasks.begin() + static_cast<std::ptrdiff_t>(taskIndex));
+		if (taskIndex == 0) {
+			tasks.pop_front();
+		} else {
+			tasks.erase(tasks.begin() + static_cast<std::ptrdiff_t>(taskIndex));
+		}
 		++result.tasks;
 		result.cost += taskCost;
 	}

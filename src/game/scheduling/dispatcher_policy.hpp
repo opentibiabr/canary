@@ -20,7 +20,6 @@
 	#include <functional>
 	#include <limits>
 	#include <optional>
-	#include <span>
 	#include <string_view>
 	#include <utility>
 	#include <vector>
@@ -114,11 +113,13 @@ public:
 		return nowFunction ? nowFunction() : Clock::now();
 	}
 
-	[[nodiscard]] DispatcherQueueSnapshot inspectQueue(std::span<const Task> tasks, TimePoint notBefore = TimePoint::min()) const {
+	template <typename TaskRange>
+	[[nodiscard]] DispatcherQueueSnapshot inspectQueue(const TaskRange &tasks, TimePoint notBefore = TimePoint::min()) const {
 		return inspectQueueAt(tasks, now(), notBefore);
 	}
 
-	[[nodiscard]] static DispatcherQueueSnapshot inspectQueueAt(std::span<const Task> tasks, TimePoint currentTime, TimePoint notBefore = TimePoint::min()) {
+	template <typename TaskRange>
+	[[nodiscard]] static DispatcherQueueSnapshot inspectQueueAt(const TaskRange &tasks, TimePoint currentTime, TimePoint notBefore = TimePoint::min()) {
 		DispatcherQueueSnapshot snapshot;
 		for (const auto &task : tasks) {
 			if (task.getEnqueuedAt() < notBefore) {
@@ -135,7 +136,8 @@ public:
 		return snapshot;
 	}
 
-	[[nodiscard]] static DispatcherQueueSnapshot inspectPlayerVisibleQueueAt(std::span<const Task> tasks, TimePoint currentTime) {
+	template <typename TaskRange>
+	[[nodiscard]] static DispatcherQueueSnapshot inspectPlayerVisibleQueueAt(const TaskRange &tasks, TimePoint currentTime) {
 		DispatcherQueueSnapshot snapshot;
 		for (const auto &task : tasks) {
 			if (!isPlayerVisible(task.getMeta().lane)) {
@@ -175,7 +177,8 @@ public:
 		return std::min(available, budget);
 	}
 
-	[[nodiscard]] static size_t selectProducerFairIndex(std::span<const Task> tasks, uint64_t lastProducerToken) {
+	template <typename TaskRange>
+	[[nodiscard]] static size_t selectProducerFairIndex(const TaskRange &tasks, uint64_t lastProducerToken) {
 		if (tasks.empty()) {
 			return 0;
 		}

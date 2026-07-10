@@ -52,7 +52,7 @@ TEST(DispatcherPolicyTest, InspectsQueueWithAnInjectedMonotonicClock) {
 	auto currentTime = base + 100ms;
 	DispatcherPolicy policy([&currentTime] { return currentTime; });
 
-	std::vector<Task> tasks;
+	std::deque<Task> tasks;
 	tasks.emplace_back(0, [] { }, "oldest", base + 10ms);
 	tasks.emplace_back(0, [] { }, "newest", base + 20ms);
 
@@ -103,7 +103,7 @@ TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 }
 
 TEST(DispatcherPolicyTest, RotatesProducersWhilePreservingEachProducerFifo) {
-	std::vector<Task> tasks;
+	std::deque<Task> tasks;
 	for (const auto producerToken : { 10, 10, 20, 20, 30 }) {
 		tasks.emplace_back(0, [] { }, "producer-task");
 		tasks.back().setProducerToken(producerToken);

@@ -18,7 +18,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <atomic>
-	#include <span>
+	#include <deque>
 #endif
 
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
@@ -262,13 +262,10 @@ private:
 	// Thread Events
 	struct ThreadTask {
 		ThreadTask() {
-			for (auto &task : tasks) {
-				task.reserve(2000);
-			}
 			scheduledTasks.reserve(2000);
 		}
 
-		std::array<std::vector<Task>, static_cast<size_t>(DispatcherLane::Last)> tasks;
+		std::array<std::deque<Task>, static_cast<size_t>(DispatcherLane::Last)> tasks;
 		std::vector<std::shared_ptr<Task>> scheduledTasks;
 		std::mutex mutex;
 	};
@@ -276,7 +273,7 @@ private:
 	std::vector<std::unique_ptr<ThreadTask>> threads;
 
 	// Main Events
-	std::array<std::vector<Task>, static_cast<size_t>(DispatcherLane::Last)> m_tasks;
+	std::array<std::deque<Task>, static_cast<size_t>(DispatcherLane::Last)> m_tasks;
 	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks {};
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
 

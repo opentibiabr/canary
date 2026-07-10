@@ -32,6 +32,10 @@ public:
 
 	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true, Clock::time_point enqueuedAt = Clock::now());
 
+	Task(const Task &) = delete;
+	Task &operator=(const Task &) = delete;
+	Task(Task &&) noexcept = default;
+	Task &operator=(Task &&) noexcept = default;
 	~Task() = default;
 
 	uint64_t getId() {

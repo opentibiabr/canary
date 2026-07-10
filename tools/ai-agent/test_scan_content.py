@@ -36,6 +36,9 @@ class ContentScannerTests(unittest.TestCase):
             self.assertEqual(index["summary"]["countsByType"]["monster"], 1)
             self.assertEqual(index["summary"]["countsByType"]["quest"], 1)
 
+            monster = next(entry for entry in index["entries"] if entry["type"] == "monster")
+            self.assertEqual(monster["name"], "Dragon")
+
             quest = next(entry for entry in index["entries"] if entry["type"] == "quest")
             self.assertEqual(quest["references"]["monster"], ["Dragon"])
             self.assertEqual(quest["references"]["item"], [2160])
@@ -46,8 +49,8 @@ class ContentScannerTests(unittest.TestCase):
             root = Path(temp_dir)
             npc_dir = root / "data" / "npcs"
             npc_dir.mkdir(parents=True)
-            (npc_dir / "one.lua").write_text('local name = "Guide"', encoding="utf-8")
-            (npc_dir / "two.lua").write_text('local name = "Guide"', encoding="utf-8")
+            (npc_dir / "one.lua").write_text('local npcType = Game.createNpcType("Guide")', encoding="utf-8")
+            (npc_dir / "two.lua").write_text('local npcType = Game.createNpcType("Guide")', encoding="utf-8")
 
             index = scan_content.build_index(root)
 

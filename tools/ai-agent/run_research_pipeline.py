@@ -45,6 +45,12 @@ def _reserve_plan_identifiers(reservations: dict, task: dict, plan: dict) -> Non
             )
 
 
+def _attach_implementation_facts(task: dict, normalized: dict) -> None:
+    facts_by_id = {entity["id"]: entity.get("facts", {}) for entity in normalized.get("entities", [])}
+    for component in task.get("contentBundle", {}).get("components", []):
+        component["implementation"] = facts_by_id.get(component["id"], {})
+
+
 def run(
     research: dict,
     registry: dict,
@@ -90,6 +96,7 @@ def run(
         atomic_write_json(output / "RESEARCH_PIPELINE_RESULT.json", summary)
         return 4, summary
 
+    _attach_implementation_facts(task, normalized)
     write_report(task, output / "RESEARCH_PROVENANCE.md")
     plan = make_plan(task, content_index, registry, reservations)
     atomic_write_json(output / "CONTENT_PLAN.json", plan)

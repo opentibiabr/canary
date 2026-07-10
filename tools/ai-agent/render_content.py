@@ -10,6 +10,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "lib"))
 
+from complete_preview import render_monster as render_complete_monster
+from complete_preview import render_npc as render_complete_npc
 from io_utils import atomic_write_json, dumps_json, read_json
 from path_policy import require_safe_write
 
@@ -45,6 +47,9 @@ def _quest_preview(task_id: str, component: dict) -> str:
 
 
 def _npc_preview(task_id: str, component: dict) -> str:
+    implementation = component.get("implementation", {})
+    if implementation.get("complete") is True:
+        return render_complete_npc(HEADER, component)
     name = _lua_string(component["name"])
     return (
         HEADER
@@ -78,6 +83,9 @@ def _npc_preview(task_id: str, component: dict) -> str:
 
 
 def _monster_preview(task_id: str, component: dict) -> str:
+    implementation = component.get("implementation", {})
+    if implementation.get("complete") is True:
+        return render_complete_monster(HEADER, component)
     name = _lua_string(component["name"])
     description = _lua_string("a " + component["name"].lower())
     return (

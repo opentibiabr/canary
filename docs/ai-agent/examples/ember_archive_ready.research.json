@@ -1,0 +1,119 @@
+{
+  "schemaVersion": "1.0",
+  "documentId": "ember_archive_ready",
+  "entities": [
+    {
+      "id": "ember_archivist_npc",
+      "type": "npc",
+      "name": "Ember Archivist",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "complete": true,
+        "classification": "custom-ots-content",
+        "description": "the ember archivist",
+        "health": 100,
+        "walkInterval": 2000,
+        "walkRadius": 2,
+        "outfit": {
+          "lookType": 130,
+          "lookHead": 95,
+          "lookBody": 94,
+          "lookLegs": 79,
+          "lookFeet": 76,
+          "lookAddons": 0
+        },
+        "dialogue": [
+          {
+            "keywords": ["archive", "ember"],
+            "reply": "The Ember Archive records every flame that survived the old forge."
+          },
+          {
+            "keywords": ["colossus", "cinderbound"],
+            "reply": "The Cinderbound Colossus guards the sealed hall. Prepare before you challenge it."
+          },
+          {
+            "keywords": ["bye", "farewell"],
+            "reply": "May your flame endure."
+          }
+        ]
+      }
+    },
+    {
+      "id": "cinderbound_colossus_monster",
+      "type": "monster",
+      "name": "Cinderbound Colossus",
+      "canonical": false,
+      "sourceRefs": ["custom_design"],
+      "facts": {
+        "complete": true,
+        "classification": "custom-ots-content",
+        "description": "the cinderbound colossus",
+        "experience": 18000,
+        "health": 26000,
+        "corpse": 5995,
+        "speed": 210,
+        "race": "blood",
+        "outfit": {
+          "lookType": 35,
+          "lookHead": 0,
+          "lookBody": 0,
+          "lookLegs": 0,
+          "lookFeet": 0,
+          "lookAddons": 0,
+          "lookMount": 0
+        },
+        "flags": {
+          "summonable": false,
+          "attackable": true,
+          "hostile": true,
+          "convinceable": false,
+          "pushable": false,
+          "rewardBoss": true,
+          "illusionable": false,
+          "canPushItems": true,
+          "canPushCreatures": true,
+          "staticAttackChance": 80,
+          "targetDistance": 1,
+          "runHealth": 0,
+          "healthHidden": false,
+          "isBlockable": false
+        },
+        "loot": [
+          {
+            "id": 3031,
+            "chance": 100000,
+            "maxCount": 80
+          },
+          {
+            "id": 3035,
+            "chance": 25000,
+            "maxCount": 4
+          }
+        ],
+        "attacks": [
+          {
+            "name": "melee",
+            "interval": 2000,
+            "chance": 100,
+            "minDamage": 0,
+            "maxDamage": -950
+          },
+          {
+            "name": "combat",
+            "type": "fire",
+            "interval": 2000,
+            "chance": 25,
+            "minDamage": -350,
+            "maxDamage": -850,
+            "range": 7,
+            "radius": 3,
+            "effect": 6
+          }
+        ],
+        "defense": 65,
+        "armor": 55
+      }
+    }
+  ]
+}

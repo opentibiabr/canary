@@ -101,10 +101,10 @@ def build_draft(normalized: dict, target_datapack: str = "data-otservbr-global")
                     "purpose": "research-derived interactive quest objects",
                 },
             ] if quest_ids else []),
-            "mapRequirements": [
+            "mapRequirements": ([
                 "Map work remains manual and must be reviewed in a map editor.",
                 "Do not modify OTBM or items.otb through this pipeline.",
-            ],
+            ] if quest_ids else []),
             "manualSteps": [
                 "Review all normalized facts against their cited sources.",
                 "Resolve every conflict before considering active datapack integration.",

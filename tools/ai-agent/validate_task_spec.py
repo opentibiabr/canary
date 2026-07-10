@@ -12,7 +12,10 @@ from io_utils import atomic_write_json, dumps_json, read_json
 
 TYPES = {"quest", "monster", "npc", "spell", "raid", "instance", "content_bundle"}
 BUNDLE_COMPONENT_TYPES = {"quest", "monster", "npc", "spell", "raid"}
+SOURCE_KINDS = {"official", "community-wiki", "repository", "manual", "inference"}
+CONFIDENCE_LEVELS = {"high", "medium", "low"}
 SAFE_TASK_ID = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+DATE_VALUE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 def _safe_name(value: object) -> bool:
@@ -21,6 +24,42 @@ def _safe_name(value: object) -> bool:
         and bool(value.strip())
         and not any(part in value for part in ("/", "\\", "..", "\x00"))
     )
+
+
+def _validate_sources(data: dict, err) -> set[str]:
+    sources = data.get("sources", [])
+    if not isinstance(sources, list):
+        err("sources must be an array")
+        return set()
+
+    source_ids = []
+    for index, source in enumerate(sources):
+        if not isinstance(source, dict):
+            err(f"source {index} must be an object")
+            continue
+        source_id = source.get("id")
+        if not isinstance(source_id, str) or not SAFE_TASK_ID.fullmatch(source_id):
+            err(f"source {index} has invalid id")
+        else:
+            source_ids.append(source_id)
+        if source.get("kind") not in SOURCE_KINDS:
+            err(f"source {index} has invalid kind")
+        if not _safe_name(source.get("title")):
+            err(f"source {index} has invalid title")
+        checked_at = source.get("checkedAt")
+        if not isinstance(checked_at, str) or not DATE_VALUE.fullmatch(checked_at):
+            err(f"source {index} has invalid checkedAt date")
+        if source.get("confidence") not in CONFIDENCE_LEVELS:
+            err(f"source {index} has invalid confidence")
+        url = source.get("url")
+        if url is not None and (not isinstance(url, str) or not url.startswith("https://")):
+            err(f"source {index} URL must use https")
+        if source.get("kind") in {"official", "community-wiki", "repository"} and not url:
+            err(f"source {index} requires a URL")
+
+    if len(source_ids) != len(set(source_ids)):
+        err("source ids must be unique")
+    return set(source_ids)
 
 
 def validate(data):
@@ -56,6 +95,8 @@ def validate(data):
     if data.get("dryRun") is not True:
         err("dryRun must be true")
 
+    source_ids = _validate_sources(data, err)
+
     stages = data.get("quest", {}).get("stages", []) if task_type == "quest" else data.get("stages", [])
     ids = [stage.get("id") for stage in stages if isinstance(stage, dict)]
     if len(ids) != len(set(ids)):
@@ -80,6 +121,8 @@ def validate(data):
         if not isinstance(bundle, dict):
             err("contentBundle payload is required")
         else:
+            if not source_ids:
+                err("content bundles require at least one provenance source")
             components = bundle.get("components")
             if not isinstance(components, list) or not components:
                 err("contentBundle.components must be a non-empty array")
@@ -98,6 +141,13 @@ def validate(data):
                         err(f"contentBundle component {index} has invalid type")
                     if not _safe_name(component.get("name")):
                         err(f"contentBundle component {index} has invalid name")
+                    source_refs = component.get("sourceRefs")
+                    if not isinstance(source_refs, list) or not source_refs:
+                        err(f"contentBundle component {index} requires sourceRefs")
+                    else:
+                        for source_ref in source_refs:
+                            if source_ref not in source_ids:
+                                err(f"contentBundle component {index} references unknown source: {source_ref}")
                 if len(component_ids) != len(set(component_ids)):
                     err("contentBundle component ids must be unique")
 

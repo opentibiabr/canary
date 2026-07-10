@@ -9,23 +9,31 @@ for index, value in ipairs(QuestDoorTable) do
 	end
 end
 
-local accountQuestDoors = {
-	[Storage.Quest.U7_6.TheApeCity.DworcDoor] = "the-ape-city",
-	[Storage.Quest.U7_6.TheApeCity.ChorDoor] = "the-ape-city",
-	[Storage.Quest.U7_6.TheApeCity.FibulaDoor] = "the-ape-city",
-	[Storage.Quest.U7_6.TheApeCity.CasksDoor] = "the-ape-city",
-	[Storage.Quest.U8_1.SecretService.CGBMission01] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.TBIMission02] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.AVINMission02] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.CGBMission02] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.TBIMission03] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.TBIMission04] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.CGBMission04] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.AVINMission05] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.CGBMission05] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.Mission07] = "secret-service",
-	[Storage.Quest.U8_1.SecretService.CGBMission06] = "secret-service",
-}
+local accountQuestDoors = {}
+local function addAccountQuestDoor(storageId, questId)
+	if storageId then
+		accountQuestDoors[storageId] = questId
+	end
+end
+
+local theApeCity = Storage.Quest.U7_6 and Storage.Quest.U7_6.TheApeCity or {}
+addAccountQuestDoor(theApeCity.DworcDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.ChorDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.FibulaDoor, "the-ape-city")
+addAccountQuestDoor(theApeCity.CasksDoor, "the-ape-city")
+
+local secretService = Storage.Quest.U8_1 and Storage.Quest.U8_1.SecretService or {}
+addAccountQuestDoor(secretService.CGBMission01, "secret-service")
+addAccountQuestDoor(secretService.TBIMission02, "secret-service")
+addAccountQuestDoor(secretService.AVINMission02, "secret-service")
+addAccountQuestDoor(secretService.CGBMission02, "secret-service")
+addAccountQuestDoor(secretService.TBIMission03, "secret-service")
+addAccountQuestDoor(secretService.TBIMission04, "secret-service")
+addAccountQuestDoor(secretService.CGBMission04, "secret-service")
+addAccountQuestDoor(secretService.AVINMission05, "secret-service")
+addAccountQuestDoor(secretService.CGBMission05, "secret-service")
+addAccountQuestDoor(secretService.Mission07, "secret-service")
+addAccountQuestDoor(secretService.CGBMission06, "secret-service")
 
 local questDoor = Action()
 function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotkey)

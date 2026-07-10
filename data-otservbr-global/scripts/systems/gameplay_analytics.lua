@@ -191,7 +191,7 @@ experience:register()
 -- Every monster must carry the health-change event so outgoing player damage can
 -- be measured after final combat reductions. EventCallback.onSpawn is global and
 -- does not require editing individual monster definitions.
-local spawnCallback = EventCallback
+local spawnCallback = EventCallback("GameplayAnalyticsSpawn")
 function spawnCallback.onSpawn(creature, position, startup, artificial)
 	if Analytics.isEnabled() and creature:isMonster() then
 		creature:registerEvent("GameplayAnalyticsHealth")

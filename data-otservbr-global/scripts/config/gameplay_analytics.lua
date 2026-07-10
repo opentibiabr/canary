@@ -13,6 +13,7 @@ return {
 	trackLoot = false,
 	anonymizePlayers = false,
 	queueLimit = 10000,
+	detailBatchSize = 250,
 	maxRetryAttempts = 5,
 	retryBaseDelaySeconds = 30,
 	retryMaxDelaySeconds = 900,

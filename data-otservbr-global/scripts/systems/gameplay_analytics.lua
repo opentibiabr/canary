@@ -1,4 +1,5 @@
 local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")
 
 local function registerPlayerEvents(player)
@@ -196,7 +197,7 @@ function analyticsCommand.onSay(player, words, param)
 	player:sendTextMessage(
 		MESSAGE_EVENT_ADVANCE,
 		string.format(
-			"Gameplay Analytics: enabled=%s, running=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, lastFlush=%d",
+			"Gameplay Analytics: enabled=%s, running=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, batchSize=%d, batchQueries=%d, detailRows=%d, lastFlush=%d",
 			tostring(status.enabled),
 			tostring(status.running),
 			status.activeSessions,
@@ -209,6 +210,9 @@ function analyticsCommand.onSay(player, words, param)
 			status.lastFlushDurationMs,
 			status.oldestQueuedAgeSeconds,
 			status.detailLevel,
+			status.detailBatchSize,
+			status.detailBatchQueries,
+			status.detailRowsPersisted,
 			status.lastFlush
 		)
 	)

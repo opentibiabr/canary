@@ -164,6 +164,11 @@ option(
     "Enable metrics feature"
     OFF
 )
+option(
+    CANARY_NATIVE_ARCH
+    "Optimize release builds for the build host CPU (non-portable binaries)"
+    OFF
+)
 
 # *****************************************************************************
 # Options Code
@@ -173,6 +178,12 @@ if(FEATURE_METRICS)
     log_option_enabled("metrics")
 else()
     log_option_disabled("metrics")
+endif()
+
+if(CANARY_NATIVE_ARCH)
+    log_option_enabled("native CPU optimizations (non-portable)")
+else()
+    log_option_disabled("native CPU optimizations; portable CPU baseline enabled")
 endif()
 
 # === CCACHE ===

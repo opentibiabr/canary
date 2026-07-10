@@ -1,0 +1,45 @@
+name: Gameplay Analytics
+
+on:
+  pull_request:
+    paths:
+      - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
+      - "schema/gameplay_analytics.sql"
+      - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/validate_gameplay_analytics.py"
+      - ".github/workflows/gameplay-analytics.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
+      - "schema/gameplay_analytics.sql"
+      - "docs/systems/gameplay-analytics.md"
+      - "tools/analytics/validate_gameplay_analytics.py"
+      - ".github/workflows/gameplay-analytics.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate gameplay analytics contract
+        run: python tools/analytics/validate_gameplay_analytics.py
+      - name: Parse SQL schema
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          sql = Path('schema/gameplay_analytics.sql').read_text(encoding='utf-8')
+          assert sql.count('CREATE TABLE IF NOT EXISTS') == 6
+          assert sql.count('ENGINE=InnoDB') == 6
+          print('SQL schema structure passed')
+          PY

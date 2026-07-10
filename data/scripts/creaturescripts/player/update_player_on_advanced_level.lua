@@ -8,7 +8,6 @@ function updatePlayerOnAdvancedLevel.onAdvance(player, skill, oldLevel, newLevel
 	player:addHealth(player:getMaxHealth())
 	player:addMana(player:getMaxMana())
 	player:getFinalLowLevelBonus()
-	player:save()
 	return true
 end
 

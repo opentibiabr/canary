@@ -112,8 +112,14 @@ def validate_runtime(text: str) -> None:
     ):
         require(event in text, f"missing runtime event: {event}")
     require('TalkAction("/analytics")' in text, "missing administrative command")
-    require("creature:registerEvent(\"GameplayAnalyticsHealth\")" in text,
-            "spawned monsters must receive the health event")
+    spawn_callback = re.search(
+        r"EventCallback.*?function\s+[A-Za-z0-9_]+\.onSpawn\s*\([^)]*creature[^)]*\).*?"
+        r"creature:registerEvent\(\"GameplayAnalyticsHealth\"\).*?"
+        r"[A-Za-z0-9_]+:register\(\)",
+        text,
+        flags=re.DOTALL,
+    )
+    require(spawn_callback is not None, "spawned monsters must receive the health event")
 
 
 def main() -> int:

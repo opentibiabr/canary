@@ -2,11 +2,41 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "description": "Dry-run AI content authoring task specification for Canary.",
-  "examples": [{"schemaVersion":"1.0","taskId":"example","type":"quest","name":"Example","description":"Example quest","targetDatapack":"data-otservbr-global","dryRun":true,"requestedBy":"ai-agent","tags":["example"],"quest":{"requiredLevel":50,"repeatable":false,"stages":[],"rewards":[],"storage":{"progress":300000}}}],
   "properties": {
-    "schemaVersion": {"type":"string"}, "taskId":{"pattern":"^[a-z0-9][a-z0-9_-]*$","type":"string"}, "type":{"enum":["quest","monster","npc","spell","raid","instance","content_bundle"]}, "name":{"minLength":1,"type":"string"}, "description":{"type":"string"}, "targetDatapack":{"type":"string"}, "dryRun":{"const":true}, "requestedBy":{"type":"string"}, "tags":{"items":{"type":"string"},"type":"array"},
-    "quest":{"additionalProperties":true,"type":"object"}, "monster":{"additionalProperties":true,"type":"object"}, "npc":{"additionalProperties":true,"type":"object"}, "spell":{"additionalProperties":true,"type":"object"}, "raid":{"additionalProperties":true,"type":"object"}, "instance":{"additionalProperties":true,"type":"object"}, "contentBundle":{"additionalProperties":true,"type":"object"}
+    "schemaVersion": {"type": "string"},
+    "taskId": {"pattern": "^[a-z0-9][a-z0-9_-]*$", "type": "string"},
+    "type": {"enum": ["quest", "monster", "npc", "spell", "raid", "instance", "content_bundle"]},
+    "name": {"minLength": 1, "type": "string"},
+    "description": {"type": "string"},
+    "targetDatapack": {"type": "string"},
+    "dryRun": {"const": true},
+    "requestedBy": {"type": "string"},
+    "tags": {"items": {"type": "string"}, "type": "array"},
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "kind", "title", "checkedAt", "confidence"],
+        "properties": {
+          "id": {"pattern": "^[a-z0-9][a-z0-9_-]*$", "type": "string"},
+          "kind": {"enum": ["official", "community-wiki", "repository", "manual", "inference"]},
+          "title": {"minLength": 1, "type": "string"},
+          "url": {"pattern": "^https://", "type": "string"},
+          "checkedAt": {"pattern": "^\\d{4}-\\d{2}-\\d{2}$", "type": "string"},
+          "confidence": {"enum": ["high", "medium", "low"]},
+          "notes": {"type": "string"}
+        }
+      }
+    },
+    "quest": {"additionalProperties": true, "type": "object"},
+    "monster": {"additionalProperties": true, "type": "object"},
+    "npc": {"additionalProperties": true, "type": "object"},
+    "spell": {"additionalProperties": true, "type": "object"},
+    "raid": {"additionalProperties": true, "type": "object"},
+    "instance": {"additionalProperties": true, "type": "object"},
+    "contentBundle": {"additionalProperties": true, "type": "object"}
   },
-  "required":["schemaVersion","taskId","type","name","description","targetDatapack","dryRun","requestedBy","tags"],
-  "type":"object"
+  "required": ["schemaVersion", "taskId", "type", "name", "description", "targetDatapack", "dryRun", "requestedBy", "tags"],
+  "type": "object"
 }

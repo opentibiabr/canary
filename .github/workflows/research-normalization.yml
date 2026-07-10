@@ -11,12 +11,14 @@ on:
       - "tools/ai-agent/evaluate_promotion_readiness.py"
       - "tools/ai-agent/build_promotion_handoff.py"
       - "tools/ai-agent/generate_staging_patch.py"
+      - "tools/ai-agent/verify_staging_patch.py"
       - "tools/ai-agent/test_research_normalization.py"
       - "tools/ai-agent/test_research_to_task.py"
       - "tools/ai-agent/test_research_pipeline.py"
       - "tools/ai-agent/test_promotion_readiness.py"
       - "tools/ai-agent/test_promotion_handoff.py"
       - "tools/ai-agent/test_staging_patch.py"
+      - "tools/ai-agent/test_staging_patch_verifier.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
@@ -28,12 +30,14 @@ on:
       - "tools/ai-agent/evaluate_promotion_readiness.py"
       - "tools/ai-agent/build_promotion_handoff.py"
       - "tools/ai-agent/generate_staging_patch.py"
+      - "tools/ai-agent/verify_staging_patch.py"
       - "tools/ai-agent/test_research_normalization.py"
       - "tools/ai-agent/test_research_to_task.py"
       - "tools/ai-agent/test_research_pipeline.py"
       - "tools/ai-agent/test_promotion_readiness.py"
       - "tools/ai-agent/test_promotion_handoff.py"
       - "tools/ai-agent/test_staging_patch.py"
+      - "tools/ai-agent/test_staging_patch_verifier.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
@@ -60,6 +64,7 @@ jobs:
           python -m unittest tools/ai-agent/test_promotion_readiness.py -v
           python -m unittest tools/ai-agent/test_promotion_handoff.py -v
           python -m unittest tools/ai-agent/test_staging_patch.py -v
+          python -m unittest tools/ai-agent/test_staging_patch_verifier.py -v
 
       - name: Validate research JSON files
         run: |

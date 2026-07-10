@@ -21,6 +21,24 @@ def _safe_relative(value: str) -> str:
     return normalized
 
 
+def _new_file_patch(target_path: str, source_text: str) -> list[str]:
+    source_lines = source_text.splitlines(keepends=True)
+    diff = list(
+        difflib.unified_diff(
+            [],
+            source_lines,
+            fromfile="/dev/null",
+            tofile=f"b/{target_path}",
+            lineterm="",
+        )
+    )
+    return [
+        f"diff --git a/{target_path} b/{target_path}",
+        "new file mode 100644",
+        *diff,
+    ]
+
+
 def generate(handoff: dict, generated_root: Path, repository_root: Path) -> tuple[dict, str]:
     if handoff.get("automaticApplyAllowed") is not False:
         raise ValueError("handoff must explicitly forbid automatic apply")
@@ -78,16 +96,7 @@ def generate(handoff: dict, generated_root: Path, repository_root: Path) -> tupl
         })
 
         if operation == "create":
-            source_lines = source.read_text(encoding="utf-8").splitlines(keepends=True)
-            patches.extend(
-                difflib.unified_diff(
-                    [],
-                    source_lines,
-                    fromfile=f"a/{target_path}",
-                    tofile=f"b/{target_path}",
-                    lineterm="",
-                )
-            )
+            patches.extend(_new_file_patch(target_path, source.read_text(encoding="utf-8")))
 
     blockers = [item for item in findings if item["level"] == "blocker"]
     status = "ready-for-manual-application" if not blockers and files else "blocked"

@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Agent Research Document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "documentId", "entities"],
+  "properties": {
+    "schemaVersion": {"const": "1.0"},
+    "documentId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"},
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "name", "canonical", "sourceRefs", "facts"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"},
+          "type": {"enum": ["quest", "npc", "monster", "item"]},
+          "name": {"type": "string", "minLength": 1},
+          "canonical": {"type": "boolean"},
+          "sourceRefs": {"type": "array", "items": {"type": "string"}},
+          "facts": {"type": "object"}
+        }
+      }
+    }
+  }
+}

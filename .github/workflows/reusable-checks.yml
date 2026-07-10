@@ -14,20 +14,27 @@ jobs:
   run-checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository (PR head branch for same-repo PRs)
-        if: inputs.checkout_ref == '' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      - name: Checkout repository
+        if: inputs.checkout_ref == ''
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.head_ref }}
 
-      - name: Checkout repository (default ref)
-        if: inputs.checkout_ref == '' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository)
-        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
-        with:
-          fetch-depth: 0
-          persist-credentials: false
+      - name: Select same-repo PR head when available
+        if: inputs.checkout_ref == '' && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        id: pr-head
+        shell: bash
+        run: |
+          if git fetch --no-tags origin "+refs/heads/${{ github.head_ref }}:refs/remotes/origin/${{ github.head_ref }}"; then
+            git checkout -B "${{ github.head_ref }}" "refs/remotes/origin/${{ github.head_ref }}"
+            echo "branch_available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PR head branch no longer exists; checking out the recorded head SHA instead."
+            git fetch --no-tags origin "${{ github.event.pull_request.head.sha }}"
+            git checkout --detach "${{ github.event.pull_request.head.sha }}"
+            echo "branch_available=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Checkout requested ref
         if: inputs.checkout_ref != ''
@@ -70,7 +77,7 @@ jobs:
           find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
 
       - name: Commit formatting changes
-        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && steps.pr-head.outputs.branch_available == 'true'
         uses: EndBug/add-and-commit@v10
         with:
           author_name: GitHub Actions

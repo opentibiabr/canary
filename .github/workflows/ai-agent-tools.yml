@@ -94,20 +94,27 @@ jobs:
         shell: python
         run: |
           import json
-          import xml.etree.ElementTree as ET
           from pathlib import Path
 
           root = Path("artifacts/first-real-content-pack")
+          generated = root / "generated-content/forgotten_forge_bundle"
           plan = json.loads((root / "CONTENT_PLAN.json").read_text(encoding="utf-8"))
           validation = json.loads((root / "CONTENT_PLAN_VALIDATION.json").read_text(encoding="utf-8"))
           reservations = json.loads((root / "ID_RESERVATIONS.working.json").read_text(encoding="utf-8"))
-          manifest = json.loads((root / "generated-content/forgotten_forge_bundle/MANIFEST.json").read_text(encoding="utf-8"))
+          manifest = json.loads((generated / "MANIFEST.json").read_text(encoding="utf-8"))
 
           assert validation["ok"] is True
           assert len(plan["componentPlan"]) == 3
           assert len(manifest["files"]) == 3
+          assert manifest["format"] == "canary-preview-v1"
           assert len([item for item in reservations["reservations"] if item["taskId"] == "forgotten_forge_bundle"]) == 5
-          ET.parse(root / "generated-content/forgotten_forge_bundle/monster/the_ashen_sentinel.xml")
+
+          quest = (generated / "quest/forgotten_forge.lua").read_text(encoding="utf-8")
+          npc = (generated / "npc/forge_keeper_ardan.lua").read_text(encoding="utf-8")
+          monster = (generated / "monster/the_ashen_sentinel.lua").read_text(encoding="utf-8")
+          assert "return quest" in quest
+          assert "Game.createNpcType" in npc and "npcType:register" in npc
+          assert "Game.createMonsterType" in monster and "mType:register" in monster
 
       - name: Create audit summary
         shell: python
@@ -126,13 +133,7 @@ jobs:
           for name, data in registry["namespaces"].items():
               lines.append(f"- {name}: {len(data['entries'])}")
           lines.append(f"- potential definition conflicts: {len(registry['conflicts'])}")
-          lines.extend([
-              "",
-              "## Project structure",
-              "",
-              f"- files: {structure['summary']['fileCount']}",
-              f"- total bytes: {structure['summary']['totalBytes']}",
-          ])
+          lines.extend(["", "## Project structure", "", f"- files: {structure['summary']['fileCount']}", f"- total bytes: {structure['summary']['totalBytes']}"])
           for name, count in structure["summary"]["categoryCounts"].items():
               lines.append(f"- {name}: {count}")
 
@@ -153,6 +154,7 @@ jobs:
           lines.append(f"- storage IDs: {len(pack['proposedStorage'])}")
           lines.append(f"- action IDs: {len(pack['proposedActionIds'])}")
           lines.append(f"- risk level: {pack['riskLevel']}")
+          lines.append("- preview format: canary-preview-v1")
 
           report = "\n".join(lines) + "\n"
           Path("artifacts/AI_AGENT_AUDIT_SUMMARY.md").write_text(report, encoding="utf-8")

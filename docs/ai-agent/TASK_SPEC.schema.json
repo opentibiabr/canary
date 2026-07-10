@@ -1,10 +1,153 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$defs": {
+    "safeId": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_-]{0,63}$"
+    },
+    "quest": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "cooldown": {"type": ["string", "integer"]},
+        "dependsOnQuests": {"type": "array", "items": {"type": "string"}},
+        "requiredActionIds": {"type": "array", "items": {"type": "integer", "minimum": 1}, "uniqueItems": true},
+        "requiredLevel": {"type": "integer", "minimum": 0},
+        "requiredUniqueIds": {"type": "array", "items": {"type": "integer", "minimum": 1}, "uniqueItems": true},
+        "requiredVocations": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "repeatable": {"type": "boolean"},
+        "rewards": {"type": "array", "items": {"type": "object"}},
+        "starterNpc": {"type": "string", "minLength": 1},
+        "storage": {"type": "object"},
+        "stages": {"type": "array", "items": {"type": "object"}},
+        "mapRequirements": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "monster": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "health": {"type": "integer", "minimum": 1},
+        "maxHealth": {"type": "integer", "minimum": 1},
+        "experience": {"type": "integer", "minimum": 0},
+        "speed": {"type": "integer", "minimum": 0},
+        "race": {"type": "string"},
+        "corpse": {"type": "integer", "minimum": 0},
+        "outfit": {"type": "object"},
+        "flags": {"type": "object"},
+        "attacks": {"type": "array", "items": {"type": "object"}},
+        "defenses": {"type": "array", "items": {"type": "object"}},
+        "elements": {"type": "object"},
+        "immunities": {"type": "array", "items": {"type": "string"}},
+        "voices": {"type": "array", "items": {"type": "object"}},
+        "loot": {"type": "array", "items": {"type": "object"}},
+        "summons": {"type": "array", "items": {"type": "object"}},
+        "events": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "npc": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "outfit": {"type": "object"},
+        "flags": {"type": "object"},
+        "dialogue": {"type": "array", "items": {"type": "object"}},
+        "shop": {"type": "array", "items": {"type": "object"}},
+        "voices": {"type": "array", "items": {"type": "object"}},
+        "events": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "spell": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "words": {"type": "string"},
+        "level": {"type": "integer", "minimum": 0},
+        "mana": {"type": "integer", "minimum": 0},
+        "cooldown": {"type": "integer", "minimum": 0},
+        "groupCooldown": {"type": "integer", "minimum": 0},
+        "vocations": {"type": "array", "items": {"type": "string"}},
+        "premium": {"type": "boolean"},
+        "aggressive": {"type": "boolean"},
+        "target": {"type": "boolean"},
+        "range": {"type": "integer", "minimum": 0},
+        "damage": {"type": "object"},
+        "effects": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "raid": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "interval": {"type": "integer", "minimum": 0},
+        "margin": {"type": "integer", "minimum": 0},
+        "repeatable": {"type": "boolean"},
+        "steps": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "template": {"type": "string"},
+        "entry": {"type": "object"},
+        "exit": {"type": "object"},
+        "duration": {"type": "integer", "minimum": 1},
+        "capacity": {"type": "integer", "minimum": 1},
+        "resetPolicy": {"type": "string"},
+        "map": {"type": "object"},
+        "mapRequirements": {"type": "array", "items": {"type": "string"}},
+        "encounters": {"type": "array", "items": {"type": "object"}},
+        "rewards": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "contentBundle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["components"],
+      "properties": {
+        "components": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "name", "dependsOn", "sourceRefs"],
+            "properties": {
+              "id": {"$ref": "#/$defs/safeId"},
+              "type": {"enum": ["quest", "monster", "npc", "spell", "raid"]},
+              "name": {"type": "string", "minLength": 1},
+              "dependsOn": {"type": "array", "items": {"$ref": "#/$defs/safeId"}, "uniqueItems": true},
+              "sourceRefs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/safeId"}, "uniqueItems": true}
+            }
+          }
+        },
+        "requestedIds": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["namespace", "count", "min", "max", "purpose"],
+            "properties": {
+              "namespace": {"enum": ["storage", "actionId", "uniqueId"]},
+              "count": {"type": "integer", "minimum": 1},
+              "min": {"type": "integer", "minimum": 1},
+              "max": {"type": "integer", "minimum": 1},
+              "purpose": {"type": "string", "minLength": 1}
+            }
+          }
+        },
+        "mapRequirements": {"type": "array", "items": {"type": "string"}},
+        "manualSteps": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  },
+  "type": "object",
   "additionalProperties": false,
   "description": "Dry-run AI content authoring task specification for Canary.",
   "properties": {
     "schemaVersion": {"type": "string"},
-    "taskId": {"pattern": "^[a-z0-9][a-z0-9_-]*$", "type": "string"},
+    "taskId": {"$ref": "#/$defs/safeId"},
     "type": {"enum": ["quest", "monster", "npc", "spell", "raid", "instance", "content_bundle"]},
     "name": {"minLength": 1, "type": "string"},
     "description": {"type": "string"},
@@ -19,7 +162,7 @@
         "additionalProperties": false,
         "required": ["id", "kind", "title", "checkedAt", "confidence"],
         "properties": {
-          "id": {"pattern": "^[a-z0-9][a-z0-9_-]*$", "type": "string"},
+          "id": {"$ref": "#/$defs/safeId"},
           "kind": {"enum": ["official", "community-wiki", "repository", "manual", "inference"]},
           "title": {"minLength": 1, "type": "string"},
           "url": {"pattern": "^https://", "type": "string"},
@@ -29,14 +172,22 @@
         }
       }
     },
-    "quest": {"additionalProperties": true, "type": "object"},
-    "monster": {"additionalProperties": true, "type": "object"},
-    "npc": {"additionalProperties": true, "type": "object"},
-    "spell": {"additionalProperties": true, "type": "object"},
-    "raid": {"additionalProperties": true, "type": "object"},
-    "instance": {"additionalProperties": true, "type": "object"},
-    "contentBundle": {"additionalProperties": true, "type": "object"}
+    "quest": {"$ref": "#/$defs/quest"},
+    "monster": {"$ref": "#/$defs/monster"},
+    "npc": {"$ref": "#/$defs/npc"},
+    "spell": {"$ref": "#/$defs/spell"},
+    "raid": {"$ref": "#/$defs/raid"},
+    "instance": {"$ref": "#/$defs/instance"},
+    "contentBundle": {"$ref": "#/$defs/contentBundle"}
   },
   "required": ["schemaVersion", "taskId", "type", "name", "description", "targetDatapack", "dryRun", "requestedBy", "tags"],
-  "type": "object"
+  "allOf": [
+    {"if": {"properties": {"type": {"const": "quest"}}}, "then": {"required": ["quest"]}},
+    {"if": {"properties": {"type": {"const": "monster"}}}, "then": {"required": ["monster"]}},
+    {"if": {"properties": {"type": {"const": "npc"}}}, "then": {"required": ["npc"]}},
+    {"if": {"properties": {"type": {"const": "spell"}}}, "then": {"required": ["spell"]}},
+    {"if": {"properties": {"type": {"const": "raid"}}}, "then": {"required": ["raid"]}},
+    {"if": {"properties": {"type": {"const": "instance"}}}, "then": {"required": ["instance"]}},
+    {"if": {"properties": {"type": {"const": "content_bundle"}}}, "then": {"required": ["contentBundle", "sources"]}}
+  ]
 }

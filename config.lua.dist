@@ -110,7 +110,7 @@ weaponProficiencyMaxPerksPerLevel = 6
 -- NOTE: 1.0 = normal progression, 2.0 = 2x faster, 0.5 = half speed, 0 = disabled.
 -- NOTE: values below 1.0 reduce XP; values above 1.0 increase XP.
 -- For full documentation see: https://github.com/opentibiabr/canary/blob/main/docs/systems/weapon-proficiency.md
-weaponProficiencyGainMultiplier = 0.33
+weaponProficiencyGainMultiplier = 1.30
 
 -- Animus Mastery - SoulPit (Get more info in: https://github.com/opentibiabr/canary/pull/3230)
 -- NOTE: animusMasteryMaxMonsterXpMultiplier is the maximum experience the multiplier can be.
@@ -660,7 +660,7 @@ metricsOstreamInterval = 1000
 -- NOTE: Features added in this list will be forced to be used on OTCR
 -- These features can be found in "modules/gamelib/const.lua"
 OTCRFeatures = {
-    enableFeature = { 
+    enableFeature = {
         101, -- g_game.enableFeature(GameItemShader)
         102, -- g_game.enableFeature(GameCreatureAttachedEffect)
         103, -- g_game.enableFeature(GameCreatureShader)

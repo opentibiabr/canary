@@ -18,8 +18,8 @@ thread_local DispatcherContext Dispatcher::dispacherContext;
 
 namespace {
 	constexpr size_t DEFERRED_GAMEPLAY_TASKS_PER_CYCLE = 16;
-	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS = 250;
-	constexpr int64_t DISPATCHER_QUEUE_LATENCY_LOG_INTERVAL_MS = 5000;
+	constexpr auto DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD = std::chrono::milliseconds(250);
+	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
 
 	std::string_view getTaskGroupName(const uint8_t groupId) {
 		switch (static_cast<TaskGroup>(groupId)) {
@@ -33,6 +33,19 @@ namespace {
 				return "DeferredGameplay";
 			case TaskGroup::GenericParallel:
 				return "GenericParallel";
+			default:
+				return "Unknown";
+		}
+	}
+
+	std::string_view getInternalWorkName(const uint8_t workId) {
+		switch (static_cast<DispatcherInternalWork>(workId)) {
+			case DispatcherInternalWork::CreatureAsyncBucket:
+				return "CreatureAsyncBucket";
+			case DispatcherInternalWork::DispatcherPass:
+				return "DispatcherPass";
+			case DispatcherInternalWork::DispatcherIdle:
+				return "DispatcherIdle";
 			default:
 				return "Unknown";
 		}
@@ -56,13 +69,23 @@ void Dispatcher::init() {
 
 		while (!threadPool.isStopped()) {
 			UPDATE_OTSYS_TIME();
+			const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+			const auto passStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 
 			executeEvents();
 			executeScheduledEvents();
 			mergeEvents();
+			if (telemetryEnabled) {
+				observeInternalWork(DispatcherInternalWork::DispatcherPass, 1, policy.elapsedSince(passStartedAt));
+			}
+			logRuntimeTelemetry();
 
 			if (!hasPendingTasks) {
+				const auto idleStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 				signalSchedule.wait_for(asyncLock, timeUntilNextScheduledTask());
+				if (telemetryEnabled) {
+					observeInternalWork(DispatcherInternalWork::DispatcherIdle, 1, policy.elapsedSince(idleStartedAt));
+				}
 			}
 		}
 	});
@@ -78,6 +101,8 @@ void Dispatcher::executeSerialEvents(const uint8_t groupId) {
 		return;
 	}
 
+	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 	logQueueLatency(groupId);
 
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
@@ -85,9 +110,12 @@ void Dispatcher::executeSerialEvents(const uint8_t groupId) {
 
 	for (const auto &task : tasks) {
 		dispacherContext.taskName = task.getContext();
-		if (task.execute()) {
+		if (executeTask(task, groupId)) {
 			++dispatcherCycle;
 		}
+	}
+	if (telemetryEnabled) {
+		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasks.size());
 	}
 	tasks.clear();
 
@@ -100,6 +128,8 @@ void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTa
 		return;
 	}
 
+	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 	logQueueLatency(groupId);
 
 	dispacherContext.group = static_cast<TaskGroup>(groupId);
@@ -109,9 +139,12 @@ void Dispatcher::executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTa
 	for (size_t i = 0; i < tasksToExecute; ++i) {
 		const auto &task = tasks[i];
 		dispacherContext.taskName = task.getContext();
-		if (task.execute()) {
+		if (executeTask(task, groupId)) {
 			++dispatcherCycle;
 		}
+	}
+	if (telemetryEnabled) {
+		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasksToExecute);
 	}
 	tasks.erase(tasks.begin(), tasks.begin() + static_cast<std::ptrdiff_t>(tasksToExecute));
 
@@ -124,21 +157,48 @@ void Dispatcher::executeParallelEvents(const uint8_t groupId) {
 		return;
 	}
 
+	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+	const auto groupStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 	logQueueLatency(groupId);
 
-	asyncWait(tasks.size(), [groupId, &tasks](size_t i) {
+	const auto barrierStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+	asyncWait(tasks.size(), [this, groupId, &tasks](size_t i) {
 		dispacherContext.type = DispatcherType::AsyncEvent;
 		dispacherContext.group = static_cast<TaskGroup>(groupId);
-		tasks[i].execute();
+		executeTask(tasks[i], groupId);
 
 		dispacherContext.reset();
 	});
+	if (telemetryEnabled) {
+		taskGroupTelemetry[groupId].barrierRuntime.observe(policy.elapsedSince(barrierStartedAt), tasks.size());
+		taskGroupTelemetry[groupId].groupRuntime.observe(policy.elapsedSince(groupStartedAt), tasks.size());
+	}
 
 	tasks.clear();
 }
 
+bool Dispatcher::executeTask(const Task &task, const uint8_t groupId) {
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+		return task.execute();
+	}
+
+	const auto startedAt = policy.now();
+	observeTaskStart(task, groupId, startedAt);
+	const auto executed = task.execute();
+	taskGroupTelemetry[groupId].taskRuntime.observe(policy.elapsedSince(startedAt), 1, task.getContext());
+	return executed;
+}
+
+void Dispatcher::observeTaskStart(const Task &task, const uint8_t groupId, Task::Clock::time_point startedAt) {
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+		return;
+	}
+
+	taskGroupTelemetry[groupId].queueWait.observe(DispatcherPolicy::elapsed(task.getReadyAt(), startedAt), 1, task.getContext());
+}
+
 void Dispatcher::logQueueLatency(const uint8_t groupId) const {
-	static std::array<int64_t, static_cast<uint8_t>(TaskGroup::Last)> nextLogAt {};
+	static std::array<Task::Clock::time_point, static_cast<uint8_t>(TaskGroup::Last)> nextLogAt {};
 
 	const auto &tasks = m_tasks[groupId];
 	if (tasks.empty()) {
@@ -154,35 +214,20 @@ void Dispatcher::logQueueLatency(const uint8_t groupId) const {
 		return;
 	}
 
-	const auto now = OTSYS_TIME();
-	const auto loggingStartedAt = queueLatencyLoggingStartedAt.load(std::memory_order_relaxed);
-	int64_t oldestAge = 0;
-	size_t queuedAfterLoggingStart = 0;
-	std::string_view oldestContext;
-	for (const auto &task : tasks) {
-		if (task.getTime() < loggingStartedAt) {
-			continue;
-		}
-
-		++queuedAfterLoggingStart;
-		const auto age = now - task.getTime();
-		if (age > oldestAge) {
-			oldestAge = age;
-			oldestContext = task.getContext();
-		}
-	}
-
-	if (queuedAfterLoggingStart == 0 || oldestAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD_MS || now < nextLogAt[groupId]) {
+	const auto now = policy.now();
+	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
+	const auto snapshot = DispatcherPolicy::inspectQueueAt(tasks, now, loggingStartedAt);
+	if (snapshot.queued == 0 || snapshot.oldestReadyAge < DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD || now < nextLogAt[groupId]) {
 		return;
 	}
 
-	nextLogAt[groupId] = now + DISPATCHER_QUEUE_LATENCY_LOG_INTERVAL_MS;
+	nextLogAt[groupId] = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
 	g_logger().warn(
 		"Dispatcher queue latency: group={}, queued={}, oldest={} ms, oldestContext={}",
 		getTaskGroupName(groupId),
-		queuedAfterLoggingStart,
-		oldestAge,
-		oldestContext
+		snapshot.queued,
+		std::chrono::duration_cast<std::chrono::milliseconds>(snapshot.oldestReadyAge).count(),
+		snapshot.oldestContext
 	);
 }
 
@@ -190,11 +235,114 @@ void Dispatcher::setQueueLatencyLoggingEnabled(const bool enabled) {
 	if (!enabled) {
 		queueLatencyLoggingEnabled.store(false, std::memory_order_release);
 		queueLatencyLoggingStartedAt.store(0, std::memory_order_relaxed);
+		resetRuntimeTelemetry();
 		return;
 	}
 
-	queueLatencyLoggingStartedAt.store(OTSYS_TIME(), std::memory_order_relaxed);
+	resetRuntimeTelemetry();
+	queueLatencyLoggingStartedAt.store(DispatcherPolicy::timestamp(policy.now()), std::memory_order_relaxed);
 	queueLatencyLoggingEnabled.store(true, std::memory_order_release);
+}
+
+void Dispatcher::observeInternalWork(DispatcherInternalWork work, uint64_t units, std::chrono::microseconds runtime, std::string_view context) noexcept {
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+		return;
+	}
+
+	const auto workId = static_cast<uint8_t>(work);
+	if (workId >= internalWorkTelemetry.size()) {
+		return;
+	}
+	internalWorkTelemetry[workId].observe(runtime, units, context);
+}
+
+void Dispatcher::logRuntimeTelemetry() {
+	static Task::Clock::time_point nextLogAt {};
+
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_acquire) || g_game().getGameState() != GAME_STATE_NORMAL) {
+		return;
+	}
+
+	const auto now = policy.now();
+	if (now < nextLogAt) {
+		return;
+	}
+	nextLogAt = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
+
+	for (uint8_t groupId = 0; groupId < taskGroupTelemetry.size(); ++groupId) {
+		auto &telemetry = taskGroupTelemetry[groupId];
+		const auto queue = telemetry.queueWait.snapshotAndReset();
+		const auto task = telemetry.taskRuntime.snapshotAndReset();
+		const auto group = telemetry.groupRuntime.snapshotAndReset();
+		const auto barrier = telemetry.barrierRuntime.snapshotAndReset();
+		if (queue.empty() && task.empty() && group.empty() && barrier.empty()) {
+			continue;
+		}
+		const auto longestTaskContext = task.longestContext.empty() ? std::string_view { "none" } : task.longestContext;
+
+		g_logger().debug(
+			"Dispatcher telemetry: group={}, queueSamples={}, queueP50={} us, queueP95={} us, queueP99={} us, taskSamples={}, taskP50={} us, taskP95={} us, taskP99={} us, groupP99={} us, barrierP99={} us, longestTask={} us, longestTaskContext={}",
+			getTaskGroupName(groupId),
+			queue.latency.samples,
+			queue.latency.percentile(0.50).count(),
+			queue.latency.percentile(0.95).count(),
+			queue.latency.percentile(0.99).count(),
+			task.latency.samples,
+			task.latency.percentile(0.50).count(),
+			task.latency.percentile(0.95).count(),
+			task.latency.percentile(0.99).count(),
+			group.latency.percentile(0.99).count(),
+			barrier.latency.percentile(0.99).count(),
+			task.longestDuration.count(),
+			longestTaskContext
+		);
+	}
+
+	const auto scheduled = scheduledLatenessTelemetry.snapshotAndReset();
+	if (!scheduled.empty()) {
+		const auto latestContext = scheduled.longestContext.empty() ? std::string_view { "none" } : scheduled.longestContext;
+		g_logger().debug(
+			"Dispatcher scheduled telemetry: samples={}, latenessP50={} us, latenessP95={} us, latenessP99={} us, maxLateness={} us, latestContext={}",
+			scheduled.latency.samples,
+			scheduled.latency.percentile(0.50).count(),
+			scheduled.latency.percentile(0.95).count(),
+			scheduled.latency.percentile(0.99).count(),
+			scheduled.latency.maxUs,
+			latestContext
+		);
+	}
+
+	for (uint8_t workId = 0; workId < internalWorkTelemetry.size(); ++workId) {
+		const auto work = internalWorkTelemetry[workId].snapshotAndReset();
+		if (work.empty()) {
+			continue;
+		}
+
+		g_logger().debug(
+			"Dispatcher internal telemetry: work={}, samples={}, units={}, runtimeP50={} us, runtimeP95={} us, runtimeP99={} us, maxRuntime={} us",
+			getInternalWorkName(workId),
+			work.latency.samples,
+			work.workUnits,
+			work.latency.percentile(0.50).count(),
+			work.latency.percentile(0.95).count(),
+			work.latency.percentile(0.99).count(),
+			work.latency.maxUs
+		);
+	}
+}
+
+void Dispatcher::resetRuntimeTelemetry() {
+	for (auto &telemetry : taskGroupTelemetry) {
+		telemetry.queueWait.reset();
+		telemetry.taskRuntime.reset();
+		telemetry.groupRuntime.reset();
+		telemetry.barrierRuntime.reset();
+	}
+
+	for (auto &telemetry : internalWorkTelemetry) {
+		telemetry.reset();
+	}
+	scheduledLatenessTelemetry.reset();
 }
 
 void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f) {
@@ -261,12 +409,21 @@ void Dispatcher::executeScheduledEvents() {
 		if (task->getTime() > OTSYS_TIME()) {
 			break;
 		}
+		const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+		const auto taskStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+		if (telemetryEnabled) {
+			scheduledLatenessTelemetry.observe(DispatcherPolicy::elapsed(task->getReadyAt(), taskStartedAt), 1, task->getContext());
+		}
 
 		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
 		dispacherContext.group = TaskGroup::Serial;
 		dispacherContext.taskName = task->getContext();
 
-		if (task->execute() && task->isCycle()) {
+		const auto executed = task->execute();
+		if (telemetryEnabled) {
+			taskGroupTelemetry[static_cast<uint8_t>(TaskGroup::Serial)].taskRuntime.observe(policy.elapsedSince(taskStartedAt), 1, task->getContext());
+		}
+		if (executed && task->isCycle()) {
 			task->updateTime();
 			threadScheduledTasks.emplace_back(task);
 		} else {

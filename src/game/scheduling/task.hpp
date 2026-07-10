@@ -9,13 +9,25 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <atomic>
+	#include <chrono>
+	#include <cstdint>
+	#include <functional>
+	#include <memory>
+	#include <string_view>
+	#include <unordered_set>
+#endif
+
 class Dispatcher;
 
 class Task {
 public:
-	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context);
+	using Clock = std::chrono::steady_clock;
 
-	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true);
+	Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, Clock::time_point enqueuedAt = Clock::now());
+
+	Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle = false, bool log = true, Clock::time_point enqueuedAt = Clock::now());
 
 	~Task() = default;
 
@@ -39,6 +51,14 @@ public:
 
 	[[nodiscard]] auto getTime() const {
 		return utime;
+	}
+
+	[[nodiscard]] Clock::time_point getEnqueuedAt() const {
+		return enqueuedAt;
+	}
+
+	[[nodiscard]] Clock::time_point getReadyAt() const {
+		return readyAt;
 	}
 
 	[[nodiscard]] bool hasExpired() const;
@@ -68,7 +88,7 @@ private:
 	 */
 	static std::string_view internContext(std::string_view context);
 
-	void updateTime();
+	void updateTime(Clock::time_point rescheduledAt = Clock::now());
 
 	bool hasTraceableContext() const {
 		const static std::unordered_set<std::string_view> tasksContext = {
@@ -111,6 +131,8 @@ private:
 
 	std::function<void(void)> func;
 	std::string_view context;
+	Clock::time_point enqueuedAt;
+	Clock::time_point readyAt;
 
 	int64_t utime = 0;
 	int64_t expiration = 0;

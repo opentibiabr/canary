@@ -73,6 +73,8 @@
     <ClInclude Include="..\src\game\movement\teleport.hpp" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_policy.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_telemetry.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />

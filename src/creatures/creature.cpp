@@ -1983,6 +1983,7 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 }
 
 void Creature::processAsyncTaskBucket(size_t bucketIndex) {
+	const auto startedAt = Task::Clock::now();
 	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
 
 	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
@@ -2004,8 +2005,10 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		bucket.scheduled = shouldReschedule;
 	}
 
+	size_t processedCreatures = 0;
 	for (auto &weakCreature : pendingCreatures) {
 		if (const auto &creature = weakCreature.lock()) {
+			++processedCreatures;
 			creature->executeAsyncTasks();
 		}
 	}
@@ -2018,6 +2021,12 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		},
 		                          TaskGroup::WalkParallel);
 	}
+
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::CreatureAsyncBucket,
+		processedCreatures,
+		std::chrono::duration_cast<std::chrono::microseconds>(Task::Clock::now() - startedAt)
+	);
 }
 
 void Creature::executeAsyncTasks() {

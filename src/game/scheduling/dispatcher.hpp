@@ -10,6 +10,8 @@
 #pragma once
 
 #include "task.hpp"
+#include "dispatcher_policy.hpp"
+#include "dispatcher_telemetry.hpp"
 #include "lib/thread/thread_pool.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
@@ -36,6 +38,13 @@ enum class DispatcherType : uint8_t {
 	AsyncEvent,
 	ScheduledEvent,
 	CycleEvent
+};
+
+enum class DispatcherInternalWork : uint8_t {
+	CreatureAsyncBucket,
+	DispatcherPass,
+	DispatcherIdle,
+	Last
 };
 
 struct DispatcherContext {
@@ -115,6 +124,7 @@ public:
 
 	void asyncEvent(std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel);
 	void asyncWait(size_t size, std::function<void(size_t i)> &&f);
+	void observeInternalWork(DispatcherInternalWork work, uint64_t units, std::chrono::microseconds runtime, std::string_view context = {}) noexcept;
 
 	uint64_t asyncCycleEvent(uint32_t delay, std::function<void(void)> &&f, TaskGroup group = TaskGroup::GenericParallel) {
 		return scheduleEvent(
@@ -182,7 +192,11 @@ private:
 	inline void executeSerialEvents(const uint8_t groupId);
 	inline void executeBudgetedSerialEvents(const uint8_t groupId, size_t maxTasks);
 	inline void executeParallelEvents(const uint8_t groupId);
+	inline bool executeTask(const Task &task, const uint8_t groupId);
+	inline void observeTaskStart(const Task &task, const uint8_t groupId, Task::Clock::time_point startedAt);
 	inline void logQueueLatency(const uint8_t groupId) const;
+	inline void logRuntimeTelemetry();
+	inline void resetRuntimeTelemetry();
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -221,6 +235,7 @@ private:
 	uint_fast64_t dispatcherCycle = 0;
 
 	ThreadPool &threadPool;
+	DispatcherPolicy policy;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
@@ -245,6 +260,17 @@ private:
 	std::array<std::vector<Task>, static_cast<uint8_t>(TaskGroup::Last)> m_tasks;
 	phmap::btree_multiset<std::shared_ptr<Task>, Task::Compare> scheduledTasks {};
 	phmap::parallel_flat_hash_map_m<uint64_t, std::shared_ptr<Task>> scheduledTasksRef {};
+
+	struct TaskGroupTelemetry {
+		dispatcher::telemetry::ConcurrentTimedWork queueWait;
+		dispatcher::telemetry::ConcurrentTimedWork taskRuntime;
+		dispatcher::telemetry::ConcurrentTimedWork groupRuntime;
+		dispatcher::telemetry::ConcurrentTimedWork barrierRuntime;
+	};
+
+	std::array<TaskGroupTelemetry, static_cast<uint8_t>(TaskGroup::Last)> taskGroupTelemetry;
+	std::array<dispatcher::telemetry::ConcurrentTimedWork, static_cast<uint8_t>(DispatcherInternalWork::Last)> internalWorkTelemetry;
+	dispatcher::telemetry::ConcurrentTimedWork scheduledLatenessTelemetry;
 
 	bool asyncWaitDisabled = false;
 

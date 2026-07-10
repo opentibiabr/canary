@@ -22,6 +22,7 @@ from research_provenance import write_report
 from research_to_task import build_draft
 from validate_content_plan import validate as validate_plan
 from validate_task_spec import validate as validate_task
+from verify_staging_patch import verify as verify_staging_patch
 
 
 def _reserve_plan_identifiers(reservations: dict, task: dict, plan: dict) -> None:
@@ -117,6 +118,14 @@ def run(
     atomic_write_json(output / "STAGING_PATCH_PLAN.json", staging)
     (output / "STAGING_CONTENT.patch").write_text(patch, encoding="utf-8")
 
+    staging_verification = verify_staging_patch(staging, patch)
+    atomic_write_json(output / "STAGING_VERIFICATION.json", staging_verification)
+
+    final_status = (
+        "verified-ready-for-human-implementation"
+        if staging_verification["verified"]
+        else "blocked-before-human-implementation"
+    )
     summary = {
         "ok": True,
         "stage": "complete",
@@ -134,6 +143,11 @@ def run(
         "stagingPatchStatus": staging["status"],
         "stagingPatchGenerated": staging["patchGenerated"],
         "stagingPatchBlockers": staging["summary"]["blockerCount"],
+        "stagingVerificationStatus": staging_verification["status"],
+        "stagingVerified": staging_verification["verified"],
+        "stagingVerificationBlockers": staging_verification["summary"]["blockerCount"],
+        "stagingRollbackVerified": staging_verification["summary"]["rollbackPassed"],
+        "finalStatus": final_status,
         "automaticPromotionAllowed": False,
         "automaticApplyAllowed": False,
     }

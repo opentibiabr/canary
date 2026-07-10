@@ -74,6 +74,15 @@ serverName = "OTServBR-Global"
 serverMotd = "Welcome to the OTServBR-Global!"
 statusTimeout = 5 * 1000
 replaceKickOnLogin = true
+
+-- Disconnect death protection
+-- Disabled by default to preserve existing server behavior.
+disconnectProtectionEnabled = false
+disconnectProtectionDetectionTime = 10 * 1000
+disconnectProtectionDuration = 30 * 1000
+disconnectProtectionCooldown = 30 * 60 * 1000
+disconnectProtectionInPvp = false
+disconnectProtectionLogEnabled = true
 maxPacketsPerSecond = 25
 maxPlayersOnlinePerAccount = 1
 maxPlayersOutsidePZPerAccount = 1

@@ -1077,6 +1077,10 @@ public:
 	void sendMagicEffect(const Position &pos, uint16_t type) const;
 	void removeMagicEffect(const Position &pos, uint16_t type) const;
 	void sendPing();
+	void activateDisconnectProtection();
+	void clearDisconnectProtection();
+	void consumeDisconnectProtection();
+	[[nodiscard]] bool hasActiveDisconnectProtection() const;
 	void sendPingBack() const;
 	void sendStats();
 	void sendBasicData() const;
@@ -1866,6 +1870,9 @@ private:
 	mutable bool m_hasPendingImbuementTrackerUpdate = false;
 	mutable uint64_t m_pendingImbuementTrackerEventId = 0;
 	bool shouldForceLogout = true;
+	bool disconnectProtectionActive = false;
+	int64_t disconnectProtectionActivatedAt = 0;
+	int64_t disconnectProtectionCooldownUntil = 0;
 	bool connProtected = false;
 
 	// Hazard system

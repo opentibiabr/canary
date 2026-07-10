@@ -2266,9 +2266,15 @@ void Player::sendPing() {
 	}
 
 	const int64_t noPongTime = timeNow - lastPong;
+	const int64_t detectionTime = std::max<int64_t>(1000, g_configManager().getNumber(DISCONNECT_PROTECTION_DETECTION_TIME));
+	const bool connectionTimedOut = hasLostConnection || noPongTime >= detectionTime;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
+	if (connectionTimedOut && attackedCreature) {
 		setAttackedCreature(nullptr);
+	}
+
+	if (connectionTimedOut) {
+		activateDisconnectProtection();
 	}
 
 	if (noPongTime >= 60000 && shouldForceLogout) {
@@ -2283,6 +2289,42 @@ void Player::sendPing() {
 			shouldForceLogout = false;
 		}
 	}
+}
+
+void Player::activateDisconnectProtection() {
+	if (!g_configManager().getBoolean(DISCONNECT_PROTECTION_ENABLED)) {
+		return;
+	}
+
+	const int64_t now = OTSYS_TIME();
+	if (disconnectProtectionActive || now < disconnectProtectionCooldownUntil) {
+		return;
+	}
+
+	disconnectProtectionActive = true;
+	disconnectProtectionActivatedAt = now;
+	if (g_configManager().getBoolean(DISCONNECT_PROTECTION_LOG_ENABLED)) {
+		g_logger().info("Disconnect protection activated for player {}.", getName());
+	}
+}
+
+void Player::clearDisconnectProtection() {
+	disconnectProtectionActive = false;
+	disconnectProtectionActivatedAt = 0;
+}
+
+void Player::consumeDisconnectProtection() {
+	clearDisconnectProtection();
+	disconnectProtectionCooldownUntil = OTSYS_TIME() + std::max<int64_t>(0, g_configManager().getNumber(DISCONNECT_PROTECTION_COOLDOWN));
+}
+
+bool Player::hasActiveDisconnectProtection() const {
+	if (!g_configManager().getBoolean(DISCONNECT_PROTECTION_ENABLED) || !disconnectProtectionActive) {
+		return false;
+	}
+
+	const int64_t duration = std::max<int64_t>(0, g_configManager().getNumber(DISCONNECT_PROTECTION_DURATION));
+	return duration > 0 && OTSYS_TIME() - disconnectProtectionActivatedAt <= duration;
 }
 
 void Player::sendPingBack() const {
@@ -3978,6 +4020,15 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			pvpDeath = (Player::lastHitIsPlayer(lastHitCreature) || playerDmg / (playerDmg + static_cast<double>(othersDmg)) >= 0.05);
 		}
 
+		const bool disconnectDeathProtected = hasActiveDisconnectProtection()
+			&& (!pvpDeath || g_configManager().getBoolean(DISCONNECT_PROTECTION_IN_PVP));
+		if (disconnectDeathProtected) {
+			if (g_configManager().getBoolean(DISCONNECT_PROTECTION_LOG_ENABLED)) {
+				g_logger().info("Death penalty prevented by disconnect protection for player {} (PvP: {}).", getName(), pvpDeath);
+			}
+			consumeDisconnectProtection();
+		}
+
 		uint8_t unfairFightReduction = 100;
 		if (pvpDeath && sumLevels > level) {
 			double reduce = level / static_cast<double>(sumLevels);
@@ -3995,7 +4046,7 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 
 		sumMana += manaSpent;
 
-		double deathLossPercent = getLostPercent() * (unfairFightReduction / 100.);
+		double deathLossPercent = disconnectDeathProtected ? 0.0 : getLostPercent() * (unfairFightReduction / 100.);
 
 		// Charm bless bestiary
 		const auto charmBless = charmsArray[CHARM_BLESS];
@@ -4106,12 +4157,16 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, deathType.str());
 
 		auto adventurerBlessingLevel = g_configManager().getNumber(ADVENTURERSBLESSING_LEVEL);
-		auto willNotLoseBless = getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE;
+		auto willNotLoseBless = disconnectDeathProtected || (getLevel() < adventurerBlessingLevel && getVocationId() > VOCATION_NONE);
 
 		std::string bless = getBlessingsName();
 		std::ostringstream blessOutput;
 		if (willNotLoseBless) {
-			blessOutput << fmt::format("You still have adventurer's blessings for being level lower than {}!", adventurerBlessingLevel);
+			if (disconnectDeathProtected) {
+				blessOutput << "Your death penalty and blessings were preserved because the server detected a lost connection.";
+			} else {
+				blessOutput << fmt::format("You still have adventurer's blessings for being level lower than {}!", adventurerBlessingLevel);
+			}
 		} else {
 			bless.empty() ? blessOutput << "You weren't protected with any blessings."
 						  : blessOutput << "You were blessed with " << bless;
@@ -8363,6 +8418,7 @@ void Player::sendNetworkMessage(NetworkMessage &message) const {
 
 void Player::receivePing() {
 	lastPong = OTSYS_TIME();
+	clearDisconnectProtection();
 }
 
 void Player::sendOpenStash(bool isNpc) const {

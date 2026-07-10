@@ -10,6 +10,7 @@
 #pragma once
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <chrono>
 	#include <condition_variable>
 	#include <cstddef>
 	#include <cstdint>
@@ -64,6 +65,7 @@ struct MonsterComputeStats {
 	size_t completionsInFlight = 0;
 	size_t capacity = 0;
 	size_t workerCount = 0;
+	std::chrono::microseconds oldestCompletionReadyAge { 0 };
 	uint64_t accepted = 0;
 	uint64_t rejected = 0;
 	uint64_t completed = 0;
@@ -119,6 +121,7 @@ private:
 		MonsterComputeToken token = 0;
 		Completion completion;
 		std::string context;
+		std::chrono::steady_clock::time_point readyAt {};
 	};
 
 	void workerLoop(std::stop_token stopToken);

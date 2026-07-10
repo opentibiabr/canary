@@ -10,6 +10,7 @@
 #pragma once
 
 #include "task.hpp"
+#include "dispatcher_budget.hpp"
 #include "dispatcher_policy.hpp"
 #include "dispatcher_telemetry.hpp"
 #include "lib/thread/thread_pool.hpp"
@@ -275,6 +276,8 @@ private:
 	inline void logQueueLatency(const uint8_t groupId) const;
 	inline void logRuntimeTelemetry();
 	inline void resetRuntimeTelemetry();
+	inline void refreshAdaptiveBudgets();
+	inline std::chrono::microseconds oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const;
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 
 	inline void checkPendingTasks() {
@@ -314,6 +317,9 @@ private:
 
 	ThreadPool &threadPool;
 	DispatcherPolicy policy;
+	DispatcherAdaptiveBudgetController adaptiveBudgetController;
+	DispatcherBudgetSet activeBudgets;
+	Task::Clock::time_point nextAdaptiveBudgetUpdateAt {};
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::atomic_uint64_t creatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
@@ -350,6 +356,7 @@ private:
 	std::array<TaskGroupTelemetry, static_cast<uint8_t>(TaskGroup::Last)> taskGroupTelemetry;
 	std::array<dispatcher::telemetry::ConcurrentTimedWork, static_cast<uint8_t>(DispatcherInternalWork::Last)> internalWorkTelemetry;
 	dispatcher::telemetry::ConcurrentTimedWork scheduledLatenessTelemetry;
+	dispatcher::telemetry::ConcurrentLatencyHistogram playerVisibleReadyLatency;
 
 	bool asyncWaitDisabled = false;
 

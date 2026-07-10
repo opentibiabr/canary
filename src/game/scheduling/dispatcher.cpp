@@ -25,9 +25,33 @@ thread_local DispatcherContext Dispatcher::dispacherContext;
 namespace {
 	constexpr auto DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD = std::chrono::milliseconds(250);
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
+	constexpr auto DISPATCHER_ADAPTIVE_BUDGET_INTERVAL = std::chrono::milliseconds(250);
 
 	size_t getPositiveConfig(const ConfigKey_t key) {
 		return static_cast<size_t>(std::max<int32_t>(1, g_configManager().getNumber(key)));
+	}
+
+	DispatcherBudgetSet getConfiguredDispatcherBudgets() {
+		return {
+			.creatureWalkTasks = getPositiveConfig(CREATURE_WALK_TASKS_PER_PASS),
+			.walkParallelTasks = getPositiveConfig(WALK_PARALLEL_TASKS_PER_PASS),
+			.creatureAsyncTasksPerBucket = getPositiveConfig(CREATURE_ASYNC_TASKS_PER_BUCKET),
+			.deferredGameplayTasks = getPositiveConfig(DEFERRED_GAMEPLAY_TASKS_PER_PASS),
+			.workerCompletions = getPositiveConfig(WORKER_COMPLETIONS_PER_PASS),
+			.sliceRuntime = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS)),
+		};
+	}
+
+	std::string_view getDispatcherLoadStateName(DispatcherLoadState state) {
+		switch (state) {
+			case DispatcherLoadState::Normal:
+				return "normal";
+			case DispatcherLoadState::Constrained:
+				return "constrained";
+			case DispatcherLoadState::Emergency:
+				return "emergency";
+		}
+		return "unknown";
 	}
 
 	std::string_view getTaskGroupName(const uint8_t groupId) {
@@ -91,6 +115,7 @@ void Dispatcher::init() {
 			const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
 			const auto passStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
 
+			refreshAdaptiveBudgets();
 			executeEvents();
 			executeScheduledEvents();
 			executeWorkerCompletions();
@@ -212,23 +237,29 @@ void Dispatcher::executeBudgetedParallelEvents(const uint8_t groupId, size_t max
 bool Dispatcher::executeTask(const Task &task, const uint8_t groupId) {
 	dispacherContext.lane = task.getMeta().lane;
 	dispacherContext.executionMode = getExecutionMode(static_cast<TaskGroup>(groupId));
-	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
+	if (!telemetryEnabled && !isPlayerVisible(task.getMeta().lane)) {
 		return task.execute();
 	}
 
 	const auto startedAt = policy.now();
 	observeTaskStart(task, groupId, startedAt);
 	const auto executed = task.execute();
-	taskGroupTelemetry[groupId].taskRuntime.observe(policy.elapsedSince(startedAt), 1, task.getContext());
+	if (telemetryEnabled) {
+		taskGroupTelemetry[groupId].taskRuntime.observe(policy.elapsedSince(startedAt), 1, task.getContext());
+	}
 	return executed;
 }
 
 void Dispatcher::observeTaskStart(const Task &task, const uint8_t groupId, Task::Clock::time_point startedAt) {
-	if (!queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
-		return;
+	const auto queueWait = DispatcherPolicy::elapsed(task.getReadyAt(), startedAt);
+	if (isPlayerVisible(task.getMeta().lane)) {
+		playerVisibleReadyLatency.observe(queueWait);
 	}
 
-	taskGroupTelemetry[groupId].queueWait.observe(DispatcherPolicy::elapsed(task.getReadyAt(), startedAt), 1, task.getContext());
+	if (queueLatencyLoggingEnabled.load(std::memory_order_relaxed)) {
+		taskGroupTelemetry[groupId].queueWait.observe(queueWait, 1, task.getContext());
+	}
 }
 
 void Dispatcher::logQueueLatency(const uint8_t groupId) const {
@@ -367,10 +398,11 @@ void Dispatcher::logRuntimeTelemetry() {
 	const auto computeStats = g_monsterComputeService().getStats();
 	if (computeStats.running) {
 		g_logger().debug(
-			"Monster compute telemetry: visibleQueued={}, backgroundQueued={}, completionsQueued={}, outstanding={}, active={}, completionsInFlight={}, capacity={}, accepted={}, rejected={}, completed={}, failed={}, canceled={}",
+			"Monster compute telemetry: visibleQueued={}, backgroundQueued={}, completionsQueued={}, oldestCompletion={} us, outstanding={}, active={}, completionsInFlight={}, capacity={}, accepted={}, rejected={}, completed={}, failed={}, canceled={}",
 			computeStats.visibleQueued,
 			computeStats.backgroundQueued,
 			computeStats.completionsQueued,
+			computeStats.oldestCompletionReadyAge.count(),
 			computeStats.outstanding,
 			computeStats.active,
 			computeStats.completionsInFlight,
@@ -396,6 +428,73 @@ void Dispatcher::resetRuntimeTelemetry() {
 		telemetry.reset();
 	}
 	scheduledLatenessTelemetry.reset();
+}
+
+std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const {
+	std::chrono::microseconds oldest = std::chrono::microseconds::zero();
+	for (const auto &tasks : m_tasks) {
+		oldest = std::max(oldest, DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, now).oldestReadyAge);
+	}
+	for (const auto &task : scheduledTasks) {
+		if (task && isPlayerVisible(task->getMeta().lane)) {
+			oldest = std::max(oldest, DispatcherPolicy::elapsed(task->getReadyAt(), now));
+		}
+	}
+	oldest = std::max(oldest, g_monsterComputeService().getStats().oldestCompletionReadyAge);
+	return oldest;
+}
+
+void Dispatcher::refreshAdaptiveBudgets() {
+	const auto now = policy.now();
+	if (now < nextAdaptiveBudgetUpdateAt) {
+		return;
+	}
+	nextAdaptiveBudgetUpdateAt = now + DISPATCHER_ADAPTIVE_BUDGET_INTERVAL;
+
+	const auto visibleWindow = playerVisibleReadyLatency.snapshotAndReset();
+	const auto configured = getConfiguredDispatcherBudgets();
+	const auto decision = adaptiveBudgetController.update(
+		configured,
+		visibleWindow.percentile(0.99),
+		oldestPlayerVisibleReadyAge(now),
+		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS)),
+		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS))
+	);
+	activeBudgets = decision.budgets;
+
+	const auto tasksPerBucket = std::min<size_t>(activeBudgets.creatureAsyncTasksPerBucket, std::numeric_limits<uint32_t>::max());
+	const auto maxRuntimeUs = std::min<int64_t>(activeBudgets.sliceRuntime.count(), std::numeric_limits<uint32_t>::max());
+	creatureAsyncSliceLimits.store((static_cast<uint64_t>(tasksPerBucket) << 32) | static_cast<uint32_t>(maxRuntimeUs), std::memory_order_relaxed);
+
+	if (!decision.stateChanged) {
+		return;
+	}
+	const auto stateName = getDispatcherLoadStateName(decision.state);
+	if (decision.state == DispatcherLoadState::Emergency) {
+		g_logger().warn(
+			"Dispatcher adaptive budgets: state={}, controlLatency={} us, creatureWalk={}, walkParallel={}, creatureBucket={}, deferred={}, completions={}, slice={} us",
+			stateName,
+			decision.controlLatency.count(),
+			activeBudgets.creatureWalkTasks,
+			activeBudgets.walkParallelTasks,
+			activeBudgets.creatureAsyncTasksPerBucket,
+			activeBudgets.deferredGameplayTasks,
+			activeBudgets.workerCompletions,
+			activeBudgets.sliceRuntime.count()
+		);
+	} else {
+		g_logger().info(
+			"Dispatcher adaptive budgets: state={}, controlLatency={} us, creatureWalk={}, walkParallel={}, creatureBucket={}, deferred={}, completions={}, slice={} us",
+			stateName,
+			decision.controlLatency.count(),
+			activeBudgets.creatureWalkTasks,
+			activeBudgets.walkParallelTasks,
+			activeBudgets.creatureAsyncTasksPerBucket,
+			activeBudgets.deferredGameplayTasks,
+			activeBudgets.workerCompletions,
+			activeBudgets.sliceRuntime.count()
+		);
+	}
 }
 
 void Dispatcher::asyncWait(size_t requestSize, std::function<void(size_t i)> &&f) {
@@ -449,8 +548,8 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 			if (group == TaskGroup::CreatureWalk && !m_tasks[groupId].empty()) {
 				executeBudgetedSerialEvents(
 					groupId,
-					getPositiveConfig(CREATURE_WALK_TASKS_PER_PASS),
-					std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS))
+					activeBudgets.creatureWalkTasks,
+					activeBudgets.sliceRuntime
 				);
 			} else {
 				executeSerialEvents(groupId);
@@ -463,18 +562,12 @@ void Dispatcher::executeEvents(const TaskGroup startGroup) {
 		} else if (isDeferredGameplay) {
 			mergeEvents();
 			if (!m_tasks[groupId].empty()) {
-				executeBudgetedSerialEvents(groupId, getPositiveConfig(DEFERRED_GAMEPLAY_TASKS_PER_PASS));
+				executeBudgetedSerialEvents(groupId, activeBudgets.deferredGameplayTasks);
 			}
 			mergeAsyncEvents();
 		} else if (group == TaskGroup::WalkParallel) {
 			if (!m_tasks[groupId].empty()) {
-				const auto tasksPerBucket = std::min<size_t>(getPositiveConfig(CREATURE_ASYNC_TASKS_PER_BUCKET), std::numeric_limits<uint32_t>::max());
-				const auto maxRuntimeUs = std::min<int64_t>(
-					std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLICE_DURATION_MS))).count(),
-					std::numeric_limits<uint32_t>::max()
-				);
-				creatureAsyncSliceLimits.store((static_cast<uint64_t>(tasksPerBucket) << 32) | static_cast<uint32_t>(maxRuntimeUs), std::memory_order_relaxed);
-				executeBudgetedParallelEvents(groupId, getPositiveConfig(WALK_PARALLEL_TASKS_PER_PASS));
+				executeBudgetedParallelEvents(groupId, activeBudgets.walkParallelTasks);
 			}
 		} else {
 			executeParallelEvents(groupId);
@@ -492,9 +585,13 @@ void Dispatcher::executeScheduledEvents() {
 			break;
 		}
 		const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-		const auto taskStartedAt = telemetryEnabled ? policy.now() : Task::Clock::time_point {};
+		const auto taskStartedAt = policy.now();
+		const auto scheduledLateness = DispatcherPolicy::elapsed(task->getReadyAt(), taskStartedAt);
+		if (isPlayerVisible(task->getMeta().lane)) {
+			playerVisibleReadyLatency.observe(scheduledLateness);
+		}
 		if (telemetryEnabled) {
-			scheduledLatenessTelemetry.observe(DispatcherPolicy::elapsed(task->getReadyAt(), taskStartedAt), 1, task->getContext());
+			scheduledLatenessTelemetry.observe(scheduledLateness, 1, task->getContext());
 		}
 
 		dispacherContext.type = task->isCycle() ? DispatcherType::CycleEvent : DispatcherType::ScheduledEvent;
@@ -539,7 +636,7 @@ void Dispatcher::executeWorkerCompletions() {
 	dispacherContext.executionMode = ExecutionMode::BackgroundCompletion;
 	const auto startedAt = policy.now();
 	const auto completed = computeService.drainCompletions(
-		getPositiveConfig(WORKER_COMPLETIONS_PER_PASS),
+		activeBudgets.workerCompletions,
 		[](std::string_view context, MonsterComputeService::Completion &completion) {
 			dispacherContext.taskName = context;
 			if (completion) {

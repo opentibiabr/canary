@@ -67,6 +67,10 @@ public:
 		return meta;
 	}
 
+	void setLane(DispatcherLane lane) {
+		meta.lane = lane;
+	}
+
 	[[nodiscard]] bool hasExpired() const;
 
 	[[nodiscard]] bool isCycle() const {
@@ -95,10 +99,6 @@ private:
 	static std::string_view internContext(std::string_view context);
 
 	void updateTime(Clock::time_point rescheduledAt = Clock::now());
-	void setLane(DispatcherLane lane) {
-		meta.lane = lane;
-	}
-
 	bool hasTraceableContext() const {
 		const static std::unordered_set<std::string_view> tasksContext = {
 			"Decay::checkDecay",

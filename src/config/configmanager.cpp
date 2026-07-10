@@ -249,7 +249,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);
 	loadIntConfig(L, DEFERRED_GAMEPLAY_TASKS_PER_PASS, "deferredGameplayTasksPerPass", 16);
+	loadIntConfig(L, DISPATCHER_EMERGENCY_MS, "dispatcherEmergencyMs", 100);
 	loadIntConfig(L, DISPATCHER_SLICE_DURATION_MS, "dispatcherSliceDurationMs", 2);
+	loadIntConfig(L, DISPATCHER_SLO_MS, "dispatcherSloMs", 50);
 	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 	loadIntConfig(L, EX_ACTIONS_DELAY_INTERVAL, "timeBetweenExActions", 1000);
 	loadIntConfig(L, EXP_FROM_PLAYERS_LEVEL_RANGE, "expFromPlayersLevelRange", 75);

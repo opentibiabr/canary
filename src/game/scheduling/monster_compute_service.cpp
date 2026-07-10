@@ -231,6 +231,12 @@ MonsterComputeStats MonsterComputeService::getStats() const {
 	stats.completionsInFlight = completionsInFlight;
 	stats.capacity = capacity;
 	stats.workerCount = workerCount;
+	if (!completions.empty()) {
+		const auto now = std::chrono::steady_clock::now();
+		if (now > completions.front().readyAt) {
+			stats.oldestCompletionReadyAge = std::chrono::duration_cast<std::chrono::microseconds>(now - completions.front().readyAt);
+		}
+	}
 	stats.accepted = acceptedCount;
 	stats.rejected = rejectedCount;
 	stats.completed = completedCount;
@@ -273,7 +279,7 @@ void MonsterComputeService::executeRequest(Request request, std::stop_token stop
 		++failedCount;
 	}
 
-	enqueueCompletion({ request.token, std::move(completion), std::move(request.context) });
+	enqueueCompletion({ request.token, std::move(completion), std::move(request.context), {} });
 }
 
 MonsterComputeService::Request MonsterComputeService::popNextRequest() {
@@ -289,6 +295,7 @@ MonsterComputeService::Request MonsterComputeService::popNextRequest() {
 void MonsterComputeService::enqueueCompletion(CompletionRecord completion) {
 	std::scoped_lock lock(mutex);
 	assert(completions.size() < capacity);
+	completion.readyAt = std::chrono::steady_clock::now();
 	completions.emplace_back(std::move(completion));
 	assert(activeRequests > 0);
 	--activeRequests;

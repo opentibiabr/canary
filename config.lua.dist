@@ -512,6 +512,9 @@ creatureAsyncTasksPerBucket = 16
 deferredGameplayTasksPerPass = 16
 dispatcherSliceDurationMs = 2
 workerCompletionsPerPass = 64
+-- Adaptive budgets enter constrained mode at the SLO and emergency mode at the higher threshold.
+dispatcherSloMs = 50
+dispatcherEmergencyMs = 100
 -- Worker count and queue capacity are fixed at startup and require a restart.
 -- Zero worker threads selects the hardware-aware default; hosts with up to two CPUs run inline.
 -- Capacity may be lowered but is hard-capped at 2048 outstanding request/completion tokens.

@@ -104,6 +104,23 @@ public:
 		return snapshot;
 	}
 
+	[[nodiscard]] static DispatcherQueueSnapshot inspectPlayerVisibleQueueAt(std::span<const Task> tasks, TimePoint currentTime) {
+		DispatcherQueueSnapshot snapshot;
+		for (const auto &task : tasks) {
+			if (!isPlayerVisible(task.getMeta().lane)) {
+				continue;
+			}
+
+			++snapshot.queued;
+			const auto readyAge = elapsed(task.getReadyAt(), currentTime);
+			if (readyAge > snapshot.oldestReadyAge) {
+				snapshot.oldestReadyAge = readyAge;
+				snapshot.oldestContext = task.getContext();
+			}
+		}
+		return snapshot;
+	}
+
 	[[nodiscard]] static std::chrono::microseconds elapsed(TimePoint startedAt, TimePoint finishedAt) {
 		if (finishedAt <= startedAt) {
 			return std::chrono::microseconds::zero();

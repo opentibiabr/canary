@@ -69,6 +69,20 @@ TEST(DispatcherPolicyTest, InspectsQueueWithAnInjectedMonotonicClock) {
 	EXPECT_EQ(afterStartup.oldestContext, "newest");
 }
 
+TEST(DispatcherPolicyTest, InspectsOnlyPlayerVisibleLanesForSloControl) {
+	const auto base = Task::Clock::time_point(10s);
+	std::vector<Task> tasks;
+	tasks.emplace_back(0, [] { }, "visible", base);
+	tasks.back().setLane(DispatcherLane::PlayerAction);
+	tasks.emplace_back(0, [] { }, "background", base - 1s);
+	tasks.back().setLane(DispatcherLane::MonsterAI);
+
+	const auto snapshot = DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, base + 100ms);
+	EXPECT_EQ(snapshot.queued, 1);
+	EXPECT_EQ(snapshot.oldestReadyAge, 100ms);
+	EXPECT_EQ(snapshot.oldestContext, "visible");
+}
+
 TEST(DispatcherPolicyTest, ClampsNegativeDurationsAndAppliesDeterministicBudgets) {
 	const auto now = Task::Clock::time_point(10s);
 	DispatcherPolicy policy([now] { return now; });

@@ -27,7 +27,7 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 	end
 
 	if target and target:getId() == SoulPit.obeliskActive then
-		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting in the soulpit!")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Someone is fighting in the soulpit!")
 		return false
 	end
 	if not target or target:getId() ~= SoulPit.obeliskInactive then
@@ -95,6 +95,16 @@ function soulPitAction.onUse(player, item, fromPosition, target, toPosition, isH
 	local encounter = Encounter("Soulpit", {
 		zone = SoulPit.zone,
 	})
+
+	function encounter:countMonsters()
+		local count = 0
+		for _, monster in ipairs(self:getZone():getMonsters()) do
+			if not monster:getMaster() then
+				count = count + 1
+			end
+		end
+		return count
+	end
 
 	function encounter:onReset(position)
 		SoulPit.zone:removeMonsters()

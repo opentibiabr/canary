@@ -22,7 +22,7 @@ def _safe_relative(value: str) -> str:
 
 
 def _new_file_patch(target_path: str, source_text: str) -> list[str]:
-    source_lines = source_text.splitlines(keepends=True)
+    source_lines = source_text.splitlines()
     diff = list(
         difflib.unified_diff(
             [],
@@ -96,6 +96,8 @@ def generate(handoff: dict, generated_root: Path, repository_root: Path) -> tupl
         })
 
         if operation == "create":
+            if patches:
+                patches.append("")
             patches.extend(_new_file_patch(target_path, source.read_text(encoding="utf-8")))
 
     blockers = [item for item in findings if item["level"] == "blocker"]

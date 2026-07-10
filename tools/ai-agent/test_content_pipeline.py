@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -47,6 +48,9 @@ class PipelineTests(unittest.TestCase):
     def task(self):
         return json.loads((ROOT / "docs/ai-agent/examples/forgotten_forge.quest.json").read_text())
 
+    def bundle_task(self):
+        return json.loads((ROOT / "docs/ai-agent/examples/forgotten_forge.content-bundle.json").read_text())
+
     def test_allocator_finds_free_range_deterministically(self):
         self.assertEqual(find_range(self.registry(), self.reservations(), "storage", 2, 300000, 300010), (300001, 300002))
         self.assertEqual(find_range(self.registry(), self.reservations(), "storage", 2, 300000, 300010), (300001, 300002))
@@ -81,13 +85,28 @@ class PipelineTests(unittest.TestCase):
         task["name"] = "../../items.otb"
         self.assertFalse(validate_task(task)["ok"])
 
+    def test_content_bundle_validation(self):
+        self.assertTrue(validate_task(self.bundle_task())["ok"])
+        task = self.bundle_task()
+        task["contentBundle"]["components"][1]["id"] = task["contentBundle"]["components"][0]["id"]
+        self.assertFalse(validate_task(task)["ok"])
+
     def test_planner_and_plan_validator(self):
         registry = self.registry()
         reservations = self.reservations()
-        add_reservation(reservations, "forgotten_forge", "storage", 300001, 300001, "data-otservbr-global", "x")
+        add_reservation(reservations, "forgotten_forge", "storage", 300001, 300001, "data", "x")
         plan = make_plan(self.task(), {}, registry, reservations)
         self.assertIn("rollbackPlan", plan)
         self.assertTrue(validate_plan(plan, registry, reservations)["ok"])
+
+    def test_content_bundle_plans_multiple_files_and_ids(self):
+        plan = make_plan(self.bundle_task(), {}, self.registry(), self.reservations())
+        self.assertEqual(len(plan["componentPlan"]), 3)
+        self.assertEqual(len(plan["newFiles"]), 3)
+        self.assertEqual([entry["id"] for entry in plan["proposedStorage"]], [390000, 390001, 390002])
+        self.assertEqual([entry["id"] for entry in plan["proposedActionIds"]], [59000, 59001])
+        self.assertTrue(plan["manualSteps"])
+        self.assertEqual(plan["riskLevel"], "medium")
 
     def test_renderer_writes_only_artifacts(self):
         (ROOT / "artifacts").mkdir(exist_ok=True)
@@ -97,6 +116,23 @@ class PipelineTests(unittest.TestCase):
             manifest = render(task, plan, directory)
             self.assertEqual(len(manifest["files"]), 1)
             self.assertIn("sha256", manifest["files"][0])
+
+    def test_content_bundle_renderer_outputs_valid_previews(self):
+        (ROOT / "artifacts").mkdir(exist_ok=True)
+        with tempfile.TemporaryDirectory(dir=ROOT / "artifacts") as directory:
+            task = self.bundle_task()
+            plan = make_plan(task, {}, self.registry(), self.reservations())
+            manifest = render(task, plan, directory)
+            self.assertEqual(len(manifest["files"]), 3)
+            generated = Path(directory) / task["taskId"]
+            quest_preview = (generated / "quest/forgotten_forge.lua").read_text(encoding="utf-8")
+            npc_preview = (generated / "npc/forge_keeper_ardan.lua").read_text(encoding="utf-8")
+            self.assertIn("return {", quest_preview)
+            self.assertIn("dryRun = true", quest_preview)
+            self.assertIn("ashen_sentinel_boss", quest_preview)
+            self.assertIn("return {", npc_preview)
+            ET.parse(generated / "monster/the_ashen_sentinel.xml")
+            self.assertEqual(set(manifest["plannedFiles"]), set(plan["newFiles"]))
 
     def test_renderer_rejects_escaping_task_id(self):
         (ROOT / "artifacts").mkdir(exist_ok=True)

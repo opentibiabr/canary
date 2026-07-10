@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import re
 import sys
 from pathlib import Path
@@ -22,6 +23,45 @@ def _safe_stem(name: str) -> str:
     return stem
 
 
+def _lua_string(value: str) -> str:
+    return json.dumps(value, ensure_ascii=False)
+
+
+def _write_preview(base: Path, output_root: Path, task_id: str, component: dict) -> Path:
+    component_type = component["type"]
+    component_name = component["name"]
+    component_id = component.get("id", task_id)
+    dependencies = component.get("dependsOn", [])
+    extension = ".xml" if component_type in {"monster", "raid"} else ".lua"
+    path = base / component_type / f"{_safe_stem(component_name)}{extension}"
+    require_safe_write(path, output_root=output_root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    if extension == ".xml":
+        body = (
+            '<?xml version="1.0" encoding="UTF-8"?>\n'
+            "<!-- Generated preview — not active game content -->\n"
+            f'<preview taskId="{task_id}" componentId="{component_id}" '
+            f'type="{component_type}" name="{component_name}" dryRun="true" />\n'
+        )
+    else:
+        dependency_values = ", ".join(_lua_string(value) for value in dependencies)
+        body = (
+            HEADER
+            + "return {\n"
+            + f"    taskId = {_lua_string(task_id)},\n"
+            + f"    componentId = {_lua_string(component_id)},\n"
+            + f"    type = {_lua_string(component_type)},\n"
+            + f"    name = {_lua_string(component_name)},\n"
+            + f"    dependsOn = {{{dependency_values}}},\n"
+            + "    dryRun = true,\n"
+            + "}\n"
+        )
+
+    path.write_text(body, encoding="utf-8")
+    return path
+
+
 def render(task, plan, outdir):
     output_root = Path(outdir)
     base = output_root / task["taskId"]
@@ -29,26 +69,25 @@ def render(task, plan, outdir):
     base.mkdir(parents=True, exist_ok=True)
 
     files = []
-    kind = task["type"]
-    stem = _safe_stem(task["name"])
+    task_type = task["type"]
 
-    if kind in {"quest", "npc", "spell", "raid", "monster"}:
-        extension = ".xml" if kind in {"monster", "raid"} else ".lua"
-        path = base / kind / f"{stem}{extension}"
-        require_safe_write(path, output_root=output_root)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        body = (
-            HEADER
-            + f'-- Task: {task["taskId"]}\n-- Type: {kind}\n-- Name: {task["name"]}\n'
-            + f'return {{ name = {task["name"]!r}, dryRun = true }}\n'
-        )
-        if extension == ".xml":
-            body = (
-                "<!-- Generated preview — not active game content -->\n"
-                + f'<!-- Task: {task["taskId"]}; Type: {kind}; Name: {task["name"]} -->\n'
+    if task_type == "content_bundle":
+        for component in task["contentBundle"]["components"]:
+            files.append(_write_preview(base, output_root, task["taskId"], component))
+    elif task_type in {"quest", "npc", "spell", "raid", "monster"}:
+        files.append(
+            _write_preview(
+                base,
+                output_root,
+                task["taskId"],
+                {
+                    "id": task["taskId"],
+                    "type": task_type,
+                    "name": task["name"],
+                    "dependsOn": [],
+                },
             )
-        path.write_text(body, encoding="utf-8")
-        files.append(path)
+        )
     else:
         path = base / "MANUAL_IMPLEMENTATION_REQUIRED.md"
         require_safe_write(path, output_root=output_root)
@@ -62,6 +101,9 @@ def render(task, plan, outdir):
     require_safe_write(manifest_path, output_root=output_root)
     manifest = {
         "taskId": task["taskId"],
+        "taskType": task_type,
+        "dryRun": True,
+        "plannedFiles": plan.get("newFiles", []),
         "files": [
             {
                 "path": str(path.relative_to(output_root)).replace("\\", "/"),

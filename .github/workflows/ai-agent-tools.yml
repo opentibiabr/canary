@@ -65,16 +65,17 @@ jobs:
           python -m json.tool docs/ai-agent/TASK_SPEC.schema.json > /dev/null
           python -m json.tool docs/ai-agent/ID_RESERVATIONS.schema.json > /dev/null
           python -m json.tool docs/ai-agent/ID_RESERVATIONS.json > /dev/null
+          python -m json.tool docs/ai-agent/examples/forgotten_forge.content-bundle.json > /dev/null
 
-      - name: Run example content pipeline
+      - name: Run first realistic content pack
         run: |
           cp docs/ai-agent/ID_RESERVATIONS.json artifacts/ID_RESERVATIONS.ci.json
           python tools/ai-agent/run_content_pipeline.py \
-            --task docs/ai-agent/examples/forgotten_forge.quest.json \
+            --task docs/ai-agent/examples/forgotten_forge.content-bundle.json \
             --registry artifacts/ID_REGISTRY.json \
             --content-index artifacts/CONTENT_INDEX.json \
             --reservations artifacts/ID_RESERVATIONS.ci.json \
-            --output artifacts/content-pipeline
+            --output artifacts/first-real-content-pack
 
       - name: Validate generated JSON
         run: |
@@ -82,6 +83,31 @@ jobs:
           python -m json.tool artifacts/PROJECT_STRUCTURE.json > /dev/null
           python -m json.tool artifacts/CONTENT_INDEX.json > /dev/null
           python -m json.tool artifacts/REFERENCE_REPORT.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/TASK_SPEC.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/TASK_SPEC_VALIDATION.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/CONTENT_PLAN.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/CONTENT_PLAN_VALIDATION.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/ID_RESERVATIONS.working.json > /dev/null
+          python -m json.tool artifacts/first-real-content-pack/generated-content/forgotten_forge_bundle/MANIFEST.json > /dev/null
+
+      - name: Verify first content pack outputs
+        shell: python
+        run: |
+          import json
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          root = Path("artifacts/first-real-content-pack")
+          plan = json.loads((root / "CONTENT_PLAN.json").read_text(encoding="utf-8"))
+          validation = json.loads((root / "CONTENT_PLAN_VALIDATION.json").read_text(encoding="utf-8"))
+          reservations = json.loads((root / "ID_RESERVATIONS.working.json").read_text(encoding="utf-8"))
+          manifest = json.loads((root / "generated-content/forgotten_forge_bundle/MANIFEST.json").read_text(encoding="utf-8"))
+
+          assert validation["ok"] is True
+          assert len(plan["componentPlan"]) == 3
+          assert len(manifest["files"]) == 3
+          assert len([item for item in reservations["reservations"] if item["taskId"] == "forgotten_forge_bundle"]) == 5
+          ET.parse(root / "generated-content/forgotten_forge_bundle/monster/the_ashen_sentinel.xml")
 
       - name: Create audit summary
         shell: python
@@ -94,6 +120,7 @@ jobs:
           structure = json.loads(Path("artifacts/PROJECT_STRUCTURE.json").read_text(encoding="utf-8"))
           content = json.loads(Path("artifacts/CONTENT_INDEX.json").read_text(encoding="utf-8"))
           references = json.loads(Path("artifacts/REFERENCE_REPORT.json").read_text(encoding="utf-8"))
+          pack = json.loads(Path("artifacts/first-real-content-pack/CONTENT_PLAN.json").read_text(encoding="utf-8"))
 
           lines = ["# AI agent repository audit", "", "## Identifier registry", ""]
           for name, data in registry["namespaces"].items():
@@ -120,6 +147,13 @@ jobs:
           for name, count in references["summary"]["countsByType"].items():
               lines.append(f"- {name}: {count}")
 
+          lines.extend(["", "## First realistic content pack", ""])
+          lines.append(f"- components: {len(pack['componentPlan'])}")
+          lines.append(f"- preview files: {len(pack['newFiles'])}")
+          lines.append(f"- storage IDs: {len(pack['proposedStorage'])}")
+          lines.append(f"- action IDs: {len(pack['proposedActionIds'])}")
+          lines.append(f"- risk level: {pack['riskLevel']}")
+
           report = "\n".join(lines) + "\n"
           Path("artifacts/AI_AGENT_AUDIT_SUMMARY.md").write_text(report, encoding="utf-8")
           risk = Path("artifacts/RISK_REPORT.md").read_text(encoding="utf-8")
@@ -137,16 +171,19 @@ jobs:
             artifacts/RISK_REPORT.md
             artifacts/AI_AGENT_AUDIT_SUMMARY.md
 
-      - name: Upload content pipeline artifacts
+      - name: Upload first realistic content pack
         uses: actions/upload-artifact@v4
         with:
-          name: ai-agent-content-pipeline
+          name: first-real-content-pack
           path: |
-            docs/ai-agent/examples/forgotten_forge.quest.json
-            artifacts/content-pipeline/CONTENT_PLAN.json
-            artifacts/content-pipeline/CONTENT_PLAN_VALIDATION.json
-            artifacts/content-pipeline/generated-content/**
-            artifacts/content-pipeline/CONTENT_PIPELINE_SUMMARY.md
+            docs/ai-agent/examples/forgotten_forge.content-bundle.json
+            artifacts/first-real-content-pack/TASK_SPEC.json
+            artifacts/first-real-content-pack/TASK_SPEC_VALIDATION.json
+            artifacts/first-real-content-pack/CONTENT_PLAN.json
+            artifacts/first-real-content-pack/CONTENT_PLAN_VALIDATION.json
+            artifacts/first-real-content-pack/ID_RESERVATIONS.working.json
+            artifacts/first-real-content-pack/generated-content/**
+            artifacts/first-real-content-pack/CONTENT_PIPELINE_SUMMARY.md
             artifacts/RISK_REPORT.md
           if-no-files-found: error
           retention-days: 14

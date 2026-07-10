@@ -6,14 +6,18 @@ on:
       - "ai/**"
     paths:
       - "tools/ai-agent/normalize_research.py"
+      - "tools/ai-agent/research_to_task.py"
       - "tools/ai-agent/test_research_normalization.py"
+      - "tools/ai-agent/test_research_to_task.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
   pull_request:
     paths:
       - "tools/ai-agent/normalize_research.py"
+      - "tools/ai-agent/research_to_task.py"
       - "tools/ai-agent/test_research_normalization.py"
+      - "tools/ai-agent/test_research_to_task.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
@@ -32,8 +36,10 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Run normalization tests
-        run: python -m unittest tools/ai-agent/test_research_normalization.py -v
+      - name: Run normalization and task-draft tests
+        run: |
+          python -m unittest tools/ai-agent/test_research_normalization.py -v
+          python -m unittest tools/ai-agent/test_research_to_task.py -v
 
       - name: Validate research JSON files
         run: |
@@ -50,17 +56,37 @@ jobs:
             --content-index artifacts/CONTENT_INDEX.json \
             --output artifacts/NORMALIZED_RESEARCH.json
 
-      - name: Verify comparison result
+      - name: Generate conflict-safe task draft
+        shell: bash
+        run: |
+          set +e
+          python tools/ai-agent/research_to_task.py \
+            --normalized artifacts/NORMALIZED_RESEARCH.json \
+            --task-output artifacts/TASK_SPEC.draft.json \
+            --report-output artifacts/RESEARCH_TO_TASK_REPORT.json
+          status=$?
+          set -e
+          test "$status" -eq 2
+
+      - name: Verify comparison and task-draft result
         shell: python
         run: |
           import json
           from pathlib import Path
 
           result = json.loads(Path("artifacts/NORMALIZED_RESEARCH.json").read_text(encoding="utf-8"))
+          task = json.loads(Path("artifacts/TASK_SPEC.draft.json").read_text(encoding="utf-8"))
+          report = json.loads(Path("artifacts/RESEARCH_TO_TASK_REPORT.json").read_text(encoding="utf-8"))
           entities = {item["id"]: item for item in result["entities"]}
+          components = {item["id"]: item for item in task["contentBundle"]["components"]}
+
           assert entities["dragon_monster"]["canary"]["status"] == "matched"
           assert entities["forgotten_forge_quest"]["canary"]["status"] == "missing"
           assert entities["forgotten_forge_quest"]["canonical"] is False
+          assert "dragon_monster" not in components
+          assert "forgotten_forge_quest" in components
+          assert report["summary"]["blockedConflicts"] == 1
+          assert report["summary"]["readyForPipeline"] is False
 
       - uses: actions/upload-artifact@v4
         with:
@@ -68,5 +94,7 @@ jobs:
           path: |
             artifacts/CONTENT_INDEX.json
             artifacts/NORMALIZED_RESEARCH.json
+            artifacts/TASK_SPEC.draft.json
+            artifacts/RESEARCH_TO_TASK_REPORT.json
           if-no-files-found: error
           retention-days: 14

@@ -394,11 +394,9 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 					setNavFlag(cell, NavCellFlag::NoFieldBlockPath, tile->hasFlag(TILESTATE_NOFIELDBLOCKPATH));
 					setNavFlag(cell, NavCellFlag::BlockProjectile, tile->hasFlag(TILESTATE_BLOCKPROJECTILE));
 
-					if (tile->hasHarmfulField()) {
-						if (const auto &field = tile->getFieldItem()) {
-							setNavFlag(cell, NavCellFlag::HarmfulField, true);
-							cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
-						}
+					if (const auto &field = tile->getFieldItem(); field && !field->isBlocking() && field->getDamage() > 0) {
+						setNavFlag(cell, NavCellFlag::HarmfulField, true);
+						cell.harmfulFieldCombatType = static_cast<uint8_t>(field->getCombatType());
 					}
 				}
 

@@ -3476,7 +3476,7 @@ void Monster::supersedeFollowPathCompute() {
 		return;
 	}
 
-	nextFollowPathComputeGeneration();
+	static_cast<void>(nextFollowPathComputeGeneration());
 	pendingFollowPathCompute.reset();
 	followPathComputeSuperseded = true;
 }

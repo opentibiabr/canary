@@ -115,8 +115,9 @@ def plan(task, content, registry, reservations):
                 "actionId": "proposedActionIds",
                 "uniqueId": "proposedUniqueIds",
             }[namespace]
+            purpose = reservation.get("purpose", "content bundle identifier")
             for value in range(start, end + 1):
-                result[key].append({"id": value, "purpose": reservation.get("purpose", component.get("id", "content bundle"))})
+                result[key].append({"id": value, "purpose": purpose})
         result["mapRequirements"] = bundle.get("mapRequirements", [])
         if result["mapRequirements"]:
             result["manualSteps"].append("Create and place map elements manually; OTBM files are never edited by this pipeline.")

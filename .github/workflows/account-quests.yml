@@ -1,0 +1,39 @@
+---
+name: Account Quests
+
+on:
+  pull_request:
+    paths:
+      - "data-otservbr-global/account_quests.lua"
+      - "data-otservbr-global/scripts/custom/account_quest_system.lua"
+      - "data-otservbr-global/scripts/quests/**"
+      - "data/scripts/actions/doors/quest_door.lua"
+      - "tools/account-quests/**"
+      - ".github/workflows/account-quests.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "data-otservbr-global/account_quests.lua"
+      - "data-otservbr-global/scripts/custom/account_quest_system.lua"
+      - "data-otservbr-global/scripts/quests/**"
+      - "data/scripts/actions/doors/quest_door.lua"
+      - "tools/account-quests/**"
+      - ".github/workflows/account-quests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate account quest contract
+        run: python tools/account-quests/validate_account_quests.py
+      - name: Run account quest validator tests
+        run: python -m unittest discover -s tools/account-quests -p "test_*.py" -v

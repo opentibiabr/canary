@@ -10,9 +10,15 @@ for index, value in ipairs(QuestDoorTable) do
 end
 
 local accountQuestDoors = {}
-local function addAccountQuestDoor(storageId, questId)
-	if storageId then
-		accountQuestDoors[storageId] = questId
+local accountQuestUnlockDoors = {}
+local function addAccountQuestDoor(storageId, questId, unlockOnUse)
+	if not storageId then
+		return
+	end
+
+	accountQuestDoors[storageId] = questId
+	if unlockOnUse then
+		accountQuestUnlockDoors[storageId] = questId
 	end
 end
 
@@ -32,7 +38,7 @@ addAccountQuestDoor(secretService.TBIMission04, "secret-service")
 addAccountQuestDoor(secretService.CGBMission04, "secret-service")
 addAccountQuestDoor(secretService.AVINMission05, "secret-service")
 addAccountQuestDoor(secretService.CGBMission05, "secret-service")
-addAccountQuestDoor(secretService.Mission07, "secret-service")
+addAccountQuestDoor(secretService.Mission07, "secret-service", true)
 addAccountQuestDoor(secretService.CGBMission06, "secret-service")
 
 local questDoor = Action()
@@ -42,9 +48,10 @@ function questDoor.onUse(player, item, fromPosition, target, toPosition, isHotke
 			local hasCharacterAccess = item.actionid > 0 and player:getStorageValue(item.actionid) ~= -1
 			local accountQuestId = accountQuestDoors[item.actionid]
 			local hasAccountAccess = accountQuestId and player:hasAccountQuestAccess(accountQuestId) or false
+			local completionQuestId = accountQuestUnlockDoors[item.actionid]
 
-			if hasCharacterAccess and accountQuestId then
-				player:unlockAccountQuestAccess(accountQuestId)
+			if hasCharacterAccess and completionQuestId then
+				player:unlockAccountQuestAccess(completionQuestId)
 			end
 
 			if hasCharacterAccess or hasAccountAccess then

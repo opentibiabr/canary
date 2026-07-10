@@ -24,7 +24,13 @@ local function loadAccountQuestConfig()
 		}
 	end
 
-	loaded.quests = loaded.quests or {}
+	if type(loaded.quests) ~= "table" then
+		logger.error("[AccountQuest] {} field 'quests' must be a table; disabling account quest sharing.", CONFIG_PATH)
+		loaded.enabled = false
+		loaded.shareAccess = false
+		loaded.allowSelfReset = false
+		loaded.quests = {}
+	end
 	loaded.defaultRewardMode = loaded.defaultRewardMode or "oncePerAccount"
 	return loaded
 end
@@ -55,6 +61,14 @@ local function getQuestDefinition(questId)
 	end
 
 	return AccountQuest.config.quests[questId], questId
+end
+
+local function countRegisteredQuests()
+	local count = 0
+	for _ in pairs(AccountQuest.config.quests) do
+		count = count + 1
+	end
+	return count
 end
 
 local function getRewardMode(definition)
@@ -94,9 +108,9 @@ function AccountQuest.hasAccess(player, questId)
 		return false
 	end
 
-	local _, normalizedId = getQuestDefinition(questId)
+	local definition, normalizedId = getQuestDefinition(questId)
 	local accountId = getPlayerAccountId(player)
-	if not normalizedId or not accountId then
+	if not definition or not normalizedId or not accountId then
 		return false
 	end
 
@@ -115,9 +129,9 @@ function AccountQuest.unlockAccess(player, questId)
 		return false
 	end
 
-	local _, normalizedId = getQuestDefinition(questId)
+	local definition, normalizedId = getQuestDefinition(questId)
 	local accountId = getPlayerAccountId(player)
-	if not normalizedId or not accountId then
+	if not definition or not normalizedId or not accountId then
 		return false
 	end
 
@@ -131,7 +145,7 @@ function AccountQuest.canClaimReward(player, questId)
 
 	local definition, normalizedId = getQuestDefinition(questId)
 	local accountId = getPlayerAccountId(player)
-	if not normalizedId or not accountId then
+	if not definition or not normalizedId or not accountId then
 		return false
 	end
 
@@ -154,7 +168,7 @@ function AccountQuest.claimReward(player, questId)
 
 	local definition, normalizedId = getQuestDefinition(questId)
 	local accountId = getPlayerAccountId(player)
-	if not normalizedId or not accountId then
+	if not definition or not normalizedId or not accountId then
 		return false
 	end
 
@@ -242,7 +256,7 @@ function startup.onStartup()
     ]])
 
 	if AccountQuest.isEnabled() then
-		logger.info("[AccountQuest] Account-wide quest system enabled with {} registered quests.", #AccountQuest.config.quests)
+		logger.info("[AccountQuest] Account-wide quest system enabled with {} registered quests.", countRegisteredQuests())
 	else
 		logger.info("[AccountQuest] Account-wide quest system disabled.")
 	end

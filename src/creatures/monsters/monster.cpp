@@ -12,6 +12,7 @@
 #include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monster_pathfinding.hpp"
+#include "creatures/monsters/monster_targeting.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
@@ -30,6 +31,7 @@ uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
 	constexpr uint8_t MAX_BACKGROUND_FOLLOW_PATH_RADIUS = 12;
+	constexpr size_t MAX_TARGET_RANK_CANDIDATES = 256;
 
 	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
 		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
@@ -529,13 +531,13 @@ void Monster::processMovementAiRefresh(const std::shared_ptr<Creature> &creature
 			if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 				const auto &topCreature = nextTile->getTopCreature();
 				if (followCreature != topCreature && isOpponent(topCreature)) {
-					selectTarget(topCreature);
+					deferTargetSelection(topCreature->getID());
 				}
 			}
 		}
 	} else if (isOpponent(creature)) {
 		// We have no target, so try to pick this one.
-		selectTarget(creature);
+		deferTargetSelection(creature->getID());
 	}
 }
 
@@ -677,6 +679,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 		totalPlayersOnScreen++;
 	}
 
+	markTargetStateChanged();
 	return true;
 }
 
@@ -694,11 +697,13 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	if (!target) {
 		forgetTargetReference(*it);
 		targetList.erase(it);
+		markTargetStateChanged();
 		return false;
 	}
 
 	forgetTargetReference(*it);
 	targetList.erase(it);
+	markTargetStateChanged();
 
 	return true;
 }
@@ -714,6 +719,7 @@ void Monster::updateTargetList() {
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
+	const auto targetCountBeforeCleanup = targetList.size();
 	std::erase_if(targetList, [this](const TargetReference &ref) {
 		const auto &target = ref.creature.lock();
 		const bool shouldErase = !target || target->getHealth() <= 0 || !canSee(target->getPosition());
@@ -722,6 +728,9 @@ void Monster::updateTargetList() {
 		}
 		return shouldErase;
 	});
+	if (targetList.size() != targetCountBeforeCleanup) {
+		markTargetStateChanged();
+	}
 
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	for (const auto &spectator : Spectators().find<Creature>(position, true, 0, 0, 0, 0, false)) {
@@ -732,6 +741,9 @@ void Monster::updateTargetList() {
 }
 
 void Monster::clearTargetList() {
+	if (!targetList.empty()) {
+		markTargetStateChanged();
+	}
 	targetList.clear();
 	totalPlayersOnScreen = 0;
 }
@@ -854,6 +866,13 @@ void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/) {
+	if (g_dispatcher().context().isBarrierParallel()) {
+		return requestTargetSearchCompute(searchType);
+	}
+	return searchTargetImmediate(searchType);
+}
+
+bool Monster::searchTargetImmediate(TargetSearchType_t searchType) {
 	if (searchType == TARGETSEARCH_DEFAULT) {
 		int32_t rnd = uniform_random(1, 100);
 
@@ -1011,10 +1030,311 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	});
 }
 
+bool Monster::requestTargetSearchCompute(TargetSearchType_t searchType) {
+	if (targetSearchComputeOutstanding && pendingTargetSearchCompute && pendingTargetSearchCompute->searchType == searchType && pendingTargetSearchCompute->stateEpoch == targetStateEpoch && pendingTargetSearchCompute->decisionEpoch == targetDecisionEpoch) {
+		return true;
+	}
+
+	pendingTargetSearchCompute = TargetSearchComputeRequest { searchType, targetStateEpoch, targetDecisionEpoch };
+	const auto generation = nextTargetSearchComputeGeneration();
+	if (targetSearchComputeOutstanding) {
+		return true;
+	}
+
+	targetSearchComputeOutstanding = true;
+	activeTargetSearchComputeGeneration = generation;
+	const auto monsterId = getID();
+	safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareTargetSearchCompute(generation);
+		}
+	});
+	return true;
+}
+
+void Monster::prepareTargetSearchCompute(uint64_t generation) {
+	if (!targetSearchComputeOutstanding || activeTargetSearchComputeGeneration != generation || !pendingTargetSearchCompute) {
+		return;
+	}
+	if (generation != targetSearchComputeGeneration) {
+		activeTargetSearchComputeGeneration = targetSearchComputeGeneration;
+		prepareTargetSearchCompute(activeTargetSearchComputeGeneration);
+		return;
+	}
+	if (pendingTargetSearchCompute->decisionEpoch != targetDecisionEpoch) {
+		clearTargetSearchCompute();
+		return;
+	}
+	pendingTargetSearchCompute->stateEpoch = targetStateEpoch;
+	if (isRemoved() || isDead()) {
+		clearTargetSearchCompute();
+		return;
+	}
+
+	auto searchType = pendingTargetSearchCompute->searchType;
+	if (searchType == TARGETSEARCH_DEFAULT) {
+		const int32_t randomValue = uniform_random(1, 100);
+		searchType = TARGETSEARCH_NEAREST;
+		int32_t strategyTotal = m_monsterType->info.strategiesTargetNearest;
+		if (randomValue > strategyTotal) {
+			searchType = TARGETSEARCH_HP;
+			strategyTotal += m_monsterType->info.strategiesTargetHealth;
+			if (randomValue > strategyTotal) {
+				searchType = TARGETSEARCH_DAMAGE;
+				strategyTotal += m_monsterType->info.strategiesTargetDamage;
+				if (randomValue > strategyTotal) {
+					searchType = TARGETSEARCH_RANDOM;
+				}
+			}
+		}
+	}
+
+	const Position origin = getPosition();
+	const uint64_t stateEpoch = targetStateEpoch;
+	const uint64_t decisionEpoch = targetDecisionEpoch;
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	const auto &currentAttacked = getAttackedCreature();
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
+	std::vector<std::shared_ptr<Creature>> eligibleTargets;
+	std::vector<uint32_t> fallbackIds;
+	MonsterTargetRankingRequest rankingRequest;
+	rankingRequest.origin = origin;
+	eligibleTargets.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+	fallbackIds.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+	rankingRequest.candidates.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+
+	for (const auto &targetRef : targetList) {
+		const auto &creature = targetRef.creature.lock();
+		if (!creature) {
+			continue;
+		}
+		if (fallbackIds.size() < MAX_TARGET_RANK_CANDIDATES) {
+			fallbackIds.emplace_back(creature->getID());
+		}
+		if (rankingRequest.candidates.size() >= MAX_TARGET_RANK_CANDIDATES || creature->getHealth() <= 0 || !isTarget(creature, monsterPerfTestFriendlyFire)) {
+			continue;
+		}
+		if (skipCurrentUnreachable && creature == currentAttacked) {
+			continue;
+		}
+		if (targetDistance != 1 && !canUseAttack(origin, creature)) {
+			continue;
+		}
+
+		int32_t damage = 0;
+		const auto damageIt = damageMap.find(creature->getID());
+		const bool hasDamage = damageIt != damageMap.end();
+		if (hasDamage) {
+			damage = damageIt->second.total;
+		}
+		rankingRequest.candidates.emplace_back(MonsterTargetCandidate {
+			.creatureId = creature->getID(),
+			.position = creature->getPosition(),
+			.faction = static_cast<int32_t>(creature->getFaction()),
+			.health = creature->getHealth(),
+			.damage = damage,
+			.hasDamage = hasDamage,
+		});
+		eligibleTargets.emplace_back(creature);
+	}
+
+	if (rankingRequest.candidates.empty()) {
+		clearTargetSearchCompute();
+		return;
+	}
+
+	if (searchType == TARGETSEARCH_RANDOM || (searchType != TARGETSEARCH_NEAREST && searchType != TARGETSEARCH_HP && searchType != TARGETSEARCH_DAMAGE)) {
+		const auto selectedIndex = static_cast<size_t>(uniform_random(0, eligibleTargets.size() - 1));
+		const auto selectedTarget = eligibleTargets[selectedIndex];
+		clearTargetSearchCompute();
+		selectTarget(selectedTarget, monsterPerfTestFriendlyFire);
+		return;
+	}
+
+	switch (searchType) {
+		case TARGETSEARCH_HP:
+			rankingRequest.mode = MonsterTargetRankMode::Health;
+			break;
+		case TARGETSEARCH_DAMAGE:
+			rankingRequest.mode = MonsterTargetRankMode::Damage;
+			break;
+		case TARGETSEARCH_NEAREST:
+		default:
+			rankingRequest.mode = MonsterTargetRankMode::Nearest;
+			break;
+	}
+
+	if (rankingRequest.candidates.size() == 1) {
+		MonsterTargetRankingResult result;
+		result.suggestedCreatureId = rankingRequest.candidates.front().creatureId;
+		completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, std::move(fallbackIds), result);
+		return;
+	}
+
+	const auto monsterId = getID();
+	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), rankingRequest = std::move(rankingRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterTargetRanker::rank(rankingRequest, stopToken);
+			return [monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), result]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, std::move(fallbackIds), result);
+				}
+			};
+		},
+		"Monster::targetRanking"
+	);
+	if (!submission.accepted()) {
+		clearTargetSearchCompute();
+	}
+}
+
+void Monster::completeTargetSearchCompute(uint64_t generation, uint64_t stateEpoch, uint64_t decisionEpoch, Position origin, TargetSearchType_t searchType, std::vector<uint32_t> fallbackIds, MonsterTargetRankingResult result) {
+	if (!targetSearchComputeOutstanding || activeTargetSearchComputeGeneration != generation || !pendingTargetSearchCompute) {
+		return;
+	}
+	if (generation != targetSearchComputeGeneration) {
+		const auto latestSearchType = pendingTargetSearchCompute->searchType;
+		retryTargetSearchCompute(latestSearchType);
+		return;
+	}
+	if (result.canceled) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (isRemoved() || isDead()) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (targetDecisionEpoch != decisionEpoch) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (targetStateEpoch != stateEpoch || getPosition() != origin) {
+		if (targetList.empty()) {
+			clearTargetSearchCompute();
+		} else {
+			retryTargetSearchCompute(searchType);
+		}
+		return;
+	}
+
+	clearTargetSearchCompute();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	const auto &currentAttacked = getAttackedCreature();
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
+	if (const auto &suggested = g_game().getCreatureByID(result.suggestedCreatureId)) {
+		const bool eligible = suggested->getHealth() > 0
+			&& isTarget(suggested, monsterPerfTestFriendlyFire)
+			&& (!skipCurrentUnreachable || suggested != currentAttacked)
+			&& (targetDistance == 1 || canUseAttack(origin, suggested));
+		if (eligible && selectTarget(suggested, monsterPerfTestFriendlyFire)) {
+			return;
+		}
+	}
+
+	for (const auto creatureId : fallbackIds) {
+		if (creatureId == result.suggestedCreatureId) {
+			continue;
+		}
+		const auto &candidate = g_game().getCreatureByID(creatureId);
+		if (!candidate || candidate->getHealth() <= 0 || (skipCurrentUnreachable && candidate == currentAttacked)) {
+			continue;
+		}
+		if (selectTarget(candidate, monsterPerfTestFriendlyFire)) {
+			return;
+		}
+	}
+}
+
+void Monster::retryTargetSearchCompute(TargetSearchType_t searchType) {
+	clearTargetSearchCompute();
+	if (isRemoved() || isDead()) {
+		return;
+	}
+	pendingTargetSearchCompute = TargetSearchComputeRequest { searchType, targetStateEpoch, targetDecisionEpoch };
+	setAsyncTaskFlag(TargetRanking, true);
+}
+
+void Monster::clearTargetSearchCompute() {
+	targetSearchComputeOutstanding = false;
+	activeTargetSearchComputeGeneration = 0;
+	pendingTargetSearchCompute.reset();
+}
+
+void Monster::markTargetStateChanged() {
+	if (++targetStateEpoch == 0) {
+		targetStateEpoch = 1;
+	}
+}
+
+void Monster::markTargetDecisionChanged() {
+	markTargetStateChanged();
+	if (++targetDecisionEpoch == 0) {
+		targetDecisionEpoch = 1;
+	}
+}
+
+uint64_t Monster::nextTargetSearchComputeGeneration() {
+	if (++targetSearchComputeGeneration == 0) {
+		targetSearchComputeGeneration = 1;
+	}
+	return targetSearchComputeGeneration;
+}
+
+void Monster::updateSummonTarget() {
+	const auto &attackedCreature = getAttackedCreature();
+	const auto &followCreature = getFollowCreature();
+	const auto &master = getMaster();
+	if (attackedCreature.get() == this) {
+		setFollowCreature(nullptr);
+	} else if (attackedCreature && followCreature != attackedCreature) {
+		setFollowCreature(attackedCreature);
+	} else if (master && master->getAttackedCreature()) {
+		selectTarget(master->getAttackedCreature());
+	} else if (master && master != followCreature) {
+		setFollowCreature(master);
+	}
+}
+
+void Monster::deferTargetSelection(uint32_t creatureId) {
+	if (creatureId == 0) {
+		return;
+	}
+	const auto monsterId = getID();
+	const auto decisionEpoch = targetDecisionEpoch;
+	safeCall([monsterId, creatureId, decisionEpoch] {
+		const auto &monster = g_game().getMonsterByID(monsterId);
+		const auto &creature = g_game().getCreatureByID(creatureId);
+		if (monster && creature && monster->targetDecisionEpoch == decisionEpoch) {
+			monster->selectTarget(creature);
+		}
+	});
+}
+
 void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) {
 	if (removeTarget(creature) && (hasFollowPath || !isSummon())) {
 		addTarget(creature, hasFollowPath);
 	}
+}
+
+bool Monster::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
+	const auto previous = getAttackedCreature();
+	const bool result = Creature::setAttackedCreature(creature);
+	if (previous != getAttackedCreature()) {
+		markTargetDecisionChanged();
+	}
+	return result;
+}
+
+bool Monster::setFollowCreature(const std::shared_ptr<Creature> &creature) {
+	const auto previous = getFollowCreature();
+	const bool result = Creature::setFollowCreature(creature);
+	if (previous != getFollowCreature()) {
+		markTargetDecisionChanged();
+	}
+	return result;
 }
 
 RaceType_t Monster::getRace() const {
@@ -1118,6 +1438,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monst
 	if (it->creature.expired()) {
 		forgetTargetReference(*it);
 		targetList.erase(it);
+		markTargetStateChanged();
 		return false;
 	}
 
@@ -1287,24 +1608,18 @@ void Monster::onThink_async() {
 
 	addEventWalk();
 
-	const auto &attackedCreature = getAttackedCreature();
-	const auto &followCreature = getFollowCreature();
-	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	if (isSummon()) {
-		const auto &master = getMaster();
-		if (attackedCreature.get() == this) {
-			setFollowCreature(nullptr);
-		} else if (attackedCreature && followCreature != attackedCreature) {
-			// This happens just after a master orders an attack, so lets follow it aswell.
-			setFollowCreature(attackedCreature);
-		} else if (master && master->getAttackedCreature()) {
-			// This happens if the monster is summoned during combat
-			selectTarget(master->getAttackedCreature());
-		} else if (master && master != followCreature) {
-			// Our master has not ordered us to attack anything, lets follow him around instead.
-			setFollowCreature(master);
-		}
+		const auto monsterId = getID();
+		const auto decisionEpoch = targetDecisionEpoch;
+		safeCall([monsterId, decisionEpoch] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId); monster && monster->targetDecisionEpoch == decisionEpoch) {
+				monster->updateSummonTarget();
+			}
+		});
 	} else {
+		const auto &attackedCreature = getAttackedCreature();
+		const auto &followCreature = getFollowCreature();
+		const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 		if (monsterPerfTestFriendlyFire && targetList.empty()) {
 			updateTargetList();
 		}
@@ -1487,11 +1802,17 @@ void Monster::onThinkTarget(uint32_t interval) {
 						challengeFocusDuration = 0;
 					}
 
-					if (m_monsterType->info.changeTargetChance >= uniform_random(1, 100)) {
-						const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
-							|| m_monsterType->info.targetDistance <= 1;
-						searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
-					}
+					const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
+						|| m_monsterType->info.targetDistance <= 1;
+					const auto searchType = useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST;
+					const auto changeTargetChance = m_monsterType->info.changeTargetChance;
+					const auto monsterId = getID();
+					const auto decisionEpoch = targetDecisionEpoch;
+					safeCall([monsterId, searchType, changeTargetChance, decisionEpoch] {
+						if (const auto &monster = g_game().getMonsterByID(monsterId); monster && monster->targetDecisionEpoch == decisionEpoch && changeTargetChance >= uniform_random(1, 100)) {
+							monster->requestTargetSearchCompute(searchType);
+						}
+					});
 				}
 			}
 		}
@@ -3251,6 +3572,12 @@ void Monster::onExecuteAsyncTasks() {
 
 	if (hasAsyncTaskFlag(UpdateIdleStatus)) {
 		updateIdleStatus();
+	}
+
+	if (hasAsyncTaskFlag(TargetRanking) && pendingTargetSearchCompute) {
+		const auto searchType = pendingTargetSearchCompute->searchType;
+		pendingTargetSearchCompute.reset();
+		requestTargetSearchCompute(searchType);
 	}
 
 	if (hasAsyncTaskFlag(OnThink)) {

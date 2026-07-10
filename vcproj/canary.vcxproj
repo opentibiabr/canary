@@ -29,6 +29,7 @@
     <ClInclude Include="..\src\creatures\interactions\chat.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster_pathfinding.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_targeting.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monsters.hpp" />
     <ClInclude Include="..\src\creatures\monsters\spawns\spawn_monster.hpp" />
     <ClInclude Include="..\src\creatures\npcs\npc.hpp" />
@@ -267,6 +268,7 @@
     <ClCompile Include="..\src\creatures\interactions\chat.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster_pathfinding.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_targeting.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monsters.cpp" />
     <ClCompile Include="..\src\creatures\monsters\spawns\spawn_monster.cpp" />
     <ClCompile Include="..\src\creatures\npcs\npc.cpp" />

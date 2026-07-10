@@ -11,6 +11,8 @@ target_sources(
             monsters/monster.cpp
             monsters/monster_pathfinding.cpp
             monsters/monster_pathfinding.hpp
+            monsters/monster_targeting.cpp
+            monsters/monster_targeting.hpp
             monsters/monsters.cpp
             monsters/spawns/spawn_monster.cpp
             npcs/npc.cpp

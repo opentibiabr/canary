@@ -822,6 +822,7 @@ protected:
 		UpdateIdleStatus = 1 << 2,
 		Pathfinder = 1 << 3,
 		OnThink = 1 << 4,
+		TargetRanking = 1 << 5,
 	};
 
 	virtual bool isDead() const {

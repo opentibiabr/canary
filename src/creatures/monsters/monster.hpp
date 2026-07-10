@@ -21,6 +21,7 @@ struct spellBlock_t;
 struct MapCacheFloorCursor;
 struct MonsterPathResult;
 struct MonsterPathTraits;
+struct MonsterTargetRankingResult;
 class MonsterType;
 class NavRegionSnapshot;
 class Tile;
@@ -63,6 +64,12 @@ private:
 		bool executeOnFollow = true;
 
 		[[nodiscard]] bool matches(const FollowPathComputeRequest &other) const;
+	};
+
+	struct TargetSearchComputeRequest {
+		TargetSearchType_t searchType = TARGETSEARCH_DEFAULT;
+		uint64_t stateEpoch = 0;
+		uint64_t decisionEpoch = 0;
 	};
 
 	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
@@ -159,6 +166,8 @@ public:
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
 	bool getNextStep(Direction &direction, uint32_t &flags) override;
+	bool setAttackedCreature(const std::shared_ptr<Creature> &creature) override;
+	bool setFollowCreature(const std::shared_ptr<Creature> &creature) override;
 	void onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) override;
 
 	void onThink(uint32_t interval) override;
@@ -187,14 +196,19 @@ public:
 		CreatureVector list;
 		list.reserve(targetList.size());
 
-		std::erase_if(targetList, [&list](const TargetReference &ref) {
+		const auto previousSize = targetList.size();
+		std::erase_if(targetList, [this, &list](const TargetReference &ref) {
 			if (const auto &creature = ref.creature.lock()) {
 				list.emplace_back(creature);
 				return false;
 			}
 
+			forgetTargetReference(ref);
 			return true;
 		});
+		if (targetList.size() != previousSize) {
+			markTargetStateChanged();
+		}
 
 		return list;
 	}
@@ -314,6 +328,17 @@ private:
 	void discardFollowPathCompute(bool requestRefresh);
 	[[nodiscard]] MonsterPathTraits capturePathTraits(const NavRegionSnapshot &navigation) const;
 	[[nodiscard]] uint64_t nextFollowPathComputeGeneration();
+	bool searchTargetImmediate(TargetSearchType_t searchType);
+	bool requestTargetSearchCompute(TargetSearchType_t searchType);
+	void prepareTargetSearchCompute(uint64_t generation);
+	void completeTargetSearchCompute(uint64_t generation, uint64_t stateEpoch, uint64_t decisionEpoch, Position origin, TargetSearchType_t searchType, std::vector<uint32_t> fallbackIds, MonsterTargetRankingResult result);
+	void retryTargetSearchCompute(TargetSearchType_t searchType);
+	void clearTargetSearchCompute();
+	void markTargetStateChanged();
+	void markTargetDecisionChanged();
+	[[nodiscard]] uint64_t nextTargetSearchComputeGeneration();
+	void updateSummonTarget();
+	void deferTargetSelection(uint32_t creatureId);
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
@@ -333,6 +358,12 @@ private:
 	uint64_t activeFollowPathComputeGeneration = 0;
 	bool followPathComputeOutstanding = false;
 	bool followPathComputeSuperseded = false;
+	std::optional<TargetSearchComputeRequest> pendingTargetSearchCompute;
+	uint64_t targetStateEpoch = 1;
+	uint64_t targetDecisionEpoch = 1;
+	uint64_t targetSearchComputeGeneration = 0;
+	uint64_t activeTargetSearchComputeGeneration = 0;
+	bool targetSearchComputeOutstanding = false;
 
 	time_t timeToChangeFiendish = 0;
 

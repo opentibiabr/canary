@@ -8,6 +8,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent / "lib"))
 
+from build_promotion_handoff import build as build_handoff
+from build_promotion_handoff import write_markdown as write_handoff_markdown
 from evaluate_promotion_readiness import evaluate as evaluate_readiness
 from evaluate_promotion_readiness import write_markdown as write_readiness_markdown
 from id_allocator import add_reservation
@@ -105,6 +107,10 @@ def run(
     atomic_write_json(output / "PROMOTION_READINESS.json", readiness)
     write_readiness_markdown(readiness, output / "PROMOTION_READINESS.md")
 
+    handoff = build_handoff(task, plan, manifest, readiness, generated_root)
+    atomic_write_json(output / "PROMOTION_HANDOFF.json", handoff)
+    write_handoff_markdown(handoff, output / "PROMOTION_HANDOFF.md")
+
     summary = {
         "ok": True,
         "stage": "complete",
@@ -117,7 +123,10 @@ def run(
         ),
         "promotionStatus": readiness["status"],
         "promotionBlockers": readiness["summary"]["blockerCount"],
+        "handoffStatus": handoff["handoffStatus"],
+        "handoffFiles": len(handoff["files"]),
         "automaticPromotionAllowed": False,
+        "automaticApplyAllowed": False,
     }
     atomic_write_json(output / "RESEARCH_PIPELINE_RESULT.json", summary)
     return 0, summary

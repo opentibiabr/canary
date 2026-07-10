@@ -9,10 +9,12 @@ on:
       - "tools/ai-agent/research_to_task.py"
       - "tools/ai-agent/run_research_pipeline.py"
       - "tools/ai-agent/evaluate_promotion_readiness.py"
+      - "tools/ai-agent/build_promotion_handoff.py"
       - "tools/ai-agent/test_research_normalization.py"
       - "tools/ai-agent/test_research_to_task.py"
       - "tools/ai-agent/test_research_pipeline.py"
       - "tools/ai-agent/test_promotion_readiness.py"
+      - "tools/ai-agent/test_promotion_handoff.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
@@ -22,10 +24,12 @@ on:
       - "tools/ai-agent/research_to_task.py"
       - "tools/ai-agent/run_research_pipeline.py"
       - "tools/ai-agent/evaluate_promotion_readiness.py"
+      - "tools/ai-agent/build_promotion_handoff.py"
       - "tools/ai-agent/test_research_normalization.py"
       - "tools/ai-agent/test_research_to_task.py"
       - "tools/ai-agent/test_research_pipeline.py"
       - "tools/ai-agent/test_promotion_readiness.py"
+      - "tools/ai-agent/test_promotion_handoff.py"
       - "docs/ai-agent/RESEARCH_ENTITY.schema.json"
       - "docs/ai-agent/examples/*.research.json"
       - ".github/workflows/research-normalization.yml"
@@ -50,6 +54,7 @@ jobs:
           python -m unittest tools/ai-agent/test_research_to_task.py -v
           python -m unittest tools/ai-agent/test_research_pipeline.py -v
           python -m unittest tools/ai-agent/test_promotion_readiness.py -v
+          python -m unittest tools/ai-agent/test_promotion_handoff.py -v
 
       - name: Validate research JSON files
         run: |
@@ -98,6 +103,8 @@ jobs:
           validation = json.loads((ready / "CONTENT_PLAN_VALIDATION.json").read_text(encoding="utf-8"))
           readiness = json.loads((ready / "PROMOTION_READINESS.json").read_text(encoding="utf-8"))
           readiness_md = (ready / "PROMOTION_READINESS.md").read_text(encoding="utf-8")
+          handoff = json.loads((ready / "PROMOTION_HANDOFF.json").read_text(encoding="utf-8"))
+          handoff_md = (ready / "PROMOTION_HANDOFF.md").read_text(encoding="utf-8")
           manifest = json.loads(
               (ready / "generated-content" / task["taskId"] / "MANIFEST.json").read_text(encoding="utf-8")
           )
@@ -109,7 +116,10 @@ jobs:
           assert result["reservedIdentifiers"] == 5
           assert result["promotionStatus"] == "not-ready"
           assert result["promotionBlockers"] > 0
+          assert result["handoffStatus"] == "blocked"
+          assert result["handoffFiles"] == 3
           assert result["automaticPromotionAllowed"] is False
+          assert result["automaticApplyAllowed"] is False
           assert validation["ok"] is True
           assert manifest["format"] == "canary-preview-v1"
           assert task["dryRun"] is True
@@ -119,6 +129,12 @@ jobs:
           assert "automatic promotion: forbidden" in readiness_md
           assert "storage-constants" in {item["category"] for item in readiness["findings"]}
           assert "map" in {item["category"] for item in readiness["findings"]}
+          assert handoff["automaticApplyAllowed"] is False
+          assert handoff["manualApprovalRequired"] is True
+          assert len(handoff["files"]) == 3
+          assert all(item["targetPath"].startswith("data-otservbr-global/") for item in handoff["files"])
+          assert "automatic apply: forbidden" in handoff_md
+          assert "production server" in handoff["prohibitedAutomaticTargets"]
 
           blocked = Path("artifacts/research-pipeline-conflict")
           blocked_result = json.loads((blocked / "RESEARCH_PIPELINE_RESULT.json").read_text(encoding="utf-8"))
@@ -130,6 +146,7 @@ jobs:
           assert not (blocked / "CONTENT_PLAN.json").exists()
           assert not (blocked / "generated-content").exists()
           assert not (blocked / "PROMOTION_READINESS.json").exists()
+          assert not (blocked / "PROMOTION_HANDOFF.json").exists()
 
       - uses: actions/upload-artifact@v4
         with:

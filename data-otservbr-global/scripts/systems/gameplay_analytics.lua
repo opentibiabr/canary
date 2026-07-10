@@ -66,24 +66,24 @@ function shutdown.onShutdown()
 end
 shutdown:register()
 
+local function ownerPlayer(source)
+	if not source then
+		return nil
+	end
+	if source:isPlayer() then
+		return source
+	end
+	local master = source:getMaster()
+	if master and master:isPlayer() then
+		return master
+	end
+	return nil
+end
+
 local health = CreatureEvent("GameplayAnalyticsHealth")
 function health.onHealthChange(creature, attacker, primaryValue, primaryType, secondaryValue, secondaryType, origin)
 	if not Analytics.isEnabled() then
 		return primaryValue, primaryType, secondaryValue, secondaryType
-	end
-
-	local function ownerPlayer(source)
-		if not source then
-			return nil
-		end
-		if source:isPlayer() then
-			return source
-		end
-		local master = source:getMaster()
-		if master and master:isPlayer() then
-			return master
-		end
-		return nil
 	end
 
 	local sourcePlayer = ownerPlayer(attacker)
@@ -146,7 +146,6 @@ function login.onLogin(player)
 	player:registerEvent("GameplayAnalyticsMana")
 	player:registerEvent("GameplayAnalyticsDeath")
 	player:registerEvent("GameplayAnalyticsKill")
-	player:registerEvent("GameplayAnalyticsExperience")
 	Analytics.start(player)
 	return true
 end
@@ -179,20 +178,31 @@ function kill.onKill(player, target)
 end
 kill:register()
 
-local experience = CreatureEvent("GameplayAnalyticsExperience")
-function experience.onGainExperience(player, source, experienceValue, rawExperience)
+local experienceCallback = EventCallback("GameplayAnalyticsExperience")
+function experienceCallback.playerOnGainExperience(player, source, experienceValue, rawExperience)
 	if Analytics.isEnabled() and source then
 		Analytics.recordExperience(player, experienceValue, rawExperience)
 	end
 	return experienceValue
 end
-experience:register()
+experienceCallback:register()
 
--- CreatureEvent health-change callbacks are registered for players on login.
--- Canary does not expose a global monster-spawn EventCallback, so attempting to
--- assign EventCallback.onSpawn is invalid and prevents the datapack from loading.
--- Monster damage tracking must be added through a supported core callback or
--- explicit monster event registration in a separate implementation change.
+-- CreatureEvent health callbacks must be registered on individual creatures.
+-- Monster spawns do not expose a global EventCallback, so use the engine-wide
+-- drain-health callback to measure player damage dealt to non-player targets.
+local drainHealthCallback = EventCallback("GameplayAnalyticsDrainHealth")
+function drainHealthCallback.creatureOnDrainHealth(creature, attacker, primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor)
+	if Analytics.isEnabled() and creature and not creature:isPlayer() then
+		local sourcePlayer = ownerPlayer(attacker)
+		local totalDamage = math.abs(tonumber(primaryValue) or 0) + math.abs(tonumber(secondaryValue) or 0)
+		if sourcePlayer and totalDamage > 0 then
+			Analytics.recordDamageDealt(sourcePlayer, creature, totalDamage, primaryType)
+		end
+	end
+
+	return primaryType, primaryValue, secondaryType, secondaryValue, primaryColor, secondaryColor
+end
+drainHealthCallback:register()
 
 local analyticsCommand = TalkAction("/analytics")
 function analyticsCommand.onSay(player, words, param)

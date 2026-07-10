@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "status": "partial-audit",
+  "repository": "blakinio/canary",
+  "baseBranch": "main",
+  "auditBranch": "ai/bootstrap-agent",
+  "baseCommit": "e8237cef7bf79c48189f2b9c2fcd46c84ae335df",
+  "engine": {
+    "name": "Canary",
+    "languages": ["C++20", "Lua"],
+    "license": "GPL-2.0",
+    "defaultDatapack": "data-otservbr-global",
+    "coreDirectory": "data",
+    "allowArbitraryDatapackDirectoryByDefault": false
+  },
+  "runtime": {
+    "defaultWorldType": "pvp",
+    "defaultGamePort": 7172,
+    "defaultLoginPort": 7171,
+    "oldProtocolProfilesEnabledByDefault": true,
+    "dockerQuickstartAvailable": true,
+    "database": "MariaDB"
+  },
+  "development": {
+    "buildSystem": "CMake",
+    "dependencyManager": "vcpkg",
+    "generator": "Ninja",
+    "testRunner": "CTest",
+    "platformPresets": ["Linux", "Windows", "macOS"],
+    "testEnabledPresets": true,
+    "addressSanitizerPresets": true,
+    "compileCommandsAvailableInLinuxDebug": true
+  },
+  "lua": {
+    "apiDocumentationGenerationEnabledByDefault": true,
+    "apiDocumentationOutput": "docs/lua-api",
+    "indexSourcePriority": [
+      "generated Lua API documentation",
+      "C++ Lua bindings",
+      "datapack libraries",
+      "registered scripts"
+    ]
+  },
+  "agentPolicy": {
+    "writeToMain": false,
+    "branchPrefix": "ai/",
+    "draftPullRequestRequired": true,
+    "validationRequired": true,
+    "mapWritesEnabled": false
+  },
+  "unknowns": [
+    "exact active OTBM path and version",
+    "exact items.otb path and format version",
+    "storage allocation conventions",
+    "active quest framework inventory",
+    "existing instance framework inventory",
+    "baseline build result",
+    "baseline test result",
+    "Docker health result"
+  ]
+}

@@ -30,6 +30,7 @@
     <ClInclude Include="..\src\creatures\monsters\monster.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster_combat_intention.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster_pathfinding.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_relevance.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster_targeting.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monsters.hpp" />
     <ClInclude Include="..\src\creatures\monsters\spawns\spawn_monster.hpp" />
@@ -270,6 +271,7 @@
     <ClCompile Include="..\src\creatures\monsters\monster.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster_combat_intention.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster_pathfinding.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_relevance.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster_targeting.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monsters.cpp" />
     <ClCompile Include="..\src\creatures\monsters\spawns\spawn_monster.cpp" />

@@ -54,6 +54,17 @@ namespace {
 		}
 		return position == expectedEndpoint;
 	}
+
+	bool isPlayerControlledCreature(const std::shared_ptr<Creature> &creature) {
+		if (!creature) {
+			return false;
+		}
+		if (creature->getPlayerRaw()) {
+			return true;
+		}
+		const auto &master = creature->getMaster();
+		return master && master->getPlayerRaw();
+	}
 }
 
 bool Monster::FollowPathComputeRequest::matches(const FollowPathComputeRequest &other) const {
@@ -1174,7 +1185,7 @@ void Monster::prepareTargetSearchCompute(uint64_t generation) {
 	}
 
 	const auto monsterId = getID();
-	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), rankingRequest = std::move(rankingRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
@@ -1743,7 +1754,7 @@ void Monster::prepareCombatIntention(uint64_t generation) {
 	}
 
 	const auto monsterId = getID();
-	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
@@ -1893,6 +1904,42 @@ uint64_t Monster::nextCombatIntentionGeneration() {
 		combatIntentionGeneration = 1;
 	}
 	return combatIntentionGeneration;
+}
+
+MonsterRelevanceSnapshot Monster::captureComputeRelevance() const {
+	MonsterRelevanceSnapshot snapshot;
+	const auto observe = [this, &snapshot](const std::shared_ptr<Creature> &creature) {
+		if (!isPlayerControlledCreature(creature)) {
+			return;
+		}
+
+		if (snapshot.playerSpectators < std::numeric_limits<uint16_t>::max()) {
+			++snapshot.playerSpectators;
+		}
+		const auto distance = std::max<uint32_t>(
+			Position::getDistanceX(getPosition(), creature->getPosition()),
+			Position::getDistanceY(getPosition(), creature->getPosition())
+		);
+		snapshot.nearestPlayerDistance = static_cast<uint16_t>(std::min<uint32_t>(
+			std::numeric_limits<uint16_t>::max(),
+			std::min<uint32_t>(snapshot.nearestPlayerDistance, distance)
+		));
+	};
+
+	for (const auto &target : targetList) {
+		observe(target.creature.lock());
+	}
+	for (const auto &friendEntry : friendList) {
+		observe(friendEntry.second.lock());
+	}
+
+	snapshot.engagedWithPlayer = isPlayerControlledCreature(getAttackedCreature()) || isPlayerControlledCreature(getFollowCreature());
+	return snapshot;
+}
+
+bool Monster::isComputeRelevant() {
+	computeRelevance = MonsterRelevancePolicy::update(computeRelevance, captureComputeRelevance(), MonsterRelevancePolicy::Clock::now());
+	return computeRelevance.tier == MonsterRelevanceTier::Visible;
 }
 
 bool Monster::hasExtraSwing() {
@@ -3441,7 +3488,7 @@ void Monster::prepareFollowPathCompute(uint64_t generation) {
 	workerRequest.traits = capturePathTraits(*navigation);
 
 	const auto monsterId = getID();
-	const auto priority = totalPlayersOnScreen > 0 ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {

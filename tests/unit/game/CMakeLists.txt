@@ -6,6 +6,7 @@ target_sources(
             monster_combat_intention_test.cpp
             monster_compute_service_test.cpp
             monster_pathfinding_test.cpp
+            monster_relevance_test.cpp
             monster_targeting_test.cpp
             navigation_snapshot_test.cpp
             npc_shop_range_test.cpp

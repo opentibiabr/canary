@@ -13,6 +13,8 @@ target_sources(
             monsters/monster_combat_intention.hpp
             monsters/monster_pathfinding.cpp
             monsters/monster_pathfinding.hpp
+            monsters/monster_relevance.cpp
+            monsters/monster_relevance.hpp
             monsters/monster_targeting.cpp
             monsters/monster_targeting.hpp
             monsters/monsters.cpp

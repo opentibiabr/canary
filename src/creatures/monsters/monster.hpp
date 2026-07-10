@@ -9,6 +9,7 @@
 
 #pragma once
 #include "creatures/creature.hpp"
+#include "creatures/monsters/monster_relevance.hpp"
 #include "game/scheduling/dispatcher_policy.hpp"
 #include "lua/lua_definitions.hpp"
 
@@ -360,6 +361,8 @@ private:
 	void clearCombatIntention();
 	void commitCombatIntention(const CombatIntentionComputeRequest &request, const std::shared_ptr<Creature> &target, const std::vector<uint32_t> &geometricallyEligibleSpellIndices, bool requireGeometryHint);
 	[[nodiscard]] uint64_t nextCombatIntentionGeneration();
+	[[nodiscard]] MonsterRelevanceSnapshot captureComputeRelevance() const;
+	bool isComputeRelevant();
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
@@ -389,6 +392,7 @@ private:
 	uint64_t combatIntentionGeneration = 0;
 	uint64_t activeCombatIntentionGeneration = 0;
 	bool combatIntentionOutstanding = false;
+	MonsterRelevanceState computeRelevance;
 
 	time_t timeToChangeFiendish = 0;
 

@@ -45,7 +45,6 @@ def build_draft(normalized: dict, target_datapack: str = "data-otservbr-global")
             "name": entity.get("name"),
             "dependsOn": [],
             "sourceRefs": ["research-document", "canary-conventions"],
-            "implementation": entity.get("facts", {}),
         })
 
     quest_ids = [item["id"] for item in components if item["type"] == "quest"]

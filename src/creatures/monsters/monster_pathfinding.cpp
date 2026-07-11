@@ -309,8 +309,8 @@ MonsterPathResult MonsterPathfinder::find(const MonsterPathRequest &request, std
 		}
 
 		++directionCount;
-		uint_fast32_t neighborCount;
-		const int_fast32_t* neighbors;
+		uint_fast32_t neighborCount = 8;
+		const int_fast32_t (*neighbors)[2] = ALL_NEIGHBORS;
 		if (node->parent) {
 			const int_fast32_t offsetX = node->parent->x - x;
 			const int_fast32_t offsetY = node->parent->y - y;
@@ -324,17 +324,14 @@ MonsterPathResult MonsterPathfinder::find(const MonsterPathRequest &request, std
 			} else {
 				incomingDirection = offsetX == -1 ? DIRECTION_SOUTHWEST : DIRECTION_SOUTHEAST;
 			}
-			neighbors = *DIRECTION_NEIGHBORS[incomingDirection];
+			neighbors = DIRECTION_NEIGHBORS[incomingDirection];
 			neighborCount = 5;
-		} else {
-			neighbors = *ALL_NEIGHBORS;
-			neighborCount = 8;
 		}
 
 		const int_fast32_t currentCost = node->f;
 		for (uint_fast32_t index = 0; index < neighborCount; ++index) {
-			position.x = static_cast<uint16_t>(x + *neighbors++);
-			position.y = static_cast<uint16_t>(y + *neighbors++);
+			position.x = static_cast<uint16_t>(x + neighbors[index][0]);
+			position.y = static_cast<uint16_t>(y + neighbors[index][1]);
 			if (Position::getDistanceX(request.start, position) > request.params.maxSearchDist || Position::getDistanceY(request.start, position) > request.params.maxSearchDist) {
 				continue;
 			}

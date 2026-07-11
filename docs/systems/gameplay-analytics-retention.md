@@ -82,36 +82,57 @@ The daily upsert replaces the complete aggregate for a dimension. Re-running the
 
 ## Recommended schedule
 
-Run once per day after the aggregation lag. Example systemd service:
+Run once per day after the aggregation lag using the ready-to-use systemd
+units in `tools/analytics/systemd/`:
 
-```ini
-[Unit]
-Description=Gameplay Analytics maintenance
-After=network-online.target mariadb.service
-
-[Service]
-Type=oneshot
-EnvironmentFile=/etc/canary/gameplay-analytics-maintenance.env
-WorkingDirectory=/opt/canary
-ExecStart=/usr/bin/bash tools/analytics/maintain_gameplay_analytics.sh
-```
-
-Example systemd timer:
-
-```ini
-[Unit]
-Description=Run Gameplay Analytics maintenance daily
-
-[Timer]
-OnCalendar=*-*-* 04:30:00
-Persistent=true
-RandomizedDelaySec=900
-
-[Install]
-WantedBy=timers.target
-```
+- `gameplay-analytics-maintenance.service` — a oneshot service that loads
+  `/etc/canary/gameplay-analytics-maintenance.env` and runs
+  `maintain_gameplay_analytics.sh`. It has no `[Install]` section because it
+  is only ever started by the timer below.
+- `gameplay-analytics-maintenance.timer` — a systemd timer that schedules the
+  service daily at 04:30 UTC with `Persistent=true` (a missed run fires on the next boot) and
+  a randomized delay to avoid a thundering herd across multiple hosts.
+- `gameplay-analytics-maintenance.env.example` — the environment file
+  template, with `DELETE_RAW_SESSIONS=false` as the shipped default.
 
 Use a database account restricted to the Analytics tables.
+
+### Install
+
+```bash
+sudo cp tools/analytics/systemd/gameplay-analytics-maintenance.env.example /etc/canary/gameplay-analytics-maintenance.env
+sudo chmod 600 /etc/canary/gameplay-analytics-maintenance.env
+# Edit /etc/canary/gameplay-analytics-maintenance.env with the real DB_PASSWORD.
+
+sudo cp tools/analytics/systemd/gameplay-analytics-maintenance.service /etc/systemd/system/
+sudo cp tools/analytics/systemd/gameplay-analytics-maintenance.timer /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now gameplay-analytics-maintenance.timer
+```
+
+The unit's `WorkingDirectory` and `ExecStart` assume Canary is deployed at
+`/opt/canary`; adjust both paths in the copied unit file if your deployment
+uses a different path. Run the first several executions with the shipped
+`DELETE_RAW_SESSIONS=false` default so only aggregation happens; only flip it
+to `true` after validating the aggregates as described below.
+
+Check the result with:
+
+```bash
+systemctl status gameplay-analytics-maintenance.timer
+sudo journalctl -u gameplay-analytics-maintenance.service
+```
+
+### Uninstall
+
+```bash
+sudo systemctl disable --now gameplay-analytics-maintenance.timer
+sudo rm /etc/systemd/system/gameplay-analytics-maintenance.service /etc/systemd/system/gameplay-analytics-maintenance.timer
+sudo systemctl daemon-reload
+```
+
+This stops future scheduled runs. It does not modify or delete any data
+already written to `analytics_daily_balance` or `analytics_maintenance_state`.
 
 ## Rollout procedure
 

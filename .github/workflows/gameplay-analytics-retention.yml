@@ -8,7 +8,10 @@ on:
       - "tools/analytics/maintain_gameplay_analytics.sh"
       - "tools/analytics/test_retention_maintenance.sh"
       - "tools/analytics/test_validate_gameplay_analytics_retention.py"
+      - "tools/analytics/test_validate_gameplay_analytics_retention_systemd.py"
       - "tools/analytics/validate_gameplay_analytics_retention.py"
+      - "tools/analytics/validate_gameplay_analytics_retention_systemd.py"
+      - "tools/analytics/systemd/**"
       - "docs/systems/gameplay-analytics-retention.md"
       - ".github/workflows/gameplay-analytics-retention.yml"
   push:
@@ -18,7 +21,10 @@ on:
       - "tools/analytics/maintain_gameplay_analytics.sh"
       - "tools/analytics/test_retention_maintenance.sh"
       - "tools/analytics/test_validate_gameplay_analytics_retention.py"
+      - "tools/analytics/test_validate_gameplay_analytics_retention_systemd.py"
       - "tools/analytics/validate_gameplay_analytics_retention.py"
+      - "tools/analytics/validate_gameplay_analytics_retention_systemd.py"
+      - "tools/analytics/systemd/**"
       - "docs/systems/gameplay-analytics-retention.md"
       - ".github/workflows/gameplay-analytics-retention.yml"
 
@@ -35,12 +41,20 @@ jobs:
           python-version: "3.12"
       - name: Validate retention contract
         run: python tools/analytics/validate_gameplay_analytics_retention.py
+      - name: Validate retention systemd unit contract
+        run: python tools/analytics/validate_gameplay_analytics_retention_systemd.py
       - name: Run retention validator tests
         run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_retention.py" -v
+      - name: Run retention systemd validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_retention_systemd.py" -v
       - name: Check maintenance shell syntax
         run: |
           bash -n tools/analytics/maintain_gameplay_analytics.sh
           bash -n tools/analytics/test_retention_maintenance.sh
+      - name: Verify systemd unit syntax
+        run: |
+          systemd-analyze verify tools/analytics/systemd/gameplay-analytics-maintenance.service
+          systemd-analyze verify tools/analytics/systemd/gameplay-analytics-maintenance.timer
 
   mariadb-integration:
     runs-on: ubuntu-latest

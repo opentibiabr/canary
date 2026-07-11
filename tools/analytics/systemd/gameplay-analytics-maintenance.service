@@ -1,0 +1,16 @@
+[Unit]
+Description=Gameplay Analytics maintenance (daily aggregation and bounded retention)
+Documentation=https://github.com/opentibiabr/canary/blob/main/docs/systems/gameplay-analytics-retention.md
+After=network-online.target mariadb.service
+Wants=network-online.target
+ConditionPathExists=/etc/canary/gameplay-analytics-maintenance.env
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/canary/gameplay-analytics-maintenance.env
+WorkingDirectory=/opt/canary
+ExecStart=/usr/bin/bash /opt/canary/tools/analytics/maintain_gameplay_analytics.sh
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+TimeoutStartSec=1800

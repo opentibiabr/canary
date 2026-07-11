@@ -47,6 +47,24 @@ The index records appearance IDs, frame groups, pattern dimensions, layers, spri
 
 See `docs/ai-agent/OTBM_APPEARANCES.md` and `docs/ai-agent/OTBM_APPEARANCES_INDEX.schema.json`.
 
+## Sprite-sheet decoding
+
+`otbm_sprite_tool.py` decodes modern 384×384 CIP/LZMA sprite sheets and can export a single sprite as deterministic RGBA PNG.
+
+```bash
+python tools/ai-agent/otbm_sprite_tool.py inspect /path/to/sheet.lzma \
+  --output artifacts/SPRITE_SHEET_REPORT.json
+
+python tools/ai-agent/otbm_sprite_tool.py extract /path/to/sheet.lzma \
+  --first-id 1 --last-id 144 --layout 0 --sprite-id 42 \
+  --output artifacts/sprite-42.png \
+  --report artifacts/sprite-42.json
+```
+
+The decoder validates the CIP header, raw LZMA1 settings, declared sizes, stream termination, 32-bit BMP structure, and sprite range. It mirrors OTClient's BGRA→RGBA conversion, magenta transparency, vertical flip, and all 36 sprite layouts. No Pillow, protobuf binding, or external decompressor is required.
+
+See `docs/ai-agent/OTBM_SPRITES.md`.
+
 ## OTBM map intelligence and authoring
 
 `otbm_map_tool.py` safely inspects Canary OTBM files, indexes world metadata, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patches, detects conflicts on newer maps, writes new OTBM copies, and publishes separately validated companion XML packages.

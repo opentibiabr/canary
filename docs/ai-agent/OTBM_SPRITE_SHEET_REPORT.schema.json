@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_SPRITE_SHEET_REPORT.schema.json",
+  "title": "Canary sprite sheet report",
+  "type": "object",
+  "required": ["format", "ok", "source", "cip", "lzma", "bmp"],
+  "properties": {
+    "format": {"const": "canary-sprite-sheet-report-v1"},
+    "ok": {"type": "boolean"},
+    "source": {
+      "type": "object",
+      "required": ["path", "size", "sha256"],
+      "properties": {
+        "path": {"type": "string"},
+        "size": {"type": "integer", "minimum": 1},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "cip": {
+      "type": "object",
+      "required": ["signatureOffset", "declaredLzmaSize"],
+      "properties": {
+        "signatureOffset": {"type": "integer", "minimum": 0, "maximum": 27},
+        "declaredLzmaSize": {"type": "integer", "minimum": 13}
+      },
+      "additionalProperties": false
+    },
+    "lzma": {
+      "type": "object",
+      "required": ["properties", "lc", "lp", "pb", "dictionarySize", "declaredUncompressedSize"],
+      "properties": {
+        "properties": {"type": "integer", "minimum": 0, "maximum": 224},
+        "lc": {"type": "integer", "minimum": 0, "maximum": 8},
+        "lp": {"type": "integer", "minimum": 0, "maximum": 4},
+        "pb": {"type": "integer", "minimum": 0, "maximum": 4},
+        "dictionarySize": {"type": "integer", "minimum": 1},
+        "declaredUncompressedSize": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]}
+      },
+      "additionalProperties": false
+    },
+    "bmp": {
+      "type": "object",
+      "required": ["width", "height", "pixelDataOffset", "rgbaBytes", "magentaPixelsMadeTransparent"],
+      "properties": {
+        "width": {"const": 384},
+        "height": {"const": 384},
+        "pixelDataOffset": {"type": "integer", "minimum": 54},
+        "rgbaBytes": {"const": 589824},
+        "magentaPixelsMadeTransparent": {"type": "integer", "minimum": 0, "maximum": 147456}
+      },
+      "additionalProperties": false
+    },
+    "sprite": {
+      "type": "object",
+      "required": ["id", "firstId", "lastId", "layout", "width", "height", "column", "row", "output"],
+      "properties": {
+        "id": {"type": "integer", "minimum": 0},
+        "firstId": {"type": "integer", "minimum": 0},
+        "lastId": {"type": "integer", "minimum": 0},
+        "layout": {"type": "integer", "minimum": 0, "maximum": 35},
+        "width": {"type": "integer", "enum": [32, 64, 96, 128, 192, 384]},
+        "height": {"type": "integer", "enum": [32, 64, 96, 128, 192, 384]},
+        "column": {"type": "integer", "minimum": 0},
+        "row": {"type": "integer", "minimum": 0},
+        "output": {"type": "string"}
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -69,6 +69,19 @@ numbered migration history to extend in the first place).
 
 ## What the migrations do
 
+**Convention note, found the hard way (see below):** `schema.sql` seeds
+`server_config.db_version` explicitly (currently `60`) so that a fresh
+install - which already has the full target schema baked in - doesn't
+re-run every historical migration against a database that already has
+their tables. Whenever a new migration is added, this seed **must** be
+bumped to match the new latest migration number, or `DatabaseManager`
+will try to run it anyway on a fresh install, hit its own idempotency
+guard ("already exists, skipping"), log a warning, and - in this repo's
+CI, which runs its runtime smoke test with `--fail-on-warnings` - fail
+the build. This PR bumped the seed from `58` to `60` for exactly that
+reason; a real CI run (not a review) is what caught it being missed on
+the first push.
+
 ### `data-otservbr-global/migrations/59.lua` — cluster registry & audit tables
 
 Purely additive (`CREATE TABLE IF NOT EXISTS`, matching every existing

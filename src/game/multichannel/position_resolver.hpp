@@ -9,12 +9,15 @@
 
 #pragma once
 
-#include "game/movement/position.hpp"
-
+// <optional>/<functional> must be visible before position.hpp, which
+// specializes std::hash<Position> and otherwise assumes the precompiled
+// header already brought in the standard hash machinery.
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <cstdint>
 	#include <optional>
 #endif
+
+#include "game/movement/position.hpp"
 
 // Pure abstraction over "is this position legal to land on when switching
 // channels" (spec §2.4). Deliberately has zero dependency on the live

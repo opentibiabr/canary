@@ -6,35 +6,67 @@ means the scenario requires infrastructure (live MySQL, a bootstrapped
 vcpkg toolchain, a 3-process cluster) that was not available in this
 development sandbox, and is left for CI / a follow-up session to execute.
 
-## 15.1 Unit tests — ✅ implemented, added to `tests/unit`
+## 15.1 Unit tests — ✅ implemented, added to `tests/unit`, 5 of 7 files actually compiled and run with real gtest
 
 | Test | File | Status |
 |---|---|---|
-| Config validation (lease TTL vs heartbeat, pvp_type, party/exit policy enums) | `tests/unit/game/multichannel/cluster_config_validator_test.cpp` | ✅ written |
-| Channel registry parsing/lookup/enabled-filtering | `tests/unit/game/multichannel/channel_registry_test.cpp` | ✅ written |
-| Channel id resolution priority (CLI > env > fallback) | `tests/unit/game/multichannel/channel_context_test.cpp` | ✅ written |
-| Position resolver: same-tile accept, radius-bounded search, house-access denial, restricted-zone denial, temple fallback | `tests/unit/game/multichannel/position_resolver_test.cpp` | ✅ written |
-| Session lock acquire/renew/release against `FakeRedisClient` | `tests/unit/game/multichannel/cluster_session_manager_test.cpp` | ✅ written |
-| Fencing token monotonicity + rejection of stale token | same file | ✅ written |
-| Channel switch policy: cooldown, PZ-lock block, skull policy variants, party deny/leave | `tests/unit/game/multichannel/channel_switch_service_test.cpp` | ✅ written |
-| Idempotency: `economic_ledger` replay contract (pure logic model) | `tests/unit/game/multichannel/idempotency_test.cpp` | ✅ written |
+| Config validation (lease TTL vs heartbeat, pvp_type, party/exit policy enums) | `tests/unit/game/multichannel/cluster_config_validator_test.cpp` | ✅ **run**, 12/12 passed |
+| Channel registry parsing/lookup/enabled-filtering | `tests/unit/game/multichannel/channel_registry_test.cpp` | ✅ written, not run locally (see below) |
+| Channel id resolution priority (CLI > env > fallback) | `tests/unit/game/multichannel/channel_context_test.cpp` | ✅ written, not run locally (see below) |
+| Position resolver: same-tile accept, radius-bounded search, house-access denial, restricted-zone denial, temple fallback | `tests/unit/game/multichannel/position_resolver_test.cpp` | ✅ **run**, 10/10 passed |
+| Session lock acquire/renew/release against `FakeRedisClient` | `tests/unit/game/multichannel/cluster_session_manager_test.cpp` | ✅ **run**, 18/18 passed |
+| Fencing token monotonicity + rejection of stale token | same file | ✅ **run** (included in the 18 above) |
+| Channel switch policy: cooldown, PZ-lock block, skull policy variants, party deny/leave | `tests/unit/game/multichannel/channel_switch_service_test.cpp` | ✅ **run**, 18/18 passed |
+| Idempotency: `economic_ledger` replay contract (pure logic model) | `tests/unit/game/multichannel/idempotency_test.cpp` | ✅ **run**, 5/5 passed |
 
-These compile against the project's existing gtest-based unit test target
-(`canary_ut`, `CANARY_BUILD_TESTS=ON` with the vcpkg `tests` feature) and
-were **not** executed in this sandbox (no vcpkg toolchain bootstrap
-available — see "Build note" below); they are written to compile cleanly
-against the module headers and follow the repo's existing gtest
-conventions. CI is expected to be the first real compile+run of the full
-target; any failures found there will be fixed as real CI feedback (see
-the PR for the actual run).
+**These compile against the project's real gtest-based unit test target**
+(`canary_ut`, `CANARY_BUILD_TESTS=ON` with the vcpkg `tests` feature) in the
+normal CMake build, which is what CI actually exercises. Separately, and in
+addition to that, **5 of the 7 test files above were compiled and run in
+this sandbox with a real `g++ -std=c++20` + the real `libgtest`/
+`libgtest_main` (installed via `apt-get install libgtest-dev` for this
+purpose) linked against each module's actual `.cpp`** — not a mock, not a
+rewritten copy: `cluster_config_validator_test.cpp`,
+`position_resolver_test.cpp`, `cluster_session_manager_test.cpp`,
+`channel_switch_service_test.cpp`, and `idempotency_test.cpp`, totaling
+**63 test cases, all passing**. `position_resolver_test.cpp` and
+`cluster_session_manager_test.cpp` needed a small local shim (pre-included
+standard headers, and a stub `operator<<(ostream&, Position)`) to stand in
+for this project's precompiled header, which is unavailable without the
+real CMake/vcpkg build; the module code under test was compiled unmodified
+except for one real fix this exercise found (see below).
 
-Two modules were additionally validated *outside* the main build, with
-plain `g++ -std=c++20`, as header-only/dependency-free logic with a small
-`main()` harness, specifically because they contain the most
-safety-critical logic (bounded search termination, fencing monotonicity):
-`position_resolver` and the `FakeRedisClient`-backed lease state machine.
-Both ran and passed locally in this session (see commit messages for the
-exact commands used).
+`channel_context_test.cpp` and `channel_registry_test.cpp` could **not** be
+run locally: both modules use `inject<T>()` (this project's boost.di-based
+DI container, `lib/di/container.hpp`), which requires `boost/di.hpp`
+(vcpkg's `bext-di` package) - not installable via `apt`, and fetching the
+single-header library from its upstream GitHub source was blocked by this
+session's own external-code-fetch safety policy (an unvetted third-party
+source, correctly refused). These two files are written to the same
+conventions as the five that were run and will be compiled for real by CI;
+their pure/static logic (`ChannelContext::resolveFrom`,
+`ChannelInfo::isValidPvpType`, `ChannelRegistry::hashBytes`) was reviewed
+carefully but not independently executed outside of the code review.
+
+**A real bug this exercise found and fixed:** `position_resolver.hpp`
+included `"game/movement/position.hpp"` *before* its own `<optional>`
+include. In this project's real build that's harmless (the precompiled
+header brings in `<optional>`/`<functional>` before any project header is
+processed, regardless of local include order), but it is a latent
+include-order hazard for any future non-PCH build, and it broke the
+standalone compile immediately. Fixed by reordering the includes (system
+headers before the local `position.hpp` include) - a one-line, zero-risk
+correction, kept in the shipped header, not just the test harness.
+
+A second, purely test-side bug was also found and fixed: an early
+standalone assertion for `cluster_session_manager` accidentally renewed a
+lease before asserting that a *different* renew call should fail due to
+expiry, which had silently extended the expiry past the test's own
+"expired" timestamp. Fixed in the test, not the production code - see the
+relevant commit message for detail. Both of these are exactly the kind of
+findings this level of real, executed verification is supposed to surface,
+and both were caught and corrected in this session, not left for CI to
+discover.
 
 ## 15.1b Redis Lua CAS script validation — ✅ run against a real `redis-server`
 
@@ -51,6 +83,10 @@ exercised directly:
 - release by the owning session id succeeds and clears the key
 - a fresh acquire after release/expiry issues fencing token 2, never
   reusing 1
+- 8 concurrent `redis-cli --eval acquire.lua` processes fired at the same
+  key at once (via shell background jobs): exactly one acquired, and
+  exactly one fencing token (1) was ever issued, confirmed by inspecting
+  every process's raw output plus the key's final `HGETALL` state
 
 This is real integration proof that the compare-and-swap semantics the
 whole anti-split-brain design depends on (THREAT_MODEL T1/T2) are correct

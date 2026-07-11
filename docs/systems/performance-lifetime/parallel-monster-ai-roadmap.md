@@ -445,7 +445,8 @@ Work:
   - barrier worker utilization;
   - completion queue depth;
   - dispatcher idle and busy time.
-- Keep startup backlog out of runtime telemetry.
+- Keep startup and immediate post-online warm-up backlog out of runtime
+  telemetry.
 - Use `std::chrono::steady_clock` or the existing latency metrics for sub-cycle
   runtime. Do not use cached `OTSYS_TIME()` to measure a lane or task inside one
   dispatcher cycle.

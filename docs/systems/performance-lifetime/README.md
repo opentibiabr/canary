@@ -673,7 +673,8 @@ Current Phase 2 implementation:
 
 - `Dispatcher` records queue wait, scheduled lateness, task runtime, lane
   runtime, barrier runtime, and internal work with a monotonic clock. Tasks
-  queued before telemetry is enabled do not pollute runtime samples.
+  queued before the one-second post-online warm-up ends do not pollute runtime
+  samples, and adaptive updates run only while the game state is normal.
 - `Creature::processAsyncTaskBucket` keeps 32 visible and 32 background buckets
   and processes at most 16 creatures per barrier task by default. It checks the
   applicable 2 ms slice deadline between creatures, requeues without overlapping

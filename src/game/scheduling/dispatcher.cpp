@@ -562,7 +562,7 @@ void Dispatcher::refreshAdaptiveBudgets() {
 			activeBudgets.sliceRuntime.count()
 		);
 	} else {
-		g_logger().info(
+		g_logger().debug(
 			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,
 			decision.controlLatency.count(),

@@ -10,4 +10,10 @@ target_sources(
             scheduling/task.cpp
             scheduling/save_manager.cpp
             zones/zone.cpp
+            multichannel/channel_context.cpp
+            multichannel/channel_registry.cpp
+            multichannel/position_resolver.cpp
+            multichannel/cluster_session_manager.cpp
+            multichannel/channel_switch_service.cpp
+            multichannel/cluster_config_validator.cpp
 )

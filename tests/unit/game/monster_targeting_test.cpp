@@ -22,7 +22,7 @@ namespace {
 	}
 }
 
-TEST(MonsterTargetRankerTest, PreservesNearestSelectionOffsetsAndCandidateOrder) {
+TEST(MonsterTargetRankerTest, ScoresEachNearestCandidateWithItsOwnFaction) {
 	MonsterTargetRankingRequest request;
 	request.mode = MonsterTargetRankMode::Nearest;
 	request.origin = Position(100, 100, 7);
@@ -32,22 +32,21 @@ TEST(MonsterTargetRankerTest, PreservesNearestSelectionOffsetsAndCandidateOrder)
 	};
 
 	const auto result = MonsterTargetRanker::rank(request);
-	EXPECT_EQ(result.suggestedCreatureId, 10);
+	EXPECT_EQ(result.suggestedCreatureId, 20);
 	EXPECT_FALSE(result.canceled);
 }
 
-TEST(MonsterTargetRankerTest, PreservesHealthSelectionOffsetsAndCandidateOrder) {
+TEST(MonsterTargetRankerTest, ScoresEachHealthCandidateWithItsOwnFaction) {
 	MonsterTargetRankingRequest request;
 	request.mode = MonsterTargetRankMode::Health;
 	request.origin = Position(100, 100, 7);
 	request.candidates = {
-		candidate(10, 105, 1, 500),
-		candidate(20, 104, 0, 100),
-		candidate(30, 103, 0, 50),
+		candidate(10, 105, 0, 100),
+		candidate(20, 104, 1, 1),
 	};
 
 	const auto result = MonsterTargetRanker::rank(request);
-	EXPECT_EQ(result.suggestedCreatureId, 30);
+	EXPECT_EQ(result.suggestedCreatureId, 10);
 }
 
 TEST(MonsterTargetRankerTest, PreservesDamageSelectionFallbackToFirstCandidate) {
@@ -63,7 +62,7 @@ TEST(MonsterTargetRankerTest, PreservesDamageSelectionFallbackToFirstCandidate) 
 	EXPECT_EQ(result.suggestedCreatureId, 10);
 }
 
-TEST(MonsterTargetRankerTest, SelectsHighestLaterDamageCandidate) {
+TEST(MonsterTargetRankerTest, KeepsHighestDamageCandidateWhenItAppearsFirst) {
 	MonsterTargetRankingRequest request;
 	request.mode = MonsterTargetRankMode::Damage;
 	request.origin = Position(100, 100, 7);
@@ -74,10 +73,10 @@ TEST(MonsterTargetRankerTest, SelectsHighestLaterDamageCandidate) {
 	};
 
 	const auto result = MonsterTargetRanker::rank(request);
-	EXPECT_EQ(result.suggestedCreatureId, 30);
+	EXPECT_EQ(result.suggestedCreatureId, 10);
 }
 
-TEST(MonsterTargetRankerTest, PreservesDamageFactionOffsetProgression) {
+TEST(MonsterTargetRankerTest, PreservesSelectedDamageFactionScore) {
 	MonsterTargetRankingRequest request;
 	request.mode = MonsterTargetRankMode::Damage;
 	request.origin = Position(100, 100, 7);
@@ -88,7 +87,7 @@ TEST(MonsterTargetRankerTest, PreservesDamageFactionOffsetProgression) {
 	};
 
 	const auto result = MonsterTargetRanker::rank(request);
-	EXPECT_EQ(result.suggestedCreatureId, 30);
+	EXPECT_EQ(result.suggestedCreatureId, 20);
 }
 
 TEST(MonsterTargetRankerTest, IgnoresFactionOffsetWithoutRecordedDamage) {

@@ -961,12 +961,13 @@ bool Monster::searchTargetImmediate(TargetSearchType_t searchType) {
 
 				if (++it != resultList.end()) {
 					const Position &targetPosition = getTarget->getPosition();
-					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition));
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
+					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition))
+						+ static_cast<int32_t>(getTarget->getFaction()) * 100;
 					do {
 						const Position &pos = (*it)->getPosition();
 
-						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos)) + factionOffset;
+						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos))
+							+ static_cast<int32_t>((*it)->getFaction()) * 100;
 						if (distance < minRange) {
 							getTarget = *it;
 							minRange = distance;
@@ -1001,11 +1002,9 @@ bool Monster::searchTargetImmediate(TargetSearchType_t searchType) {
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100000;
-					int32_t minHp = getTarget->getHealth() + factionOffset;
+					int32_t minHp = getTarget->getHealth() + static_cast<int32_t>(getTarget->getFaction()) * 100000;
 					do {
-						auto hp = (*it)->getHealth() + factionOffset;
-						factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
+						auto hp = (*it)->getHealth() + static_cast<int32_t>((*it)->getFaction()) * 100000;
 						if (hp < minHp) {
 							getTarget = *it;
 							minHp = hp;
@@ -1024,12 +1023,15 @@ bool Monster::searchTargetImmediate(TargetSearchType_t searchType) {
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t mostDamage = 0;
+					const auto firstDamage = damageMap.find(getTarget->getID());
+					int32_t mostDamage = firstDamage == damageMap.end()
+						? std::numeric_limits<int32_t>::min()
+						: firstDamage->second.total + static_cast<int32_t>(getTarget->getFaction()) * 100000;
 					do {
 						int32_t factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
 						const auto dmg = damageMap.find((*it)->getID());
 						if (dmg != damageMap.end() && dmg->second.total + factionOffset > mostDamage) {
-							mostDamage = dmg->second.total;
+							mostDamage = dmg->second.total + factionOffset;
 							getTarget = *it;
 						}
 					} while (++it != resultList.end());

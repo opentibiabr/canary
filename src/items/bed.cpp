@@ -175,20 +175,19 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	}
 
 	const auto &nextBedItem = getNextBedItem();
-	const auto logoutEvent = g_dispatcher().scheduleEvent(
-		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout", DispatcherLane::PlayerAction, player->getID()
-	);
-	if (logoutEvent == 0) {
-		return false;
-	}
-
 	const auto self = static_self_cast<BedItem>();
-	const bool walkAccepted = g_dispatcher().addWalkEvent([player, self] {
+	const auto client = player->client;
+	const bool walkAccepted = g_dispatcher().addWalkEvent([player, self, client] {
 		g_game().map.moveCreature(player, self->getTile());
+		const auto logoutEvent = g_dispatcher().scheduleEvent(
+			SCHEDULER_MINTICKS, [client] { client->logout(false, false); }, "ProtocolGame::logout", DispatcherLane::PlayerAction, player->getID()
+		);
+		if (logoutEvent == 0) {
+			client->logout(false, false);
+		}
 	},
 	                                                      0, player->getID());
 	if (!walkAccepted) {
-		g_dispatcher().stopEvent(logoutEvent);
 		return false;
 	}
 

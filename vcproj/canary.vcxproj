@@ -225,6 +225,7 @@
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
     <ClInclude Include="..\src\map\utils\mapsector.hpp" />
+    <ClInclude Include="..\src\security\login_session_manager.hpp" />
     <ClInclude Include="..\src\security\rsa_backend.hpp" />
     <ClInclude Include="..\src\security\rsa.hpp" />
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
@@ -439,6 +440,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\security\argon.cpp" />
+    <ClCompile Include="..\src\security\login_session_manager.cpp" />
     <ClCompile Include="..\src\security\rsa_backend_mbedtls.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />

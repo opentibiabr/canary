@@ -72,7 +72,9 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		const auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = scheduleGlobalEvent(SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer");
+				timerEventId = scheduleGlobalEvent(
+					SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer"
+				);
 				if (timerEventId == 0) {
 					g_logger().warn("[GlobalEvents::registerLuaEvent] Failed to schedule timer event {}", globalEvent->getName());
 					timerMap.erase(result.first);
@@ -90,7 +92,9 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		const auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
-				thinkEventId = scheduleGlobalEvent(SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think");
+				thinkEventId = scheduleGlobalEvent(
+					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think"
+				);
 				if (thinkEventId == 0) {
 					g_logger().warn("[GlobalEvents::registerLuaEvent] Failed to schedule think event {}", globalEvent->getName());
 					thinkMap.erase(result.first);
@@ -153,7 +157,9 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = scheduleGlobalEvent(timerDelayMilliseconds(nextScheduledTime), [this] { timer(); }, __FUNCTION__);
+		timerEventId = scheduleGlobalEvent(
+			timerDelayMilliseconds(nextScheduledTime), [this] { timer(); }, __FUNCTION__
+		);
 		if (timerEventId == 0) {
 			g_logger().warn("[GlobalEvents::timer] Failed to reschedule timer events");
 		}
@@ -192,7 +198,9 @@ void GlobalEvents::think() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		const auto delay = thinkDelayMilliseconds(nextScheduledTime);
-		thinkEventId = scheduleGlobalEvent(delay, [this] { think(); }, "GlobalEvents::think");
+		thinkEventId = scheduleGlobalEvent(
+			delay, [this] { think(); }, "GlobalEvents::think"
+		);
 		if (thinkEventId == 0) {
 			g_logger().warn("[GlobalEvents::think] Failed to reschedule think events");
 		}

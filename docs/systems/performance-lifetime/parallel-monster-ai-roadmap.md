@@ -28,25 +28,27 @@ on it.
 | Area | Implemented state |
 | --- | --- |
 | Measurement | `Task` uses a monotonic ready timestamp. Dispatcher telemetry separates queue wait, scheduled lateness, task runtime, lane runtime, barrier runtime, internal work, and worker completion age. The policy and clock-dependent logic are unit-testable. |
-| Movement fairness | Player walk, visible creature walk, barrier monster AI, deferred gameplay, and world commits use distinct lanes. Player, bed, push, autowalk, protocol, and scheduled movement producers are classified explicitly. |
-| Bounded compatibility work | Visible creature walk, barrier tasks, deferred work, worker completions, and work inside creature buckets have per-pass or per-slice limits. `BarrierParallel` still waits before dispatcher commits continue. |
-| Cadence and coalescing | Monster movement refresh and post-think work keep at most one pending request per monster/work kind, preserve the oldest ready time, and never replay missed attack or movement ticks as a burst. |
-| Compute service | A dedicated `std::jthread` pool has bounded visible/background request queues, a bounded completion queue, a 3:1 visible/background policy, cancellation, token accounting, and dispatcher wakeup without workers calling gameplay APIs. |
+| Movement fairness | Player walk, visible/background creature walk, visible/background barrier monster AI, deferred gameplay, and world commits use distinct lanes. Player, bed, push, autowalk, protocol, and scheduled movement producers are classified explicitly. |
+| Bounded compatibility work | Visible/background creature walk, barrier tasks, deferred work, worker completions, and work inside creature buckets have per-pass or per-slice limits. `BarrierParallel` still waits before dispatcher commits continue. |
+| Cadence and coalescing | Monster movement refresh and post-think work keep at most one pending request per monster/work kind, preserve the oldest ready time, and never replay missed attack or movement ticks as a burst. Visible post-think runs in batches of eight on `WorldCommit`; background post-think runs in batches of 64 on `Deferred`. Queue ownership makes stale pre-promotion entries harmless. |
+| Compute service | A dedicated `std::jthread` pool has bounded visible/background request and completion queues, a 3:1 visible/background policy at both stages, cancellation, token accounting, and dispatcher wakeup without workers calling gameplay APIs. One quarter of capacity is reserved from background admission for visible work. |
 | Navigation reads | Lazy immutable 16x16 sector snapshots separate topology and occupancy revisions. Topology changes invalidate a result. Occupancy changes remain a hint because every committed step is checked again on the dispatcher. |
 | Follow pathfinding | Monster follow paths with search radius up to 12 can run from immutable `NavCell` and `MonsterPathTraits` values. The dispatcher re-resolves IDs/generations and commits each step only through existing movement legality APIs. |
 | AI intention | Workers rank copied target candidates only. Target mutation, final selection, relevance, and gameplay RNG remain on the dispatcher. Requests are latest-only and capped at 256 candidates. |
 | Combat intention | Workers return geometrically eligible spell indices only. The dispatcher repeats target, floor, range, line-of-sight, zone, cooldown, reload-epoch, and generation checks before RNG, Lua, damage, effects, or conditions. Requests are latest-only and capped at 256 spells. |
-| Relevance and control | Immutable relevance values with temporal hysteresis affect queue weight only. Adaptive budgets use player-visible p99/oldest age, 50 ms SLO, 100 ms emergency threshold, lane minimums, and four healthy windows before relaxation. |
+| Relevance and control | Direct player spectator IDs plus a three-second hysteresis classify scheduling relevance without changing target legality. Player appearance and sight entry eagerly promote pending walk/post-think work. Adaptive reductions apply to background budgets; visible creature walk and visible barrier AI retain configured budgets. |
 | Final scheduler | Fixed group draining and the legacy group abstraction were removed. Due scheduled tasks enter classified lanes. Weighted deficit round robin, aging, producer round robin, and bounded completion draining now choose ready work. |
-| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Immediate enqueue reserves before moving its closure, queued work releases admission when execution starts, canceled timers release immediately, and a one-shot scheduled callback releases before queuing its successor. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens. |
+| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Immediate enqueue reserves before moving its closure, queued work releases admission when execution starts, canceled timers release immediately, and a one-shot scheduled callback releases before queuing its successor. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens; at the default capacity, background work can consume at most 1,536 and leaves 512 for visible requests. |
 | Overload recovery | Protocol work fails closed by closing the connection. Rejected player walk cancels its dependent action, rejected coalesced monster work releases its pending state, rejected tile materialization keeps the old tile, and serial movement/death commits retain an audited inline fallback. Worker exceptions return a dispatcher-side failure completion so monster request state cannot remain outstanding. |
+| Zone cache lifetime | Zone weak caches use owner-stable `std::owner_less` ordering and one cache mutex. Expiration can no longer change a key's hash/equality while it is stored, and cleanup locks each weak owner only once. |
 
 ### Production gate status
 
 Implementation completion is not an acceptance result. Before merge or
 production rollout, all of the following remain mandatory:
 
-- Run the supported release build and unit-test workflow on Windows and Linux.
+- Repeat the supported release build and unit-test workflow in CI and on Linux;
+  the local Windows Release build and unit suite have passed.
 - Run movement, pathfinding, AI, combat, reload, shutdown, and saturation
   integration suites listed later in this document.
 - Record production-like hunt p50, p95, and p99 separately from the artificial
@@ -61,9 +63,14 @@ production rollout, all of the following remain mandatory:
 - Keep `monsterPerfTestForceActive` and `monsterPerfTestFriendlyFire` disabled
   outside controlled benchmarks.
 
-The implementation session intentionally did not run builds or executable
-tests because repository policy requires explicit authorization. Static checks
-and source formatting do not replace these gates.
+Local validation completed after explicit authorization:
+
+- The Visual Studio Release server target compiled successfully after the final
+  scheduling and lifetime changes.
+- The CMake `windows-release-enabled-tests` unit target passed 264 of 264 tests.
+- Manual all-monsters-active stress kept player walk responsive while exposing
+  bounded background degradation. This is diagnostic evidence, not a substitute
+  for the integration, Linux, 72-hour canary, or production-hunt gates above.
 
 ## Implemented scheduler model
 
@@ -78,19 +85,24 @@ Estimated cost is clamped to 1 through 32.
 | `PlayerAction` | `Serial` | 6 | 256 tasks |
 | `WorldCommit` | `Serial` | 6 | 256 tasks |
 | `WorkerCompletion` | `BackgroundCompletion` | 4 | `workerCompletionsPerPass` |
-| `VisibleMonster` | `Serial` | 4 | `creatureWalkTasksPerPass` |
-| `MonsterAI` | `BarrierParallel` | 2 | `walkParallelTasksPerPass` |
-| `Deferred` | `Serial` | 2 | `deferredGameplayTasksPerPass` |
+| `VisibleMonster` | `Serial` | 4 | configured `creatureWalkTasksPerPass` |
+| `BackgroundMonster` | `Serial` | 1 | adaptive `creatureWalkTasksPerPass` |
+| `VisibleMonsterAI` | `BarrierParallel` | 4 | configured `walkParallelTasksPerPass` |
+| `MonsterAI` | `BarrierParallel` | 2 | adaptive `walkParallelTasksPerPass` |
+| `Deferred` | `Serial` | 2 | adaptive `deferredGameplayTasksPerPass` |
 | `Maintenance` | `Serial` | 1 | 16 tasks |
-| `GenericParallel` | `BarrierParallel` | 1 | `walkParallelTasksPerPass` |
+| `GenericParallel` | `BarrierParallel` | 1 | adaptive `walkParallelTasksPerPass` |
 
 The scheduler consumes a lane's deficit before advancing. When oldest ready age
 reaches the SLO, the lane quantum doubles up to 32. `ProtocolInput`,
 `PlayerWalk`, and `PlayerAction` rotate over active producer tokens while
 preserving FIFO inside each producer. Non-player-visible serial lanes share a
-cumulative `dispatcherSliceDurationMs` runtime limit for the pass. Scheduled
-callbacks reserve the same lane capacity as immediate work and are promoted only
-when due.
+cumulative `dispatcherSliceDurationMs` runtime limit for the pass. Visible
+monster movement and barrier AI are exempt from adaptive reductions and use the
+configured limits. Background movement, background monster AI, `Deferred`,
+`GenericParallel`, and completion draining use the active adaptive limits.
+Scheduled callbacks reserve the same lane capacity as immediate work and are
+promoted only when due.
 
 ### Runtime defaults
 
@@ -112,6 +124,28 @@ the same request/completion algorithm inline. Larger hosts use
 `clamp((hardware_concurrency - 2) / 2, 1, 4)` dedicated workers. Worker count and
 queue capacity are fixed when the service starts.
 
+The compute token follows a request until its completion is consumed. Request
+selection and completion draining both use a 3:1 visible/background ratio. At
+the default capacity, background admission stops at 1,536 outstanding tokens so
+that 512 remain available for work that becomes player-visible.
+
+### Benchmark overload semantics
+
+`monsterPerfTestForceActive` prevents the logical idle transition; it does not
+disable queue bounds, coalescing, adaptive budgets, or the no-catch-up contract.
+Consequently, a distant monster can look idle when the artificial benchmark
+saturates background queues even though the dispatcher has already cleared its
+logical idle state and its AI remains eligible for service. This is intentional
+graceful degradation as long as visible work remains within its SLO.
+
+When a player appears or crosses into a monster's sight, the monster records the
+player in its direct spectator IDs before the asynchronous target-list update,
+promotes pending walk and post-think work, and keeps visible priority for three
+seconds after the last player leaves. A monster that remains unresponsive after
+that promotion is a correctness failure, not expected overload behavior.
+`monsterPerfTestFriendlyFire` applies only to hostile non-summon monsters;
+passive monsters retain their normal follow and target behavior.
+
 ## Problem statement
 
 Canary can show acceptable total CPU usage while one dispatcher/main gameplay
@@ -122,9 +156,11 @@ callbacks.
 
 Existing performance-lifetime work already reduced several hot costs:
 
-- Creature async work is bucketed into the `MonsterAI` lane in
-  `BarrierParallel` mode.
-- Monster post-think follow-up runs through the budgeted `Deferred` lane.
+- Creature async work is split across 32 visible and 32 background buckets in
+  `VisibleMonsterAI` and `MonsterAI`, both in `BarrierParallel` mode.
+- Visible monster post-think uses `WorldCommit`; background post-think uses the
+  budgeted `Deferred` lane. Both queues store IDs and enforce one pending tick
+  per monster.
 - Pathfinding and tile lookup reuse scoped local cursors.
 - Monster target lists and condition checks avoid some repeated weak-lock and
   scan costs.
@@ -133,8 +169,8 @@ Existing performance-lifetime work already reduced several hot costs:
 The remaining architecture issue is not only CPU throughput. It is queue
 fairness and player-visible latency. `BarrierParallel` runs work on multiple
 threads, but the dispatcher still waits for the selected batch to finish before
-continuing. Player-visible walk and generic creature walk now use `PlayerWalk`
-and `VisibleMonster`, respectively.
+continuing. Player walk uses `PlayerWalk`; monster movement uses
+`VisibleMonster` or `BackgroundMonster` according to direct player visibility.
 
 ## Current execution model
 
@@ -352,6 +388,9 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
 - The compute service accepts at most 2,048 outstanding request/completion
   tokens. A token is released only when its completion is consumed or shutdown
   cancels the request.
+- Background compute admission is capped at 75% of capacity. The remaining 25%
+  is reserved for visible requests, and visible/background completions are
+  drained with the same 3:1 policy as requests.
 - Target, path, and combat requests are latest-only per monster and kind. A full
   compute queue rejects the request and returns control to the dispatcher; it
   never creates an unbounded fallback queue.
@@ -362,8 +401,8 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
 
 ### Phase 0: measurement and guardrails
 
-Status: implemented in code; production baselines and executable validation are
-still pending.
+Status: implemented in code. Windows Release and unit validation passed;
+production baselines and integration validation remain pending.
 
 Priority: highest.
 
@@ -490,8 +529,8 @@ Acceptance:
 - Player walk no longer shares an unbounded queue with general creature walk.
 - `BarrierParallel` cannot monopolize one dispatcher pass.
 - Remaining barrier work is preserved and continues in later passes.
-- The `VisibleMonster` lane preserves the old movement deferral, notification,
-  coalescing, and `safeCall` behavior.
+- The `VisibleMonster` and `BackgroundMonster` lanes preserve movement
+  deferral, notification, coalescing, and `safeCall` behavior.
 - Player scheduled-walk lateness and protocol input queue age stay within the
   recorded production SLO.
 - Monster movement still progresses under normal hunt load.
@@ -938,6 +977,8 @@ Implemented lane model:
 - `WorldCommit`
 - `WorkerCompletion`
 - `VisibleMonster`
+- `BackgroundMonster`
+- `VisibleMonsterAI`
 - `MonsterAI`
 - `Deferred`
 - `Maintenance`
@@ -1061,6 +1102,8 @@ Dispatcher and scheduler:
   rejected walk admission.
 - Worker-exception failure completions, generation-aware monster cleanup, and
   token release only after the failure completion is consumed.
+- Background admission preserves the visible compute reserve, and both request
+  and completion selection preserve the documented 3:1 service order.
 - Lua timer rejection without registry-reference leaks, plus recurring global
   event and raid scheduling after capacity is recovered.
 - Deterministic adaptive-budget tests with an injected clock and workload.
@@ -1078,6 +1121,8 @@ Monster AI:
 - Target death/logout/despawn while AI or path jobs are pending.
 - Monster follow, flee, retarget, walk back to spawn, summon/master behavior,
   and no-target idle transitions.
+- First player sight promotes already-pending walk and post-think work without
+  bypassing target legality, and priority hysteresis expires after the hold.
 
 Combat:
 
@@ -1100,14 +1145,17 @@ Concurrency and lifetime:
 - Unknown or dedicated worker threads cannot overrun dispatcher per-thread
   queue storage.
 - Stale result discard counters.
+- Expired Zone weak-cache owners can be cleaned while spawn/add/remove activity
+  continues without changing associative-key ordering or racing cache mutation.
 - Debug assertions for forbidden worker mutation where practical.
 
 Performance:
 
 - Production-like hunt load.
 - Artificial all-monsters-active stress as a degradation test.
-- Queue-age comparison for `PlayerWalk`, `WorldCommit`, `MonsterAI`,
-  `Deferred`, and every other active lane.
+- Queue-age comparison for `PlayerWalk`, `WorldCommit`, `VisibleMonster`,
+  `BackgroundMonster`, `VisibleMonsterAI`, `MonsterAI`, `Deferred`, and every
+  other active lane.
 - Scheduled-walk due lateness and input-to-walk-commit p50, p95, and p99.
 - Barrier wall time, longest inner creature call, and work units
   per slice.

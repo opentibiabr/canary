@@ -378,6 +378,9 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 			},
 			"Game::checkCreatureWalk", lane, playerWalk ? getID() : 0
 		);
+		if (eventWalk == 0 && !playerWalk) {
+			forceUpdateFollowPath = true;
+		}
 	});
 }
 

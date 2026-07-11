@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
+
 class Player;
 class Item;
 class DBResult;
@@ -20,7 +24,13 @@ using ItemBlockList = std::list<std::pair<int32_t, std::shared_ptr<Item>>>;
 
 class IOLoginData {
 public:
-	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip);
+	/**
+	 * @param preAuthenticatedAccountId When set (by a caller that already
+	 * redeemed a LoginSessionManager token), the account/password check is
+	 * skipped and the account is loaded by id instead of by descriptor -
+	 * every other check (character ownership, deletion status) still runs.
+	 */
+	static bool gameWorldAuthentication(const std::string &accountDescriptor, const std::string &sessionOrPassword, std::string &characterName, uint32_t &accountId, bool oldProcotol, const uint32_t ip, std::optional<uint32_t> preAuthenticatedAccountId = std::nullopt);
 	static uint8_t getAccountType(uint32_t accountId);
 	static bool loadPlayerById(const std::shared_ptr<Player> &player, uint32_t id, bool disableIrrelevantInfo = true);
 	static bool loadPlayerByName(const std::shared_ptr<Player> &player, const std::string &name, bool disableIrrelevantInfo = true);

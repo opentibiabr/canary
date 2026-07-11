@@ -21,7 +21,49 @@
 #include "enums/account_type.hpp"
 #include "enums/account_errors.hpp"
 
-bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip) {
+namespace {
+	// Character-ownership and deletion-status checks: these run regardless of
+	// how the account was authenticated (password, DB session, or an already
+	// redeemed LoginSessionManager token), so a token can never skip them.
+	bool finishGameWorldAuthentication(Account &account, std::string &characterName, uint32_t &accountId, uint32_t ip) {
+		if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
+			g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
+			return false;
+		}
+
+		if (AccountErrors_t::Ok != account.load()) {
+			g_logger().error("Failed to load account [{}]", account.getID());
+			return false;
+		}
+
+		auto [players, result] = account.getAccountPlayers();
+		if (AccountErrors_t::Ok != result) {
+			g_logger().error("Failed to load account [{}] players", account.getID());
+			return false;
+		}
+
+		if (players[characterName] != 0) {
+			g_logger().error("Account [{}] player [{}] not found or deleted.", account.getID(), characterName);
+			return false;
+		}
+
+		accountId = account.getID();
+		return true;
+	}
+}
+
+bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, const std::string &password, std::string &characterName, uint32_t &accountId, bool oldProtocol, const uint32_t ip, std::optional<uint32_t> preAuthenticatedAccountId) {
+	if (preAuthenticatedAccountId) {
+		Account account(*preAuthenticatedAccountId);
+		account.setProtocolCompat(oldProtocol);
+		if (AccountErrors_t::Ok != account.load()) {
+			g_logger().error("Couldn't load pre-authenticated account [{}].", *preAuthenticatedAccountId);
+			return false;
+		}
+
+		return finishGameWorldAuthentication(account, characterName, accountId, ip);
+	}
+
 	Account account(accountDescriptor);
 	account.setProtocolCompat(oldProtocol);
 
@@ -40,30 +82,7 @@ bool IOLoginData::gameWorldAuthentication(const std::string &accountDescriptor, 
 		}
 	}
 
-	if (!g_accountRepository().getCharacterByAccountIdAndName(account.getID(), characterName)) {
-		g_logger().warn("IP [{}] trying to connect into another account character", convertIPToString(ip));
-		return false;
-	}
-
-	if (AccountErrors_t::Ok != account.load()) {
-		g_logger().error("Failed to load account [{}]", accountDescriptor);
-		return false;
-	}
-
-	auto [players, result] = account.getAccountPlayers();
-	if (AccountErrors_t::Ok != result) {
-		g_logger().error("Failed to load account [{}] players", accountDescriptor);
-		return false;
-	}
-
-	if (players[characterName] != 0) {
-		g_logger().error("Account [{}] player [{}] not found or deleted.", accountDescriptor, characterName);
-		return false;
-	}
-
-	accountId = account.getID();
-
-	return true;
+	return finishGameWorldAuthentication(account, characterName, accountId, ip);
 }
 
 uint8_t IOLoginData::getAccountType(uint32_t accountId) {

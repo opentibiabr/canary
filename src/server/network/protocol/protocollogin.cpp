@@ -10,6 +10,7 @@
 #include "server/network/protocol/protocollogin.hpp"
 
 #include "config/configmanager.hpp"
+#include "security/login_session_manager.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/protocol_session_hint.hpp"
@@ -56,7 +57,6 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	}
 
 	auto output = OutputMessagePool::getOutputMessage();
-	const std::string sessionKey = accountDescriptor + "\n" + password;
 	const std::string &motd = g_configManager().getString(SERVER_MOTD);
 	if (!motd.empty()) {
 		// Add MOTD
@@ -76,6 +76,28 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 	const auto* loginLayout = protocolProfile ? ProtocolProfileRegistry::resolveAccountLoginLayout(protocolProfile->id) : nullptr;
 	const auto characterListLayout = loginLayout ? loginLayout->characterListLayout : AccountCharacterListLayout::WorldListWithSessionKey;
+
+	// Modern, non-old-protocol clients configured for authType=="session" can
+	// carry an opaque token in this same field instead of account+password
+	// (see docs/systems/login-session-manager.md); every other combination
+	// keeps sending the legacy string unchanged.
+	std::string sessionKey = accountDescriptor + "\n" + password;
+	if (loginLayout && loginLayout->sendsSessionKey && !oldProtocol && protocolProfile && g_configManager().getString(AUTH_TYPE) == "session") {
+		std::vector<std::string> allowedCharacterNames;
+		allowedCharacterNames.reserve(players.size());
+		for (const auto &[name, deletion] : players) {
+			allowedCharacterNames.emplace_back(name);
+		}
+
+		LoginSessionIssueParams issueParams;
+		issueParams.accountId = account.getID();
+		issueParams.allowedCharacterNames = std::move(allowedCharacterNames);
+		issueParams.protocolProfile = protocolProfile->id;
+		if (auto secureToken = LoginSessionManager::getInstance().issueToken(issueParams)) {
+			sessionKey = std::move(*secureToken);
+		}
+	}
+
 	if (loginLayout && loginLayout->sendsSessionKey) {
 		// Add session key
 		output->addByte(0x28);

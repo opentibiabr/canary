@@ -73,7 +73,7 @@ services:
       - ../../config.lua.dist:/srv/canary/config.lua.dist:ro
       - ./entrypoint.sh:/srv/canary/multichannel-entrypoint.sh:ro
     ports:
-      - "7171:7171" # login gateway - the only channel that publishes this
+      - "7171:7171"  # login gateway - the only channel that publishes this
       - "7172:7172"
       - "7173:7173"
     depends_on:

@@ -1,0 +1,32 @@
+# Example Grafana datasource provisioning file for Gameplay Analytics.
+#
+# Copy to grafana/provisioning/datasources/mariadb.yaml (or into your
+# existing Grafana provisioning directory) and fill in the real host. Never
+# commit the filled-in copy: credentials belong in Grafana's own secrets
+# storage or an environment-substituted secret file, not in version control.
+#
+# Grafana's MySQL datasource plugin also speaks the MariaDB wire protocol,
+# so no separate MariaDB plugin is required.
+apiVersion: 1
+
+datasources:
+  - name: Gameplay Analytics MariaDB
+    uid: gameplay-analytics-mariadb
+    type: mysql
+    access: proxy
+    url: CHANGE_ME:3306
+    database: canary
+    user: CHANGE_ME
+    # Use a read-only account restricted to the analytics_* tables and
+    # views. Set the password out-of-band, for example via Grafana's
+    # GF_DATASOURCES_DEFAULT_PASSWORD-style provisioning secret file or a
+    # secureJsonData override supplied by your deployment tooling - never
+    # a literal value in this file.
+    secureJsonData:
+      password: "$MARIADB_ANALYTICS_PASSWORD"
+    jsonData:
+      maxOpenConns: 5
+      maxIdleConns: 2
+      connMaxLifetime: 14400
+    isDefault: false
+    editable: false

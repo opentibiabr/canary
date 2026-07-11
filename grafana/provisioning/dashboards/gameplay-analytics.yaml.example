@@ -1,0 +1,18 @@
+# Example Grafana dashboard provisioning file for Gameplay Analytics.
+#
+# Copy to grafana/provisioning/dashboards/gameplay-analytics.yaml (or into
+# your existing Grafana provisioning directory) alongside a copy of
+# grafana/gameplay-analytics-dashboard.json placed at the path below.
+apiVersion: 1
+
+providers:
+  - name: Gameplay Analytics
+    orgId: 1
+    folder: Gameplay Analytics
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 300
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/gameplay-analytics-dashboards
+      foldersFromFilesStructure: false

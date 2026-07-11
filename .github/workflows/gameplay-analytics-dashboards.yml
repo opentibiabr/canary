@@ -1,0 +1,105 @@
+---
+name: Gameplay Analytics Dashboards
+
+on:
+  pull_request:
+    paths:
+      - "schema/gameplay_analytics_views.sql"
+      - "grafana/gameplay-analytics-dashboard.json"
+      - "grafana/provisioning/datasources/mariadb.yaml.example"
+      - "grafana/provisioning/dashboards/gameplay-analytics.yaml.example"
+      - "tools/analytics/test_gameplay_analytics_dashboard_views.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_dashboard.py"
+      - "tools/analytics/validate_gameplay_analytics_dashboard.py"
+      - "docs/systems/gameplay-analytics-dashboards.md"
+      - ".github/workflows/gameplay-analytics-dashboards.yml"
+  push:
+    branches: [main]
+    paths:
+      - "schema/gameplay_analytics_views.sql"
+      - "grafana/gameplay-analytics-dashboard.json"
+      - "grafana/provisioning/datasources/mariadb.yaml.example"
+      - "grafana/provisioning/dashboards/gameplay-analytics.yaml.example"
+      - "tools/analytics/test_gameplay_analytics_dashboard_views.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_dashboard.py"
+      - "tools/analytics/validate_gameplay_analytics_dashboard.py"
+      - "docs/systems/gameplay-analytics-dashboards.md"
+      - ".github/workflows/gameplay-analytics-dashboards.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate dashboard contract
+        run: python tools/analytics/validate_gameplay_analytics_dashboard.py
+      - name: Run dashboard validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_dashboard.py" -v
+      - name: Check dashboard view test shell syntax
+        run: bash -n tools/analytics/test_gameplay_analytics_dashboard_views.sh
+      - name: Parse dashboard JSON
+        run: python -c "import json; json.load(open('grafana/gameplay-analytics-dashboard.json'))"
+      - name: Parse provisioning YAML examples
+        run: |
+          pip install PyYAML
+          python -c "import yaml; yaml.safe_load(open('grafana/provisioning/datasources/mariadb.yaml.example'))"
+          python -c "import yaml; yaml.safe_load(open('grafana/provisioning/dashboards/gameplay-analytics.yaml.example'))"
+
+  mariadb-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: canary_test
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+      - name: Prepare main Analytics and retention schema
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+          MYSQL_PWD: root
+        run: |
+          set -o pipefail
+          {
+            bash tools/analytics/test_mariadb_integration.sh
+            bash tools/analytics/migrate_gameplay_analytics.sh
+            mariadb --protocol=TCP --host=127.0.0.1 --port=3306 --user=root canary_test < schema/gameplay_analytics_retention.sql
+          } 2>&1 | tee dashboard-setup.log
+      - name: Test reporting views
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+        run: |
+          set -o pipefail
+          bash tools/analytics/test_gameplay_analytics_dashboard_views.sh 2>&1 | tee dashboard-views-test.log
+      - name: Upload dashboard integration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-dashboard-log
+          path: |
+            dashboard-setup.log
+            dashboard-views-test.log
+          if-no-files-found: error
+          retention-days: 7

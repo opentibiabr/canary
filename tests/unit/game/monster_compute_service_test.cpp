@@ -33,6 +33,67 @@ TEST(MonsterComputeServiceTest, SelectsVisibleAndBackgroundWorkAtAThreeToOneRati
 	EXPECT_FALSE(MonsterComputeService::selectNextPriority(false, false, visibleStreak).has_value());
 }
 
+TEST(MonsterComputeServiceTest, PreservesVisibleCapacityUnderBackgroundSaturation) {
+	MonsterComputeService service;
+	MonsterComputeConfig config;
+	config.capacity = 8;
+	config.hardwareConcurrency = 2;
+	service.start(config);
+
+	const auto submit = [&service](MonsterComputePriority priority) {
+		return service.submit(priority, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::reserve");
+	};
+
+	for (size_t index = 0; index < 6; ++index) {
+		EXPECT_TRUE(submit(MonsterComputePriority::Background).accepted());
+	}
+	EXPECT_EQ(submit(MonsterComputePriority::Background).status, MonsterComputeSubmitStatus::QueueFull);
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_EQ(submit(MonsterComputePriority::Visible).status, MonsterComputeSubmitStatus::QueueFull);
+
+	const auto saturated = service.getStats();
+	EXPECT_EQ(saturated.visibleReserve, 2);
+	EXPECT_EQ(saturated.visibleOutstanding, 2);
+	EXPECT_EQ(saturated.backgroundOutstanding, 6);
+	EXPECT_EQ(saturated.outstanding, 8);
+	EXPECT_EQ(service.drainCompletions(8), 8);
+	service.shutdown();
+}
+
+TEST(MonsterComputeServiceTest, DrainsVisibleCompletionsAtAThreeToOneRatio) {
+	MonsterComputeService service;
+	MonsterComputeConfig config;
+	config.capacity = 8;
+	config.hardwareConcurrency = 2;
+	service.start(config);
+
+	std::vector<MonsterComputePriority> drained;
+	const auto submit = [&service, &drained](MonsterComputePriority priority) {
+		return service.submit(priority, [&drained, priority](MonsterComputeToken, std::stop_token) {
+			return [&drained, priority] { drained.emplace_back(priority); };
+		}, "MonsterComputeServiceTest::completionPriority");
+	};
+
+	EXPECT_TRUE(submit(MonsterComputePriority::Background).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Visible).accepted());
+	EXPECT_TRUE(submit(MonsterComputePriority::Background).accepted());
+
+	EXPECT_EQ(service.drainCompletions(6), 6);
+	EXPECT_EQ(drained, (std::vector {
+		MonsterComputePriority::Visible,
+		MonsterComputePriority::Visible,
+		MonsterComputePriority::Visible,
+		MonsterComputePriority::Background,
+		MonsterComputePriority::Visible,
+		MonsterComputePriority::Background,
+	}));
+	service.shutdown();
+}
+
 TEST(MonsterComputeServiceTest, HoldsCapacityTokensUntilInlineCompletionsAreConsumed) {
 	MonsterComputeService service;
 	MonsterComputeConfig config;

@@ -70,8 +70,13 @@ void MonsterComputeService::start(MonsterComputeConfig config) {
 	}
 
 	capacity = std::clamp<size_t>(config.capacity, 1, MAX_MONSTER_COMPUTE_CAPACITY);
+	// Background work may use most of the service, but it must leave admission
+	// headroom for monsters that are currently visible to a player.
+	visibleReserve = capacity / 4;
 	workerCount = resolveWorkerCount(config.configuredThreads, config.hardwareConcurrency);
 	inlineMode = workerCount == 0;
+	visibleStreak = 0;
+	completionVisibleStreak = 0;
 	state = State::Running;
 	try {
 		workers.reserve(workerCount);
@@ -102,6 +107,7 @@ MonsterComputeSubmission MonsterComputeService::submit(MonsterComputePriority pr
 	}
 
 	Request request;
+	request.priority = priority;
 	request.work = std::move(work);
 	request.failureCompletion = std::move(failureCompletion);
 	request.context = context;
@@ -113,7 +119,8 @@ MonsterComputeSubmission MonsterComputeService::submit(MonsterComputePriority pr
 			++rejectedCount;
 			return { MonsterComputeSubmitStatus::Stopping, 0 };
 		}
-		if (outstanding >= capacity) {
+		const auto backgroundCapacity = capacity - visibleReserve;
+		if (outstanding >= capacity || (priority == MonsterComputePriority::Background && backgroundOutstanding >= backgroundCapacity)) {
 			++rejectedCount;
 			return { MonsterComputeSubmitStatus::QueueFull, 0 };
 		}
@@ -121,6 +128,11 @@ MonsterComputeSubmission MonsterComputeService::submit(MonsterComputePriority pr
 		request.token = nextToken();
 		token = request.token;
 		++outstanding;
+		if (priority == MonsterComputePriority::Visible) {
+			++visibleOutstanding;
+		} else {
+			++backgroundOutstanding;
+		}
 		++acceptedCount;
 		runInline = inlineMode;
 		if (runInline) {
@@ -148,11 +160,15 @@ size_t MonsterComputeService::drainCompletions(size_t maxCompletions, Completion
 	std::vector<CompletionRecord> pending;
 	{
 		std::scoped_lock lock(mutex);
-		const auto count = std::min(maxCompletions, completions.size());
+		const auto completionCount = visibleCompletions.size() + backgroundCompletions.size();
+		const auto count = std::min(maxCompletions, completionCount);
 		pending.reserve(count);
 		for (size_t index = 0; index < count; ++index) {
-			pending.emplace_back(std::move(completions.front()));
-			completions.pop_front();
+			const auto priority = selectNextPriority(!visibleCompletions.empty(), !backgroundCompletions.empty(), completionVisibleStreak);
+			assert(priority.has_value());
+			auto &queue = *priority == MonsterComputePriority::Visible ? visibleCompletions : backgroundCompletions;
+			pending.emplace_back(std::move(queue.front()));
+			queue.pop_front();
 		}
 		completionsInFlight += count;
 	}
@@ -172,6 +188,13 @@ size_t MonsterComputeService::drainCompletions(size_t maxCompletions, Completion
 		std::scoped_lock lock(mutex);
 		assert(outstanding > 0);
 		--outstanding;
+		if (record.priority == MonsterComputePriority::Visible) {
+			assert(visibleOutstanding > 0);
+			--visibleOutstanding;
+		} else {
+			assert(backgroundOutstanding > 0);
+			--backgroundOutstanding;
+		}
 		assert(completionsInFlight > 0);
 		--completionsInFlight;
 		++completedCount;
@@ -195,11 +218,17 @@ void MonsterComputeService::shutdown() {
 			return;
 		}
 		state = State::Stopping;
-		queuedCanceled = visibleRequests.size() + backgroundRequests.size();
+		const auto visibleQueuedCanceled = visibleRequests.size();
+		const auto backgroundQueuedCanceled = backgroundRequests.size();
+		queuedCanceled = visibleQueuedCanceled + backgroundQueuedCanceled;
 		visibleRequests.clear();
 		backgroundRequests.clear();
 		assert(outstanding >= queuedCanceled);
 		outstanding -= queuedCanceled;
+		assert(visibleOutstanding >= visibleQueuedCanceled);
+		visibleOutstanding -= visibleQueuedCanceled;
+		assert(backgroundOutstanding >= backgroundQueuedCanceled);
+		backgroundOutstanding -= backgroundQueuedCanceled;
 		canceledCount += queuedCanceled;
 	}
 
@@ -214,12 +243,21 @@ void MonsterComputeService::shutdown() {
 		lifecycleChanged.wait(lock, [this] {
 			return activeRequests == 0 && completionsInFlight == 0;
 		});
-		const auto discardedCompletions = completions.size();
+		const auto discardedVisibleCompletions = visibleCompletions.size();
+		const auto discardedBackgroundCompletions = backgroundCompletions.size();
+		const auto discardedCompletions = discardedVisibleCompletions + discardedBackgroundCompletions;
 		assert(outstanding >= discardedCompletions);
 		outstanding -= discardedCompletions;
+		assert(visibleOutstanding >= discardedVisibleCompletions);
+		visibleOutstanding -= discardedVisibleCompletions;
+		assert(backgroundOutstanding >= discardedBackgroundCompletions);
+		backgroundOutstanding -= discardedBackgroundCompletions;
 		canceledCount += discardedCompletions;
-		completions.clear();
+		visibleCompletions.clear();
+		backgroundCompletions.clear();
 		assert(outstanding == 0);
+		assert(visibleOutstanding == 0);
+		assert(backgroundOutstanding == 0);
 		workerCount = 0;
 		state = State::Stopped;
 		lifecycleChanged.notify_all();
@@ -231,18 +269,25 @@ MonsterComputeStats MonsterComputeService::getStats() const {
 	MonsterComputeStats stats;
 	stats.visibleQueued = visibleRequests.size();
 	stats.backgroundQueued = backgroundRequests.size();
-	stats.completionsQueued = completions.size();
+	stats.visibleCompletionsQueued = visibleCompletions.size();
+	stats.backgroundCompletionsQueued = backgroundCompletions.size();
+	stats.completionsQueued = stats.visibleCompletionsQueued + stats.backgroundCompletionsQueued;
+	stats.visibleOutstanding = visibleOutstanding;
+	stats.backgroundOutstanding = backgroundOutstanding;
 	stats.outstanding = outstanding;
 	stats.active = activeRequests;
 	stats.completionsInFlight = completionsInFlight;
 	stats.capacity = capacity;
+	stats.visibleReserve = visibleReserve;
 	stats.workerCount = workerCount;
-	if (!completions.empty()) {
-		const auto now = std::chrono::steady_clock::now();
-		if (now > completions.front().readyAt) {
-			stats.oldestCompletionReadyAge = std::chrono::duration_cast<std::chrono::microseconds>(now - completions.front().readyAt);
-		}
+	const auto now = std::chrono::steady_clock::now();
+	if (!visibleCompletions.empty() && now > visibleCompletions.front().readyAt) {
+		stats.oldestVisibleCompletionReadyAge = std::chrono::duration_cast<std::chrono::microseconds>(now - visibleCompletions.front().readyAt);
 	}
+	if (!backgroundCompletions.empty() && now > backgroundCompletions.front().readyAt) {
+		stats.oldestBackgroundCompletionReadyAge = std::chrono::duration_cast<std::chrono::microseconds>(now - backgroundCompletions.front().readyAt);
+	}
+	stats.oldestCompletionReadyAge = std::max(stats.oldestVisibleCompletionReadyAge, stats.oldestBackgroundCompletionReadyAge);
 	stats.accepted = acceptedCount;
 	stats.rejected = rejectedCount;
 	stats.completed = completedCount;
@@ -255,7 +300,7 @@ MonsterComputeStats MonsterComputeService::getStats() const {
 
 size_t MonsterComputeService::getCompletionCount() const {
 	std::scoped_lock lock(mutex);
-	return completions.size();
+	return visibleCompletions.size() + backgroundCompletions.size();
 }
 
 void MonsterComputeService::workerLoop(std::stop_token stopToken) {
@@ -286,7 +331,7 @@ void MonsterComputeService::executeRequest(Request request, std::stop_token stop
 		completion = std::move(request.failureCompletion);
 	}
 
-	enqueueCompletion({ request.token, std::move(completion), std::move(request.context), {} });
+	enqueueCompletion({ request.token, request.priority, std::move(completion), std::move(request.context), {} });
 }
 
 MonsterComputeService::Request MonsterComputeService::popNextRequest() {
@@ -303,9 +348,10 @@ void MonsterComputeService::enqueueCompletion(CompletionRecord completion) {
 	CompletionNotifier notifier;
 	{
 		std::scoped_lock lock(mutex);
-		assert(completions.size() < capacity);
+		assert(visibleCompletions.size() + backgroundCompletions.size() < capacity);
 		completion.readyAt = std::chrono::steady_clock::now();
-		completions.emplace_back(std::move(completion));
+		auto &queue = completion.priority == MonsterComputePriority::Visible ? visibleCompletions : backgroundCompletions;
+		queue.emplace_back(std::move(completion));
 		assert(activeRequests > 0);
 		--activeRequests;
 		notifier = completionNotifier;

@@ -59,12 +59,19 @@ struct MonsterComputeConfig {
 struct MonsterComputeStats {
 	size_t visibleQueued = 0;
 	size_t backgroundQueued = 0;
+	size_t visibleCompletionsQueued = 0;
+	size_t backgroundCompletionsQueued = 0;
 	size_t completionsQueued = 0;
+	size_t visibleOutstanding = 0;
+	size_t backgroundOutstanding = 0;
 	size_t outstanding = 0;
 	size_t active = 0;
 	size_t completionsInFlight = 0;
 	size_t capacity = 0;
+	size_t visibleReserve = 0;
 	size_t workerCount = 0;
+	std::chrono::microseconds oldestVisibleCompletionReadyAge { 0 };
+	std::chrono::microseconds oldestBackgroundCompletionReadyAge { 0 };
 	std::chrono::microseconds oldestCompletionReadyAge { 0 };
 	uint64_t accepted = 0;
 	uint64_t rejected = 0;
@@ -115,6 +122,7 @@ private:
 
 	struct Request {
 		MonsterComputeToken token = 0;
+		MonsterComputePriority priority = MonsterComputePriority::Background;
 		Work work;
 		Completion failureCompletion;
 		std::string context;
@@ -122,6 +130,7 @@ private:
 
 	struct CompletionRecord {
 		MonsterComputeToken token = 0;
+		MonsterComputePriority priority = MonsterComputePriority::Background;
 		Completion completion;
 		std::string context;
 		std::chrono::steady_clock::time_point readyAt {};
@@ -138,18 +147,23 @@ private:
 	std::condition_variable lifecycleChanged;
 	std::deque<Request> visibleRequests;
 	std::deque<Request> backgroundRequests;
-	std::deque<CompletionRecord> completions;
+	std::deque<CompletionRecord> visibleCompletions;
+	std::deque<CompletionRecord> backgroundCompletions;
 	std::vector<std::jthread> workers;
 	CompletionNotifier completionNotifier;
 
 	State state = State::Stopped;
 	size_t capacity = 0;
+	size_t visibleReserve = 0;
+	size_t visibleOutstanding = 0;
+	size_t backgroundOutstanding = 0;
 	size_t outstanding = 0;
 	size_t activeRequests = 0;
 	size_t completionsInFlight = 0;
 	size_t workerCount = 0;
 	MonsterComputeToken lastToken = 0;
 	uint8_t visibleStreak = 0;
+	uint8_t completionVisibleStreak = 0;
 	uint64_t acceptedCount = 0;
 	uint64_t rejectedCount = 0;
 	uint64_t completedCount = 0;

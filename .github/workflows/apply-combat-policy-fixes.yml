@@ -1,21 +1,19 @@
 name: Apply combat policy fixes
 
 on:
-  pull_request:
-    types: [opened, synchronize]
-    branches: [main]
+  push:
+    branches: [fix/issues-3160-3345]
 
 permissions:
   contents: write
 
 jobs:
   apply:
-    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/issues-3160-3345'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: fix/issues-3160-3345
       - name: Apply verified source changes
         shell: bash
         run: |
@@ -69,4 +67,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "fix: harden chain targets and reflected wheel damage"
-          git push origin "HEAD:${{ github.head_ref }}"
+          git push origin HEAD:fix/issues-3160-3345

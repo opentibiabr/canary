@@ -544,12 +544,15 @@ void Dispatcher::refreshAdaptiveBudgets() {
 		emergencyThreshold
 	);
 	activeBudgets = decision.budgets;
-	bool sustainedEmergency = false;
+	bool shouldWarnEmergency = false;
 	if (decision.controlLatency >= emergencyThreshold) {
-		if (emergencyLatencyWindows <= DISPATCHER_EMERGENCY_WARNING_WINDOWS) {
+		if (emergencyLatencyWindows < DISPATCHER_EMERGENCY_WARNING_WINDOWS) {
 			++emergencyLatencyWindows;
 		}
-		sustainedEmergency = emergencyLatencyWindows == DISPATCHER_EMERGENCY_WARNING_WINDOWS;
+		if (emergencyLatencyWindows == DISPATCHER_EMERGENCY_WARNING_WINDOWS && g_game().getPlayersOnline() > 0) {
+			shouldWarnEmergency = true;
+			++emergencyLatencyWindows;
+		}
 	} else {
 		emergencyLatencyWindows = 0;
 	}
@@ -562,11 +565,11 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	visibleCreatureAsyncSliceLimits.store(packCreatureLimits(configuredBudgets), std::memory_order_relaxed);
 	backgroundCreatureAsyncSliceLimits.store(packCreatureLimits(activeBudgets), std::memory_order_relaxed);
 
-	if (!decision.stateChanged && !sustainedEmergency) {
+	if (!decision.stateChanged && !shouldWarnEmergency) {
 		return;
 	}
 	const auto stateName = getDispatcherLoadStateName(decision.state);
-	if (sustainedEmergency) {
+	if (shouldWarnEmergency) {
 		g_logger().warn(
 			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,

@@ -38,10 +38,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Validate patch schema JSON
+      - name: Validate OTBM schema JSON
+        shell: bash
         run: |
-          python -m json.tool docs/ai-agent/OTBM_PATCH.schema.json > /dev/null
-          python -m json.tool docs/ai-agent/OTBM_WORLD_PATCH.schema.json > /dev/null
+          set -euo pipefail
+          shopt -s nullglob
+          schemas=(docs/ai-agent/OTBM_*.schema.json)
+          if (( ${#schemas[@]} == 0 )); then
+            echo "No OTBM schemas found" >&2
+            exit 1
+          fi
+          for schema in "${schemas[@]}"; do
+            echo "Validating ${schema}"
+            python -m json.tool "${schema}" > /dev/null
+          done
 
       - name: Run focused OTBM tests
         id: otbm-tests

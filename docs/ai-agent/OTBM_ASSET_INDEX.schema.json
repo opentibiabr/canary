@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_ASSET_INDEX.schema.json",
+  "title": "Canary client asset index",
+  "type": "object",
+  "required": ["format", "ok", "catalog", "appearances", "sprites", "coverage", "summary", "issueSummary", "issues"],
+  "properties": {
+    "format": {"const": "canary-client-assets-index-v1"},
+    "ok": {"type": "boolean"},
+    "requestedRoot": {"type": "string"},
+    "catalog": {
+      "type": "object",
+      "required": ["path", "directory", "entryCount"],
+      "properties": {
+        "path": {"type": "string"},
+        "directory": {"type": "string"},
+        "sha256": {"oneOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
+        "entryCount": {"type": "integer", "minimum": 0}
+      }
+    },
+    "package": {"oneOf": [{"type": "object"}, {"type": "null"}]},
+    "assetIdentifier": {"oneOf": [{"type": "object"}, {"type": "null"}]},
+    "appearances": {"type": "array", "items": {"$ref": "#/$defs/fileEntry"}},
+    "sprites": {"type": "array", "items": {"$ref": "#/$defs/spriteEntry"}},
+    "otherCatalogTypes": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+    "coverage": {
+      "type": "object",
+      "required": ["rangeCount", "declaredSpriteCount", "gaps", "overlaps"],
+      "properties": {
+        "rangeCount": {"type": "integer", "minimum": 0},
+        "declaredSpriteCount": {"type": "integer", "minimum": 0},
+        "firstSpriteId": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "lastSpriteId": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "gaps": {"type": "array", "items": {"$ref": "#/$defs/range"}},
+        "overlaps": {"type": "array", "items": {"$ref": "#/$defs/range"}}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["appearancesEntries", "spriteEntries", "existingSpriteFiles", "missingSpriteFiles", "hashesCalculated"],
+      "properties": {
+        "appearancesEntries": {"type": "integer", "minimum": 0},
+        "spriteEntries": {"type": "integer", "minimum": 0},
+        "existingSpriteFiles": {"type": "integer", "minimum": 0},
+        "missingSpriteFiles": {"type": "integer", "minimum": 0},
+        "hashesCalculated": {"type": "boolean"}
+      }
+    },
+    "issueSummary": {"$ref": "#/$defs/issueSummary"},
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}}
+  },
+  "$defs": {
+    "fileEntry": {
+      "type": "object",
+      "required": ["catalogIndex", "type", "file", "path", "relativePath", "exists", "size", "sha256"],
+      "properties": {
+        "catalogIndex": {"type": "integer", "minimum": 0},
+        "type": {"type": "string"},
+        "file": {"oneOf": [{"type": "string"}, {"type": "null"}]},
+        "path": {"oneOf": [{"type": "string"}, {"type": "null"}]},
+        "relativePath": {"oneOf": [{"type": "string"}, {"type": "null"}]},
+        "exists": {"type": "boolean"},
+        "size": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "sha256": {"oneOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]}
+      }
+    },
+    "spriteEntry": {
+      "allOf": [
+        {"$ref": "#/$defs/fileEntry"},
+        {
+          "type": "object",
+          "required": ["firstSpriteId", "lastSpriteId", "spriteType", "compression"],
+          "properties": {
+            "firstSpriteId": {"type": "integer", "minimum": 0},
+            "lastSpriteId": {"type": "integer", "minimum": 0},
+            "spriteType": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+            "compression": {"enum": ["lzma", "none"]}
+          }
+        }
+      ]
+    },
+    "range": {
+      "type": "object",
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"type": "integer", "minimum": 0},
+        "to": {"type": "integer", "minimum": 0}
+      }
+    },
+    "issueSummary": {
+      "type": "object",
+      "required": ["error", "warning", "info"],
+      "properties": {
+        "error": {"type": "integer", "minimum": 0},
+        "warning": {"type": "integer", "minimum": 0},
+        "info": {"type": "integer", "minimum": 0}
+      }
+    },
+    "issue": {
+      "type": "object",
+      "required": ["severity", "code", "message"],
+      "properties": {
+        "severity": {"enum": ["error", "warning", "info"]},
+        "code": {"type": "string"},
+        "message": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  }
+}

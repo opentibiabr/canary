@@ -20,6 +20,19 @@ python tools/ai-agent/scan_ids.py \
 
 The text scanner remains intentionally conservative and regex-based. It does not resolve Lua constants, arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files. The OTBM scanner contributes action and unique IDs but deliberately avoids adding every placed item ID.
 
+## Client asset package index
+
+`otbm_asset_tool.py` validates the modern asset package layout used by OTClient and Canary Map Editor before pixel rendering is enabled.
+
+```bash
+python tools/ai-agent/otbm_asset_tool.py /path/to/client-root \
+  --output artifacts/CLIENT_ASSETS_INDEX.json
+```
+
+The input may be a client root containing `package.json` and `assets/`, an OTClient `data/things/<version>` directory, an `assets` directory, or `catalog-content.json` itself. The index records appearances and sprite files, ranges, layouts, compression suffixes, sizes, SHA-256 values, gaps, overlaps, package metadata, and `assets.json.sha256`. Missing files, unsafe paths, invalid integers, reversed ranges, and overlaps are errors. Use `--skip-hashes` for a quick structural audit of very large packages.
+
+See `docs/ai-agent/OTBM_ASSETS.md` and `docs/ai-agent/OTBM_ASSET_INDEX.schema.json`.
+
 ## OTBM map intelligence and authoring
 
 `otbm_map_tool.py` safely inspects Canary OTBM files, indexes world metadata, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patches, detects conflicts on newer maps, writes new OTBM copies, and publishes separately validated companion XML packages.

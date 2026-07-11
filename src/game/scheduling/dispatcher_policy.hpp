@@ -66,7 +66,15 @@ public:
 	using Clock = std::chrono::steady_clock;
 	using TimePoint = Clock::time_point;
 
-	bool tryEnqueue(TimePoint readyAt = Clock::now()) {
+	bool tryEnqueue() {
+		if (pending) {
+			return false;
+		}
+
+		return tryEnqueue(Clock::now());
+	}
+
+	bool tryEnqueue(TimePoint readyAt) {
 		if (pending) {
 			return false;
 		}

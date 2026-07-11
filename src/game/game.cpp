@@ -84,6 +84,7 @@ namespace {
 	struct MonsterPostThinkQueue {
 		std::mutex mutex;
 		std::deque<uint32_t> monsterIds;
+		DispatcherAdmissionCounter admission;
 		bool scheduled = false;
 	};
 
@@ -117,6 +118,11 @@ namespace {
 			std::scoped_lock lock(queue.mutex);
 			monsterIds.swap(queue.monsterIds);
 			queue.scheduled = false;
+		}
+		for (size_t index = 0; index < monsterIds.size(); ++index) {
+			const bool released = queue.admission.release();
+			assert(released);
+			(void)released;
 		}
 
 		for (const auto monsterId : monsterIds) {
@@ -154,6 +160,11 @@ namespace {
 			}
 			shouldReschedule = !queue.monsterIds.empty();
 			queue.scheduled = shouldReschedule;
+		}
+		for (size_t index = 0; index < monsterIds.size(); ++index) {
+			const bool released = queue.admission.release();
+			assert(released);
+			(void)released;
 		}
 
 		for (const auto monsterId : monsterIds) {
@@ -7585,19 +7596,24 @@ void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
 
 bool Game::queueMonsterPostThink(uint32_t monsterId, bool playerVisible) {
 	auto &queue = getMonsterPostThinkQueue(playerVisible);
-	bool shouldSchedule = false;
-	{
-		std::scoped_lock lock(queue.mutex);
-		if (queue.monsterIds.size() >= MONSTER_POST_THINK_QUEUE_CAPACITY) {
-			observeMonsterPostThinkRejection(playerVisible);
-			return false;
-		}
+	if (!queue.admission.tryReserve(MONSTER_POST_THINK_QUEUE_CAPACITY)) {
+		observeMonsterPostThinkRejection(playerVisible);
+		return false;
+	}
 
+	bool shouldSchedule = false;
+	try {
+		std::scoped_lock lock(queue.mutex);
 		queue.monsterIds.emplace_back(monsterId);
 		if (!queue.scheduled) {
 			queue.scheduled = true;
 			shouldSchedule = true;
 		}
+	} catch (...) {
+		const bool released = queue.admission.release();
+		assert(released);
+		(void)released;
+		throw;
 	}
 
 	return !shouldSchedule || scheduleMonsterPostThinkQueue(playerVisible);

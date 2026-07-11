@@ -957,11 +957,11 @@ bool Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 		lane = DispatcherLane::WorldCommit;
 	}
 
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
 	try {
 		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
 		task.setLane(lane);
@@ -984,12 +984,12 @@ bool Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 		return false;
 	}
 
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 	constexpr auto lane = DispatcherLane::PlayerWalk;
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
 	try {
 		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
 		task.setLane(lane);
@@ -1011,11 +1011,11 @@ bool Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, DispatcherL
 		lane = DispatcherLane::VisibleMonster;
 	}
 
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
 	try {
 		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), this->context().taskName);
 		task.setLane(lane);
@@ -1033,12 +1033,12 @@ bool Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::st
 		return false;
 	}
 
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 	constexpr auto lane = DispatcherLane::Deferred;
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
 	try {
 		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(expiresAfterMs, std::move(f), context);
 		task.setLane(lane);
@@ -1059,11 +1059,11 @@ bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane l
 		lane = DispatcherLane::GenericParallel;
 	}
 
-	const auto &thread = getThreadTask();
-	std::scoped_lock lock(thread->mutex);
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
+	const auto &thread = getThreadTask();
+	std::scoped_lock lock(thread->mutex);
 	try {
 		auto &task = thread->tasks[static_cast<size_t>(lane)].emplace_back(0, std::move(f), dispacherContext.taskName);
 		task.setLane(lane);

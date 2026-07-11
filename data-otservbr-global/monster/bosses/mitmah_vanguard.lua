@@ -80,30 +80,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, minCount = 1, maxCount = 360 },
-	{ name = "platinum coin", chance = 20000, maxCount = 60 },
-	{ name = "great health potion", chance = 40000, maxCount = 13 },
-	{ name = "broken mitmah necklace", chance = 40000, maxCount = 1 },
-	{ name = "crystal of the mitmah", chance = 40000, maxCount = 1 },
-	{ name = "great spirit potion", chance = 25530, maxCount = 9 },
-	{ name = "great mana potion", chance = 34040, maxCount = 13 },
-	{ name = "white gem", chance = 15000 },
-	{ name = "yellow gem", chance = 15000, maxCount = 2 },
-	{ name = "blue gem", chance = 15000 },
-	{ name = "broken mitmah chestplate", chance = 9000 },
-	{ name = "giant sapphire", chance = 9000 },
-	{ name = "splintered mitmah gem", chance = 9000 },
-	{ name = "amber with a bug", chance = 3190 },
-	{ name = "amber", chance = 5320 },
-	{ name = "stoic iks boots", chance = 452 },
-	{ name = "stoic iks casque", chance = 372 },
-	{ name = "stoic iks chestplate", chance = 545 },
-	{ name = "stoic iks robe", chance = 545 },
-	{ name = "stoic iks culet", chance = 362 },
-	{ name = "stoic iks faulds", chance = 460 },
-	{ name = "stoic iks headpiece", chance = 552 },
-	{ name = "stoic iks sandals", chance = 665 },
-	{ name = "stoic iks cuirass", chance = 382 },
+	{ id = 3035, chance = 76000, maxCount = 60 }, -- Platinum Coin
+	{ id = 44438, chance = 57000 }, -- Broken Mitmah Necklace
+	{ id = 44439, chance = 43000 }, -- Crystal of the Mitmah
+	{ id = 32769, chance = 28000, maxCount = 2 }, -- White Gem
+	{ id = 239, chance = 28000, maxCount = 13 }, -- Great Health Potion
+	{ id = 238, chance = 27000, maxCount = 13 }, -- Great Mana Potion
+	{ id = 3037, chance = 26000, maxCount = 2 }, -- Yellow Gem
+	{ id = 3041, chance = 25000, maxCount = 3 }, -- Blue Gem
+	{ id = 3043, chance = 24000 }, -- Crystal Coin
+	{ id = 7643, chance = 19500, maxCount = 9 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 17100, maxCount = 9 }, -- Ultimate Mana Potion
+	{ id = 7642, chance = 8500, maxCount = 9 }, -- Great Spirit Potion
+	{ id = 32623, chance = 6100 }, -- Giant Topaz
+	{ id = 32622, chance = 5800 }, -- Giant Amethyst
+	{ id = 44727, chance = 5500 }, -- Broken Mitmah Chestplate
+	{ id = 30060, chance = 4400 }, -- Giant Emerald
+	{ id = 30061, chance = 4100 }, -- Giant Sapphire
+	{ id = 44728, chance = 2400 }, -- Splintered Mitmah Gem
+	{ id = 44643, chance = 340 }, -- Stoic Iks Faulds
 }
 
 monster.attacks = {

@@ -63,12 +63,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000 },
-	{ name = "cyan crystal fragment", chance = 55000 },
-	{ name = "poison gland", chance = 54500 },
-	{ name = "great mana potion", chance = 80000 },
-	{ name = "plate armor", chance = 64000 },
-	{ name = "green gem", chance = 35000 },
+	{ id = 3035, chance = 100000, maxCount = 12 }, -- Platinum Coin
+	{ id = 29348, chance = 100000 }, -- Poison Gland
+	{ id = 3315, chance = 11100 }, -- Guardian Halberd
+	{ id = 3357, chance = 11100 }, -- Plate Armor
+	{ id = 238, chance = 11100 }, -- Great Mana Potion
+	{ id = 3053, chance = 11100 }, -- Time Ring
+	{ id = 7449, chance = 11100 }, -- Crystal Sword
+	{ id = 9058, chance = 11100 }, -- Gold Ingot
+	{ id = 281, chance = 5600 }, -- Giant Shimmering Pearl
+	{ id = 7441, chance = 5600 }, -- Ice Cube
+	{ id = 3269, chance = 5600 }, -- Halberd
+	{ id = 16125, chance = 5600 }, -- Cyan Crystal Fragment
+	{ id = 16119, chance = 5600 }, -- Blue Crystal Shard
+	{ id = 3008, chance = 5600 }, -- Crystal Necklace
+	{ id = 3313, chance = 5600 }, -- Obsidian Lance
+	{ id = 5879, chance = 5600 }, -- Spider Silk
 }
 
 monster.attacks = {

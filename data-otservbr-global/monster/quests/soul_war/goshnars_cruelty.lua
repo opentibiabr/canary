@@ -73,29 +73,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "cruelty's chest", chance = 2000 },
-	{ name = "cruelty's claw", chance = 2000 },
-	{ name = "figurine of cruelty", chance = 400 },
-	{ name = "spectral saddle", chance = 400 },
-	{ name = "spectral horse tack", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 3043, chance = 100000, maxCount = 91 }, -- Crystal Coin
+	{ id = 23373, chance = 73000, maxCount = 107 }, -- Ultimate Mana Potion
+	{ id = 32622, chance = 55000 }, -- Giant Amethyst
+	{ id = 23375, chance = 45000, maxCount = 166 }, -- Supreme Health Potion
+	{ id = 7443, chance = 45000, maxCount = 43 }, -- Bullseye Potion
+	{ id = 3041, chance = 45000, maxCount = 2 }, -- Blue Gem
+	{ id = 23374, chance = 36000, maxCount = 69 }, -- Ultimate Spirit Potion
+	{ id = 3037, chance = 27000 }, -- Yellow Gem
+	{ id = 3039, chance = 27000 }, -- Red Gem
+	{ id = 3036, chance = 27000 }, -- Violet Gem
+	{ id = 7440, chance = 27000, maxCount = 24 }, -- Mastermind Potion
+	{ id = 30060, chance = 27000 }, -- Giant Emerald
+	{ id = 281, chance = 18200 }, -- Giant Shimmering Pearl
+	{ id = 3038, chance = 18200 }, -- Green Gem
+	{ id = 49271, chance = 18200, maxCount = 33 }, -- Transcendence Potion
+	{ id = 30061, chance = 18200 }, -- Giant Sapphire
+	{ id = 33923, chance = 18200 }, -- Cruelty's Chest
+	{ id = 33922, chance = 18200 }, -- Cruelty's Claw
+	{ id = 7439, chance = 9100, maxCount = 32 }, -- Berserk Potion
+	{ id = 9058, chance = 9100 }, -- Gold Ingot
+	{ id = 32769, chance = 9100 }, -- White Gem
 }
 
 monster.attacks = {

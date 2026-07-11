@@ -76,19 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 10 },
-	{ name = "gold coin", chance = 100000, maxCount = 50 },
-	{ id = 281, chance = 14830 }, -- giant shimmering pearl
-	{ name = "great health potion", chance = 14530 },
-	{ name = "tiger eye", chance = 4820 },
-	{ name = "green crystal splinter", chance = 4190 },
-	{ name = "brown crystal splinter", chance = 4160 },
-	{ name = "opal", chance = 3450, maxCount = 2 },
-	{ name = "gearwheel chain", chance = 3150 },
-	{ name = "onyx chip", chance = 2490 },
-	{ name = "ritual tooth", chance = 2410 },
-	{ name = "spiked squelcher", chance = 1700 },
-	{ id = 11514, chance = 1500 }, -- colorful feather
+	{ id = 3035, chance = 55000, maxCount = 10 }, -- Platinum Coin
+	{ id = 3031, chance = 19700, maxCount = 50 }, -- Gold Coin
+	{ id = 239, chance = 14700 }, -- Great Health Potion
+	{ id = 281, chance = 14500 }, -- Giant Shimmering Pearl
+	{ id = 44440, chance = 13700 }, -- Yapunac Dagger
+	{ id = 24961, chance = 4100 }, -- Tiger Eye
+	{ id = 16123, chance = 3700 }, -- Brown Crystal Splinter
+	{ id = 22194, chance = 3400 }, -- Opal
+	{ id = 16122, chance = 3300 }, -- Green Crystal Splinter
+	{ id = 21170, chance = 2900 }, -- Gearwheel Chain
+	{ id = 40528, chance = 2800 }, -- Ritual Tooth
+	{ id = 22193, chance = 2700 }, -- Onyx Chip
+	{ id = 7452, chance = 1800 }, -- Spiked Squelcher
+	{ id = 11514, chance = 1400 }, -- Colourful Feather
+	{ id = 44432, chance = 200 }, -- Ancient Iks Ritual Chalice
+	{ id = 3081, chance = 89 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -83,36 +83,49 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "bed of nails", chance = 67000 },
-	{ name = "small sapphire", chance = 21000, maxCount = 10 },
-	{ name = "great spirit potion", chance = 33230, maxCount = 5 },
-	{ name = "yellow gem", chance = 12000 },
-	{ id = 282, chance = 5000 }, -- giant shimmering pearl (brown)
-	{ name = "platinum coin", chance = 68299, maxCount = 30 },
-	{ name = "lightning legs", chance = 18000 },
-	{ name = "sacred tree amulet", chance = 15000 },
-	{ name = "wood cape", chance = 9000 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "small emerald", chance = 19000, maxCount = 10 },
-	{ name = "great mana potion", chance = 31230, maxCount = 5 },
-	{ id = 3039, chance = 12000 }, -- red gem
-	{ name = "oriental shoes", chance = 11000 },
-	{ name = "torn shirt", chance = 42000 },
-	{ name = "fig leaf", chance = 32000 },
-	{ name = "luminous orb", chance = 35000 },
-	{ name = "wooden spellbook", chance = 4500 },
-	{ name = "elven legs", chance = 16000 },
-	{ name = "small diamond", chance = 21000, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 28230, maxCount = 5 },
-	{ name = "energy bar", chance = 53000, maxCount = 5 },
-	{ name = "green gem", chance = 12000 },
-	{ name = "broken key ring", chance = 4000 },
-	{ name = "muck rod", chance = 10000 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "cobra crown", chance = 400 },
-	{ name = "silver token", chance = 2500 },
-	{ name = "elven mail", chance = 3000 },
+	{ id = 23535, chance = 100000, maxCount = 9 }, -- Energy Bar
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 3031, chance = 100000, maxCount = 378 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 48 }, -- Platinum Coin
+	{ id = 25743, chance = 99000 }, -- Bed of Nails
+	{ id = 9302, chance = 70000 }, -- Sacred Tree Amulet
+	{ id = 238, chance = 59000, maxCount = 16 }, -- Great Mana Potion
+	{ id = 16117, chance = 59000 }, -- Muck Rod
+	{ id = 3575, chance = 58000 }, -- Wood Cape
+	{ id = 7643, chance = 53000, maxCount = 16 }, -- Ultimate Health Potion
+	{ id = 25742, chance = 52000 }, -- Fig Leaf
+	{ id = 7642, chance = 48000, maxCount = 18 }, -- Great Spirit Potion
+	{ id = 25744, chance = 47000 }, -- Torn Shirt
+	{ id = 3041, chance = 32000, maxCount = 2 }, -- Blue Gem
+	{ id = 22721, chance = 26000 }, -- Gold Token
+	{ id = 3029, chance = 26000, maxCount = 19 }, -- Small Sapphire
+	{ id = 3038, chance = 25000, maxCount = 2 }, -- Green Gem
+	{ id = 5904, chance = 21000 }, -- Magic Sulphur
+	{ id = 22516, chance = 21000 }, -- Silver Token
+	{ id = 3028, chance = 19000, maxCount = 19 }, -- Small Diamond
+	{ id = 3032, chance = 19000, maxCount = 19 }, -- Small Emerald
+	{ id = 3039, chance = 16400 }, -- Red Gem
+	{ id = 281, chance = 15500 }, -- Giant Shimmering Pearl
+	{ id = 813, chance = 15500 }, -- Terra Boots
+	{ id = 9057, chance = 15500, maxCount = 17 }, -- Small Topaz
+	{ id = 3037, chance = 15500 }, -- Yellow Gem
+	{ id = 11454, chance = 15500 }, -- Luminous Orb
+	{ id = 3033, chance = 14700, maxCount = 19 }, -- Small Amethyst
+	{ id = 11652, chance = 12900 }, -- Broken Key Ring
+	{ id = 21981, chance = 12100 }, -- Oriental Shoes
+	{ id = 25699, chance = 12100 }, -- Wooden Spellbook
+	{ id = 7463, chance = 10300 }, -- Mammoth Fur Cape
+	{ id = 822, chance = 6900 }, -- Lightning Legs
+	{ id = 811, chance = 6000 }, -- Terra Mantle
+	{ id = 10451, chance = 4300 }, -- Jade Hat
+	{ id = 3036, chance = 4300 }, -- Violet Gem
+	{ id = 11674, chance = 2600 }, -- Cobra Crown
+	{ id = 3399, chance = 1700 }, -- Elven Mail
+	{ id = 3401, chance = 1700 }, -- Elven Legs
+	{ id = 8050, chance = 1700 }, -- Crystalline Armor
+	{ id = 3079, chance = 860 }, -- Boots of Haste
+	{ id = 50154, chance = 860 }, -- Enchanted Merudri Brooch
+	{ id = 49372, chance = 860 }, -- Spiritualist Gem
 }
 
 monster.attacks = {

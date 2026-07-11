@@ -81,26 +81,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 74230, maxCount = 10 },
-	{ name = "bullseye potion", chance = 74230, maxCount = 10 },
-	{ name = "mastermind potion", chance = 74230, maxCount = 10 },
-	{ name = "berserk potion", chance = 74230, maxCount = 17 },
-	{ name = "ultimate mana potion", chance = 74230, maxCount = 20 },
-	{ name = "ultimate spirit potion", chance = 74230, maxCount = 8 },
-	{ name = "supreme health potion", chance = 74230, maxCount = 8 },
-	{ name = "goblet of gloom", chance = 7000, maxCount = 1 },
-	{ name = "violet gem", chance = 7000, maxCount = 1 },
-	{ name = "gruesome fan", chance = 7000, maxCount = 1 },
-	{ name = "crystal coin", chance = 7000, maxCount = 200 },
-	{ name = "amber with a dragonfly", chance = 7000, maxCount = 1 },
-	{ name = "abomination's tongue", chance = 7000, maxCount = 1 },
-	{ name = "abomination's eye", chance = 7000, maxCount = 1 },
-	{ name = "abomination's tail", chance = 7000, maxCount = 1 },
-	{ name = "brooch of embracement", chance = 7000, maxCount = 1 },
-	{ name = "giant amethyst", chance = 7000, maxCount = 1 },
-	{ name = "giant topaz", chance = 7000, maxCount = 1 },
-	{ name = "raw watermelon tourmaline", chance = 7000, maxCount = 1 },
-	{ name = "fiery horseshoe", chance = 5990, maxCount = 1 },
+	{ id = 3031, chance = 100000 }, -- Gold Coin
+	{ id = 3043, chance = 71000, maxCount = 39 }, -- Crystal Coin
+	{ id = 23374, chance = 29000, maxCount = 10 }, -- Ultimate Spirit Potion
+	{ id = 23373, chance = 29000, maxCount = 20 }, -- Ultimate Mana Potion
+	{ id = 7440, chance = 19400, maxCount = 16 }, -- Mastermind Potion
+	{ id = 7439, chance = 12900, maxCount = 16 }, -- Berserk Potion
+	{ id = 23375, chance = 12900, maxCount = 5 }, -- Supreme Health Potion
+	{ id = 7443, chance = 9700, maxCount = 12 }, -- Bullseye Potion
+	{ id = 30059, chance = 6500 }, -- Giant Ruby
+	{ id = 32769, chance = 6500 }, -- White Gem
+	{ id = 36793, chance = 6500 }, -- Abomination's Tongue
+	{ id = 36792, chance = 6500 }, -- Abomination's Eye
+	{ id = 34025, chance = 3200 }, -- Diabolic Skull
 }
 
 monster.attacks = {

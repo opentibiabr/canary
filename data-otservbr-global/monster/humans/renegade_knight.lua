@@ -81,24 +81,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3447, chance = 90450, maxCount = 10 }, -- arrow
-	{ id = 3031, chance = 75410, maxCount = 30 }, -- gold coin
-	{ id = 3592, chance = 1210 }, -- grapes
-	{ id = 239, chance = 1210 }, -- great health potion
-	{ id = 3577, chance = 1210, maxCount = 2 }, -- meat
-	{ id = 7364, chance = 1210, maxCount = 4 }, -- sniper arrow
-	{ id = 3381, chance = 210 }, -- crown armor
-	{ id = 3385, chance = 310 }, -- crown helmet
-	{ id = 3419, chance = 210 }, -- crown shield
-	{ id = 3382, chance = 110 }, -- crown legs
-	{ id = 3280, chance = 310 }, -- fire sword
-	{ id = 3269, chance = 1610 }, -- halberd
-	{ id = 3658, chance = 510 }, -- red rose
-	{ id = 3003, chance = 1510 }, -- rope
-	{ id = 2815, chance = 910 }, -- scroll
-	{ id = 11510, chance = 910 }, -- scroll of heroic deeds
-	{ id = 11450, chance = 910 }, -- small notebook
-	{ id = 3004, chance = 510 }, -- wedding ring
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 25000, maxCount = 2 }, -- Platinum Coin
+	{ id = 3577, chance = 9300 }, -- Meat
+	{ id = 239, chance = 7000 }, -- Great Health Potion
+	{ id = 11510, chance = 6100 }, -- Scroll of Heroic Deeds
+	{ id = 3265, chance = 5100 }, -- Two Handed Sword
+	{ id = 3030, chance = 3700 }, -- Small Ruby
+	{ id = 5911, chance = 1800 }, -- Red Piece of Cloth
+	{ id = 11450, chance = 1500 }, -- Small Notebook
+	{ id = 3279, chance = 970 }, -- War Hammer
+	{ id = 3381, chance = 660 }, -- Crown Armor
+	{ id = 3385, chance = 590 }, -- Crown Helmet
+	{ id = 3382, chance = 570 }, -- Crown Legs
+	{ id = 3280, chance = 520 }, -- Fire Sword
+	{ id = 3419, chance = 190 }, -- Crown Shield
+	{ id = 2995, chance = 110 }, -- Piggy Bank
 }
 
 monster.attacks = {

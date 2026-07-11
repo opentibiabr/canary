@@ -82,28 +82,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 169 }, -- gold coin
-	{ id = 3035, chance = 77400, maxCount = 9 }, -- platinum coin
-	{ id = 5911, chance = 31100 }, -- red piece of cloth
-	{ id = 239, chance = 26830, maxCount = 5 }, -- great health potion
-	{ id = 238, chance = 23170, maxCount = 5 }, -- great mana potion
-	{ id = 3062, chance = 9760 }, -- mind stone
-	{ id = 7443, chance = 6710, maxCount = 2 }, -- bullseye potion
-	{ id = 8043, chance = 4880 }, -- focus cape
-	{ id = 3049, chance = 4880 }, -- stealth ring
-	{ id = 11454, chance = 4270 }, -- luminous orb
-	{ id = 3728, chance = 3600, maxCount = 4 }, -- dark mushroom
-	{ id = 7368, chance = 1830, maxCount = 7 }, -- assassin star
-	{ id = 3007, chance = 1830 }, -- crystal ring
-	{ id = 3006, chance = 1830 }, -- ring of the sky
-	{ id = 3029, chance = 1830, maxCount = 5 }, -- small sapphire
-	{ id = 12803, chance = 1220 }, -- elemental spikes
-	{ id = 2995, chance = 1220 }, -- piggy bank
-	{ id = 9045, chance = 1220 }, -- royal tapestry
-	{ id = 3079, chance = 610 }, -- boots of haste
-	{ id = 9067, chance = 610 }, -- crystal of power
-	{ id = 5741, chance = 610 }, -- skull helmet
-	{ id = 8074, chance = 610 }, -- spellbook of mind control
+	{ id = 3031, chance = 100000, maxCount = 259 }, -- Gold Coin
+	{ id = 3035, chance = 80000, maxCount = 15 }, -- Platinum Coin
+	{ id = 2995, chance = 60000 }, -- Piggy Bank
+	{ id = 239, chance = 30000, maxCount = 4 }, -- Great Health Potion
+	{ id = 7368, chance = 30000, maxCount = 11 }, -- Assassin Star
+	{ id = 3029, chance = 30000, maxCount = 9 }, -- Small Sapphire
+	{ id = 3062, chance = 20000 }, -- Mind Stone
+	{ id = 3007, chance = 20000 }, -- Crystal Ring
+	{ id = 3728, chance = 10000, maxCount = 2 }, -- Dark Mushroom
+	{ id = 8074, chance = 10000 }, -- Spellbook of Mind Control
+	{ id = 5911, chance = 10000 }, -- Red Piece of Cloth
+	{ id = 8043, chance = 10000 }, -- Focus Cape
+	{ id = 3081, chance = 10000 }, -- Stone Skin Amulet
+	{ id = 238, chance = 23080, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7443, chance = 6510 }, -- Bullseye Potion
+	{ id = 11454, chance = 4140 }, -- Luminous Orb
+	{ id = 3049, chance = 4730 }, -- Stealth Ring
+	{ id = 3006, chance = 1780 }, -- Ring of the Sky
+	{ id = 9045, chance = 1180 }, -- Royal Tapestry
+	{ id = 9067, chance = 590 }, -- Crystal of Power
+	{ id = 5741, chance = 590 }, -- Skull Helmet
+	{ id = 3079, chance = 590 }, -- Boots of Haste
+	{ id = 12803, chance = 1180 }, -- Elemental Spikes
 }
 
 monster.attacks = {

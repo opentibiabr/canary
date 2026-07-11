@@ -77,16 +77,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 6 },
-	{ name = "flaming arrow", chance = 22040, maxCount = 19 },
-	{ name = "ogre ear stud", chance = 12900 },
-	{ name = "ogre nose ring", chance = 20970 },
-	{ name = "skull fetish", chance = 12900 },
-	{ name = "wand of inferno", chance = 10000 },
-	{ name = "jalapeno pepper", chance = 3760, maxCount = 3 },
-	{ name = "wand of draconia", chance = 2150 },
-	{ name = "wand of everblazing", chance = 1080 },
-	{ name = "ogre choppa", chance = 540 },
+	{ id = 3035, chance = 78000, maxCount = 7 }, -- Platinum Coin
+	{ id = 763, chance = 24000, maxCount = 9 }, -- Flaming Arrow
+	{ id = 22188, chance = 21000 }, -- Ogre Ear Stud
+	{ id = 22189, chance = 17100 }, -- Ogre Nose Ring
+	{ id = 22191, chance = 10000 }, -- Skull Fetish
+	{ id = 3071, chance = 7600 }, -- Wand of Inferno
+	{ id = 3032, chance = 5800 }, -- Small Emerald
+	{ id = 8093, chance = 5100 }, -- Wand of Draconia
+	{ id = 16120, chance = 4100 }, -- Violet Crystal Shard
+	{ id = 24962, chance = 4100 }, -- Prismatic Quartz
+	{ id = 16119, chance = 3500 }, -- Blue Crystal Shard
+	{ id = 8016, chance = 3100, maxCount = 2 }, -- Jalapeno Pepper
+	{ id = 22193, chance = 2400 }, -- Onyx Chip
+	{ id = 22194, chance = 1900 }, -- Opal
+	{ id = 3041, chance = 1800 }, -- Blue Gem
+	{ id = 16115, chance = 1300 }, -- Wand of Everblazing
+	{ id = 22172, chance = 980 }, -- Ogre Choppa
+	{ id = 282, chance = 900 }, -- Giant Shimmering Pearl (Brown)
 }
 
 monster.attacks = {

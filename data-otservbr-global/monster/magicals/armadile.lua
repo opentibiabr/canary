@@ -77,28 +77,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 100000, maxCount = 98 },
-	{ name = "platinum coin", chance = 95000, maxCount = 7 },
-	{ id = 3053, chance = 1000 }, -- time ring
-	{ name = "tower shield", chance = 620 },
-	{ name = "titan axe", chance = 1540 },
-	{ name = "jade conical hat", chance = 1150 },
-	{ name = "bonebreaker", chance = 1150 },
-	{ name = "strong health potion", chance = 14285, maxCount = 2 },
-	{ name = "strong mana potion", chance = 15000, maxCount = 2 },
-	{ name = "great mana potion", chance = 15920, maxCount = 2 },
-	{ name = "great health potion", chance = 15000, maxCount = 2 },
-	{ name = "mana potion", chance = 14285, maxCount = 3 },
-	{ name = "terra boots", chance = 2850 },
-	{ name = "crystalline armor", chance = 230 },
-	{ name = "battle stone", chance = 12460 },
-	{ id = 12600, chance = 6000 }, -- coal
-	{ name = "green crystal splinter", chance = 3920, maxCount = 2 },
-	{ name = "green crystal fragment", chance = 5690, maxCount = 2 },
-	{ name = "crystalline spikes", chance = 14540 },
-	{ name = "drill bolt", chance = 7692, maxCount = 5 },
-	{ name = "envenomed arrow", chance = 10230, maxCount = 10 },
+	{ id = 3031, chance = 100000, maxCount = 170 }, -- Gold Coin
+	{ id = 3035, chance = 98000, maxCount = 9 }, -- Platinum Coin
+	{ id = 239, chance = 24000, maxCount = 2 }, -- Great Health Potion
+	{ id = 238, chance = 17400, maxCount = 2 }, -- Great Mana Potion
+	{ id = 11447, chance = 15200 }, -- Battle Stone
+	{ id = 16142, chance = 15200, maxCount = 5 }, -- Drill Bolt
+	{ id = 268, chance = 13000, maxCount = 3 }, -- Mana Potion
+	{ id = 16138, chance = 10900 }, -- Crystalline Spikes
+	{ id = 12600, chance = 8700 }, -- Coal
+	{ id = 236, chance = 8700, maxCount = 2 }, -- Strong Health Potion
+	{ id = 237, chance = 6500, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 16122, chance = 4300, maxCount = 2 }, -- Green Crystal Splinter
+	{ id = 16143, chance = 4300, maxCount = 8 }, -- Envenomed Arrow
+	{ id = 16127, chance = 2200, maxCount = 2 }, -- Green Crystal Fragment
+	{ id = 7413, chance = 2200 }, -- Titan Axe
+	{ id = 3428, chance = 2200 }, -- Tower Shield
+	{ id = 813, chance = 2460 }, -- Terra Boots
+	{ id = 3053, chance = 1180 }, -- Time Ring
+	{ id = 7428, chance = 1010 }, -- Bonebreaker
+	{ id = 50193, chance = 220 }, -- Jade Conical Hat
+	{ id = 8050, chance = 340 }, -- Crystalline Armor
 }
 
 monster.attacks = {

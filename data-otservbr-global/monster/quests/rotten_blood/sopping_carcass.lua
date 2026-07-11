@@ -70,7 +70,19 @@ monster.light = {
 	color = 0,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3043, chance = 51000 }, -- Crystal Coin
+	{ id = 5944, chance = 16100, maxCount = 3 }, -- Soul Orb
+	{ id = 43846, chance = 8600 }, -- Decayed Finger Bone
+	{ id = 43782, chance = 8300 }, -- Lichen Gobbler
+	{ id = 3037, chance = 5400 }, -- Yellow Gem
+	{ id = 43849, chance = 5400 }, -- Rotten Roots
+	{ id = 3039, chance = 4800 }, -- Red Gem
+	{ id = 23373, chance = 4200, maxCount = 3 }, -- Ultimate Mana Potion
+	{ id = 8082, chance = 3000 }, -- Underworld Rod
+	{ id = 5741, chance = 2400 }, -- Skull Helmet
+	{ id = 3346, chance = 2100 }, -- Ripper Lance
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1100 },

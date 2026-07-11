@@ -75,15 +75,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 28569, chance = 10000, maxCount = 5 }, -- book page
-	{ id = 28570, chance = 10000, maxCount = 5 }, -- glowing rune
-	{ name = "small amethyst", chance = 10000, maxCount = 5 },
-	{ name = "flash arrow", chance = 10000, maxCount = 5 },
-	{ name = "lightning legs", chance = 250 },
-	{ name = "spellbook of warding", chance = 350 },
-	{ name = "ultimate health potion", chance = 10000, maxCount = 5 },
-	{ name = "ultimate mana potion", chance = 10000, maxCount = 5 },
-	{ name = "wand of starstorm", chance = 300 },
+	{ id = 28569, chance = 57000, maxCount = 4 }, -- Book Page
+	{ id = 3033, chance = 52000, maxCount = 10 }, -- Small Amethyst
+	{ id = 28570, chance = 17400, maxCount = 4 }, -- Glowing Rune
+	{ id = 7643, chance = 10900 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 6500 }, -- Ultimate Mana Potion
+	{ id = 8073, chance = 6500 }, -- Spellbook of Warding
+	{ id = 816, chance = 6500 }, -- Lightning Pendant
+	{ id = 822, chance = 6500 }, -- Lightning Legs
+	{ id = 761, chance = 6500, maxCount = 14 }, -- Flash Arrow
+	{ id = 3055, chance = 2200 }, -- Platinum Amulet
+	{ id = 3048, chance = 2200 }, -- Might Ring
+	{ id = 10438, chance = 2200 }, -- Spellweaver's Robe
+	{ id = 8092, chance = 6990 }, -- Wand of Starstorm
+	{ id = 16096, chance = 1290 }, -- Wand of Defiance
+	{ id = 9304, chance = 770 }, -- Shockwave Amulet
 }
 
 monster.attacks = {

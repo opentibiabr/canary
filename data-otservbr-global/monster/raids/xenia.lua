@@ -71,10 +71,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3114, chance = 100000, maxCount = 2 }, -- skull
-	{ name = "gold coin", chance = 66666, maxCount = 34 },
-	{ name = "sabre", chance = 33000 },
-	{ name = "studded shield", chance = 33000 },
+	{ id = 3114, chance = 87000, maxCount = 2 }, -- Skull (Item)
+	{ id = 3031, chance = 60000, maxCount = 40 }, -- Gold Coin
+	{ id = 3273, chance = 47000 }, -- Sabre
+	{ id = 3008, chance = 6700 }, -- Crystal Necklace
+	{ id = 3426, chance = 6700 }, -- Studded Shield
 }
 
 monster.attacks = {

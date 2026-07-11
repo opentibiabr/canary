@@ -73,12 +73,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "ham", chance = 20120 },
-	{ id = 3012, chance = 2000 }, -- wolf tooth chain
-	{ name = "gold coin", chance = 65000, maxCount = 48 },
-	{ name = "meat", chance = 55000, maxCount = 2 },
-	{ name = "wolf paw", chance = 980 },
-	{ id = 22007, chance = 8000 }, --gloom wolf fur
+	{ id = 3031, chance = 67000, maxCount = 15 }, -- Gold Coin
+	{ id = 3582, chance = 41000 }, -- Ham
+	{ id = 3577, chance = 39000 }, -- Meat
+	{ id = 22007, chance = 7800 }, -- Gloom Wolf Fur
+	{ id = 3012, chance = 6900 }, -- Wolf Tooth Chain
+	{ id = 5897, chance = 3300 }, -- Wolf Paw
 }
 
 monster.attacks = {

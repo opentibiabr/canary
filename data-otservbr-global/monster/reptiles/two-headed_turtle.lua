@@ -65,27 +65,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 8 },
-	{ name = "great health potion", chance = 15701 },
-	{ name = "two-headed turtle heads", chance = 8700 },
-	{ name = "strong mana potion", chance = 13373 },
-	{ name = "hydrophytes", chance = 11000 },
-	{ id = 3115, chance = 6388 }, -- bone
-	{ name = "glacier shoes", chance = 4650 },
-	{ id = 281, chance = 3582 }, -- giant shimmering pearl (green)
-	{ name = "small tropical fish", chance = 3582 },
-	{ name = "coral brooch", chance = 2600 },
-	{ name = "silver brooch", chance = 2507 },
-	{ name = "lightning headband", chance = 2110 },
-	{ name = "knight legs", chance = 2000 },
-	{ name = "gemmed figurine", chance = 2090 },
-	{ name = "emerald bangle", chance = 1373 },
-	{ name = "terra amulet", chance = 1373 },
-	{ id = 3040, chance = 1313 }, -- "gold nugget"
-	{ name = "spellbook of enlightenment", chance = 1300 },
-	{ id = 3565, chance = 1015 }, -- "cape"
-	{ id = 10422, chance = 657 }, -- "clay lump"
-	{ name = "white gem", chance = 418 },
+	{ id = 3035, chance = 100000, maxCount = 27 }, -- Platinum Coin
+	{ id = 239, chance = 15200 }, -- Great Health Potion
+	{ id = 237, chance = 11300 }, -- Strong Mana Potion
+	{ id = 39410, chance = 9300 }, -- Hydrophytes
+	{ id = 39409, chance = 8100 }, -- Two-Headed Turtle Heads
+	{ id = 3115, chance = 5900 }, -- Bone
+	{ id = 281, chance = 3400 }, -- Giant Shimmering Pearl (Green)
+	{ id = 819, chance = 3400 }, -- Glacier Shoes
+	{ id = 39408, chance = 3200 }, -- Small Tropical Fish
+	{ id = 24391, chance = 2300 }, -- Coral Brooch
+	{ id = 3017, chance = 2000 }, -- Silver Brooch
+	{ id = 828, chance = 2000 }, -- Lightning Headband
+	{ id = 3371, chance = 1900 }, -- Knight Legs
+	{ id = 24392, chance = 1400 }, -- Gemmed Figurine
+	{ id = 3565, chance = 1100 }, -- Cape
+	{ id = 814, chance = 1000 }, -- Terra Amulet
+	{ id = 3010, chance = 1000 }, -- Emerald Bangle
+	{ id = 3040, chance = 640 }, -- Gold Nugget
+	{ id = 8072, chance = 570 }, -- Spellbook of Enlightenment
+	{ id = 10422, chance = 460 }, -- Clay Lump
+	{ id = 5899, chance = 210 }, -- Turtle Shell
+	{ id = 32769, chance = 180 }, -- White Gem
 }
 
 monster.attacks = {

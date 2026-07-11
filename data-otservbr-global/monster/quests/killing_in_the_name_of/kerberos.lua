@@ -63,21 +63,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, maxCount = 18 }, -- platinum coin
-	{ id = 3027, chance = 96880, maxCount = 5 }, -- black pearl
-	{ id = 6558, chance = 100000 }, -- flask of demonic blood
-	{ id = 6499, chance = 62500 }, -- demonic essence
-	{ id = 9058, chance = 100000, maxCount = 5 }, -- gold ingot
-	{ id = 3318, chance = 10810 }, -- knight axe
-	{ id = 6553, chance = 6250 }, -- ruthless axe
-	{ id = 9637, chance = 100000 }, -- hellhound slobber
-	{ id = 3038, chance = 50000 }, -- green gem
-	{ id = 3280, chance = 46880 }, -- fire sword
-	{ id = 4871, chance = 65630 }, -- explorer brooch
-	{ id = 817, chance = 96880 }, -- magma amulet
-	{ id = 238, chance = 96880, maxCount = 3 }, -- great mana potion
-	{ id = 7453, chance = 3130 }, -- executioner
-	{ id = 3360, chance = 31250 }, -- golden armor
+	{ id = 6558, chance = 100000 }, -- Flask of Demonic Blood
+	{ id = 9637, chance = 100000 }, -- Hellhound Slobber
+	{ id = 3035, chance = 100000, maxCount = 19 }, -- Platinum Coin
+	{ id = 9058, chance = 100000, maxCount = 5 }, -- Gold Ingot
+	{ id = 238, chance = 98000, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3027, chance = 98000, maxCount = 5 }, -- Black Pearl
+	{ id = 817, chance = 98000 }, -- Magma Amulet
+	{ id = 3318, chance = 72000 }, -- Knight Axe
+	{ id = 6499, chance = 67000 }, -- Demonic Essence
+	{ id = 4871, chance = 65000 }, -- Explorer Brooch
+	{ id = 3280, chance = 51000 }, -- Fire Sword
+	{ id = 3038, chance = 47000 }, -- Green Gem
+	{ id = 3360, chance = 28000 }, -- Golden Armor
+	{ id = 6553, chance = 7000 }, -- Ruthless Axe
+	{ id = 7453, chance = 2300 }, -- Executioner
 }
 
 monster.attacks = {

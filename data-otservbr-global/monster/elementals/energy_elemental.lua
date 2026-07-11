@@ -76,20 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3007, chance = 2000 }, -- crystal ring
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 70 },
-	{ name = "small amethyst", chance = 5000, maxCount = 2 },
-	{ id = 3051, chance = 892 }, -- energy ring
-	{ name = "silver amulet", chance = 1020 },
-	{ name = "wand of cosmic energy", chance = 636 },
-	{ name = "throwing star", chance = 9900, maxCount = 5 },
-	{ name = "obsidian lance", chance = 3571 },
-	{ name = "guardian shield", chance = 243 },
-	{ name = "crystal sword", chance = 5882 },
-	{ name = "strong mana potion", chance = 7692 },
-	{ name = "mana potion", chance = 11711 },
-	{ id = 761, chance = 10000, maxCount = 10 }, -- flash arrow
+	{ id = 3031, chance = 98000, maxCount = 169 }, -- Gold Coin
+	{ id = 268, chance = 13700 }, -- Mana Potion
+	{ id = 3287, chance = 10600, maxCount = 5 }, -- Throwing Star
+	{ id = 761, chance = 10600, maxCount = 10 }, -- Flash Arrow
+	{ id = 237, chance = 7900 }, -- Strong Mana Potion
+	{ id = 7449, chance = 6300 }, -- Crystal Sword
+	{ id = 3033, chance = 5300, maxCount = 2 }, -- Small Amethyst
+	{ id = 3313, chance = 4100 }, -- Obsidian Lance
+	{ id = 3048, chance = 3300 }, -- Might Ring
+	{ id = 3007, chance = 2200 }, -- Crystal Ring
+	{ id = 3051, chance = 1000 }, -- Energy Ring
+	{ id = 3054, chance = 780 }, -- Silver Amulet
+	{ id = 3073, chance = 780 }, -- Wand of Cosmic Energy
+	{ id = 3415, chance = 60 }, -- Guardian Shield
 }
 
 monster.attacks = {

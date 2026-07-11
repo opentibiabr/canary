@@ -76,23 +76,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "piggy bank", chance = 150 },
-	{ name = "gold coin", chance = 50000, maxCount = 88 },
-	{ name = "sabre", chance = 10000 },
-	{ name = "throwing star", chance = 8400, maxCount = 12 },
-	{ name = "dark armor", chance = 1650 },
-	{ name = "dark shield", chance = 1000 },
-	{ name = "pirate boots", chance = 220 },
-	{ name = "rum flask", chance = 130 },
-	{ id = 5813, chance = 130 }, -- skull candle
-	{ name = "pirate backpack", chance = 930 },
-	{ name = "pirate hat", chance = 1150 },
-	{ name = "hook", chance = 600 },
-	{ name = "eye patch", chance = 500 },
-	{ name = "peg leg", chance = 600 },
-	{ name = "strong health potion", chance = 820 },
-	{ name = "compass", chance = 11050 },
-	{ name = "compass", chance = 11020 },
+	{ id = 3031, chance = 55000, maxCount = 86 }, -- Gold Coin
+	{ id = 10302, chance = 10100 }, -- Compass
+	{ id = 3273, chance = 9900 }, -- Sabre
+	{ id = 3287, chance = 7900, maxCount = 12 }, -- Throwing Star
+	{ id = 3383, chance = 2000 }, -- Dark Armor
+	{ id = 6096, chance = 1100 }, -- Pirate Hat
+	{ id = 3421, chance = 1100 }, -- Dark Shield
+	{ id = 5926, chance = 1000 }, -- Pirate Backpack
+	{ id = 236, chance = 820 }, -- Strong Health Potion
+	{ id = 6097, chance = 550 }, -- Hook
+	{ id = 6126, chance = 550 }, -- Peg Leg
+	{ id = 6098, chance = 480 }, -- Eye Patch
+	{ id = 5461, chance = 310 }, -- Pirate Boots
+	{ id = 5552, chance = 130 }, -- Rum Flask
+	{ id = 5812, chance = 110 }, -- Skull Candle
+	{ id = 2995, chance = 88 }, -- Piggy Bank
 }
 
 monster.attacks = {

@@ -67,11 +67,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 99990, maxCount = 76 },
-	{ name = "strong health potion", chance = 50000 },
-	{ name = "small diamond", chance = 50000, maxCount = 3 },
-	{ name = "black pearl", chance = 16670 },
-	{ name = "spider silk", chance = 16670 },
+	{ id = 3031, chance = 100000, maxCount = 82 }, -- Gold Coin
+	{ id = 236, chance = 43000 }, -- Strong Health Potion
+	{ id = 3028, chance = 29000, maxCount = 3 }, -- Small Diamond
+	{ id = 3027, chance = 29000 }, -- Black Pearl
+	{ id = 3035, chance = 7100 }, -- Platinum Coin
+	{ id = 5879, chance = 7100 }, -- Spider Silk
 }
 
 monster.attacks = {

@@ -72,24 +72,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "fairy wings", chance = 100000 },
-	{ name = "gold coin", chance = 100000, maxCount = 365 },
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "strong health potion", chance = 91460, maxCount = 2 },
-	{ name = "great health potion", chance = 76330, maxCount = 3 },
-	{ name = "small enchanted amethyst", chance = 53560, maxCount = 5 },
-	{ name = "ancient coin", chance = 46980, maxCount = 3 },
-	{ name = "gemmed figurine", chance = 32030 },
-	{ name = "small enchanted emerald", chance = 11003, maxCount = 5 },
-	{ name = "small enchanted ruby", chance = 2000 },
-	{ name = "silver token", chance = 10140 },
-	{ name = "cluster of solace", chance = 19960 },
-	{ name = "red crystal fragment", chance = 9960 },
-	{ name = "small enchanted sapphire", chance = 8900 },
-	{ name = "assassin star", chance = 8540 },
-	{ name = "gold token", chance = 6580 },
-	{ name = "gold ingot", chance = 6410 },
-	{ name = "nightmare blade", chance = 3020 },
+	{ id = 3031, chance = 100000, maxCount = 348 }, -- Gold Coin
+	{ id = 16126, chance = 100000, maxCount = 3 }, -- Red Crystal Fragment
+	{ id = 3035, chance = 100000, maxCount = 7 }, -- Platinum Coin
+	{ id = 25694, chance = 100000, maxCount = 3 }, -- Fairy Wings
+	{ id = 236, chance = 91000, maxCount = 2 }, -- Strong Health Potion
+	{ id = 239, chance = 74000, maxCount = 3 }, -- Great Health Potion
+	{ id = 24390, chance = 53000, maxCount = 3 }, -- Ancient Coin
+	{ id = 48239, chance = 47000 }, -- Matcha Turtle
+	{ id = 48278, chance = 47000 }, -- Tattered Piece of Paper
+	{ id = 24392, chance = 33000 }, -- Gemmed Figurine
+	{ id = 676, chance = 28000, maxCount = 5 }, -- Small Enchanted Ruby
+	{ id = 677, chance = 25000, maxCount = 5 }, -- Small Enchanted Emerald
+	{ id = 678, chance = 25000, maxCount = 5 }, -- Small Enchanted Amethyst
+	{ id = 675, chance = 23000, maxCount = 5 }, -- Small Enchanted Sapphire
+	{ id = 22516, chance = 9600 }, -- Silver Token
+	{ id = 20062, chance = 8100 }, -- Cluster of Solace
+	{ id = 9058, chance = 8100 }, -- Gold Ingot
+	{ id = 7368, chance = 6000, maxCount = 8 }, -- Assassin Star
+	{ id = 22721, chance = 4900 }, -- Gold Token
+	{ id = 7418, chance = 3500 }, -- Nightmare Blade
 }
 
 monster.attacks = {

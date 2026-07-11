@@ -77,22 +77,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 75 },
-	{ name = "platinum coin", chance = 100000, maxCount = 4 },
-	{ name = "brown crystal splinter", chance = 15500 },
-	{ name = "green crystal splinter", chance = 15060 },
-	{ name = "small enchanted sapphire", chance = 10100 },
-	{ name = "plate shield", chance = 8720 },
-	{ name = "onyx chip", chance = 8060, maxCount = 2 },
-	{ name = "opal", chance = 7260 },
-	{ name = "small emerald", chance = 6820 },
-	{ name = "war hammer", chance = 5620 },
-	{ name = "strong health potion", chance = 5180, maxCount = 2 },
-	{ name = "small ruby", chance = 4300, maxCount = 2 },
-	{ name = "rotten feather", chance = 2170 },
-	{ name = "ritual tooth", chance = 1330 },
-	{ name = "gold-brocaded cloth", chance = 890 },
-	{ name = "broken iks sandals", chance = 40 },
+	{ id = 3031, chance = 100000, maxCount = 110 }, -- Gold Coin
+	{ id = 3035, chance = 42000, maxCount = 5 }, -- Platinum Coin
+	{ id = 16122, chance = 15300 }, -- Green Crystal Splinter
+	{ id = 16123, chance = 14300 }, -- Brown Crystal Splinter
+	{ id = 675, chance = 11700 }, -- Small Enchanted Sapphire
+	{ id = 3410, chance = 8900 }, -- Plate Shield
+	{ id = 3032, chance = 7700 }, -- Small Emerald
+	{ id = 22193, chance = 7600, maxCount = 2 }, -- Onyx Chip
+	{ id = 22194, chance = 6500 }, -- Opal
+	{ id = 3279, chance = 4900 }, -- War Hammer
+	{ id = 236, chance = 4600, maxCount = 2 }, -- Strong Health Potion
+	{ id = 3030, chance = 4300, maxCount = 2 }, -- Small Ruby
+	{ id = 40527, chance = 1800 }, -- Rotten Feather
+	{ id = 40528, chance = 1500 }, -- Ritual Tooth
+	{ id = 40529, chance = 1000 }, -- Gold-Brocaded Cloth
+	{ id = 3081, chance = 520 }, -- Stone Skin Amulet
+	{ id = 40533, chance = 50 }, -- Broken Iks Cuirass
+	{ id = 40531, chance = 50 }, -- Broken Iks Faulds
+	{ id = 40534, chance = 40 }, -- Broken Iks Sandals
 }
 
 monster.attacks = {

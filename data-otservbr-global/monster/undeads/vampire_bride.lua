@@ -81,22 +81,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 1100 },
-	{ name = "small diamond", chance = 1020, maxCount = 2 },
-	{ name = "gold coin", chance = 90000, maxCount = 149 },
-	{ name = "platinum coin", chance = 9910 },
-	{ name = "moonlight rod", chance = 5500 },
-	{ name = "boots of haste", chance = 220 },
-	{ name = "strong health potion", chance = 5000 },
-	{ name = "strong mana potion", chance = 10210 },
-	{ id = 649, chance = 200 }, -- flower bouquet
-	{ name = "hibiscus dress", chance = 1030 },
-	{ name = "blood goblet", chance = 60 },
-	{ id = 8895, chance = 1010 }, -- rusted armor
-	{ id = 8923, chance = 970 }, -- velvet tapestry
-	{ name = "vampire teeth", chance = 10000 },
-	{ name = "blood preservation", chance = 4950 },
-	{ name = "leather whip", chance = 20 },
+	{ id = 3031, chance = 93000, maxCount = 147 }, -- Gold Coin
+	{ id = 237, chance = 10000 }, -- Strong Mana Potion
+	{ id = 9685, chance = 10000 }, -- Vampire Teeth
+	{ id = 3035, chance = 9800 }, -- Platinum Coin
+	{ id = 11449, chance = 5300 }, -- Blood Preservation
+	{ id = 3070, chance = 5300 }, -- Moonlight Rod
+	{ id = 236, chance = 4600 }, -- Strong Health Potion
+	{ id = 8895, chance = 1200 }, -- Rusted Armor
+	{ id = 3010, chance = 1200 }, -- Emerald Bangle
+	{ id = 8045, chance = 970 }, -- Hibiscus Dress
+	{ id = 8923, chance = 890 }, -- Velvet Tapestry
+	{ id = 3028, chance = 800, maxCount = 2 }, -- Small Diamond
+	{ id = 3079, chance = 290 }, -- Boots of Haste
+	{ id = 649, chance = 200 }, -- Flower Bouquet
+	{ id = 3081, chance = 140 }, -- Stone Skin Amulet
+	{ id = 8531, chance = 120 }, -- Blood Goblet
+	{ id = 5668, chance = 77 }, -- Mysterious Voodoo Skull
+	{ id = 12306, chance = 15 }, -- Leather Whip
 }
 
 monster.attacks = {

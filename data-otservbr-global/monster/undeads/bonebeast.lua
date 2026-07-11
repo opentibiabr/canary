@@ -76,17 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ id = 3114, chance = 20000 }, -- skull
-	{ id = 3115, chance = 47750 }, -- bone
-	{ name = "bone club", chance = 4950 },
-	{ name = "plate armor", chance = 8000 },
-	{ name = "bone shield", chance = 2000 },
-	{ name = "green mushroom", chance = 1350 },
-	{ name = "hardened bone", chance = 960 },
-	{ name = "health potion", chance = 540 },
-	{ name = "bonebeast trophy", chance = 120 },
-	{ name = "bony tail", chance = 9780 },
+	{ id = 3115, chance = 50000 }, -- Bone
+	{ id = 3031, chance = 29000, maxCount = 90 }, -- Gold Coin
+	{ id = 3114, chance = 19900 }, -- Skull (Item)
+	{ id = 10277, chance = 10000 }, -- Bony Tail
+	{ id = 3357, chance = 8200 }, -- Plate Armor
+	{ id = 3337, chance = 5000 }, -- Bone Club
+	{ id = 3441, chance = 2300 }, -- Bone Shield
+	{ id = 3732, chance = 1500 }, -- Green Mushroom
+	{ id = 5925, chance = 1200 }, -- Hardened Bone
+	{ id = 266, chance = 380 }, -- Health Potion
+	{ id = 10244, chance = 100 }, -- Bonebeast Trophy
+	{ id = 3081, chance = 100 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

@@ -76,10 +76,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 92000, maxCount = 155 },
-	{ id = 3049, chance = 560 }, -- stealth ring
-	{ name = "throwing star", chance = 28000, maxCount = 10 },
-	{ name = "frosty ear of a troll", chance = 5120 },
+	{ id = 3031, chance = 94000, maxCount = 156 }, -- Gold Coin
+	{ id = 3287, chance = 29000, maxCount = 10 }, -- Throwing Star
+	{ id = 9648, chance = 4500 }, -- Frosty Ear of a Troll
+	{ id = 3049, chance = 340 }, -- Stealth Ring
 }
 
 monster.attacks = {

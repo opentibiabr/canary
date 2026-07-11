@@ -73,42 +73,49 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 329 },
-	{ name = "platinum coin", chance = 100000, maxCount = 35 },
-	{ id = 3100, chance = 100000 }, -- ring of healing
-	{ name = "wand of starstorm", chance = 100000 },
-	{ name = "mastermind potion", chance = 100000 },
-	{ name = "violet crystal shard", chance = 71790, maxCount = 5 },
-	{ name = "blue crystal shard", chance = 69230, maxCount = 5 },
-	{ name = "great spirit potion", chance = 61540, maxCount = 10 },
-	{ name = "ultimate health potion", chance = 56410, maxCount = 10 },
-	{ name = "green crystal shard", chance = 56410, maxCount = 5 },
-	{ name = "great mana potion", chance = 46150, maxCount = 10 },
-	{ name = "luminous orb", chance = 41030 },
-	{ id = 23542, chance = 38460 }, -- collar of blue plasma
-	{ name = "gold token", chance = 30770 },
-	{ id = 282, chance = 30770 }, -- giant shimmering pearl
-	{ name = "rusted armor", chance = 28210 },
-	{ id = 3039, chance = 28210 }, -- red gem
-	{ name = "small emerald", chance = 25640, maxCount = 10 },
-	{ name = "small amethyst", chance = 25640, maxCount = 12 },
-	{ name = "silver token", chance = 25640 },
-	{ name = "small topaz", chance = 20510, maxCount = 10 },
-	{ name = "small ruby", chance = 17950, maxCount = 18 },
-	{ name = "spellbook of warding", chance = 15380 },
-	{ name = "yellow gem", chance = 12820 },
-	{ name = "small diamond", chance = 10260, maxCount = 10 },
-	{ name = "white piece of cloth", chance = 10260, maxCount = 3 },
-	{ name = "piece of hell steel", chance = 10260, maxCount = 3 },
-	{ name = "blue gem", chance = 10260 },
-	{ name = "green gem", chance = 10260 },
-	{ name = "lightning legs", chance = 7690 },
-	{ name = "violet gem", chance = 7690 },
-	{ name = "spellweaver's robe", chance = 5130 },
-	{ name = "demon helmet", chance = 5130 },
-	{ name = "boots of haste", chance = 2560 },
-	{ id = 24959, chance = 500, unique = true }, -- part of a rune
-	{ name = "pillow backpack", chance = 256 },
+	{ id = 3031, chance = 100000, maxCount = 370 }, -- Gold Coin
+	{ id = 8092, chance = 100000 }, -- Wand of Starstorm
+	{ id = 3035, chance = 100000, maxCount = 38 }, -- Platinum Coin
+	{ id = 3098, chance = 100000 }, -- Ring of Healing
+	{ id = 7440, chance = 100000 }, -- Mastermind Potion
+	{ id = 16121, chance = 73000, maxCount = 5 }, -- Green Crystal Shard
+	{ id = 7642, chance = 65000, maxCount = 14 }, -- Great Spirit Potion
+	{ id = 16120, chance = 65000, maxCount = 5 }, -- Violet Crystal Shard
+	{ id = 16119, chance = 60000, maxCount = 5 }, -- Blue Crystal Shard
+	{ id = 238, chance = 55000, maxCount = 13 }, -- Great Mana Potion
+	{ id = 7643, chance = 49000, maxCount = 12 }, -- Ultimate Health Potion
+	{ id = 23526, chance = 40000 }, -- Collar of Blue Plasma
+	{ id = 11454, chance = 34000 }, -- Luminous Orb
+	{ id = 8895, chance = 33000 }, -- Rusted Armor
+	{ id = 22721, chance = 28000 }, -- Gold Token
+	{ id = 9057, chance = 25000, maxCount = 19 }, -- Small Topaz
+	{ id = 3038, chance = 24000 }, -- Green Gem
+	{ id = 3032, chance = 24000, maxCount = 19 }, -- Small Emerald
+	{ id = 3041, chance = 21000 }, -- Blue Gem
+	{ id = 22516, chance = 19600 }, -- Silver Token
+	{ id = 3028, chance = 18500, maxCount = 18 }, -- Small Diamond
+	{ id = 3037, chance = 17400 }, -- Yellow Gem
+	{ id = 3030, chance = 17400, maxCount = 19 }, -- Small Ruby
+	{ id = 8073, chance = 16300 }, -- Spellbook of Warding
+	{ id = 3039, chance = 16300 }, -- Red Gem
+	{ id = 281, chance = 16300 }, -- Giant Shimmering Pearl
+	{ id = 5909, chance = 15200, maxCount = 5 }, -- White Piece of Cloth
+	{ id = 5888, chance = 14100, maxCount = 3 }, -- Piece of Hell Steel
+	{ id = 3033, chance = 14100, maxCount = 19 }, -- Small Amethyst
+	{ id = 10438, chance = 10900 }, -- Spellweaver's Robe
+	{ id = 24393, chance = 8700 }, -- Pillow Backpack
+	{ id = 24959, chance = 3700 }, -- Part of a Rune (Six)
+	{ id = 3036, chance = 4300 }, -- Violet Gem
+	{ id = 5904, chance = 4300 }, -- Magic Sulphur
+	{ id = 822, chance = 4300 }, -- Lightning Legs
+	{ id = 3387, chance = 3300 }, -- Demon Helmet
+	{ id = 3079, chance = 3300 }, -- Boots of Haste
+	{ id = 5891, chance = 1100 }, -- Enchanted Chicken Wing
+	{ id = 24954, chance = 3700 }, -- Part of a Rune (One)
+	{ id = 24955, chance = 3700 }, -- Part of a Rune (Two)
+	{ id = 24956, chance = 3700 }, -- Part of a Rune (Three)
+	{ id = 24957, chance = 3700 }, -- Part of a Rune (Four)
+	{ id = 24958, chance = 3700 }, -- Part of a Rune (Five)
 }
 
 monster.attacks = {

@@ -77,30 +77,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "gold coin", chance = 13600000, maxCount = 100 },
-	{ name = "platinum coin", chance = 13600000, maxCount = 10 },
-	{ name = "assassin star", chance = 13600000, maxCount = 9 },
-	{ name = "black pearl", chance = 13600000, maxCount = 2 },
-	{ name = "great mana potion", chance = 13600000, maxCount = 2 },
-	{ name = "great spirit potion", chance = 13600000, maxCount = 2 },
-	{ name = "small enchanted emerald", chance = 13600000, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 13600000, maxCount = 2 },
-	{ name = "ultimate spirit potion", chance = 13600000, maxCount = 2 },
-	{ name = "fox paw", chance = 13600000, maxCount = 2 },
-	{ name = "moonlight rod", chance = 13600000 },
-	{ id = 3049, chance = 13600000 }, -- stealth ring
-	{ name = "werefox tail", chance = 13600000 },
-	{ name = "green gem", chance = 400 },
-	{ name = "troll green", chance = 400 },
-	{ name = "werewolf amulet", chance = 400 },
-	{ name = "composite hornbow", chance = 250 },
-	{ name = "traditional sai", chance = 250 },
-	{ name = "silver token", chance = 250 },
-	{ id = 27706, chance = 250 }, -- werefox trophy
-	{ name = "foxtail", chance = 100 },
-	{ name = "wolf backpack", chance = 100 },
-	{ name = "silver token", chance = 100 },
+	{ id = 7368, chance = 100000, maxCount = 8 }, -- Assassin Star
+	{ id = 27463, chance = 100000 }, -- Werefox Tail
+	{ id = 677, chance = 100000 }, -- Small Enchanted Emerald
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 238, chance = 100000, maxCount = 2 }, -- Great Mana Potion
+	{ id = 27462, chance = 100000 }, -- Fox Paw
+	{ id = 3031, chance = 50000, maxCount = 21 }, -- Gold Coin
+	{ id = 50183, chance = 50000 }, -- Sai
+	{ id = 3027, chance = 44790, maxCount = 2 }, -- Black Pearl
+	{ id = 7642, chance = 40000, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 23374, chance = 14650, maxCount = 2 }, -- Ultimate Spirit Potion
+	{ id = 3049, chance = 9440 }, -- Stealth Ring
+	{ id = 10389, chance = 2530 }, -- Traditional Sai
+	{ id = 3038, chance = 20140 }, -- Green Gem
+	{ id = 23373, chance = 13940, maxCount = 2 }, -- Ultimate Mana Potion
+	{ id = 27706, chance = 5770 }, -- Werefox Trophy
+	{ id = 3070, chance = 7320 }, -- Moonlight Rod
+	{ id = 22083, chance = 3100 }, -- Moonlight Crystals
+	{ id = 3741, chance = 5490 }, -- Troll Green
+	{ id = 22060, chance = 2960 }, -- Werewolf Amulet
+	{ id = 8027, chance = 850 }, -- Composite Hornbow
+	{ id = 22516, chance = 2110 }, -- Silver Token
+	{ id = 14142, chance = 140 }, -- Foxtail
+	{ id = 22084, chance = 140 }, -- Wolf Backpack
+	{ id = 3055, chance = 280 }, -- Platinum Amulet
 }
 
 monster.attacks = {

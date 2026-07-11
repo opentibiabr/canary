@@ -82,25 +82,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 14615, maxCount = 115 },
-	{ name = "ultimate spirit potion", chance = 7169, maxCount = 153 },
-	{ name = "mastermind potion", chance = 14651, maxCount = 45 },
-	{ name = "yellow gem", chance = 9243, maxCount = 5 },
-	{ name = "amber with a bug", chance = 7224, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 13137, maxCount = 179 },
-	{ name = "violet gem", chance = 14447, maxCount = 4 },
-	{ name = "raw watermelon tourmaline", chance = 6788, maxCount = 2 },
-	{ id = 3039, chance = 9047, maxCount = 1 }, -- red gem
-	{ name = "supreme health potion", chance = 14635, maxCount = 37 },
-	{ name = "berserk potion", chance = 14973, maxCount = 45 },
-	{ name = "amber with a dragonfly", chance = 6470, maxCount = 1 },
-	{ name = "gold ingot", chance = 11421, maxCount = 1 },
-	{ name = "blue gem", chance = 8394, maxCount = 1 },
-	{ name = "bullseye potion", chance = 13783, maxCount = 36 },
-	{ name = "putrefactive figurine", chance = 11416, maxCount = 1 },
-	{ name = "ichgahal's fungal infestation", chance = 7902, maxCount = 1 },
-	{ name = "white gem", chance = 13559, maxCount = 3 },
-	{ id = 43895, chance = 360 }, -- Bag you covet
+	{ id = 3043, chance = 100000, maxCount = 96 }, -- Crystal Coin
+	{ id = 23375, chance = 63000, maxCount = 163 }, -- Supreme Health Potion
+	{ id = 23374, chance = 56000, maxCount = 146 }, -- Ultimate Spirit Potion
+	{ id = 32625, chance = 52000, maxCount = 2 }, -- Amber with a Dragonfly
+	{ id = 23373, chance = 52000, maxCount = 173 }, -- Ultimate Mana Potion
+	{ id = 3039, chance = 48000, maxCount = 5 }, -- Red Gem
+	{ id = 33778, chance = 37000, maxCount = 2 }, -- Raw Watermelon Tourmaline
+	{ id = 3038, chance = 33000, maxCount = 4 }, -- Green Gem
+	{ id = 3037, chance = 30000, maxCount = 5 }, -- Yellow Gem
+	{ id = 3041, chance = 30000, maxCount = 4 }, -- Blue Gem
+	{ id = 49271, chance = 30000, maxCount = 44 }, -- Transcendence Potion
+	{ id = 7439, chance = 30000, maxCount = 37 }, -- Berserk Potion
+	{ id = 7443, chance = 22000, maxCount = 46 }, -- Bullseye Potion
+	{ id = 7440, chance = 18500, maxCount = 34 }, -- Mastermind Potion
+	{ id = 9058, chance = 18500 }, -- Gold Ingot
+	{ id = 3036, chance = 11100, maxCount = 4 }, -- Violet Gem
+	{ id = 43502, chance = 11100 }, -- The Essence of Ichgahal
+	{ id = 32624, chance = 11100, maxCount = 2 }, -- Amber with a Bug
+	{ id = 30053, chance = 7400 }, -- Dragon Figurine
+	{ id = 32769, chance = 7400, maxCount = 3 }, -- White Gem
+	{ id = 43962, chance = 3700 }, -- Putrefactive Figurine
 }
 
 monster.attacks = {

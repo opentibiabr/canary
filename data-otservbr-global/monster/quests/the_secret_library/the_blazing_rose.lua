@@ -68,7 +68,36 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3031, chance = 100000, maxCount = 378 }, -- Gold Coin
+	{ id = 28495, chance = 100000 }, -- Perfume Flacon
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 21975, chance = 100000 }, -- Peacock Feather Fan
+	{ id = 21974, chance = 100000 }, -- Golden Lotus Brooch
+	{ id = 7368, chance = 54000, maxCount = 15 }, -- Assassin Star
+	{ id = 6558, chance = 40000 }, -- Flask of Demonic Blood
+	{ id = 6499, chance = 31000 }, -- Demonic Essence
+	{ id = 3033, chance = 26000, maxCount = 3 }, -- Small Amethyst
+	{ id = 5944, chance = 24000 }, -- Soul Orb
+	{ id = 238, chance = 16100, maxCount = 5 }, -- Great Mana Potion
+	{ id = 7642, chance = 14500, maxCount = 5 }, -- Great Spirit Potion
+	{ id = 3039, chance = 14500 }, -- Red Gem
+	{ id = 7643, chance = 11300, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 3070, chance = 11300 }, -- Moonlight Rod
+	{ id = 3007, chance = 8100 }, -- Crystal Ring
+	{ id = 9058, chance = 6500, maxCount = 3 }, -- Gold Ingot
+	{ id = 8082, chance = 5600 }, -- Underworld Rod
+	{ id = 3069, chance = 4800 }, -- Necrotic Rod
+	{ id = 25759, chance = 4000, maxCount = 4 }, -- Royal Star
+	{ id = 6299, chance = 3200 }, -- Death Ring
+	{ id = 22516, chance = 2400 }, -- Silver Token
+	{ id = 21981, chance = 2400 }, -- Oriental Shoes
+	{ id = 3038, chance = 2400 }, -- Green Gem
+	{ id = 826, chance = 1600 }, -- Magma Coat
+	{ id = 3036, chance = 1600 }, -- Violet Gem
+	{ id = 821, chance = 1600 }, -- Magma Legs
+	{ id = 7404, chance = 810 }, -- Assassin Dagger
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -200 },

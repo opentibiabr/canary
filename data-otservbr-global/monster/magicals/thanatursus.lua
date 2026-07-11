@@ -78,26 +78,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 17 },
-	{ name = "meat", chance = 90000, maxCount = 3 },
-	{ name = "great spirit potion", chance = 50000, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 50000 },
-	{ name = "essence of a bad dream", chance = 17000 },
-	{ name = "knight axe", chance = 14000 },
-	{ name = "mino shield", chance = 12000 },
-	{ name = "terra boots", chance = 7000 },
-	{ name = "terra hood", chance = 6400 },
-	{ name = "beastslayer axe", chance = 500 },
-	{ name = "black shield", chance = 3500 },
-	{ name = "bloody pincers", chance = 4200 },
-	{ name = "dark shield", chance = 1500 },
-	{ name = "obsidian lance", chance = 1500 },
-	{ name = "sickle", chance = 1100 },
-	{ name = "titan axe", chance = 1100 },
-	{ name = "wand of cosmic energy", chance = 400 },
-	{ name = "wand of defiance", chance = 400 },
-	{ name = "warrior's axe", chance = 400 },
-	{ name = "warrior's shield", chance = 400 },
+	{ id = 3035, chance = 100000, maxCount = 12 }, -- Platinum Coin
+	{ id = 3577, chance = 50000 }, -- Meat
+	{ id = 3582, chance = 15200 }, -- Ham
+	{ id = 10306, chance = 12700, maxCount = 6 }, -- Essence of a Bad Dream
+	{ id = 3269, chance = 12200 }, -- Halberd
+	{ id = 813, chance = 9600 }, -- Terra Boots
+	{ id = 7643, chance = 8600 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 6400, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 830, chance = 6300 }, -- Terra Hood
+	{ id = 3318, chance = 5600 }, -- Knight Axe
+	{ id = 21175, chance = 5100 }, -- Mino Shield
+	{ id = 3073, chance = 4200 }, -- Wand of Cosmic Energy
+	{ id = 3344, chance = 4100 }, -- Beastslayer Axe
+	{ id = 3421, chance = 3600 }, -- Dark Shield
+	{ id = 14042, chance = 3000 }, -- Warrior's Shield
+	{ id = 3429, chance = 2900 }, -- Black Shield
+	{ id = 3293, chance = 2800 }, -- Sickle
+	{ id = 3313, chance = 2600 }, -- Obsidian Lance
+	{ id = 9633, chance = 1900 }, -- Bloody Pincers
+	{ id = 14040, chance = 1800 }, -- Warrior's Axe
+	{ id = 7413, chance = 1600 }, -- Titan Axe
+	{ id = 16096, chance = 1600 }, -- Wand of Defiance
 }
 
 monster.attacks = {

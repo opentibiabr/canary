@@ -80,20 +80,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 14790 },
-	{ name = "terra rod", chance = 850 },
-	{ name = "serpent sword", chance = 1360 },
-	{ name = "black shield", chance = 1320 },
-	{ name = "white mushroom", chance = 7142, maxCount = 5 },
-	{ name = "blue piece of cloth", chance = 2080 },
-	{ name = "yellow piece of cloth", chance = 2160 },
-	{ name = "strong health potion", chance = 4930 },
-	{ name = "strong mana potion", chance = 5250 },
-	{ name = "crystalline arrow", chance = 15540, maxCount = 5 },
-	{ name = "green crystal splinter", chance = 3600 },
-	{ name = "green crystal fragment", chance = 2070 },
-	{ name = "drill bolt", chance = 15260, maxCount = 5 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 15793, chance = 18700, maxCount = 5 }, -- Crystalline Arrow
+	{ id = 16142, chance = 14400, maxCount = 5 }, -- Drill Bolt
+	{ id = 3035, chance = 11500, maxCount = 12 }, -- Platinum Coin
+	{ id = 3723, chance = 8600, maxCount = 5 }, -- White Mushroom
+	{ id = 236, chance = 6500 }, -- Strong Health Potion
+	{ id = 16122, chance = 4300 }, -- Green Crystal Splinter
+	{ id = 16127, chance = 3600 }, -- Green Crystal Fragment
+	{ id = 237, chance = 2900 }, -- Strong Mana Potion
+	{ id = 5914, chance = 1400 }, -- Yellow Piece of Cloth
+	{ id = 5912, chance = 720 }, -- Blue Piece of Cloth
+	{ id = 3429, chance = 720 }, -- Black Shield
+	{ id = 5910, chance = 720 }, -- Green Piece of Cloth
+	{ id = 3065, chance = 720 }, -- Terra Rod
+	{ id = 3297, chance = 1410 }, -- Serpent Sword
 }
 
 monster.attacks = {

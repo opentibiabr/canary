@@ -63,17 +63,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "piece of iron", chance = 10400 },
-	{ name = "great health potion", chance = 15000, maxCount = 2 },
-	{ name = "red crystal fragment", chance = 7600 },
-	{ name = "great mana potion", chance = 15000, maxCount = 3 },
-	{ name = "brown crystal splinter", chance = 16000 },
-	{ name = "banana skin", chance = 9500 },
-	{ name = "ham", chance = 6000, maxCount = 2 },
-	{ name = "violet crystal shard", chance = 3000 },
-	{ name = "gold ingot", chance = 2300 },
-	{ name = "fishbone", chance = 10000 },
+	{ id = 3031, chance = 82000, maxCount = 99 }, -- Gold Coin
+	{ id = 239, chance = 21000, maxCount = 2 }, -- Great Health Potion
+	{ id = 3111, chance = 14700 }, -- Fishbone
+	{ id = 16123, chance = 11800 }, -- Brown Crystal Splinter
+	{ id = 3116, chance = 8800 }, -- Big Bone
+	{ id = 5951, chance = 8800 }, -- Fish Tail
+	{ id = 3104, chance = 8800 }, -- Banana Skin
+	{ id = 16279, chance = 5900 }, -- Crystal Rubbish
+	{ id = 238, chance = 5900, maxCount = 2 }, -- Great Mana Potion
+	{ id = 3110, chance = 2900 }, -- Piece of Iron
+	{ id = 3582, chance = 2900 }, -- Ham
+	{ id = 3115, chance = 2900 }, -- Bone
+	{ id = 9058, chance = 2900 }, -- Gold Ingot
+	{ id = 16126, chance = 2900 }, -- Red Crystal Fragment
+	{ id = 20062, chance = 290 }, -- Cluster of Solace
+	{ id = 37530, chance = 2050 }, -- Bottle of Champagne
+	{ id = 3578, chance = 5870 }, -- Fish
+	{ id = 16120, chance = 2640 }, -- Violet Crystal Shard
+	{ id = 37468, chance = 290 }, -- Special Fx Box
 }
 
 monster.attacks = {

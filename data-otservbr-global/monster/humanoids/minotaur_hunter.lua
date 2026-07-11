@@ -79,27 +79,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3147, chance = 13600, maxCount = 2 }, -- blank rune
-	{ id = 3031, chance = 99500, maxCount = 199 }, -- gold coin
-	{ id = 3347, chance = 14880, maxCount = 5 }, -- hunting spear
-	{ id = 3035, chance = 33890, maxCount = 3 }, -- platinum coin
-	{ id = 7378, chance = 11410, maxCount = 5 }, -- royal spear
-	{ id = 236, chance = 10350, maxCount = 2 }, -- strong health potion
-	{ id = 237, chance = 10620, maxCount = 2 }, -- strong mana potion
-	{ id = 5944, chance = 7430 }, -- soul orb
-	{ id = 5878, chance = 5030 }, -- minotaur leather
-	{ id = 11472, chance = 4720, maxCount = 2 }, -- minotaur horn
-	{ id = 3030, chance = 2640, maxCount = 3 }, -- small ruby
-	{ id = 3033, chance = 2580, maxCount = 3 }, -- small amethyst
-	{ id = 3049, chance = 2220 }, -- stealth ring
-	{ id = 5912, chance = 1670 }, -- blue piece of cloth
-	{ id = 5910, chance = 1420 }, -- green piece of cloth
-	{ id = 5911, chance = 1360 }, -- red piece of cloth
-	{ id = 21175, chance = 640 }, -- mino shield
-	{ id = 3037, chance = 470 }, -- yellow gem
-	{ id = 3039, chance = 400 }, -- red gem
-	{ id = 7401, chance = 190 }, -- minotaur trophy
-	{ id = 21166, chance = 170 }, -- mooh'tah plate
+	{ id = 3031, chance = 99000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 35000, maxCount = 3 }, -- Platinum Coin
+	{ id = 3347, chance = 15000, maxCount = 5 }, -- Hunting Spear
+	{ id = 3147, chance = 15000, maxCount = 2 }, -- Blank Rune
+	{ id = 7378, chance = 11700, maxCount = 5 }, -- Royal Spear
+	{ id = 237, chance = 10100, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 236, chance = 9900, maxCount = 2 }, -- Strong Health Potion
+	{ id = 5944, chance = 7100 }, -- Soul Orb
+	{ id = 11472, chance = 5100, maxCount = 2 }, -- Minotaur Horn
+	{ id = 5878, chance = 4900 }, -- Minotaur Leather
+	{ id = 3030, chance = 2500, maxCount = 3 }, -- Small Ruby
+	{ id = 3033, chance = 2500, maxCount = 3 }, -- Small Amethyst
+	{ id = 3049, chance = 2400 }, -- Stealth Ring
+	{ id = 5910, chance = 1500 }, -- Green Piece of Cloth
+	{ id = 5912, chance = 1500 }, -- Blue Piece of Cloth
+	{ id = 5911, chance = 1500 }, -- Red Piece of Cloth
+	{ id = 21175, chance = 750 }, -- Mino Shield
+	{ id = 3037, chance = 560 }, -- Yellow Gem
+	{ id = 3039, chance = 520 }, -- Red Gem
+	{ id = 7401, chance = 160 }, -- Minotaur Trophy
+	{ id = 21166, chance = 110 }, -- Mooh'tah Plate
 }
 
 monster.attacks = {

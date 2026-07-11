@@ -83,24 +83,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "fafnar symbol", chance = 6600 },
-	{ id = 31433, chance = 5600 }, -- secret instruction
-	{ id = 31435, chance = 5600 }, -- secret instruction
-	{ id = 31436, chance = 5600 }, -- secret instruction
-	{ name = "dragon necklace", chance = 4700 },
-	{ name = "lightning pendant", chance = 4100 },
-	{ name = "magma amulet", chance = 3700 },
-	{ name = "strange talisman", chance = 3000 },
-	{ name = "magma boots", chance = 2700 },
-	{ id = 31331, chance = 2400 }, -- empty honey glass
-	{ name = "elven amulet", chance = 2100 },
-	{ name = "lightning legs", chance = 2000 },
-	{ name = "lightning headband", chance = 1700 },
-	{ name = "lightning boots", chance = 1400 },
-	{ name = "spellweaver's robe", chance = 850 },
-	{ id = 31369, chance = 570 }, -- gryphon mask
-	{ name = "sea horse figurine", chance = 140 },
+	{ id = 3035, chance = 100000, maxCount = 4 }, -- Platinum Coin
+	{ id = 31443, chance = 10300 }, -- Fafnar Symbol
+	{ id = 3085, chance = 6000 }, -- Dragon Necklace
+	{ id = 3045, chance = 5200 }, -- Strange Talisman
+	{ id = 817, chance = 4400 }, -- Magma Amulet
+	{ id = 818, chance = 4300 }, -- Magma Boots
+	{ id = 816, chance = 4200 }, -- Lightning Pendant
+	{ id = 828, chance = 4000 }, -- Lightning Headband
+	{ id = 822, chance = 3600 }, -- Lightning Legs
+	{ id = 31331, chance = 2700 }, -- Empty Honey Glass
+	{ id = 3082, chance = 2200 }, -- Elven Amulet
+	{ id = 820, chance = 1500 }, -- Lightning Boots
+	{ id = 10438, chance = 1200 }, -- Spellweaver's Robe
+	{ id = 31324, chance = 790 }, -- Golden Mask
+	{ id = 31323, chance = 620 }, -- Sea Horse Figurine
+	{ id = 31433, chance = 7600 }, -- Secret Instruction (Gryphon)
+	{ id = 31436, chance = 7600 }, -- Secret Instruction (Mirror)
+	{ id = 31435, chance = 7600 }, -- Secret Instruction (Silver)
+	{ id = 31434, chance = 7600 }, -- Secret Instruction (Ivory)
 }
 
 monster.attacks = {

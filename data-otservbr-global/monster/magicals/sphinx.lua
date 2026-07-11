@@ -76,17 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "sphinx feather", chance = 9300 },
-	{ name = "magma amulet", chance = 7000 },
-	{ id = 31438, chance = 5500 }, -- sphinx tiara
-	{ name = "magma boots", chance = 3600 },
-	{ name = "lightning pendant", chance = 3500 },
-	{ name = "lightning headband", chance = 3100 },
-	{ name = "wand of starstorm", chance = 2900 },
-	{ name = "wand of defiance", chance = 1800 },
-	{ name = "magma monocle", chance = 1400 },
-	{ name = "magma legs", chance = 1300 },
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 31437, chance = 7200 }, -- Sphinx Feather
+	{ id = 817, chance = 6000 }, -- Magma Amulet
+	{ id = 31438, chance = 5800 }, -- Sphinx Tiara
+	{ id = 3038, chance = 5500 }, -- Green Gem
+	{ id = 3041, chance = 4300 }, -- Blue Gem
+	{ id = 818, chance = 3500 }, -- Magma Boots
+	{ id = 3026, chance = 3300 }, -- White Pearl
+	{ id = 828, chance = 3000 }, -- Lightning Headband
+	{ id = 816, chance = 2400 }, -- Lightning Pendant
+	{ id = 16096, chance = 2100 }, -- Wand of Defiance
+	{ id = 8092, chance = 2000 }, -- Wand of Starstorm
+	{ id = 827, chance = 1900 }, -- Magma Monocle
+	{ id = 821, chance = 1100 }, -- Magma Legs
 }
 
 monster.attacks = {

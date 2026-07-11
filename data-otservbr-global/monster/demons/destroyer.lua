@@ -79,27 +79,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal necklace", chance = 500 },
-	{ name = "gold coin", chance = 92500, maxCount = 341 },
-	{ name = "small amethyst", chance = 5850, maxCount = 2 },
-	{ name = "platinum coin", chance = 2250, maxCount = 3 },
-	{ name = "mind stone", chance = 70 },
-	{ name = "giant sword", chance = 1250 },
-	{ name = "crowbar", chance = 10500 },
-	{ name = "plate armor", chance = 3400 },
-	{ name = "dark armor", chance = 6250 },
-	{ id = 3449, chance = 8350, maxCount = 12 }, -- burst arrow
-	{ id = 3456, chance = 4850 }, -- pick
-	{ name = "steel boots", chance = 300 },
-	{ name = "meat", chance = 40000, maxCount = 6 },
-	{ name = "skull helmet", chance = 10 },
-	{ name = "soul orb", chance = 5350 },
-	{ id = 6299, chance = 250 }, -- death ring
-	{ name = "demonic essence", chance = 13850 },
-	{ name = "dreaded cleaver", chance = 400 },
-	{ name = "chaos mace", chance = 800 },
-	{ name = "great health potion", chance = 1000 },
-	{ name = "metal spike", chance = 4850 },
+	{ id = 3031, chance = 94000, maxCount = 325 }, -- Gold Coin
+	{ id = 3577, chance = 40000 }, -- Meat
+	{ id = 6499, chance = 13900 }, -- Demonic Essence
+	{ id = 3304, chance = 11000 }, -- Crowbar
+	{ id = 3449, chance = 8400, maxCount = 12 }, -- Burst Arrow
+	{ id = 3383, chance = 7000 }, -- Dark Armor
+	{ id = 3033, chance = 6000, maxCount = 2 }, -- Small Amethyst
+	{ id = 10298, chance = 5400 }, -- Metal Spike
+	{ id = 5944, chance = 5100 }, -- Soul Orb
+	{ id = 3456, chance = 4600 }, -- Pick
+	{ id = 3357, chance = 3800 }, -- Plate Armor
+	{ id = 3035, chance = 2400, maxCount = 3 }, -- Platinum Coin
+	{ id = 3281, chance = 890 }, -- Giant Sword
+	{ id = 239, chance = 810 }, -- Great Health Potion
+	{ id = 7427, chance = 590 }, -- Chaos Mace
+	{ id = 3554, chance = 540 }, -- Steel Boots
+	{ id = 7419, chance = 510 }, -- Dreaded Cleaver
+	{ id = 3008, chance = 460 }, -- Crystal Necklace
+	{ id = 3062, chance = 300 }, -- Mind Stone
+	{ id = 6299, chance = 110 }, -- Death Ring
+	{ id = 5741, chance = 54 }, -- Skull Helmet
 }
 
 monster.attacks = {

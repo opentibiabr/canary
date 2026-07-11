@@ -74,28 +74,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 16 },
-	{ name = "afflicted strider worms", chance = 10940, maxCount = 3 },
-	{ name = "guardian halberd", chance = 9410 },
-	{ name = "crystal sword", chance = 8940 },
-	{ name = "violet gem", chance = 6940, maxCount = 1 },
-	{ name = "violet crystal shard", chance = 5410 },
-	{ name = "doublet", chance = 5060 },
-	{ name = "green crystal shard", chance = 6820 },
-	{ name = "belted cape", chance = 3760 },
-	{ name = "afflicted strider head", chance = 4820 },
-	{ name = "knight armor", chance = 4590 },
-	{ name = "spirit cloak", chance = 3060 },
-	{ name = "magma coat", chance = 2470 },
-	{ name = "serpent sword", chance = 2240 },
-	{ name = "machete", chance = 3760 },
-	{ name = "broadsword", chance = 1060 },
-	{ name = "focus cape", chance = 2240 },
-	{ name = "ice rapier", chance = 2240 },
-	{ name = "titan axe", chance = 1880 },
-	{ name = "haunted blade", chance = 1410 },
-	{ name = "mercenary sword", chance = 1530 },
-	{ name = "knight axe", chance = 1290 },
+	{ id = 3035, chance = 100000, maxCount = 15 }, -- Platinum Coin
+	{ id = 36790, chance = 10100 }, -- Afflicted Strider Worms
+	{ id = 3315, chance = 8500 }, -- Guardian Halberd
+	{ id = 7449, chance = 8400 }, -- Crystal Sword
+	{ id = 3036, chance = 7000 }, -- Violet Gem
+	{ id = 16121, chance = 6400 }, -- Green Crystal Shard
+	{ id = 16120, chance = 5700 }, -- Violet Crystal Shard
+	{ id = 36789, chance = 5100 }, -- Afflicted Strider Head
+	{ id = 3379, chance = 4700 }, -- Doublet
+	{ id = 8044, chance = 4100 }, -- Belted Cape
+	{ id = 3370, chance = 3900 }, -- Knight Armor
+	{ id = 3308, chance = 3600 }, -- Machete
+	{ id = 8042, chance = 3000 }, -- Spirit Cloak
+	{ id = 8043, chance = 2700 }, -- Focus Cape
+	{ id = 826, chance = 2200 }, -- Magma Coat
+	{ id = 3297, chance = 2100 }, -- Serpent Sword
+	{ id = 3301, chance = 2000 }, -- Broadsword
+	{ id = 3284, chance = 2000 }, -- Ice Rapier
+	{ id = 7413, chance = 1600 }, -- Titan Axe
+	{ id = 7407, chance = 1500 }, -- Haunted Blade
+	{ id = 7386, chance = 1500 }, -- Mercenary Sword
+	{ id = 3318, chance = 1200 }, -- Knight Axe
 }
 
 monster.attacks = {

@@ -60,36 +60,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 22 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ name = "naga basin", chance = 12245 },
-	{ id = 49271, chance = 18367, maxCount = 5 }, -- transcendence potion
-	{ name = "piece of timira's sensors", chance = 10204 },
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "one of timira's many heads", chance = 2041 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "dawnfire sherwani", chance = 200 },
-	{ name = "dawnfire pantaloons", chance = 200 },
-	{ name = "frostflower boots", chance = 200 },
-	{ name = "feverbloom boots", chance = 200 },
-	{ id = 39233, chance = 200 }, -- enchanted turtle amulet
-	{ name = "midnight tunic", chance = 200 },
-	{ name = "midnight sarong", chance = 200 },
-	{ name = "naga quiver", chance = 200 },
-	{ name = "naga sword", chance = 200 },
-	{ name = "naga axe", chance = 200 },
-	{ name = "naga club", chance = 200 },
-	{ name = "naga wand", chance = 200 },
-	{ name = "naga rod", chance = 200 },
-	{ name = "naga crossbow", chance = 200 },
-	{ name = "naga tanko", chance = 200 },
+	{ id = 3043, chance = 100000, maxCount = 6 }, -- Crystal Coin
+	{ id = 7643, chance = 35000, maxCount = 14 }, -- Ultimate Health Potion
+	{ id = 23373, chance = 29000, maxCount = 14 }, -- Ultimate Mana Potion
+	{ id = 7440, chance = 17800, maxCount = 5 }, -- Mastermind Potion
+	{ id = 7439, chance = 16500, maxCount = 5 }, -- Berserk Potion
+	{ id = 7443, chance = 16100, maxCount = 5 }, -- Bullseye Potion
+	{ id = 49271, chance = 13300, maxCount = 5 }, -- Transcendence Potion
+	{ id = 39400, chance = 6500 }, -- Piece of Timira's Sensors
+	{ id = 32622, chance = 6500 }, -- Giant Amethyst
+	{ id = 30060, chance = 4800 }, -- Giant Emerald
+	{ id = 30059, chance = 4300 }, -- Giant Ruby
+	{ id = 32623, chance = 3900 }, -- Giant Topaz
+	{ id = 30061, chance = 2800 }, -- Giant Sapphire
+	{ id = 39399, chance = 2400 }, -- One of Timira's Many Heads
+	{ id = 39158, chance = 220 }, -- Frostflower Boots
+	{ id = 39755, chance = 220 }, -- Naga Basin
 }
 
 monster.attacks = {

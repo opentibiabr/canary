@@ -2,9 +2,14 @@
 
 Honest status of every test category the spec asks for. "Run" means
 actually executed in this session and its result observed; "not run"
-means the scenario requires infrastructure (live MySQL, a bootstrapped
-vcpkg toolchain, a 3-process cluster) that was not available in this
-development sandbox, and is left for CI / a follow-up session to execute.
+means the scenario requires infrastructure that was not available in this
+development sandbox and is left for CI / a follow-up session to execute.
+A real MariaDB 10.11 server and real gtest turned out to be installable
+here (`apt-get install mariadb-server`/`libgtest-dev`) even though a
+working Docker daemon and a bootstrapped vcpkg toolchain were not — so the
+database and unit-test layers got substantially more real execution than
+originally expected; the remaining gap is specifically a compiled,
+running three-process Canary cluster.
 
 ## 15.1 Unit tests — ✅ implemented, added to `tests/unit`, 5 of 7 files actually compiled and run with real gtest
 
@@ -95,48 +100,73 @@ transcript.
 
 ## 15.2 Integration tests (3-process, MySQL+Redis) — not run
 
-Requires a bootstrapped vcpkg toolchain (to produce a Canary binary) and a
-live MySQL/MariaDB server; neither was available in this sandbox (no
-`vcpkg`, no `mysqld`/`mariadbd`, and the Docker daemon was not usable
-either). The 30 scenarios from the spec are captured as concrete,
-numbered acceptance criteria in `docker/multichannel/SCENARIOS.md` so they
-can be executed against the Compose stack in this PR by CI or by an
-operator with Docker access, once Phase 2 wires the engine call sites
-these scenarios exercise (most of them — logins races, session takeover,
-position fallback — depend on code marked 📐 in ARCHITECTURE.md).
+Requires a bootstrapped vcpkg toolchain to produce three actual Canary
+binaries; that specific piece was not available in this sandbox (no
+`vcpkg`). A real MariaDB server *was* obtained and used extensively (see
+§15.4 and MIGRATION.md's "What was actually verified" section) - the
+remaining gap is specifically the compiled engine, not the database. The
+30 scenarios from the spec are captured as concrete, numbered acceptance
+criteria in `docker/multichannel/SCENARIOS.md` so they can be executed
+against the Compose stack in this PR by CI or by an operator with Docker
+access, once Phase 2 wires the engine call sites these scenarios exercise
+(most of them — login races, session takeover, position fallback — depend
+on code marked 📐 in ARCHITECTURE.md).
 
-## 15.3 Anti-dupe race tests — partially run (algorithmic level only)
+## 15.3 Anti-dupe race tests — run at every level this PR's code actually reaches
 
-The concurrency-critical primitives were race-tested at the level they
-actually exist in this PR:
-
-- **Redis CAS script race:** two `redis-cli --eval` acquire calls fired
-  back-to-back against the same key — confirmed exactly one succeeds
-  (✅ run, see 15.1b).
-- **`FakeRedisClient` concurrent acquire:** unit test spins N threads
+- **Redis CAS script race:** 8 concurrent `redis-cli --eval` acquire
+  calls fired at the same key at once — confirmed exactly one succeeds
+  and exactly one fencing token is ever issued (✅ run, see 15.1b).
+- **`FakeRedisClient` concurrent acquire:** unit test spins 16-32 threads
   calling `acquire()` on the same account/player key concurrently, asserts
   exactly one succeeds and the fencing token sequence has no gaps or
-  repeats (✅ written and run as part of the standalone g++ harness above).
-- **DB unique-constraint race** (two processes racing to `INSERT` into
-  `cluster_sessions`/`account_house_ownership` for the same key): not run
-  — requires a live MySQL server. The constraint itself (PK/UNIQUE) is
-  what MySQL uses to serialize concurrent transactions regardless of
-  application timing, which is why this is considered lower-risk to leave
-  for CI than the Redis script logic was — but it is explicitly not
-  verified in this session, stated plainly rather than assumed.
+  repeats (✅ run, both via the real gtest suite and a standalone g++
+  harness).
+- **DB constraint enforcement** (`cluster_sessions.PRIMARY KEY(account_id)`,
+  `cluster_sessions_player_unique`, `account_house_ownership.PRIMARY
+  KEY(account_id)`, `account_house_ownership_house_unique`): ✅ **run**
+  against a real MariaDB 10.11 instance installed in this sandbox
+  (`apt-get install mariadb-server` worked, even though a Docker daemon
+  did not). Confirmed each constraint actually rejects the specific
+  duplicate it exists to prevent — a second house for one account, a
+  second account claiming one physical house, a second online session for
+  one account, and a second session for one player under a different
+  account. This is sequential constraint-violation testing (one `INSERT`
+  after another observing the rejection), not literally two concurrent
+  connections racing in the same millisecond — but a UNIQUE/PRIMARY KEY
+  constraint is exactly the mechanism that makes concurrent races
+  irrelevant (MySQL/MariaDB serializes conflicting writes at the storage
+  engine regardless of arrival timing), so confirming the constraint
+  itself is real and correctly shaped is the meaningful thing to verify
+  here, and it was.
 
-## 15.4 Compatibility — partially run
+## 15.4 Compatibility — schema/migration path run against a real database; engine boot not run
 
 - **Single-channel mode unaffected:** verified by inspection — every new
   code path added in Phase 1 is gated by `multiChannelEnabled` (which
   defaults `false`) or is purely additive schema (migrations are
   `CREATE TABLE IF NOT EXISTS` / guarded `ALTER`). Not verified by an
-  actual full-engine build+boot in this sandbox (no toolchain/DB — see
-  above).
-- **Migration idempotency (re-run safety):** verified by code inspection
-  against the existing migration framework's guard pattern
-  (`db.tableExists`, and this PR's added `information_schema` column/key
-  existence checks) — not executed against a live DB.
+  actual full-engine build+boot in this sandbox (no vcpkg toolchain).
+- **Migration idempotency and upgrade correctness: ✅ run for real**, not
+  just reviewed. This session installed a real MariaDB 10.11 server,
+  imported the pre-PR `schema.sql` (a genuine "v58" baseline, via `git
+  show`), applied `59.lua` and `60.lua`'s actual SQL bodies in their real
+  file order as a live upgrade, diffed the result against a fresh-install
+  `schema.sql` import (identical modulo column order), and confirmed every
+  guard query used by the Lua idempotency checks
+  (`SHOW COLUMNS ... LIKE`, `SHOW KEYS ... WHERE Column_name = ...`,
+  `information_schema` existence checks) returns exactly what the
+  migration script expects to see post-migration - i.e. a second run
+  would correctly no-op. The documented rollback SQL in MIGRATION.md was
+  also executed against the upgraded database and confirmed to restore
+  the exact pre-migration `houses` shape. **This process found and fixed
+  a real bug**: `account_id` columns on four new tables were declared as
+  plain signed `int(11)` instead of `int(11) UNSIGNED` to match
+  `accounts.id`, which MariaDB rejected outright as a malformed foreign
+  key the moment `schema.sql` was imported for real - see MIGRATION.md
+  for detail. What's still not run: three actual compiled Canary
+  processes reading/writing through this schema end-to-end (needs the
+  vcpkg toolchain this sandbox doesn't have).
 - **Legacy protocol layout:** `ProtocolLogin` change was written to
   preserve the exact existing single-world output when
   `multiChannelEnabled = false` (early-return keeps the original code

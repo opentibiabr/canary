@@ -70,7 +70,7 @@ function onUpdateDatabase()
 		if
 			not db.query([[
 			CREATE TABLE `cluster_sessions` (
-				`account_id` int(11) NOT NULL,
+				`account_id` int(11) UNSIGNED NOT NULL,
 				`player_id` int(11) NOT NULL,
 				`channel_id` int(11) NOT NULL,
 				`instance_id` varchar(64) NOT NULL DEFAULT '',
@@ -104,7 +104,7 @@ function onUpdateDatabase()
 			CREATE TABLE `channel_switch_audit` (
 				`id` bigint(20) NOT NULL AUTO_INCREMENT,
 				`player_id` int(11) NOT NULL,
-				`account_id` int(11) NOT NULL,
+				`account_id` int(11) UNSIGNED NOT NULL,
 				`source_channel_id` int(11) DEFAULT NULL,
 				`target_channel_id` int(11) NOT NULL,
 				`source_position` varchar(64) NOT NULL DEFAULT '',
@@ -137,7 +137,7 @@ function onUpdateDatabase()
 			CREATE TABLE `economic_ledger` (
 				`transaction_uuid` char(36) NOT NULL,
 				`operation_type` varchar(64) NOT NULL,
-				`account_id` int(11) DEFAULT NULL,
+				`account_id` int(11) UNSIGNED DEFAULT NULL,
 				`player_id` int(11) DEFAULT NULL,
 				`source_channel_id` int(11) DEFAULT NULL,
 				`target_channel_id` int(11) DEFAULT NULL,
@@ -192,7 +192,7 @@ function onUpdateDatabase()
 		if
 			not db.query([[
 			CREATE TABLE `account_house_ownership` (
-				`account_id` int(11) NOT NULL,
+				`account_id` int(11) UNSIGNED NOT NULL,
 				`channel_id` int(11) NOT NULL,
 				`house_id` int(11) NOT NULL,
 				`since` bigint(20) NOT NULL,

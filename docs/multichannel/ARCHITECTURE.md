@@ -305,8 +305,11 @@ real and tested; plugging them into `ProtocolGame`'s connect/disconnect
 handlers is Phase 2 — doing that safely means walking the existing
 save/logout pipeline (`IOLoginData`, `Player::save`) end to end with a
 working multi-process test harness, which this sandboxed session cannot
-build/run (no vcpkg toolchain bootstrap, no live MySQL — see
-[TEST_PLAN.md](TEST_PLAN.md) for exactly what was and wasn't run).
+build/run: a real MariaDB server *was* obtained and used extensively here
+(schema/migration verification, see MIGRATION.md), but there is no
+bootstrapped vcpkg toolchain to actually compile the engine that would
+call into that pipeline — see [TEST_PLAN.md](TEST_PLAN.md) for exactly
+what was and wasn't run.
 
 ## 6. Channel switch (✅ policy engine, 📐 engine call sites)
 
@@ -413,9 +416,12 @@ market/mail/house/bank code, protocol-level login gateway routing for every
 supported client version, and a green multi-platform CI matrix — after
 each of those is actually implemented and verified. That is a genuinely
 large distributed-systems project; this sandboxed session has no vcpkg
-toolchain bootstrap, no live MySQL/MariaDB server, and no multi-hour CI
-budget to iterate against. Claiming all of that was built and verified
-here would be false. What *is* real in this PR: the schema, the config
+toolchain bootstrap and no multi-hour CI budget to iterate against (a
+live MariaDB server, it turns out, *was* obtainable here via `apt-get`,
+and got used heavily — see MIGRATION.md/TEST_PLAN.md). Claiming all of
+that was built and verified here would be false. What *is* real in this
+PR: the schema (imported and upgrade-tested against a real database, one
+real bug found and fixed in the process), the config
 surface, the core algorithms (position resolution, session fencing) with
 unit tests and — for the Redis compare-and-swap logic specifically — a
 real local `redis-server` integration check, the login-list wiring (which

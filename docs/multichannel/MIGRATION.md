@@ -2,16 +2,70 @@
 
 ## Before you start
 
-**Take a full database backup.** This is not optional. The house-related
-migration (`60.lua`) changes the primary key of a table with foreign-key
-children. It has been written as carefully as the existing migration
-patterns allow and is idempotent (safe to re-run / resume after a partial
-failure, same as every other migration in this repo), but it has **not**
-been executed against a live MySQL/MariaDB server in this development
-session — there was no database server available in the sandbox this PR
-was built in. Test it against a staging copy of your database before
-running it against production. This limitation is stated plainly rather
-than glossed over; see TEST_PLAN.md for exactly what *was* validated.
+**Take a full database backup.** This is not optional, even though this
+migration has since been executed and verified against a real MariaDB
+10.11 server in this session (see "What was actually verified" below) -
+your production data/config may differ from the test fixtures used here,
+and a backup is cheap insurance regardless.
+
+## What was actually verified against a real database
+
+`apt-get install mariadb-server` turned out to work in this sandbox
+(earlier attempts at a working Docker daemon had failed, but a bare
+`mariadbd` process did not need one). Against a real, running MariaDB
+10.11 instance, this session:
+
+1. Imported `schema.sql` (fresh install) into an empty database - clean,
+   no errors, all 7 new tables plus the composite `houses` identity
+   present exactly as designed.
+2. Reconstructed a "v58-equivalent" database from this repo's `schema.sql`
+   as it existed immediately before this PR (`git show <pre-PR commit>`),
+   then applied the exact SQL bodies from `59.lua` and `60.lua`, in their
+   real file order, as a genuine upgrade simulation - succeeded cleanly.
+3. Diffed the upgraded `houses` table against the fresh-install one:
+   identical except column order (`channel_id` lands at the end via
+   `ADD COLUMN` instead of right after `id`) - cosmetic only, not a
+   functional difference.
+4. Verified every migration guard query (`SHOW COLUMNS ... LIKE
+   'channel_id'`, `SHOW KEYS ... WHERE Column_name = 'channel_id'`,
+   `information_schema` table-existence check) returns exactly the result
+   the Lua guard logic expects to see after the migration has already run
+   - i.e. confirmed a second run would correctly no-op every step instead
+   of erroring, which is the resumability property §13 of the spec
+   requires.
+5. Seeded a house owned by an existing player/account *before* running the
+   migration, then confirmed the `account_house_ownership` backfill query
+   populated exactly one correct row from the join.
+6. Attempted to violate every anti-dupe constraint this PR's schema adds,
+   against the real database, and confirmed each one is actually
+   rejected: a second house for the same account
+   (`account_house_ownership.PRIMARY KEY(account_id)`), a second account
+   claiming the same physical house
+   (`account_house_ownership_house_unique(channel_id, house_id)`), a
+   second `cluster_sessions` row for the same account
+   (`PRIMARY KEY(account_id)`), and a second `cluster_sessions` row for
+   the same player under a different account
+   (`cluster_sessions_player_unique`).
+7. Ran the reverse-rollback SQL documented below against the upgraded
+   database and confirmed it restores the exact pre-migration `houses`
+   shape.
+
+**A real bug was found and fixed by this process**: the first version of
+this migration/schema declared `account_id` as a plain signed `int(11)`
+on `cluster_sessions`, `channel_switch_audit`, `economic_ledger`, and
+`account_house_ownership` - but `accounts.id` in this schema is
+`int(11) UNSIGNED`, and every *other* table in this schema that
+references it already declares its own `account_id` as `UNSIGNED` too.
+MariaDB rejected the mismatched foreign key outright
+(`errno 150 "Foreign key constraint is incorrectly formed"`) the moment
+`schema.sql` was imported for real. Fixed in both `schema.sql` and
+`59.lua` before this PR was finalized - this is exactly the class of bug
+a real database catches instantly and a design review can miss.
+
+What is still *not* verified: production-scale data volumes, MySQL (as
+opposed to MariaDB) specifically, concurrent migration runs, and the
+`data-canary` datapack (which, per its own note further down, has no
+numbered migration history to extend in the first place).
 
 ## What the migrations do
 

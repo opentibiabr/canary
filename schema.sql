@@ -928,7 +928,7 @@ CREATE TABLE IF NOT EXISTS `channel_runtime_status` (
 -- together guarantee at most one online character per account, cluster-wide,
 -- even if the Redis coordination layer (fast path) is unavailable or wrong.
 CREATE TABLE IF NOT EXISTS `cluster_sessions` (
-    `account_id` int(11) NOT NULL,
+    `account_id` int(11) UNSIGNED NOT NULL,
     `player_id` int(11) NOT NULL,
     `channel_id` int(11) NOT NULL,
     `instance_id` varchar(64) NOT NULL DEFAULT '',
@@ -952,7 +952,7 @@ CREATE TABLE IF NOT EXISTS `cluster_sessions` (
 CREATE TABLE IF NOT EXISTS `channel_switch_audit` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
     `player_id` int(11) NOT NULL,
-    `account_id` int(11) NOT NULL,
+    `account_id` int(11) UNSIGNED NOT NULL,
     `source_channel_id` int(11) DEFAULT NULL,
     `target_channel_id` int(11) NOT NULL,
     `source_position` varchar(64) NOT NULL DEFAULT '',
@@ -978,7 +978,7 @@ CREATE TABLE IF NOT EXISTS `channel_switch_audit` (
 CREATE TABLE IF NOT EXISTS `economic_ledger` (
     `transaction_uuid` char(36) NOT NULL,
     `operation_type` varchar(64) NOT NULL,
-    `account_id` int(11) DEFAULT NULL,
+    `account_id` int(11) UNSIGNED DEFAULT NULL,
     `player_id` int(11) DEFAULT NULL,
     `source_channel_id` int(11) DEFAULT NULL,
     `target_channel_id` int(11) DEFAULT NULL,
@@ -1016,7 +1016,7 @@ CREATE TABLE IF NOT EXISTS `mail_delivery_audit` (
 -- PRIMARY KEY(account_id) makes a second house for the same account a
 -- constraint violation rather than an application-level race.
 CREATE TABLE IF NOT EXISTS `account_house_ownership` (
-    `account_id` int(11) NOT NULL,
+    `account_id` int(11) UNSIGNED NOT NULL,
     `channel_id` int(11) NOT NULL,
     `house_id` int(11) NOT NULL,
     `since` bigint(20) NOT NULL,

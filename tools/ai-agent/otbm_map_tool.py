@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Safe, deterministic OTBM inspection, catalog enrichment, diff and patch tool."""
+"""Safe, deterministic OTBM inspection, catalog enrichment, world indexing, diff and patch tool."""
 from __future__ import annotations
 
 import argparse
@@ -21,6 +21,7 @@ from otbm_catalog import (
 from otbm_patch import build_diff_patch, load_patch, plan_patch, plan_report, write_patched_map
 from otbm_scan import build_export, normalize_bounds, position_from_text, render_svg, scan_map, scan_summary, write_json
 from otbm_schema import validate_patch_document
+from otbm_world import build_world_index
 
 
 def _load_catalog_for_map(args: argparse.Namespace, map_path: Path) -> ItemCatalog | None:
@@ -50,6 +51,12 @@ def command_verify(args: argparse.Namespace) -> int:
     payload["ok"] = not scan.duplicates
     write_json(Path(args.output) if args.output else None, payload)
     return 0 if payload["ok"] else 2
+
+
+def command_world_index(args: argparse.Namespace) -> int:
+    payload = build_world_index(Path(args.map), include_entries=not args.summary_only)
+    write_json(Path(args.output), payload)
+    return 0 if payload["ok"] or args.allow_errors else 2
 
 
 def command_catalog(args: argparse.Namespace) -> int:
@@ -146,6 +153,13 @@ def build_parser() -> argparse.ArgumentParser:
     verify_parser.add_argument("--count-tiles", action="store_true", help="Also enumerate every tile (slower on large maps)")
     verify_parser.add_argument("--output")
     verify_parser.set_defaults(func=command_verify)
+
+    world_parser = subparsers.add_parser("world-index", help="Index towns, waypoints, house and zone references, and companion XML files")
+    world_parser.add_argument("map")
+    world_parser.add_argument("--output", required=True)
+    world_parser.add_argument("--summary-only", action="store_true", help="Omit full house, spawn, NPC, and zone entry arrays")
+    world_parser.add_argument("--allow-errors", action="store_true", help="Return success while retaining validation errors in the report")
+    world_parser.set_defaults(func=command_world_index)
 
     catalog_parser = subparsers.add_parser("catalog", help="Build a machine-readable item catalog from Canary items.xml")
     catalog_parser.add_argument("items_xml")

@@ -1,6 +1,6 @@
 # OTBM map tool
 
-`tools/ai-agent/otbm_map_tool.py` provides deterministic, standard-library-only OTBM inspection, item-catalog enrichment, bounded region export, diff generation, patch validation, dry-run conflict detection, and opt-in map writing.
+`tools/ai-agent/otbm_map_tool.py` provides deterministic, standard-library-only OTBM inspection, item-catalog enrichment, world-package indexing, bounded region export, diff generation, patch validation, dry-run conflict detection, and opt-in map writing.
 
 ## Safety model
 
@@ -26,6 +26,32 @@ python tools/ai-agent/otbm_map_tool.py verify data-otservbr/world/otservbr.otbm 
 
 `inspect --fast` reads metadata without enumerating every tile.
 
+## Index the complete world package
+
+Place the OTBM and its referenced companion files in the same directory, then run:
+
+```bash
+python tools/ai-agent/otbm_map_tool.py world-index data-otservbr/world/otservbr.otbm \
+  --output artifacts/OTBM_WORLD_INDEX.json
+```
+
+The command reads the whole map and produces an AI-readable inventory of:
+
+- towns and temple positions stored inside OTBM;
+- waypoints stored inside OTBM;
+- house IDs used by house tiles;
+- zone IDs used by tile-zone nodes;
+- referenced or conventionally named monster, NPC, house, and zones XML files;
+- monster and NPC spawn groups, absolute positions, directions, respawn times, and names;
+- house metadata, entry positions, rents, sizes, town references, client IDs, guildhall flags, and bed limits;
+- zone names and IDs;
+- SHA-256 values for the map and every companion file;
+- cross-file errors such as missing house definitions, unknown house towns, missing zone definitions, duplicate IDs, invalid spawn positions, malformed XML, and missing companion files.
+
+Use `--summary-only` to retain counts, name summaries, diagnostics, and cross-file validation while omitting the potentially large entity arrays. By default, validation errors produce exit code 2. `--allow-errors` preserves the same report but returns success for audit-only pipelines.
+
+When an OTBM attribute does not name a companion file, the indexer follows Canary conventions and looks for `<map>-monster.xml`, `<map>-npc.xml`, `<map>-house.xml`, and `<map>-zones.xml` next to the map.
+
 ## Build the Canary item catalog
 
 ```bash
@@ -33,7 +59,7 @@ python tools/ai-agent/otbm_map_tool.py catalog data/items/items.xml \
   --output artifacts/ITEM_CATALOG.json
 ```
 
-The catalog streams `items.xml`, supports individual IDs and `fromid`/`toid` ranges, and records names, articles, plurals, declared types, XML attributes, conservative logical categories, source SHA-256, and missing definitions. It does not modify `items.xml` or `items.otb`.
+The catalog streams `items.xml`, supports individual IDs and `fromid`/`toid` ranges, and records names, articles, plurals, declared types, XML attributes, conservative logical categories, source SHA-256, and diagnostics. Reversed ranges are skipped to mirror Canary's loader behavior, and repeated definitions are reported while the later XML entry wins. It does not modify `items.xml` or `items.otb`.
 
 ## Export an AI-readable region
 
@@ -131,7 +157,7 @@ Raw tile operations preserve unsupported item attributes and child nodes byte-fo
 
 ## Current boundary
 
-This stage makes map regions understandable to an AI through IDs, names, categories, properties, coordinates, flags, attributes, and logical SVG previews. Pixel-accurate rendering still requires compatible client or RME sprite assets. Town, waypoint, spawn, NPC, monster, house-XML, and zone-XML authoring remain separate integration stages.
+The tool can now understand map tiles, item definitions, towns, waypoints, houses, zones, monster spawns, and NPC spawns as structured data and can validate their cross-file references. Pixel-accurate rendering still requires compatible client or RME sprite assets. Editing companion XML and OTBM towns or waypoints remains a later authoring stage; the current world index is read-only.
 
 ## Tests
 

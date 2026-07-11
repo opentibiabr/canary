@@ -31,19 +31,20 @@ The separate OTBM tool described below can inspect and export binary map regions
 
 ## OTBM map intelligence
 
-`otbm_map_tool.py` safely inspects Canary OTBM files, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patch documents, generates diffs, detects conflicts on newer maps, and writes only to separate output files when explicitly enabled.
+`otbm_map_tool.py` safely inspects Canary OTBM files, indexes towns, waypoints and companion world XML files, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patch documents, generates diffs, detects conflicts on newer maps, and writes only to separate output files when explicitly enabled.
 
 Main entry points:
 
 ```bash
 python tools/ai-agent/otbm_map_tool.py verify map.otbm --count-tiles
+python tools/ai-agent/otbm_map_tool.py world-index map.otbm --output artifacts/OTBM_WORLD_INDEX.json
 python tools/ai-agent/otbm_map_tool.py catalog data/items/items.xml --output artifacts/ITEM_CATALOG.json
 python tools/ai-agent/otbm_map_tool.py export map.otbm --from 32000,32000,7 --to 32031,32031,7 --items-xml data/items/items.xml --output artifacts/region.json --preview artifacts/region.svg
 python tools/ai-agent/otbm_map_tool.py validate-patch patches/change.json
 python tools/ai-agent/otbm_map_tool.py apply map.otbm patches/change.json --output artifacts/map-edited.otbm --report artifacts/change-report.json
 ```
 
-The last command is a dry-run unless `--write` is present. See `docs/ai-agent/OTBM_MAP_TOOL.md` and `docs/ai-agent/OTBM_PATCH.schema.json` for the complete safety and format contracts.
+The world index cross-checks OTBM house and zone references against house/zones XML, resolves monster and NPC spawn coordinates, validates town links and companion files, and records SHA-256 provenance. The apply command is a dry-run unless `--write` is present. See `docs/ai-agent/OTBM_MAP_TOOL.md` and `docs/ai-agent/OTBM_PATCH.schema.json` for the complete safety and format contracts.
 
 ## Content authoring pipeline
 

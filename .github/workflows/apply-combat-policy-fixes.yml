@@ -1,0 +1,70 @@
+name: Apply combat policy fixes
+
+on:
+  push:
+    branches: [fix/issues-3160-3345]
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/issues-3160-3345
+      - name: Apply verified source changes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          combat = Path('src/creatures/combat/combat.cpp')
+          text = combat.read_text()
+          include_anchor = '#include "creatures/combat/combat.hpp"\n'
+          include_line = '#include "creatures/combat/functions/chain_target_policy.hpp"\n'
+          assert text.count(include_anchor) == 1
+          if include_line not in text:
+              text = text.replace(include_anchor, include_anchor + include_line, 1)
+
+          signature = 'bool Combat::isValidChainTarget(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &currentTarget, const std::shared_ptr<Creature> &potentialTarget, const CombatParams &params, bool aggressive) {'
+          guard = '''bool Combat::isValidChainTarget(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &currentTarget, const std::shared_ptr<Creature> &potentialTarget, const CombatParams &params, bool aggressive) {
+\tif (!potentialTarget || ChainTargetPolicy::shouldRejectDefaultTarget(potentialTarget == caster, potentialTarget->getNpc() != nullptr, aggressive, potentialTarget->getZoneType() == ZONE_PROTECTION)) {
+\t\treturn false;
+\t}
+'''
+          assert text.count(signature) == 1
+          text = text.replace(signature, guard, 1)
+          combat.write_text(text)
+
+          game = Path('src/game/game.cpp')
+          text = game.read_text()
+          game_anchor = '#include "game/functions/use_with_policy.hpp"\n'
+          game_include = '#include "game/functions/wheel_damage_policy.hpp"\n'
+          assert text.count(game_anchor) == 1
+          if game_include not in text:
+              text = text.replace(game_anchor, game_anchor + game_include, 1)
+
+          patterns = [
+              r'(void Game::applyWheelOfDestinyEffectsToDamage\([^\n]+\) const \{\n)',
+              r'(void Game::applyWheelOfDestinyHealing\([^\n]+\) \{\n)',
+          ]
+          insertion = '\tif (!WheelDamagePolicy::shouldApplyWheelEffects(damage.reflection)) {\n\t\treturn;\n\t}\n\n'
+          for pattern in patterns:
+              text, count = re.subn(pattern, lambda match: match.group(1) + insertion, text, count=1)
+              assert count == 1, pattern
+          game.write_text(text)
+          PY
+          rm -f .github/automation/combat-policy-trigger.txt
+          rm .github/workflows/apply-combat-policy-fixes.yml
+          git diff --check
+      - name: Commit source fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: harden chain targets and reflected wheel damage"
+          git push origin HEAD:fix/issues-3160-3345

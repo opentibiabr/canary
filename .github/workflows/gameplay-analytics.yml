@@ -18,6 +18,9 @@ on:
       - "docs/systems/gameplay-analytics-migrations.md"
       - "docs/systems/gameplay-analytics-context.md"
       - "docs/systems/gameplay-analytics-context-rollout.md"
+      - "docs/systems/gameplay-analytics-deployment.md"
+      - "tools/analytics/gameplay-analytics.env.example"
+      - "tools/analytics/install_gameplay_analytics.sh"
       - "tools/analytics/migrate_gameplay_analytics.sh"
       - "tools/analytics/test_gameplay_analytics_batching.lua"
       - "tools/analytics/test_gameplay_analytics_context.lua"
@@ -28,11 +31,13 @@ on:
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_batching.py"
       - "tools/analytics/test_validate_gameplay_analytics_context.py"
+      - "tools/analytics/test_validate_gameplay_analytics_deployment.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics_batching.py"
       - "tools/analytics/validate_gameplay_analytics_context.py"
+      - "tools/analytics/validate_gameplay_analytics_deployment.py"
       - "tools/analytics/validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
@@ -53,6 +58,9 @@ on:
       - "docs/systems/gameplay-analytics-migrations.md"
       - "docs/systems/gameplay-analytics-context.md"
       - "docs/systems/gameplay-analytics-context-rollout.md"
+      - "docs/systems/gameplay-analytics-deployment.md"
+      - "tools/analytics/gameplay-analytics.env.example"
+      - "tools/analytics/install_gameplay_analytics.sh"
       - "tools/analytics/migrate_gameplay_analytics.sh"
       - "tools/analytics/test_gameplay_analytics_batching.lua"
       - "tools/analytics/test_gameplay_analytics_context.lua"
@@ -63,11 +71,13 @@ on:
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_batching.py"
       - "tools/analytics/test_validate_gameplay_analytics_context.py"
+      - "tools/analytics/test_validate_gameplay_analytics_deployment.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics_batching.py"
       - "tools/analytics/validate_gameplay_analytics_context.py"
+      - "tools/analytics/validate_gameplay_analytics_deployment.py"
       - "tools/analytics/validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
@@ -93,6 +103,10 @@ jobs:
         run: python tools/analytics/validate_gameplay_analytics_reliability.py
       - name: Validate gameplay analytics migration contract
         run: python tools/analytics/validate_gameplay_analytics_migrations.py
+      - name: Validate gameplay analytics deployment contract
+        run: python tools/analytics/validate_gameplay_analytics_deployment.py
+      - name: Check deployment shell syntax
+        run: bash -n tools/analytics/install_gameplay_analytics.sh
       - name: Run gameplay analytics validator tests
         run: |
           set -o pipefail

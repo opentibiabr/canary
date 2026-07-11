@@ -6,22 +6,58 @@ on:
     paths:
       - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua"
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
+      - "schema/gameplay_analytics_migrations/**"
       - "docs/systems/gameplay-analytics.md"
+      - "docs/systems/gameplay-analytics-persistence.md"
+      - "docs/systems/gameplay-analytics-migrations.md"
+      - "tools/analytics/migrate_gameplay_analytics.sh"
+      - "tools/analytics/test_gameplay_analytics_batching.lua"
+      - "tools/analytics/test_gameplay_analytics_reliability.lua"
+      - "tools/analytics/test_gameplay_analytics_schema.lua"
+      - "tools/analytics/test_mariadb_integration.sh"
+      - "tools/analytics/test_schema_migrations.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
+      - "tools/analytics/test_validate_gameplay_analytics_batching.py"
+      - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
+      - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
+      - "tools/analytics/validate_gameplay_analytics_batching.py"
+      - "tools/analytics/validate_gameplay_analytics_reliability.py"
+      - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
   push:
     branches: [main]
     paths:
       - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua"
       - "data-otservbr-global/scripts/systems/gameplay_analytics.lua"
       - "schema/gameplay_analytics.sql"
+      - "schema/gameplay_analytics_migrations/**"
       - "docs/systems/gameplay-analytics.md"
+      - "docs/systems/gameplay-analytics-persistence.md"
+      - "docs/systems/gameplay-analytics-migrations.md"
+      - "tools/analytics/migrate_gameplay_analytics.sh"
+      - "tools/analytics/test_gameplay_analytics_batching.lua"
+      - "tools/analytics/test_gameplay_analytics_reliability.lua"
+      - "tools/analytics/test_gameplay_analytics_schema.lua"
+      - "tools/analytics/test_mariadb_integration.sh"
+      - "tools/analytics/test_schema_migrations.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
+      - "tools/analytics/test_validate_gameplay_analytics_batching.py"
+      - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
+      - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
+      - "tools/analytics/validate_gameplay_analytics_batching.py"
+      - "tools/analytics/validate_gameplay_analytics_reliability.py"
+      - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
 
 permissions:
@@ -37,14 +73,81 @@ jobs:
           python-version: "3.12"
       - name: Validate gameplay analytics contract
         run: python tools/analytics/validate_gameplay_analytics.py
+      - name: Validate gameplay analytics batching contract
+        run: python tools/analytics/validate_gameplay_analytics_batching.py
+      - name: Validate gameplay analytics reliability contract
+        run: python tools/analytics/validate_gameplay_analytics_reliability.py
+      - name: Validate gameplay analytics migration contract
+        run: python tools/analytics/validate_gameplay_analytics_migrations.py
       - name: Run gameplay analytics validator tests
-        run: python -m unittest discover -s tools/analytics -p "test_*.py" -v
+        run: |
+          set -o pipefail
+          python -m unittest discover -s tools/analytics -p "test_*.py" -v 2>&1 | tee validator-tests.log
+      - name: Upload validator test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-validator-log
+          path: validator-tests.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Install LuaJIT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit
+      - name: Run gameplay analytics Lua batching test
+        run: luajit tools/analytics/test_gameplay_analytics_batching.lua
+      - name: Run gameplay analytics Lua reliability test
+        run: luajit tools/analytics/test_gameplay_analytics_reliability.lua
+      - name: Run gameplay analytics Lua schema test
+        run: luajit tools/analytics/test_gameplay_analytics_schema.lua
       - name: Parse SQL schema
         run: |
           python - <<'PY'
           from pathlib import Path
           sql = Path('schema/gameplay_analytics.sql').read_text(encoding='utf-8')
-          assert sql.count('CREATE TABLE IF NOT EXISTS') == 6
-          assert sql.count('ENGINE=InnoDB') == 6
+          assert sql.count('CREATE TABLE IF NOT EXISTS') == 8
+          assert sql.count('ENGINE=InnoDB') == 8
           print('SQL schema structure passed')
           PY
+
+  mariadb-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: canary_test
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+      - name: Test schema, persistence and migrations
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+        run: |
+          set -o pipefail
+          {
+            bash tools/analytics/test_mariadb_integration.sh
+            bash tools/analytics/test_schema_migrations.sh
+          } 2>&1 | tee mariadb-integration.log
+      - name: Upload MariaDB integration log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-mariadb-log
+          path: |
+            mariadb-integration.log
+            migration-checksum-mismatch.log
+          if-no-files-found: error
+          retention-days: 7

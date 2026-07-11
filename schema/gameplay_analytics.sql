@@ -1,5 +1,6 @@
 -- Gameplay Analytics schema for Canary
 -- Safe to execute repeatedly.
+-- This file installs baseline schema version 1. Run the migration script after import.
 
 CREATE TABLE IF NOT EXISTS `analytics_sessions` (
     `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -97,3 +98,42 @@ CREATE TABLE IF NOT EXISTS `analytics_session_loot` (
     CONSTRAINT `analytics_loot_session_fk`
         FOREIGN KEY (`session_id`) REFERENCES `analytics_sessions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `analytics_dead_letters` (
+    `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `session_uuid` CHAR(36) NOT NULL,
+    `player_id` INT NOT NULL,
+    `player_name` VARCHAR(255) DEFAULT NULL,
+    `retry_count` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    `last_error` VARCHAR(255) NOT NULL,
+    `failed_at` BIGINT UNSIGNED NOT NULL,
+    `started_at` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `ended_at` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `experience_raw` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `experience_final` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `damage_dealt` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `damage_received` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `healing_total` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `mana_spent` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `monsters_killed` INT UNSIGNED NOT NULL DEFAULT 0,
+    `deaths` SMALLINT UNSIGNED NOT NULL DEFAULT 0,
+    `loot_value_npc` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `loot_value_market` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    `supplies_value` BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `analytics_dead_letters_uuid` (`session_uuid`),
+    KEY `analytics_dead_letters_failed_at` (`failed_at`),
+    KEY `analytics_dead_letters_player` (`player_id`, `failed_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `analytics_schema_migrations` (
+    `version` INT UNSIGNED NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `checksum` CHAR(64) NOT NULL DEFAULT '',
+    `applied_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `analytics_schema_migrations` (`version`, `name`, `checksum`)
+VALUES (1, 'baseline', '')
+ON DUPLICATE KEY UPDATE `name` = VALUES(`name`);

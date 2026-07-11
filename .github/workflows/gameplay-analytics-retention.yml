@@ -1,0 +1,97 @@
+---
+name: Gameplay Analytics Retention
+
+on:
+  pull_request:
+    paths:
+      - "schema/gameplay_analytics_retention.sql"
+      - "tools/analytics/maintain_gameplay_analytics.sh"
+      - "tools/analytics/test_retention_maintenance.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_retention.py"
+      - "tools/analytics/validate_gameplay_analytics_retention.py"
+      - "docs/systems/gameplay-analytics-retention.md"
+      - ".github/workflows/gameplay-analytics-retention.yml"
+  push:
+    branches: [main]
+    paths:
+      - "schema/gameplay_analytics_retention.sql"
+      - "tools/analytics/maintain_gameplay_analytics.sh"
+      - "tools/analytics/test_retention_maintenance.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_retention.py"
+      - "tools/analytics/validate_gameplay_analytics_retention.py"
+      - "docs/systems/gameplay-analytics-retention.md"
+      - ".github/workflows/gameplay-analytics-retention.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate retention contract
+        run: python tools/analytics/validate_gameplay_analytics_retention.py
+      - name: Run retention validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_retention.py" -v
+      - name: Check maintenance shell syntax
+        run: |
+          bash -n tools/analytics/maintain_gameplay_analytics.sh
+          bash -n tools/analytics/test_retention_maintenance.sh
+
+  mariadb-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: canary_test
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+      - name: Prepare main Analytics schema
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+          MYSQL_PWD: root
+        run: |
+          set -o pipefail
+          {
+            bash tools/analytics/test_mariadb_integration.sh
+            bash tools/analytics/migrate_gameplay_analytics.sh
+            mariadb --protocol=TCP --host=127.0.0.1 --port=3306 --user=root canary_test < schema/gameplay_analytics_retention.sql
+            mariadb --protocol=TCP --host=127.0.0.1 --port=3306 --user=root canary_test < schema/gameplay_analytics_retention.sql
+          } 2>&1 | tee retention-setup.log
+      - name: Test aggregation and retention lifecycle
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+        run: |
+          set -o pipefail
+          bash tools/analytics/test_retention_maintenance.sh 2>&1 | tee retention-test.log
+      - name: Upload retention integration logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-retention-log
+          path: |
+            retention-setup.log
+            retention-test.log
+          if-no-files-found: error
+          retention-days: 7

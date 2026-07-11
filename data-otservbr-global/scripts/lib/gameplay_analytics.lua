@@ -49,9 +49,17 @@ local function isExcluded(player)
 	if not player or not player:isPlayer() then
 		return true
 	end
-	if Analytics.config.includeStaff ~= true and player:getAccountType() > ACCOUNT_TYPE_NORMAL then
+
+	local accountType = player:getAccountType()
+	if Analytics.config.includeStaff ~= true and accountType > ACCOUNT_TYPE_NORMAL then
 		return true
 	end
+	for _, excludedType in ipairs(Analytics.config.excludedAccountTypes or {}) do
+		if accountType == excludedType then
+			return true
+		end
+	end
+
 	local name = player:getName()
 	for _, excluded in ipairs(Analytics.config.excludedPlayerNames or {}) do
 		if excluded:lower() == name:lower() then
@@ -82,6 +90,7 @@ local function newSession(player)
 	return {
 		uuid = uuid(player:getGuid()),
 		playerId = player:getGuid(),
+		runtimeId = player:getId(),
 		playerName = Analytics.config.anonymizePlayers and nil or player:getName(),
 		vocationId = vocationId,
 		levelStart = player:getLevel(),
@@ -114,6 +123,19 @@ local function newSession(player)
 	}
 end
 
+local function monsterBucket(session, creature)
+	if Analytics.config.trackMonsters ~= true or not creature or not creature:isMonster() then
+		return nil
+	end
+	local name = creature:getName():lower()
+	session.monsters[name] = session.monsters[name] or { kills = 0, damageDealt = 0, damageReceived = 0, experienceRaw = 0 }
+	return session.monsters[name]
+end
+
+local function sessionHasData(session)
+	return session.experienceRaw > 0 or session.experienceFinal > 0 or session.damageDealt > 0 or session.damageReceived > 0 or session.healingSelf > 0 or session.healingOthers > 0 or session.overhealing > 0 or session.manaSpent > 0 or session.monstersKilled > 0 or session.deaths > 0 or session.lootNpc > 0 or session.lootMarket > 0 or session.suppliesValue > 0
+end
+
 function Analytics.isEnabled()
 	return Analytics.config.enabled == true
 end
@@ -125,6 +147,8 @@ function Analytics.start(player)
 	local id = player:getGuid()
 	if not Analytics.sessions[id] then
 		Analytics.sessions[id] = newSession(player)
+	else
+		Analytics.sessions[id].runtimeId = player:getId()
 	end
 	return Analytics.sessions[id]
 end
@@ -149,21 +173,32 @@ function Analytics.touchCombat(session)
 end
 
 local function closeCombatWindow(session, timestamp)
-	if session.combatStartedAt > 0 then
-		session.combatSeconds = session.combatSeconds + math.max(0, timestamp - session.combatStartedAt)
-		session.combatStartedAt = 0
+	if session.combatStartedAt == 0 then
+		return
 	end
+	local combatEnd = timestamp
+	if session.lastCombatAt > 0 then
+		combatEnd = math.min(combatEnd, session.lastCombatAt)
+	end
+	session.combatSeconds = session.combatSeconds + math.max(0, combatEnd - session.combatStartedAt)
+	session.combatStartedAt = 0
 end
 
-function Analytics.recordExperience(player, finalExperience, rawExperience)
+function Analytics.recordExperience(player, finalExperience, rawExperience, source)
 	local session = Analytics.get(player)
 	if not session then
 		return
 	end
+	local finalAmount = math.max(0, tonumber(finalExperience) or 0)
+	local rawAmount = math.max(0, tonumber(rawExperience) or finalAmount)
 	Analytics.touchCombat(session)
-	session.experienceFinal = session.experienceFinal + math.max(0, tonumber(finalExperience) or 0)
-	session.experienceRaw = session.experienceRaw + math.max(0, tonumber(rawExperience) or tonumber(finalExperience) or 0)
+	session.experienceFinal = session.experienceFinal + finalAmount
+	session.experienceRaw = session.experienceRaw + rawAmount
 	session.levelEnd = player:getLevel()
+	local monster = monsterBucket(session, source)
+	if monster then
+		monster.experienceRaw = monster.experienceRaw + rawAmount
+	end
 end
 
 local function damageBucket(session, damageType)
@@ -183,11 +218,11 @@ function Analytics.recordDamageDealt(player, target, amount, damageType)
 	end
 	Analytics.touchCombat(session)
 	session.damageDealt = session.damageDealt + amount
-	damageBucket(session, damageType).dealt = damageBucket(session, damageType).dealt + amount
-	if Analytics.config.trackMonsters and target and target:isMonster() then
-		local name = target:getName():lower()
-		session.monsters[name] = session.monsters[name] or { kills = 0, damageDealt = 0, damageReceived = 0, experienceRaw = 0 }
-		session.monsters[name].damageDealt = session.monsters[name].damageDealt + amount
+	local bucket = damageBucket(session, damageType)
+	bucket.dealt = bucket.dealt + amount
+	local monster = monsterBucket(session, target)
+	if monster then
+		monster.damageDealt = monster.damageDealt + amount
 	end
 end
 
@@ -202,11 +237,11 @@ function Analytics.recordDamageReceived(player, attacker, amount, damageType)
 	end
 	Analytics.touchCombat(session)
 	session.damageReceived = session.damageReceived + amount
-	damageBucket(session, damageType).received = damageBucket(session, damageType).received + amount
-	if Analytics.config.trackMonsters and attacker and attacker:isMonster() then
-		local name = attacker:getName():lower()
-		session.monsters[name] = session.monsters[name] or { kills = 0, damageDealt = 0, damageReceived = 0, experienceRaw = 0 }
-		session.monsters[name].damageReceived = session.monsters[name].damageReceived + amount
+	local bucket = damageBucket(session, damageType)
+	bucket.received = bucket.received + amount
+	local monster = monsterBucket(session, attacker)
+	if monster then
+		monster.damageReceived = monster.damageReceived + amount
 	end
 end
 
@@ -227,11 +262,15 @@ function Analytics.recordHealing(healer, target, effective, overhealing)
 end
 
 function Analytics.recordManaSpent(player, amount)
+	amount = math.max(0, tonumber(amount) or 0)
+	if amount == 0 then
+		return
+	end
 	local session = Analytics.get(player)
 	if not session then
 		return
 	end
-	session.manaSpent = session.manaSpent + math.max(0, tonumber(amount) or 0)
+	session.manaSpent = session.manaSpent + amount
 end
 
 function Analytics.recordKill(player, target)
@@ -244,10 +283,9 @@ function Analytics.recordKill(player, target)
 	end
 	Analytics.touchCombat(session)
 	session.monstersKilled = session.monstersKilled + 1
-	if Analytics.config.trackMonsters then
-		local name = target:getName():lower()
-		session.monsters[name] = session.monsters[name] or { kills = 0, damageDealt = 0, damageReceived = 0, experienceRaw = 0 }
-		session.monsters[name].kills = session.monsters[name].kills + 1
+	local monster = monsterBucket(session, target)
+	if monster then
+		monster.kills = monster.kills + 1
 	end
 end
 
@@ -276,7 +314,6 @@ function Analytics.recordSpell(player, spellName, damage, healing, mana, targets
 	spell.mana = spell.mana + math.max(0, tonumber(mana) or 0)
 	spell.critical = spell.critical + (critical and 1 or 0)
 	session.spells[key] = spell
-	Analytics.recordManaSpent(player, mana)
 end
 
 function Analytics.recordSupply(player, itemId, amount, unitValue)
@@ -320,6 +357,9 @@ function Analytics.recordLoot(player, itemId, amount, npcValue, marketValue)
 end
 
 function Analytics.enqueue(session)
+	if Analytics.config.databaseEnabled ~= true then
+		return true
+	end
 	if #Analytics.queue >= clampInteger(Analytics.config.queueLimit, 100, nil, 10000) then
 		logger.error("[GameplayAnalytics] Queue limit reached; dropping session {}", session.uuid)
 		return false
@@ -338,13 +378,16 @@ function Analytics.finish(player, reason)
 		return
 	end
 	local timestamp = now()
+	if reason == "combat-timeout" and session.lastCombatAt > 0 then
+		timestamp = session.lastCombatAt
+	end
 	closeCombatWindow(session, timestamp)
 	session.endedAt = timestamp
 	session.levelEnd = player:getLevel()
 	session.finishReason = reason or "unknown"
 	Analytics.sessions[id] = nil
 	local duration = session.endedAt - session.startedAt
-	if duration >= clampInteger(Analytics.config.minimumSessionSeconds, 0, nil, 60) then
+	if sessionHasData(session) and duration >= clampInteger(Analytics.config.minimumSessionSeconds, 0, nil, 60) then
 		Analytics.enqueue(session)
 	end
 end
@@ -354,7 +397,9 @@ local function sessionInsert(session)
 	return string.format(
 		[[INSERT INTO `analytics_sessions`
         (`session_uuid`,`player_id`,`player_name`,`vocation_id`,`level_start`,`level_end`,`started_at`,`ended_at`,`duration_seconds`,`combat_seconds`,`experience_raw`,`experience_final`,`damage_dealt`,`damage_received`,`healing_self`,`healing_others`,`overhealing`,`mana_spent`,`monsters_killed`,`deaths`,`loot_value_npc`,`loot_value_market`,`supplies_value`,`party_size`,`shared_experience`,`detail_level`,`analytics_version`)
-        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)]],
+        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)
+        ON DUPLICATE KEY UPDATE
+        `player_id`=VALUES(`player_id`),`player_name`=VALUES(`player_name`),`vocation_id`=VALUES(`vocation_id`),`level_start`=VALUES(`level_start`),`level_end`=VALUES(`level_end`),`started_at`=VALUES(`started_at`),`ended_at`=VALUES(`ended_at`),`duration_seconds`=VALUES(`duration_seconds`),`combat_seconds`=VALUES(`combat_seconds`),`experience_raw`=VALUES(`experience_raw`),`experience_final`=VALUES(`experience_final`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`healing_self`=VALUES(`healing_self`),`healing_others`=VALUES(`healing_others`),`overhealing`=VALUES(`overhealing`),`mana_spent`=VALUES(`mana_spent`),`monsters_killed`=VALUES(`monsters_killed`),`deaths`=VALUES(`deaths`),`loot_value_npc`=VALUES(`loot_value_npc`),`loot_value_market`=VALUES(`loot_value_market`),`supplies_value`=VALUES(`supplies_value`),`party_size`=VALUES(`party_size`),`shared_experience`=VALUES(`shared_experience`),`detail_level`=VALUES(`detail_level`),`analytics_version`=VALUES(`analytics_version`)]],
 		escaped(session.uuid),
 		session.playerId,
 		nameSql,
@@ -385,6 +430,10 @@ local function sessionInsert(session)
 	)
 end
 
+local function runDetailQuery(query)
+	return db.query(query) == true
+end
+
 local function insertDetails(session)
 	local queryResult = db.storeQuery("SELECT `id` FROM `analytics_sessions` WHERE `session_uuid` = " .. escaped(session.uuid) .. " LIMIT 1")
 	if not queryResult then
@@ -393,49 +442,83 @@ local function insertDetails(session)
 	end
 	local sessionId = result.getNumber(queryResult, "id")
 	result.free(queryResult)
+	local success = true
+
 	if Analytics.config.trackMonsters then
 		for name, data in pairs(session.monsters) do
-			db.query(string.format("INSERT INTO `analytics_session_monsters` (`session_id`,`monster_name`,`kills`,`damage_dealt`,`damage_received`,`experience_raw`) VALUES (%d,%s,%d,%d,%d,%d)", sessionId, escaped(name), data.kills, data.damageDealt, data.damageReceived, data.experienceRaw))
+			local query = string.format(
+				"INSERT INTO `analytics_session_monsters` (`session_id`,`monster_name`,`kills`,`damage_dealt`,`damage_received`,`experience_raw`) VALUES (%d,%s,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `kills`=VALUES(`kills`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`experience_raw`=VALUES(`experience_raw`)",
+				sessionId,
+				escaped(name),
+				data.kills,
+				data.damageDealt,
+				data.damageReceived,
+				data.experienceRaw
+			)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackSpells then
 		for name, data in pairs(session.spells) do
-			db.query(string.format("INSERT INTO `analytics_session_spells` (`session_id`,`spell_name`,`casts`,`targets_hit`,`damage`,`healing`,`mana_spent`,`critical_hits`) VALUES (%d,%s,%d,%d,%d,%d,%d,%d)", sessionId, escaped(name), data.casts, data.targets, data.damage, data.healing, data.mana, data.critical))
+			local query = string.format(
+				"INSERT INTO `analytics_session_spells` (`session_id`,`spell_name`,`casts`,`targets_hit`,`damage`,`healing`,`mana_spent`,`critical_hits`) VALUES (%d,%s,%d,%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `casts`=VALUES(`casts`),`targets_hit`=VALUES(`targets_hit`),`damage`=VALUES(`damage`),`healing`=VALUES(`healing`),`mana_spent`=VALUES(`mana_spent`),`critical_hits`=VALUES(`critical_hits`)",
+				sessionId,
+				escaped(name),
+				data.casts,
+				data.targets,
+				data.damage,
+				data.healing,
+				data.mana,
+				data.critical
+			)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackDamageTypes then
 		for damageType, data in pairs(session.damageTypes) do
-			db.query(string.format("INSERT INTO `analytics_session_damage_types` (`session_id`,`damage_type`,`damage_dealt`,`damage_received`) VALUES (%d,%d,%d,%d)", sessionId, damageType, data.dealt, data.received))
+			local query = string.format("INSERT INTO `analytics_session_damage_types` (`session_id`,`damage_type`,`damage_dealt`,`damage_received`) VALUES (%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`)", sessionId, damageType, data.dealt, data.received)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackSupplies then
 		for itemId, data in pairs(session.supplies) do
-			db.query(string.format("INSERT INTO `analytics_session_supplies` (`session_id`,`item_id`,`amount_used`,`unit_value`,`total_value`) VALUES (%d,%d,%d,%d,%d)", sessionId, itemId, data.amount, data.unitValue, data.totalValue))
+			local query = string.format("INSERT INTO `analytics_session_supplies` (`session_id`,`item_id`,`amount_used`,`unit_value`,`total_value`) VALUES (%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `amount_used`=VALUES(`amount_used`),`unit_value`=VALUES(`unit_value`),`total_value`=VALUES(`total_value`)", sessionId, itemId, data.amount, data.unitValue, data.totalValue)
+			success = runDetailQuery(query) and success
 		end
 	end
 	if Analytics.config.trackLoot then
 		for itemId, data in pairs(session.loot) do
-			db.query(string.format("INSERT INTO `analytics_session_loot` (`session_id`,`item_id`,`amount`,`npc_value`,`market_value`) VALUES (%d,%d,%d,%d,%d)", sessionId, itemId, data.amount, data.npcValue, data.marketValue))
+			local query = string.format("INSERT INTO `analytics_session_loot` (`session_id`,`item_id`,`amount`,`npc_value`,`market_value`) VALUES (%d,%d,%d,%d,%d) ON DUPLICATE KEY UPDATE `amount`=VALUES(`amount`),`npc_value`=VALUES(`npc_value`),`market_value`=VALUES(`market_value`)", sessionId, itemId, data.amount, data.npcValue, data.marketValue)
+			success = runDetailQuery(query) and success
 		end
 	end
-	return true
+
+	if not success then
+		logger.error("[GameplayAnalytics] Failed to persist one or more details for session {}.", session.uuid)
+	end
+	return success
 end
 
 function Analytics.flush()
-	if Analytics.config.databaseEnabled ~= true or #Analytics.queue == 0 then
+	if Analytics.config.databaseEnabled ~= true then
+		Analytics.queue = {}
+		Analytics.lastFlush = now()
+		return true
+	end
+	if #Analytics.queue == 0 then
 		Analytics.lastFlush = now()
 		return true
 	end
 	local pending = Analytics.queue
 	Analytics.queue = {}
 	for _, session in ipairs(pending) do
-		if db.query(sessionInsert(session)) then
-			insertDetails(session)
-		else
-			logger.error("[GameplayAnalytics] Failed to persist session {}", session.uuid)
-			if #Analytics.queue < clampInteger(Analytics.config.queueLimit, 100, nil, 10000) then
-				Analytics.queue[#Analytics.queue + 1] = session
-			end
+		local persisted = db.query(sessionInsert(session)) == true
+		if persisted then
+			persisted = insertDetails(session)
+		end
+		if not persisted then
+			logger.error("[GameplayAnalytics] Failed to persist session {}; scheduling retry.", session.uuid)
+			Analytics.enqueue(session)
 		end
 	end
 	Analytics.lastFlush = now()
@@ -445,17 +528,22 @@ end
 function Analytics.expireInactive()
 	local timestamp = now()
 	local timeout = clampInteger(Analytics.config.combatTimeoutSeconds, 10, nil, 120)
-	for playerId, session in pairs(Analytics.sessions) do
+	local expired = {}
+	for playerGuid, session in pairs(Analytics.sessions) do
 		if session.lastCombatAt > 0 and timestamp - session.lastCombatAt >= timeout then
-			local player = Player(playerId)
-			if player then
-				Analytics.finish(player, "combat-timeout")
-				Analytics.start(player)
-			else
-				closeCombatWindow(session, timestamp)
-				session.endedAt = timestamp
-				Analytics.sessions[playerId] = nil
-				Analytics.enqueue(session)
+			expired[#expired + 1] = { playerGuid = playerGuid, session = session }
+		end
+	end
+	for _, entry in ipairs(expired) do
+		local player = entry.session.runtimeId and Player(entry.session.runtimeId) or nil
+		if player then
+			Analytics.finish(player, "combat-timeout")
+		else
+			closeCombatWindow(entry.session, entry.session.lastCombatAt)
+			entry.session.endedAt = entry.session.lastCombatAt
+			Analytics.sessions[entry.playerGuid] = nil
+			if sessionHasData(entry.session) then
+				Analytics.enqueue(entry.session)
 			end
 		end
 	end
@@ -482,10 +570,22 @@ end
 
 function Analytics.stopRuntime()
 	Analytics.running = false
-	for playerId, _ in pairs(Analytics.sessions) do
-		local player = Player(playerId)
+	local active = {}
+	for _, session in pairs(Analytics.sessions) do
+		local player = session.runtimeId and Player(session.runtimeId) or nil
 		if player then
-			Analytics.finish(player, "shutdown")
+			active[#active + 1] = player
+		end
+	end
+	for _, player in ipairs(active) do
+		Analytics.finish(player, "shutdown")
+	end
+	for playerGuid, session in pairs(Analytics.sessions) do
+		closeCombatWindow(session, session.lastCombatAt > 0 and session.lastCombatAt or now())
+		session.endedAt = session.lastCombatAt > 0 and session.lastCombatAt or now()
+		Analytics.sessions[playerGuid] = nil
+		if sessionHasData(session) then
+			Analytics.enqueue(session)
 		end
 	end
 	Analytics.flush()

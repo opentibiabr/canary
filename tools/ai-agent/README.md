@@ -23,17 +23,27 @@ python tools/ai-agent/scan_ids.py --root . --output docs/ai-agent/ID_REGISTRY.js
 
 The generated document follows `docs/ai-agent/ID_REGISTRY.schema.json`.
 
-## Current limitations
+### Scanner limitations
 
-The scanner is intentionally conservative and regex-based. It detects numeric identifiers present directly in source files. It does not yet resolve:
+The identifier scanner is intentionally conservative and regex-based. It detects numeric identifiers present directly in source files. It does not yet merge binary OTBM action and unique IDs into `ID_REGISTRY.json`, resolve Lua constants and arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files.
 
-- Lua constants and arithmetic expressions,
-- imported storage tables,
-- dynamically constructed identifiers,
-- binary OTBM action and unique IDs,
-- item IDs stored only in binary asset files.
+The separate OTBM tool described below can inspect and export binary map regions. A future registry-integration stage can feed those results into the identifier allocator. Multi-file reuse is reported as a warning rather than an automatic error because shared identifiers may be intentional.
 
-A later indexer stage will add Lua-aware parsing and OTBM inspection. Multi-file reuse is reported as a warning rather than an automatic error because shared identifiers may be intentional.
+## OTBM map intelligence
+
+`otbm_map_tool.py` safely inspects Canary OTBM files, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patch documents, generates diffs, detects conflicts on newer maps, and writes only to separate output files when explicitly enabled.
+
+Main entry points:
+
+```bash
+python tools/ai-agent/otbm_map_tool.py verify map.otbm --count-tiles
+python tools/ai-agent/otbm_map_tool.py catalog data/items/items.xml --output artifacts/ITEM_CATALOG.json
+python tools/ai-agent/otbm_map_tool.py export map.otbm --from 32000,32000,7 --to 32031,32031,7 --items-xml data/items/items.xml --output artifacts/region.json --preview artifacts/region.svg
+python tools/ai-agent/otbm_map_tool.py validate-patch patches/change.json
+python tools/ai-agent/otbm_map_tool.py apply map.otbm patches/change.json --output artifacts/map-edited.otbm --report artifacts/change-report.json
+```
+
+The last command is a dry-run unless `--write` is present. See `docs/ai-agent/OTBM_MAP_TOOL.md` and `docs/ai-agent/OTBM_PATCH.schema.json` for the complete safety and format contracts.
 
 ## Content authoring pipeline
 

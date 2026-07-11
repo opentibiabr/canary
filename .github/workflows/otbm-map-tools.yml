@@ -1,0 +1,59 @@
+---
+name: OTBM Map Tools
+
+on:
+  push:
+    branches:
+      - "feat/otbm-map-*"
+      - "fix/otbm-map-*"
+    paths:
+      - "tools/ai-agent/otbm_*.py"
+      - "tools/ai-agent/test_otbm_*.py"
+      - "docs/ai-agent/OTBM_*.md"
+      - "docs/ai-agent/OTBM_*.json"
+      - ".github/workflows/otbm-map-tools.yml"
+  pull_request:
+    paths:
+      - "tools/ai-agent/otbm_*.py"
+      - "tools/ai-agent/test_otbm_*.py"
+      - "docs/ai-agent/OTBM_*.md"
+      - "docs/ai-agent/OTBM_*.json"
+      - ".github/workflows/otbm-map-tools.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-otbm-tools:
+    name: Validate OTBM map tools
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate patch schema JSON
+        run: python -m json.tool docs/ai-agent/OTBM_PATCH.schema.json > /dev/null
+
+      - name: Run focused OTBM tests
+        id: otbm-tests
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p artifacts
+          python -m unittest discover -s tools/ai-agent -p "test_otbm_*.py" -v 2>&1 | tee artifacts/OTBM_TESTS.log
+
+      - name: Upload OTBM test log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: otbm-map-tool-tests
+          path: artifacts/OTBM_TESTS.log
+          if-no-files-found: error
+          retention-days: 14

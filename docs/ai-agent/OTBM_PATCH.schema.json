@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_PATCH.schema.json",
+  "title": "Canary OTBM patch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "bounds", "operations"],
+  "properties": {
+    "format": {"const": "canary-otbm-patch-v1"},
+    "name": {"type": "string", "minLength": 1},
+    "base": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+        "file": {"type": "string"}
+      }
+    },
+    "bounds": {"$ref": "#/$defs/bounds"},
+    "operations": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/operation"}
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 15}
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"$ref": "#/$defs/position"},
+        "to": {"$ref": "#/$defs/position"}
+      }
+    },
+    "sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "itemId": {"type": "integer", "minimum": 0, "maximum": 65535},
+    "common": {
+      "type": "object",
+      "required": ["op", "position"],
+      "properties": {
+        "op": {"type": "string"},
+        "position": {"$ref": "#/$defs/position"},
+        "expectedTileHash": {"$ref": "#/$defs/sha256"},
+        "resultTileHash": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+        "occurrence": {"type": "integer", "minimum": 0}
+      }
+    },
+    "operation": {
+      "allOf": [
+        {"$ref": "#/$defs/common"},
+        {
+          "oneOf": [
+            {
+              "properties": {
+                "op": {"const": "replace_item_id"},
+                "expectedItemId": {"$ref": "#/$defs/itemId"},
+                "itemId": {"$ref": "#/$defs/itemId"},
+                "scope": {"enum": ["any", "inline", "child"]}
+              },
+              "required": ["expectedTileHash", "expectedItemId", "itemId"]
+            },
+            {
+              "properties": {
+                "op": {"const": "remove_item"},
+                "itemId": {"$ref": "#/$defs/itemId"},
+                "scope": {"enum": ["any", "inline", "child"]}
+              },
+              "required": ["expectedTileHash", "itemId"]
+            },
+            {
+              "properties": {
+                "op": {"const": "add_simple_item"},
+                "itemId": {"$ref": "#/$defs/itemId"},
+                "attributes": {"type": "object"}
+              },
+              "required": ["expectedTileHash", "itemId"]
+            },
+            {
+              "properties": {
+                "op": {"const": "set_item_attribute"},
+                "itemId": {"$ref": "#/$defs/itemId"},
+                "attribute": {"type": "string", "minLength": 1},
+                "expected": {},
+                "value": {}
+              },
+              "required": ["expectedTileHash", "itemId", "attribute", "value"]
+            },
+            {
+              "properties": {
+                "op": {"const": "set_tile_flags"},
+                "expected": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+                "value": {"type": "integer", "minimum": 0, "maximum": 4294967295}
+              },
+              "required": ["expectedTileHash", "value"]
+            },
+            {
+              "properties": {
+                "op": {"const": "set_house_id"},
+                "expected": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+                "value": {"type": "integer", "minimum": 0, "maximum": 4294967295}
+              },
+              "required": ["expectedTileHash", "value"]
+            },
+            {
+              "properties": {
+                "op": {"const": "create_tile"},
+                "kind": {"enum": ["tile", "house"]},
+                "houseId": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+                "flags": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+                "inlineItemId": {"oneOf": [{"$ref": "#/$defs/itemId"}, {"type": "null"}]},
+                "items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["itemId"],
+                    "properties": {
+                      "itemId": {"$ref": "#/$defs/itemId"},
+                      "attributes": {"type": "object"}
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "properties": {
+                "op": {"enum": ["add_tile", "replace_tile"]},
+                "tileBase64": {"type": "string", "minLength": 1}
+              },
+              "required": ["tileBase64"]
+            },
+            {
+              "properties": {"op": {"const": "delete_tile"}},
+              "required": ["expectedTileHash"]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

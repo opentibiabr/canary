@@ -517,7 +517,7 @@ std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::t
 }
 
 void Dispatcher::refreshAdaptiveBudgets() {
-	if (!queueLatencyLoggingEnabled.load(std::memory_order_acquire)) {
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_acquire) || g_game().getGameState() != GAME_STATE_NORMAL) {
 		return;
 	}
 

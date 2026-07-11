@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_ITEM_AUDIT_REPORT.schema.json",
+  "title": "Canary OTBM item audit report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "ok",
+    "sources",
+    "summary",
+    "mechanicSummary",
+    "missingAppearances",
+    "withoutItemsXml",
+    "interactiveWithoutItemsXml",
+    "appearanceOnlyDecorations",
+    "mapMechanicItems",
+    "mechanicPlacements",
+    "unknownAttributeTypes",
+    "notes"
+  ],
+  "properties": {
+    "format": {"const": "canary-otbm-item-audit-v1"},
+    "ok": {"type": "boolean"},
+    "sources": {"type": "object"},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tileCount",
+        "usedItemIds",
+        "totalPlacements",
+        "inlinePlacements",
+        "itemNodePlacements",
+        "missingAppearanceIds",
+        "missingAppearancePlacements",
+        "withoutItemsXmlIds",
+        "withoutItemsXmlPlacements",
+        "interactiveWithoutItemsXmlIds",
+        "interactiveWithoutItemsXmlPlacements",
+        "appearanceOnlyDecorationIds",
+        "appearanceOnlyDecorationPlacements",
+        "mapMechanicItemIds",
+        "mapMechanicPlacements",
+        "unknownAttributeTails"
+      ],
+      "properties": {
+        "tileCount": {"type": "integer", "minimum": 0},
+        "usedItemIds": {"type": "integer", "minimum": 0},
+        "totalPlacements": {"type": "integer", "minimum": 0},
+        "inlinePlacements": {"type": "integer", "minimum": 0},
+        "itemNodePlacements": {"type": "integer", "minimum": 0},
+        "missingAppearanceIds": {"type": "integer", "minimum": 0},
+        "missingAppearancePlacements": {"type": "integer", "minimum": 0},
+        "withoutItemsXmlIds": {"type": "integer", "minimum": 0},
+        "withoutItemsXmlPlacements": {"type": "integer", "minimum": 0},
+        "interactiveWithoutItemsXmlIds": {"type": "integer", "minimum": 0},
+        "interactiveWithoutItemsXmlPlacements": {"type": "integer", "minimum": 0},
+        "appearanceOnlyDecorationIds": {"type": "integer", "minimum": 0},
+        "appearanceOnlyDecorationPlacements": {"type": "integer", "minimum": 0},
+        "mapMechanicItemIds": {"type": "integer", "minimum": 0},
+        "mapMechanicPlacements": {"type": "integer", "minimum": 0},
+        "unknownAttributeTails": {"type": "integer", "minimum": 0}
+      }
+    },
+    "mechanicSummary": {
+      "type": "object",
+      "required": ["attributePlacements", "actionIds", "uniqueIds", "teleportDestinations"],
+      "properties": {
+        "attributePlacements": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 0}},
+        "actionIds": {"type": "array", "items": {"$ref": "#/$defs/valueCount"}},
+        "uniqueIds": {"type": "array", "items": {"$ref": "#/$defs/valueCount"}},
+        "teleportDestinations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["position", "placements"],
+            "properties": {
+              "position": {"$ref": "#/$defs/position"},
+              "placements": {"type": "integer", "minimum": 1}
+            }
+          }
+        }
+      }
+    },
+    "missingAppearances": {"type": "array", "items": {"$ref": "#/$defs/itemFinding"}},
+    "withoutItemsXml": {"type": "array", "items": {"$ref": "#/$defs/itemFinding"}},
+    "interactiveWithoutItemsXml": {"type": "array", "items": {"$ref": "#/$defs/itemFinding"}},
+    "appearanceOnlyDecorations": {"type": "array", "items": {"$ref": "#/$defs/itemFinding"}},
+    "mapMechanicItems": {"type": "array", "items": {"$ref": "#/$defs/itemFinding"}},
+    "mechanicPlacements": {"type": "array", "items": {"$ref": "#/$defs/mechanicPlacement"}},
+    "unknownAttributeTypes": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+    "notes": {"type": "array", "items": {"type": "string"}}
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 15}
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "valueCount": {
+      "type": "object",
+      "required": ["value", "placements"],
+      "properties": {
+        "value": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "placements": {"type": "integer", "minimum": 1}
+      }
+    },
+    "itemFinding": {
+      "type": "object",
+      "required": [
+        "id",
+        "placements",
+        "inlinePlacements",
+        "itemNodePlacements",
+        "attributes",
+        "appearanceName",
+        "interactiveAppearanceFlags",
+        "itemsXml",
+        "hasMapMechanic"
+      ],
+      "properties": {
+        "id": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "placements": {"type": "integer", "minimum": 1},
+        "inlinePlacements": {"type": "integer", "minimum": 0},
+        "itemNodePlacements": {"type": "integer", "minimum": 0},
+        "attributes": {"type": "object", "additionalProperties": {"type": "integer", "minimum": 1}},
+        "appearanceName": {"oneOf": [{"type": "string"}, {"type": "null"}]},
+        "interactiveAppearanceFlags": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "itemsXml": {"oneOf": [{"type": "object"}, {"type": "null"}]},
+        "hasMapMechanic": {"type": "boolean"}
+      }
+    },
+    "mechanicPlacement": {
+      "type": "object",
+      "required": ["itemId", "position", "itemDepth"],
+      "properties": {
+        "itemId": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "position": {"$ref": "#/$defs/position"},
+        "itemDepth": {"type": "integer", "minimum": 0},
+        "actionId": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "uniqueId": {"type": "integer", "minimum": 0, "maximum": 65535},
+        "houseDoorId": {"type": "integer", "minimum": 0, "maximum": 255},
+        "teleportDestination": {"$ref": "#/$defs/position"}
+      }
+    }
+  }
+}

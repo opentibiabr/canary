@@ -48,6 +48,7 @@
 #include "items/weapons/weapons.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
+#include "security/login_session_manager.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
 #include "server/network/protocol/protocol_port_utils.hpp"
@@ -1431,8 +1432,23 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		return;
 	}
 
+	// Modern, non-old-protocol clients configured for authType=="session" are
+	// the one wire path with an opaque session-key field (see
+	// docs/systems/login-session-manager.md): try the secure, single-use
+	// token first. If it doesn't match anything (not issued through this
+	// path, wrong protocol/character binding, expired, or already redeemed),
+	// fall through to the existing account_sessions/password check exactly
+	// as before - this is purely additive.
+	std::optional<uint32_t> preAuthenticatedAccountId;
+	if (!oldProtocol && gameLoginLayout->authenticationLayout == GameLoginAuthenticationLayout::SessionKey && authType == "session") {
+		const auto tokenResult = LoginSessionManager::getInstance().consumeToken(sessionKey, characterName, protocolProfile->id);
+		if (tokenResult.ok) {
+			preAuthenticatedAccountId = tokenResult.accountId;
+		}
+	}
+
 	uint32_t accountId;
-	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIP())) {
+	if (!IOLoginData::gameWorldAuthentication(accountDescriptor, password, characterName, accountId, oldProtocol, getIP(), preAuthenticatedAccountId)) {
 		ss.str(std::string());
 		if (authType == "session") {
 			ss << "Your session has expired. Please log in again.";

@@ -193,7 +193,7 @@ TEST(DispatcherTelemetryTest, ReportsBoundedPercentilesAndResetsTheWindow) {
 TEST(DispatcherTelemetryTest, PreservesOnlyTheLongestLowCardinalityContext) {
 	dispatcher::telemetry::ConcurrentTimedWork telemetry;
 	telemetry.observe(100us, 2, "first");
-	telemetry.observe(500us, 3, "slowest");
+	telemetry.observe(500us, 3, std::string { "slowest" });
 	telemetry.observe(250us, 1, "middle");
 
 	const auto snapshot = telemetry.snapshotAndReset();

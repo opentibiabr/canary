@@ -18,7 +18,9 @@
 	#include <cstddef>
 	#include <cstdint>
 	#include <mutex>
+	#include <string>
 	#include <string_view>
+	#include <utility>
 #endif
 
 namespace dispatcher::telemetry {
@@ -121,7 +123,7 @@ namespace dispatcher::telemetry {
 		LatencySnapshot latency;
 		uint64_t workUnits = 0;
 		Duration longestDuration { 0 };
-		std::string_view longestContext;
+		std::string longestContext;
 
 		[[nodiscard]] bool empty() const {
 			return latency.empty();
@@ -147,8 +149,13 @@ namespace dispatcher::telemetry {
 
 				std::scoped_lock lock(longestContextMutex);
 				if (value >= longestContextDuration.count()) {
-					longestContextDuration = Duration(value);
-					longestContext = context;
+					try {
+						longestContext.assign(context);
+						longestContextDuration = Duration(value);
+					} catch (...) {
+						longestContext.clear();
+						longestContextDuration = Duration::zero();
+					}
 				}
 				break;
 			}
@@ -162,9 +169,8 @@ namespace dispatcher::telemetry {
 			{
 				std::scoped_lock lock(longestContextMutex);
 				snapshot.longestDuration = longestContextDuration;
-				snapshot.longestContext = longestContext;
+				snapshot.longestContext = std::move(longestContext);
 				longestContextDuration = Duration::zero();
-				longestContext = {};
 			}
 			return snapshot;
 		}
@@ -179,6 +185,6 @@ namespace dispatcher::telemetry {
 		std::atomic_int64_t longestContextDurationUs = 0;
 		std::mutex longestContextMutex;
 		Duration longestContextDuration { 0 };
-		std::string_view longestContext;
+		std::string longestContext;
 	};
 }

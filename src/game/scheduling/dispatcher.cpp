@@ -406,7 +406,7 @@ void Dispatcher::logRuntimeTelemetry() {
 		if (queue.empty() && task.empty() && group.empty() && barrier.empty()) {
 			continue;
 		}
-		const auto longestTaskContext = task.longestContext.empty() ? std::string_view { "none" } : task.longestContext;
+		const auto longestTaskContext = task.longestContext.empty() ? std::string_view { "none" } : std::string_view { task.longestContext };
 
 		g_logger().debug(
 			"Dispatcher telemetry: lane={}, queued={}, rejected={}, queueSamples={}, queueP50={} us, queueP95={} us, queueP99={} us, taskSamples={}, taskP50={} us, taskP95={} us, taskP99={} us, laneP99={} us, barrierP99={} us, longestTask={} us, longestTaskContext={}",
@@ -430,7 +430,7 @@ void Dispatcher::logRuntimeTelemetry() {
 
 	const auto scheduled = scheduledLatenessTelemetry.snapshotAndReset();
 	if (!scheduled.empty()) {
-		const auto latestContext = scheduled.longestContext.empty() ? std::string_view { "none" } : scheduled.longestContext;
+		const auto latestContext = scheduled.longestContext.empty() ? std::string_view { "none" } : std::string_view { scheduled.longestContext };
 		g_logger().debug(
 			"Dispatcher scheduled telemetry: samples={}, latenessP50={} us, latenessP95={} us, latenessP99={} us, maxLateness={} us, latestContext={}",
 			scheduled.latency.samples,

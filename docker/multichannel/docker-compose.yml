@@ -1,0 +1,173 @@
+---
+# Multi-channel cluster development example (see
+# docker/multichannel/README.md and docs/multichannel/ARCHITECTURE.md).
+#
+# Brings up: MariaDB, Redis, and three Canary channel processes sharing the
+# same database, the same Redis instance, and the same read-only datapack/
+# map. Channel 1 is the login gateway (the only one with a login port
+# published to the host - see README.md for why the other two still run
+# their own login listener internally in this Phase 1 PR).
+#
+# NOT build-tested in the sandbox this PR was authored in - no working
+# Docker daemon was available there (see docs/multichannel/TEST_PLAN.md).
+# Review before relying on this for anything beyond local experimentation.
+name: canary-multichannel
+
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: canary
+      MARIADB_USER: canary
+      MARIADB_PASSWORD: canary
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - db-data:/var/lib/mysql
+      - ../../schema.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./seed-channels.sql:/docker-entrypoint-initdb.d/20-seed-channels.sql:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [canary-net]
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks: [canary-net]
+
+  channel1:
+    build:
+      context: ../..
+      dockerfile: docker/multichannel/Dockerfile
+    restart: unless-stopped
+    environment:
+      CANARY_CHANNEL_ID: "1"
+      CANARY_DB_HOST: db
+      CANARY_DB_USER: canary
+      CANARY_DB_PASSWORD: canary
+      CANARY_DB_NAME: canary
+      CANARY_REDIS_HOST: redis
+      CANARY_REDIS_PORT: "6379"
+      CANARY_EXTERNAL_IP: "127.0.0.1"
+      CANARY_SERVER_NAME: "Channel 1"
+      CANARY_WORLD_TYPE: "no-pvp"
+      CANARY_LOGIN_GATEWAY: "true"
+      CANARY_MULTICHANNEL_ENABLED: "true"
+      CANARY_LOGIN_PORT: "7171"
+      CANARY_GAME_PORT: "7172"
+      CANARY_STATUS_PORT: "7173"
+    entrypoint: ["/bin/bash", "/srv/canary/multichannel-entrypoint.sh"]
+    volumes:
+      - channel1-runtime:/srv/canary
+      - ../../data:/srv/canary/data:ro
+      - ../../data-otservbr-global:/srv/canary/data-otservbr-global:ro
+      - ../../start.sh:/srv/canary/start.sh:ro
+      - ../../config.lua.dist:/srv/canary/config.lua.dist:ro
+      - ./entrypoint.sh:/srv/canary/multichannel-entrypoint.sh:ro
+    ports:
+      - "7171:7171" # login gateway - the only channel that publishes this
+      - "7172:7172"
+      - "7173:7173"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [canary-net]
+
+  channel2:
+    build:
+      context: ../..
+      dockerfile: docker/multichannel/Dockerfile
+    restart: unless-stopped
+    environment:
+      CANARY_CHANNEL_ID: "2"
+      CANARY_DB_HOST: db
+      CANARY_DB_USER: canary
+      CANARY_DB_PASSWORD: canary
+      CANARY_DB_NAME: canary
+      CANARY_REDIS_HOST: redis
+      CANARY_REDIS_PORT: "6379"
+      CANARY_EXTERNAL_IP: "127.0.0.1"
+      CANARY_SERVER_NAME: "Channel 2"
+      CANARY_WORLD_TYPE: "no-pvp"
+      CANARY_LOGIN_GATEWAY: "false"
+      CANARY_MULTICHANNEL_ENABLED: "true"
+      # Internal login port is unpublished (see README) - kept identical to
+      # channel1's since each container has its own network namespace.
+      CANARY_LOGIN_PORT: "7171"
+      CANARY_GAME_PORT: "7172"
+      CANARY_STATUS_PORT: "7173"
+    entrypoint: ["/bin/bash", "/srv/canary/multichannel-entrypoint.sh"]
+    volumes:
+      - channel2-runtime:/srv/canary
+      - ../../data:/srv/canary/data:ro
+      - ../../data-otservbr-global:/srv/canary/data-otservbr-global:ro
+      - ../../start.sh:/srv/canary/start.sh:ro
+      - ../../config.lua.dist:/srv/canary/config.lua.dist:ro
+      - ./entrypoint.sh:/srv/canary/multichannel-entrypoint.sh:ro
+    ports:
+      - "8172:7172"
+      - "8173:7173"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [canary-net]
+
+  channel3:
+    build:
+      context: ../..
+      dockerfile: docker/multichannel/Dockerfile
+    restart: unless-stopped
+    environment:
+      CANARY_CHANNEL_ID: "3"
+      CANARY_DB_HOST: db
+      CANARY_DB_USER: canary
+      CANARY_DB_PASSWORD: canary
+      CANARY_DB_NAME: canary
+      CANARY_REDIS_HOST: redis
+      CANARY_REDIS_PORT: "6379"
+      CANARY_EXTERNAL_IP: "127.0.0.1"
+      CANARY_SERVER_NAME: "Channel 3"
+      CANARY_WORLD_TYPE: "pvp"
+      CANARY_LOGIN_GATEWAY: "false"
+      CANARY_MULTICHANNEL_ENABLED: "true"
+      CANARY_LOGIN_PORT: "7171"
+      CANARY_GAME_PORT: "7172"
+      CANARY_STATUS_PORT: "7173"
+    entrypoint: ["/bin/bash", "/srv/canary/multichannel-entrypoint.sh"]
+    volumes:
+      - channel3-runtime:/srv/canary
+      - ../../data:/srv/canary/data:ro
+      - ../../data-otservbr-global:/srv/canary/data-otservbr-global:ro
+      - ../../start.sh:/srv/canary/start.sh:ro
+      - ../../config.lua.dist:/srv/canary/config.lua.dist:ro
+      - ./entrypoint.sh:/srv/canary/multichannel-entrypoint.sh:ro
+    ports:
+      - "9172:7172"
+      - "9173:7173"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks: [canary-net]
+
+networks:
+  canary-net:
+
+volumes:
+  db-data:
+  channel1-runtime:
+  channel2-runtime:
+  channel3-runtime:

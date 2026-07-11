@@ -24,6 +24,12 @@ bullseye:setParameter(CONDITION_PARAM_SKILL_DISTANCE, 5)
 bullseye:setParameter(CONDITION_PARAM_SKILL_SHIELD, -10)
 bullseye:setParameter(CONDITION_PARAM_BUFF_SPELL, true)
 
+local AnalyticsPrices = dofile("data/scripts/lib/gameplay_analytics_prices.lua")
+local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+if not analyticsOk then
+	Analytics = nil
+end
+
 local antidote = Combat()
 antidote:setParameter(COMBAT_PARAM_TYPE, COMBAT_HEALING)
 antidote:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_MAGIC_BLUE)
@@ -148,6 +154,9 @@ function flaskPotion.onUse(player, item, fromPosition, target, toPosition, isHot
 	end
 
 	player:updateSupplyTracker(item)
+	if Analytics then
+		Analytics.recordSupply(player, item:getId(), 1, AnalyticsPrices.buyPrice(item:getId()))
+	end
 	item:remove(1)
 	return true
 end

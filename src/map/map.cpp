@@ -92,6 +92,38 @@ namespace {
 		}
 	}
 
+	void populateCreatureOccupancy(NavCell &cell, const std::shared_ptr<Tile> &tile) {
+		if (!tile) {
+			return;
+		}
+
+		const auto* creatures = tile->getCreatures();
+		if (!creatures) {
+			return;
+		}
+
+		for (const auto &creature : *creatures) {
+			if (!creature || creature->isInGhostMode()) {
+				continue;
+			}
+			if (cell.blockingCreatures < std::numeric_limits<uint8_t>::max()) {
+				++cell.blockingCreatures;
+			}
+			if (!creature->isInvisible()) {
+				cell.hasNonInvisibleCreature = true;
+			}
+
+			const auto &monster = creature->getMonster();
+			const auto &master = monster && monster->isSummon() ? monster->getMaster() : nullptr;
+			const bool pushableMonster = monster && monster->isPushable() && (!master || !master->getPlayerRaw());
+			if (pushableMonster && cell.pushableMonsters < std::numeric_limits<uint8_t>::max()) {
+				++cell.pushableMonsters;
+			} else if (!pushableMonster) {
+				cell.hasUnpushableCreature = true;
+			}
+		}
+	}
+
 	// Path searches call this for every candidate node; pass the creature's
 	// current tile captured once per search to avoid repeated weak_ptr locks.
 	std::shared_ptr<Tile> getPathfindingTile(
@@ -458,31 +490,7 @@ std::shared_ptr<const NavSectorSnapshot> Map::getOrBuildNavigationSector(uint32_
 					}
 				}
 
-				if (!tile) {
-					continue;
-				}
-				if (const auto* creatures = tile->getCreatures()) {
-					for (const auto &creature : *creatures) {
-						if (!creature || creature->isInGhostMode()) {
-							continue;
-						}
-						if (cell.blockingCreatures < std::numeric_limits<uint8_t>::max()) {
-							++cell.blockingCreatures;
-						}
-						if (!creature->isInvisible()) {
-							cell.hasNonInvisibleCreature = true;
-						}
-
-						const auto &monster = creature->getMonster();
-						const auto &master = monster && monster->isSummon() ? monster->getMaster() : nullptr;
-						const bool pushableMonster = monster && monster->isPushable() && (!master || !master->getPlayerRaw());
-						if (pushableMonster && cell.pushableMonsters < std::numeric_limits<uint8_t>::max()) {
-							++cell.pushableMonsters;
-						} else if (!pushableMonster) {
-							cell.hasUnpushableCreature = true;
-						}
-					}
-				}
+				populateCreatureOccupancy(cell, tile);
 			}
 		}
 	}

@@ -49,6 +49,25 @@ TEST_F(ClusterRuntimeTest, CleanLogoutReleasesAndAllowsReacquire) {
 	EXPECT_TRUE(runtime.acquireForLogin(42, 1, 10020).acquired);
 }
 
+TEST_F(ClusterRuntimeTest, GetTrackedSessionInfoReflectsTheAcquiredHandle) {
+	auto &runtime = ClusterRuntime::getInstance();
+	auto fake = std::make_shared<FakeRedisClient>();
+	runtime.configure(fake, 1, "instance-A", 1000, 200, 500);
+
+	EXPECT_FALSE(runtime.getTrackedSessionInfo(42).has_value());
+
+	const auto handle = runtime.acquireForLogin(42, 1, 10000);
+	ASSERT_TRUE(handle.acquired);
+
+	const auto info = runtime.getTrackedSessionInfo(42);
+	ASSERT_TRUE(info.has_value());
+	EXPECT_EQ(handle.sessionId, info->sessionId);
+	EXPECT_EQ(handle.fencingToken, info->fencingToken);
+
+	runtime.releaseForLogout(42, 10010);
+	EXPECT_FALSE(runtime.getTrackedSessionInfo(42).has_value());
+}
+
 TEST_F(ClusterRuntimeTest, HealthyRenewKeepsSessionTracked) {
 	auto &runtime = ClusterRuntime::getInstance();
 	auto fake = std::make_shared<FakeRedisClient>();

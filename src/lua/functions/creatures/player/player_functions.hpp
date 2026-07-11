@@ -24,6 +24,7 @@ class PlayerFunctions {
 	static int luaPlayerCreate(lua_State* L);
 
 	static int luaPlayerUnlockAllCharmRunes(lua_State* L);
+	static int luaPlayerRequestChannelSwitch(lua_State* L);
 	static int luaPlayerResetCharmsMonsters(lua_State* L);
 	static int luaPlayerAddCharmPoints(lua_State* L);
 	static int luaPlayerAddMinorCharmEchoes(lua_State* L);

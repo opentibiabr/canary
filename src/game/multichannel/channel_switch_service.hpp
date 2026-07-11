@@ -41,6 +41,8 @@ enum class ChannelSwitchDenyReason : uint8_t {
 	TargetFull,
 };
 
+[[nodiscard]] std::string describeChannelSwitchDenyReason(ChannelSwitchDenyReason reason);
+
 struct ChannelSwitchRequest {
 	int32_t accountId = 0;
 	int32_t playerId = 0;

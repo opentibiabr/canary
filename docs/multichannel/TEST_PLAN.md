@@ -77,8 +77,32 @@ discover.
 
 | Test | File | Status |
 |---|---|---|
-| `ClusterRuntime`: conflict rejection, clean release+reacquire, healthy renewal, legitimate supersession (no grace period), outage blocks new logins immediately, outage forces disconnect before lease could be stolen | `tests/unit/game/multichannel/cluster_runtime_test.cpp` | ✅ **run**, 7/7 passed |
+| `ClusterRuntime`: conflict rejection, clean release+reacquire, healthy renewal, legitimate supersession (no grace period), outage blocks new logins immediately, outage forces disconnect before lease could be stolen, `getTrackedSessionInfo` reflects the acquired handle | `tests/unit/game/multichannel/cluster_runtime_test.cpp` | ✅ **run**, 8/8 passed |
 | `HiredisRedisClient` against a **real local `redis-server`** (not `FakeRedisClient`): acquire/conflict/renew/non-holder-renew/release/re-acquire/real-wall-clock-expiry/unreachable-connection | ad hoc standalone harness (not part of the gtest suite - a production networked client isn't something the project's own unit-test target exercises against a live server either) | ✅ **run**, 19/19 assertions passed |
+| `multichannel::formatPosition`/`parsePosition`: round-trip, boundary values, malformed/negative/out-of-range/trailing-garbage rejection | `tests/unit/game/multichannel/position_serialization_test.cpp` | ✅ **run**, 10/10 passed |
+| `describeChannelSwitchDenyReason` returns a non-empty string for every `ChannelSwitchDenyReason` | `tests/unit/game/multichannel/channel_switch_service_test.cpp` | ✅ **run** (included in that file's 19/19) |
+
+`ChannelSwitchAuditStore`'s pure position (de)serialization was
+deliberately split into its own `position_serialization.*` (no `database.hpp`
+dependency) specifically so it could get the same real-gtest treatment as
+everything else, rather than being untestable-by-construction inside a
+class that also does live DB I/O - the same reasoning that split
+`channel_info.hpp` out of `channel_registry.hpp` in Phase 1.
+
+**A real bug this exercise found and fixed, in code from *this* PR, before
+it ever reached CI:** `Game::renewClusterSessions()` was first declared
+`const` (it only reads `ClusterRuntime` state, calling
+`renewAllAndCollectExpired`), but its body also calls the existing,
+non-const `Game::kickPlayer()` to force-disconnect an expired account -
+`this` inside a `const` member function is `const Game*`, which cannot
+bind to `kickPlayer`'s non-const `this`. Real compilers on every platform
+caught this immediately and identically (GCC: "passing 'const Game' as
+'this' argument discards qualifiers"; MSVC: "C2662: cannot convert 'this'
+pointer from 'const Game' to 'Game &'") the moment this reached CI - fixed
+by dropping the erroneous `const` from both the declaration and the
+definition. Left in this document instead of quietly amended away, per
+this repo's established practice of recording every real bug CI (not just
+local review) actually caught.
 
 `libhiredis-dev` (1.2.0, matching the vcpkg package's typical version) was
 installable via `apt-get` in this sandbox, same as `libgtest-dev` and
@@ -105,9 +129,11 @@ thing and passing for the wrong reason, which is exactly the kind of gap
 this level of real, executed verification exists to catch.
 
 **What was reviewed but could not be compiled or run in this sandbox:**
-the actual engine call sites - `ProtocolGame::login`'s acquire gate,
-`Player::onRemoveCreature`'s release call, `Game::renewClusterSessions`,
-and `CanaryServer::initializeMultichannelCluster`'s `HiredisRedisClient`
+the actual engine call sites - `ProtocolGame::login`'s acquire gate and
+switch-audit consumption, `Player::onRemoveCreature`'s release call,
+`Game::renewClusterSessions`, `Game::playerRequestChannelSwitch` and its
+`player:requestChannelSwitch` Lua binding, and
+`CanaryServer::initializeMultichannelCluster`'s `HiredisRedisClient`
 construction - and `EnginePositionLegality` (`tileExists`/
 `isInaccessibleHouse` against `Tile`/`House`, and the `Zone`-name
 convention for the other three checks). Each of these files transitively

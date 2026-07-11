@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '60'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '61'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -967,6 +967,7 @@ CREATE TABLE IF NOT EXISTS `channel_switch_audit` (
     `result` enum('SUCCESS','DENIED','ERROR') NOT NULL,
     `deny_reason` varchar(128) NOT NULL DEFAULT '',
     `created_at` bigint(20) NOT NULL,
+    `consumed_at` bigint(20) DEFAULT NULL,
     CONSTRAINT `channel_switch_audit_pk` PRIMARY KEY (`id`),
     INDEX `player_id` (`player_id`),
     INDEX `created_at` (`created_at`),

@@ -15,6 +15,7 @@
 	#include <cstdint>
 	#include <memory>
 	#include <mutex>
+	#include <optional>
 	#include <string>
 	#include <unordered_map>
 	#include <vector>
@@ -86,6 +87,18 @@ public:
 	std::vector<int32_t> renewAllAndCollectExpired(int64_t nowMs);
 
 	[[nodiscard]] std::size_t trackedCount() const;
+
+	struct TrackedSessionInfo {
+		std::string sessionId;
+		uint64_t fencingToken = 0;
+	};
+
+	// Read-only lookup of the session this process currently believes it
+	// holds for accountId, if any - used only for populating audit records
+	// (docs/multichannel/ARCHITECTURE.md §6) with the same session/fencing
+	// identifiers the lease itself uses, so an operator correlating a
+	// channel_switch_audit row with Redis state can do so directly.
+	[[nodiscard]] std::optional<TrackedSessionInfo> getTrackedSessionInfo(int32_t accountId) const;
 
 private:
 	ClusterRuntime() = default;

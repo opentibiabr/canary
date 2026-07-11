@@ -404,31 +404,45 @@ it answers every check against *this* process's own already-loaded map,
 which is only meaningful if the target channel loaded the same one. A
 caller resolving a switch to a channel with a **different** `mapHash` must
 not use it and should fall back to the temple-only step of the chain
-instead; see §6's "still not wired" note below for why this caller does
-not exist yet.
+instead — `Game::playerRequestChannelSwitch` (below) checks this itself.
 
-**📐 Still not wired: the actual switch command.** `ChannelSwitchService`
-and `PositionResolver`/`EnginePositionLegality` are both real and callable,
-but nothing in the engine invokes them yet — there is no in-game
-command/talkaction that gathers a live player's real state (position,
-combat, PZ-lock, party, skull), calls `evaluate()`, and on success performs
-the handoff. The safe design this session settled on (chosen so a switch
-never requires cross-process signaling, which this sandbox has no way to
-integration-test): the **origin** channel, upon an explicit in-game switch
-request, evaluates the policy and resolves the arrival position using its
-own already-loaded map (gated on matching `mapHash` as above), writes one
-`channel_switch_audit` row recording the resolved position and decision,
-then performs a perfectly normal, already-safe clean logout (§5's real
-`ClusterRuntime::releaseForLogout` path — no new release mechanism
-needed). The **target** channel, at the existing login acquire point, must
-still be taught to look up a pending, unconsumed audit row for the
-account and use its resolved position instead of `player.loginPosition`
-when placing the character, then mark the row consumed. That consumption
-step, the Lua-exposed trigger for the command itself, and the
-`cluster_sessions`/`channel_switch_audit` dual-write are the concrete
-remaining work — precise enough to implement directly, deliberately left
-for a follow-up commit rather than rushed in the same pass as the session-
-lifecycle wiring above.
+**✅ The switch command is wired**, using exactly the DB-row handoff
+design above, chosen specifically so a switch never requires cross-process
+signaling (which this sandbox has no way to integration-test):
+
+- `Game::playerRequestChannelSwitch(playerId, targetChannelId)` runs on the
+  **origin** channel. It gathers the player's live state (position, combat/
+  PZ-lock via the same tile-flag check `ProtocolGame::logout` already uses,
+  skull, party, and `ChannelSwitchAuditStore::getLastSwitchAtMs` for the
+  cooldown clock), calls `ChannelSwitchService::evaluate()`, and on success
+  resolves the arrival position (`PositionResolver`/`EnginePositionLegality`
+  if `mapHash` matches, otherwise straight to the target's temple), writes
+  one `channel_switch_audit` row either way, then calls
+  `player->removePlayer(true)` — a perfectly normal, already-safe clean
+  disconnect (§5's real `ClusterRuntime::releaseForLogout` path fires from
+  the same `Player::onRemoveCreature` hook a plain logout uses; no new
+  release mechanism was needed). `decision.mustLeavePartyFirst` needs no
+  separate action, since that same disconnect path already unconditionally
+  leaves any active party.
+- The only new trigger surface is `player:requestChannelSwitch(channelId)`,
+  a Lua method (`src/lua/functions/creatures/player/player_functions.cpp`)
+  an operator wires into a talkaction/command of their choosing — there is
+  still no new client protocol packet.
+- `ProtocolGame::login`'s existing acquire gate (§5) now also calls
+  `ChannelSwitchAuditStore::findPending` for this account/channel; a match
+  overrides the stale `loginPosition` for that one login and is marked
+  consumed only after `placeCreature` actually succeeds (a failed
+  placement leaves it pending, so the *next* attempt gets the same
+  resolved position instead of silently falling back).
+
+**📐 Known gaps, stated honestly:** `targetChannelOnline`/`targetChannelFull`
+are optimistic placeholders (`true`/`false`) since no heartbeat loop exists
+yet to check them for real (§3.4). `players.last_safe_position` still
+doesn't exist, so step 3 of the resolver chain is never reached in
+practice. The `cluster_sessions` DB table is still not dual-written by any
+of this (§5's gap). And the admin-facing side of this — an operator
+inspecting `channel_switch_audit` for a stuck/failed switch — has no
+tooling beyond direct SQL.
 
 ## 7. Houses (✅ schema, 📐 purchase/transfer call sites)
 

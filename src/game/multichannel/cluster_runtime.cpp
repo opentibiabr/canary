@@ -152,3 +152,12 @@ std::size_t ClusterRuntime::trackedCount() const {
 	std::lock_guard lock(mutex);
 	return tracked.size();
 }
+
+std::optional<ClusterRuntime::TrackedSessionInfo> ClusterRuntime::getTrackedSessionInfo(int32_t accountId) const {
+	std::lock_guard lock(mutex);
+	const auto it = tracked.find(accountId);
+	if (it == tracked.end()) {
+		return std::nullopt;
+	}
+	return TrackedSessionInfo { it->second.sessionId, it->second.fencingToken };
+}

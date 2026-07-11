@@ -206,21 +206,26 @@ staging-environment testing, not as a substitute for the backup.
    `CANARY_CHANNEL_ID`/`--channel-id` per process, start each process.
 6. Follow OPERATIONS.md for day-2 monitoring.
 
-**Updated status (Phase 2, part 1):** turning `multiChannelEnabled = true`
-now activates the login-list multi-world display, the startup validator,
-**and real cluster-wide session enforcement** — a second login attempt for
-an already-online account is genuinely rejected (or the holder is force-
-disconnected if its lease becomes unrenewable during a Redis outage), not
-just documented as a future guarantee. See ARCHITECTURE.md §5 for exactly
-what's wired and its one stated gap (the `cluster_sessions` DB table is not
-yet dual-written; Redis is the sole enforcement mechanism today).
+**Updated status (Phase 2):** turning `multiChannelEnabled = true` now
+activates the login-list multi-world display, the startup validator,
+**real cluster-wide session enforcement** (a second login attempt for an
+already-online account is genuinely rejected, or the holder is force-
+disconnected if its lease becomes unrenewable during a Redis outage), and
+**a real live channel switch**: `player:requestChannelSwitch(channelId)`
+(a Lua method an operator wires into any talkaction/command) evaluates the
+full policy against the player's live state and, on success, resolves an
+arrival position and performs a normal clean disconnect; logging back in
+on the target channel picks up that resolved position automatically. See
+ARCHITECTURE.md §5/§6 for exactly what's wired and its stated gaps (most
+notably: the `cluster_sessions` DB table isn't dual-written yet, so Redis
+is the sole session-enforcement mechanism; and target-channel online/
+capacity checks are optimistic placeholders since no heartbeat loop exists
+yet to check them for real).
 
 **Still not enforced**, and still the reason not to enable this flag in
-production yet: live channel switching (there is no switch command wired
-into the engine at all yet — see ARCHITECTURE.md §6) and the economy
-ledger / house purchase transactional rewrites (§7, §8). Do not enable
+production yet: the economy ledger and house purchase/transfer
+transactional rewrites (§7, §8) — a switch or a normal login does not yet
+touch money-moving state at all, which is the safe side to be wrong on,
+but also means this is not yet a complete cluster. Do not enable
 `multiChannelEnabled = true` in production until those ship and are
-tested; today's state is genuinely useful for a *single* shared-account
-gate across channels (e.g. an operator manually assigning players to one
-channel each) but not for a product where players are expected to move
-between channels themselves.
+tested.

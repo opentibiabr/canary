@@ -193,3 +193,21 @@ TEST(ChannelSwitchServiceTest, CombatCheckTakesPriorityOverPartyAndCapacityCheck
 	EXPECT_FALSE(decision.allowed);
 	EXPECT_EQ(ChannelSwitchDenyReason::CombatOrPzLock, decision.denyReason);
 }
+
+TEST(ChannelSwitchServiceTest, DescribeReturnsNonEmptyStringForEveryDenyReason) {
+	const std::vector<ChannelSwitchDenyReason> allReasons = {
+		ChannelSwitchDenyReason::None,
+		ChannelSwitchDenyReason::SameChannel,
+		ChannelSwitchDenyReason::Cooldown,
+		ChannelSwitchDenyReason::AlreadyOnlineElsewhere,
+		ChannelSwitchDenyReason::CombatOrPzLock,
+		ChannelSwitchDenyReason::SkullBlocksNoPvpEntry,
+		ChannelSwitchDenyReason::ActiveParty,
+		ChannelSwitchDenyReason::TargetDisabled,
+		ChannelSwitchDenyReason::TargetOffline,
+		ChannelSwitchDenyReason::TargetFull,
+	};
+	for (const auto &reason : allReasons) {
+		EXPECT_FALSE(describeChannelSwitchDenyReason(reason).empty());
+	}
+}

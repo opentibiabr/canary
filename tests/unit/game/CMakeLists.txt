@@ -11,6 +11,7 @@ target_sources(
             multichannel/position_resolver_test.cpp
             multichannel/cluster_session_manager_test.cpp
             multichannel/cluster_runtime_test.cpp
+            multichannel/position_serialization_test.cpp
             multichannel/channel_switch_service_test.cpp
             multichannel/cluster_config_validator_test.cpp
             multichannel/idempotency_test.cpp

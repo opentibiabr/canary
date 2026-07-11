@@ -34,6 +34,7 @@
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
 #include "game/multichannel/channel_context.hpp"
+#include "game/multichannel/channel_switch_audit_store.hpp"
 #include "game/multichannel/cluster_runtime.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/functions/iologindata_load_player.hpp"
@@ -1040,23 +1041,46 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
+		// Consume a pending channel-switch handoff, if one exists (docs/
+		// multichannel/ARCHITECTURE.md §6): the origin channel of a live
+		// switch already resolved and audited an arrival position for this
+		// account targeting this specific channel; use it instead of the
+		// stale global loginPosition. A no-op query when multi-channel mode
+		// is disabled or no such row exists - falls through to the normal
+		// single-channel behavior unchanged.
+		Position arrivalPosition = player->getLoginPosition();
+		std::optional<int64_t> consumedSwitchAuditId;
+		if (g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+			if (const auto pending = ChannelSwitchAuditStore::findPending(static_cast<int32_t>(accountId), g_channelContext().getChannelId()); pending.has_value()) {
+				arrivalPosition = pending->resolvedPosition;
+				consumedSwitchAuditId = pending->auditId;
+			}
+		}
+
 		const bool suppressPreLoginPacketsBeforePlacement = isCipsoft860Profile(protocolProfile);
 		const bool previousSuppressPreLoginPackets = suppressPreLoginPackets;
 		if (suppressPreLoginPacketsBeforePlacement) {
 			suppressPreLoginPackets = true;
 		}
 
-		const bool placedCreature = g_game().placeCreature(player, player->getLoginPosition()) || g_game().placeCreature(player, player->getTemplePosition(), false, true);
+		const bool placedCreature = g_game().placeCreature(player, arrivalPosition) || g_game().placeCreature(player, player->getTemplePosition(), false, true);
 		suppressPreLoginPackets = previousSuppressPreLoginPackets;
 		if (!placedCreature) {
 			// The just-acquired lease must not outlive a player who never
 			// actually entered the world - release it immediately rather
 			// than leaving it to expire on its own TTL, which would falsely
-			// block a real login attempt in the meantime.
+			// block a real login attempt in the meantime. The switch audit
+			// row, if any, is deliberately left unconsumed so the next
+			// login attempt gets the same resolved position rather than
+			// silently falling back to the stale loginPosition.
 			g_clusterRuntime().releaseForLogout(static_cast<int32_t>(accountId), OTSYS_TIME());
 			disconnectClient("Temple position is wrong. Please, contact the administrator.");
 			g_logger().warn("Player {} temple position is wrong", player->getName());
 			return;
+		}
+
+		if (consumedSwitchAuditId.has_value()) {
+			ChannelSwitchAuditStore::markConsumed(*consumedSwitchAuditId, OTSYS_TIME());
 		}
 
 		player->lastIP = player->getIP();

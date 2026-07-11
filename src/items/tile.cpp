@@ -28,6 +28,45 @@
 auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
 
+namespace {
+	struct NavigationItemTopology {
+		TileFlags_t floorChange = TILESTATE_NONE;
+		uint16_t groundId = 0;
+		uint8_t harmfulFieldCombatType = 0;
+		bool hasGround = false;
+		bool teleport = false;
+		bool blockSolid = false;
+		bool immovableBlockSolid = false;
+		bool noFieldBlockPath = false;
+		bool immovableNoFieldBlockPath = false;
+		bool blockProjectile = false;
+		bool harmfulField = false;
+
+		bool operator==(const NavigationItemTopology &) const = default;
+	};
+
+	NavigationItemTopology getNavigationItemTopology(const std::shared_ptr<Item> &item, const ItemType &itemType) {
+		const bool movable = itemType.movable
+			&& !item->hasAttribute(ItemAttribute_t::UNIQUEID)
+			&& (!item->hasAttribute(ItemAttribute_t::ACTIONID) || item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID) != IMMOVABLE_ACTION_ID);
+		const bool noFieldBlockPath = !itemType.isMagicField() && itemType.blockPathFind;
+		const bool harmfulField = itemType.isMagicField() && !itemType.blockSolid && itemType.conditionDamage && itemType.conditionDamage->getTotalDamage() > 0;
+		return {
+			.floorChange = itemType.floorChange,
+			.groundId = itemType.isGroundTile() ? itemType.id : 0,
+			.harmfulFieldCombatType = harmfulField ? static_cast<uint8_t>(itemType.combatType) : 0,
+			.hasGround = itemType.isGroundTile(),
+			.teleport = itemType.isTeleport(),
+			.blockSolid = itemType.blockSolid,
+			.immovableBlockSolid = itemType.blockSolid && !movable,
+			.noFieldBlockPath = noFieldBlockPath,
+			.immovableNoFieldBlockPath = noFieldBlockPath && !movable,
+			.blockProjectile = itemType.blockProjectile,
+			.harmfulField = harmfulField,
+		};
+	}
+}
+
 bool Tile::hasProperty(ItemProperty prop) const {
 	switch (prop) {
 		case CONST_PROP_BLOCKSOLID:
@@ -452,7 +491,9 @@ void Tile::onUpdateTileItem(const std::shared_ptr<Item> &oldItem, const ItemType
 		g_logger().error("Tile::onUpdateTileItem: oldItem or newItem is nullptr");
 		return;
 	}
-	g_game().map.markNavigationTopologyChanged(getPosition());
+	if (getNavigationItemTopology(oldItem, oldType) != getNavigationItemTopology(newItem, newType)) {
+		g_game().map.markNavigationTopologyChanged(getPosition());
+	}
 
 	if ((newItem->hasProperty(CONST_PROP_MOVABLE) || newItem->getContainer()) || (newItem->isWrapable() && newItem->hasProperty(CONST_PROP_MOVABLE) && !oldItem->hasProperty(CONST_PROP_BLOCKPATH))) {
 		const auto it = g_game().browseFields.find(getTile());

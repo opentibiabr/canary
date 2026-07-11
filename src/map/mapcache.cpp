@@ -337,7 +337,6 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	}
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
-	map->markNavigationTopologyChanged(pos);
 
 	const bool commitAccepted = tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
 		if (const auto &house = tile->getHouse()) {
@@ -356,6 +355,7 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	}
 
 	floor->setTile(x, y, tile);
+	map->markNavigationTopologyChanged(pos);
 
 	// Remove Tile from cache
 	floor->setTileCache(x, y, nullptr);

@@ -674,18 +674,18 @@ uint32_t Dispatcher::laneQuantum(DispatcherLane lane) const {
 	return 1;
 }
 
-bool Dispatcher::tryReserveLaneSlot(DispatcherLane lane) {
+bool Dispatcher::tryReserveLaneSlot(DispatcherLane lane, size_t capacity) {
 	const auto laneId = static_cast<size_t>(lane);
 	if (laneId >= reservedLaneSlots.size() || lane == DispatcherLane::WorkerCompletion) {
-		observeLaneRejection(laneId < reservedLaneSlots.size() ? lane : DispatcherLane::Maintenance);
+		observeLaneRejection(laneId < reservedLaneSlots.size() ? lane : DispatcherLane::Maintenance, capacity);
 		return false;
 	}
 
-	if (reservedLaneSlots[laneId].tryReserve(DISPATCHER_LANE_QUEUE_CAPACITY)) {
+	if (reservedLaneSlots[laneId].tryReserve(capacity)) {
 		return true;
 	}
 
-	observeLaneRejection(lane);
+	observeLaneRejection(lane, capacity);
 	return false;
 }
 
@@ -732,7 +732,7 @@ void Dispatcher::releaseDispatcherSlot(Task &task) {
 	releaseLaneSlot(static_cast<DispatcherLane>(laneId));
 }
 
-void Dispatcher::observeLaneRejection(DispatcherLane lane) {
+void Dispatcher::observeLaneRejection(DispatcherLane lane, size_t capacity) {
 	const auto laneId = static_cast<size_t>(lane);
 	if (laneId >= rejectedLaneTasks.size()) {
 		return;
@@ -743,7 +743,7 @@ void Dispatcher::observeLaneRejection(DispatcherLane lane) {
 		g_logger().warn(
 			"Dispatcher lane admission rejected: lane={}, capacity={}, queued={}, rejected={}",
 			getDispatcherLaneName(lane),
-			DISPATCHER_LANE_QUEUE_CAPACITY,
+			capacity,
 			reservedLaneSlots[laneId].size(),
 			rejected
 		);
@@ -1060,6 +1060,17 @@ bool Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::st
 }
 
 bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane) {
+	return addBarrierEvent(std::move(f), lane, DISPATCHER_LANE_QUEUE_CAPACITY);
+}
+
+bool Dispatcher::addCreatureAsyncEvent(std::function<void(void)> &&f, DispatcherLane lane) {
+	if (lane != DispatcherLane::VisibleMonsterAI && lane != DispatcherLane::MonsterAI) {
+		return false;
+	}
+	return addBarrierEvent(std::move(f), lane, DISPATCHER_LANE_QUEUE_CAPACITY + DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE);
+}
+
+bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane, size_t capacity) {
 	if (shuttingDown.load(std::memory_order_acquire)) {
 		return false;
 	}
@@ -1067,7 +1078,7 @@ bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane l
 		lane = DispatcherLane::GenericParallel;
 	}
 
-	if (!tryReserveLaneSlot(lane)) {
+	if (!tryReserveLaneSlot(lane, capacity)) {
 		return false;
 	}
 	const auto &thread = getThreadTask();

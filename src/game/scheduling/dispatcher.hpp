@@ -24,6 +24,7 @@
 static constexpr uint16_t DISPATCHER_TASK_EXPIRATION = 2000;
 static constexpr uint16_t SCHEDULER_MINTICKS = 50;
 static constexpr size_t DISPATCHER_LANE_QUEUE_CAPACITY = 16384;
+static constexpr size_t DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE = 32;
 
 enum class DispatcherType : uint8_t {
 	None,
@@ -134,6 +135,7 @@ public:
 	bool addCreatureWalkEvent(std::function<void(void)> &&f, DispatcherLane lane, uint32_t expiresAfterMs = 0); // No need context name
 	bool addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 	bool addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane = DispatcherLane::GenericParallel);
+	bool addCreatureAsyncEvent(std::function<void(void)> &&f, DispatcherLane lane);
 
 	uint64_t cycleEvent(uint32_t delay, std::function<void(void)> &&f, std::string_view context, DispatcherLane lane = DispatcherLane::WorldCommit, uint64_t producerToken = 0) {
 		return scheduleEvent(delay, std::move(f), context, true, true, lane, producerToken);
@@ -218,12 +220,13 @@ private:
 	inline void checkPendingTasks();
 	[[nodiscard]] size_t laneTaskBudget(DispatcherLane lane) const;
 	[[nodiscard]] uint32_t laneQuantum(DispatcherLane lane) const;
-	bool tryReserveLaneSlot(DispatcherLane lane);
+	bool addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane, size_t capacity);
+	bool tryReserveLaneSlot(DispatcherLane lane, size_t capacity = DISPATCHER_LANE_QUEUE_CAPACITY);
 	void adoptReservedLaneSlot(Task &task, DispatcherLane lane);
 	void releaseLaneSlot(DispatcherLane lane);
 	bool reserveDispatcherSlot(Task &task);
 	void releaseDispatcherSlot(Task &task);
-	void observeLaneRejection(DispatcherLane lane);
+	void observeLaneRejection(DispatcherLane lane, size_t capacity = DISPATCHER_LANE_QUEUE_CAPACITY);
 
 	void notify() {
 		if (!hasPendingTasks) {

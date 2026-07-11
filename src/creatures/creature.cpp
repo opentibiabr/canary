@@ -32,16 +32,14 @@
 #endif
 
 namespace {
-	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 32;
-
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;
 		std::deque<std::weak_ptr<Creature>> creatures;
 		bool scheduled = false;
 	};
 
-	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> visibleCreatureAsyncTaskBuckets;
-	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> backgroundCreatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> visibleCreatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> backgroundCreatureAsyncTaskBuckets;
 
 	auto &getCreatureAsyncTaskBuckets(bool playerVisible) {
 		return playerVisible ? visibleCreatureAsyncTaskBuckets : backgroundCreatureAsyncTaskBuckets;
@@ -52,7 +50,7 @@ namespace {
 	}
 
 	size_t getCreatureAsyncTaskBucketIndex(uint32_t creatureId) noexcept {
-		return creatureId % CREATURE_ASYNC_TASK_BUCKET_COUNT;
+		return creatureId % DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE;
 	}
 }
 
@@ -2045,13 +2043,12 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 
 	if (shouldSchedule) {
-		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex, playerVisible] {
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
 			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
 		                                                     getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
-			std::scoped_lock lock(bucket.mutex);
-			bucket.scheduled = false;
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
 		}
 	}
 }
@@ -2113,13 +2110,12 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
 	pendingCreatures.clear();
 
 	if (shouldReschedule) {
-		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex, playerVisible] {
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
 			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
 		                                                     getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
-			std::scoped_lock lock(bucket.mutex);
-			bucket.scheduled = false;
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
 		}
 	}
 
@@ -2130,6 +2126,22 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
 	);
 	if (requeuedCreatures > 0) {
 		g_dispatcher().observeInternalWork(DispatcherInternalWork::CreatureAsyncRequeue, requeuedCreatures, std::chrono::microseconds::zero());
+	}
+}
+
+void Creature::rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
+	std::deque<std::weak_ptr<Creature>> rejectedCreatures;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		bucket.scheduled = false;
+		rejectedCreatures.swap(bucket.creatures);
+	}
+
+	for (const auto &weakCreature : rejectedCreatures) {
+		if (const auto &creature = weakCreature.lock()) {
+			creature->setAsyncTaskFlag(AsyncTaskRunning, false);
+		}
 	}
 }
 

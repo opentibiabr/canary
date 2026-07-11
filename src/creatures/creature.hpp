@@ -1038,6 +1038,7 @@ private:
 	 */
 	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible);
 	static void processAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
+	static void rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
 	void executeAsyncTasks();
 	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);

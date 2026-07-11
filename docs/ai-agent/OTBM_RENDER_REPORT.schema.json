@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_RENDER_REPORT.schema.json",
+  "title": "Canary OTBM sprite region render report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "ok", "source", "bounds", "output", "summary", "decodedSheets", "warnings", "errors"],
+  "properties": {
+    "format": {"const": "canary-otbm-render-report-v1"},
+    "ok": {"type": "boolean"},
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["map", "mapSha256", "assetsRoot", "assetCatalogSha256", "appearancesSha256"],
+      "properties": {
+        "map": {"type": "string"},
+        "mapSha256": {"$ref": "#/$defs/sha256"},
+        "assetsRoot": {"type": "string"},
+        "assetCatalogSha256": {"$ref": "#/$defs/sha256"},
+        "appearancesSha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "bounds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["from", "to"],
+      "properties": {
+        "from": {"$ref": "#/$defs/position"},
+        "to": {"$ref": "#/$defs/position"}
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "width", "height", "paddingPixels"],
+      "properties": {
+        "path": {"type": "string"},
+        "width": {"type": "integer", "minimum": 1},
+        "height": {"type": "integer", "minimum": 1},
+        "paddingPixels": {"type": "integer", "minimum": 0}
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requestedPositions", "mapTiles", "renderedItems", "renderedSprites", "decodedSheetCount", "missingAppearanceCount", "missingSpriteCount"],
+      "properties": {
+        "requestedPositions": {"type": "integer", "minimum": 1},
+        "mapTiles": {"type": "integer", "minimum": 0},
+        "renderedItems": {"type": "integer", "minimum": 0},
+        "renderedSprites": {"type": "integer", "minimum": 0},
+        "decodedSheetCount": {"type": "integer", "minimum": 0},
+        "missingAppearanceCount": {"type": "integer", "minimum": 0},
+        "missingSpriteCount": {"type": "integer", "minimum": 0}
+      }
+    },
+    "decodedSheets": {
+      "type": "array",
+      "items": {"type": "string"},
+      "uniqueItems": true
+    },
+    "warnings": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/issue"}
+    },
+    "errors": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/issue"}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 15}
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "issue": {
+      "type": "object",
+      "required": ["code", "message"],
+      "properties": {
+        "code": {"type": "string", "minLength": 1},
+        "message": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -65,6 +65,24 @@ The decoder validates the CIP header, raw LZMA1 settings, declared sizes, stream
 
 See `docs/ai-agent/OTBM_SPRITES.md`.
 
+## Pixel OTBM region rendering
+
+`otbm_render_tool.py` combines a bounded one-floor OTBM region with the validated client catalog, appearances protobuf data, and CIP/LZMA sprite sheets.
+
+```bash
+python tools/ai-agent/otbm_render_tool.py map.otbm /path/to/client-root \
+  --from 32000,32000,7 \
+  --to 32031,32031,7 \
+  --output artifacts/region.png \
+  --report artifacts/region-render.json
+```
+
+The renderer preserves the visible OTBM item stack and applies OTClient-compatible ground, border, bottom, common, and top ordering, stack-count and position patterns, layers, displacement, cumulative elevation, and source-over alpha blending. It decodes only the sheets needed by the selected region and reports missing appearances or sprites with SHA-256 provenance.
+
+Rendering is deterministic: it currently supports one floor at a time and uses animation phase `0`. Hangable orientation falls back to pattern `0` with an explicit warning until neighboring wall-hook context is implemented.
+
+See `docs/ai-agent/OTBM_RENDERER.md` and `docs/ai-agent/OTBM_RENDER_REPORT.schema.json`.
+
 ## OTBM map intelligence and authoring
 
 `otbm_map_tool.py` safely inspects Canary OTBM files, indexes world metadata, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patches, detects conflicts on newer maps, writes new OTBM copies, and publishes separately validated companion XML packages.

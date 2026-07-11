@@ -2,14 +2,7 @@
 
 ## Identifier scanner
 
-`scan_ids.py` recursively scans text-based project files and creates a machine-readable registry of:
-
-- storage keys,
-- action IDs,
-- unique IDs,
-- item IDs.
-
-Run from the repository root:
+`scan_ids.py` recursively scans text-based project files and creates a machine-readable registry of storage keys, action IDs, unique IDs, and item IDs.
 
 ```bash
 python tools/ai-agent/scan_ids.py
@@ -23,25 +16,13 @@ python tools/ai-agent/scan_ids.py \
   --output artifacts/ID_REGISTRY.json
 ```
 
-`--map` may be repeated. Relative map paths are resolved from `--root`; absolute paths are supported and recorded as absolute provenance. Each map is read without modification, hashed with SHA-256, and scanned tile-by-tile, including item nodes nested inside containers.
+`--map` may be repeated. Maps are read without modification, hashed with SHA-256, and scanned tile-by-tile, including item nodes nested inside containers. Duplicate `uniqueId` definitions are errors; reused `actionId` definitions are review warnings. The generated document follows `docs/ai-agent/ID_REGISTRY.schema.json`.
 
-Custom root and output:
+The text scanner remains intentionally conservative and regex-based. It does not resolve Lua constants, arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files. The OTBM scanner contributes action and unique IDs but deliberately avoids adding every placed item ID.
 
-```bash
-python tools/ai-agent/scan_ids.py --root . --output docs/ai-agent/ID_REGISTRY.json
-```
+## OTBM map intelligence and authoring
 
-The generated document follows `docs/ai-agent/ID_REGISTRY.schema.json`. The optional `binarySources` section records every OTBM input, version, item version, size, tile count, top-level item count, hash, and identifier totals. Map sources use coordinates and an item-node path instead of a text line number.
-
-Duplicate `uniqueId` definitions are reported as errors because the value must identify one location globally. Reused `actionId` definitions are warnings because sharing an action handler may be intentional. Text and OTBM definitions participate in the same conflict analysis.
-
-### Scanner limitations
-
-The text scanner is intentionally conservative and regex-based. It detects numeric identifiers present directly in source files. It does not resolve Lua constants and arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files. The OTBM scanner currently contributes action and unique IDs; it deliberately does not add every placed map item ID to avoid producing a very large, low-signal registry.
-
-## OTBM map intelligence
-
-`otbm_map_tool.py` safely inspects Canary OTBM files, indexes towns, waypoints and companion world XML files, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patch documents, generates diffs, detects conflicts on newer maps, and writes only to separate output files when explicitly enabled.
+`otbm_map_tool.py` safely inspects Canary OTBM files, indexes world metadata, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patches, detects conflicts on newer maps, writes new OTBM copies, and publishes separately validated companion XML packages.
 
 Main entry points:
 
@@ -54,7 +35,16 @@ python tools/ai-agent/otbm_map_tool.py validate-patch patches/change.json
 python tools/ai-agent/otbm_map_tool.py apply map.otbm patches/change.json --output artifacts/map-edited.otbm --report artifacts/change-report.json
 ```
 
-The world index cross-checks OTBM house and zone references against house/zones XML, resolves monster and NPC spawn coordinates, validates town links and companion files, and records SHA-256 provenance. The apply command is a dry-run unless `--write` is present. See `docs/ai-agent/OTBM_MAP_TOOL.md` and `docs/ai-agent/OTBM_PATCH.schema.json` for the complete safety and format contracts.
+Companion XML workflow:
+
+```bash
+python tools/ai-agent/otbm_map_tool.py world-patch-template map.otbm --output patches/world-change.json
+python tools/ai-agent/otbm_map_tool.py validate-world-patch patches/world-change.json
+python tools/ai-agent/otbm_map_tool.py apply-world-patch map.otbm patches/world-change.json --report artifacts/world-change-report.json
+python tools/ai-agent/otbm_map_tool.py apply-world-patch map.otbm patches/world-change.json --output-dir artifacts/world-package --report artifacts/world-change-report.json --write
+```
+
+The companion patcher supports houses, zones, monster spawn groups, and NPC spawn groups. It requires map, file, and entry hashes; dry-run is the default; source files are never overwritten; and an existing output package is replaced only with `--overwrite`, after a timestamped directory backup. See `docs/ai-agent/OTBM_MAP_TOOL.md`, `docs/ai-agent/OTBM_PATCH.schema.json`, and `docs/ai-agent/OTBM_WORLD_PATCH.schema.json`.
 
 ## Content authoring pipeline
 
@@ -67,8 +57,6 @@ The dry-run content authoring pipeline adds these entry points:
 - `validate_content_plan.py` checks identifier, path, rollback, and manual-step safety.
 - `run_content_pipeline.py` orchestrates the end-to-end flow.
 
-Example:
-
 ```bash
 python tools/ai-agent/run_content_pipeline.py \
   --task docs/ai-agent/examples/forgotten_forge.quest.json \
@@ -78,6 +66,4 @@ python tools/ai-agent/run_content_pipeline.py \
   --output artifacts/content-pipeline
 ```
 
-The lifecycle is validation, temporary CI reservation, planning, preview rendering, plan validation, risk review, and human approval. To add a renderer, implement preview output only and call the shared path policy before writes. To add a content type, extend the task schema, validator rules, planner output, renderer, plan validator tests, and example coverage.
-
-Current limitations: schema validation is a focused built-in validator rather than full JSON Schema evaluation; generated Lua/XML is preview scaffolding, not active datapack content.
+The lifecycle is validation, temporary CI reservation, planning, preview rendering, plan validation, risk review, and human approval. Current limitations: schema validation is a focused built-in validator rather than full JSON Schema evaluation; generated Lua/XML from the generic content pipeline is preview scaffolding, while the dedicated OTBM companion patcher publishes only hash-pinned, cross-validated world packages.

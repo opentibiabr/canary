@@ -4,8 +4,8 @@ name: OTBM Map Tools
 on:
   push:
     branches:
-      - "feat/otbm-map-*"
-      - "fix/otbm-map-*"
+      - "feat/otbm-*"
+      - "fix/otbm-*"
     paths:
       - "tools/ai-agent/otbm_*.py"
       - "tools/ai-agent/test_otbm_*.py"
@@ -39,7 +39,9 @@ jobs:
           python-version: "3.12"
 
       - name: Validate patch schema JSON
-        run: python -m json.tool docs/ai-agent/OTBM_PATCH.schema.json > /dev/null
+        run: |
+          python -m json.tool docs/ai-agent/OTBM_PATCH.schema.json > /dev/null
+          python -m json.tool docs/ai-agent/OTBM_WORLD_PATCH.schema.json > /dev/null
 
       - name: Run focused OTBM tests
         id: otbm-tests

@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_WORLD_PATCH.schema.json",
+  "title": "Canary OTBM companion XML patch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["format", "base", "operations"],
+  "properties": {
+    "format": {"const": "canary-otbm-world-patch-v1"},
+    "name": {"type": "string"},
+    "base": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["map", "files"],
+      "properties": {
+        "map": {"$ref": "#/$defs/mapBase"},
+        "files": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["monster", "npc", "house", "zones"],
+          "properties": {
+            "monster": {"$ref": "#/$defs/fileBase"},
+            "npc": {"$ref": "#/$defs/fileBase"},
+            "house": {"$ref": "#/$defs/fileBase"},
+            "zones": {"$ref": "#/$defs/fileBase"}
+          }
+        }
+      }
+    },
+    "inventory": {
+      "type": "object",
+      "description": "Optional template snapshot for selecting hash-pinned entries.",
+      "additionalProperties": {
+        "type": "array",
+        "items": {"type": "object"}
+      }
+    },
+    "operations": {
+      "type": "array",
+      "maxItems": 10000,
+      "items": {"$ref": "#/$defs/operation"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-fA-F]{64}$"},
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 65535},
+        {"type": "integer", "minimum": 0, "maximum": 15}
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "mapBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "sha256"],
+      "properties": {
+        "filename": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "fileBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["filename", "sha256"],
+      "properties": {
+        "filename": {"type": "string", "minLength": 1},
+        "sha256": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]}
+      }
+    },
+    "house": {
+      "type": "object",
+      "required": ["houseId", "name", "entryPosition", "rent", "size", "townId", "clientId"],
+      "properties": {
+        "houseId": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "name": {"type": "string"},
+        "entryPosition": {"$ref": "#/$defs/position"},
+        "rent": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "size": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "townId": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "clientId": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "guildhall": {"oneOf": [{"type": "boolean"}, {"type": "null"}]},
+        "beds": {"oneOf": [{"type": "integer"}, {"type": "null"}]}
+      }
+    },
+    "zone": {
+      "type": "object",
+      "required": ["zoneId", "name"],
+      "properties": {
+        "zoneId": {"type": "integer", "minimum": 1, "maximum": 65535},
+        "name": {"type": "string", "minLength": 1}
+      }
+    },
+    "spawnEntity": {
+      "type": "object",
+      "required": ["name", "offset", "spawntime"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1},
+        "offset": {
+          "type": "array",
+          "prefixItems": [{"type": "integer"}, {"type": "integer"}],
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "spawntime": {"type": "integer", "minimum": 0, "maximum": 86400},
+        "direction": {"type": "integer", "minimum": 0},
+        "weight": {"type": "integer", "minimum": 0}
+      }
+    },
+    "spawnGroup": {
+      "type": "object",
+      "required": ["centerPosition", "entities"],
+      "properties": {
+        "centerPosition": {"$ref": "#/$defs/position"},
+        "radius": {"type": "integer", "minimum": -1},
+        "entities": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/spawnEntity"}
+        }
+      }
+    },
+    "operation": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["op", "expectedEntryHash", "house"],
+          "properties": {
+            "op": {"const": "upsert_house"},
+            "expectedEntryHash": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+            "house": {"$ref": "#/$defs/house"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "houseId", "expectedEntryHash"],
+          "properties": {
+            "op": {"const": "remove_house"},
+            "houseId": {"type": "integer", "minimum": 1},
+            "expectedEntryHash": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "expectedEntryHash", "zone"],
+          "properties": {
+            "op": {"const": "upsert_zone"},
+            "expectedEntryHash": {"oneOf": [{"$ref": "#/$defs/sha256"}, {"type": "null"}]},
+            "zone": {"$ref": "#/$defs/zone"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "zoneId", "expectedEntryHash"],
+          "properties": {
+            "op": {"const": "remove_zone"},
+            "zoneId": {"type": "integer", "minimum": 1},
+            "expectedEntryHash": {"$ref": "#/$defs/sha256"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "kind", "group"],
+          "properties": {
+            "op": {"const": "add_spawn_group"},
+            "kind": {"enum": ["monster", "npc"]},
+            "group": {"$ref": "#/$defs/spawnGroup"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "kind", "groupIndex", "expectedEntryHash", "group"],
+          "properties": {
+            "op": {"const": "replace_spawn_group"},
+            "kind": {"enum": ["monster", "npc"]},
+            "groupIndex": {"type": "integer", "minimum": 0},
+            "expectedEntryHash": {"$ref": "#/$defs/sha256"},
+            "group": {"$ref": "#/$defs/spawnGroup"}
+          }
+        },
+        {
+          "type": "object",
+          "required": ["op", "kind", "groupIndex", "expectedEntryHash"],
+          "properties": {
+            "op": {"const": "remove_spawn_group"},
+            "kind": {"enum": ["monster", "npc"]},
+            "groupIndex": {"type": "integer", "minimum": 0},
+            "expectedEntryHash": {"$ref": "#/$defs/sha256"}
+          }
+        }
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Safe, deterministic OTBM inspection, catalog enrichment, world indexing, diff and patch tool."""
+"""Safe, deterministic OTBM inspection, world authoring, diff and patch tool."""
 from __future__ import annotations
 
 import argparse
@@ -22,6 +22,13 @@ from otbm_patch import build_diff_patch, load_patch, plan_patch, plan_report, wr
 from otbm_scan import build_export, normalize_bounds, position_from_text, render_svg, scan_map, scan_summary, write_json
 from otbm_schema import validate_patch_document
 from otbm_world import build_world_index
+from otbm_world_patch import (
+    build_world_patch_template,
+    execute_world_patch,
+    load_world_patch,
+    plan_world_patch,
+    validate_world_patch,
+)
 
 
 def _load_catalog_for_map(args: argparse.Namespace, map_path: Path) -> ItemCatalog | None:
@@ -57,6 +64,48 @@ def command_world_index(args: argparse.Namespace) -> int:
     payload = build_world_index(Path(args.map), include_entries=not args.summary_only)
     write_json(Path(args.output), payload)
     return 0 if payload["ok"] or args.allow_errors else 2
+
+
+def command_world_patch_template(args: argparse.Namespace) -> int:
+    payload = build_world_patch_template(Path(args.map))
+    write_json(Path(args.output), payload)
+    return 0
+
+
+def command_validate_world_patch(args: argparse.Namespace) -> int:
+    payload = json.loads(Path(args.patch).read_text(encoding="utf-8"))
+    report = validate_world_patch(payload)
+    write_json(Path(args.output) if args.output else None, report)
+    return 0 if report["ok"] else 2
+
+
+def command_apply_world_patch(args: argparse.Namespace) -> int:
+    if args.write:
+        _require(args.output_dir is not None, "--output-dir is required with --write")
+    patch_path = Path(args.patch)
+    raw_patch = json.loads(patch_path.read_text(encoding="utf-8"))
+    validation = validate_world_patch(raw_patch)
+    if not validation["ok"]:
+        report = {
+            "format": "canary-otbm-world-patch-report-v1",
+            "ok": False,
+            "mode": "validation",
+            "validation": validation,
+            "conflicts": [],
+        }
+        write_json(Path(args.report) if args.report else None, report)
+        return 2
+    patch = load_world_patch(patch_path)
+    plan = plan_world_patch(Path(args.map), patch)
+    report = execute_world_patch(
+        plan,
+        output_dir=Path(args.output_dir) if args.output_dir else None,
+        write=args.write,
+        overwrite=args.overwrite,
+    )
+    report["schemaValidation"] = validation
+    write_json(Path(args.report) if args.report else None, report)
+    return 0 if report["ok"] else 2
 
 
 def command_catalog(args: argparse.Namespace) -> int:
@@ -160,6 +209,25 @@ def build_parser() -> argparse.ArgumentParser:
     world_parser.add_argument("--summary-only", action="store_true", help="Omit full house, spawn, NPC, and zone entry arrays")
     world_parser.add_argument("--allow-errors", action="store_true", help="Return success while retaining validation errors in the report")
     world_parser.set_defaults(func=command_world_index)
+
+    template_parser = subparsers.add_parser("world-patch-template", help="Create a hash-pinned companion XML patch template")
+    template_parser.add_argument("map")
+    template_parser.add_argument("--output", required=True)
+    template_parser.set_defaults(func=command_world_patch_template)
+
+    validate_world_parser = subparsers.add_parser("validate-world-patch", help="Validate a companion XML patch without touching map files")
+    validate_world_parser.add_argument("patch")
+    validate_world_parser.add_argument("--output")
+    validate_world_parser.set_defaults(func=command_validate_world_patch)
+
+    apply_world_parser = subparsers.add_parser("apply-world-patch", help="Dry-run or write a separate companion XML package")
+    apply_world_parser.add_argument("map")
+    apply_world_parser.add_argument("patch")
+    apply_world_parser.add_argument("--output-dir")
+    apply_world_parser.add_argument("--report")
+    apply_world_parser.add_argument("--write", action="store_true", help="Publish a complete companion XML package")
+    apply_world_parser.add_argument("--overwrite", action="store_true", help="Atomically back up and replace an existing output directory")
+    apply_world_parser.set_defaults(func=command_apply_world_patch)
 
     catalog_parser = subparsers.add_parser("catalog", help="Build a machine-readable item catalog from Canary items.xml")
     catalog_parser.add_argument("items_xml")

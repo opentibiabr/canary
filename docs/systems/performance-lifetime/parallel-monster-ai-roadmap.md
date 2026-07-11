@@ -38,8 +38,8 @@ on it.
 | Combat intention | Workers return geometrically eligible spell indices only. The dispatcher repeats target, floor, range, line-of-sight, zone, cooldown, reload-epoch, and generation checks before RNG, Lua, damage, effects, or conditions. Requests are latest-only and capped at 256 spells. |
 | Relevance and control | Direct player spectator IDs plus a three-second hysteresis classify scheduling relevance without changing target legality. Player appearance and sight entry eagerly promote pending walk/post-think work. Adaptive reductions apply to background budgets; visible creature walk and visible barrier AI retain configured budgets. |
 | Final scheduler | Fixed group draining and the legacy group abstraction were removed. Due scheduled tasks enter classified lanes. Weighted deficit round robin, aging, producer round robin, and bounded completion draining now choose ready work. |
-| Admission | Every task-backed dispatcher lane has 16,384 reserved slots across immediate and scheduled work. Immediate enqueue reserves before moving its closure, queued work releases admission when execution starts, canceled timers release immediately, and a one-shot scheduled callback releases before queuing its successor. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens; at the default capacity, background work can consume at most 1,536 and leaves 512 for visible requests. |
-| Overload recovery | Protocol work fails closed by closing the connection. Rejected player walk cancels its dependent action, rejected coalesced monster work releases its pending state, rejected tile materialization keeps the old tile, and serial movement/death commits retain an audited inline fallback. Worker exceptions return a dispatcher-side failure completion so monster request state cannot remain outstanding. |
+| Admission | Every task-backed dispatcher lane has a 16,384-slot base capacity across immediate and scheduled work. `VisibleMonsterAI` and `MonsterAI` each add 32 dedicated slots for their 32 creature buckets, so ordinary lane work cannot strand a bucket continuation. Immediate enqueue reserves before moving its closure, queued work releases admission when execution starts, canceled timers release immediately, and a one-shot scheduled callback releases before queuing its successor. `WorkerCompletion` is backed instead by the compute service's 2,048 outstanding request/completion tokens; at the default capacity, background work can consume at most 1,536 and leaves 512 for visible requests. |
+| Overload recovery | Protocol work fails closed by closing the connection. Rejected player walk cancels its dependent action; item pickup is committed only inside an admitted walk task. Rejected creature-bucket admission clears `AsyncTaskRunning` for every queued creature, rejected coalesced monster work releases its pending state, rejected tile materialization keeps the old tile, and serial movement/death commits retain an audited inline fallback. Worker exceptions return a dispatcher-side failure completion so monster request state cannot remain outstanding. |
 | Zone cache lifetime | Zone weak caches use owner-stable `std::owner_less` ordering and one cache mutex. Expiration can no longer change a key's hash/equality while it is stored, and cleanup locks each weak owner only once. |
 
 ### Production gate status
@@ -367,8 +367,10 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
 - Bound dispatcher completion processing per pass.
 - Reject, replace, or defer new jobs when a queue is full. Never allow an
   unbounded queue to become the overload policy.
-- Dispatcher immediate and scheduled work share a hard 16,384-slot cap per
-  lane. Admission is reserved before an immediate closure is moved, so an
+- Dispatcher immediate and scheduled work share a hard 16,384-slot base cap per
+  lane. The two creature-AI lanes add 32 dedicated bucket slots each, retaining
+  a hard bound while preventing ordinary work from consuming every continuation
+  slot. Admission is reserved before an immediate closure is moved, so an
   ordinary rejection leaves the caller-owned closure available for an audited
   fallback.
 - Admission counts queued work, not callbacks that have started. A canceled
@@ -379,9 +381,10 @@ Parallelism must not turn queue latency into memory pressure or delayed bursts.
   output fail closed by closing the connection instead of dropping work while
   leaving a paused buffer or partial session unresolved.
 - Rejection must unwind producer state. Player autowalk does not install its
-  dependent action, monster post-think consumes its pending token, creature
-  checks become retryable, and Lua timer registration releases registry
-  references when scheduler admission fails.
+  dependent action or pick up its item before admission, creature buckets clear
+  `AsyncTaskRunning` on rejected entries, monster post-think consumes its
+  pending token, creature checks become retryable, and Lua timer registration
+  releases registry references when scheduler admission fails.
 - A worker exception is converted into a prebuilt failure completion. That
   completion runs on the dispatcher, applies generation-aware cleanup, and
   retains the compute token until the cleanup is consumed.

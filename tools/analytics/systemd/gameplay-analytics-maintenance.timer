@@ -1,0 +1,12 @@
+[Unit]
+Description=Run Gameplay Analytics maintenance daily
+Documentation=https://github.com/opentibiabr/canary/blob/main/docs/systems/gameplay-analytics-retention.md
+
+[Timer]
+OnCalendar=*-*-* 04:30:00
+Persistent=true
+RandomizedDelaySec=900
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

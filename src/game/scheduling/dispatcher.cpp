@@ -836,7 +836,9 @@ void Dispatcher::promoteScheduledEvents() {
 			break;
 		}
 
-		Task readyTask(0, [this, task] { executeScheduledTask(task); }, task->getContext(), task->getReadyAt());
+		Task readyTask(
+			0, [this, task] { executeScheduledTask(task); }, task->getContext(), task->getReadyAt()
+		);
 		const auto requestedLaneId = static_cast<size_t>(task->getMeta().lane);
 		const auto lane = requestedLaneId < m_tasks.size() ? task->getMeta().lane : DispatcherLane::Maintenance;
 		readyTask.setLane(lane);

@@ -41,7 +41,9 @@ TEST(MonsterComputeServiceTest, PreservesVisibleCapacityUnderBackgroundSaturatio
 	service.start(config);
 
 	const auto submit = [&service](MonsterComputePriority priority) {
-		return service.submit(priority, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::reserve");
+		return service.submit(
+			priority, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::reserve"
+		);
 	};
 
 	for (size_t index = 0; index < 6; ++index) {
@@ -70,9 +72,12 @@ TEST(MonsterComputeServiceTest, DrainsVisibleCompletionsAtAThreeToOneRatio) {
 
 	std::vector<MonsterComputePriority> drained;
 	const auto submit = [&service, &drained](MonsterComputePriority priority) {
-		return service.submit(priority, [&drained, priority](MonsterComputeToken, std::stop_token) {
-			return [&drained, priority] { drained.emplace_back(priority); };
-		}, "MonsterComputeServiceTest::completionPriority");
+		return service.submit(
+			priority, [&drained, priority](MonsterComputeToken, std::stop_token) {
+				return [&drained, priority] { drained.emplace_back(priority); };
+			},
+			"MonsterComputeServiceTest::completionPriority"
+		);
 	};
 
 	EXPECT_TRUE(submit(MonsterComputePriority::Background).accepted());
@@ -84,13 +89,13 @@ TEST(MonsterComputeServiceTest, DrainsVisibleCompletionsAtAThreeToOneRatio) {
 
 	EXPECT_EQ(service.drainCompletions(6), 6);
 	EXPECT_EQ(drained, (std::vector {
-		MonsterComputePriority::Visible,
-		MonsterComputePriority::Visible,
-		MonsterComputePriority::Visible,
-		MonsterComputePriority::Background,
-		MonsterComputePriority::Visible,
-		MonsterComputePriority::Background,
-	}));
+						   MonsterComputePriority::Visible,
+						   MonsterComputePriority::Visible,
+						   MonsterComputePriority::Visible,
+						   MonsterComputePriority::Background,
+						   MonsterComputePriority::Visible,
+						   MonsterComputePriority::Background,
+					   }));
 	service.shutdown();
 }
 
@@ -141,8 +146,14 @@ TEST(MonsterComputeServiceTest, ReleasesTokensForFailedAndEmptyCompletions) {
 	config.hardwareConcurrency = 1;
 	service.start(config);
 
-	EXPECT_TRUE(service.submit(MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) -> MonsterComputeService::Completion { throw std::runtime_error("expected"); }, "MonsterComputeServiceTest::failure").accepted());
-	EXPECT_TRUE(service.submit(MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::empty").accepted());
+	EXPECT_TRUE(service.submit(
+						   MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) -> MonsterComputeService::Completion { throw std::runtime_error("expected"); }, "MonsterComputeServiceTest::failure"
+	)
+	                .accepted());
+	EXPECT_TRUE(service.submit(
+						   MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::empty"
+	)
+	                .accepted());
 
 	EXPECT_EQ(service.drainCompletions(2), 2);
 	const auto stats = service.getStats();
@@ -187,14 +198,20 @@ TEST(MonsterComputeServiceTest, CancelsQueuedAndRunningTokensDuringShutdown) {
 
 	auto started = std::make_shared<std::promise<void>>();
 	auto startedFuture = started->get_future();
-	EXPECT_TRUE(service.submit(MonsterComputePriority::Visible, [started](MonsterComputeToken, std::stop_token stopToken) {
+	EXPECT_TRUE(service.submit(
+						   MonsterComputePriority::Visible, [started](MonsterComputeToken, std::stop_token stopToken) {
 		started->set_value();
 		while (!stopToken.stop_requested()) {
 			std::this_thread::yield();
 		}
-		return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::running").accepted());
+		return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::running"
+	)
+	                .accepted());
 	ASSERT_EQ(startedFuture.wait_for(2s), std::future_status::ready);
-	EXPECT_TRUE(service.submit(MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::queued").accepted());
+	EXPECT_TRUE(service.submit(
+						   MonsterComputePriority::Background, [](MonsterComputeToken, std::stop_token) { return MonsterComputeService::Completion {}; }, "MonsterComputeServiceTest::queued"
+	)
+	                .accepted());
 
 	service.shutdown();
 	const auto stats = service.getStats();

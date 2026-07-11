@@ -44,8 +44,10 @@ TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
 
 TEST(DispatcherPolicyTest, TracksMonotonicReadyTimesWithoutChangingWallClockScheduling) {
 	const auto enqueuedAt = Task::Clock::time_point(10s);
-	Task immediate(0, [] { }, "immediate", enqueuedAt);
-	Task scheduled([] { }, "scheduled", 75, false, false, enqueuedAt);
+	Task immediate(
+		0, [] {}, "immediate", enqueuedAt
+	);
+	Task scheduled([] {}, "scheduled", 75, false, false, enqueuedAt);
 
 	EXPECT_EQ(immediate.getEnqueuedAt(), enqueuedAt);
 	EXPECT_EQ(immediate.getReadyAt(), enqueuedAt);
@@ -61,8 +63,12 @@ TEST(DispatcherPolicyTest, InspectsQueueWithAnInjectedMonotonicClock) {
 	DispatcherPolicy policy([&currentTime] { return currentTime; });
 
 	std::deque<Task> tasks;
-	tasks.emplace_back(0, [] { }, "oldest", base + 10ms);
-	tasks.emplace_back(0, [] { }, "newest", base + 20ms);
+	tasks.emplace_back(
+		0, [] {}, "oldest", base + 10ms
+	);
+	tasks.emplace_back(
+		0, [] {}, "newest", base + 20ms
+	);
 
 	const auto allTasks = policy.inspectQueue(tasks);
 	EXPECT_EQ(allTasks.queued, 2);
@@ -78,9 +84,13 @@ TEST(DispatcherPolicyTest, InspectsQueueWithAnInjectedMonotonicClock) {
 TEST(DispatcherPolicyTest, InspectsOnlyPlayerVisibleLanesForSloControl) {
 	const auto base = Task::Clock::time_point(10s);
 	std::vector<Task> tasks;
-	tasks.emplace_back(0, [] { }, "visible", base);
+	tasks.emplace_back(
+		0, [] {}, "visible", base
+	);
 	tasks.back().setLane(DispatcherLane::PlayerAction);
-	tasks.emplace_back(0, [] { }, "background", base - 1s);
+	tasks.emplace_back(
+		0, [] {}, "background", base - 1s
+	);
 	tasks.back().setLane(DispatcherLane::MonsterAI);
 
 	const auto snapshot = DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, base + 100ms);
@@ -113,7 +123,9 @@ TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 TEST(DispatcherPolicyTest, RotatesProducersWhilePreservingEachProducerFifo) {
 	std::deque<Task> tasks;
 	for (const auto producerToken : { 10, 10, 20, 20, 30 }) {
-		tasks.emplace_back(0, [] { }, "producer-task");
+		tasks.emplace_back(
+			0, [] {}, "producer-task"
+		);
 		tasks.back().setProducerToken(producerToken);
 	}
 

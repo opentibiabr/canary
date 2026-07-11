@@ -1011,7 +1011,7 @@ protected:
 		}
 	}
 
-	virtual void onExecuteAsyncTasks() { };
+	virtual void onExecuteAsyncTasks() {};
 
 	/**
 	 * Runs an action immediately or defers it back to the dispatcher.

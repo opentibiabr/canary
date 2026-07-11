@@ -1380,12 +1380,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	if (accountDescriptor == "@livestream") {
-		if (!dispatchProtocolTask([self = getThis(), characterName, password, operatingSystem] {
+		// dispatchProtocolTask force-closes the connection when admission fails.
+		(void)dispatchProtocolTask([self = getThis(), characterName, password, operatingSystem] {
 				self->castViewerLogin(characterName, password, operatingSystem);
 			},
-		                          "ProtocolGame::castViewerLogin")) {
-			return;
-		}
+		                           "ProtocolGame::castViewerLogin");
 		return;
 	}
 

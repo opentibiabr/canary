@@ -2046,7 +2046,7 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
 			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                                                     getCreatureAsyncTaskLane(playerVisible));
+		                                                           getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
 			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
 		}
@@ -2113,7 +2113,7 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
 		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
 			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                                                     getCreatureAsyncTaskLane(playerVisible));
+		                                                           getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
 			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
 		}

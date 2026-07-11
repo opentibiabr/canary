@@ -2480,8 +2480,8 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 
 	const auto lane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
 	if (!g_dispatcher().addCreatureWalkEvent([posTile] {
-		Monster::pushCreatures(posTile);
-	},
+			Monster::pushCreatures(posTile);
+		},
 	                                         lane)) {
 		forceUpdateFollowPath = true;
 		result = false;

@@ -310,7 +310,7 @@ MonsterPathResult MonsterPathfinder::find(const MonsterPathRequest &request, std
 
 		++directionCount;
 		uint_fast32_t neighborCount = 8;
-		const int_fast32_t (*neighbors)[2] = ALL_NEIGHBORS;
+		const int_fast32_t(*neighbors)[2] = ALL_NEIGHBORS;
 		if (node->parent) {
 			const int_fast32_t offsetX = node->parent->x - x;
 			const int_fast32_t offsetY = node->parent->y - y;

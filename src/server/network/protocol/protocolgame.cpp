@@ -1381,8 +1381,8 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 
 	if (accountDescriptor == "@livestream") {
 		if (!dispatchProtocolTask([self = getThis(), characterName, password, operatingSystem] {
-			self->castViewerLogin(characterName, password, operatingSystem);
-		},
+				self->castViewerLogin(characterName, password, operatingSystem);
+			},
 		                          "ProtocolGame::castViewerLogin")) {
 			return;
 		}

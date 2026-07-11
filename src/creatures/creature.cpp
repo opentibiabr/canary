@@ -504,7 +504,18 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		return;
 	}
 
-	if (creature.get() == this) {
+	const bool selfMove = creature.get() == this;
+	if (!selfMove) {
+		// Compare control-block identity without promoting weak references for every spectator movement.
+		const auto isTrackedCreature = [&creature](const std::weak_ptr<Creature> &trackedCreature) {
+			return !trackedCreature.owner_before(creature) && !creature.owner_before(trackedCreature);
+		};
+		if (!isTrackedCreature(m_followCreature) && !isTrackedCreature(m_attackedCreature)) {
+			return;
+		}
+	}
+
+	if (selfMove) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;
 

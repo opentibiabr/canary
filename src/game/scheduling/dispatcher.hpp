@@ -264,6 +264,7 @@ private:
 	DispatcherBudgetSet configuredBudgets;
 	DispatcherBudgetSet activeBudgets;
 	Task::Clock::time_point nextAdaptiveBudgetUpdateAt {};
+	uint8_t emergencyLatencyWindows = 0;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::atomic_bool hasUnmergedEvents = false;

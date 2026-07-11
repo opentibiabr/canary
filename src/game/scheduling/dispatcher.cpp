@@ -27,6 +27,7 @@ namespace {
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
 	constexpr auto DISPATCHER_ADAPTIVE_BUDGET_INTERVAL = std::chrono::milliseconds(250);
 	constexpr auto DISPATCHER_TELEMETRY_WARMUP = std::chrono::seconds(1);
+	constexpr uint8_t DISPATCHER_EMERGENCY_WARNING_WINDOWS = 4;
 
 	const DispatcherBudgetSet defaultDispatcherBudgets;
 	constexpr auto DEFAULT_DISPATCHER_SLO = std::chrono::milliseconds(50);
@@ -500,6 +501,7 @@ void Dispatcher::resetRuntimeTelemetry() {
 	}
 	scheduledLatenessTelemetry.reset();
 	playerVisibleReadyLatency.reset();
+	emergencyLatencyWindows = 0;
 }
 
 std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const {
@@ -533,14 +535,24 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	configuredBudgets = configured;
 	const auto visibleP99 = visibleWindow.percentile(0.99);
 	const auto oldestVisibleReadyAge = oldestPlayerVisibleReadyAge(now);
+	const auto emergencyThreshold = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS, DEFAULT_DISPATCHER_EMERGENCY.count()));
 	const auto decision = adaptiveBudgetController.update(
 		configured,
 		visibleP99,
 		oldestVisibleReadyAge,
 		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count())),
-		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS, DEFAULT_DISPATCHER_EMERGENCY.count()))
+		emergencyThreshold
 	);
 	activeBudgets = decision.budgets;
+	bool sustainedEmergency = false;
+	if (decision.controlLatency >= emergencyThreshold) {
+		if (emergencyLatencyWindows <= DISPATCHER_EMERGENCY_WARNING_WINDOWS) {
+			++emergencyLatencyWindows;
+		}
+		sustainedEmergency = emergencyLatencyWindows == DISPATCHER_EMERGENCY_WARNING_WINDOWS;
+	} else {
+		emergencyLatencyWindows = 0;
+	}
 
 	const auto packCreatureLimits = [](const DispatcherBudgetSet &budgets) {
 		const auto tasksPerBucket = std::min<size_t>(budgets.creatureAsyncTasksPerBucket, std::numeric_limits<uint32_t>::max());
@@ -550,11 +562,11 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	visibleCreatureAsyncSliceLimits.store(packCreatureLimits(configuredBudgets), std::memory_order_relaxed);
 	backgroundCreatureAsyncSliceLimits.store(packCreatureLimits(activeBudgets), std::memory_order_relaxed);
 
-	if (!decision.stateChanged) {
+	if (!decision.stateChanged && !sustainedEmergency) {
 		return;
 	}
 	const auto stateName = getDispatcherLoadStateName(decision.state);
-	if (decision.state == DispatcherLoadState::Emergency) {
+	if (sustainedEmergency) {
 		g_logger().warn(
 			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,

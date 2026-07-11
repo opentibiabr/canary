@@ -15,4 +15,5 @@ target_sources(
             random_mount_test.cpp
             player_stats_test.cpp
             spawn_monster_test.cpp
+            zone_weak_cache_test.cpp
 )

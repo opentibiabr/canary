@@ -120,6 +120,7 @@ class FindingLimitTests(unittest.TestCase):
 	def test_limit_stops_generation_without_materializing_all_findings(self) -> None:
 		config = replace(self.config, max_findings=2)
 		original_build = rules_module._build_finding
+		references = self._missing_references(100)
 		build_count = 0
 
 		def counted_build(**kwargs):
@@ -129,7 +130,7 @@ class FindingLimitTests(unittest.TestCase):
 
 		with patch.object(rules_module, "_build_finding", side_effect=counted_build):
 			with self.assertRaisesRegex(RuntimeError, "maxFindings=2"):
-				evaluate_rules(self._missing_references(100), config, ("canary",))
+				evaluate_rules(references, config, ("canary",))
 
 		self.assertEqual(build_count, 3)
 

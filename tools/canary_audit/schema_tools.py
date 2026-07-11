@@ -33,7 +33,10 @@ def validate_instance(name: str, instance: Any) -> None:
 	except Exception as error:
 		raise SchemaError(f"invalid schema {name}: {error}") from error
 	validator = Draft202012Validator(schema, format_checker=FormatChecker())
-	errors = sorted(validator.iter_errors(instance), key=lambda error: list(error.absolute_path))
+	errors = sorted(
+		validator.iter_errors(instance),
+		key=lambda error: [str(part) for part in error.absolute_path],
+	)
 	if errors:
 		error = errors[0]
 		location = ".".join(str(part) for part in error.absolute_path) or "<root>"

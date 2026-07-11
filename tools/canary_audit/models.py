@@ -92,7 +92,7 @@ class Fact:
 		if self.owner is not None:
 			result["owner"] = self.owner
 		if self.attributes:
-			result["attributes"] = {key: value for key, value in self.attributes}
+			result["attributes"] = dict(self.attributes)
 		return result
 
 	def sort_key(self) -> tuple[Any, ...]:

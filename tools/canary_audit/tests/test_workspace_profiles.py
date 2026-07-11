@@ -6,7 +6,7 @@ import unittest
 from pathlib import Path
 
 from tools.canary_audit.cli import _artifact_output_directory
-from tools.canary_audit.config import ConfigError, load_config
+from tools.canary_audit.config import ConfigError, config_from_mapping, load_config
 from tools.canary_audit.rules import evaluate_rules
 from tools.canary_audit.workspace import (
 	WorkspaceError,
@@ -16,7 +16,7 @@ from tools.canary_audit.workspace import (
 	safe_relative_path,
 )
 
-from .helpers import fact, repository_config
+from .helpers import CONFIG_PATH, fact, repository_config
 
 
 class WorkspacePathSafetyTests(unittest.TestCase):
@@ -27,8 +27,33 @@ class WorkspacePathSafetyTests(unittest.TestCase):
 			_artifact_output_directory(config, "artifacts/canary-audit"),
 			"artifacts/canary-audit",
 		)
+		self.assertEqual(
+			_artifact_output_directory(config, "artifacts/canary-audit///"),
+			"artifacts/canary-audit",
+		)
 		with self.assertRaises(ConfigError):
 			_artifact_output_directory(config, "reports/canary-audit")
+
+	def test_config_paths_reject_windows_device_names(self) -> None:
+		data = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+		data["baselinePath"] = "reports/NUL.json"
+
+		with self.assertRaisesRegex(ConfigError, "reserved device name"):
+			config_from_mapping(data)
+
+	def test_config_collection_errors_distinguish_empty_and_duplicate_names(self) -> None:
+		for collection in ("layers", "profiles"):
+			with self.subTest(collection=collection, case="empty"):
+				data = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+				data[collection] = []
+				with self.assertRaisesRegex(ConfigError, f"{collection} must not be empty"):
+					config_from_mapping(data)
+
+			with self.subTest(collection=collection, case="duplicate"):
+				data = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+				data[collection].append(dict(data[collection][0]))
+				with self.assertRaisesRegex(ConfigError, f"{collection} must have unique names"):
+					config_from_mapping(data)
 
 	def test_safe_relative_path_accepts_normal_posix_path(self) -> None:
 		self.assertEqual(safe_relative_path("artifacts/audit/report.json"), "artifacts/audit/report.json")

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -7,6 +8,7 @@ from pathlib import Path
 from tools.canary_audit.cli import _write_artifacts
 from tools.canary_audit.runner import run_audit
 from tools.canary_audit.schema_tools import (
+	SchemaError,
 	load_and_validate_json,
 	stable_json,
 	validate_all_schemas,
@@ -26,6 +28,13 @@ class SchemaAndDeterministicIntegrationTests(unittest.TestCase):
 		validate_all_schemas()
 		load_and_validate_json(CONFIG_PATH, "config.schema.json")
 		load_and_validate_json(BASELINE_PATH, "baseline.schema.json")
+
+	def test_config_schema_requires_an_excluded_directory(self) -> None:
+		config = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+		config["excludedDirectories"] = []
+
+		with self.assertRaises(SchemaError):
+			validate_instance("config.schema.json", config)
 
 	def test_same_workspace_produces_byte_stable_schema_valid_artifacts(self) -> None:
 		with tempfile.TemporaryDirectory() as temporary:
@@ -73,7 +82,7 @@ class SchemaAndDeterministicIntegrationTests(unittest.TestCase):
 		else:
 			path.write_text(content, encoding="utf-8")
 
-	classmethod
+	@classmethod
 	def _write_minimal_workspace(cls, root: Path) -> None:
 		cls._write(root, "data/items/appearances.dat", appearances_payload(321))
 		cls._write(root, "data/items/items.xml", '<items><item id="321" name="test item" /></items>')

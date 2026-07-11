@@ -8,7 +8,12 @@ import xml.sax
 from dataclasses import dataclass, field, replace
 from pathlib import Path
 from typing import BinaryIO, Generic, Iterable, TypeVar
-from xml.sax.handler import feature_external_ges, feature_external_pes
+from xml.sax.handler import (
+	LexicalHandler,
+	feature_external_ges,
+	feature_external_pes,
+	property_lexical_handler,
+)
 
 from .config import AuditConfig, StorageTable
 
@@ -35,6 +40,10 @@ T = TypeVar("T")
 
 class ExtractionLimitError(RuntimeError):
 	pass
+
+
+class _XmlSecurityError(xml.sax.SAXException):
+	"""Stop XML parsing as soon as a forbidden construct is observed."""
 
 
 class BoundedList(list[T], Generic[T]):
@@ -278,7 +287,7 @@ SELECTOR_RULES = {
 def extract_lua(path: DiscoveredFile, config: AuditConfig) -> ExtractionResult:
 	result = ExtractionResult.bounded(config, path.path)
 	context = _fact_context(config, path.path)
-	if context is None or PurePathName(path.path).startswith("#"):
+	if context is None or _pure_path_name(path.path).startswith("#"):
 		return result
 	layer, profiles = context
 	try:
@@ -526,7 +535,7 @@ def extract_lua(path: DiscoveredFile, config: AuditConfig) -> ExtractionResult:
 	return result
 
 
-def PurePathName(path: str) -> str:
+def _pure_path_name(path: str) -> str:
 	return path.rsplit("/", 1)[-1]
 
 
@@ -805,7 +814,7 @@ def extract_appearances(path: DiscoveredFile, config: AuditConfig) -> Extraction
 	return result
 
 
-class CanaryXmlHandler(xml.sax.ContentHandler):
+class CanaryXmlHandler(xml.sax.ContentHandler, LexicalHandler):
 	def __init__(
 		self,
 		path: str,
@@ -832,6 +841,14 @@ class CanaryXmlHandler(xml.sax.ContentHandler):
 
 	def setDocumentLocator(self, locator: xml.sax.xmlreader.Locator) -> None:  # noqa: N802
 		self.locator = locator
+
+	def startDTD(  # noqa: N802
+		self,
+		_name: str,
+		_public_id: str | None,
+		_system_id: str | None,
+	) -> None:
+		raise _XmlSecurityError("DTD declarations are not allowed")
 
 	def current_location(self) -> Location:
 		if self.locator is None:
@@ -1043,8 +1060,30 @@ def extract_xml(path: DiscoveredFile, config: AuditConfig) -> ExtractionResult:
 				)
 				return result
 		parser.setContentHandler(handler)
+		try:
+			parser.setProperty(property_lexical_handler, handler)
+		except (xml.sax.SAXNotRecognizedException, xml.sax.SAXNotSupportedException) as error:
+			result.diagnostics.append(
+				Diagnostic(
+					"scan.xml-security",
+					f"XML parser cannot reject DTD declarations: {error}",
+					"error",
+					Location(path.path),
+				)
+			)
+			return result
 		with path.absolute_path.open("rb") as source:
 			parser.parse(source)
+	except _XmlSecurityError as error:
+		result.diagnostics.append(
+			Diagnostic(
+				"scan.xml-security",
+				f"cannot securely parse {path.path}: {error}",
+				"error",
+				Location(path.path),
+			)
+		)
+		return result
 	except (OSError, xml.sax.SAXException) as error:
 		result.diagnostics.append(
 			Diagnostic("scan.xml-error", f"cannot parse {path.path}: {error}", "error", Location(path.path))

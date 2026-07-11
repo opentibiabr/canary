@@ -3,6 +3,8 @@ from __future__ import annotations
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import Mock, patch
+from xml.sax import SAXNotSupportedException
 
 from tools.canary_audit.extractors import extract_appearances, extract_lua, extract_xml
 
@@ -234,6 +236,31 @@ class XmlAndProtobufExtractorTests(unittest.TestCase):
 
 		self.assertEqual([item.code for item in result.diagnostics], ["xml.invalid-item-range"])
 		self.assertFalse(result.facts)
+
+	def test_xml_dtd_and_internal_entities_are_rejected(self) -> None:
+		xml = '''<!DOCTYPE items [
+	<!ENTITY itemId "321">
+]>
+<items><item id="&itemId;" /></items>'''
+		with tempfile.TemporaryDirectory() as temporary:
+			path = discovered_file(Path(temporary), "data/items/items.xml", xml)
+			result = extract_xml(path, self.config)
+
+		self.assertEqual([item.code for item in result.diagnostics], ["scan.xml-security"])
+		self.assertIn("DTD declarations are not allowed", result.diagnostics[0].message)
+		self.assertFalse(result.facts)
+
+	def test_xml_parser_without_dtd_controls_fails_closed(self) -> None:
+		parser = Mock()
+		parser.setProperty.side_effect = SAXNotSupportedException("lexical handler unavailable")
+		with tempfile.TemporaryDirectory() as temporary:
+			path = discovered_file(Path(temporary), "data/items/items.xml", "<items />")
+			with patch("tools.canary_audit.extractors.xml.sax.make_parser", return_value=parser):
+				result = extract_xml(path, self.config)
+
+		self.assertEqual([item.code for item in result.diagnostics], ["scan.xml-security"])
+		self.assertIn("cannot reject DTD declarations", result.diagnostics[0].message)
+		parser.parse.assert_not_called()
 
 	def test_world_xml_names_are_references_not_definitions(self) -> None:
 		xml = '''<spawns>

@@ -34,6 +34,7 @@ class CliExitCodeTests(unittest.TestCase):
 
 		self.assertEqual(status, EXIT_INCOMPLETE)
 		self.assertIn("internal scan failure", stderr.getvalue())
+		self.assertIn("Traceback (most recent call last)", stderr.getvalue())
 
 	def test_bundled_schema_failure_returns_incomplete_exit(self) -> None:
 		stderr = io.StringIO()
@@ -47,6 +48,7 @@ class CliExitCodeTests(unittest.TestCase):
 
 		self.assertEqual(status, EXIT_INCOMPLETE)
 		self.assertIn("internal schema failure", stderr.getvalue())
+		self.assertIn("Traceback (most recent call last)", stderr.getvalue())
 
 
 if __name__ == "__main__":

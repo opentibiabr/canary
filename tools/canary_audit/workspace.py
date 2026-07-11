@@ -23,6 +23,8 @@ WINDOWS_DEVICE_NAMES = {
 	*(f"LPT{index}" for index in range(1, 10)),
 }
 
+GIT_COMMAND_TIMEOUT_SECONDS = 30
+
 
 @dataclass(frozen=True)
 class DiscoveredFile:
@@ -35,6 +37,10 @@ class DiscoveredFile:
 def safe_relative_path(value: str, field_name: str = "path") -> str:
 	if not value or "\\" in value:
 		raise WorkspaceError(f"{field_name} must be a non-empty POSIX path")
+	try:
+		value.encode("utf-8", errors="strict")
+	except UnicodeError as error:
+		raise WorkspaceError(f"{field_name} must be valid UTF-8") from error
 	raw_parts = value.split("/")
 	if any(part in {"", ".", ".."} for part in raw_parts):
 		raise WorkspaceError(f"{field_name} must be normalized and stay inside the repository: {value!r}")
@@ -46,6 +52,11 @@ def safe_relative_path(value: str, field_name: str = "path") -> str:
 		if device in WINDOWS_DEVICE_NAMES:
 			raise WorkspaceError(f"{field_name} uses a reserved device name: {part!r}")
 	return path.as_posix()
+
+
+def safe_relative_directory(value: str, field_name: str = "directory") -> str:
+	"""Normalize trailing separators on a repository-local directory."""
+	return safe_relative_path(value.rstrip("/"), field_name)
 
 
 def _is_within(path: Path, root: Path) -> bool:
@@ -91,14 +102,15 @@ def _git_file_names(root: Path) -> list[str] | None:
 			check=True,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.PIPE,
+			timeout=GIT_COMMAND_TIMEOUT_SECONDS,
 		)
-	except (FileNotFoundError, subprocess.CalledProcessError):
+		return sorted(
+			path.decode("utf-8", errors="strict").replace("\\", "/")
+			for path in result.stdout.split(b"\0")
+			if path
+		)
+	except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired, UnicodeError):
 		return None
-	return sorted(
-		path.decode("utf-8", errors="strict").replace("\\", "/")
-		for path in result.stdout.split(b"\0")
-		if path
-	)
 
 
 def _walk_file_names(root: Path, excluded_directories: frozenset[str]) -> list[str]:
@@ -227,8 +239,9 @@ def git_revision(root: Path) -> str | None:
 			text=True,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.DEVNULL,
+			timeout=GIT_COMMAND_TIMEOUT_SECONDS,
 		).stdout.strip()
-	except (FileNotFoundError, subprocess.CalledProcessError):
+	except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired, UnicodeError):
 		return None
 
 
@@ -241,12 +254,13 @@ def git_dirty(root: Path) -> bool | None:
 			text=True,
 			stdout=subprocess.PIPE,
 			stderr=subprocess.DEVNULL,
+			timeout=GIT_COMMAND_TIMEOUT_SECONDS,
 		).stdout
 		return bool(output.strip())
-	except (FileNotFoundError, subprocess.CalledProcessError):
+	except (FileNotFoundError, subprocess.CalledProcessError, subprocess.TimeoutExpired, UnicodeError):
 		return None
 
 
 def relative_outputs(output_directory: str, file_names: Iterable[str]) -> tuple[str, ...]:
-	directory = safe_relative_path(output_directory, "output directory").rstrip("/")
+	directory = safe_relative_directory(output_directory, "output directory")
 	return tuple(f"{directory}/{safe_relative_path(name, 'output file name')}" for name in file_names)

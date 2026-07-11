@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from typing import Any
 
 from .models import Severity
+from .workspace import WorkspaceError, safe_relative_path
 
 
 class ConfigError(ValueError):
@@ -15,14 +17,10 @@ class ConfigError(ValueError):
 
 
 def _relative_path(value: str, field_name: str) -> str:
-	if not value or "\\" in value:
-		raise ConfigError(f"{field_name} must use a non-empty POSIX path")
-	if any(part in {"", ".", ".."} for part in value.split("/")):
-		raise ConfigError(f"{field_name} must be normalized and stay inside the repository: {value!r}")
-	path = PurePosixPath(value)
-	if path.is_absolute() or any(part in {"", ".", ".."} for part in path.parts):
-		raise ConfigError(f"{field_name} must stay inside the repository: {value!r}")
-	return path.as_posix()
+	try:
+		return safe_relative_path(value, field_name)
+	except WorkspaceError as error:
+		raise ConfigError(str(error)) from error
 
 
 @dataclass(frozen=True)
@@ -100,7 +98,13 @@ def load_config(path: Path) -> AuditConfig:
 		data = json.loads(path.read_text(encoding="utf-8"))
 	except (OSError, UnicodeError, json.JSONDecodeError) as error:
 		raise ConfigError(f"cannot load audit config {path}: {error}") from error
+	return config_from_mapping(data)
 
+
+def config_from_mapping(data: Mapping[str, Any]) -> AuditConfig:
+	"""Build an audit configuration from an already loaded JSON object."""
+	if not isinstance(data, Mapping):
+		raise ConfigError("audit config must be a JSON object")
 	if data.get("schemaVersion") != 1:
 		raise ConfigError("unsupported config schemaVersion")
 
@@ -108,7 +112,9 @@ def load_config(path: Path) -> AuditConfig:
 		Layer(name=str(item["name"]), root=_relative_path(str(item["root"]), "layers.root"))
 		for item in data.get("layers", [])
 	)
-	if not layers or len({item.name for item in layers}) != len(layers):
+	if not layers:
+		raise ConfigError("layers must not be empty")
+	if len({item.name for item in layers}) != len(layers):
 		raise ConfigError("layers must have unique names")
 	if len({item.root for item in layers}) != len(layers):
 		raise ConfigError("layer roots must be unique")
@@ -118,7 +124,9 @@ def load_config(path: Path) -> AuditConfig:
 		Profile(name=str(item["name"]), layers=tuple(str(name) for name in item["layers"]))
 		for item in data.get("profiles", [])
 	)
-	if not profiles or len({item.name for item in profiles}) != len(profiles):
+	if not profiles:
+		raise ConfigError("profiles must not be empty")
+	if len({item.name for item in profiles}) != len(profiles):
 		raise ConfigError("profiles must have unique names")
 	for profile in profiles:
 		if not profile.layers or not set(profile.layers) <= layer_names:

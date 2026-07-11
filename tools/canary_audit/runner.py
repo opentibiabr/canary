@@ -179,7 +179,7 @@ def _project_index(
 	}
 
 
-def _coverage(facts: tuple[Fact, ...]) -> list[dict[str, str]]:
+def _coverage() -> list[dict[str, str]]:
 	return [
 		{
 			"domain": "item.server_id",
@@ -237,7 +237,7 @@ def _symbol_registry(
 			"countsByRole": dict(sorted(by_role.items())),
 			"unresolvedCount": by_role.get("unresolved", 0),
 		},
-		"coverage": _coverage(facts),
+		"coverage": _coverage(),
 		"facts": [fact.as_dict() for fact in facts],
 	}
 

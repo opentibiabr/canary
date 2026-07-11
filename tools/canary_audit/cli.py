@@ -3,18 +3,17 @@
 from __future__ import annotations
 
 import argparse
-import json
 import os
 import sys
+import traceback
 from datetime import date
 from pathlib import Path, PurePosixPath
-from typing import Any, Sequence
+from typing import Sequence
 
-from .config import AuditConfig, ConfigError, load_config
+from .config import AuditConfig, ConfigError, config_from_mapping
 from .models import SEVERITY_RANK, is_sha
 from .runner import AuditArtifacts, run_audit
 from .schema_tools import (
-	SchemaError,
 	load_and_validate_json,
 	stable_json,
 	validate_all_schemas,
@@ -25,6 +24,7 @@ from .workspace import (
 	atomic_write_text,
 	relative_outputs,
 	resolve_workspace_path,
+	safe_relative_directory,
 	safe_relative_path,
 )
 
@@ -74,8 +74,8 @@ def _parser() -> argparse.ArgumentParser:
 def _load_config_and_baseline(root: Path, config_relative: str) -> tuple[AuditConfig, frozenset[str]]:
 	config_name = safe_relative_path(config_relative, "config path")
 	config_path = resolve_workspace_path(root, config_name, must_exist=True)
-	load_and_validate_json(config_path, "config.schema.json")
-	config = load_config(config_path)
+	config_data = load_and_validate_json(config_path, "config.schema.json")
+	config = config_from_mapping(config_data)
 	baseline_path = resolve_workspace_path(root, config.baseline_path, must_exist=True)
 	baseline = load_and_validate_json(baseline_path, "baseline.schema.json")
 	today = date.today()
@@ -108,7 +108,7 @@ def _validate_artifacts(artifacts: AuditArtifacts) -> None:
 
 
 def _artifact_output_directory(config: AuditConfig, requested: str) -> str:
-	directory = safe_relative_path(requested, "output directory").rstrip("/")
+	directory = safe_relative_directory(requested, "output directory")
 	root_parts = PurePosixPath(config.artifact_root).parts
 	if PurePosixPath(directory).parts[: len(root_parts)] != root_parts:
 		raise ConfigError(f"output directory must be {config.artifact_root!r} or one of its descendants")
@@ -161,12 +161,28 @@ def _emit_annotations(artifacts: AuditArtifacts, gate_severity: str) -> None:
 		)
 
 
-def _scan(root: Path, args: argparse.Namespace, config: AuditConfig, waivers: frozenset[str]) -> int:
+def _validated_scan_options(
+	config: AuditConfig,
+	args: argparse.Namespace,
+) -> tuple[tuple[str, ...], str, str]:
 	_validate_sha("base SHA", args.base_sha)
 	_validate_sha("head SHA", args.head_sha)
 	profiles = _selected_profiles(config, args.profile)
 	gate_severity = args.fail_on or config.gate_severity
 	output_directory = _artifact_output_directory(config, args.output_dir)
+	return profiles, gate_severity, output_directory
+
+
+def _scan(
+	root: Path,
+	args: argparse.Namespace,
+	config: AuditConfig,
+	waivers: frozenset[str],
+	*,
+	profiles: tuple[str, ...],
+	gate_severity: str,
+	output_directory: str,
+) -> int:
 	artifacts = run_audit(
 		root,
 		config,
@@ -190,7 +206,7 @@ def _scan(root: Path, args: argparse.Namespace, config: AuditConfig, waivers: fr
 
 def _validate_existing(root: Path, input_directory: str) -> int:
 	validate_all_schemas()
-	directory = safe_relative_path(input_directory, "input directory").rstrip("/")
+	directory = safe_relative_directory(input_directory, "input directory")
 	for file_name, schema_name in ARTIFACT_SCHEMAS.items():
 		relative = f"{directory}/{file_name}"
 		path = resolve_workspace_path(root, relative, must_exist=True)
@@ -214,36 +230,40 @@ def main(argv: Sequence[str] | None = None, *, repository_root: Path | None = No
 			print("All Canary audit schemas are valid")
 			return EXIT_SUCCESS
 		except Exception as error:
+			traceback.print_exc()
 			print(f"canary-audit: internal schema failure: {error}", file=sys.stderr)
 			return EXIT_INCOMPLETE
 
 	try:
 		config, waivers = _load_config_and_baseline(root, args.config)
-	except (ConfigError, SchemaError, WorkspaceError, ValueError) as error:
+	except (WorkspaceError, ValueError) as error:
 		print(f"canary-audit: {error}", file=sys.stderr)
 		return EXIT_USAGE
 
 	if args.command == "validate":
 		try:
 			return _validate_existing(root, args.input_dir)
-		except (ConfigError, SchemaError, WorkspaceError, ValueError) as error:
+		except (WorkspaceError, ValueError) as error:
 			print(f"canary-audit: {error}", file=sys.stderr)
 			return EXIT_USAGE
 
-	if args.command != "scan":
-		print(f"canary-audit: unsupported command: {args.command}", file=sys.stderr)
-		return EXIT_USAGE
 	try:
-		_validate_sha("base SHA", args.base_sha)
-		_validate_sha("head SHA", args.head_sha)
-		_selected_profiles(config, args.profile)
-		_artifact_output_directory(config, args.output_dir)
-	except (ConfigError, WorkspaceError, ValueError) as error:
+		profiles, gate_severity, output_directory = _validated_scan_options(config, args)
+	except (WorkspaceError, ValueError) as error:
 		print(f"canary-audit: {error}", file=sys.stderr)
 		return EXIT_USAGE
 	try:
-		return _scan(root, args, config, waivers)
+		return _scan(
+			root,
+			args,
+			config,
+			waivers,
+			profiles=profiles,
+			gate_severity=gate_severity,
+			output_directory=output_directory,
+		)
 	except Exception as error:  # Scanning, schema composition, and writes are operational failures.
+		traceback.print_exc()
 		print(f"canary-audit: internal scan failure: {error}", file=sys.stderr)
 		return EXIT_INCOMPLETE
 

@@ -334,7 +334,7 @@ def render_region(
 
     asset_index = build_asset_index(assets_root, hash_files=True)
     _require(asset_index["ok"], f"Client asset package is invalid: {asset_index['issues'][:5]}")
-    appearances_index = build_appearances_index(_resolve_appearance_path(asset_index), asset_index=asset_index)
+    appearances_index = build_appearances_index(_resolve_appearance_path(asset_index))
     _require(appearances_index["ok"], f"Appearances data is invalid: {appearances_index['issues'][:5]}")
     appearances = {
         int(entry["id"]): entry

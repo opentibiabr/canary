@@ -92,7 +92,7 @@ def make_cip_sheet(bmp: bytes, *, lc: int = 3, lp: int = 0, pb: int = 2, diction
         }
     ]
     compressed = lzma.compress(bmp, format=lzma.FORMAT_RAW, filters=filters)
-    lzma_file = bytes((properties,)) + struct.pack("<I", dictionary_size) + struct.pack("<Q", len(bmp)) + compressed
+    lzma_file = bytes((properties,)) + struct.pack("<I", dictionary_size) + struct.pack("<Q", len(compressed)) + compressed
     encoded_size = encode_7bit(len(lzma_file))
     padding = 32 - len(CIP_SIGNATURE) - len(encoded_size)
     if padding < 0:
@@ -120,6 +120,7 @@ class SpriteSheetTests(unittest.TestCase):
         self.assertEqual(sheet.header.lc, 3)
         self.assertEqual(sheet.header.lp, 0)
         self.assertEqual(sheet.header.pb, 2)
+        self.assertEqual(sheet.header.declared_compressed_size, len(self.path.read_bytes()) - 45)
         report = sheet_report(sheet)
         self.assertTrue(report["ok"])
         self.assertEqual(report["bmp"]["rgbaBytes"], 384 * 384 * 4)
@@ -165,6 +166,14 @@ class SpriteSheetTests(unittest.TestCase):
         data[size_offset] ^= 1
         self.path.write_bytes(data)
         with self.assertRaisesRegex(SpriteSheetError, "size mismatch"):
+            decode_sprite_sheet(self.path)
+
+    def test_rejects_inner_compressed_size_mismatch(self) -> None:
+        data = bytearray(self.path.read_bytes())
+        declared = struct.unpack_from("<Q", data, 37)[0]
+        struct.pack_into("<Q", data, 37, declared + 1)
+        self.path.write_bytes(data)
+        with self.assertRaisesRegex(SpriteSheetError, "compressed size mismatch"):
             decode_sprite_sheet(self.path)
 
     def test_rejects_missing_signature(self) -> None:

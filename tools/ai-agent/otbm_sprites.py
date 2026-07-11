@@ -69,7 +69,7 @@ class CipHeader:
     lp: int
     pb: int
     dictionary_size: int
-    declared_uncompressed_size: int | None
+    declared_compressed_size: int
 
 
 @dataclass(frozen=True)
@@ -154,11 +154,11 @@ def _parse_cip_header(data: bytes) -> CipHeader:
     dictionary_size = struct.unpack_from("<I", data, CIP_HEADER_SIZE + 1)[0]
     if dictionary_size == 0:
         raise SpriteSheetError("LZMA dictionary size must be greater than zero")
-    raw_size = struct.unpack_from("<Q", data, CIP_HEADER_SIZE + 5)[0]
-    declared_uncompressed_size = None if raw_size == 0xFFFFFFFFFFFFFFFF else raw_size
-    if declared_uncompressed_size is not None and declared_uncompressed_size > MAX_DECOMPRESSED_SIZE:
+    declared_compressed_size = struct.unpack_from("<Q", data, CIP_HEADER_SIZE + 5)[0]
+    actual_compressed_size = len(data) - CIP_HEADER_SIZE - 13
+    if declared_compressed_size != actual_compressed_size:
         raise SpriteSheetError(
-            f"Declared uncompressed size exceeds {MAX_DECOMPRESSED_SIZE}: {declared_uncompressed_size}"
+            f"LZMA compressed size mismatch: declared {declared_compressed_size}, actual {actual_compressed_size}"
         )
     return CipHeader(
         signature_offset=signature_offset,
@@ -168,7 +168,7 @@ def _parse_cip_header(data: bytes) -> CipHeader:
         lp=lp,
         pb=pb,
         dictionary_size=dictionary_size,
-        declared_uncompressed_size=declared_uncompressed_size,
+        declared_compressed_size=declared_compressed_size,
     )
 
 
@@ -194,10 +194,6 @@ def _decompress_lzma(data: bytes, header: CipHeader) -> bytes:
         raise SpriteSheetError("LZMA stream did not reach its end marker")
     if decoder.unused_data:
         raise SpriteSheetError("LZMA stream contains trailing compressed data")
-    if header.declared_uncompressed_size is not None and len(decoded) != header.declared_uncompressed_size:
-        raise SpriteSheetError(
-            f"LZMA output size mismatch: declared {header.declared_uncompressed_size}, actual {len(decoded)}"
-        )
     return decoded
 
 
@@ -359,7 +355,7 @@ def sheet_report(sheet: DecodedSheet) -> dict[str, Any]:
             "lp": sheet.header.lp,
             "pb": sheet.header.pb,
             "dictionarySize": sheet.header.dictionary_size,
-            "declaredUncompressedSize": sheet.header.declared_uncompressed_size,
+            "declaredCompressedSize": sheet.header.declared_compressed_size,
         },
         "bmp": {
             "width": sheet.width,

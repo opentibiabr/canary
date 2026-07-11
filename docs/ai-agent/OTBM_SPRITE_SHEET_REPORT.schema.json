@@ -28,14 +28,14 @@
     },
     "lzma": {
       "type": "object",
-      "required": ["properties", "lc", "lp", "pb", "dictionarySize", "declaredUncompressedSize"],
+      "required": ["properties", "lc", "lp", "pb", "dictionarySize", "declaredCompressedSize"],
       "properties": {
         "properties": {"type": "integer", "minimum": 0, "maximum": 224},
         "lc": {"type": "integer", "minimum": 0, "maximum": 8},
         "lp": {"type": "integer", "minimum": 0, "maximum": 4},
         "pb": {"type": "integer", "minimum": 0, "maximum": 4},
         "dictionarySize": {"type": "integer", "minimum": 1},
-        "declaredUncompressedSize": {"oneOf": [{"type": "integer", "minimum": 1}, {"type": "null"}]}
+        "declaredCompressedSize": {"type": "integer", "minimum": 0}
       },
       "additionalProperties": false
     },

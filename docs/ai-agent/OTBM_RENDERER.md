@@ -20,7 +20,7 @@ The assets argument may point to:
 - an OTClient `data/things/<version>` directory;
 - an `assets` directory containing `catalog-content.json`.
 
-The renderer validates the complete asset package before drawing. It then parses the referenced appearances protobuf and decodes only the CIP/LZMA sprite sheets needed by the requested map region.
+The renderer validates every file and sprite range declared by the supplied catalog before drawing. The catalog may represent a complete client or a reduced render package. Appearances are parsed independently, while sprite availability is required only for IDs actually referenced by items in the requested map region.
 
 ## Rendering pipeline
 
@@ -92,7 +92,7 @@ A PNG is still written when individual placed items are missing from the client 
 - padding is bounded;
 - total canvas pixels are bounded;
 - asset paths must pass the catalog index safety checks;
-- appearances and sprite sheets must pass their independent parsers before rendering;
+- appearances and every sprite sheet used by the selected region must pass their independent parsers before rendering;
 - no OTBM, companion XML, client asset, or server file is modified.
 
 ## Current boundary

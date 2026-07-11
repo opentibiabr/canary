@@ -14,12 +14,14 @@ The decoder follows the OTClient format:
 
 1. validate the fixed 32-byte CIP header;
 2. validate the CIP signature and 7-bit LZMA file size;
-3. read the LZMA1 properties byte, dictionary size, and declared output size;
+3. read the LZMA1 properties byte, dictionary size, and declared compressed payload size;
 4. decompress the raw LZMA stream with bounded output;
 5. validate the 384×384, 32-bit BMP;
 6. convert BGRA to RGBA;
 7. make RGB magenta (`255,0,255`) fully transparent;
 8. normalize bottom-up BMP rows to top-down RGBA.
+
+The eight-byte value after the LZMA properties and dictionary is the compressed raw-LZMA payload length used by the real OTClient/CIP files, not the decompressed BMP size.
 
 ## Extract one sprite
 
@@ -51,7 +53,7 @@ The PNG writer uses the Python standard library and writes deterministic RGBA PN
 
 - source sheets are read-only;
 - the CIP size must exactly match the physical LZMA payload;
-- LZMA properties, dictionary size, stream termination, output size, and trailing data are checked;
+- LZMA properties, dictionary size, declared compressed payload size, stream termination, and trailing data are checked;
 - decompressed output is bounded;
 - BMP dimensions, pixel offset, bit depth, compression, and data bounds are checked;
 - sprite range and layout capacity are checked before extraction;

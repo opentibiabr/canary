@@ -96,7 +96,7 @@ def make_sheet(path: Path) -> None:
     dictionary_size = 1 << 20
     filters = [{"id": lzma.FILTER_LZMA1, "dict_size": dictionary_size, "lc": 3, "lp": 0, "pb": 2}]
     compressed = lzma.compress(bmp, format=lzma.FORMAT_RAW, filters=filters)
-    lzma_file = bytes((properties,)) + struct.pack("<I", dictionary_size) + struct.pack("<Q", len(bmp)) + compressed
+    lzma_file = bytes((properties,)) + struct.pack("<I", dictionary_size) + struct.pack("<Q", len(compressed)) + compressed
     encoded_size = encode_7bit(len(lzma_file))
     padding = 32 - len(CIP_SIGNATURE) - len(encoded_size)
     path.write_bytes(b"\0" * padding + CIP_SIGNATURE + encoded_size + lzma_file)
@@ -179,6 +179,8 @@ class RendererTests(unittest.TestCase):
             [
                 object_appearance(100, 100, ground=True),
                 object_appearance(101, 101, top=True),
+                # A reduced render package may omit sheets used only by unrelated appearances.
+                object_appearance(9999, 500),
             ],
         )
         make_map(self.map_path, 100, 101)

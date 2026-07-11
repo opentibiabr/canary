@@ -682,6 +682,9 @@ Current Phase 2 implementation:
 - `VisibleMonster` and `VisibleMonsterAI` use the configured 128 movement/eight
   barrier-task limits. `BackgroundMonster`, `MonsterAI`, and `GenericParallel`
   use adaptive limits so overload reduces distant cadence first.
+- Adaptive reductions apply on the first SLO or emergency breach. State changes
+  remain debug telemetry until emergency latency persists for four consecutive
+  250 ms windows, at which point the dispatcher emits one warning.
 - Visible post-think processes eight IDs per `WorldCommit` task. Background
   post-think processes 64 IDs per `Deferred` task, whose lane drains 16 tasks per
   pass by default. Both queues are bounded and keep one coalesced tick per

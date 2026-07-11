@@ -907,7 +907,7 @@ Mitigation:
 ### Phase 8: adaptive budgets and aging
 
 Status: implemented with static bounds, SLO/emergency thresholds, hysteresis,
-lane minimums, and WDRR aging.
+lane minimums, sustained-emergency warning gating, and WDRR aging.
 
 Priority: medium-low.
 
@@ -927,6 +927,9 @@ Work:
 - Increase monster budgets when player-visible lanes are healthy and monster
   queues age.
 - Add hysteresis and gradual changes so the controller does not oscillate.
+- Apply emergency budgets immediately, but require four consecutive emergency
+  windows before escalating the state transition from debug telemetry to a
+  warning.
 - Apply per-player or per-actor admission control where one producer can flood a
   high-priority lane.
 - Keep hard minimum and maximum budgets. No lane may become unbounded because a

@@ -8,6 +8,7 @@
  */
 
 #include "server/network/protocol/protocolgame.hpp"
+#include "game/functions/forge_transfer_policy.hpp"
 
 #include "account/account.hpp"
 #include "config/configmanager.hpp"
@@ -7245,10 +7246,6 @@ void ProtocolGame::sendOpenForge() {
 			// Let's access the itemType to check the item's (donator of tier) classification level
 			// Must be the same as the item that will receive the tier
 			const ItemType &donorType = Item::items[itemId];
-			auto donorSlotPosition = donorType.slotPosition;
-			if ((donorSlotPosition & SLOTP_TWO_HAND) != 0) {
-				donorSlotPosition = SLOTP_HAND;
-			}
 
 			// Total count of item (donator of tier)
 			auto donorTierTotalItemsCount = tierAndCountMap.size();
@@ -7261,13 +7258,9 @@ void ProtocolGame::sendOpenForge() {
 
 			uint16_t receiveTierTotalItemCount = 0;
 			for (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
-				// Let's access the itemType to check the item's (receiver of tier) classification level
+				// Normal transfer compatibility is based on upgrade classification, not equipment slot.
 				const ItemType &receiveType = Item::items[iteratorItemId];
-				auto receiveSlotPosition = receiveType.slotPosition;
-				if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
-					receiveSlotPosition = SLOTP_HAND;
-				}
-				if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
+				if (ForgeTransferPolicy::hasMatchingClassification(donorType.upgradeClassification, receiveType.upgradeClassification)) {
 					receiveTierTotalItemCount++;
 				}
 			}
@@ -7276,13 +7269,9 @@ void ProtocolGame::sendOpenForge() {
 			msg.add<uint16_t>(receiveTierTotalItemCount);
 			if (receiveTierTotalItemCount > 0) {
 				for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
-					// Let's access the itemType to check the item's (receiver of tier) classification level
+					// Normal transfer compatibility is based on upgrade classification, not equipment slot.
 					const ItemType &receiveType = Item::items[receiveItemId];
-					auto receiveSlotPosition = receiveType.slotPosition;
-					if ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
-						receiveSlotPosition = SLOTP_HAND;
-					}
-					if (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
+					if (ForgeTransferPolicy::hasMatchingClassification(donorType.upgradeClassification, receiveType.upgradeClassification)) {
 						for (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
 							msg.add<uint16_t>(receiveItemId);
 							msg.add<uint16_t>(receiveItemCount);

@@ -8,6 +8,7 @@
  */
 
 #include "creatures/players/player.hpp"
+#include "game/functions/forge_transfer_policy.hpp"
 
 #include "account/account.hpp"
 #include "config/configmanager.hpp"
@@ -11364,6 +11365,14 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
+	const uint8_t donorClassification = donorItem->getClassification();
+	const uint8_t receiveClassification = receiveItem->getClassification();
+	if (!ForgeTransferPolicy::isValidDonorTier(donorItem->getTier(), convergence) || !ForgeTransferPolicy::hasMatchingClassification(donorClassification, receiveClassification)) {
+		g_logger().warn("[{}] Rejected invalid transfer for player {}: donor class {}, receiver class {}, donor tier {}, convergence {}", __FUNCTION__, getName(), donorClassification, receiveClassification, donorItem->getTier(), convergence);
+		sendForgeError(RETURNVALUE_NOTPOSSIBLE);
+		return;
+	}
+
 	// Pre-validate all resources before mutating player inventory.
 	auto configKey = convergence ? FORGE_CONVERGENCE_TRANSFER_DUST_COST : FORGE_TRANSFER_DUST_COST;
 	auto dustCost = static_cast<uint64_t>(g_configManager().getNumber(configKey));
@@ -11376,18 +11385,18 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	uint8_t coresAmount = 0;
 	uint64_t cost = 0;
 	bool hasMatchingClassification = false;
+	const uint8_t resourceTier = ForgeTransferPolicy::resourceTier(donorItem->getTier());
 	for (const auto* itemClassification : g_game().getItemsClassifications()) {
-		if (!itemClassification || itemClassification->id != donorItem->getClassification()) {
+		if (!itemClassification || itemClassification->id != donorClassification) {
 			continue;
 		}
 		hasMatchingClassification = true;
-		const uint8_t toTier = convergence ? donorItem->getTier() : donorItem->getTier() - 1;
-		if (!itemClassification->tiers.contains(toTier)) {
-			g_logger().error("[{}] Failed to find tier {} for item {} in classification {}", __FUNCTION__, toTier, donorItem->getClassification(), itemClassification->id);
+		if (!itemClassification->tiers.contains(resourceTier)) {
+			g_logger().error("[{}] Failed to find tier {} for item {} in classification {}", __FUNCTION__, resourceTier, donorClassification, itemClassification->id);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
-		const auto &tierPrices = itemClassification->tiers.at(toTier);
+		const auto &tierPrices = itemClassification->tiers.at(resourceTier);
 		cost = convergence ? tierPrices.convergenceTransferPrice : tierPrices.regularPrice;
 		coresAmount = tierPrices.corePrice;
 		break;
@@ -11456,11 +11465,8 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 
-	if (convergence) {
-		newReceiveItem->setTier(tier);
-	} else {
-		newReceiveItem->setTier(tier - 1);
-	}
+	const uint8_t resultTier = ForgeTransferPolicy::resultTier(donorItem->getTier(), convergence);
+	newReceiveItem->setTier(resultTier);
 	returnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
 	if (returnValue != RETURNVALUE_NOERROR) {
 		g_logger().error("[Log 7] Failed to add forge item {} from player with name {}", receiveItemId, getName());
@@ -11483,6 +11489,8 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		return;
 	}
 	history.cost = cost;
+	history.coresCost = coresAmount;
+	history.dustCost = dustCost;
 	g_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_transfer" } });
 
 	history.firstItemName = Item::items[donorItemId].name;
@@ -11491,7 +11499,7 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 	history.convergence = convergence;
 	registerForgeHistoryDescription(history);
 
-	sendForgeResult(actionType, donorItemId, tier, receiveItemId, convergence ? tier : tier - 1, true, 0, 0, convergence);
+	sendForgeResult(actionType, donorItemId, tier, receiveItemId, resultTier, true, 0, 0, convergence);
 }
 
 void Player::forgeResourceConversion(ForgeAction_t actionType) {
@@ -11747,6 +11755,9 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 			);
 		}
 	} else if (history.actionType == ForgeAction_t::TRANSFER) {
+		const auto secondItemId = Item::items.getItemIdByName(history.secondItemName);
+		const ItemType &secondItemType = Item::items[secondItemId];
+		const uint8_t resultTier = ForgeTransferPolicy::resultTier(history.tier, history.convergence);
 		detailsResponse << fmt::format(
 			"{:s}{:s} <br><br>"
 			"Transfer partners:"
@@ -11755,27 +11766,27 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 			"First item: {:s} {:s}, tier {:s}"
 			"</li>"
 			"<li>"
-			"Second item: {:s} {:s}, tier {:s}"
+			"Second item: {:s} {:s}, tier 0"
 			"</li>"
 			"</ul>"
 			"<br>"
 			"Result:"
 			"<ul> "
 			"<li>"
-			"First item: {:s} {:s}, tier {:s}"
+			"First item: consumed"
 			"</li>"
 			"<li>"
-			"Second item: {:s} {:s}, {:s}"
+			"Second item: {:s} {:s}, tier {:s}"
 			"</li>"
 			"</ul>"
 			"<br>"
 			"Invested:"
 			"<ul>"
 			"<li>"
-			"1 cores"
+			"{:d} cores"
 			"</li>"
 			"<li>"
-			"100 dust"
+			"{:d} dust"
 			"</li>"
 			"<li>"
 			"{:s} gold"
@@ -11784,10 +11795,9 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 			successfulString,
 			history.convergence ? " (convergence)" : "",
 			itemType.article, itemType.name, std::to_string(history.tier),
-			itemType.article, itemType.name, std::to_string(history.tier),
-			itemType.article, itemType.name, std::to_string(history.tier),
-			itemType.article, itemType.name, std::to_string(history.tier),
-			price
+			secondItemType.article, secondItemType.name,
+			secondItemType.article, secondItemType.name, std::to_string(resultTier),
+			history.coresCost, history.dustCost, price
 		);
 	} else if (history.actionType == ForgeAction_t::DUSTTOSLIVERS) {
 		detailsResponse << fmt::format("Converted {:d} dust to {:d} slivers.", history.cost, history.gained);

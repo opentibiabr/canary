@@ -8,6 +8,7 @@
  */
 
 #include "game/game.hpp"
+#include "game/functions/use_with_policy.hpp"
 
 #include "game/multichannel/channel_context.hpp"
 #include "game/multichannel/channel_registry.hpp"
@@ -4844,11 +4845,9 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 	}
 
 	bool isHotkey = (fromPos.x == 0xFFFF && fromPos.y == 0 && fromPos.z == 0);
-	if (!g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED)) {
-		if (creature->getPlayer() || isHotkey) {
-			player->sendCancelMessage(RETURNVALUE_DIRECTPLAYERSHOOT);
-			return;
-		}
+	if (UseWithPolicy::shouldBlockAimbotHotkey(g_configManager().getBoolean(AIMBOT_HOTKEY_ENABLED), isHotkey)) {
+		player->sendCancelMessage(RETURNVALUE_DIRECTPLAYERSHOOT);
+		return;
 	}
 
 	const std::shared_ptr<Thing> &thing = internalGetThing(player, fromPos, fromStackPos, itemId, STACKPOS_FIND_THING);

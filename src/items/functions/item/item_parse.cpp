@@ -8,6 +8,7 @@
  */
 
 #include "items/functions/item/item_parse.hpp"
+#include "items/functions/item/item_parse_policy.hpp"
 
 #include "config/configmanager.hpp"
 #include "creatures/players/components/weapon_proficiency.hpp"
@@ -1303,6 +1304,9 @@ void ItemParse::parseUnscriptedItems(std::string_view stringValue, pugi::xml_nod
 					createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_DEEQUIP);
 				} else {
 					createAndRegisterScript(itemType, attributeNode, eventType);
+					if (ItemParsePolicy::shouldRegisterAddItemField(eventType == MOVE_EVENT_STEP_IN, itemType.isMagicField())) {
+						createAndRegisterScript(itemType, attributeNode, MOVE_EVENT_ADD_ITEM_ITEMTILE);
+					}
 				}
 			} else if (token == "weapon") {
 				WeaponType_t weaponType = {};

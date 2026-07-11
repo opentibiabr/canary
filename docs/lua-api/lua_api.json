@@ -7211,6 +7211,14 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "requestChannelSwitch",
+        "params": [
+          "targetChannelId: number"
+        ],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "resetCharmsBestiary",
         "params": [],
         "return": "boolean|nil",

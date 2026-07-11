@@ -652,6 +652,11 @@ int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:requestChannelSwitch
+ * @param targetChannelId number
+ * @return boolean|nil
+ */
 int PlayerFunctions::luaPlayerRequestChannelSwitch(lua_State* L) {
 	// player:requestChannelSwitch(targetChannelId)
 	// Multi-channel cluster live switch (docs/multichannel/

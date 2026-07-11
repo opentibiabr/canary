@@ -1,0 +1,109 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_APPEARANCES_INDEX.schema.json",
+  "title": "Canary appearances protobuf index",
+  "type": "object",
+  "required": ["format", "ok", "source", "categories", "appearances", "summary", "issueSummary", "issues"],
+  "properties": {
+    "format": {"const": "canary-appearances-index-v1"},
+    "ok": {"type": "boolean"},
+    "source": {
+      "type": "object",
+      "required": ["path", "size", "sha256"],
+      "properties": {
+        "path": {"type": "string"},
+        "size": {"type": "integer", "minimum": 0},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "categories": {
+      "type": "object",
+      "required": ["object", "outfit", "effect", "missile"],
+      "properties": {
+        "object": {"type": "integer", "minimum": 0},
+        "outfit": {"type": "integer", "minimum": 0},
+        "effect": {"type": "integer", "minimum": 0},
+        "missile": {"type": "integer", "minimum": 0}
+      }
+    },
+    "includeNonObjects": {"type": "boolean"},
+    "appearances": {"type": "array", "items": {"$ref": "#/$defs/appearance"}},
+    "summary": {
+      "type": "object",
+      "required": ["indexedAppearances", "objectCount", "uniqueObjectIds", "frameGroupCount", "spriteReferenceCount", "uniqueSpriteIds", "uncoveredSpriteIdCount", "missingFlags", "missingFrameGroups"],
+      "properties": {
+        "indexedAppearances": {"type": "integer", "minimum": 0},
+        "objectCount": {"type": "integer", "minimum": 0},
+        "uniqueObjectIds": {"type": "integer", "minimum": 0},
+        "frameGroupCount": {"type": "integer", "minimum": 0},
+        "spriteReferenceCount": {"type": "integer", "minimum": 0},
+        "uniqueSpriteIds": {"type": "integer", "minimum": 0},
+        "minimumSpriteId": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "maximumSpriteId": {"oneOf": [{"type": "integer", "minimum": 0}, {"type": "null"}]},
+        "uncoveredSpriteIdCount": {"type": "integer", "minimum": 0},
+        "missingFlags": {"type": "integer", "minimum": 0},
+        "missingFrameGroups": {"type": "integer", "minimum": 0}
+      }
+    },
+    "issueSummary": {"$ref": "#/$defs/issueSummary"},
+    "issues": {"type": "array", "items": {"$ref": "#/$defs/issue"}}
+  },
+  "$defs": {
+    "appearance": {
+      "type": "object",
+      "required": ["category", "frameGroups"],
+      "properties": {
+        "category": {"enum": ["object", "outfit", "effect", "missile"]},
+        "id": {"type": "integer", "minimum": 0},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "flags": {"type": "object"},
+        "frameGroups": {"type": "array", "items": {"$ref": "#/$defs/frameGroup"}}
+      },
+      "additionalProperties": false
+    },
+    "frameGroup": {
+      "type": "object",
+      "properties": {
+        "fixedFrameGroup": {"type": "integer"},
+        "id": {"type": "integer", "minimum": 0},
+        "spriteInfo": {"$ref": "#/$defs/spriteInfo"}
+      },
+      "additionalProperties": false
+    },
+    "spriteInfo": {
+      "type": "object",
+      "required": ["patternWidth", "patternHeight", "patternDepth", "layers", "spriteIds"],
+      "properties": {
+        "patternWidth": {"type": "integer", "minimum": 0},
+        "patternHeight": {"type": "integer", "minimum": 0},
+        "patternDepth": {"type": "integer", "minimum": 0},
+        "layers": {"type": "integer", "minimum": 0},
+        "spriteIds": {"type": "array", "items": {"type": "integer", "minimum": 0}},
+        "boundingSquare": {"type": "integer", "minimum": 0},
+        "opaque": {"type": "boolean"},
+        "animation": {"type": "object"}
+      },
+      "additionalProperties": false
+    },
+    "issueSummary": {
+      "type": "object",
+      "required": ["error", "warning", "info"],
+      "properties": {
+        "error": {"type": "integer", "minimum": 0},
+        "warning": {"type": "integer", "minimum": 0},
+        "info": {"type": "integer", "minimum": 0}
+      }
+    },
+    "issue": {
+      "type": "object",
+      "required": ["severity", "code", "message"],
+      "properties": {
+        "severity": {"enum": ["error", "warning", "info"]},
+        "code": {"type": "string"},
+        "message": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  }
+}

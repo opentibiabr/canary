@@ -33,6 +33,20 @@ The input may be a client root containing `package.json` and `assets/`, an OTCli
 
 See `docs/ai-agent/OTBM_ASSETS.md` and `docs/ai-agent/OTBM_ASSET_INDEX.schema.json`.
 
+## Appearances protobuf index
+
+`otbm_appearances_tool.py` extracts render-relevant item appearances from modern `appearances.dat` files without generated protobuf bindings or third-party Python packages.
+
+```bash
+python tools/ai-agent/otbm_appearances_tool.py /path/to/appearances.dat \
+  --asset-index artifacts/CLIENT_ASSETS_INDEX.json \
+  --output artifacts/APPEARANCES_INDEX.json
+```
+
+The index records appearance IDs, frame groups, pattern dimensions, layers, sprite IDs, animation phases, and flags used for draw order, shift, elevation, light, translucency, and automap color. It detects malformed protobuf data, duplicate appearance IDs, missing flags or frame groups, and sprite IDs outside the asset catalog ranges. Object appearances are indexed by default; `--include-non-objects` also includes outfits, effects, and missiles.
+
+See `docs/ai-agent/OTBM_APPEARANCES.md` and `docs/ai-agent/OTBM_APPEARANCES_INDEX.schema.json`.
+
 ## OTBM map intelligence and authoring
 
 `otbm_map_tool.py` safely inspects Canary OTBM files, indexes world metadata, exports bounded regions, enriches item IDs from `data/items/items.xml`, renders logical SVG previews, validates patches, detects conflicts on newer maps, writes new OTBM copies, and publishes separately validated companion XML packages.

@@ -377,7 +377,7 @@ void Monster::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool i
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		if (canSee(creature->getPosition())) {
+		if (creature->getPlayerRaw() && canSee(creature->getPosition())) {
 			observeVisiblePlayerForScheduling(creature);
 		}
 		addAsyncTask([this, creature] {
@@ -475,7 +475,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 }
 
 void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
-	if (canSee(newPos) && !canSee(oldPos)) {
+	if (creature->getPlayerRaw() && canSee(newPos) && !canSee(oldPos)) {
 		observeVisiblePlayerForScheduling(creature);
 	}
 
@@ -2048,6 +2048,10 @@ bool Monster::isPlayerVisibleForScheduling() {
 }
 
 void Monster::observeVisiblePlayerForScheduling(const std::shared_ptr<Creature> &creature) {
+	if (!creature || !creature->getPlayerRaw()) {
+		return;
+	}
+
 	const bool wasPlayerVisible = isPlayerVisibleForScheduling();
 	const bool becamePlayerVisible = addVisiblePlayerSpectator(creature);
 	if (becamePlayerVisible && !wasPlayerVisible) {

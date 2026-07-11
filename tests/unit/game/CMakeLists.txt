@@ -1,6 +1,7 @@
 target_sources(
     canary_ut
     PRIVATE bank_test.cpp
+            combat_policy_test.cpp
             events_scheduler_test.cpp
             highscores_test.cpp
             npc_shop_range_test.cpp

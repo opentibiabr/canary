@@ -13,6 +13,12 @@ end
 
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
+local AnalyticsSpell = dofile("data/scripts/lib/gameplay_analytics_spell.lua")
+local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+if not analyticsOk then
+	Analytics = nil
+end
+
 local rune = Spell("rune")
 
 function rune.onCastSpell(creature, var, isHotkey)
@@ -21,7 +27,9 @@ function rune.onCastSpell(creature, var, isHotkey)
 		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	else
-		return combat:execute(creature, var)
+		return AnalyticsSpell.recordCast(Analytics, creature, "Intense Healing Rune", 0, 1, function()
+			return combat:execute(creature, var)
+		end)
 	end
 end
 

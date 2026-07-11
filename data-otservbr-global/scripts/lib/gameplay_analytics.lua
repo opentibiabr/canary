@@ -261,6 +261,18 @@ function Analytics.recordHealing(healer, target, effective, overhealing)
 	session.overhealing = session.overhealing + overhealing
 end
 
+-- Read-only snapshot used by spell scripts to attribute a share of the
+-- session-wide damage and healing totals to one cast, without adding to
+-- those totals again. The generic combat hooks remain the single place
+-- that increments them.
+function Analytics.combatTotals(player)
+	local session = Analytics.get(player)
+	if not session then
+		return 0, 0
+	end
+	return session.damageDealt or 0, (session.healingSelf or 0) + (session.healingOthers or 0)
+end
+
 function Analytics.recordManaSpent(player, amount)
 	amount = math.max(0, tonumber(amount) or 0)
 	if amount == 0 then

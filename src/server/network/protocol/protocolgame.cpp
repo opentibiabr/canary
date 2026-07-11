@@ -33,6 +33,8 @@
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
+#include "game/multichannel/channel_context.hpp"
+#include "game/multichannel/cluster_runtime.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/functions/iologindata_load_player.hpp"
 #include "io/io_bosstiary.hpp"
@@ -1021,6 +1023,23 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			}
 		}
 
+		// Cluster-wide anti-split-brain gate (docs/multichannel/ARCHITECTURE.md
+		// §5): a no-op returning acquired=true when multi-channel mode is
+		// disabled, so single-channel installs never see this check. Placed
+		// as the very last gate before placeCreature so every earlier
+		// rejection above (ban, waiting list, PZ-account-limit) still
+		// returns before ever acquiring a lease this function would then
+		// have to remember to release.
+		const auto clusterSessionHandle = g_clusterRuntime().acquireForLogin(static_cast<int32_t>(accountId), g_channelContext().getChannelId(), OTSYS_TIME());
+		if (!clusterSessionHandle.acquired) {
+			if (!g_clusterRuntime().isAcceptingNewSessions()) {
+				disconnectClient("The game cluster is temporarily unable to verify your session.\nPlease try again in a moment.");
+			} else {
+				disconnectClient("This character is already online on another channel.\nPlease log out there first.");
+			}
+			return;
+		}
+
 		const bool suppressPreLoginPacketsBeforePlacement = isCipsoft860Profile(protocolProfile);
 		const bool previousSuppressPreLoginPackets = suppressPreLoginPackets;
 		if (suppressPreLoginPacketsBeforePlacement) {
@@ -1030,6 +1049,11 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		const bool placedCreature = g_game().placeCreature(player, player->getLoginPosition()) || g_game().placeCreature(player, player->getTemplePosition(), false, true);
 		suppressPreLoginPackets = previousSuppressPreLoginPackets;
 		if (!placedCreature) {
+			// The just-acquired lease must not outlive a player who never
+			// actually entered the world - release it immediately rather
+			// than leaving it to expire on its own TTL, which would falsely
+			// block a real login attempt in the meantime.
+			g_clusterRuntime().releaseForLogout(static_cast<int32_t>(accountId), OTSYS_TIME());
 			disconnectClient("Temple position is wrong. Please, contact the administrator.");
 			g_logger().warn("Player {} temple position is wrong", player->getName());
 			return;

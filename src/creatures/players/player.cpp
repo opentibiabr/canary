@@ -35,6 +35,7 @@
 #include "enums/player_cyclopedia.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
+#include "game/multichannel/cluster_runtime.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 
@@ -12138,6 +12139,14 @@ void Player::onRemoveCreature(const std::shared_ptr<Creature> &creature, bool is
 		closeShopWindow();
 
 		g_saveManager().savePlayer(player);
+
+		// Release the cluster-wide session lease (docs/multichannel/
+		// ARCHITECTURE.md §5) now that the player's data is safely saved -
+		// a no-op in single-channel mode. Mirrors the acquire in
+		// ProtocolGame::login: this is the only place a player's own
+		// creature is actually removed from the world, so it is the
+		// correct single release point regardless of why isLogout is set.
+		g_clusterRuntime().releaseForLogout(static_cast<int32_t>(player->getAccount()->getID()), time(nullptr) * 1000LL);
 	}
 
 	if (creature == shopOwner) {

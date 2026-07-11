@@ -27,6 +27,7 @@ enum class ClusterConfigValidationError : uint8_t {
 	CurrentChannelDisabled,
 	CurrentChannelInvalidPvpType,
 	MultipleLoginGatewaysEnabled,
+	RedisTlsNotSupported,
 };
 
 [[nodiscard]] std::string describeClusterConfigValidationError(ClusterConfigValidationError error);
@@ -41,6 +42,11 @@ struct ClusterConfigValidationInput {
 	// "multichannel" feature (CANARY_MULTICHANNEL_REDIS). See
 	// docs/multichannel/ARCHITECTURE.md §9.
 	bool redisClientCompiledIn = false;
+	// The production HiredisRedisClient (src/game/multichannel/
+	// hiredis_redis_client.*) only speaks plain TCP to Redis; it does not
+	// link hiredis_ssl. redisUseTls=true would silently connect without TLS
+	// if not caught here - fail closed instead (see ARCHITECTURE.md §9).
+	bool redisUseTls = false;
 	// The `channels` row for this process's resolved channel id, if the
 	// registry has one.
 	std::optional<ChannelInfo> currentChannel;

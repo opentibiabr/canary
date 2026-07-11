@@ -985,6 +985,14 @@ private:
 
 	void updatePlayersOnline() const;
 	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
+
+	// Cluster session heartbeat (docs/multichannel/ARCHITECTURE.md §5, §10):
+	// renews every locally-tracked account's lease and force-disconnects
+	// (best-effort save, then kick) any account ClusterRuntime reports as
+	// expired - either legitimately superseded elsewhere or about to be
+	// legally stolen after a prolonged Redis outage. A no-op call when
+	// multi-channel mode is disabled.
+	void renewClusterSessions() const;
 };
 
 constexpr auto g_game = Game::getInstance;

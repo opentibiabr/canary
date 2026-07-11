@@ -16,4 +16,12 @@ target_sources(
             multichannel/cluster_session_manager.cpp
             multichannel/channel_switch_service.cpp
             multichannel/cluster_config_validator.cpp
+            multichannel/cluster_runtime.cpp
 )
+
+if(FEATURE_MULTICHANNEL_REDIS)
+    target_sources(
+        ${CORE_TARGET_NAME}
+        PRIVATE multichannel/hiredis_redis_client.cpp
+    )
+endif()

@@ -29,6 +29,8 @@ std::string describeClusterConfigValidationError(ClusterConfigValidationError er
 			return "this process's channel has an invalid pvp_type";
 		case ClusterConfigValidationError::MultipleLoginGatewaysEnabled:
 			return "more than one enabled channel has login_gateway=true; exactly one login gateway is allowed cluster-wide";
+		case ClusterConfigValidationError::RedisTlsNotSupported:
+			return "redisUseTls=true is not supported by this build's Redis client yet; refusing to silently connect without TLS";
 	}
 	return "unknown validation error";
 }
@@ -62,6 +64,11 @@ ClusterConfigValidationResult ClusterConfigValidator::validate(const ClusterConf
 	if (!input.redisClientCompiledIn) {
 		result.valid = false;
 		result.errors.push_back(ClusterConfigValidationError::RedisClientNotCompiledIn);
+	}
+
+	if (input.redisUseTls) {
+		result.valid = false;
+		result.errors.push_back(ClusterConfigValidationError::RedisTlsNotSupported);
 	}
 
 	if (!input.currentChannel.has_value()) {

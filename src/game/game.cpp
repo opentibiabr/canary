@@ -9,6 +9,8 @@
 
 #include "game/game.hpp"
 
+#include "game/multichannel/cluster_runtime.hpp"
+
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/appearance/attached_effects/attached_effects.hpp"
@@ -821,6 +823,13 @@ void Game::start(ServiceManager* manager) {
 	[[maybe_unused]] auto eventId8 = g_dispatcher().cycleEvent(
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
+
+	if (g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+		const auto heartbeatIntervalMs = std::max<int64_t>(1000, g_configManager().getNumber(SESSION_HEARTBEAT_INTERVAL));
+		[[maybe_unused]] auto eventId9 = g_dispatcher().cycleEvent(
+			heartbeatIntervalMs, [this] { renewClusterSessions(); }, "Game::renewClusterSessions"
+		);
+	}
 }
 
 GameState_t Game::getGameState() const {
@@ -12391,6 +12400,35 @@ void Game::updatePlayersOnline() const {
 	const bool success = DBTransaction::executeWithinTransactionRollbackOnFailure(updateOperation);
 	if (!success) {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
+	}
+}
+
+void Game::renewClusterSessions() const {
+	if (!g_clusterRuntime().isEnabled()) {
+		return;
+	}
+
+	const auto expiredAccountIds = g_clusterRuntime().renewAllAndCollectExpired(OTSYS_TIME());
+	if (expiredAccountIds.empty()) {
+		return;
+	}
+
+	// Force-disconnect every online player belonging to an account
+	// ClusterRuntime says is no longer safely held - per
+	// docs/multichannel/OPERATIONS.md "Redis outage" step 4, this must
+	// happen before another process could legally acquire the lease, so
+	// this runs synchronously as part of the same heartbeat cycle rather
+	// than being merely scheduled. Player::removePlayer -> ...->
+	// Player::onRemoveCreature does the actual best-effort save.
+	std::vector<uint32_t> playerIdsToKick;
+	for (const auto &player : getPlayers() | std::views::values) {
+		if (std::ranges::find(expiredAccountIds, static_cast<int32_t>(player->getAccount()->getID())) != expiredAccountIds.end()) {
+			playerIdsToKick.push_back(player->getID());
+		}
+	}
+	for (const auto playerId : playerIdsToKick) {
+		g_logger().warn("[multichannel] Force-disconnecting player id {}: cluster session lease lost or about to expire during a Redis outage.", playerId);
+		kickPlayer(playerId, false);
 	}
 }
 

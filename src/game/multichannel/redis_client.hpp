@@ -66,4 +66,14 @@ public:
 	// issued. Used to check whether a token a caller is holding is still
 	// current (anti-zombie-write check, see THREAT_MODEL.md T2).
 	virtual std::optional<uint64_t> peekFencingToken(const std::string &lockKey) = 0;
+
+	// True if the connection itself is currently usable. This is the signal
+	// ClusterRuntime (docs/multichannel/OPERATIONS.md "Redis outage") needs
+	// to tell "Redis is unreachable, retry within the failure grace period"
+	// apart from "Redis answered fine and legitimately rejected this call"
+	// (e.g. someone else holds the lease) - the two must never be handled
+	// the same way, since the first should not immediately relinquish a
+	// still-legitimately-held session and the second must relinquish it
+	// immediately, with no grace period at all.
+	[[nodiscard]] virtual bool isHealthy() const = 0;
 };

@@ -21,6 +21,8 @@
 #include "game/multichannel/channel_context.hpp"
 #include "game/multichannel/channel_registry.hpp"
 #include "game/multichannel/cluster_config_validator.hpp"
+#include "game/multichannel/cluster_runtime.hpp"
+#include "game/multichannel/hiredis_redis_client.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "game/zones/zone.hpp"
@@ -519,6 +521,7 @@ void CanaryServer::initializeMultichannelCluster() {
 #else
 	validationInput.redisClientCompiledIn = false;
 #endif
+	validationInput.redisUseTls = g_configManager().getBoolean(REDIS_USE_TLS);
 	validationInput.currentChannel = g_channelRegistry().getChannel(g_channelContext().getChannelId());
 
 	const auto loginListChannels = g_channelRegistry().getLoginListChannels();
@@ -539,6 +542,25 @@ void CanaryServer::initializeMultichannelCluster() {
 	}
 
 	logger.info("[multichannel] Channel {} validated OK ({} channel(s) known to the registry).", g_channelContext().getChannelId(), g_channelRegistry().size());
+
+#ifdef CANARY_MULTICHANNEL_REDIS
+	HiredisRedisClient::Options redisOptions;
+	redisOptions.host = g_configManager().getString(REDIS_HOST);
+	redisOptions.port = static_cast<int>(g_configManager().getNumber(REDIS_PORT));
+	redisOptions.database = static_cast<int>(g_configManager().getNumber(REDIS_DATABASE));
+	redisOptions.username = g_configManager().getString(REDIS_USERNAME);
+	redisOptions.password = g_configManager().getString(REDIS_PASSWORD);
+	auto redisClient = std::make_shared<HiredisRedisClient>(redisOptions);
+	g_clusterRuntime().configure(
+		redisClient,
+		g_channelContext().getChannelId(),
+		ClusterSessionManager::generateSessionId(),
+		validationInput.sessionLeaseTtlMs,
+		validationInput.sessionHeartbeatIntervalMs,
+		g_configManager().getNumber(REDIS_FAILURE_GRACE_PERIOD)
+	);
+	logger.info("[multichannel] Cluster session runtime configured against Redis at {}:{}.", redisOptions.host, redisOptions.port);
+#endif
 }
 
 void CanaryServer::loadModules() {

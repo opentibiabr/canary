@@ -4,4 +4,5 @@ target_sources(
             imbuements_it.cpp
             money_it.cpp
             forge_it.cpp
+            otbm_loader_it.cpp
 )

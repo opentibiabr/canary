@@ -26,6 +26,7 @@ namespace {
 	constexpr auto DISPATCHER_QUEUE_LATENCY_LOG_THRESHOLD = std::chrono::milliseconds(250);
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
 	constexpr auto DISPATCHER_ADAPTIVE_BUDGET_INTERVAL = std::chrono::milliseconds(250);
+	constexpr auto DISPATCHER_TELEMETRY_WARMUP = std::chrono::seconds(1);
 
 	const DispatcherBudgetSet defaultDispatcherBudgets;
 	constexpr auto DEFAULT_DISPATCHER_SLO = std::chrono::milliseconds(50);
@@ -368,7 +369,7 @@ void Dispatcher::setQueueLatencyLoggingEnabled(const bool enabled) {
 	}
 
 	resetRuntimeTelemetry();
-	queueLatencyLoggingStartedAt.store(DispatcherPolicy::timestamp(policy.now()), std::memory_order_relaxed);
+	queueLatencyLoggingStartedAt.store(DispatcherPolicy::timestamp(policy.now() + DISPATCHER_TELEMETRY_WARMUP), std::memory_order_relaxed);
 	queueLatencyLoggingEnabled.store(true, std::memory_order_release);
 }
 

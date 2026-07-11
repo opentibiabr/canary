@@ -1,0 +1,470 @@
+name: Apply Forge Transfer Rules Fix
+
+on:
+  pull_request:
+    types: [opened, reopened]
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  apply-fix:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/forge-transfer-rules'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref }}
+      - name: Apply verified Forge transfer fixes
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          def replace_exact(path: str, old: str, new: str, expected: int = 1) -> None:
+              target = Path(path)
+              text = target.read_text()
+              count = text.count(old)
+              if count != expected:
+                  raise SystemExit(f"{path}: expected {expected} matches, found {count}")
+              target.write_text(text.replace(old, new, expected))
+
+          player = "src/creatures/players/player.cpp"
+          replace_exact(
+              player,
+              '#include "creatures/players/player.hpp"\n',
+              '#include "creatures/players/player.hpp"\n#include "game/functions/forge_transfer_policy.hpp"\n',
+          )
+          replace_exact(
+              player,
+              '''\tconst auto &receiveItem = getForgeItemFromId(receiveItemId, 0, donorItem);
+          \tif (!receiveItem) {
+          \t\tg_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
+          \t\tsendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+          \t\treturn;
+          \t}
+
+          \t// Pre-validate all resources before mutating player inventory.
+          ''',
+              '''\tconst auto &receiveItem = getForgeItemFromId(receiveItemId, 0, donorItem);
+          \tif (!receiveItem) {
+          \t\tg_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
+          \t\tsendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+          \t\treturn;
+          \t}
+
+          \tconst uint8_t donorClassification = donorItem->getClassification();
+          \tconst uint8_t receiveClassification = receiveItem->getClassification();
+          \tif (!ForgeTransferPolicy::isValidDonorTier(donorItem->getTier(), convergence) || !ForgeTransferPolicy::hasMatchingClassification(donorClassification, receiveClassification)) {
+          \t\tg_logger().warn("[{}] Rejected invalid transfer for player {}: donor class {}, receiver class {}, donor tier {}, convergence {}", __FUNCTION__, getName(), donorClassification, receiveClassification, donorItem->getTier(), convergence);
+          \t\tsendForgeError(RETURNVALUE_NOTPOSSIBLE);
+          \t\treturn;
+          \t}
+
+          \t// Pre-validate all resources before mutating player inventory.
+          ''',
+          )
+          replace_exact(
+              player,
+              '''\tuint8_t coresAmount = 0;
+          \tuint64_t cost = 0;
+          \tbool hasMatchingClassification = false;
+          \tfor (const auto* itemClassification : g_game().getItemsClassifications()) {
+          \t\tif (!itemClassification || itemClassification->id != donorItem->getClassification()) {
+          \t\t\tcontinue;
+          \t\t}
+          \t\thasMatchingClassification = true;
+          \t\tconst uint8_t toTier = convergence ? donorItem->getTier() : donorItem->getTier() - 1;
+          \t\tif (!itemClassification->tiers.contains(toTier)) {
+          \t\t\tg_logger().error("[{}] Failed to find tier {} for item {} in classification {}", __FUNCTION__, toTier, donorItem->getClassification(), itemClassification->id);
+          \t\t\tsendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+          \t\t\treturn;
+          \t\t}
+          \t\tconst auto &tierPrices = itemClassification->tiers.at(toTier);
+          \t\tcost = convergence ? tierPrices.convergenceTransferPrice : tierPrices.regularPrice;
+          \t\tcoresAmount = tierPrices.corePrice;
+          \t\tbreak;
+          \t}
+          ''',
+              '''\tuint8_t coresAmount = 0;
+          \tuint64_t cost = 0;
+          \tbool hasMatchingClassification = false;
+          \tconst uint8_t resourceTier = ForgeTransferPolicy::resourceTier(donorItem->getTier());
+          \tfor (const auto* itemClassification : g_game().getItemsClassifications()) {
+          \t\tif (!itemClassification || itemClassification->id != donorClassification) {
+          \t\t\tcontinue;
+          \t\t}
+          \t\thasMatchingClassification = true;
+          \t\tif (!itemClassification->tiers.contains(resourceTier)) {
+          \t\t\tg_logger().error("[{}] Failed to find tier {} for item {} in classification {}", __FUNCTION__, resourceTier, donorClassification, itemClassification->id);
+          \t\t\tsendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+          \t\t\treturn;
+          \t\t}
+          \t\tconst auto &tierPrices = itemClassification->tiers.at(resourceTier);
+          \t\tcost = convergence ? tierPrices.convergenceTransferPrice : tierPrices.regularPrice;
+          \t\tcoresAmount = tierPrices.corePrice;
+          \t\tbreak;
+          \t}
+          ''',
+          )
+          replace_exact(
+              player,
+              '''\tif (convergence) {
+          \t\tnewReceiveItem->setTier(tier);
+          \t} else {
+          \t\tnewReceiveItem->setTier(tier - 1);
+          \t}
+          \treturnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
+          ''',
+              '''\tconst uint8_t resultTier = ForgeTransferPolicy::resultTier(donorItem->getTier(), convergence);
+          \tnewReceiveItem->setTier(resultTier);
+          \treturnValue = g_game().internalAddItem(exaltationContainer, newReceiveItem, INDEX_WHEREEVER);
+          ''',
+          )
+          replace_exact(
+              player,
+              '''\thistory.cost = cost;
+          \tg_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_transfer" } });
+
+          \thistory.firstItemName = Item::items[donorItemId].name;
+          ''',
+              '''\thistory.cost = cost;
+          \thistory.coresCost = coresAmount;
+          \thistory.dustCost = dustCost;
+          \tg_metrics().addCounter("balance_decrease", cost, { { "player", getName() }, { "context", "forge_transfer" } });
+
+          \thistory.firstItemName = Item::items[donorItemId].name;
+          ''',
+          )
+          replace_exact(
+              player,
+              'sendForgeResult(actionType, donorItemId, tier, receiveItemId, convergence ? tier : tier - 1, true, 0, 0, convergence);',
+              'sendForgeResult(actionType, donorItemId, tier, receiveItemId, resultTier, true, 0, 0, convergence);',
+          )
+          replace_exact(
+              player,
+              '''\t} else if (history.actionType == ForgeAction_t::TRANSFER) {
+          \t\tdetailsResponse << fmt::format(
+          \t\t\t"{:s}{:s} <br><br>"
+          \t\t\t"Transfer partners:"
+          \t\t\t"<ul> "
+          \t\t\t"<li>"
+          \t\t\t"First item: {:s} {:s}, tier {:s}"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"Second item: {:s} {:s}, tier {:s}"
+          \t\t\t"</li>"
+          \t\t\t"</ul>"
+          \t\t\t"<br>"
+          \t\t\t"Result:"
+          \t\t\t"<ul> "
+          \t\t\t"<li>"
+          \t\t\t"First item: {:s} {:s}, tier {:s}"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"Second item: {:s} {:s}, {:s}"
+          \t\t\t"</li>"
+          \t\t\t"</ul>"
+          \t\t\t"<br>"
+          \t\t\t"Invested:"
+          \t\t\t"<ul>"
+          \t\t\t"<li>"
+          \t\t\t"1 cores"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"100 dust"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"{:s} gold"
+          \t\t\t"</li>"
+          \t\t\t"</ul>",
+          \t\t\tsuccessfulString,
+          \t\t\thistory.convergence ? " (convergence)" : "",
+          \t\t\titemType.article, itemType.name, std::to_string(history.tier),
+          \t\t\titemType.article, itemType.name, std::to_string(history.tier),
+          \t\t\titemType.article, itemType.name, std::to_string(history.tier),
+          \t\t\titemType.article, itemType.name, std::to_string(history.tier),
+          \t\t\tprice
+          \t\t);
+          ''',
+              '''\t} else if (history.actionType == ForgeAction_t::TRANSFER) {
+          \t\tconst auto secondItemId = Item::items.getItemIdByName(history.secondItemName);
+          \t\tconst ItemType &secondItemType = Item::items[secondItemId];
+          \t\tconst uint8_t resultTier = ForgeTransferPolicy::resultTier(history.tier, history.convergence);
+          \t\tdetailsResponse << fmt::format(
+          \t\t\t"{:s}{:s} <br><br>"
+          \t\t\t"Transfer partners:"
+          \t\t\t"<ul> "
+          \t\t\t"<li>"
+          \t\t\t"First item: {:s} {:s}, tier {:s}"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"Second item: {:s} {:s}, tier 0"
+          \t\t\t"</li>"
+          \t\t\t"</ul>"
+          \t\t\t"<br>"
+          \t\t\t"Result:"
+          \t\t\t"<ul> "
+          \t\t\t"<li>"
+          \t\t\t"First item: consumed"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"Second item: {:s} {:s}, tier {:s}"
+          \t\t\t"</li>"
+          \t\t\t"</ul>"
+          \t\t\t"<br>"
+          \t\t\t"Invested:"
+          \t\t\t"<ul>"
+          \t\t\t"<li>"
+          \t\t\t"{:d} cores"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"{:d} dust"
+          \t\t\t"</li>"
+          \t\t\t"<li>"
+          \t\t\t"{:s} gold"
+          \t\t\t"</li>"
+          \t\t\t"</ul>",
+          \t\t\tsuccessfulString,
+          \t\t\thistory.convergence ? " (convergence)" : "",
+          \t\t\titemType.article, itemType.name, std::to_string(history.tier),
+          \t\t\tsecondItemType.article, secondItemType.name,
+          \t\t\tsecondItemType.article, secondItemType.name, std::to_string(resultTier),
+          \t\t\thistory.coresCost, history.dustCost, price
+          \t\t);
+          ''',
+          )
+
+          protocol = "src/server/network/protocol/protocolgame.cpp"
+          replace_exact(
+              protocol,
+              '#include "server/network/protocol/protocolgame.hpp"\n',
+              '#include "server/network/protocol/protocolgame.hpp"\n#include "game/functions/forge_transfer_policy.hpp"\n',
+          )
+          replace_exact(
+              protocol,
+              '''\t\t\tconst ItemType &donorType = Item::items[itemId];
+          \t\t\tauto donorSlotPosition = donorType.slotPosition;
+          \t\t\tif ((donorSlotPosition & SLOTP_TWO_HAND) != 0) {
+          \t\t\t\tdonorSlotPosition = SLOTP_HAND;
+          \t\t\t}
+
+          \t\t\t// Total count of item (donator of tier)
+          ''',
+              '''\t\t\tconst ItemType &donorType = Item::items[itemId];
+
+          \t\t\t// Total count of item (donator of tier)
+          ''',
+          )
+          replace_exact(
+              protocol,
+              '''\t\t\tfor (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
+          \t\t\t\t// Let's access the itemType to check the item's (receiver of tier) classification level
+          \t\t\t\tconst ItemType &receiveType = Item::items[iteratorItemId];
+          \t\t\t\tauto receiveSlotPosition = receiveType.slotPosition;
+          \t\t\t\tif ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
+          \t\t\t\t\treceiveSlotPosition = SLOTP_HAND;
+          \t\t\t\t}
+          \t\t\t\tif (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
+          \t\t\t\t\treceiveTierTotalItemCount++;
+          \t\t\t\t}
+          \t\t\t}
+          ''',
+              '''\t\t\tfor (const auto &[iteratorItemId, unusedTierAndCountMap] : receiveTierItemMap) {
+          \t\t\t\t// Normal transfer compatibility is based on upgrade classification, not equipment slot.
+          \t\t\t\tconst ItemType &receiveType = Item::items[iteratorItemId];
+          \t\t\t\tif (ForgeTransferPolicy::hasMatchingClassification(donorType.upgradeClassification, receiveType.upgradeClassification)) {
+          \t\t\t\t\treceiveTierTotalItemCount++;
+          \t\t\t\t}
+          \t\t\t}
+          ''',
+          )
+          replace_exact(
+              protocol,
+              '''\t\t\t\tfor (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
+          \t\t\t\t\t// Let's access the itemType to check the item's (receiver of tier) classification level
+          \t\t\t\t\tconst ItemType &receiveType = Item::items[receiveItemId];
+          \t\t\t\t\tauto receiveSlotPosition = receiveType.slotPosition;
+          \t\t\t\t\tif ((receiveSlotPosition & SLOTP_TWO_HAND) != 0) {
+          \t\t\t\t\t\treceiveSlotPosition = SLOTP_HAND;
+          \t\t\t\t\t}
+          \t\t\t\t\tif (donorType.upgradeClassification == receiveType.upgradeClassification && donorSlotPosition == receiveSlotPosition) {
+          \t\t\t\t\t\tfor (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+          \t\t\t\t\t\t\tmsg.add<uint16_t>(receiveItemId);
+          \t\t\t\t\t\t\tmsg.add<uint16_t>(receiveItemCount);
+          \t\t\t\t\t\t}
+          \t\t\t\t\t}
+          \t\t\t\t}
+          ''',
+              '''\t\t\t\tfor (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
+          \t\t\t\t\t// Normal transfer compatibility is based on upgrade classification, not equipment slot.
+          \t\t\t\t\tconst ItemType &receiveType = Item::items[receiveItemId];
+          \t\t\t\t\tif (ForgeTransferPolicy::hasMatchingClassification(donorType.upgradeClassification, receiveType.upgradeClassification)) {
+          \t\t\t\t\t\tfor (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+          \t\t\t\t\t\t\tmsg.add<uint16_t>(receiveItemId);
+          \t\t\t\t\t\t\tmsg.add<uint16_t>(receiveItemCount);
+          \t\t\t\t\t\t}
+          \t\t\t\t\t}
+          \t\t\t\t}
+          ''',
+          )
+
+          integration = "tests/integration/game/forge_it.cpp"
+          replace_exact(
+              integration,
+              '''\t\t\tsetupItemType(firstForgeItemId);
+          \t\t\tsetupItemType(secondForgeItemId);
+          \t\t\tsetupItemType(donorItemId);
+          \t\t\tsetupItemType(receiveItemId);
+          ''',
+              '''\t\t\tsetupItemType(firstForgeItemId, "forge fusion item one", 0);
+          \t\t\tsetupItemType(secondForgeItemId, "forge fusion item two", 0);
+          \t\t\tsetupItemType(donorItemId, "forge donor item", SLOTP_HAND);
+          \t\t\tsetupItemType(receiveItemId, "forge receiver item", SLOTP_ARMOR);
+          ''',
+          )
+          replace_exact(
+              integration,
+              '''\t\tvoid setupItemType(uint16_t itemId) const {
+          \t\t\tauto &itemType = Item::items.getItemType(itemId);
+          \t\t\titemType = ItemType {};
+          \t\t\titemType.id = itemId;
+          \t\t\titemType.name = "Forge test item";
+          \t\t\titemType.pickupable = true;
+          \t\t\titemType.movable = true;
+          \t\t\titemType.slotPosition = 0;
+          \t\t\titemType.type = ITEM_TYPE_TOOLS;
+          \t\t\titemType.upgradeClassification = classificationId;
+          \t\t}
+          ''',
+              '''\t\tvoid setupItemType(uint16_t itemId, std::string name, uint32_t slotPosition) const {
+          \t\t\tauto &itemType = Item::items.getItemType(itemId);
+          \t\t\titemType = ItemType {};
+          \t\t\titemType.id = itemId;
+          \t\t\titemType.article = "a";
+          \t\t\titemType.name = std::move(name);
+          \t\t\titemType.pickupable = true;
+          \t\t\titemType.movable = true;
+          \t\t\titemType.slotPosition = slotPosition;
+          \t\t\titemType.type = ITEM_TYPE_TOOLS;
+          \t\t\titemType.upgradeClassification = classificationId;
+          \t\t}
+          ''',
+          )
+          replace_exact(
+              integration,
+              'classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0',
+              'classification->tiers.contains(transferFromTier) ? classification->tiers.at(transferFromTier).corePrice : 0',
+              2,
+          )
+          replace_exact(integration, 'fixture.fusionCostForTier(transferToTier)', 'fixture.fusionCostForTier(transferFromTier)', 2)
+          replace_exact(
+              integration,
+              '''\tEXPECT_TRUE(hasItem(*player, fixture.receiveItemId, 1));
+          \tEXPECT_GT(countItem(*player, ITEM_EXALTATION_CHEST, 0), startChest);
+          }
+          ''',
+              '''\tEXPECT_TRUE(hasItem(*player, fixture.receiveItemId, 1));
+          \tEXPECT_GT(countItem(*player, ITEM_EXALTATION_CHEST, 0), startChest);
+          \tEXPECT_NE(Item::items[fixture.donorItemId].slotPosition, Item::items[fixture.receiveItemId].slotPosition);
+
+          \tconst auto &historyEntries = player->forgeHistory().get();
+          \tASSERT_FALSE(historyEntries.empty());
+          \tconst auto &history = historyEntries.back();
+          \tEXPECT_EQ(transferGoldCost, history.cost);
+          \tEXPECT_EQ(transferCoreCost, history.coresCost);
+          \tEXPECT_EQ(dustCost, history.dustCost);
+          \tEXPECT_NE(std::string::npos, history.description.find("First item: a forge donor item, tier 2"));
+          \tEXPECT_NE(std::string::npos, history.description.find("Second item: a forge receiver item, tier 0"));
+          \tEXPECT_NE(std::string::npos, history.description.find("First item: consumed"));
+          \tEXPECT_NE(std::string::npos, history.description.find("Second item: a forge receiver item, tier 1"));
+          }
+          ''',
+          )
+
+          unit = "tests/unit/players/forge_test.cpp"
+          replace_exact(
+              unit,
+              '#include "creatures/players/player.hpp"\n',
+              '#include "creatures/players/player.hpp"\n#include "game/functions/forge_transfer_policy.hpp"\n',
+          )
+          unit_path = Path(unit)
+          unit_path.write_text(
+              unit_path.read_text().rstrip()
+              + '''
+
+          TEST(ForgeTransferPolicyTest, MatchesOnlyNonZeroEqualClassifications) {
+          \tEXPECT_TRUE(ForgeTransferPolicy::hasMatchingClassification(4, 4));
+          \tEXPECT_FALSE(ForgeTransferPolicy::hasMatchingClassification(4, 3));
+          \tEXPECT_FALSE(ForgeTransferPolicy::hasMatchingClassification(0, 0));
+          }
+
+          TEST(ForgeTransferPolicyTest, ValidatesDonorTierByTransferMode) {
+          \tEXPECT_FALSE(ForgeTransferPolicy::isValidDonorTier(1, false));
+          \tEXPECT_TRUE(ForgeTransferPolicy::isValidDonorTier(2, false));
+          \tEXPECT_TRUE(ForgeTransferPolicy::isValidDonorTier(1, true));
+          }
+
+          TEST(ForgeTransferPolicyTest, UsesDonorTierForResourcesAndCalculatesResultTier) {
+          \tEXPECT_EQ(3, ForgeTransferPolicy::resourceTier(3));
+          \tEXPECT_EQ(2, ForgeTransferPolicy::resultTier(3, false));
+          \tEXPECT_EQ(3, ForgeTransferPolicy::resultTier(3, true));
+          }
+          '''
+          )
+
+          helper = Path("src/game/functions/forge_transfer_policy.hpp")
+          if helper.exists():
+              raise SystemExit(f"{helper}: file already exists")
+          helper.write_text('''/**
+           * Canary - A free and open-source MMORPG server emulator
+           * Copyright (©) 2019–present OpenTibiaBR <opentibiabr@outlook.com>
+           * Repository: https://github.com/opentibiabr/canary
+           * License: https://github.com/opentibiabr/canary/blob/main/LICENSE
+           * Contributors: https://github.com/opentibiabr/canary/graphs/contributors
+           * Website: https://docs.opentibiabr.com/
+           */
+
+          #pragma once
+
+          #include <cstdint>
+
+          namespace ForgeTransferPolicy {
+          \t[[nodiscard]] constexpr bool hasMatchingClassification(uint8_t donorClassification, uint8_t receiveClassification) {
+          \t\treturn donorClassification > 0 && donorClassification == receiveClassification;
+          \t}
+
+          \t[[nodiscard]] constexpr bool isValidDonorTier(uint8_t donorTier, bool convergence) {
+          \t\treturn convergence ? donorTier >= 1 : donorTier >= 2;
+          \t}
+
+          \t[[nodiscard]] constexpr uint8_t resourceTier(uint8_t donorTier) {
+          \t\treturn donorTier;
+          \t}
+
+          \t[[nodiscard]] constexpr uint8_t resultTier(uint8_t donorTier, bool convergence) {
+          \t\treturn convergence ? donorTier : static_cast<uint8_t>(donorTier - 1);
+          \t}
+          }
+          ''')
+          PY
+          rm .github/workflows/apply-forge-transfer-rules.yml
+          git diff --check
+          cat > /tmp/forge_transfer_policy_smoke.cpp <<'CPP'
+          #include "game/functions/forge_transfer_policy.hpp"
+          static_assert(ForgeTransferPolicy::hasMatchingClassification(4, 4));
+          static_assert(!ForgeTransferPolicy::hasMatchingClassification(4, 3));
+          static_assert(ForgeTransferPolicy::resourceTier(3) == 3);
+          static_assert(ForgeTransferPolicy::resultTier(3, false) == 2);
+          int main() { return 0; }
+          CPP
+          g++ -std=c++23 -Isrc -fsyntax-only /tmp/forge_transfer_policy_smoke.cpp
+      - name: Commit Forge transfer fixes
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix: correct Forge transfer rules and history"
+          git push origin "HEAD:${{ github.head_ref }}"

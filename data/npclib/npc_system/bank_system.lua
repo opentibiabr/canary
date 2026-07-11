@@ -1,4 +1,5 @@
 local count = {}
+local maximumWithdrawal = Bank.MAX_WITHDRAWAL_AMOUNT
 local transfer = {}
 local receiptFormat = "Date: %s\nType: %s\nGold Amount: %d\nReceipt Owner: %s\nRecipient: %s\n\n%s"
 
@@ -155,11 +156,12 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 	elseif MsgContains(message, "withdraw") then
 		if string.match(message, "%d+") then
 			count[playerId] = getMoneyCount(message)
-			if isValidMoney(count[playerId]) then
+			if isValidMoney(count[playerId]) and count[playerId] <= maximumWithdrawal then
 				npcHandler:say(string.format("Are you sure you wish to withdraw %d gold from your bank account?", count[playerId]), npc, creature)
 				npcHandler:setTopic(playerId, 7)
 			else
-				npcHandler:say("There is not enough gold on your account.", npc, creature)
+				local messageText = count[playerId] and count[playerId] > maximumWithdrawal and string.format("You can withdraw at most %d gold at a time.", maximumWithdrawal) or "There is not enough gold on your account."
+				npcHandler:say(messageText, npc, creature)
 				npcHandler:setTopic(playerId, 0)
 			end
 			return true
@@ -170,11 +172,12 @@ function Npc:parseBank(message, npc, creature, npcHandler)
 		end
 	elseif npcHandler:getTopic(playerId) == 6 then
 		count[playerId] = getMoneyCount(message)
-		if isValidMoney(count[playerId]) then
+		if isValidMoney(count[playerId]) and count[playerId] <= maximumWithdrawal then
 			npcHandler:say(string.format("Are you sure you wish to withdraw %d gold from your bank account?", count[playerId]), npc, creature)
 			npcHandler:setTopic(playerId, 7)
 		else
-			npcHandler:say("There is not enough gold on your account.", npc, creature)
+			local messageText = count[playerId] and count[playerId] > maximumWithdrawal and string.format("You can withdraw at most %d gold at a time.", maximumWithdrawal) or "There is not enough gold on your account."
+			npcHandler:say(messageText, npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		end
 		return true

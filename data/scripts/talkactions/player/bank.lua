@@ -46,11 +46,17 @@ deposit:groupType("normal")
 deposit:register()
 
 local withdraw = TalkAction("!withdraw")
+local maximumWithdrawal = Bank.MAX_WITHDRAWAL_AMOUNT
 
 function withdraw.onSay(player, words, param)
 	local amount = tonumber(param)
-	if not amount or amount <= 0 and isValidMoney(amount) then
+	if not amount or not isValidMoney(amount) then
 		player:sendTextMessage(config.messageStyle, "Invalid amount.")
+		return true
+	end
+
+	if amount > maximumWithdrawal then
+		player:sendTextMessage(config.messageStyle, "You can withdraw at most " .. FormatNumber(maximumWithdrawal) .. " gold coins at a time.")
 		return true
 	end
 

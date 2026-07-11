@@ -10,6 +10,11 @@ local function revertCarrotAndLever(position, carrotPosition)
 	if carrotItem then
 		carrotItem:remove()
 	end
+
+	local openDoor = Tile(doorPosition):getItemById(1663)
+	if openDoor then
+		openDoor:transform(1662)
+	end
 end
 
 local theAncientOasisLever = Action()
@@ -45,5 +50,5 @@ function theAncientOasisLever.onUse(player, item, fromPosition, target, toPositi
 	return true
 end
 
-theAncientOasisLever:aid(12107)
+theAncientOasisLever:aid(12107, 12108)
 theAncientOasisLever:register()

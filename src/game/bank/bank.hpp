@@ -29,6 +29,13 @@ public:
 
 class Bank : public SharedObject {
 public:
+	// Keep this value in sync with data/libs/functions/bank.lua.
+	static constexpr uint64_t MAX_WITHDRAWAL_AMOUNT = 100'000'000;
+
+	[[nodiscard]] static constexpr bool isWithdrawalAmountAllowed(uint64_t amount) {
+		return amount > 0 && amount <= MAX_WITHDRAWAL_AMOUNT;
+	}
+
 	explicit Bank(const std::shared_ptr<Bankable> &bankable);
 	~Bank() override;
 

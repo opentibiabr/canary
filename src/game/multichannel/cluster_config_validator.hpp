@@ -26,6 +26,7 @@ enum class ClusterConfigValidationError : uint8_t {
 	CurrentChannelMissing,
 	CurrentChannelDisabled,
 	CurrentChannelInvalidPvpType,
+	MultipleLoginGatewaysEnabled,
 };
 
 [[nodiscard]] std::string describeClusterConfigValidationError(ClusterConfigValidationError error);
@@ -43,6 +44,13 @@ struct ClusterConfigValidationInput {
 	// The `channels` row for this process's resolved channel id, if the
 	// registry has one.
 	std::optional<ChannelInfo> currentChannel;
+	// How many *enabled* rows in the whole `channels` table have
+	// login_gateway = true. This is a static, single-snapshot check (every
+	// process reloads the same table) - it does not require live
+	// cross-process communication, unlike the runtime-heartbeat-based
+	// "is another process's login gateway actually alive" check, which
+	// remains 📐 (see docs/multichannel/ARCHITECTURE.md §4.4).
+	int32_t enabledLoginGatewayCount = 0;
 };
 
 struct ClusterConfigValidationResult {

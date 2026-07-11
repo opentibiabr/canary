@@ -8,6 +8,7 @@
  */
 
 #include "canary_server.hpp"
+#include "game/multichannel/channel_context.hpp"
 #include "lib/di/container.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
@@ -31,6 +32,16 @@ namespace {
 int main(int argc, char* argv[]) {
 	auto &server = inject<CanaryServer>();
 	const std::span<char*> arguments(argv, static_cast<std::size_t>(argc));
+
+	// Resolves this process's multi-channel cluster identity (--channel-id
+	// CLI arg > CANARY_CHANNEL_ID env > single-channel fallback) before
+	// anything else runs, since config.lua is shared by every process in a
+	// cluster and can't carry a process-specific id (see
+	// docs/multichannel/ARCHITECTURE.md §3.1). A no-op concern in
+	// single-channel installs - nothing reads the resolved id unless
+	// multiChannelEnabled is true.
+	g_channelContext().resolve(arguments);
+
 	if (hasArgument(arguments, GenerateLuaApiDocsOnlyArgument)) {
 		return server.generateLuaApiDocsOnly();
 	}

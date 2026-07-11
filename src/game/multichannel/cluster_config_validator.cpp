@@ -27,6 +27,8 @@ std::string describeClusterConfigValidationError(ClusterConfigValidationError er
 			return "this process's channel is disabled in the `channels` table";
 		case ClusterConfigValidationError::CurrentChannelInvalidPvpType:
 			return "this process's channel has an invalid pvp_type";
+		case ClusterConfigValidationError::MultipleLoginGatewaysEnabled:
+			return "more than one enabled channel has login_gateway=true; exactly one login gateway is allowed cluster-wide";
 	}
 	return "unknown validation error";
 }
@@ -74,6 +76,11 @@ ClusterConfigValidationResult ClusterConfigValidator::validate(const ClusterConf
 			result.valid = false;
 			result.errors.push_back(ClusterConfigValidationError::CurrentChannelInvalidPvpType);
 		}
+	}
+
+	if (input.enabledLoginGatewayCount > 1) {
+		result.valid = false;
+		result.errors.push_back(ClusterConfigValidationError::MultipleLoginGatewaysEnabled);
 	}
 
 	return result;

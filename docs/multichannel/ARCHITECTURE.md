@@ -250,11 +250,20 @@ startup (fail-closed) on the first failure:
 6. Redis connectivity (best-effort ping) — see §10.1 for what happens if
    this fails *after* startup instead.
 
-Redis/DB reachability at boot and "only one login gateway is active
-cluster-wide" are 📐 (the latter needs the runtime heartbeat table from
-§3.4 to check other *processes*, not just this row); the config-shape
-validations (1–5) and the single-process "is `login_gateway` claimed by
-more than one row in a config snapshot" static check are ✅.
+Redis connectivity ping (#6) is 📐 (not implemented - see item 6 above,
+which today only fails closed if the binary wasn't *compiled* with the
+Redis client, not if Redis is unreachable at boot). The config-shape
+validations (1–5), plus a 7th check added alongside them - at most one
+*enabled* row in the whole `channels` table may have `login_gateway = true`
+(`ClusterConfigValidationError::MultipleLoginGatewaysEnabled`) - are ✅ and
+wired into real server startup (`CanaryServer::initializeMultichannelCluster`,
+called from `initializeDatabase()`): it reloads the registry, runs every
+check above, logs every warning/error, and throws `FailedToInitializeCanary`
+to abort the process on any hard failure. This 7th check is a static,
+single-snapshot check (every process reads the same table) - it is
+**not** the live, cross-process "is that other login gateway actually
+still alive" check, which still needs the runtime heartbeat table from
+§3.4 and remains 📐.
 
 ## 5. Sessions, locks, anti-split-brain (✅ core algorithm, 📐 engine call sites)
 

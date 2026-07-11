@@ -21,6 +21,7 @@ namespace {
 		input.channelSwitchPartyPolicy = "deny";
 		input.pvpChannelExitPolicy = "combat-or-skull";
 		input.redisClientCompiledIn = true;
+		input.enabledLoginGatewayCount = 1;
 
 		ChannelInfo channel;
 		channel.id = 1;
@@ -118,6 +119,30 @@ TEST(ClusterConfigValidatorTest, RejectsWhenCurrentChannelHasInvalidPvpType) {
 	EXPECT_TRUE(contains(result.errors, ClusterConfigValidationError::CurrentChannelInvalidPvpType));
 }
 
+TEST(ClusterConfigValidatorTest, AllowsExactlyOneEnabledLoginGateway) {
+	auto input = validInput();
+	input.enabledLoginGatewayCount = 1;
+	const auto result = ClusterConfigValidator::validate(input);
+	EXPECT_TRUE(result.valid);
+}
+
+TEST(ClusterConfigValidatorTest, AllowsZeroEnabledLoginGateways) {
+	// Not ideal operationally (nothing serves logins), but not this
+	// validator's job to catch - it only rejects an unambiguous conflict.
+	auto input = validInput();
+	input.enabledLoginGatewayCount = 0;
+	const auto result = ClusterConfigValidator::validate(input);
+	EXPECT_TRUE(result.valid);
+}
+
+TEST(ClusterConfigValidatorTest, RejectsMultipleEnabledLoginGateways) {
+	auto input = validInput();
+	input.enabledLoginGatewayCount = 2;
+	const auto result = ClusterConfigValidator::validate(input);
+	EXPECT_FALSE(result.valid);
+	EXPECT_TRUE(contains(result.errors, ClusterConfigValidationError::MultipleLoginGatewaysEnabled));
+}
+
 TEST(ClusterConfigValidatorTest, CollectsMultipleErrorsAtOnce) {
 	auto input = validInput();
 	input.channelSwitchPartyPolicy = "bad";
@@ -137,6 +162,7 @@ TEST(ClusterConfigValidatorTest, DescribeReturnsNonEmptyStringForEveryError) {
 		ClusterConfigValidationError::CurrentChannelMissing,
 		ClusterConfigValidationError::CurrentChannelDisabled,
 		ClusterConfigValidationError::CurrentChannelInvalidPvpType,
+		ClusterConfigValidationError::MultipleLoginGatewaysEnabled,
 	};
 	for (const auto &error : allErrors) {
 		EXPECT_FALSE(describeClusterConfigValidationError(error).empty());

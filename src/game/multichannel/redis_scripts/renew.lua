@@ -16,18 +16,18 @@ local sessionId = ARGV[1]
 local ttlMs = tonumber(ARGV[2])
 local nowMs = tonumber(ARGV[3])
 
-local currentSessionId = redis.call('HGET', key, 'session_id')
+local currentSessionId = redis.call("HGET", key, "session_id")
 if not currentSessionId or currentSessionId ~= sessionId then
 	return { 0 }
 end
 
-local currentExpiresAt = tonumber(redis.call('HGET', key, 'expires_at'))
+local currentExpiresAt = tonumber(redis.call("HGET", key, "expires_at"))
 if not currentExpiresAt or currentExpiresAt <= nowMs then
 	return { 0 }
 end
 
-redis.call('HSET', key, 'expires_at', tostring(nowMs + ttlMs))
-redis.call('PEXPIRE', key, ttlMs * 4)
+redis.call("HSET", key, "expires_at", tostring(nowMs + ttlMs))
+redis.call("PEXPIRE", key, ttlMs * 4)
 
-local fencingToken = redis.call('HGET', key, 'fencing_token')
+local fencingToken = redis.call("HGET", key, "fencing_token")
 return { 1, fencingToken }

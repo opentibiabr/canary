@@ -20,27 +20,23 @@ local instanceId = ARGV[3]
 local ttlMs = tonumber(ARGV[4])
 local nowMs = tonumber(ARGV[5])
 
-local existingExpiresAt = tonumber(redis.call('HGET', key, 'expires_at'))
+local existingExpiresAt = tonumber(redis.call("HGET", key, "expires_at"))
 if existingExpiresAt and existingExpiresAt > nowMs then
 	-- Lease is held and has not expired: reject. The caller must not
 	-- overwrite a live session, regardless of which process is asking.
-	local currentSessionId = redis.call('HGET', key, 'session_id')
-	local currentFencingToken = redis.call('HGET', key, 'fencing_token')
+	local currentSessionId = redis.call("HGET", key, "session_id")
+	local currentFencingToken = redis.call("HGET", key, "fencing_token")
 	return { 0, currentSessionId, currentFencingToken }
 end
 
 -- HINCRBY on a field that has never existed starts from 0 and returns 1, and
 -- is never reset by release (see release.lua) - this is what makes the
 -- fencing token strictly monotonic for the lifetime of this key.
-local fencingToken = redis.call('HINCRBY', key, 'fencing_token', 1)
-redis.call('HSET', key,
-	'session_id', newSessionId,
-	'channel_id', channelId,
-	'instance_id', instanceId,
-	'expires_at', tostring(nowMs + ttlMs))
+local fencingToken = redis.call("HINCRBY", key, "fencing_token", 1)
+redis.call("HSET", key, "session_id", newSessionId, "channel_id", channelId, "instance_id", instanceId, "expires_at", tostring(nowMs + ttlMs))
 -- Belt-and-suspenders TTL on the whole key so an abandoned lock key doesn't
 -- live forever if every caller misbehaves; comfortably longer than the lease
 -- itself so a legitimate renew is never at risk of the key vanishing under it.
-redis.call('PEXPIRE', key, ttlMs * 4)
+redis.call("PEXPIRE", key, ttlMs * 4)
 
 return { 1, newSessionId, fencingToken }

@@ -12,10 +12,10 @@
 local key = KEYS[1]
 local sessionId = ARGV[1]
 
-local currentSessionId = redis.call('HGET', key, 'session_id')
+local currentSessionId = redis.call("HGET", key, "session_id")
 if not currentSessionId or currentSessionId ~= sessionId then
 	return { 0 }
 end
 
-redis.call('HSET', key, 'expires_at', '0')
+redis.call("HSET", key, "expires_at", "0")
 return { 1 }

@@ -47,22 +47,18 @@ function onUpdateDatabase()
 		return true
 	end
 
-	if
-		not db.query([[
+	if not db.query([[
 		ALTER TABLE `house_lists`
 			DROP FOREIGN KEY `houses_list_house_fk`;
-	]])
-	then
+	]]) then
 		logger.error("Failed to drop house_lists foreign key.")
 		return false
 	end
 
-	if
-		not db.query([[
+	if not db.query([[
 		ALTER TABLE `tile_store`
 			DROP FOREIGN KEY `tile_store_account_fk`;
-	]])
-	then
+	]]) then
 		logger.error("Failed to drop tile_store foreign key.")
 		return false
 	end
@@ -70,39 +66,33 @@ function onUpdateDatabase()
 	-- `id` has always been assigned explicitly from map data (never relies on
 	-- MySQL-generated values), so dropping AUTO_INCREMENT here does not change
 	-- any existing insert behavior.
-	if
-		not db.query([[
+	if not db.query([[
 		ALTER TABLE `houses`
 			DROP PRIMARY KEY,
 			MODIFY `id` int(11) NOT NULL,
 			ADD CONSTRAINT `houses_pk` PRIMARY KEY (`channel_id`, `id`),
 			ADD CONSTRAINT `houses_id_unique` UNIQUE (`id`);
-	]])
-	then
+	]]) then
 		logger.error("Failed to rebuild houses primary key.")
 		return false
 	end
 
-	if
-		not db.query([[
+	if not db.query([[
 		ALTER TABLE `house_lists`
 			ADD CONSTRAINT `house_lists_channel_house_fk`
 				FOREIGN KEY (`channel_id`, `house_id`) REFERENCES `houses` (`channel_id`, `id`)
 				ON DELETE CASCADE;
-	]])
-	then
+	]]) then
 		logger.error("Failed to re-add house_lists foreign key.")
 		return false
 	end
 
-	if
-		not db.query([[
+	if not db.query([[
 		ALTER TABLE `tile_store`
 			ADD CONSTRAINT `tile_store_channel_house_fk`
 				FOREIGN KEY (`channel_id`, `house_id`) REFERENCES `houses` (`channel_id`, `id`)
 				ON DELETE CASCADE;
-	]])
-	then
+	]]) then
 		logger.error("Failed to re-add tile_store foreign key.")
 		return false
 	end

@@ -29,6 +29,32 @@ std::optional<PvpChannelExitPolicy> parsePvpChannelExitPolicy(const std::string 
 	return std::nullopt;
 }
 
+std::string describeChannelSwitchDenyReason(ChannelSwitchDenyReason reason) {
+	switch (reason) {
+		case ChannelSwitchDenyReason::None:
+			return "No reason (switch was allowed).";
+		case ChannelSwitchDenyReason::SameChannel:
+			return "You are already on that channel.";
+		case ChannelSwitchDenyReason::Cooldown:
+			return "You must wait before switching channels again.";
+		case ChannelSwitchDenyReason::AlreadyOnlineElsewhere:
+			return "Your account is already online elsewhere.";
+		case ChannelSwitchDenyReason::CombatOrPzLock:
+			return "You cannot switch channels while in combat outside a protection zone.";
+		case ChannelSwitchDenyReason::SkullBlocksNoPvpEntry:
+			return "You cannot enter a non-PvP channel while skulled.";
+		case ChannelSwitchDenyReason::ActiveParty:
+			return "You cannot switch channels while in a party.";
+		case ChannelSwitchDenyReason::TargetDisabled:
+			return "That channel is currently disabled.";
+		case ChannelSwitchDenyReason::TargetOffline:
+			return "That channel is currently offline.";
+		case ChannelSwitchDenyReason::TargetFull:
+			return "That channel is currently full.";
+	}
+	return "Unknown reason.";
+}
+
 namespace {
 	ChannelSwitchDecision deny(ChannelSwitchDenyReason reason) {
 		ChannelSwitchDecision decision;

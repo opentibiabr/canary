@@ -328,6 +328,16 @@ public:
 
 	// Implementation of player invoked events
 	void playerTeleport(uint32_t playerId, const Position &pos);
+	// Multi-channel cluster live switch (docs/multichannel/ARCHITECTURE.md
+	// §6): evaluates ChannelSwitchService against this player's live state,
+	// and on success resolves the arrival position (EnginePositionLegality,
+	// gated on the two channels sharing a mapHash), writes one
+	// channel_switch_audit row recording the decision, then performs a
+	// perfectly normal, already-safe clean disconnect (the existing
+	// ClusterRuntime::releaseForLogout path in Player::onRemoveCreature) -
+	// no cross-process signaling of any kind. A no-op (sends a message,
+	// returns) when multi-channel mode is disabled.
+	void playerRequestChannelSwitch(uint32_t playerId, int32_t targetChannelId);
 	void playerMoveThing(uint32_t playerId, const Position &fromPos, uint16_t itemId, uint8_t fromStackPos, const Position &toPos, uint8_t count);
 	void playerMoveCreatureByID(uint32_t playerId, uint32_t movingCreatureId, const Position &movingCreatureOrigPos, const Position &toPos);
 	void playerMoveCreature(const std::shared_ptr<Player> &playerId, const std::shared_ptr<Creature> &movingCreature, const Position &movingCreatureOrigPos, const std::shared_ptr<Tile> &toTile);
@@ -985,6 +995,14 @@ private:
 
 	void updatePlayersOnline() const;
 	[[nodiscard]] std::map<uint32_t, std::vector<std::shared_ptr<Player>>> groupPlayersByIP() const;
+
+	// Cluster session heartbeat (docs/multichannel/ARCHITECTURE.md §5, §10):
+	// renews every locally-tracked account's lease and force-disconnects
+	// (best-effort save, then kick) any account ClusterRuntime reports as
+	// expired - either legitimately superseded elsewhere or about to be
+	// legally stolen after a prolonged Redis outage. A no-op call when
+	// multi-channel mode is disabled.
+	void renewClusterSessions();
 };
 
 constexpr auto g_game = Game::getInstance;

@@ -15,5 +15,16 @@ target_sources(
             multichannel/position_resolver.cpp
             multichannel/cluster_session_manager.cpp
             multichannel/channel_switch_service.cpp
+            multichannel/channel_switch_audit_store.cpp
             multichannel/cluster_config_validator.cpp
+            multichannel/cluster_runtime.cpp
+            multichannel/engine_position_legality.cpp
+            multichannel/position_serialization.cpp
 )
+
+if(FEATURE_MULTICHANNEL_REDIS)
+    target_sources(
+        ${CORE_TARGET_NAME}
+        PRIVATE multichannel/hiredis_redis_client.cpp
+    )
+endif()

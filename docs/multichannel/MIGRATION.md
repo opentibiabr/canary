@@ -206,11 +206,26 @@ staging-environment testing, not as a substitute for the backup.
    `CANARY_CHANNEL_ID`/`--channel-id` per process, start each process.
 6. Follow OPERATIONS.md for day-2 monitoring.
 
-Phase 1 does not yet wire session/switch/economy enforcement into the live
-engine (see ARCHITECTURE.md), so turning `multiChannelEnabled = true`
-today activates the login-list multi-world display and the startup
-validator's config-shape checks, but does **not** yet enforce one-session-
-per-account or perform live channel switches end-to-end — that requires
-the Phase 2 PR. Do not enable this flag in production before Phase 2 ships
-and is tested; it is included now so the schema/config/docs contract is
-complete and reviewable end-to-end.
+**Updated status (Phase 2):** turning `multiChannelEnabled = true` now
+activates the login-list multi-world display, the startup validator,
+**real cluster-wide session enforcement** (a second login attempt for an
+already-online account is genuinely rejected, or the holder is force-
+disconnected if its lease becomes unrenewable during a Redis outage), and
+**a real live channel switch**: `player:requestChannelSwitch(channelId)`
+(a Lua method an operator wires into any talkaction/command) evaluates the
+full policy against the player's live state and, on success, resolves an
+arrival position and performs a normal clean disconnect; logging back in
+on the target channel picks up that resolved position automatically. See
+ARCHITECTURE.md §5/§6 for exactly what's wired and its stated gaps (most
+notably: the `cluster_sessions` DB table isn't dual-written yet, so Redis
+is the sole session-enforcement mechanism; and target-channel online/
+capacity checks are optimistic placeholders since no heartbeat loop exists
+yet to check them for real).
+
+**Still not enforced**, and still the reason not to enable this flag in
+production yet: the economy ledger and house purchase/transfer
+transactional rewrites (§7, §8) — a switch or a normal login does not yet
+touch money-moving state at all, which is the safe side to be wrong on,
+but also means this is not yet a complete cluster. Do not enable
+`multiChannelEnabled = true` in production until those ship and are
+tested.

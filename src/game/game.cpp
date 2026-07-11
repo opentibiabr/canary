@@ -9,6 +9,14 @@
 
 #include "game/game.hpp"
 
+#include "game/multichannel/channel_context.hpp"
+#include "game/multichannel/channel_registry.hpp"
+#include "game/multichannel/channel_switch_audit_store.hpp"
+#include "game/multichannel/channel_switch_service.hpp"
+#include "game/multichannel/cluster_runtime.hpp"
+#include "game/multichannel/engine_position_legality.hpp"
+#include "game/multichannel/position_resolver.hpp"
+
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/appearance/attached_effects/attached_effects.hpp"
@@ -821,6 +829,13 @@ void Game::start(ServiceManager* manager) {
 	[[maybe_unused]] auto eventId8 = g_dispatcher().cycleEvent(
 		UPDATE_PLAYERS_ONLINE_DB, [this] { updatePlayersOnline(); }, "Game::updatePlayersOnline"
 	);
+
+	if (g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+		const auto heartbeatIntervalMs = std::max<int64_t>(1000, g_configManager().getNumber(SESSION_HEARTBEAT_INTERVAL));
+		[[maybe_unused]] auto eventId9 = g_dispatcher().cycleEvent(
+			heartbeatIntervalMs, [this] { renewClusterSessions(); }, "Game::renewClusterSessions"
+		);
+	}
 }
 
 GameState_t Game::getGameState() const {
@@ -1521,6 +1536,156 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 	}
 
 	return true;
+}
+
+namespace {
+	std::string positionResolutionReasonName(PositionResolutionReason reason) {
+		switch (reason) {
+			case PositionResolutionReason::SamePosition:
+				return "SamePosition";
+			case PositionResolutionReason::NearestPublicTile:
+				return "NearestPublicTile";
+			case PositionResolutionReason::LastSafePosition:
+				return "LastSafePosition";
+			case PositionResolutionReason::Temple:
+				return "Temple";
+		}
+		return "Unknown";
+	}
+} // namespace
+
+void Game::playerRequestChannelSwitch(uint32_t playerId, int32_t targetChannelId) {
+	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+
+	if (!g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+		return;
+	}
+
+	const auto &player = getPlayerByID(playerId);
+	if (!player) {
+		return;
+	}
+
+	const int32_t accountId = static_cast<int32_t>(player->getAccount()->getID());
+	const int32_t currentChannelId = g_channelContext().getChannelId();
+	const auto targetChannel = g_channelRegistry().getChannel(targetChannelId);
+	const auto currentChannel = g_channelRegistry().getChannel(currentChannelId);
+	const int64_t nowMs = OTSYS_TIME();
+
+	ChannelSwitchRequest request;
+	request.accountId = accountId;
+	request.playerId = static_cast<int32_t>(player->getGUID());
+	request.sourceChannelId = currentChannelId;
+	request.targetChannelId = targetChannelId;
+	request.lastChannelSwitchAt = ChannelSwitchAuditStore::getLastSwitchAtMs(accountId);
+	request.nowMs = nowMs;
+	request.cooldownMs = g_configManager().getNumber(CHANNEL_SWITCH_COOLDOWN);
+
+	const auto &tile = player->getTile();
+	request.hasActivePzLockOrCombat = tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && player->hasCondition(CONDITION_INFIGHT);
+	request.isSkulled = player->getSkull() != SKULL_NONE;
+	request.isInParty = player->getParty() != nullptr;
+
+	request.partyPolicy = parseChannelSwitchPartyPolicy(g_configManager().getString(CHANNEL_SWITCH_PARTY_POLICY)).value_or(ChannelSwitchPartyPolicy::Deny);
+	request.pvpExitPolicy = parsePvpChannelExitPolicy(g_configManager().getString(PVP_CHANNEL_EXIT_POLICY)).value_or(PvpChannelExitPolicy::CombatOrSkull);
+	request.targetIsNoPvp = targetChannel.has_value() && targetChannel->pvpType == "no-pvp";
+
+	// This command can only ever be issued by the account's own live,
+	// currently-connected session on *this* channel - there is no other
+	// process this same account could simultaneously be online on without
+	// ClusterRuntime::acquireForLogin having already refused it at login
+	// time (docs/multichannel/ARCHITECTURE.md §5), so this is always false
+	// here by construction, unlike at a fresh login attempt.
+	request.hasActiveClusterSessionElsewhere = false;
+
+	request.targetChannelEnabled = targetChannel.has_value() && targetChannel->isSelectable();
+	// No heartbeat loop is wired yet (§3.4), so live online/capacity state
+	// for another channel isn't available here - optimistic defaults,
+	// tracked as a known gap rather than silently guessed at.
+	request.targetChannelOnline = true;
+	request.targetChannelFull = false;
+
+	const auto decision = ChannelSwitchService::evaluate(request);
+
+	ChannelSwitchAuditRecord record;
+	record.playerId = request.playerId;
+	record.accountId = accountId;
+	record.sourceChannelId = currentChannelId;
+	record.targetChannelId = targetChannelId;
+	record.sourcePosition = player->getPosition();
+	record.resolvedPosition = record.sourcePosition;
+
+	if (!decision.allowed) {
+		record.result = "DENIED";
+		record.denyReason = describeChannelSwitchDenyReason(decision.denyReason);
+		ChannelSwitchAuditStore::write(record, nowMs);
+		player->sendTextMessage(MESSAGE_STATUS, record.denyReason);
+		return;
+	}
+
+	if (!targetChannel.has_value()) {
+		// Unreachable in practice (evaluate() already required
+		// targetChannelEnabled, which requires targetChannel to exist), but
+		// never dereference an empty optional regardless.
+		return;
+	}
+
+	Position templePosition = player->getTemplePosition();
+	if (targetChannel->templeTownId.has_value()) {
+		const auto &town = map.towns.getTown(static_cast<uint32_t>(*targetChannel->templeTownId));
+		if (town) {
+			templePosition = town->getTemplePosition();
+		}
+	}
+
+	// EnginePositionLegality only ever answers against this process's own
+	// loaded map, so it is only trustworthy for a target channel that
+	// shares this one's mapHash (docs/multichannel/ARCHITECTURE.md §6);
+	// otherwise fall back straight to the temple, which is always legal.
+	PositionResolutionResult resolved;
+	const bool sameMap = currentChannel.has_value() && !currentChannel->mapHash.empty() && currentChannel->mapHash == targetChannel->mapHash;
+	if (sameMap) {
+		PositionResolutionInput input;
+		input.requestedPosition = player->getPosition();
+		input.lastSafePosition = std::nullopt; // 📐 players.last_safe_position not yet added, see DECISION_MATRIX.md
+		input.templePosition = templePosition;
+		input.searchRadius = static_cast<int32_t>(g_configManager().getNumber(CHANNEL_SWITCH_SEARCH_RADIUS));
+		const EnginePositionLegality legality(player);
+		resolved = PositionResolver::resolve(input, legality);
+	} else {
+		resolved.position = templePosition;
+		resolved.reason = PositionResolutionReason::Temple;
+	}
+
+	// decision.mustLeavePartyFirst needs no explicit action here: the clean
+	// disconnect below (Player::onRemoveCreature's existing isLogout path)
+	// already unconditionally removes the player from any active party
+	// before saving, exactly the "leave the party first" the policy
+	// requires - a separate call here would be pure redundancy.
+
+	record.result = "SUCCESS";
+	record.resolvedPosition = resolved.position;
+	record.fallbackReason = positionResolutionReasonName(resolved.reason);
+	if (const auto sessionInfo = g_clusterRuntime().getTrackedSessionInfo(accountId); sessionInfo.has_value()) {
+		record.sessionId = sessionInfo->sessionId;
+		record.fencingToken = sessionInfo->fencingToken;
+	}
+	ChannelSwitchAuditStore::write(record, nowMs);
+
+	player->sendTextMessage(MESSAGE_STATUS, fmt::format("Switching to channel '{}'...", targetChannel->name));
+
+	// Perform a perfectly normal, already-safe clean disconnect - this is
+	// what actually releases the cluster session lease
+	// (Player::onRemoveCreature -> ClusterRuntime::releaseForLogout), no
+	// new release mechanism needed here. The client reconnects through the
+	// existing login-list mechanism and picks the target channel's world
+	// entry for the same character; that login consumes the audit row
+	// written above instead of using the stale global loginPosition.
+	// forced=true: the PZ-lock/combat check ChannelSwitchService::evaluate
+	// already performed above is authoritative - ProtocolGame::logout's own
+	// (differently-scoped) checks must not re-litigate a decision already
+	// made and audited.
+	player->removePlayer(true);
 }
 
 void Game::playerTeleport(uint32_t playerId, const Position &newPosition) {
@@ -12391,6 +12556,35 @@ void Game::updatePlayersOnline() const {
 	const bool success = DBTransaction::executeWithinTransactionRollbackOnFailure(updateOperation);
 	if (!success) {
 		g_logger().error("[Game::updatePlayersOnline] Failed to update players online.");
+	}
+}
+
+void Game::renewClusterSessions() {
+	if (!g_clusterRuntime().isEnabled()) {
+		return;
+	}
+
+	const auto expiredAccountIds = g_clusterRuntime().renewAllAndCollectExpired(OTSYS_TIME());
+	if (expiredAccountIds.empty()) {
+		return;
+	}
+
+	// Force-disconnect every online player belonging to an account
+	// ClusterRuntime says is no longer safely held - per
+	// docs/multichannel/OPERATIONS.md "Redis outage" step 4, this must
+	// happen before another process could legally acquire the lease, so
+	// this runs synchronously as part of the same heartbeat cycle rather
+	// than being merely scheduled. Player::removePlayer -> ...->
+	// Player::onRemoveCreature does the actual best-effort save.
+	std::vector<uint32_t> playerIdsToKick;
+	for (const auto &player : getPlayers() | std::views::values) {
+		if (std::ranges::find(expiredAccountIds, static_cast<int32_t>(player->getAccount()->getID())) != expiredAccountIds.end()) {
+			playerIdsToKick.push_back(player->getID());
+		}
+	}
+	for (const auto playerId : playerIdsToKick) {
+		g_logger().warn("[multichannel] Force-disconnecting player id {}: cluster session lease lost or about to expire during a Redis outage.", playerId);
+		kickPlayer(playerId, false);
 	}
 }
 

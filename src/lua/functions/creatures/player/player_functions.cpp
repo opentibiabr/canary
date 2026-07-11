@@ -118,6 +118,7 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "Player", "Creature", PlayerFunctions::luaPlayerCreate);
 	Lua::registerMetaMethod(L, "Player", "__eq", Lua::luaUserdataCompare);
 
+	Lua::registerMethod(L, "Player", "requestChannelSwitch", PlayerFunctions::luaPlayerRequestChannelSwitch);
 	Lua::registerMethod(L, "Player", "resetCharmsBestiary", PlayerFunctions::luaPlayerResetCharmsMonsters);
 	Lua::registerMethod(L, "Player", "unlockAllCharmRunes", PlayerFunctions::luaPlayerUnlockAllCharmRunes);
 	Lua::registerMethod(L, "Player", "addCharmPoints", PlayerFunctions::luaPlayerAddCharmPoints);
@@ -648,6 +649,30 @@ int PlayerFunctions::luaPlayerCreate(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+/***
+ * @function Player:requestChannelSwitch
+ * @param targetChannelId number
+ * @return boolean|nil
+ */
+int PlayerFunctions::luaPlayerRequestChannelSwitch(lua_State* L) {
+	// player:requestChannelSwitch(targetChannelId)
+	// Multi-channel cluster live switch (docs/multichannel/
+	// ARCHITECTURE.md §6) - the only trigger for Game::
+	// playerRequestChannelSwitch, since no new client protocol packet was
+	// introduced for this feature. A server operator wires this into a
+	// talkaction/command script of their choosing. A no-op (returns true
+	// without effect) when multiChannelEnabled is false.
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+	const int32_t targetChannelId = Lua::getNumber<int32_t>(L, 2);
+	g_game().playerRequestChannelSwitch(player->getID(), targetChannelId);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

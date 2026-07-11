@@ -24,6 +24,9 @@ class FakeRedisClient : public IRedisClient {
 public:
 	LeaseAcquireOutcome acquireLease(const std::string &lockKey, const std::string &sessionId, const std::string &channelId, const std::string &instanceId, int64_t ttlMs, int64_t nowMs) override {
 		std::lock_guard lock(mutex);
+		if (!healthy) {
+			return {};
+		}
 		auto &entry = entries[lockKey];
 
 		if (entry.expiresAt > nowMs) {
@@ -41,6 +44,9 @@ public:
 
 	LeaseRenewOutcome renewLease(const std::string &lockKey, const std::string &sessionId, int64_t ttlMs, int64_t nowMs) override {
 		std::lock_guard lock(mutex);
+		if (!healthy) {
+			return {};
+		}
 		const auto it = entries.find(lockKey);
 		if (it == entries.end() || it->second.sessionId != sessionId) {
 			return { false, 0 };
@@ -54,6 +60,9 @@ public:
 
 	bool releaseLease(const std::string &lockKey, const std::string &sessionId) override {
 		std::lock_guard lock(mutex);
+		if (!healthy) {
+			return false;
+		}
 		const auto it = entries.find(lockKey);
 		if (it == entries.end() || it->second.sessionId != sessionId) {
 			return false;
@@ -66,11 +75,27 @@ public:
 
 	std::optional<uint64_t> peekFencingToken(const std::string &lockKey) override {
 		std::lock_guard lock(mutex);
+		if (!healthy) {
+			return std::nullopt;
+		}
 		const auto it = entries.find(lockKey);
 		if (it == entries.end()) {
 			return std::nullopt;
 		}
 		return it->second.fencingToken;
+	}
+
+	[[nodiscard]] bool isHealthy() const override {
+		std::lock_guard lock(mutex);
+		return healthy;
+	}
+
+	// Test-only: simulate a Redis outage (or recovery) without touching any
+	// lease state, so a test can assert on ClusterRuntime's outage handling
+	// independent of the CAS semantics above.
+	void setHealthyForTesting(bool value) {
+		std::lock_guard lock(mutex);
+		healthy = value;
 	}
 
 private:
@@ -82,6 +107,7 @@ private:
 		int64_t expiresAt = 0;
 	};
 
-	std::mutex mutex;
+	mutable std::mutex mutex;
 	std::unordered_map<std::string, Entry> entries;
+	bool healthy = true;
 };

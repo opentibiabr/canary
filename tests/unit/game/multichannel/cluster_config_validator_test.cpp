@@ -119,6 +119,14 @@ TEST(ClusterConfigValidatorTest, RejectsWhenCurrentChannelHasInvalidPvpType) {
 	EXPECT_TRUE(contains(result.errors, ClusterConfigValidationError::CurrentChannelInvalidPvpType));
 }
 
+TEST(ClusterConfigValidatorTest, RejectsRedisUseTls) {
+	auto input = validInput();
+	input.redisUseTls = true;
+	const auto result = ClusterConfigValidator::validate(input);
+	EXPECT_FALSE(result.valid);
+	EXPECT_TRUE(contains(result.errors, ClusterConfigValidationError::RedisTlsNotSupported));
+}
+
 TEST(ClusterConfigValidatorTest, AllowsExactlyOneEnabledLoginGateway) {
 	auto input = validInput();
 	input.enabledLoginGatewayCount = 1;
@@ -163,6 +171,7 @@ TEST(ClusterConfigValidatorTest, DescribeReturnsNonEmptyStringForEveryError) {
 		ClusterConfigValidationError::CurrentChannelDisabled,
 		ClusterConfigValidationError::CurrentChannelInvalidPvpType,
 		ClusterConfigValidationError::MultipleLoginGatewaysEnabled,
+		ClusterConfigValidationError::RedisTlsNotSupported,
 	};
 	for (const auto &error : allErrors) {
 		EXPECT_FALSE(describeClusterConfigValidationError(error).empty());

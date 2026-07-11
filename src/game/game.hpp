@@ -356,6 +356,20 @@ public:
 	 * @return true when the walk was admitted; false after canceling dependent walk work.
 	 */
 	bool queuePlayerAutoWalk(uint32_t playerId, std::vector<Direction> listDir);
+	/**
+	 * Admits the player-walk task before moving an item into the inventory.
+	 * The owned cylinder and item references keep the pickup inputs alive until
+	 * the dispatcher revalidates and executes the transaction.
+	 */
+	void queuePlayerAutoWalkAfterItemPickup(
+		uint32_t playerId,
+		const Position &walkToPos,
+		int32_t maxTargetDistance,
+		const std::shared_ptr<Cylinder> &fromCylinder,
+		const std::shared_ptr<Item> &item,
+		uint32_t count,
+		std::function<void(const std::shared_ptr<Player> &, const Position &, uint8_t)> &&afterPickup
+	);
 	void playerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir);
 	void playerStopAutoWalk(uint32_t playerId);

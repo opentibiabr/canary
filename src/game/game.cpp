@@ -2159,22 +2159,29 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 				walkPos.y++;
 			}
 
-			auto itemPos = fromPos;
-			uint8_t itemStackPos = fromStackPos;
-
-			if (fromPos.x != 0xFFFF && Position::areInRange<1, 1>(mapFromPos, playerPos)
-			    && !Position::areInRange<1, 1, 0>(mapFromPos, walkPos)) {
-				// need to pickup the item first
-				std::shared_ptr<Item> moveItem = nullptr;
-
-				const auto ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &moveItem);
-				if (ret != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret);
-					return;
-				}
-
-				// changing the position since its now in the inventory of the player
-				internalGetPosition(moveItem, itemPos, itemStackPos);
+			const bool requiresPickup = fromPos.x != 0xFFFF
+				&& Position::areInRange<1, 1>(mapFromPos, playerPos)
+				&& !Position::areInRange<1, 1, 0>(mapFromPos, walkPos);
+			if (requiresPickup) {
+				queuePlayerAutoWalkAfterItemPickup(
+					player->getID(),
+					walkPos,
+					0,
+					fromCylinder,
+					item,
+					count,
+					[this, playerId = player->getID(), itemId, toPos, count](const std::shared_ptr<Player> &walkPlayer, const Position &itemPos, uint8_t itemStackPos) {
+						const auto &task = createPlayerTask(
+							400,
+							[this, playerId, itemPos, itemId, itemStackPos, toPos, count] {
+								playerMoveItemByPlayerID(playerId, itemPos, itemId, itemStackPos, toPos, count);
+							},
+							"Game::playerMoveItem"
+						);
+						walkPlayer->setNextWalkActionTask(task);
+					}
+				);
+				return;
 			}
 
 			std::vector<Direction> listDir;
@@ -2184,8 +2191,8 @@ void Game::playerMoveItem(const std::shared_ptr<Player> &player, const Position 
 				}
 				const auto &task = createPlayerTask(
 					400,
-					[this, playerId = player->getID(), itemPos, itemId, itemStackPos, toPos, count] {
-						playerMoveItemByPlayerID(playerId, itemPos, itemId, itemStackPos, toPos, count);
+					[this, playerId = player->getID(), fromPos, itemId, fromStackPos, toPos, count] {
+						playerMoveItemByPlayerID(playerId, fromPos, itemId, fromStackPos, toPos, count);
 					},
 					__FUNCTION__
 				);
@@ -4475,6 +4482,54 @@ bool Game::queuePlayerAutoWalk(uint32_t playerId, std::vector<Direction> listDir
 	return accepted;
 }
 
+void Game::queuePlayerAutoWalkAfterItemPickup(
+	uint32_t playerId,
+	const Position &walkToPos,
+	int32_t maxTargetDistance,
+	const std::shared_ptr<Cylinder> &fromCylinder,
+	const std::shared_ptr<Item> &item,
+	uint32_t count,
+	std::function<void(const std::shared_ptr<Player> &, const Position &, uint8_t)> &&afterPickup
+) {
+	const bool accepted = g_dispatcher().addWalkEvent(
+		[this, playerId, walkToPos, maxTargetDistance, fromCylinder, item, count, afterPickup = std::move(afterPickup)] {
+			const auto &player = getPlayerByID(playerId);
+			if (!player || !item) {
+				return;
+			}
+
+			std::shared_ptr<Item> movedItem;
+			const auto ret = internalMoveItem(fromCylinder, player, INDEX_WHEREEVER, item, count, &movedItem);
+			if (ret != RETURNVALUE_NOERROR) {
+				player->sendCancelMessage(ret);
+				return;
+			}
+
+			Position itemPos;
+			uint8_t itemStackPos = 0;
+			internalGetPosition(movedItem, itemPos, itemStackPos);
+
+			std::vector<Direction> listDir;
+			if (!player->getPathTo(walkToPos, listDir, 0, maxTargetDistance, true, true)) {
+				player->sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+				return;
+			}
+
+			afterPickup(player, itemPos, itemStackPos);
+			playerAutoWalk(playerId, listDir);
+		},
+		0,
+		playerId
+	);
+	if (!accepted) {
+		if (const auto &player = getPlayerByID(playerId)) {
+			player->setNextWalkTask(nullptr);
+			player->setNextWalkActionTask(nullptr);
+			player->sendCancelWalk();
+		}
+	}
+}
+
 void Game::forcePlayerAutoWalk(uint32_t playerId, const std::vector<Direction> &listDir) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
@@ -4556,20 +4611,34 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 
 	if (ret != RETURNVALUE_NOERROR) {
 		if (ret == RETURNVALUE_TOOFARAWAY) {
-			Position itemPos = fromPos;
-			uint8_t itemStackPos = fromStackPos;
-
-			if (fromPos.x != 0xFFFF && toPos.x != 0xFFFF && Position::areInRange<1, 1, 0>(fromPos, player->getPosition()) && !Position::areInRange<1, 1, 0>(fromPos, toPos)) {
-				std::shared_ptr<Item> moveItem = nullptr;
-
-				ret = internalMoveItem(item->getParent(), player, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem);
-				if (ret != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret);
-					return;
-				}
-
-				// changing the position since its now in the inventory of the player
-				internalGetPosition(moveItem, itemPos, itemStackPos);
+			const bool requiresPickup = fromPos.x != 0xFFFF
+				&& toPos.x != 0xFFFF
+				&& Position::areInRange<1, 1, 0>(fromPos, player->getPosition())
+				&& !Position::areInRange<1, 1, 0>(fromPos, toPos);
+			if (requiresPickup) {
+				queuePlayerAutoWalkAfterItemPickup(
+					playerId,
+					walkToPos,
+					1,
+					item->getParent(),
+					item,
+					item->getItemCount(),
+					[this, playerId, fromItemId, toPos, toStackPos, toItemId, canTriggerExhaustion](const std::shared_ptr<Player> &walkPlayer, const Position &itemPos, uint8_t itemStackPos) {
+						const auto &task = createPlayerTask(
+							400,
+							[this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] {
+								playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId);
+							},
+							"Game::playerUseItemEx"
+						);
+						if (canTriggerExhaustion) {
+							walkPlayer->setNextPotionActionTask(task);
+						} else {
+							walkPlayer->setNextWalkActionTask(task);
+						}
+					}
+				);
+				return;
 			}
 
 			std::vector<Direction> listDir;
@@ -4579,8 +4648,8 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 				}
 				const auto &task = createPlayerTask(
 					400,
-					[this, playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId] {
-						playerUseItemEx(playerId, itemPos, itemStackPos, fromItemId, toPos, toStackPos, toItemId);
+					[this, playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId] {
+						playerUseItemEx(playerId, fromPos, fromStackPos, fromItemId, toPos, toStackPos, toItemId);
 					},
 					__FUNCTION__
 				);
@@ -4849,19 +4918,33 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 
 	if (ret != RETURNVALUE_NOERROR) {
 		if (ret == RETURNVALUE_TOOFARAWAY) {
-			Position itemPos = fromPos;
-			uint8_t itemStackPos = fromStackPos;
-
-			if (fromPos.x != 0xFFFF && Position::areInRange<1, 1, 0>(fromPos, player->getPosition()) && !Position::areInRange<1, 1, 0>(fromPos, toPos)) {
-				std::shared_ptr<Item> moveItem = nullptr;
-				ret = internalMoveItem(item->getParent(), player, INDEX_WHEREEVER, item, item->getItemCount(), &moveItem);
-				if (ret != RETURNVALUE_NOERROR) {
-					player->sendCancelMessage(ret);
-					return;
-				}
-
-				// changing the position since its now in the inventory of the player
-				internalGetPosition(moveItem, itemPos, itemStackPos);
+			const bool requiresPickup = fromPos.x != 0xFFFF
+				&& Position::areInRange<1, 1, 0>(fromPos, player->getPosition())
+				&& !Position::areInRange<1, 1, 0>(fromPos, toPos);
+			if (requiresPickup) {
+				queuePlayerAutoWalkAfterItemPickup(
+					playerId,
+					walkToPos,
+					1,
+					item->getParent(),
+					item,
+					item->getItemCount(),
+					[this, playerId, creatureId, itemId, canTriggerExhaustion](const std::shared_ptr<Player> &walkPlayer, const Position &itemPos, uint8_t itemStackPos) {
+						const auto &task = createPlayerTask(
+							400,
+							[this, playerId, itemPos, itemStackPos, creatureId, itemId] {
+								playerUseWithCreature(playerId, itemPos, itemStackPos, creatureId, itemId);
+							},
+							"Game::playerUseWithCreature"
+						);
+						if (canTriggerExhaustion) {
+							walkPlayer->setNextPotionActionTask(task);
+						} else {
+							walkPlayer->setNextWalkActionTask(task);
+						}
+					}
+				);
+				return;
 			}
 
 			std::vector<Direction> listDir;
@@ -4871,8 +4954,8 @@ void Game::playerUseWithCreature(uint32_t playerId, const Position &fromPos, uin
 				}
 				const auto &task = createPlayerTask(
 					400,
-					[this, playerId, itemPos, itemStackPos, creatureId, itemId] {
-						playerUseWithCreature(playerId, itemPos, itemStackPos, creatureId, itemId);
+					[this, playerId, fromPos, fromStackPos, creatureId, itemId] {
+						playerUseWithCreature(playerId, fromPos, fromStackPos, creatureId, itemId);
 					},
 					__FUNCTION__
 				);

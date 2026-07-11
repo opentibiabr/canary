@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/blakinio/canary/blob/main/docs/ai-agent/OTBM_REFERENCE_REPORT.schema.json",
+  "title": "Canary OTBM reference comparison report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "reference",
+    "otbm",
+    "totals",
+    "coverageOfLatest",
+    "floors",
+    "largestMissingRegions",
+    "largestWalkableMissingRegions",
+    "legend"
+  ],
+  "properties": {
+    "format": { "const": "canary-otbm-reference-report-v1" },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["directory", "origin", "width", "height", "floors"],
+      "properties": {
+        "directory": { "type": "string" },
+        "origin": { "$ref": "#/$defs/coordinate2" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "floors": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0, "maximum": 15 },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+    "otbm": { "$ref": "#/$defs/occupancy" },
+    "totals": { "$ref": "#/$defs/counts" },
+    "coverageOfLatest": { "type": "number", "minimum": 0, "maximum": 1 },
+    "floors": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/floor" },
+      "minItems": 1
+    },
+    "largestMissingRegions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/component" }
+    },
+    "largestWalkableMissingRegions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/component" }
+    },
+    "legend": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["green", "red", "blue", "transparent"],
+      "properties": {
+        "green": { "type": "string" },
+        "red": { "type": "string" },
+        "blue": { "type": "string" },
+        "transparent": { "type": "string" }
+      }
+    }
+  },
+  "$defs": {
+    "coordinate2": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "integer" },
+        { "type": "integer" }
+      ],
+      "minItems": 2,
+      "maxItems": 2
+    },
+    "position": {
+      "type": "array",
+      "prefixItems": [
+        { "type": "number" },
+        { "type": "number" },
+        { "type": "integer", "minimum": 0, "maximum": 15 }
+      ],
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "counts": {
+      "type": "object",
+      "required": [
+        "latestTerrainTiles",
+        "otbmTilesInBounds",
+        "overlapTiles",
+        "latestOnlyTiles",
+        "latestOnlyWalkableTiles",
+        "otbmOnlyTiles"
+      ],
+      "properties": {
+        "latestTerrainTiles": { "type": "integer", "minimum": 0 },
+        "otbmTilesInBounds": { "type": "integer", "minimum": 0 },
+        "overlapTiles": { "type": "integer", "minimum": 0 },
+        "latestOnlyTiles": { "type": "integer", "minimum": 0 },
+        "latestOnlyWalkableTiles": { "type": "integer", "minimum": 0 },
+        "otbmOnlyTiles": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["floor", "area", "walkable", "walkableRatio", "bounds", "centroid", "width", "height"],
+      "properties": {
+        "floor": { "type": "integer", "minimum": 0, "maximum": 15 },
+        "area": { "type": "integer", "minimum": 1 },
+        "walkable": { "type": "integer", "minimum": 0 },
+        "walkableRatio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "bounds": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["from", "to"],
+          "properties": {
+            "from": { "$ref": "#/$defs/position" },
+            "to": { "$ref": "#/$defs/position" }
+          }
+        },
+        "centroid": { "$ref": "#/$defs/position" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "floor": {
+      "allOf": [
+        { "$ref": "#/$defs/counts" },
+        {
+          "type": "object",
+          "required": ["z", "coverageOfLatest", "componentCount", "largestComponents"],
+          "properties": {
+            "z": { "type": "integer", "minimum": 0, "maximum": 15 },
+            "coverageOfLatest": { "type": "number", "minimum": 0, "maximum": 1 },
+            "componentCount": { "type": "integer", "minimum": 0 },
+            "largestComponents": {
+              "type": "array",
+              "items": { "$ref": "#/$defs/component" }
+            }
+          }
+        }
+      ]
+    },
+    "occupancy": {
+      "type": "object",
+      "required": [
+        "format",
+        "source",
+        "origin",
+        "width",
+        "height",
+        "tileAreaNodes",
+        "totalTiles",
+        "inReferenceBoundsTiles",
+        "duplicateReferencePositions",
+        "floors"
+      ],
+      "properties": {
+        "format": { "const": "canary-otbm-occupancy-v1" },
+        "source": {
+          "type": "object",
+          "required": ["path", "size", "sha256"],
+          "properties": {
+            "path": { "type": "string" },
+            "size": { "type": "integer", "minimum": 1 },
+            "sha256": {
+              "oneOf": [
+                { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+                { "type": "null" }
+              ]
+            }
+          }
+        },
+        "origin": { "$ref": "#/$defs/coordinate2" },
+        "width": { "type": "integer", "minimum": 1 },
+        "height": { "type": "integer", "minimum": 1 },
+        "tileAreaNodes": { "type": "integer", "minimum": 0 },
+        "totalTiles": { "type": "integer", "minimum": 0 },
+        "inReferenceBoundsTiles": { "type": "integer", "minimum": 0 },
+        "duplicateReferencePositions": { "type": "integer", "minimum": 0 },
+        "floors": {
+          "type": "array",
+          "minItems": 16,
+          "maxItems": 16,
+          "items": {
+            "type": "object",
+            "required": ["z", "tileCount", "inReferenceBoundsTiles", "occupancyFile", "bounds"],
+            "properties": {
+              "z": { "type": "integer", "minimum": 0, "maximum": 15 },
+              "tileCount": { "type": "integer", "minimum": 0 },
+              "inReferenceBoundsTiles": { "type": "integer", "minimum": 0 },
+              "occupancyFile": { "type": "string", "pattern": "^floor-[0-9]{2}\\.bits$" },
+              "bounds": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "prefixItems": [
+                      { "$ref": "#/$defs/coordinate2" },
+                      { "$ref": "#/$defs/coordinate2" }
+                    ],
+                    "minItems": 2,
+                    "maxItems": 2
+                  },
+                  { "type": "null" }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

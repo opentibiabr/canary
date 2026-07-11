@@ -1,0 +1,53 @@
+---
+name: Gameplay Analytics Spell Telemetry
+
+on:
+  pull_request:
+    paths:
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data/scripts/lib/gameplay_analytics_spell.lua"
+      - "data/scripts/spells/attack/ethereal_spear.lua"
+      - "data/scripts/spells/healing/ultimate_healing.lua"
+      - "data/scripts/runes/fireball.lua"
+      - "data/scripts/runes/intense_healing_rune.lua"
+      - "tools/analytics/test_gameplay_analytics_spell_integration.lua"
+      - "tools/analytics/test_validate_gameplay_analytics_spell_integration.py"
+      - "tools/analytics/validate_gameplay_analytics_spell_integration.py"
+      - "docs/systems/gameplay-analytics-spells.md"
+      - ".github/workflows/gameplay-analytics-spells.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data/scripts/lib/gameplay_analytics_spell.lua"
+      - "data/scripts/spells/attack/ethereal_spear.lua"
+      - "data/scripts/spells/healing/ultimate_healing.lua"
+      - "data/scripts/runes/fireball.lua"
+      - "data/scripts/runes/intense_healing_rune.lua"
+      - "tools/analytics/test_gameplay_analytics_spell_integration.lua"
+      - "tools/analytics/test_validate_gameplay_analytics_spell_integration.py"
+      - "tools/analytics/validate_gameplay_analytics_spell_integration.py"
+      - "docs/systems/gameplay-analytics-spells.md"
+      - ".github/workflows/gameplay-analytics-spells.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate spell integration contract
+        run: python tools/analytics/validate_gameplay_analytics_spell_integration.py
+      - name: Run spell integration validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_spell_integration.py" -v
+      - name: Install LuaJIT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit
+      - name: Run gameplay analytics spell integration Lua test
+        run: luajit tools/analytics/test_gameplay_analytics_spell_integration.lua

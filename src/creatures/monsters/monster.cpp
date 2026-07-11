@@ -34,11 +34,13 @@ namespace {
 	constexpr uint8_t MAX_BACKGROUND_FOLLOW_PATH_RADIUS = 12;
 	constexpr size_t MAX_COMBAT_INTENTION_SPELLS = 256;
 	constexpr size_t MAX_TARGET_RANK_CANDIDATES = 256;
+	constexpr auto WALK_PLAYER_VISIBLE_HOLD = std::chrono::seconds(3);
 
 	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
-		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
+		const auto* targetMonster = creature ? creature->getMonsterRaw() : nullptr;
+		return monsterPerfTestFriendlyFire && monster.isHostile() && !monster.isSummon() && targetMonster && targetMonster->isHostile()
 			&& creature.get() != static_cast<const Creature*>(&monster)
-			&& creature->getMonsterRaw() && !creature->isSummon();
+			&& !creature->isSummon();
 	}
 
 	[[nodiscard]] bool pathReachesEndpoint(const NavRegionSnapshot &navigation, const Position &start, const std::vector<Direction> &directions, const Position &expectedEndpoint) {
@@ -375,6 +377,9 @@ void Monster::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool i
 		updateTargetList();
 		updateIdleStatus();
 	} else {
+		if (canSee(creature->getPosition())) {
+			observeVisiblePlayerForScheduling(creature);
+		}
 		addAsyncTask([this, creature] {
 			onCreatureEnter(creature);
 		});
@@ -470,6 +475,10 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 }
 
 void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
+	if (canSee(newPos) && !canSee(oldPos)) {
+		observeVisiblePlayerForScheduling(creature);
+	}
+
 	if (!pendingMovementAiRefresh.state.tryEnqueue()) {
 		pendingMovementAiRefresh.needsFullRefresh = true;
 		return;
@@ -745,9 +754,14 @@ void Monster::updateTargetList() {
 		markTargetStateChanged();
 	}
 
+	if (!visiblePlayerSpectatorIds.empty()) {
+		playerVisibleUntil = MonsterRelevancePolicy::Clock::now() + WALK_PLAYER_VISIBLE_HOLD;
+		visiblePlayerSpectatorIds.clear();
+	}
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	for (const auto &spectator : Spectators().find<Creature>(position, true, 0, 0, 0, 0, false)) {
 		if (spectator.get() != this && canSee(spectator->getPosition())) {
+			addVisiblePlayerSpectator(spectator);
 			onCreatureFound(spectator, false, monsterPerfTestFriendlyFire);
 		}
 	}
@@ -785,6 +799,7 @@ void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pu
 }
 
 void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
+	observeVisiblePlayerForScheduling(creature);
 	onCreatureFound(creature, true);
 }
 
@@ -864,6 +879,7 @@ uint16_t Monster::getLookCorpse() const {
 
 void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	removeVisiblePlayerSpectator(creature);
 
 	// update friendList
 	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
@@ -1189,7 +1205,7 @@ void Monster::prepareTargetSearchCompute(uint64_t generation) {
 	}
 
 	const auto monsterId = getID();
-	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), rankingRequest = std::move(rankingRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
@@ -1271,7 +1287,7 @@ void Monster::completeTargetSearchCompute(uint64_t generation, uint64_t stateEpo
 }
 
 void Monster::retryTargetSearchCompute(TargetSearchType_t searchType) {
-	clearTargetSearchCompute();
+	clearTargetSearchCompute(false);
 	if (isRemoved() || isDead()) {
 		return;
 	}
@@ -1279,10 +1295,14 @@ void Monster::retryTargetSearchCompute(TargetSearchType_t searchType) {
 	setAsyncTaskFlag(TargetRanking, true);
 }
 
-void Monster::clearTargetSearchCompute() {
+void Monster::clearTargetSearchCompute(bool releasePostThink) {
 	targetSearchComputeOutstanding = false;
 	activeTargetSearchComputeGeneration = 0;
 	pendingTargetSearchCompute.reset();
+	if (releasePostThink && postThinkWaitingForTargetDecision) {
+		postThinkWaitingForTargetDecision = false;
+		queuePostThinkAfterAsync();
+	}
 }
 
 void Monster::markTargetStateChanged() {
@@ -1495,12 +1515,20 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
+	const bool forceActive = g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE);
+	if (forceActive && !g_dispatcher().context().isBarrierParallel()) {
+		// The stress flag must wake idle monsters before background AI service;
+		// otherwise the benchmark activates only after visibility promotion.
+		setIdle(false);
+		return;
+	}
+
 	if (!g_dispatcher().context().isBarrierParallel()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
 
-	if (g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE)) {
+	if (forceActive) {
 		setIdle(false);
 		return;
 	}
@@ -1599,14 +1627,34 @@ void Monster::onThink(uint32_t interval) {
 }
 
 bool Monster::trySchedulePostThink() {
+	if (!hasAsyncTaskFlag(OnThink)) {
+		return false;
+	}
 	return pendingPostThink.tryEnqueue();
 }
 
-void Monster::cancelScheduledPostThink() {
+void Monster::cancelScheduledPostThink(bool playerVisible) {
+	if (!postThinkQueued || postThinkPlayerVisible != playerVisible) {
+		return;
+	}
+
+	postThinkQueued = false;
+	postThinkWaitingForTargetDecision = false;
 	(void)pendingPostThink.consume();
 }
 
-void Monster::executePostThink(uint32_t interval) {
+void Monster::executePostThink(uint32_t interval, bool playerVisible) {
+	if (!postThinkQueued || postThinkPlayerVisible != playerVisible) {
+		return;
+	}
+
+	if (targetSearchComputeOutstanding) {
+		postThinkQueued = false;
+		postThinkWaitingForTargetDecision = true;
+		return;
+	}
+
+	postThinkQueued = false;
 	const auto readyAt = pendingPostThink.consume();
 	if (!readyAt) {
 		return;
@@ -1627,9 +1675,35 @@ void Monster::executePostThink(uint32_t interval) {
 	executeConditions(interval);
 }
 
-void Monster::onThink_async() {
-	if (isIdle) { // updateIdleStatus(); is executed before this method
+void Monster::queuePostThinkAfterAsync() {
+	if (!pendingPostThink.isPending() || postThinkQueued) {
 		return;
+	}
+	if (targetSearchComputeOutstanding) {
+		postThinkWaitingForTargetDecision = true;
+		return;
+	}
+
+	postThinkWaitingForTargetDecision = false;
+	postThinkQueued = true;
+	postThinkPlayerVisible = isPlayerVisibleForScheduling();
+	if (!g_game().queueMonsterPostThink(getID(), postThinkPlayerVisible)) {
+		cancelScheduledPostThink(postThinkPlayerVisible);
+	}
+}
+
+void Monster::promotePostThinkToPlayerVisibleQueue() {
+	if (!postThinkQueued || !pendingPostThink.isPending()) {
+		return;
+	}
+
+	postThinkQueued = false;
+	queuePostThinkAfterAsync();
+}
+
+bool Monster::onThink_async() {
+	if (isIdle) { // updateIdleStatus(); is executed before this method
+		return false;
 	}
 
 	addEventWalk();
@@ -1665,10 +1739,11 @@ void Monster::onThink_async() {
 
 	onThinkTarget(EVENT_CREATURE_THINK_INTERVAL);
 
-	safeCall([this] {
+	return safeCall([this] {
 		onThinkYell(EVENT_CREATURE_THINK_INTERVAL);
 		onThinkDefense(EVENT_CREATURE_THINK_INTERVAL);
 		onThinkSound(EVENT_CREATURE_THINK_INTERVAL);
+		queuePostThinkAfterAsync();
 	});
 }
 
@@ -1770,7 +1845,7 @@ void Monster::prepareCombatIntention(uint64_t generation) {
 	}
 
 	const auto monsterId = getID();
-	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
@@ -1961,6 +2036,48 @@ MonsterRelevanceSnapshot Monster::captureComputeRelevance() const {
 bool Monster::isComputeRelevant() {
 	computeRelevance = MonsterRelevancePolicy::update(computeRelevance, captureComputeRelevance(), MonsterRelevancePolicy::Clock::now());
 	return computeRelevance.tier == MonsterRelevanceTier::Visible;
+}
+
+bool Monster::isPlayerVisibleForScheduling() {
+	const auto now = MonsterRelevancePolicy::Clock::now();
+	if (!visiblePlayerSpectatorIds.empty()) {
+		playerVisibleUntil = now + WALK_PLAYER_VISIBLE_HOLD;
+		return true;
+	}
+	return now < playerVisibleUntil;
+}
+
+void Monster::observeVisiblePlayerForScheduling(const std::shared_ptr<Creature> &creature) {
+	const bool wasPlayerVisible = isPlayerVisibleForScheduling();
+	const bool becamePlayerVisible = addVisiblePlayerSpectator(creature);
+	if (becamePlayerVisible && !wasPlayerVisible) {
+		promoteWalkEventToPlayerVisibleLane();
+		promotePostThinkToPlayerVisibleQueue();
+	}
+}
+
+bool Monster::addVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature) {
+	if (!creature || !creature->getPlayerRaw()) {
+		return false;
+	}
+
+	const auto playerId = creature->getID();
+	if (std::ranges::find(visiblePlayerSpectatorIds, playerId) != visiblePlayerSpectatorIds.end()) {
+		return false;
+	}
+
+	const bool becameVisible = visiblePlayerSpectatorIds.empty();
+	visiblePlayerSpectatorIds.emplace_back(playerId);
+	return becameVisible;
+}
+
+void Monster::removeVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature) {
+	if (creature && creature->getPlayerRaw()) {
+		const auto removed = std::erase(visiblePlayerSpectatorIds, creature->getID());
+		if (removed > 0 && visiblePlayerSpectatorIds.empty()) {
+			playerVisibleUntil = MonsterRelevancePolicy::Clock::now() + WALK_PLAYER_VISIBLE_HOLD;
+		}
+	}
 }
 
 bool Monster::hasExtraSwing() {
@@ -2344,9 +2461,10 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 				if (g_dispatcher().context().isMovementCommit()) {
 					Monster::pushCreatures(posTile);
 				} else {
+					const auto lane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
 					g_dispatcher().addCreatureWalkEvent([=] {
 						Monster::pushCreatures(posTile);
-					});
+					}, lane);
 				}
 			}
 		}
@@ -3517,7 +3635,7 @@ void Monster::prepareFollowPathCompute(uint64_t generation) {
 	workerRequest.traits = capturePathTraits(*navigation);
 
 	const auto monsterId = getID();
-	const auto priority = isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
 	const auto submission = g_monsterComputeService().submit(
 		priority,
 		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
@@ -3853,7 +3971,9 @@ void Monster::onExecuteAsyncTasks() {
 	}
 
 	if (hasAsyncTaskFlag(OnThink)) {
-		onThink_async();
+		if (!onThink_async()) {
+			queuePostThinkAfterAsync();
+		}
 	}
 }
 

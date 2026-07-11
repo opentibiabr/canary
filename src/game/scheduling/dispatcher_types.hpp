@@ -23,6 +23,8 @@ enum class DispatcherLane : uint8_t {
 	WorldCommit,
 	WorkerCompletion,
 	VisibleMonster,
+	BackgroundMonster,
+	VisibleMonsterAI,
 	MonsterAI,
 	Deferred,
 	Maintenance,
@@ -46,7 +48,7 @@ struct TaskMeta {
 };
 
 [[nodiscard]] constexpr ExecutionMode defaultExecutionMode(const DispatcherLane lane) {
-	if (lane == DispatcherLane::MonsterAI || lane == DispatcherLane::GenericParallel) {
+	if (lane == DispatcherLane::VisibleMonsterAI || lane == DispatcherLane::MonsterAI || lane == DispatcherLane::GenericParallel) {
 		return ExecutionMode::BarrierParallel;
 	}
 	if (lane == DispatcherLane::WorkerCompletion) {
@@ -56,11 +58,15 @@ struct TaskMeta {
 }
 
 [[nodiscard]] constexpr bool isMovementCommit(const DispatcherLane lane) {
-	return lane == DispatcherLane::PlayerWalk || lane == DispatcherLane::VisibleMonster;
+	return lane == DispatcherLane::PlayerWalk || lane == DispatcherLane::VisibleMonster || lane == DispatcherLane::BackgroundMonster;
 }
 
 [[nodiscard]] constexpr bool isPlayerVisible(const DispatcherLane lane) {
-	return lane == DispatcherLane::ProtocolInput || lane == DispatcherLane::PlayerWalk || lane == DispatcherLane::PlayerAction || lane == DispatcherLane::WorldCommit || lane == DispatcherLane::WorkerCompletion || lane == DispatcherLane::VisibleMonster;
+	return lane == DispatcherLane::ProtocolInput || lane == DispatcherLane::PlayerWalk || lane == DispatcherLane::PlayerAction || lane == DispatcherLane::WorldCommit || lane == DispatcherLane::WorkerCompletion || lane == DispatcherLane::VisibleMonster || lane == DispatcherLane::VisibleMonsterAI;
+}
+
+[[nodiscard]] constexpr DispatcherLane barrierContinuationLane(const DispatcherLane lane) {
+	return lane == DispatcherLane::MonsterAI ? DispatcherLane::Deferred : DispatcherLane::WorldCommit;
 }
 
 [[nodiscard]] constexpr bool usesProducerFairness(const DispatcherLane lane) {

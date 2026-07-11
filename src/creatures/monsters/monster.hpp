@@ -186,8 +186,8 @@ public:
 
 	void onThink(uint32_t interval) override;
 	bool trySchedulePostThink();
-	void cancelScheduledPostThink();
-	void executePostThink(uint32_t interval);
+	void cancelScheduledPostThink(bool playerVisible);
+	void executePostThink(uint32_t interval, bool playerVisible);
 	bool requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow);
 	void supersedeFollowPathCompute();
 
@@ -336,7 +336,9 @@ protected:
 	void onExecuteAsyncTasks() override;
 
 private:
-	void onThink_async();
+	bool onThink_async();
+	void queuePostThinkAfterAsync();
+	void promotePostThinkToPlayerVisibleQueue();
 	void prepareFollowPathCompute(uint64_t generation);
 	void completeFollowPathCompute(uint64_t generation, std::shared_ptr<const NavRegionSnapshot> navigation, MonsterPathResult result);
 	void rejectFollowPathCompute(uint64_t generation);
@@ -348,7 +350,7 @@ private:
 	void prepareTargetSearchCompute(uint64_t generation);
 	void completeTargetSearchCompute(uint64_t generation, uint64_t stateEpoch, uint64_t decisionEpoch, Position origin, TargetSearchType_t searchType, std::vector<uint32_t> fallbackIds, MonsterTargetRankingResult result);
 	void retryTargetSearchCompute(TargetSearchType_t searchType);
-	void clearTargetSearchCompute();
+	void clearTargetSearchCompute(bool releasePostThink = true);
 	void markTargetStateChanged();
 	void markTargetDecisionChanged();
 	[[nodiscard]] uint64_t nextTargetSearchComputeGeneration();
@@ -364,6 +366,10 @@ private:
 	[[nodiscard]] uint64_t nextCombatIntentionGeneration();
 	[[nodiscard]] MonsterRelevanceSnapshot captureComputeRelevance() const;
 	bool isComputeRelevant();
+	bool isPlayerVisibleForScheduling() override;
+	void observeVisiblePlayerForScheduling(const std::shared_ptr<Creature> &creature);
+	bool addVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature);
+	void removeVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature);
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
 		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
@@ -378,6 +384,9 @@ private:
 	std::deque<TargetReference> targetList;
 	PendingMovementAiRefresh pendingMovementAiRefresh;
 	CoalescedTaskState pendingPostThink;
+	bool postThinkQueued = false;
+	bool postThinkPlayerVisible = false;
+	bool postThinkWaitingForTargetDecision = false;
 	std::optional<FollowPathComputeRequest> pendingFollowPathCompute;
 	uint64_t followPathComputeGeneration = 0;
 	uint64_t activeFollowPathComputeGeneration = 0;
@@ -411,6 +420,8 @@ private:
 	int64_t lastMeleeAttack = 0;
 
 	uint16_t totalPlayersOnScreen = 0;
+	std::vector<uint32_t> visiblePlayerSpectatorIds;
+	MonsterRelevancePolicy::Clock::time_point playerVisibleUntil {};
 
 	uint16_t criticalChance = 0;
 	uint16_t criticalDamage = 0;
@@ -534,9 +545,10 @@ private:
 	/**
 	 * @brief Classifies visible creatures for local friend and target observer lists.
 	 *
-	 * The monsterPerfTestFriendlyFire config only changes non-summon monster
-	 * classification for benchmark scenarios. It must not be used as a persistent
-	 * ownership or lifetime shortcut.
+	 * The monsterPerfTestFriendlyFire config only changes hostile non-summon
+	 * monster classification for benchmark scenarios. Passive monsters retain
+	 * their normal follow behavior. This must not be used as a persistent ownership
+	 * or lifetime shortcut.
 	 */
 	bool isFriend(const std::shared_ptr<Creature> &creature) const;
 	bool isFriend(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const;

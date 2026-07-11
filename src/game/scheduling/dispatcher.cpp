@@ -77,6 +77,10 @@ namespace {
 				return "WorkerCompletion";
 			case DispatcherLane::VisibleMonster:
 				return "VisibleMonster";
+			case DispatcherLane::BackgroundMonster:
+				return "BackgroundMonster";
+			case DispatcherLane::VisibleMonsterAI:
+				return "VisibleMonsterAI";
 			case DispatcherLane::MonsterAI:
 				return "MonsterAI";
 			case DispatcherLane::Deferred:
@@ -458,15 +462,20 @@ void Dispatcher::logRuntimeTelemetry() {
 	const auto computeStats = g_monsterComputeService().getStats();
 	if (computeStats.running) {
 		g_logger().debug(
-			"Monster compute telemetry: visibleQueued={}, backgroundQueued={}, completionsQueued={}, oldestCompletion={} us, outstanding={}, active={}, completionsInFlight={}, capacity={}, accepted={}, rejected={}, completed={}, failed={}, canceled={}",
+			"Monster compute telemetry: visibleQueued={}, backgroundQueued={}, visibleCompletions={}, backgroundCompletions={}, oldestVisibleCompletion={} us, oldestBackgroundCompletion={} us, visibleOutstanding={}, backgroundOutstanding={}, outstanding={}, active={}, completionsInFlight={}, capacity={}, visibleReserve={}, accepted={}, rejected={}, completed={}, failed={}, canceled={}",
 			computeStats.visibleQueued,
 			computeStats.backgroundQueued,
-			computeStats.completionsQueued,
-			computeStats.oldestCompletionReadyAge.count(),
+			computeStats.visibleCompletionsQueued,
+			computeStats.backgroundCompletionsQueued,
+			computeStats.oldestVisibleCompletionReadyAge.count(),
+			computeStats.oldestBackgroundCompletionReadyAge.count(),
+			computeStats.visibleOutstanding,
+			computeStats.backgroundOutstanding,
 			computeStats.outstanding,
 			computeStats.active,
 			computeStats.completionsInFlight,
 			computeStats.capacity,
+			computeStats.visibleReserve,
 			computeStats.accepted,
 			computeStats.rejected,
 			computeStats.completed,
@@ -488,6 +497,7 @@ void Dispatcher::resetRuntimeTelemetry() {
 		telemetry.reset();
 	}
 	scheduledLatenessTelemetry.reset();
+	playerVisibleReadyLatency.reset();
 }
 
 std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const {
@@ -500,7 +510,7 @@ std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::t
 			oldest = std::max(oldest, DispatcherPolicy::elapsed(task->getReadyAt(), now));
 		}
 	}
-	oldest = std::max(oldest, g_monsterComputeService().getStats().oldestCompletionReadyAge);
+	oldest = std::max(oldest, g_monsterComputeService().getStats().oldestVisibleCompletionReadyAge);
 	return oldest;
 }
 
@@ -513,18 +523,25 @@ void Dispatcher::refreshAdaptiveBudgets() {
 
 	const auto visibleWindow = playerVisibleReadyLatency.snapshotAndReset();
 	const auto configured = getConfiguredDispatcherBudgets();
+	configuredBudgets = configured;
+	const auto visibleP99 = visibleWindow.percentile(0.99);
+	const auto oldestVisibleReadyAge = oldestPlayerVisibleReadyAge(now);
 	const auto decision = adaptiveBudgetController.update(
 		configured,
-		visibleWindow.percentile(0.99),
-		oldestPlayerVisibleReadyAge(now),
+		visibleP99,
+		oldestVisibleReadyAge,
 		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count())),
 		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS, DEFAULT_DISPATCHER_EMERGENCY.count()))
 	);
 	activeBudgets = decision.budgets;
 
-	const auto tasksPerBucket = std::min<size_t>(activeBudgets.creatureAsyncTasksPerBucket, std::numeric_limits<uint32_t>::max());
-	const auto maxRuntimeUs = std::min<int64_t>(activeBudgets.sliceRuntime.count(), std::numeric_limits<uint32_t>::max());
-	creatureAsyncSliceLimits.store((static_cast<uint64_t>(tasksPerBucket) << 32) | static_cast<uint32_t>(maxRuntimeUs), std::memory_order_relaxed);
+	const auto packCreatureLimits = [](const DispatcherBudgetSet &budgets) {
+		const auto tasksPerBucket = std::min<size_t>(budgets.creatureAsyncTasksPerBucket, std::numeric_limits<uint32_t>::max());
+		const auto maxRuntimeUs = std::min<int64_t>(budgets.sliceRuntime.count(), std::numeric_limits<uint32_t>::max());
+		return (static_cast<uint64_t>(tasksPerBucket) << 32) | static_cast<uint32_t>(maxRuntimeUs);
+	};
+	visibleCreatureAsyncSliceLimits.store(packCreatureLimits(configuredBudgets), std::memory_order_relaxed);
+	backgroundCreatureAsyncSliceLimits.store(packCreatureLimits(activeBudgets), std::memory_order_relaxed);
 
 	if (!decision.stateChanged) {
 		return;
@@ -532,9 +549,11 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	const auto stateName = getDispatcherLoadStateName(decision.state);
 	if (decision.state == DispatcherLoadState::Emergency) {
 		g_logger().warn(
-			"Dispatcher adaptive budgets: state={}, controlLatency={} us, creatureWalk={}, walkParallel={}, creatureBucket={}, deferred={}, completions={}, slice={} us",
+			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,
 			decision.controlLatency.count(),
+			visibleP99.count(),
+			oldestVisibleReadyAge.count(),
 			activeBudgets.creatureWalkTasks,
 			activeBudgets.walkParallelTasks,
 			activeBudgets.creatureAsyncTasksPerBucket,
@@ -544,9 +563,11 @@ void Dispatcher::refreshAdaptiveBudgets() {
 		);
 	} else {
 		g_logger().info(
-			"Dispatcher adaptive budgets: state={}, controlLatency={} us, creatureWalk={}, walkParallel={}, creatureBucket={}, deferred={}, completions={}, slice={} us",
+			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,
 			decision.controlLatency.count(),
+			visibleP99.count(),
+			oldestVisibleReadyAge.count(),
 			activeBudgets.creatureWalkTasks,
 			activeBudgets.walkParallelTasks,
 			activeBudgets.creatureAsyncTasksPerBucket,
@@ -603,7 +624,11 @@ size_t Dispatcher::laneTaskBudget(DispatcherLane lane) const {
 		case DispatcherLane::WorkerCompletion:
 			return activeBudgets.workerCompletions;
 		case DispatcherLane::VisibleMonster:
+			return configuredBudgets.creatureWalkTasks;
+		case DispatcherLane::BackgroundMonster:
 			return activeBudgets.creatureWalkTasks;
+		case DispatcherLane::VisibleMonsterAI:
+			return configuredBudgets.walkParallelTasks;
 		case DispatcherLane::MonsterAI:
 		case DispatcherLane::GenericParallel:
 			return activeBudgets.walkParallelTasks;
@@ -627,7 +652,10 @@ uint32_t Dispatcher::laneQuantum(DispatcherLane lane) const {
 			return 6;
 		case DispatcherLane::WorkerCompletion:
 		case DispatcherLane::VisibleMonster:
+		case DispatcherLane::VisibleMonsterAI:
 			return 4;
+		case DispatcherLane::BackgroundMonster:
+			return 1;
 		case DispatcherLane::MonsterAI:
 		case DispatcherLane::Deferred:
 			return 2;
@@ -971,14 +999,16 @@ bool Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 	return true;
 }
 
-bool Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs) {
+bool Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, DispatcherLane lane, uint32_t expiresAfterMs) {
 	if (shuttingDown.load(std::memory_order_acquire)) {
 		return false;
+	}
+	if (lane != DispatcherLane::VisibleMonster && lane != DispatcherLane::BackgroundMonster) {
+		lane = DispatcherLane::VisibleMonster;
 	}
 
 	const auto &thread = getThreadTask();
 	std::scoped_lock lock(thread->mutex);
-	constexpr auto lane = DispatcherLane::VisibleMonster;
 	if (!tryReserveLaneSlot(lane)) {
 		return false;
 	}
@@ -1021,7 +1051,7 @@ bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane l
 	if (shuttingDown.load(std::memory_order_acquire)) {
 		return false;
 	}
-	if (lane != DispatcherLane::MonsterAI && lane != DispatcherLane::GenericParallel) {
+	if (lane != DispatcherLane::VisibleMonsterAI && lane != DispatcherLane::MonsterAI && lane != DispatcherLane::GenericParallel) {
 		lane = DispatcherLane::GenericParallel;
 	}
 

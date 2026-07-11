@@ -15,10 +15,12 @@ using namespace std::chrono_literals;
 TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
 	EXPECT_TRUE(isMovementCommit(DispatcherLane::PlayerWalk));
 	EXPECT_TRUE(isMovementCommit(DispatcherLane::VisibleMonster));
+	EXPECT_TRUE(isMovementCommit(DispatcherLane::BackgroundMonster));
 	EXPECT_FALSE(isMovementCommit(DispatcherLane::WorldCommit));
 	EXPECT_FALSE(isMovementCommit(DispatcherLane::MonsterAI));
 
 	EXPECT_EQ(defaultExecutionMode(DispatcherLane::MonsterAI), ExecutionMode::BarrierParallel);
+	EXPECT_EQ(defaultExecutionMode(DispatcherLane::VisibleMonsterAI), ExecutionMode::BarrierParallel);
 	EXPECT_EQ(defaultExecutionMode(DispatcherLane::GenericParallel), ExecutionMode::BarrierParallel);
 	EXPECT_EQ(defaultExecutionMode(DispatcherLane::PlayerWalk), ExecutionMode::Serial);
 	EXPECT_EQ(defaultExecutionMode(DispatcherLane::WorkerCompletion), ExecutionMode::BackgroundCompletion);
@@ -26,8 +28,14 @@ TEST(DispatcherContextTest, SeparatesMovementBarrierAndVisibilitySemantics) {
 	EXPECT_TRUE(isPlayerVisible(DispatcherLane::PlayerWalk));
 	EXPECT_TRUE(isPlayerVisible(DispatcherLane::WorldCommit));
 	EXPECT_TRUE(isPlayerVisible(DispatcherLane::VisibleMonster));
+	EXPECT_TRUE(isPlayerVisible(DispatcherLane::VisibleMonsterAI));
+	EXPECT_FALSE(isPlayerVisible(DispatcherLane::BackgroundMonster));
 	EXPECT_FALSE(isPlayerVisible(DispatcherLane::Deferred));
 	EXPECT_FALSE(isPlayerVisible(DispatcherLane::MonsterAI));
+
+	EXPECT_EQ(barrierContinuationLane(DispatcherLane::VisibleMonsterAI), DispatcherLane::WorldCommit);
+	EXPECT_EQ(barrierContinuationLane(DispatcherLane::MonsterAI), DispatcherLane::Deferred);
+	EXPECT_EQ(barrierContinuationLane(DispatcherLane::GenericParallel), DispatcherLane::WorldCommit);
 
 	EXPECT_TRUE(usesProducerFairness(DispatcherLane::ProtocolInput));
 	EXPECT_TRUE(usesProducerFairness(DispatcherLane::PlayerAction));

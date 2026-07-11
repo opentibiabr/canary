@@ -40,7 +40,16 @@ namespace {
 		bool scheduled = false;
 	};
 
-	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> creatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> visibleCreatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> backgroundCreatureAsyncTaskBuckets;
+
+	auto &getCreatureAsyncTaskBuckets(bool playerVisible) {
+		return playerVisible ? visibleCreatureAsyncTaskBuckets : backgroundCreatureAsyncTaskBuckets;
+	}
+
+	DispatcherLane getCreatureAsyncTaskLane(bool playerVisible) {
+		return playerVisible ? DispatcherLane::VisibleMonsterAI : DispatcherLane::MonsterAI;
+	}
 
 	size_t getCreatureAsyncTaskBucketIndex(uint32_t creatureId) noexcept {
 		return creatureId % CREATURE_ASYNC_TASK_BUCKET_COUNT;
@@ -264,9 +273,10 @@ void Creature::onCreatureWalk() {
 	};
 
 	const bool playerWalk = getPlayerRaw() != nullptr;
+	const auto creatureWalkLane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
 	const bool accepted = playerWalk
 		? g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID())
-		: g_dispatcher().addCreatureWalkEvent(std::move(walkTask));
+		: g_dispatcher().addCreatureWalkEvent(std::move(walkTask), creatureWalkLane);
 	if (!accepted) {
 		checkingWalkCreature = false;
 		eventWalk = 0;
@@ -356,13 +366,17 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 			onCreatureWalk();
 		}
 
+		const bool playerWalk = getPlayerRaw() != nullptr;
+		const auto lane = playerWalk
+			? DispatcherLane::PlayerWalk
+			: (isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster);
 		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
 				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
 				}
 			},
-			"Game::checkCreatureWalk", getPlayerRaw() ? DispatcherLane::PlayerWalk : DispatcherLane::VisibleMonster, getPlayerRaw() ? getID() : 0
+			"Game::checkCreatureWalk", lane, playerWalk ? getID() : 0
 		);
 	});
 }
@@ -372,6 +386,17 @@ void Creature::stopEventWalk() {
 		g_dispatcher().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
+}
+
+void Creature::promoteWalkEventToPlayerVisibleLane() {
+	(void)safeCall([this] {
+		if (eventWalk == 0 || checkingWalkCreature || !isPlayerVisibleForScheduling()) {
+			return;
+		}
+
+		stopEventWalk();
+		addEventWalk();
+	});
 }
 
 void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
@@ -1991,9 +2016,9 @@ void Creature::iconChanged() {
 	}
 }
 
-void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId) {
+void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible) {
 	const auto bucketIndex = getCreatureAsyncTaskBucketIndex(creatureId);
-	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
 
 	bool shouldSchedule = false;
 	{
@@ -2006,10 +2031,10 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 
 	if (shouldSchedule) {
-		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex] {
-			Creature::processAsyncTaskBucket(bucketIndex);
+		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                                                     DispatcherLane::MonsterAI);
+		                                                     getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
 			std::scoped_lock lock(bucket.mutex);
 			bucket.scheduled = false;
@@ -2017,12 +2042,12 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 }
 
-void Creature::processAsyncTaskBucket(size_t bucketIndex) {
+void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
 	const auto startedAt = Task::Clock::now();
-	const auto limits = g_dispatcher().getCreatureAsyncSliceLimits();
+	const auto limits = g_dispatcher().getCreatureAsyncSliceLimits(playerVisible);
 	const auto deadline = startedAt + limits.maxRuntime;
 	const auto batchLimit = limits.tasksPerBucket;
-	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
 
 	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
 	pendingCreatures.clear();
@@ -2052,6 +2077,10 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 
 		auto &weakCreature = pendingCreatures[consumedCreatures++];
 		if (const auto &creature = weakCreature.lock()) {
+			if (!playerVisible && creature->isPlayerVisibleForScheduling()) {
+				enqueueAsyncTask(weakCreature, creature->getID(), true);
+				continue;
+			}
 			++processedCreatures;
 			creature->executeAsyncTasks();
 		}
@@ -2070,10 +2099,10 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 	pendingCreatures.clear();
 
 	if (shouldReschedule) {
-		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex] {
-			Creature::processAsyncTaskBucket(bucketIndex);
+		const bool accepted = g_dispatcher().addBarrierEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                                                     DispatcherLane::MonsterAI);
+		                                                     getCreatureAsyncTaskLane(playerVisible));
 		if (!accepted) {
 			std::scoped_lock lock(bucket.mutex);
 			bucket.scheduled = false;
@@ -2134,11 +2163,12 @@ void Creature::sendAsyncTasks() {
 	}
 
 	m_flagAsyncTask |= AsyncTaskRunning;
-	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID());
+	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID(), isPlayerVisibleForScheduling());
 }
 
 bool Creature::safeCall(std::function<void(void)> &&action) const {
 	if (g_dispatcher().context().isBarrierParallel()) {
+		const auto continuationLane = barrierContinuationLane(g_dispatcher().context().getLane());
 		return g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
 			if (const auto self = weak_self.lock()) {
 				if (!self->isInternalRemoved) {
@@ -2146,7 +2176,7 @@ bool Creature::safeCall(std::function<void(void)> &&action) const {
 				}
 			}
 		},
-		                               g_dispatcher().context().getName());
+		                               g_dispatcher().context().getName(), 0, continuationLane);
 	}
 	if (isInternalRemoved) {
 		return false;

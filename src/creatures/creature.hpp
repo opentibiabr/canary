@@ -829,6 +829,10 @@ protected:
 	virtual bool isDead() const {
 		return false;
 	}
+	virtual bool isPlayerVisibleForScheduling() {
+		return true;
+	}
+	void promoteWalkEventToPlayerVisibleLane();
 
 	Position position;
 
@@ -1032,8 +1036,8 @@ private:
 	 * per-creature guard that prevents duplicate entries while a batch is
 	 * pending or executing.
 	 */
-	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId);
-	static void processAsyncTaskBucket(size_t bucketIndex);
+	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible);
+	static void processAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
 	void executeAsyncTasks();
 	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);

@@ -69,19 +69,101 @@
 
 #include <appearances.pb.h>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <deque>
+	#include <mutex>
+#endif
+
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
-	constexpr size_t MONSTER_POST_THINK_BATCH_SIZE = 64;
+	constexpr size_t VISIBLE_MONSTER_POST_THINK_BATCH_SIZE = 8;
+	constexpr size_t BACKGROUND_MONSTER_POST_THINK_BATCH_SIZE = 64;
+	constexpr size_t MONSTER_POST_THINK_QUEUE_CAPACITY = DISPATCHER_LANE_QUEUE_CAPACITY;
 
-	void cancelMonsterPostThinkBatch(const std::shared_ptr<const std::vector<uint32_t>> &creatureIds, size_t startIndex) {
-		if (!creatureIds) {
-			return;
+	struct MonsterPostThinkQueue {
+		std::mutex mutex;
+		std::deque<uint32_t> monsterIds;
+		bool scheduled = false;
+	};
+
+	MonsterPostThinkQueue visibleMonsterPostThinkQueue;
+	MonsterPostThinkQueue backgroundMonsterPostThinkQueue;
+	std::array<std::atomic_uint64_t, 2> rejectedMonsterPostThinkTasks {};
+
+	MonsterPostThinkQueue &getMonsterPostThinkQueue(bool playerVisible) {
+		return playerVisible ? visibleMonsterPostThinkQueue : backgroundMonsterPostThinkQueue;
+	}
+
+	void observeMonsterPostThinkRejection(bool playerVisible) {
+		const auto index = playerVisible ? 0 : 1;
+		const auto rejected = rejectedMonsterPostThinkTasks[index].fetch_add(1, std::memory_order_relaxed) + 1;
+		if (rejected == 1 || (rejected & (rejected - 1)) == 0) {
+			g_logger().warn(
+				"Monster post-think queue admission rejected: priority={}, capacity={}, rejected={}",
+				playerVisible ? "visible" : "background",
+				MONSTER_POST_THINK_QUEUE_CAPACITY,
+				rejected
+			);
 		}
-		for (size_t index = startIndex; index < creatureIds->size(); ++index) {
-			if (const auto &monster = g_game().getMonsterByID((*creatureIds)[index])) {
-				monster->cancelScheduledPostThink();
+	}
+
+	void processMonsterPostThinkQueue(bool playerVisible);
+
+	void cancelMonsterPostThinkQueue(bool playerVisible) {
+		auto &queue = getMonsterPostThinkQueue(playerVisible);
+		std::deque<uint32_t> monsterIds;
+		{
+			std::scoped_lock lock(queue.mutex);
+			monsterIds.swap(queue.monsterIds);
+			queue.scheduled = false;
+		}
+
+		for (const auto monsterId : monsterIds) {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->cancelScheduledPostThink(playerVisible);
 			}
+		}
+	}
+
+	bool scheduleMonsterPostThinkQueue(bool playerVisible) {
+		std::function<void()> task = [playerVisible] {
+			processMonsterPostThinkQueue(playerVisible);
+		};
+		const bool accepted = playerVisible
+			? g_dispatcher().addEvent(std::move(task), "Game::visibleMonsterPostThink", 0, DispatcherLane::WorldCommit)
+			: g_dispatcher().addDeferredGameplayEvent(std::move(task), "Game::backgroundMonsterPostThink");
+		if (!accepted) {
+			cancelMonsterPostThinkQueue(playerVisible);
+		}
+		return accepted;
+	}
+
+	void processMonsterPostThinkQueue(bool playerVisible) {
+		auto &queue = getMonsterPostThinkQueue(playerVisible);
+		const auto batchLimit = playerVisible ? VISIBLE_MONSTER_POST_THINK_BATCH_SIZE : BACKGROUND_MONSTER_POST_THINK_BATCH_SIZE;
+		std::vector<uint32_t> monsterIds;
+		bool shouldReschedule = false;
+		{
+			std::scoped_lock lock(queue.mutex);
+			const auto batchSize = std::min(queue.monsterIds.size(), batchLimit);
+			monsterIds.reserve(batchSize);
+			for (size_t index = 0; index < batchSize; ++index) {
+				monsterIds.emplace_back(queue.monsterIds.front());
+				queue.monsterIds.pop_front();
+			}
+			shouldReschedule = !queue.monsterIds.empty();
+			queue.scheduled = shouldReschedule;
+		}
+
+		for (const auto monsterId : monsterIds) {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->executePostThink(EVENT_CREATURE_THINK_INTERVAL, playerVisible);
+			}
+		}
+
+		if (shouldReschedule) {
+			(void)scheduleMonsterPostThinkQueue(playerVisible);
 		}
 	}
 
@@ -103,33 +185,6 @@ namespace {
 		return nullptr;
 	}
 
-	void scheduleMonsterPostThinkBatch(std::shared_ptr<const std::vector<uint32_t>> creatureIds, size_t startIndex = 0) {
-		if (!creatureIds || startIndex >= creatureIds->size()) {
-			return;
-		}
-
-		const bool accepted = g_dispatcher().addDeferredGameplayEvent(
-			[creatureIds, startIndex] {
-				const size_t endIndex = std::min(creatureIds->size(), startIndex + MONSTER_POST_THINK_BATCH_SIZE);
-				for (size_t i = startIndex; i < endIndex; ++i) {
-					const auto &deferredCreature = g_game().getCreatureByID((*creatureIds)[i]);
-					if (deferredCreature) {
-						if (auto* monster = deferredCreature->getMonsterRaw()) {
-							monster->executePostThink(EVENT_CREATURE_THINK_INTERVAL);
-						}
-					}
-				}
-
-				if (endIndex < creatureIds->size()) {
-					scheduleMonsterPostThinkBatch(creatureIds, endIndex);
-				}
-			},
-			"Game::checkCreaturesPostThink"
-		);
-		if (!accepted) {
-			cancelMonsterPostThinkBatch(creatureIds, startIndex);
-		}
-	}
 }
 
 namespace InternalGame {
@@ -7528,23 +7583,38 @@ void Game::removeCreatureCheck(const std::shared_ptr<Creature> &creature) {
 	}
 }
 
+bool Game::queueMonsterPostThink(uint32_t monsterId, bool playerVisible) {
+	auto &queue = getMonsterPostThinkQueue(playerVisible);
+	bool shouldSchedule = false;
+	{
+		std::scoped_lock lock(queue.mutex);
+		if (queue.monsterIds.size() >= MONSTER_POST_THINK_QUEUE_CAPACITY) {
+			observeMonsterPostThinkRejection(playerVisible);
+			return false;
+		}
+
+		queue.monsterIds.emplace_back(monsterId);
+		if (!queue.scheduled) {
+			queue.scheduled = true;
+			shouldSchedule = true;
+		}
+	}
+
+	return !shouldSchedule || scheduleMonsterPostThinkQueue(playerVisible);
+}
+
 void Game::checkCreatures() {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	static size_t index = 0;
 
-	std::vector<uint32_t> deferredMonsterIds;
-	deferredMonsterIds.reserve(checkCreatureLists[index].size());
-
-	std::erase_if(checkCreatureLists[index], [this, &deferredMonsterIds](const std::weak_ptr<Creature> &weak) {
+	std::erase_if(checkCreatureLists[index], [](const std::weak_ptr<Creature> &weak) {
 		if (const auto creature = weak.lock()) {
 			if (creature->creatureCheck && creature->isAlive()) {
 				creature->onThink(EVENT_CREATURE_THINK_INTERVAL);
 				if (auto* monster = creature->getMonsterRaw()) {
-					// The monster's onThink is executed asynchronously,
-					// so the target is updated later, so we need to postpone the actions below.
-					if (!creature->isRemoved() && creature->isAlive() && monster->trySchedulePostThink()) {
-						deferredMonsterIds.emplace_back(creature->getID());
-					}
+					// The async completion queues this post-think only after target and
+					// follow decisions for the coalesced tick have finished.
+					(void)monster->trySchedulePostThink();
 				} else {
 					creature->onAttacking(EVENT_CREATURE_THINK_INTERVAL);
 					creature->executeConditions(EVENT_CREATURE_THINK_INTERVAL);
@@ -7557,10 +7627,6 @@ void Game::checkCreatures() {
 
 		return true;
 	});
-
-	if (!deferredMonsterIds.empty()) {
-		scheduleMonsterPostThinkBatch(std::make_shared<std::vector<uint32_t>>(std::move(deferredMonsterIds)));
-	}
 
 	index = (index + 1) % EVENT_CREATURECOUNT;
 }

@@ -131,7 +131,7 @@ public:
 	bool addEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0, DispatcherLane lane = DispatcherLane::WorldCommit, uint64_t producerToken = 0);
 	bool addProtocolEvent(std::function<void(void)> &&f, std::string_view context, uint64_t producerToken, uint32_t expiresAfterMs = 0);
 	bool addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0, uint64_t producerToken = 0); // No need context name
-	bool addCreatureWalkEvent(std::function<void(void)> &&f, uint32_t expiresAfterMs = 0); // No need context name
+	bool addCreatureWalkEvent(std::function<void(void)> &&f, DispatcherLane lane, uint32_t expiresAfterMs = 0); // No need context name
 	bool addDeferredGameplayEvent(std::function<void(void)> &&f, std::string_view context, uint32_t expiresAfterMs = 0);
 	bool addBarrierEvent(std::function<void(void)> &&f, DispatcherLane lane = DispatcherLane::GenericParallel);
 
@@ -147,8 +147,9 @@ public:
 	void asyncWait(size_t size, std::function<void(size_t i)> &&f);
 	void observeInternalWork(DispatcherInternalWork work, uint64_t units, std::chrono::microseconds runtime, std::string_view context = {}) noexcept;
 
-	[[nodiscard]] CreatureAsyncSliceLimits getCreatureAsyncSliceLimits() const noexcept {
-		const auto packed = creatureAsyncSliceLimits.load(std::memory_order_relaxed);
+	[[nodiscard]] CreatureAsyncSliceLimits getCreatureAsyncSliceLimits(bool playerVisible) const noexcept {
+		const auto &limits = playerVisible ? visibleCreatureAsyncSliceLimits : backgroundCreatureAsyncSliceLimits;
+		const auto packed = limits.load(std::memory_order_relaxed);
 		return { static_cast<size_t>(packed >> 32), std::chrono::microseconds(static_cast<uint32_t>(packed)) };
 	}
 
@@ -252,11 +253,13 @@ private:
 	ThreadPool &threadPool;
 	DispatcherPolicy policy;
 	DispatcherAdaptiveBudgetController adaptiveBudgetController;
+	DispatcherBudgetSet configuredBudgets;
 	DispatcherBudgetSet activeBudgets;
 	Task::Clock::time_point nextAdaptiveBudgetUpdateAt {};
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
-	std::atomic_uint64_t creatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
+	std::atomic_uint64_t visibleCreatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
+	std::atomic_uint64_t backgroundCreatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.
 
 	// Thread Events

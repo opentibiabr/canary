@@ -483,6 +483,7 @@ public:
 	 * must not be treated as a generation-safe async handle.
 	 */
 	void checkCreatures();
+	bool queueMonsterPostThink(uint32_t monsterId, bool playerVisible);
 	void checkLight();
 
 	bool combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool checkDefense, bool checkArmor, bool field, bool condition = false);

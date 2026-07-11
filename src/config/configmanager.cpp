@@ -411,6 +411,29 @@ bool ConfigManager::load() {
 	loadStringConfig(L, LOGLEVEL, "logLevel", "info");
 	loadStringConfig(L, LUA_API_DOCS_OUTPUT_DIRECTORY, "luaApiDocsOutputDirectory", "docs/lua-api");
 
+	// Multi-channel cluster (see docs/multichannel/ARCHITECTURE.md); default off,
+	// zero behavior change for single-channel installs when left disabled.
+	loadBoolConfig(L, MULTICHANNEL_ENABLED, "multiChannelEnabled", false);
+	loadIntConfig(L, CHANNEL_SWITCH_COOLDOWN, "channelSwitchCooldown", 60 * 1000);
+	loadStringConfig(L, CHANNEL_SWITCH_POSITION_POLICY, "channelSwitchPositionPolicy", "same-nearest-public-last-safe-temple");
+	loadIntConfig(L, CHANNEL_SWITCH_SEARCH_RADIUS, "channelSwitchSearchRadius", 10);
+	loadStringConfig(L, CHANNEL_SWITCH_PARTY_POLICY, "channelSwitchPartyPolicy", "deny");
+	loadStringConfig(L, PVP_CHANNEL_EXIT_POLICY, "pvpChannelExitPolicy", "combat-or-skull");
+	loadBoolConfig(L, CLUSTER_CHAT_ENABLED, "clusterChatEnabled", true);
+	loadBoolConfig(L, SHOW_CHANNEL_TAG_IN_CLUSTER_CHAT, "showChannelTagInClusterChat", true);
+	loadStringConfig(L, REDIS_HOST, "redisHost", "127.0.0.1");
+	loadIntConfig(L, REDIS_PORT, "redisPort", 6379);
+	loadIntConfig(L, REDIS_DATABASE, "redisDatabase", 0);
+	loadStringConfig(L, REDIS_USERNAME, "redisUsername", "");
+	loadStringConfig(L, REDIS_PASSWORD, "redisPassword", "");
+	loadBoolConfig(L, REDIS_USE_TLS, "redisUseTls", false);
+	loadIntConfig(L, SESSION_LEASE_TTL, "sessionLeaseTtl", 30 * 1000);
+	loadIntConfig(L, SESSION_HEARTBEAT_INTERVAL, "sessionHeartbeatInterval", 5 * 1000);
+	loadIntConfig(L, REDIS_FAILURE_GRACE_PERIOD, "redisFailureGracePeriod", 10 * 1000);
+	loadIntConfig(L, DATABASE_FAILURE_GRACE_PERIOD, "databaseFailureGracePeriod", 5 * 1000);
+	loadBoolConfig(L, LOGIN_PROTOCOL_ENABLED, "loginProtocolEnabled", true);
+	loadBoolConfig(L, STATUS_PROTOCOL_AGGREGATE_CHANNELS, "statusProtocolAggregateChannels", true);
+
 	loadLuaOTCFeatures(L);
 
 	loaded = true;

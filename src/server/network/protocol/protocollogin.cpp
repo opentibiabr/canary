@@ -21,6 +21,7 @@
 #include "io/iologindata.hpp"
 #include "creatures/players/management/ban.hpp"
 #include "game/game.hpp"
+#include "game/multichannel/channel_registry.hpp"
 #include "core.hpp"
 #include "enums/account_errors.hpp"
 
@@ -87,6 +88,70 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	output->addByte(0x64);
 
 	if (characterListLayout == AccountCharacterListLayout::LegacyCharacterList) {
+		// Multi-channel cluster (see docs/multichannel/ARCHITECTURE.md §3.2):
+		// the 8.60 layout has no separate world table, so each channel is
+		// represented by repeating every character once per channel, each
+		// row carrying that channel's own numeric IPv4/port. This never
+		// creates a second `players` row - it's purely a login-list
+		// presentation of the same account/character list once per channel.
+		if (g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+			const auto channels = g_channelRegistry().getLoginListChannels();
+			if (!channels.empty()) {
+				struct LegacyChannelEndpoint {
+					std::string name;
+					uint32_t ip;
+					uint16_t port;
+				};
+				std::vector<LegacyChannelEndpoint> endpoints;
+				endpoints.reserve(channels.size());
+				for (const auto &channel : channels) {
+					const auto channelIp = protocol_port_utils::legacyIpStringToNumber(channel.externalHost);
+					if (channelIp == 0) {
+						g_logger().warn("[ProtocolLogin::getCharacterList] - Channel '{}' has a non-numeric external_host '{}'; legacy 8.60 clients require a numeric IPv4 address, skipping this channel for legacy login lists.", channel.name, channel.externalHost);
+						continue;
+					}
+					endpoints.push_back({ channel.name, channelIp, static_cast<uint16_t>(channel.gamePort) });
+				}
+
+				if (endpoints.empty()) {
+					g_logger().warn("[ProtocolLogin::getCharacterList] - No channel has a legacy-compatible numeric IP; falling back to single-channel legacy list.");
+				} else {
+					const std::size_t totalRows = std::min<std::size_t>(std::numeric_limits<uint8_t>::max(), players.size() * endpoints.size());
+					output->addByte(static_cast<uint8_t>(totalRows));
+
+					std::vector<std::string> characterNames;
+					characterNames.reserve(players.size());
+					std::size_t rowsWritten = 0;
+					for (const auto &endpoint : endpoints) {
+						for (const auto &[name, deletion] : players) {
+							if (rowsWritten >= totalRows) {
+								break;
+							}
+							output->addString(name);
+							output->addString(endpoint.name);
+							output->add<uint32_t>(endpoint.ip);
+							output->add<uint16_t>(endpoint.port);
+							++rowsWritten;
+						}
+					}
+					for (const auto &[name, deletion] : players) {
+						characterNames.emplace_back(name);
+					}
+
+					output->add<uint16_t>(std::min<uint32_t>(std::numeric_limits<uint16_t>::max(), account.getPremiumRemainingDays()));
+
+					send(output);
+
+					if (protocolProfile) {
+						ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+					}
+
+					disconnect();
+					return;
+				}
+			}
+		}
+
 		const auto serverName = g_configManager().getString(SERVER_NAME);
 		const auto configuredWorldIp = g_configManager().getString(IP);
 		const auto worldIp = protocol_port_utils::legacyIpStringToNumber(configuredWorldIp);
@@ -120,6 +185,64 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 
 		disconnect();
 		return;
+	}
+
+	// Multi-channel cluster (see docs/multichannel/ARCHITECTURE.md §3.2): this
+	// layout already supports a world table plus a per-character world-id
+	// byte, so a channel is just another world entry, and each character is
+	// repeated once per channel with that channel's world index - no second
+	// `players` row is ever created for this. Falls straight through to the
+	// original single-world behavior when the flag is off or no channel is
+	// registered yet, so single-channel installs are byte-for-byte
+	// unaffected.
+	if (g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+		const auto channels = g_channelRegistry().getLoginListChannels();
+		if (!channels.empty()) {
+			const auto worldCount = std::min<std::size_t>(std::numeric_limits<uint8_t>::max(), channels.size());
+			output->addByte(static_cast<uint8_t>(worldCount));
+
+			for (std::size_t index = 0; index < worldCount; ++index) {
+				const auto &channel = channels[index];
+				output->addByte(static_cast<uint8_t>(index)); // world id
+				output->addString(channel.name);
+				output->addString(channel.externalHost);
+				output->add<uint16_t>(static_cast<uint16_t>(channel.gamePort));
+				output->addByte(0); // preview/unknown flag, unused
+			}
+
+			const std::size_t totalRows = std::min<std::size_t>(std::numeric_limits<uint8_t>::max(), players.size() * worldCount);
+			output->addByte(static_cast<uint8_t>(totalRows));
+
+			std::vector<std::string> characterNames;
+			characterNames.reserve(players.size());
+			std::size_t rowsWritten = 0;
+			for (std::size_t index = 0; index < worldCount && rowsWritten < totalRows; ++index) {
+				for (const auto &[name, deletion] : players) {
+					if (rowsWritten >= totalRows) {
+						break;
+					}
+					output->addByte(static_cast<uint8_t>(index));
+					output->addString(name);
+					++rowsWritten;
+				}
+			}
+			for (const auto &[name, deletion] : players) {
+				characterNames.emplace_back(name);
+			}
+
+			output->addByte(account.getPremiumRemainingDays());
+			output->addByte(account.getPremiumLastDay() > getTimeNow());
+			output->add<uint32_t>(account.getPremiumLastDay());
+
+			send(output);
+
+			if (protocolProfile) {
+				ProtocolSessionHintStore::getInstance().registerHint(getIP(), protocolProfile->id, sessionKey, characterNames);
+			}
+
+			disconnect();
+			return;
+		}
 	}
 
 	output->addByte(1); // number of worlds

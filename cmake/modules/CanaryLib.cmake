@@ -141,6 +141,17 @@ foreach(
         )
     endif()
 
+    if(FEATURE_MULTICHANNEL_REDIS)
+        target_compile_definitions(
+            ${core_target}
+            PUBLIC CANARY_MULTICHANNEL_REDIS
+        )
+        target_link_libraries(
+            ${core_target}
+            PUBLIC hiredis::hiredis
+        )
+    endif()
+
     if(MSVC)
         target_link_libraries(
             ${core_target}

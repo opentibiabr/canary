@@ -18,6 +18,9 @@
 #include "database/databasemanager.hpp"
 #include "declarations.hpp"
 #include "game/game.hpp"
+#include "game/multichannel/channel_context.hpp"
+#include "game/multichannel/channel_registry.hpp"
+#include "game/multichannel/cluster_config_validator.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "game/zones/zone.hpp"
@@ -40,6 +43,7 @@
 #include "utils/benchmark.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
 	#include <string_view>
 #endif
 
@@ -488,6 +492,53 @@ void CanaryServer::initializeDatabase() {
 		logger.info("No tables were optimized");
 	}
 	g_logger().info("Database connection established!");
+
+	initializeMultichannelCluster();
+}
+
+void CanaryServer::initializeMultichannelCluster() {
+	if (!g_configManager().getBoolean(MULTICHANNEL_ENABLED)) {
+		return;
+	}
+
+	logger.info("Multi-channel cluster mode enabled (channel id {}); validating cluster configuration...", g_channelContext().getChannelId());
+
+	g_channelRegistry().ensureBootstrapChannel();
+	if (!g_channelRegistry().reload()) {
+		throw FailedToInitializeCanary("Multi-channel cluster mode is enabled but the `channels` table could not be read; refusing to start (fail-closed). See docs/multichannel/MIGRATION.md.");
+	}
+
+	ClusterConfigValidationInput validationInput;
+	validationInput.multiChannelEnabled = true;
+	validationInput.sessionLeaseTtlMs = g_configManager().getNumber(SESSION_LEASE_TTL);
+	validationInput.sessionHeartbeatIntervalMs = g_configManager().getNumber(SESSION_HEARTBEAT_INTERVAL);
+	validationInput.channelSwitchPartyPolicy = g_configManager().getString(CHANNEL_SWITCH_PARTY_POLICY);
+	validationInput.pvpChannelExitPolicy = g_configManager().getString(PVP_CHANNEL_EXIT_POLICY);
+#ifdef CANARY_MULTICHANNEL_REDIS
+	validationInput.redisClientCompiledIn = true;
+#else
+	validationInput.redisClientCompiledIn = false;
+#endif
+	validationInput.currentChannel = g_channelRegistry().getChannel(g_channelContext().getChannelId());
+
+	const auto loginListChannels = g_channelRegistry().getLoginListChannels();
+	validationInput.enabledLoginGatewayCount = static_cast<int32_t>(std::ranges::count_if(loginListChannels, [](const ChannelInfo &channel) {
+		return channel.loginGateway;
+	}));
+
+	const auto validationResult = ClusterConfigValidator::validate(validationInput);
+	for (const auto &warning : validationResult.warnings) {
+		logger.warn("[multichannel] {}", warning);
+	}
+
+	if (!validationResult.valid) {
+		for (const auto &error : validationResult.errors) {
+			logger.error("[multichannel] {}", describeClusterConfigValidationError(error));
+		}
+		throw FailedToInitializeCanary("Multi-channel cluster configuration validation failed (see errors above); refusing to start (fail-closed). See docs/multichannel/ARCHITECTURE.md §4.4.");
+	}
+
+	logger.info("[multichannel] Channel {} validated OK ({} channel(s) known to the registry).", g_channelContext().getChannelId(), g_channelRegistry().size());
 }
 
 void CanaryServer::loadModules() {

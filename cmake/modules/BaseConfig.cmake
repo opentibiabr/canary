@@ -80,6 +80,13 @@ if(FEATURE_METRICS)
         REQUIRED
     )
 endif()
+if(FEATURE_MULTICHANNEL_REDIS)
+    find_package(
+        hiredis
+        CONFIG
+        REQUIRED
+    )
+endif()
 find_package(mio REQUIRED)
 find_package(
     pugixml

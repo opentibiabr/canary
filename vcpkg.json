@@ -41,6 +41,12 @@
           ]
         }
       ]
+    },
+    "multichannel": {
+      "description": "Redis client required to run with multiChannelEnabled=true (see docs/multichannel/ARCHITECTURE.md). Not required for single-channel operation.",
+      "dependencies": [
+        "hiredis"
+      ]
     }
   },
   "builtin-baseline": "cd61e1e26a038e82d6550a3ebbe0fbbfe7da78e3"

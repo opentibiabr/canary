@@ -67,6 +67,7 @@ private:
 	bool generateLuaApiDocs(bool force = false) const;
 	void validateDatapack();
 	void initializeDatabase();
+	void initializeMultichannelCluster();
 	void loadModules();
 	void setWorldType();
 	void loadMaps() const;

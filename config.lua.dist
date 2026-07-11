@@ -24,6 +24,74 @@ toggleMaintainMode = false
 -- @field [parent=#global] #string maintainModeMessage an empty string by default, set a custom message if needed.
 maintainModeMessage = ""
 
+-- Multi-channel cluster settings (see docs/multichannel/ARCHITECTURE.md).
+-- Disabled by default: leaving multiChannelEnabled = false keeps a server
+-- running exactly like a single-channel install, no Redis required, no
+-- schema behavior change beyond the additive tables/columns from the
+-- 59/60 migrations. Every process in the cluster must share this same
+-- config.lua; the per-process channel id is resolved separately via the
+-- --channel-id CLI flag or the CANARY_CHANNEL_ID environment variable, in
+-- that priority order, falling back to channel 1 (single-channel mode).
+multiChannelEnabled = false
+
+-- Minimum time between two channel switches for the same character, in ms.
+channelSwitchCooldown = 60 * 1000
+-- Fallback chain used to place a character on the target channel:
+-- same tile -> nearest legal public tile within channelSwitchSearchRadius
+-- -> last persisted safe public position -> the target channel's temple.
+channelSwitchPositionPolicy = "same-nearest-public-last-safe-temple"
+-- Bounded search radius (tiles) used by the "nearest legal public tile" step.
+channelSwitchSearchRadius = 10
+-- What happens to an active party when its leader/member switches channel:
+-- "deny" blocks the switch outright (default, safest); "leave" removes the
+-- switching character from the party first.
+channelSwitchPartyPolicy = "deny"
+-- Policy for leaving a PvP channel toward a No-PvP one:
+-- "combat-only" blocks only while in active combat/PZ lock;
+-- "combat-or-skull" (default, safest) additionally blocks while skulled.
+-- Regardless of this setting, an active PZ lock/combat condition always
+-- blocks a channel switch and cannot be disabled via configuration.
+pvpChannelExitPolicy = "combat-or-skull"
+
+-- Deliver public cluster-scope chat channels (Global/Trade/Help/etc,
+-- configurable per channel) to players on every channel, not just the
+-- sender's own channel.
+clusterChatEnabled = true
+-- Prefix cluster-scope chat messages with a channel tag, e.g. "[C2]".
+showChannelTagInClusterChat = true
+
+-- Redis connection used for session leases, fencing tokens, channel
+-- heartbeats and ephemeral chat Pub/Sub. Only required when
+-- multiChannelEnabled = true; a build without the optional vcpkg
+-- "multichannel" feature cannot enable multiChannelEnabled at all
+-- (startup fails closed rather than silently running unprotected).
+redisHost = "127.0.0.1"
+redisPort = 6379
+redisDatabase = 0
+redisUsername = ""
+redisPassword = ""
+redisUseTls = false
+
+-- Session lease/heartbeat tuning, in ms. sessionLeaseTtl must be strictly
+-- greater than sessionHeartbeatInterval or startup will refuse to boot in
+-- multi-channel mode.
+sessionLeaseTtl = 30 * 1000
+sessionHeartbeatInterval = 5 * 1000
+-- Grace period a process keeps trying to recover before it fails closed
+-- (blocks new logins/switches/economy mutations) after losing Redis/DB.
+redisFailureGracePeriod = 10 * 1000
+databaseFailureGracePeriod = 5 * 1000
+
+-- Whether this process is allowed to act as the cluster's login gateway
+-- (the process that serves the multi-world character list). Exactly one
+-- enabled channel in the `channels` table should have login_gateway = 1;
+-- this flag is a secondary, process-local confirmation, not the
+-- authoritative source (the `channels` table is).
+loginProtocolEnabled = true
+-- Whether the status protocol reports aggregated cluster-wide population
+-- alongside this channel's own population.
+statusProtocolAggregateChannels = true
+
 -- Combat settings
 -- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)

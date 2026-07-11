@@ -165,6 +165,11 @@ option(
     OFF
 )
 option(
+    FEATURE_MULTICHANNEL_REDIS
+    "Enable the Redis client required to run with multiChannelEnabled=true (see docs/multichannel/ARCHITECTURE.md). Not required for single-channel operation."
+    OFF
+)
+option(
     CANARY_NATIVE_ARCH
     "Optimize release builds for the build host CPU (non-portable binaries)"
     OFF
@@ -178,6 +183,12 @@ if(FEATURE_METRICS)
     log_option_enabled("metrics")
 else()
     log_option_disabled("metrics")
+endif()
+
+if(FEATURE_MULTICHANNEL_REDIS)
+    log_option_enabled("multichannel-redis")
+else()
+    log_option_disabled("multichannel-redis")
 endif()
 
 if(CANARY_NATIVE_ARCH)

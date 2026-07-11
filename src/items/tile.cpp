@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/combat/combat.hpp"
+#include "creatures/combat/condition.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
 #include "creatures/players/player.hpp"

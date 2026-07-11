@@ -15,19 +15,29 @@ Run from the repository root:
 python tools/ai-agent/scan_ids.py
 ```
 
+Include one or more OTBM maps so action and unique IDs stored inside map items are merged into the same registry:
+
+```bash
+python tools/ai-agent/scan_ids.py \
+  --map /maps/otservbr.otbm \
+  --output artifacts/ID_REGISTRY.json
+```
+
+`--map` may be repeated. Relative map paths are resolved from `--root`; absolute paths are supported and recorded as absolute provenance. Each map is read without modification, hashed with SHA-256, and scanned tile-by-tile, including item nodes nested inside containers.
+
 Custom root and output:
 
 ```bash
 python tools/ai-agent/scan_ids.py --root . --output docs/ai-agent/ID_REGISTRY.json
 ```
 
-The generated document follows `docs/ai-agent/ID_REGISTRY.schema.json`.
+The generated document follows `docs/ai-agent/ID_REGISTRY.schema.json`. The optional `binarySources` section records every OTBM input, version, item version, size, tile count, top-level item count, hash, and identifier totals. Map sources use coordinates and an item-node path instead of a text line number.
+
+Duplicate `uniqueId` definitions are reported as errors because the value must identify one location globally. Reused `actionId` definitions are warnings because sharing an action handler may be intentional. Text and OTBM definitions participate in the same conflict analysis.
 
 ### Scanner limitations
 
-The identifier scanner is intentionally conservative and regex-based. It detects numeric identifiers present directly in source files. It does not yet merge binary OTBM action and unique IDs into `ID_REGISTRY.json`, resolve Lua constants and arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files.
-
-The separate OTBM tool described below can inspect and export binary map regions. A future registry-integration stage can feed those results into the identifier allocator. Multi-file reuse is reported as a warning rather than an automatic error because shared identifiers may be intentional.
+The text scanner is intentionally conservative and regex-based. It detects numeric identifiers present directly in source files. It does not resolve Lua constants and arithmetic expressions, imported storage tables, dynamically constructed identifiers, or item IDs stored only in binary asset files. The OTBM scanner currently contributes action and unique IDs; it deliberately does not add every placed map item ID to avoid producing a very large, low-signal registry.
 
 ## OTBM map intelligence
 

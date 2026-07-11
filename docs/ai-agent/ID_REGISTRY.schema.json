@@ -27,6 +27,11 @@
       "type": "array",
       "items": { "$ref": "#/$defs/reservation" },
       "default": []
+    },
+    "binarySources": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/binarySource" },
+      "default": []
     }
   },
   "$defs": {
@@ -96,6 +101,30 @@
         "to": { "type": "integer", "minimum": 0 },
         "status": { "enum": ["reserved", "committed", "released"] },
         "description": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "binarySource": {
+      "type": "object",
+      "required": ["path", "sha256", "fileSize", "version", "itemsMajor", "itemsMinor", "tileCount", "topLevelItemCount", "counts"],
+      "properties": {
+        "path": { "type": "string" },
+        "sha256": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "fileSize": { "type": "integer", "minimum": 1 },
+        "version": { "type": "integer", "minimum": 1 },
+        "itemsMajor": { "type": "integer", "minimum": 1 },
+        "itemsMinor": { "type": "integer", "minimum": 0 },
+        "tileCount": { "type": "integer", "minimum": 0 },
+        "topLevelItemCount": { "type": "integer", "minimum": 0 },
+        "counts": {
+          "type": "object",
+          "required": ["actionId", "uniqueId"],
+          "properties": {
+            "actionId": { "type": "integer", "minimum": 0 },
+            "uniqueId": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        }
       },
       "additionalProperties": false
     }

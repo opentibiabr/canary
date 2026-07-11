@@ -899,10 +899,14 @@ CREATE TABLE IF NOT EXISTS `channels` (
     CONSTRAINT `channels_pk` PRIMARY KEY (`id`),
     CONSTRAINT `channels_name_unique` UNIQUE (`name`),
     CONSTRAINT `channels_endpoint_unique` UNIQUE (`external_host`, `game_port`),
-    CONSTRAINT `channels_status_endpoint_unique` UNIQUE (`external_host`, `status_port`),
-    CONSTRAINT `channels_temple_town_fk`
-        FOREIGN KEY (`temple_town_id`) REFERENCES `towns` (`id`)
-        ON DELETE SET NULL
+    CONSTRAINT `channels_status_endpoint_unique` UNIQUE (`external_host`, `status_port`)
+    -- temple_town_id deliberately has no FK to `towns`: InnoDB refuses to
+    -- TRUNCATE a table that any other table has an incoming foreign key
+    -- against, even with zero matching rows, which breaks existing
+    -- world-reset/CI tooling that truncates `towns`. Referential integrity
+    -- for this column is enforced at the application layer (ChannelRegistry)
+    -- instead - it's informational routing metadata, not part of the
+    -- anti-dupe/session safety guarantees, which live elsewhere.
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Table structure `channel_runtime_status`

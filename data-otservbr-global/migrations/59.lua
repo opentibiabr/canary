@@ -24,10 +24,13 @@ function onUpdateDatabase()
 				CONSTRAINT `channels_pk` PRIMARY KEY (`id`),
 				CONSTRAINT `channels_name_unique` UNIQUE (`name`),
 				CONSTRAINT `channels_endpoint_unique` UNIQUE (`external_host`, `game_port`),
-				CONSTRAINT `channels_status_endpoint_unique` UNIQUE (`external_host`, `status_port`),
-				CONSTRAINT `channels_temple_town_fk`
-					FOREIGN KEY (`temple_town_id`) REFERENCES `towns` (`id`)
-					ON DELETE SET NULL
+				CONSTRAINT `channels_status_endpoint_unique` UNIQUE (`external_host`, `status_port`)
+				-- temple_town_id deliberately has no FK to `towns`: InnoDB
+				-- refuses to TRUNCATE a table that any other table has an
+				-- incoming foreign key against, even with zero matching
+				-- rows, which breaks existing world-reset/CI tooling that
+				-- truncates `towns`. Enforced at the application layer
+				-- (ChannelRegistry) instead - see schema.sql.
 			) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		]])
 		then

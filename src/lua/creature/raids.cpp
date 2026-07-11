@@ -106,6 +106,7 @@ bool Raids::startup() {
 		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids", DispatcherLane::Maintenance
 	);
 	if (checkRaidsEvent == 0) {
+		g_logger().warn("[Raids::startup] Failed to schedule raid checks");
 		return false;
 	}
 
@@ -143,6 +144,9 @@ void Raids::checkRaids() {
 	checkRaidsEvent = g_dispatcher().scheduleEvent(
 		CHECK_RAIDS_INTERVAL * 1000, [this] { checkRaids(); }, "Raids::checkRaids", DispatcherLane::Maintenance
 	);
+	if (checkRaidsEvent == 0) {
+		g_logger().warn("[Raids::checkRaids] Failed to reschedule raid checks");
+	}
 }
 
 void Raids::clear() {
@@ -228,6 +232,7 @@ void Raid::startRaid() {
 			raidEvent->getDelay(), [this, raidEvent] { executeRaidEvent(raidEvent); }, "Raid::executeRaidEvent", DispatcherLane::Maintenance
 		);
 		if (nextEventEvent == 0) {
+			g_logger().warn("[Raid::startRaid] Failed to schedule the first event for raid {}", name);
 			resetRaid();
 		}
 	} else {
@@ -248,6 +253,7 @@ void Raid::executeRaidEvent(const std::shared_ptr<RaidEvent> &raidEvent) {
 				ticks, [this, newRaidEvent] { executeRaidEvent(newRaidEvent); }, __FUNCTION__, DispatcherLane::Maintenance
 			);
 			if (nextEventEvent == 0) {
+				g_logger().warn("[Raid::executeRaidEvent] Failed to schedule the next event for raid {}", name);
 				resetRaid();
 			}
 		} else {

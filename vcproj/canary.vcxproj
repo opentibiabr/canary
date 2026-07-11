@@ -75,6 +75,14 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
+    <ClInclude Include="..\src\game\multichannel\channel_context.hpp" />
+    <ClInclude Include="..\src\game\multichannel\channel_info.hpp" />
+    <ClInclude Include="..\src\game\multichannel\channel_registry.hpp" />
+    <ClInclude Include="..\src\game\multichannel\channel_switch_service.hpp" />
+    <ClInclude Include="..\src\game\multichannel\cluster_config_validator.hpp" />
+    <ClInclude Include="..\src\game\multichannel\cluster_session_manager.hpp" />
+    <ClInclude Include="..\src\game\multichannel\position_resolver.hpp" />
+    <ClInclude Include="..\src\game\multichannel\redis_client.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
     <ClInclude Include="..\src\io\filestream.hpp" />
     <ClInclude Include="..\src\io\functions\iologindata_load_player.hpp" />
@@ -302,6 +310,12 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
+    <ClCompile Include="..\src\game\multichannel\channel_context.cpp" />
+    <ClCompile Include="..\src\game\multichannel\channel_registry.cpp" />
+    <ClCompile Include="..\src\game\multichannel\channel_switch_service.cpp" />
+    <ClCompile Include="..\src\game\multichannel\cluster_config_validator.cpp" />
+    <ClCompile Include="..\src\game\multichannel\cluster_session_manager.cpp" />
+    <ClCompile Include="..\src\game\multichannel\position_resolver.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />

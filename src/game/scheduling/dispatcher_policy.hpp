@@ -173,6 +173,15 @@ public:
 		return elapsed(startedAt, now());
 	}
 
+	template <typename Scheduler>
+	[[nodiscard]] static auto scheduleWithFallbackLane(Scheduler &&scheduler, DispatcherLane primaryLane, DispatcherLane fallbackLane) {
+		const auto eventId = std::invoke(scheduler, primaryLane);
+		if (eventId != 0) {
+			return eventId;
+		}
+		return std::invoke(scheduler, fallbackLane);
+	}
+
 	[[nodiscard]] static int64_t timestamp(TimePoint timePoint) {
 		return std::chrono::duration_cast<std::chrono::microseconds>(timePoint.time_since_epoch()).count();
 	}

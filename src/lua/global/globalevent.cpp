@@ -35,6 +35,16 @@ namespace {
 	uint32_t thinkDelayMilliseconds(int64_t delayMilliseconds) {
 		return static_cast<uint32_t>(std::clamp<int64_t>(delayMilliseconds, 0, std::numeric_limits<uint32_t>::max()));
 	}
+
+	uint64_t scheduleGlobalEvent(uint32_t delay, const std::function<void()> &callback, std::string_view context) {
+		return DispatcherPolicy::scheduleWithFallbackLane(
+			[delay, &callback, context](DispatcherLane lane) {
+				return g_dispatcher().scheduleEvent(delay, std::function<void()> { callback }, context, lane);
+			},
+			DispatcherLane::Maintenance,
+			DispatcherLane::WorldCommit
+		);
+	}
 }
 
 GlobalEvents::GlobalEvents() = default;
@@ -62,9 +72,7 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		const auto result = timerMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (timerEventId == 0) {
-				timerEventId = g_dispatcher().scheduleEvent(
-					SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer", DispatcherLane::Maintenance
-				);
+				timerEventId = scheduleGlobalEvent(SCHEDULER_MINTICKS, [this] { timer(); }, "GlobalEvents::timer");
 				if (timerEventId == 0) {
 					g_logger().warn("[GlobalEvents::registerLuaEvent] Failed to schedule timer event {}", globalEvent->getName());
 					timerMap.erase(result.first);
@@ -82,9 +90,7 @@ bool GlobalEvents::registerLuaEvent(const std::shared_ptr<GlobalEvent> &globalEv
 		const auto result = thinkMap.emplace(globalEvent->getName(), globalEvent);
 		if (result.second) {
 			if (thinkEventId == 0) {
-				thinkEventId = g_dispatcher().scheduleEvent(
-					SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think", DispatcherLane::Maintenance
-				);
+				thinkEventId = scheduleGlobalEvent(SCHEDULER_MINTICKS, [this] { think(); }, "GlobalEvents::think");
 				if (thinkEventId == 0) {
 					g_logger().warn("[GlobalEvents::registerLuaEvent] Failed to schedule think event {}", globalEvent->getName());
 					thinkMap.erase(result.first);
@@ -147,9 +153,7 @@ void GlobalEvents::timer() {
 	}
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
-		timerEventId = g_dispatcher().scheduleEvent(
-			timerDelayMilliseconds(nextScheduledTime), [this] { timer(); }, __FUNCTION__, DispatcherLane::Maintenance
-		);
+		timerEventId = scheduleGlobalEvent(timerDelayMilliseconds(nextScheduledTime), [this] { timer(); }, __FUNCTION__);
 		if (timerEventId == 0) {
 			g_logger().warn("[GlobalEvents::timer] Failed to reschedule timer events");
 		}
@@ -188,9 +192,7 @@ void GlobalEvents::think() {
 
 	if (nextScheduledTime != std::numeric_limits<int64_t>::max()) {
 		const auto delay = thinkDelayMilliseconds(nextScheduledTime);
-		thinkEventId = g_dispatcher().scheduleEvent(
-			delay, [this] { think(); }, "GlobalEvents::think", DispatcherLane::Maintenance
-		);
+		thinkEventId = scheduleGlobalEvent(delay, [this] { think(); }, "GlobalEvents::think");
 		if (thinkEventId == 0) {
 			g_logger().warn("[GlobalEvents::think] Failed to reschedule think events");
 		}

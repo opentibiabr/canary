@@ -115,6 +115,21 @@ TEST(DispatcherPolicyTest, ClampsNegativeDurationsAndAppliesDeterministicBudgets
 	EXPECT_FALSE(policy.deadlineReached(now + 1us));
 }
 
+TEST(DispatcherPolicyTest, RetriesRejectedScheduleOnceOnFallbackLane) {
+	std::vector<DispatcherLane> attempts;
+	const auto eventId = DispatcherPolicy::scheduleWithFallbackLane(
+		[&attempts](DispatcherLane lane) -> uint64_t {
+			attempts.emplace_back(lane);
+			return lane == DispatcherLane::Maintenance ? 0 : 42;
+		},
+		DispatcherLane::Maintenance,
+		DispatcherLane::WorldCommit
+	);
+
+	EXPECT_EQ(eventId, 42);
+	EXPECT_EQ(attempts, (std::vector { DispatcherLane::Maintenance, DispatcherLane::WorldCommit }));
+}
+
 TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 	std::deque<int> queue { 4, 5 };
 	std::vector<int> slice { 1, 2, 3 };

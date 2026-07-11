@@ -293,7 +293,7 @@ bool Dispatcher::executeTask(const Task &task, DispatcherLane lane) {
 	dispacherContext.lane = task.getMeta().lane;
 	dispacherContext.executionMode = task.getMeta().executionMode;
 	const auto telemetryEnabled = queueLatencyLoggingEnabled.load(std::memory_order_relaxed);
-	if (!telemetryEnabled && !isPlayerVisible(task.getMeta().lane)) {
+	if (!telemetryEnabled) {
 		return task.execute();
 	}
 
@@ -308,7 +308,8 @@ bool Dispatcher::executeTask(const Task &task, DispatcherLane lane) {
 
 void Dispatcher::observeTaskStart(const Task &task, DispatcherLane lane, Task::Clock::time_point startedAt) {
 	const auto queueWait = DispatcherPolicy::elapsed(task.getReadyAt(), startedAt);
-	if (isPlayerVisible(task.getMeta().lane)) {
+	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
+	if (isPlayerVisible(task.getMeta().lane) && task.getEnqueuedAt() >= loggingStartedAt) {
 		playerVisibleReadyLatency.observe(queueWait);
 	}
 
@@ -501,12 +502,13 @@ void Dispatcher::resetRuntimeTelemetry() {
 }
 
 std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const {
+	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
 	std::chrono::microseconds oldest = std::chrono::microseconds::zero();
 	for (const auto &tasks : m_tasks) {
-		oldest = std::max(oldest, DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, now).oldestReadyAge);
+		oldest = std::max(oldest, DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, now, loggingStartedAt).oldestReadyAge);
 	}
 	for (const auto &task : scheduledTasks) {
-		if (task && isPlayerVisible(task->getMeta().lane)) {
+		if (task && task->getEnqueuedAt() >= loggingStartedAt && isPlayerVisible(task->getMeta().lane)) {
 			oldest = std::max(oldest, DispatcherPolicy::elapsed(task->getReadyAt(), now));
 		}
 	}
@@ -515,6 +517,10 @@ std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::t
 }
 
 void Dispatcher::refreshAdaptiveBudgets() {
+	if (!queueLatencyLoggingEnabled.load(std::memory_order_acquire)) {
+		return;
+	}
+
 	const auto now = policy.now();
 	if (now < nextAdaptiveBudgetUpdateAt) {
 		return;

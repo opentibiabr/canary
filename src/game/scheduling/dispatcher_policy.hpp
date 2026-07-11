@@ -145,10 +145,10 @@ public:
 	}
 
 	template <typename TaskRange>
-	[[nodiscard]] static DispatcherQueueSnapshot inspectPlayerVisibleQueueAt(const TaskRange &tasks, TimePoint currentTime) {
+	[[nodiscard]] static DispatcherQueueSnapshot inspectPlayerVisibleQueueAt(const TaskRange &tasks, TimePoint currentTime, TimePoint notBefore = TimePoint::min()) {
 		DispatcherQueueSnapshot snapshot;
 		for (const auto &task : tasks) {
-			if (!isPlayerVisible(task.getMeta().lane)) {
+			if (task.getEnqueuedAt() < notBefore || !isPlayerVisible(task.getMeta().lane)) {
 				continue;
 			}
 

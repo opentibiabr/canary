@@ -8,7 +8,7 @@ if Analytics.schemaGuardInstalled then
 end
 
 Analytics.schemaGuardInstalled = true
-Analytics.REQUIRED_SCHEMA_VERSION = 2
+Analytics.REQUIRED_SCHEMA_VERSION = 3
 Analytics.schemaState = Analytics.schemaState or {
 	ready = false,
 	version = 0,

@@ -57,6 +57,16 @@ def validate_runner(text: str) -> None:
         "aggregate_through",
     ):
         require(token in text, f"maintenance runner lacks {token}")
+
+    daily_start = text.find("INSERT INTO analytics_daily_balance")
+    state_start = text.find("INSERT INTO analytics_maintenance_state", daily_start)
+    require(daily_start >= 0 and state_start > daily_start, "maintenance runner lacks the daily aggregate statement")
+    daily_statement = text[daily_start:state_start]
+    require(
+        "ON DUPLICATE KEY UPDATE" in daily_statement,
+        "daily aggregate must use ON DUPLICATE KEY UPDATE",
+    )
+
     require('DELETE_RAW_SESSIONS="${DELETE_RAW_SESSIONS:-false}"' in text, "raw deletion must be disabled by default")
     require('if [[ "${DELETE_RAW_SESSIONS}" != "true" ]]' in text, "raw deletion must require explicit opt-in")
     require("table_name IN ('analytics_daily_balance','analytics_maintenance_state')" in text, "runner must verify optional retention schema")

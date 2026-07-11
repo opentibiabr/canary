@@ -37,10 +37,16 @@ class GameplayAnalyticsMigrationValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "blocked"):
             validator.validate_guard(broken)
 
+    def test_rejects_guard_that_leaves_collection_enabled(self) -> None:
+        broken = self.guard.replace("\t\tAnalytics.config.enabled = false\n", "", 1)
+        with self.assertRaisesRegex(AssertionError, "disable collection"):
+            validator.validate_guard(broken)
+
     def test_rejects_wrong_schema_load_order(self) -> None:
+        context = 'Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_context.lua")'
         schema = 'Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua")'
-        batching = 'Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")'
-        broken = self.runtime.replace(f"{schema}\n{batching}", f"{batching}\n{schema}", 1)
+        broken = self.runtime.replace(f"{context}\n{schema}", f"{schema}\n{context}", 1)
+        self.assertNotEqual(broken, self.runtime, "load-order mutation must alter the runtime fixture")
         with self.assertRaisesRegex(AssertionError, "load order"):
             validator.validate_runtime(broken)
 

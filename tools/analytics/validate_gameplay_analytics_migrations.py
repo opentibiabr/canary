@@ -37,10 +37,26 @@ def validate_migrations() -> None:
     require(files, "no numbered migrations found")
     versions = [int(path.name.split("_", 1)[0]) for path in files]
     require(versions == sorted(set(versions)), "migration versions must be unique and ordered")
-    require(versions[0] == 2, "post-baseline migrations must start at version 2")
-    migration_two = read(files[0])
+    require(versions == list(range(2, max(versions) + 1)), "post-baseline migration versions must be contiguous from 2")
+
+    migrations = {int(path.name.split("_", 1)[0]): read(path) for path in files}
+    migration_two = migrations.get(2, "")
     require("analytics_sessions_server_version_time" in migration_two, "migration 002 must add the server-version index")
-    require("IF NOT EXISTS" in migration_two, "migration DDL must be idempotent")
+    require("IF NOT EXISTS" in migration_two, "migration 002 DDL must be idempotent")
+
+    migration_three = migrations.get(3, "")
+    for column in (
+        "hunt_area",
+        "party_size_min",
+        "party_size_max",
+        "party_size_avg",
+        "shared_experience_seconds",
+        "shared_experience_ratio",
+        "party_vocations",
+    ):
+        require(f"`{column}`" in migration_three, f"migration 003 lacks {column}")
+    require("analytics_sessions_hunt_area_time" in migration_three, "migration 003 must add the hunt-area index")
+    require(migration_three.count("IF NOT EXISTS") >= 8, "migration 003 DDL must be repeatable")
 
 
 def validate_runner(text: str) -> None:
@@ -58,23 +74,27 @@ def validate_runner(text: str) -> None:
 
 
 def validate_guard(text: str) -> None:
-    require("Analytics.REQUIRED_SCHEMA_VERSION = 2" in text, "runtime required schema version is not current")
+    require("Analytics.REQUIRED_SCHEMA_VERSION = 3" in text, "runtime required schema version is not current")
     require("function Analytics.checkSchema()" in text, "missing runtime schema check")
     require("MAX(`version`)" in text, "schema check must read latest migration version")
     require("not Analytics.checkSchema()" in text, "runtime start must be blocked by incompatible schema")
     require("databaseEnabled ~= true" in text, "database-disabled mode must bypass schema requirement")
+    require("Analytics.config.enabled = false" in text, "schema rejection must disable collection")
     for field in ("schemaReady", "schemaVersion", "requiredSchemaVersion", "schemaError"):
         require(field in text, f"schema status lacks {field}")
 
 
 def validate_runtime(text: str) -> None:
-    core = 'dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")'
-    schema = 'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua")'
-    batching = 'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")'
-    reliability = 'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")'
-    indexes = [text.find(item) for item in (core, schema, batching, reliability)]
+    layers = (
+        'dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")',
+        'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_context.lua")',
+        'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua")',
+        'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")',
+        'dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")',
+    )
+    indexes = [text.find(item) for item in layers]
     require(all(index >= 0 for index in indexes), "runtime is missing an analytics layer")
-    require(indexes == sorted(indexes), "load order must be core, schema, batching, reliability")
+    require(indexes == sorted(indexes), "load order must be core, context, schema, batching, reliability")
     require('command == "schema"' in text, "missing /analytics schema command")
     require("if not Analytics.startRuntime() then" in text, "manual enable must respect schema failure")
 

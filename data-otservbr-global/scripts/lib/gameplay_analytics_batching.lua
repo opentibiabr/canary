@@ -39,6 +39,13 @@ local function escaped(value)
 	return db.escapeString(tostring(value or ""))
 end
 
+local function nullableSql(value)
+	if value == nil or value == "" then
+		return "NULL"
+	end
+	return escaped(value)
+end
+
 local function sortedKeys(values)
 	local keys = {}
 	for key in pairs(values) do
@@ -83,16 +90,21 @@ local function runDetailBatches(prefix, rows, updateClause)
 end
 
 local function sessionInsert(session)
-	local nameSql = session.playerName and escaped(session.playerName) or "NULL"
+	local partySize = tonumber(session.partySize) or 1
+	local partySizeMin = tonumber(session.partySizeMin) or partySize
+	local partySizeMax = tonumber(session.partySizeMax) or partySize
+	local partySizeAvg = tonumber(session.partySizeAvg) or partySize
+	local sharedExperienceSeconds = math.max(0, tonumber(session.sharedExperienceSeconds) or 0)
+	local sharedExperienceRatio = math.max(0, math.min(1, tonumber(session.sharedExperienceRatio) or (session.sharedExperience and 1 or 0)))
 	return string.format(
 		[[INSERT INTO `analytics_sessions`
-        (`session_uuid`,`player_id`,`player_name`,`vocation_id`,`level_start`,`level_end`,`started_at`,`ended_at`,`duration_seconds`,`combat_seconds`,`experience_raw`,`experience_final`,`damage_dealt`,`damage_received`,`healing_self`,`healing_others`,`overhealing`,`mana_spent`,`monsters_killed`,`deaths`,`loot_value_npc`,`loot_value_market`,`supplies_value`,`party_size`,`shared_experience`,`detail_level`,`analytics_version`)
-        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d)
+        (`session_uuid`,`player_id`,`player_name`,`vocation_id`,`level_start`,`level_end`,`started_at`,`ended_at`,`duration_seconds`,`combat_seconds`,`experience_raw`,`experience_final`,`damage_dealt`,`damage_received`,`healing_self`,`healing_others`,`overhealing`,`mana_spent`,`monsters_killed`,`deaths`,`loot_value_npc`,`loot_value_market`,`supplies_value`,`party_size`,`party_size_min`,`party_size_max`,`party_size_avg`,`shared_experience`,`shared_experience_seconds`,`shared_experience_ratio`,`party_vocations`,`server_version`,`hunt_area`,`detail_level`,`analytics_version`)
+        VALUES (%s,%d,%s,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%.2f,%d,%d,%.4f,%s,%s,%s,%d,%d)
         ON DUPLICATE KEY UPDATE
-        `player_id`=VALUES(`player_id`),`player_name`=VALUES(`player_name`),`vocation_id`=VALUES(`vocation_id`),`level_start`=VALUES(`level_start`),`level_end`=VALUES(`level_end`),`started_at`=VALUES(`started_at`),`ended_at`=VALUES(`ended_at`),`duration_seconds`=VALUES(`duration_seconds`),`combat_seconds`=VALUES(`combat_seconds`),`experience_raw`=VALUES(`experience_raw`),`experience_final`=VALUES(`experience_final`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`healing_self`=VALUES(`healing_self`),`healing_others`=VALUES(`healing_others`),`overhealing`=VALUES(`overhealing`),`mana_spent`=VALUES(`mana_spent`),`monsters_killed`=VALUES(`monsters_killed`),`deaths`=VALUES(`deaths`),`loot_value_npc`=VALUES(`loot_value_npc`),`loot_value_market`=VALUES(`loot_value_market`),`supplies_value`=VALUES(`supplies_value`),`party_size`=VALUES(`party_size`),`shared_experience`=VALUES(`shared_experience`),`detail_level`=VALUES(`detail_level`),`analytics_version`=VALUES(`analytics_version`)]],
+        `player_id`=VALUES(`player_id`),`player_name`=VALUES(`player_name`),`vocation_id`=VALUES(`vocation_id`),`level_start`=VALUES(`level_start`),`level_end`=VALUES(`level_end`),`started_at`=VALUES(`started_at`),`ended_at`=VALUES(`ended_at`),`duration_seconds`=VALUES(`duration_seconds`),`combat_seconds`=VALUES(`combat_seconds`),`experience_raw`=VALUES(`experience_raw`),`experience_final`=VALUES(`experience_final`),`damage_dealt`=VALUES(`damage_dealt`),`damage_received`=VALUES(`damage_received`),`healing_self`=VALUES(`healing_self`),`healing_others`=VALUES(`healing_others`),`overhealing`=VALUES(`overhealing`),`mana_spent`=VALUES(`mana_spent`),`monsters_killed`=VALUES(`monsters_killed`),`deaths`=VALUES(`deaths`),`loot_value_npc`=VALUES(`loot_value_npc`),`loot_value_market`=VALUES(`loot_value_market`),`supplies_value`=VALUES(`supplies_value`),`party_size`=VALUES(`party_size`),`party_size_min`=VALUES(`party_size_min`),`party_size_max`=VALUES(`party_size_max`),`party_size_avg`=VALUES(`party_size_avg`),`shared_experience`=VALUES(`shared_experience`),`shared_experience_seconds`=VALUES(`shared_experience_seconds`),`shared_experience_ratio`=VALUES(`shared_experience_ratio`),`party_vocations`=VALUES(`party_vocations`),`server_version`=VALUES(`server_version`),`hunt_area`=VALUES(`hunt_area`),`detail_level`=VALUES(`detail_level`),`analytics_version`=VALUES(`analytics_version`)]],
 		escaped(session.uuid),
 		session.playerId,
-		nameSql,
+		nullableSql(session.playerName),
 		session.vocationId,
 		session.levelStart,
 		session.levelEnd,
@@ -113,8 +125,16 @@ local function sessionInsert(session)
 		session.lootNpc,
 		session.lootMarket,
 		session.suppliesValue,
-		session.partySize,
+		partySize,
+		partySizeMin,
+		partySizeMax,
+		partySizeAvg,
 		session.sharedExperience and 1 or 0,
+		sharedExperienceSeconds,
+		sharedExperienceRatio,
+		nullableSql(session.partyVocations),
+		nullableSql(session.serverVersion),
+		nullableSql(session.huntArea),
 		clampInteger(Analytics.config.detailLevel, 0, 2, 1),
 		Analytics.VERSION
 	)

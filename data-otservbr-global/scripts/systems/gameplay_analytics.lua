@@ -1,4 +1,5 @@
 local Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics.lua")
+Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_context.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua")
 Analytics = dofile("data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua")
@@ -209,7 +210,7 @@ function analyticsCommand.onSay(player, words, param)
 	player:sendTextMessage(
 		MESSAGE_EVENT_ADVANCE,
 		string.format(
-			"Gameplay Analytics: enabled=%s, running=%s, schema=%d/%d ready=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, batchSize=%d, batchQueries=%d, detailRows=%d, lastFlush=%d",
+			"Gameplay Analytics: enabled=%s, running=%s, schema=%d/%d ready=%s, active=%d, queued=%d, retrying=%d, deadLetters=%d, retries=%d, flushOk=%d, flushFail=%d, lastFlushMs=%d, oldestQueued=%ds, detail=%d, batchSize=%d, batchQueries=%d, detailRows=%d, contextSamples=%d, contextFinalized=%d, lastFlush=%d",
 			tostring(status.enabled),
 			tostring(status.running),
 			status.schemaVersion,
@@ -228,6 +229,8 @@ function analyticsCommand.onSay(player, words, param)
 			status.detailBatchSize,
 			status.detailBatchQueries,
 			status.detailRowsPersisted,
+			status.contextSamples,
+			status.contextFinalizedSessions,
 			status.lastFlush
 		)
 	)

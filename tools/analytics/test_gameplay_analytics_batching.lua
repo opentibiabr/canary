@@ -4,6 +4,12 @@ local function assertEqual(actual, expected, message)
 	end
 end
 
+local function assertContains(value, expected, message)
+	if not value:find(expected, 1, true) then
+		error(string.format("%s: '%s' not found", message or "assertion failed", expected), 2)
+	end
+end
+
 local function runScenario(batchSize, failingQueryFragment)
 	local queries = {}
 
@@ -86,8 +92,16 @@ local function runScenario(batchSize, failingQueryFragment)
 			lootNpc = 10000,
 			lootMarket = 12000,
 			suppliesValue = 2000,
-			partySize = 1,
-			sharedExperience = false,
+			partySize = 3,
+			partySizeMin = 1,
+			partySizeMax = 3,
+			partySizeAvg = 2.0,
+			sharedExperience = true,
+			sharedExperienceSeconds = 5,
+			sharedExperienceRatio = 0.5,
+			partyVocations = "1:1,2:1,3:1",
+			serverVersion = "context-test-build",
+			huntArea = "area-beta",
 			monsters = {
 				["alpha monster"] = { kills = 2, damageDealt = 100, damageReceived = 20, experienceRaw = 50 },
 				["beta monster"] = { kills = 3, damageDealt = 200, damageReceived = 30, experienceRaw = 75 },
@@ -121,6 +135,12 @@ assertEqual(batched.batchStats.detailBatchQueries, 5, "batched detail query coun
 assertEqual(batched.batchStats.detailRowsPersisted, 10, "batched detail row count")
 assertEqual(batched.batchStats.largestDetailBatch, 2, "largest typical batch")
 assertEqual(#batched.queue, 0, "successful batched queue drain")
+assertContains(batchedQueries[1], "`party_size_min`", "session query context columns")
+assertContains(batchedQueries[1], "`shared_experience_ratio`", "session query shared ratio")
+assertContains(batchedQueries[1], "`hunt_area`", "session query hunt area column")
+assertContains(batchedQueries[1], "'1:1,2:1,3:1'", "session query party composition")
+assertContains(batchedQueries[1], "'context-test-build'", "session query server version")
+assertContains(batchedQueries[1], "'area-beta'", "session query hunt area value")
 for index = 2, #batchedQueries do
 	if not batchedQueries[index]:find("),(", 1, true) then
 		error("detail query did not contain multiple value rows: " .. batchedQueries[index])

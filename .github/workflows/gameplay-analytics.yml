@@ -6,6 +6,7 @@ on:
     paths:
       - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_context.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua"
@@ -15,18 +16,23 @@ on:
       - "docs/systems/gameplay-analytics.md"
       - "docs/systems/gameplay-analytics-persistence.md"
       - "docs/systems/gameplay-analytics-migrations.md"
+      - "docs/systems/gameplay-analytics-context.md"
+      - "docs/systems/gameplay-analytics-context-rollout.md"
       - "tools/analytics/migrate_gameplay_analytics.sh"
       - "tools/analytics/test_gameplay_analytics_batching.lua"
+      - "tools/analytics/test_gameplay_analytics_context.lua"
       - "tools/analytics/test_gameplay_analytics_reliability.lua"
       - "tools/analytics/test_gameplay_analytics_schema.lua"
       - "tools/analytics/test_mariadb_integration.sh"
       - "tools/analytics/test_schema_migrations.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_batching.py"
+      - "tools/analytics/test_validate_gameplay_analytics_context.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics_batching.py"
+      - "tools/analytics/validate_gameplay_analytics_context.py"
       - "tools/analytics/validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
@@ -35,6 +41,7 @@ on:
     paths:
       - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data-otservbr-global/scripts/lib/gameplay_analytics_context.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_schema.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_batching.lua"
       - "data-otservbr-global/scripts/lib/gameplay_analytics_reliability.lua"
@@ -44,18 +51,23 @@ on:
       - "docs/systems/gameplay-analytics.md"
       - "docs/systems/gameplay-analytics-persistence.md"
       - "docs/systems/gameplay-analytics-migrations.md"
+      - "docs/systems/gameplay-analytics-context.md"
+      - "docs/systems/gameplay-analytics-context-rollout.md"
       - "tools/analytics/migrate_gameplay_analytics.sh"
       - "tools/analytics/test_gameplay_analytics_batching.lua"
+      - "tools/analytics/test_gameplay_analytics_context.lua"
       - "tools/analytics/test_gameplay_analytics_reliability.lua"
       - "tools/analytics/test_gameplay_analytics_schema.lua"
       - "tools/analytics/test_mariadb_integration.sh"
       - "tools/analytics/test_schema_migrations.sh"
       - "tools/analytics/test_validate_gameplay_analytics.py"
       - "tools/analytics/test_validate_gameplay_analytics_batching.py"
+      - "tools/analytics/test_validate_gameplay_analytics_context.py"
       - "tools/analytics/test_validate_gameplay_analytics_reliability.py"
       - "tools/analytics/test_validate_gameplay_analytics_migrations.py"
       - "tools/analytics/validate_gameplay_analytics.py"
       - "tools/analytics/validate_gameplay_analytics_batching.py"
+      - "tools/analytics/validate_gameplay_analytics_context.py"
       - "tools/analytics/validate_gameplay_analytics_reliability.py"
       - "tools/analytics/validate_gameplay_analytics_migrations.py"
       - ".github/workflows/gameplay-analytics.yml"
@@ -73,6 +85,8 @@ jobs:
           python-version: "3.12"
       - name: Validate gameplay analytics contract
         run: python tools/analytics/validate_gameplay_analytics.py
+      - name: Validate gameplay analytics context contract
+        run: python tools/analytics/validate_gameplay_analytics_context.py
       - name: Validate gameplay analytics batching contract
         run: python tools/analytics/validate_gameplay_analytics_batching.py
       - name: Validate gameplay analytics reliability contract
@@ -95,6 +109,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y luajit
+      - name: Run gameplay analytics Lua context test
+        run: luajit tools/analytics/test_gameplay_analytics_context.lua
       - name: Run gameplay analytics Lua batching test
         run: luajit tools/analytics/test_gameplay_analytics_batching.lua
       - name: Run gameplay analytics Lua reliability test

@@ -206,11 +206,21 @@ staging-environment testing, not as a substitute for the backup.
    `CANARY_CHANNEL_ID`/`--channel-id` per process, start each process.
 6. Follow OPERATIONS.md for day-2 monitoring.
 
-Phase 1 does not yet wire session/switch/economy enforcement into the live
-engine (see ARCHITECTURE.md), so turning `multiChannelEnabled = true`
-today activates the login-list multi-world display and the startup
-validator's config-shape checks, but does **not** yet enforce one-session-
-per-account or perform live channel switches end-to-end — that requires
-the Phase 2 PR. Do not enable this flag in production before Phase 2 ships
-and is tested; it is included now so the schema/config/docs contract is
-complete and reviewable end-to-end.
+**Updated status (Phase 2, part 1):** turning `multiChannelEnabled = true`
+now activates the login-list multi-world display, the startup validator,
+**and real cluster-wide session enforcement** — a second login attempt for
+an already-online account is genuinely rejected (or the holder is force-
+disconnected if its lease becomes unrenewable during a Redis outage), not
+just documented as a future guarantee. See ARCHITECTURE.md §5 for exactly
+what's wired and its one stated gap (the `cluster_sessions` DB table is not
+yet dual-written; Redis is the sole enforcement mechanism today).
+
+**Still not enforced**, and still the reason not to enable this flag in
+production yet: live channel switching (there is no switch command wired
+into the engine at all yet — see ARCHITECTURE.md §6) and the economy
+ledger / house purchase transactional rewrites (§7, §8). Do not enable
+`multiChannelEnabled = true` in production until those ship and are
+tested; today's state is genuinely useful for a *single* shared-account
+gate across channels (e.g. an operator manually assigning players to one
+channel each) but not for a product where players are expected to move
+between channels themselves.

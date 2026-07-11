@@ -82,6 +82,7 @@
     <ClInclude Include="..\src\game\multichannel\cluster_config_validator.hpp" />
     <ClInclude Include="..\src\game\multichannel\cluster_runtime.hpp" />
     <ClInclude Include="..\src\game\multichannel\cluster_session_manager.hpp" />
+    <ClInclude Include="..\src\game\multichannel\engine_position_legality.hpp" />
     <ClInclude Include="..\src\game\multichannel\hiredis_redis_client.hpp" />
     <ClInclude Include="..\src\game\multichannel\position_resolver.hpp" />
     <ClInclude Include="..\src\game\multichannel\redis_client.hpp" />
@@ -318,6 +319,7 @@
     <ClCompile Include="..\src\game\multichannel\cluster_config_validator.cpp" />
     <ClCompile Include="..\src\game\multichannel\cluster_runtime.cpp" />
     <ClCompile Include="..\src\game\multichannel\cluster_session_manager.cpp" />
+    <ClCompile Include="..\src\game\multichannel\engine_position_legality.cpp" />
     <ClCompile Include="..\src\game\multichannel\hiredis_redis_client.cpp" />
     <ClCompile Include="..\src\game\multichannel\position_resolver.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />

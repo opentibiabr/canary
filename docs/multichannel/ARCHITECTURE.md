@@ -265,7 +265,7 @@ single-snapshot check (every process reads the same table) - it is
 still alive" check, which still needs the runtime heartbeat table from
 §3.4 and remains 📐.
 
-## 5. Sessions, locks, anti-split-brain (✅ core algorithm, 📐 engine call sites)
+## 5. Sessions, locks, anti-split-brain (✅ core algorithm and engine call sites)
 
 `ClusterSessionManager` (`src/game/multichannel/cluster_session_manager.*`)
 implements the lease/fencing state machine from spec §5.1:
@@ -288,30 +288,50 @@ implements the lease/fencing state machine from spec §5.1:
   `PRIMARY KEY(account_id)` **and** `UNIQUE(player_id)`, so even a total
   Redis loss (§10.1) cannot let two DB rows exist for the same account or
   the same player — a second `INSERT` fails on the constraint, not on
-  application logic.
-- The abstraction is `IRedisClient`; production uses a `hiredis`-backed
-  implementation (📐, needs the new optional vcpkg feature to compile —
-  see §9), tests use `FakeRedisClient`, an in-memory model of the exact
-  Lua-script semantics, so the state machine is fully unit-tested without
-  a live Redis dependency. The Lua scripts themselves are additionally
-  validated against a real local `redis-server` (see TEST_PLAN.md) — this
-  is real integration proof of the atomic CAS behavior, not just a mock.
+  application logic. **Not yet dual-written by the engine call sites below**
+  (📐 — see "Known gap" at the end of this section).
+- The abstraction is `IRedisClient`; production uses `HiredisRedisClient`
+  (✅ `src/game/multichannel/hiredis_redis_client.*`, built only when the
+  optional vcpkg feature is enabled — see §9), compiled standalone against
+  the real `hiredis` header/lib and run end-to-end against a real local
+  `redis-server` (acquire/renew/release/expiry/conflict/unreachable-
+  connection). Tests use `FakeRedisClient`, an in-memory model of the exact
+  same CAS semantics, so the state machine is fully unit-tested without a
+  live Redis dependency too.
 
-📐 Not yet wired: the actual login/logout call sites that would invoke
-`ClusterSessionManager::acquire/renew/release` from the game's connection
-lifecycle, and the admin tool to inspect/clear orphaned sessions (§5.3,
-§12.2). The state machine, the atomicity guarantees, and the schema are
-real and tested; plugging them into `ProtocolGame`'s connect/disconnect
-handlers is Phase 2 — doing that safely means walking the existing
-save/logout pipeline (`IOLoginData`, `Player::save`) end to end with a
-working multi-process test harness, which this sandboxed session cannot
-build/run: a real MariaDB server *was* obtained and used extensively here
-(schema/migration verification, see MIGRATION.md), but there is no
-bootstrapped vcpkg toolchain to actually compile the engine that would
-call into that pipeline — see [TEST_PLAN.md](TEST_PLAN.md) for exactly
-what was and wasn't run.
+**✅ Engine call sites (Phase 2):**
 
-## 6. Channel switch (✅ policy engine, 📐 engine call sites)
+- `ClusterRuntime` (`src/game/multichannel/cluster_runtime.*`) orchestrates
+  `ClusterSessionManager` against the accounts this process currently
+  believes are online. It is the seam between the pure state machine above
+  and the live engine, and implements the Redis-outage policy from §10/
+  OPERATIONS.md itself (see there for the exact rules).
+- `ProtocolGame::login` calls `ClusterRuntime::acquireForLogin` as the very
+  last gate before `placeCreature`, so every earlier rejection (ban,
+  waiting list, per-account PZ limit) still returns before a lease is ever
+  acquired that the function would then have to remember to release; a
+  `placeCreature` failure after a successful acquire releases it again
+  immediately rather than leaving it to expire on its own TTL.
+- `Player::onRemoveCreature` calls `ClusterRuntime::releaseForLogout` right
+  after the existing save-on-logout call — the one place a player's own
+  creature is actually removed from the world, regardless of why.
+- `Game::renewClusterSessions()`, cycled at `sessionHeartbeatInterval`,
+  renews every tracked account and force-disconnects (best-effort save,
+  then kick, via the existing `Game::kickPlayer`) whichever ones
+  `ClusterRuntime` reports expired — either a legitimate supersession
+  (no grace period) or a Redis outage whose grace period or lease margin
+  has run out (see §10).
+
+**📐 Known gap, stated honestly:** the `cluster_sessions` DB table (the
+defense-in-depth layer for a *total* Redis loss) is not yet dual-written by
+these call sites — today it only exists as schema. Redis is the sole
+enforcement mechanism this session actually wires. If Redis is wiped,
+misconfigured, or bypassed entirely, the DB constraint would have caught a
+second concurrent session; without the dual-write, it currently cannot.
+Also not yet wired: the admin tool to inspect/clear orphaned `DIRTY`
+sessions (§5.3, §12.2).
+
+## 6. Channel switch (✅ policy engine and position resolver, 📐 switch command)
 
 `ChannelSwitchService` orchestrates, in order:
 
@@ -352,6 +372,63 @@ what was and wasn't run.
 Both classes are pure logic over an injected map/legality interface, so
 they are fully unit-tested (radius bound, house-access denial, instance
 denial, tie-breaking) without needing a live game world.
+
+**✅ `EnginePositionLegality`** (`src/game/multichannel/
+engine_position_legality.*`) is the real, engine-backed `IPositionLegality`
+`PositionResolver` needs to actually run against a live map instead of a
+test fake:
+
+- `tileExists`: `Tile::queryAdd(0, arrivingPlayer, 1, 0) ==
+  RETURNVALUE_NOERROR` — the exact same legality check the normal
+  movement/teleport path already uses, reused rather than reimplemented so
+  it can never silently disagree with the engine's own definition of
+  "walkable".
+- `isInaccessibleHouse`: `Tile::getHouse()` + `House::isInvited(player)` —
+  the existing house-access model, unchanged.
+- `isRestrictedInstance` / `isNoChannelSwitchZone` /
+  `requiresSpecialEntryCondition`: there is no dedicated schema or
+  authoring convention anywhere in this project for these three concepts,
+  so they are answered via an explicit, **opt-in naming convention**: a
+  `Zone` (existing `game/zones/zone.hpp` mechanism) covering the position
+  whose name starts with `restrictedinstance` / `nochannelswitch` /
+  `specialentry` respectively (case-insensitive). An operator who wants a
+  boss room or quest instance excluded from channel-switch arrivals names
+  (or renames) its zone accordingly — no code change needed, but nothing
+  is excluded by default. This is honestly a convention bolted onto the
+  existing generic zone system, not a first-class feature; a real
+  dedicated flag is tracked as Phase 3 work in DECISION_MATRIX.md.
+
+`EnginePositionLegality` is only correct for a target channel that shares
+this channel's `mapHash` (`ChannelRegistry`/`channels.map_hash`, §3.5) —
+it answers every check against *this* process's own already-loaded map,
+which is only meaningful if the target channel loaded the same one. A
+caller resolving a switch to a channel with a **different** `mapHash` must
+not use it and should fall back to the temple-only step of the chain
+instead; see §6's "still not wired" note below for why this caller does
+not exist yet.
+
+**📐 Still not wired: the actual switch command.** `ChannelSwitchService`
+and `PositionResolver`/`EnginePositionLegality` are both real and callable,
+but nothing in the engine invokes them yet — there is no in-game
+command/talkaction that gathers a live player's real state (position,
+combat, PZ-lock, party, skull), calls `evaluate()`, and on success performs
+the handoff. The safe design this session settled on (chosen so a switch
+never requires cross-process signaling, which this sandbox has no way to
+integration-test): the **origin** channel, upon an explicit in-game switch
+request, evaluates the policy and resolves the arrival position using its
+own already-loaded map (gated on matching `mapHash` as above), writes one
+`channel_switch_audit` row recording the resolved position and decision,
+then performs a perfectly normal, already-safe clean logout (§5's real
+`ClusterRuntime::releaseForLogout` path — no new release mechanism
+needed). The **target** channel, at the existing login acquire point, must
+still be taught to look up a pending, unconsumed audit row for the
+account and use its resolved position instead of `player.loginPosition`
+when placing the character, then mark the row consumed. That consumption
+step, the Lua-exposed trigger for the command itself, and the
+`cluster_sessions`/`channel_switch_audit` dual-write are the concrete
+remaining work — precise enough to implement directly, deliberately left
+for a follow-up commit rather than rushed in the same pass as the session-
+lifecycle wiring above.
 
 ## 7. Houses (✅ schema, 📐 purchase/transfer call sites)
 

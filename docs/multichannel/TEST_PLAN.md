@@ -73,6 +73,58 @@ findings this level of real, executed verification is supposed to surface,
 and both were caught and corrected in this session, not left for CI to
 discover.
 
+### Phase 2 additions
+
+| Test | File | Status |
+|---|---|---|
+| `ClusterRuntime`: conflict rejection, clean release+reacquire, healthy renewal, legitimate supersession (no grace period), outage blocks new logins immediately, outage forces disconnect before lease could be stolen | `tests/unit/game/multichannel/cluster_runtime_test.cpp` | ✅ **run**, 7/7 passed |
+| `HiredisRedisClient` against a **real local `redis-server`** (not `FakeRedisClient`): acquire/conflict/renew/non-holder-renew/release/re-acquire/real-wall-clock-expiry/unreachable-connection | ad hoc standalone harness (not part of the gtest suite - a production networked client isn't something the project's own unit-test target exercises against a live server either) | ✅ **run**, 19/19 assertions passed |
+
+`libhiredis-dev` (1.2.0, matching the vcpkg package's typical version) was
+installable via `apt-get` in this sandbox, same as `libgtest-dev` and
+`mariadb-server` before it - unexpected again, and used for real: the
+production `IRedisClient` implementation Phase 1 explicitly declined to
+write blind was compiled against the actual header/lib and driven against
+an actual running Redis server, including letting a real lease actually
+expire on the wall clock rather than only simulating time.
+
+**A real test-driven bug found and fixed here:** `FakeRedisClient`'s new
+`isHealthy()`/`setHealthyForTesting()` were added so `ClusterRuntime`'s
+outage-handling logic could be tested, but the fake's existing
+`acquireLease`/`renewLease`/`releaseLease` methods didn't originally
+consult the simulated-outage flag at all - a test asserting "this account
+survives a brief Redis outage, then gets force-expired once its lease
+nears real expiry" would have passed for the wrong reason (every renew
+kept silently succeeding, so the account's tracked expiry kept advancing
+forever and the "about to expire" branch was never actually exercised).
+Fixed by making the fake's CAS methods fail cleanly while marked
+unhealthy, matching what an actually-unreachable Redis would do. The bug
+was entirely in the test double, not in `cluster_runtime.cpp` itself - but
+without the fix, the outage test would have been asserting the wrong
+thing and passing for the wrong reason, which is exactly the kind of gap
+this level of real, executed verification exists to catch.
+
+**What was reviewed but could not be compiled or run in this sandbox:**
+the actual engine call sites - `ProtocolGame::login`'s acquire gate,
+`Player::onRemoveCreature`'s release call, `Game::renewClusterSessions`,
+and `CanaryServer::initializeMultichannelCluster`'s `HiredisRedisClient`
+construction - and `EnginePositionLegality` (`tileExists`/
+`isInaccessibleHouse` against `Tile`/`House`, and the `Zone`-name
+convention for the other three checks). Each of these files transitively
+includes the project's full engine header graph (`game/game.hpp` pulls in
+Lua, the database layer, and eventually protobuf/Abseil/opentelemetry via
+`src/pch.hpp`'s own dependency list), which requires the real vcpkg-
+managed toolchain to compile; this sandbox does not have one bootstrapped
+(confirmed again this session: `mysql/mysql.h` was reachable after
+installing `libmariadb-dev` and shimming the include path, but the very
+next missing header was `absl/numeric/int128.h`, at which point chasing
+the rest of vcpkg's dependency tree one `apt-get` at a time stopped being
+a reasonable use of the time available). Each was instead reviewed by hand
+against the exact surrounding code (matching existing patterns for
+per-account checks, `cycleEvent` registration, `queryAdd`-based tile
+legality, etc.) - **CI is the first real compiler for these**, per this
+repo's established CI-repair policy from #69.
+
 ## 15.1b Redis Lua CAS script validation — ✅ run against a real `redis-server`
 
 The acquire/renew/release Lua scripts in

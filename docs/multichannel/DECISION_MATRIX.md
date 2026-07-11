@@ -15,7 +15,7 @@ Status legend: ✅ shipped and tested · 📐 designed/schema-ready, not wired �
 | 2.2 | Per-channel physical/runtime state | `houses`, `house_lists`, `tile_store` get `channel_id`; everything else in the list is already per-process in-memory by construction | ✅ schema / 📐 runtime wiring for instances |
 | 2.3 | Market global, no `channel_id` in offer identity | `source_channel_id` added as nullable audit column only | ✅ schema / 📐 write call sites |
 | 2.3 | Market operations transactional + idempotent | `economic_ledger.transaction_uuid` PK contract | 📐 |
-| 2.4 | Position resolution order: same → nearest bounded → last-safe → temple | Implemented exactly, radius+cost bounded BFS | ✅ algorithm+tests / 📐 live map integration |
+| 2.4 | Position resolution order: same → nearest bounded → last-safe → temple | Implemented exactly, radius+cost bounded BFS; `EnginePositionLegality` wires it to the live Map/Tile/House (Zone-name convention for the 3 checks with no dedicated schema - see ARCHITECTURE.md §6) | ✅ algorithm+tests+engine hook / 📐 switch command that would call it |
 | 2.4 | Persistent "last safe public position" | New `players.last_safe_position` intent documented; column not added to schema.sql in this PR (would require touching the very large `players` load/save path blind) | 📐 documented in MIGRATION.md as the exact ALTER + call sites needed |
 | 2.5 | Composite house identity `(channel_id, house_id)` | Implemented on `houses`/`house_lists`/`tile_store` | ✅ schema / 📐 purchase call sites |
 | 2.5 | One house per account, DB-enforced | `account_house_ownership` with `PRIMARY KEY(account_id)` | ✅ schema / 📐 write call sites |
@@ -28,7 +28,7 @@ Status legend: ✅ shipped and tested · 📐 designed/schema-ready, not wired �
 | 2.9 | War kills global definition, combat only on PvP channels | `guildwar_kills.channel_id` audit column added | ✅ schema / 📐 combat-check call site |
 | 2.10 | Per-channel `pvp_type`, kept compatible with existing `worldType` values | `channels.pvp_type` enum reuses exactly `no-pvp`/`pvp`/`pvp-enforced` | ✅ |
 | 2.10 | `pvpChannelExitPolicy` default `combat-or-skull` | Config default set exactly as specified | ✅ |
-| 2.11 | One online character per account, cluster-wide, defense in depth | `cluster_sessions` DB table (`PRIMARY KEY(account_id)` + `UNIQUE(player_id)`) + Redis lease/fencing | ✅ schema+algorithm / 📐 connect/disconnect hook |
+| 2.11 | One online character per account, cluster-wide, defense in depth | `cluster_sessions` DB table (`PRIMARY KEY(account_id)` + `UNIQUE(player_id)`) + Redis lease/fencing; `ClusterRuntime` wires the Redis half into real login (acquire)/logout (release)/heartbeat (renew, outage handling) | ✅ schema+algorithm+Redis engine hook / 📐 DB table not yet dual-written (Redis is the sole enforcement today - see ARCHITECTURE.md §5) |
 | 2.12 | Mail/parcel exactly-once across channels | `mail_delivery_audit` table + `transaction_uuid` contract | 📐 |
 | 2.13 | VIP/ignore/block global, no `channel_id` | Confirmed, no schema change | ✅ (no-op is correct) |
 | 2.14 | Chat scope `local`/`cluster`, Pub/Sub for ephemeral only | `ChatChannelScope` enum documented; Redis Pub/Sub not used as source of truth for anything persistent | 📐 |

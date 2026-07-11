@@ -17,6 +17,7 @@ target_sources(
             multichannel/channel_switch_service.cpp
             multichannel/cluster_config_validator.cpp
             multichannel/cluster_runtime.cpp
+            multichannel/engine_position_legality.cpp
 )
 
 if(FEATURE_MULTICHANNEL_REDIS)

@@ -63,8 +63,8 @@ TEST_F(ChannelRegistryTest, LoginListIsSortedBySortOrderThenId) {
 
 	const auto selectable = g_channelRegistry().getLoginListChannels();
 	ASSERT_EQ(3u, selectable.size());
-	EXPECT_EQ(3, selectable[0].id); // sortOrder 5, lowest id first
-	EXPECT_EQ(2, selectable[1].id); // sortOrder 5
+	EXPECT_EQ(2, selectable[0].id); // sortOrder 5, lowest id first
+	EXPECT_EQ(3, selectable[1].id); // sortOrder 5
 	EXPECT_EQ(1, selectable[2].id); // sortOrder 10
 }
 

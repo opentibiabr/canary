@@ -11018,7 +11018,14 @@ void Player::triggerTranscendence() {
 		);
 		task->setLane(DispatcherLane::PlayerAction);
 		task->setProducerToken(getID());
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
+		auto eventId = g_dispatcher().scheduleEvent(task);
+		if (eventId == 0) {
+			task->setLane(DispatcherLane::Maintenance);
+			eventId = g_dispatcher().scheduleEvent(task);
+			if (eventId == 0) {
+				g_logger().warn("[Player::triggerTranscendence] Failed to schedule the post-transcendence refresh for player {}", getName());
+			}
+		}
 
 		wheel().sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());

@@ -53,8 +53,8 @@ namespace {
 		const bool harmfulField = itemType.isMagicField() && !itemType.blockSolid && itemType.conditionDamage && itemType.conditionDamage->getTotalDamage() > 0;
 		return {
 			.floorChange = itemType.floorChange,
-			.groundId = itemType.isGroundTile() ? itemType.id : 0,
-			.harmfulFieldCombatType = harmfulField ? static_cast<uint8_t>(itemType.combatType) : 0,
+			.groundId = itemType.isGroundTile() ? itemType.id : static_cast<uint16_t>(0),
+			.harmfulFieldCombatType = harmfulField ? static_cast<uint8_t>(itemType.combatType) : static_cast<uint8_t>(0),
 			.hasGround = itemType.isGroundTile(),
 			.teleport = itemType.isTeleport(),
 			.blockSolid = itemType.blockSolid,

@@ -1139,13 +1139,13 @@ void Monster::prepareTargetSearchCompute(uint64_t generation) {
 
 	for (const auto &targetRef : targetList) {
 		const auto &creature = targetRef.creature.lock();
-		if (!creature) {
+		if (!creature || creature->getHealth() <= 0 || !isTarget(creature, monsterPerfTestFriendlyFire)) {
 			continue;
 		}
 		if (fallbackIds.size() < MAX_TARGET_RANK_CANDIDATES) {
 			fallbackIds.emplace_back(creature->getID());
 		}
-		if (rankingRequest.candidates.size() >= MAX_TARGET_RANK_CANDIDATES || creature->getHealth() <= 0 || !isTarget(creature, monsterPerfTestFriendlyFire)) {
+		if (rankingRequest.candidates.size() >= MAX_TARGET_RANK_CANDIDATES) {
 			continue;
 		}
 		if (skipCurrentUnreachable && creature == currentAttacked) {
@@ -1278,7 +1278,7 @@ void Monster::completeTargetSearchCompute(uint64_t generation, uint64_t stateEpo
 			continue;
 		}
 		const auto &candidate = g_game().getCreatureByID(creatureId);
-		if (!candidate || candidate->getHealth() <= 0 || (skipCurrentUnreachable && candidate == currentAttacked)) {
+		if (!candidate || candidate->getHealth() <= 0 || !isTarget(candidate, monsterPerfTestFriendlyFire) || (skipCurrentUnreachable && candidate == currentAttacked)) {
 			continue;
 		}
 		if (selectTarget(candidate, monsterPerfTestFriendlyFire)) {

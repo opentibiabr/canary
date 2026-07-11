@@ -10,6 +10,7 @@
 #include "creatures/monsters/monster.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/monsters/monster_combat_intention.hpp"
 #include "creatures/monsters/monster_pathfinding.hpp"
@@ -1859,7 +1860,7 @@ void Monster::prepareCombatIntention(uint64_t generation) {
 		"Monster::combatIntention",
 		[monsterId, generation] {
 			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
-				monster->completeCombatIntention(generation, { .canceled = true });
+				monster->completeCombatIntention(generation, { .geometricallyEligibleSpellIndices = {}, .canceled = true });
 			}
 		}
 	);

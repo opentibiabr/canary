@@ -444,7 +444,7 @@ of this (§5's gap). And the admin-facing side of this — an operator
 inspecting `channel_switch_audit` for a stuck/failed switch — has no
 tooling beyond direct SQL.
 
-## 7. Houses (✅ schema, 📐 purchase/transfer call sites)
+## 7. Houses (✅ schema and purchase/transfer call site)
 
 Composite identity `(channel_id, id)` on `houses`, propagated to
 `house_lists` and `tile_store` (§2.2). `account_house_ownership` is the
@@ -458,14 +458,45 @@ for the owning `player_id` at load time; `account_house_ownership` is the
 new piece that makes the *cross-channel* constraint real instead of an
 in-memory check.
 
-📐 The actual purchase/transfer transaction
-(`Houses`/`IOMapSerialize`/house auction settlement) must, in the same DB
-transaction that sets `houses.owner`, upsert or delete the matching
-`account_house_ownership` row. That call-site change is Phase 2 — it
-touches money-moving code this session cannot compile-test, so it is
-specified precisely (function names, transaction boundaries) in
-[MIGRATION.md](MIGRATION.md) and [DECISION_MATRIX.md](DECISION_MATRIX.md)
-rather than blind-edited.
+**✅ `House::setOwner`** (`src/map/house/house.cpp`) is the one real
+chokepoint every ownership change in this codebase funnels through —
+auction settlement, trade-based sale, rent/inactivity repossession, and
+the deferred "transfer on next restart" path (`IOMapSerialize::
+loadHouseInfo`, `Houses::payHouses`) all call it, directly or via
+`setNewOwnerGuid`. It now also mirrors every change into
+`account_house_ownership`:
+
+- Whenever the existing `UPDATE houses SET owner = ...` write actually
+  runs (i.e. `updateDatabase && owner != guid`), a
+  `DELETE FROM account_house_ownership WHERE channel_id = ? AND house_id = ?`
+  clears whatever row was there — keyed by
+  `account_house_ownership_house_unique(channel_id, house_id)`, not by the
+  previous owner's account, so it works even when that account can no
+  longer be resolved. For a revoke (`guid == 0`) this is the whole job.
+- For a grant (`guid != 0`), once the new owner's `account_id` is resolved
+  (the same `SELECT ... FROM players` the function already ran), a
+  `DELETE FROM account_house_ownership WHERE account_id = ?` clears
+  whatever house that account held anywhere else in the cluster (the
+  `PRIMARY KEY(account_id)` only allows one row), then a plain `INSERT`
+  adds the new one.
+- Neither write is wrapped in a new explicit transaction — matching every
+  other write already in this function (the `UPDATE houses` and the
+  `SELECT ... FROM players` are two independent statements today too);
+  see TEST_PLAN.md for what was verified against a real MariaDB instead
+  (grant, re-grant to a different house for the same account, revoke).
+
+**📐 Known gap, stated honestly:** this makes the *mirror* accurate, it
+does not add a new *gate*. Nothing yet stops an account from bidding on
+or trading for a second house before an already-in-flight purchase for a
+different house settles — that would mean touching the auction/bid/trade
+acceptance code (`Game::playerCyclopediaHouseBid`/...`Transfer`/
+...`MoveOut` and the trade-accept path), which only stage pending state
+today and don't call `setOwner` until the next `IOMapSerialize::
+loadHouseInfo()` pass (i.e. next restart/map reload) - a materially larger
+and riskier change than mirroring an already-decided outcome, left for a
+follow-up. Also unresolved from Phase 1: house ids still aren't
+independently reusable per channel (`houses_id_unique`, see
+MIGRATION.md's "Known limitation").
 
 ## 8. Economy (📐 schema + idempotency contract, not wired)
 

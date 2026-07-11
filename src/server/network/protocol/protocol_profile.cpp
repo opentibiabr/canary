@@ -61,8 +61,22 @@ namespace {
 		.sequenceHighBitSignalsCompression = false,
 	};
 
-	constexpr TransportProfile currentModernTransport {
-		.id = TransportProfileId::CurrentModern,
+	constexpr TransportProfile currentLoginTransport {
+		.id = TransportProfileId::CurrentLogin,
+		.outerLength = OuterLengthEncoding::ModernBlockCount,
+		.encryptedPayload = EncryptedPayloadLayout::ModernPaddingByte,
+		.inboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.outboundChecksum = CHECKSUM_METHOD_ADLER32,
+		.compression = CompressionLayout::None,
+		.modernLengthExtraBytes = CHECKSUM_LENGTH,
+		.serverFirstPacketHeaderBytes = 0,
+		.hasCryptoHeader = true,
+		.lengthIncludesChecksum = true,
+		.sequenceHighBitSignalsCompression = false,
+	};
+
+	constexpr TransportProfile currentGameSequenceTransport {
+		.id = TransportProfileId::CurrentGameSequence,
 		.outerLength = OuterLengthEncoding::ModernBlockCount,
 		.encryptedPayload = EncryptedPayloadLayout::ModernPaddingByte,
 		.inboundChecksum = CHECKSUM_METHOD_SEQUENCE,
@@ -73,6 +87,20 @@ namespace {
 		.hasCryptoHeader = true,
 		.lengthIncludesChecksum = true,
 		.sequenceHighBitSignalsCompression = true,
+	};
+
+	constexpr TransportProfile currentGamePlainTransport {
+		.id = TransportProfileId::CurrentGamePlain,
+		.outerLength = OuterLengthEncoding::ModernBlockCount,
+		.encryptedPayload = EncryptedPayloadLayout::ModernPaddingByte,
+		.inboundChecksum = CHECKSUM_METHOD_NONE,
+		.outboundChecksum = CHECKSUM_METHOD_NONE,
+		.compression = CompressionLayout::None,
+		.modernLengthExtraBytes = CHECKSUM_LENGTH,
+		.serverFirstPacketHeaderBytes = CHECKSUM_LENGTH + 2,
+		.hasCryptoHeader = true,
+		.lengthIncludesChecksum = false,
+		.sequenceHighBitSignalsCompression = false,
 	};
 
 	constexpr TransportProfile legacyRawWithLoginHeaderTransport {
@@ -104,7 +132,7 @@ namespace {
 	};
 
 	constexpr InitialConnectionBehavior currentInitialBehavior {
-		.transport = TransportProfileId::CurrentModern,
+		.transport = TransportProfileId::CurrentGamePlain,
 		.challenge = {
 			.flow = GameHandshakeFlow::ServerChallengeBeforeLogin,
 			.layout = ChallengeLayout::CurrentLoginChallenge,
@@ -283,7 +311,7 @@ namespace {
 	constexpr AccountLoginLayout currentAccountLoginLayout {
 		.profileId = ProtocolProfileId::Current,
 		.clientVersion = CLIENT_VERSION,
-		.responseTransport = TransportProfileId::CurrentModern,
+		.responseTransport = TransportProfileId::CurrentLogin,
 		.bytesToSkipBeforeRsa = 17,
 		.characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey,
 		.sendsSessionKey = true,
@@ -397,8 +425,12 @@ namespace {
 const TransportProfile &ProtocolProfileRegistry::getTransportProfile(TransportProfileId id) {
 	using enum TransportProfileId;
 	switch (id) {
-		case CurrentModern:
-			return currentModernTransport;
+		case CurrentLogin:
+			return currentLoginTransport;
+		case CurrentGameSequence:
+			return currentGameSequenceTransport;
+		case CurrentGamePlain:
+			return currentGamePlainTransport;
 		case LegacyRawWithLoginHeader:
 			return legacyRawWithLoginHeaderTransport;
 		case LegacyClassic:

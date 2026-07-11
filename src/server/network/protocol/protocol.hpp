@@ -18,6 +18,7 @@ using Connection_ptr = std::shared_ptr<Connection>;
 using ConnectionWeak_ptr = std::weak_ptr<Connection>;
 
 class NetworkMessage;
+enum class CompressionLayout : uint8_t;
 
 class Protocol : public std::enable_shared_from_this<Protocol> {
 public:
@@ -66,9 +67,13 @@ protected:
 		}
 	}
 
-	void setChecksumMethod(ChecksumMethods_t method) {
-		checksumMethod = method;
-	}
+	/** Selects a complete transport profile matching the negotiated checksum contract. */
+	void setChecksumMethod(ChecksumMethods_t method);
+
+	// Exposed to Protocol subclasses (in addition to the TransportCodec friend
+	// declaration below) so test doubles can construct known-ciphertext fixtures
+	// for transport framing regression tests.
+	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
 
 	static bool RSA_decrypt(NetworkMessage &msg);
 
@@ -90,10 +95,7 @@ private:
 		std::array<char, NETWORKMESSAGE_MAXSIZE> buffer {};
 	};
 
-	void XTEA_transform(uint8_t* buffer, size_t messageLength, bool encrypt) const;
-	void XTEA_encrypt(OutputMessage &msg) const;
-	bool XTEA_decrypt(NetworkMessage &msg) const;
-	bool compression(OutputMessage &msg) const;
+	bool compression(OutputMessage &msg, CompressionLayout layout) const;
 
 	OutputMessage_ptr outputBuffer;
 
@@ -101,7 +103,6 @@ private:
 	std::array<uint32_t, 4> key = {};
 	uint32_t serverSequenceNumber = 0;
 	uint32_t clientSequenceNumber = 0;
-	std::underlying_type_t<ChecksumMethods_t> checksumMethod = CHECKSUM_METHOD_NONE;
 	bool encryptionEnabled = false;
 	bool rawMessages = false;
 

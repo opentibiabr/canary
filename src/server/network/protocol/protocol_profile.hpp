@@ -91,7 +91,9 @@ enum class ProtocolFeature : uint64_t {
 
 enum class TransportProfileId : uint8_t {
 	RawClientFirst,
-	CurrentModern,
+	CurrentLogin,
+	CurrentGameSequence,
+	CurrentGamePlain,
 	LegacyRawWithLoginHeader,
 	LegacyClassic,
 };
@@ -198,7 +200,7 @@ enum class GameLoginAuthenticationLayout : uint8_t {
 struct AccountLoginLayout {
 	ProtocolProfileId profileId = ProtocolProfileId::Current;
 	uint16_t clientVersion = CLIENT_VERSION;
-	TransportProfileId responseTransport = TransportProfileId::CurrentModern;
+	TransportProfileId responseTransport = TransportProfileId::CurrentLogin;
 	uint8_t bytesToSkipBeforeRsa = 17;
 	bool hasAssetSignaturesBeforeRsa = false;
 	AccountCharacterListLayout characterListLayout = AccountCharacterListLayout::WorldListWithSessionKey;

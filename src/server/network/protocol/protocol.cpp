@@ -20,8 +20,36 @@
 Protocol::Protocol(const Connection_ptr &initConnection) :
 	connectionPtr(initConnection) {
 	if (initConnection) {
-		initConnection->setTransportCodec(TransportCodecs::currentModern());
+		initConnection->setTransportCodec(TransportCodecs::currentGamePlain());
 	}
+}
+
+void Protocol::setChecksumMethod(ChecksumMethods_t method) {
+	const auto connection = getConnection();
+	if (!connection) {
+		return;
+	}
+
+	const auto &activeProfile = connection->getTransportCodec().getProfile();
+	TransportProfileId targetProfile = activeProfile.id;
+	if (activeProfile.outerLength == OuterLengthEncoding::ModernBlockCount) {
+		switch (method) {
+			case CHECKSUM_METHOD_ADLER32:
+				targetProfile = TransportProfileId::CurrentLogin;
+				break;
+			case CHECKSUM_METHOD_SEQUENCE:
+				targetProfile = TransportProfileId::CurrentGameSequence;
+				break;
+			case CHECKSUM_METHOD_NONE:
+				targetProfile = TransportProfileId::CurrentGamePlain;
+				break;
+		}
+	} else if (method != activeProfile.inboundChecksum || method != activeProfile.outboundChecksum) {
+		g_logger().error("[Protocol::setChecksumMethod] checksum contract is not available for transport profile {}", static_cast<uint8_t>(activeProfile.id));
+		return;
+	}
+
+	connection->setTransportCodec(TransportCodecs::get(targetProfile), connection->getInitialTransportState());
 }
 
 void Protocol::onSendMessage(const OutputMessage_ptr &msg) {
@@ -147,46 +175,6 @@ void Protocol::XTEA_transform(uint8_t* buffer, size_t messageLength, bool encryp
 	}
 }
 
-void Protocol::XTEA_encrypt(OutputMessage &outputMessage) const {
-	// Ensure the message length is a multiple of 8
-	size_t paddingBytes = outputMessage.getLength() % 8;
-	if (paddingBytes != 0) {
-		outputMessage.addPaddingBytes(8 - paddingBytes);
-	}
-
-	uint8_t* buffer = outputMessage.getOutputBuffer();
-	size_t messageLength = outputMessage.getLength();
-
-	XTEA_transform(buffer, messageLength, true);
-}
-
-bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
-	uint16_t msgLength = msg.getLength() - (checksumMethod == CHECKSUM_METHOD_NONE ? 2 : 6);
-	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
-	if ((msgLength % 8) != 0) {
-		g_logger().error("XTEA_decrypt Failed - invalid block size: {}", msgLength);
-		for (int i = 0; i < msgLength; ++i) {
-			fmt::print("{:02X} ", buffer[i]);
-		}
-		fmt::print("\n");
-		return false;
-	}
-
-	size_t messageLength = msgLength;
-
-	XTEA_transform(buffer, messageLength, false);
-
-	uint8_t paddingSize = msg.getByte();
-	uint16_t innerLength = messageLength - paddingSize;
-	if (innerLength + paddingSize > msgLength) {
-		g_logger().error("XTEA_decrypt Failed - invalid inner length: {} + {} > {}", innerLength, paddingSize, msgLength);
-		return false;
-	}
-
-	msg.setLength(messageLength - paddingSize);
-	return true;
-}
-
 bool Protocol::RSA_decrypt(NetworkMessage &msg) {
 	if ((msg.getLength() - msg.getBufferPosition()) < 128) {
 		return false;
@@ -214,8 +202,8 @@ uint32_t Protocol::getIP() const {
 	return 0;
 }
 
-bool Protocol::compression(OutputMessage &outputMessage) const {
-	if (checksumMethod != CHECKSUM_METHOD_SEQUENCE) {
+bool Protocol::compression(OutputMessage &outputMessage, CompressionLayout layout) const {
+	if (layout == CompressionLayout::None) {
 		return false;
 	}
 

@@ -32,11 +32,8 @@ std::optional<uint16_t> TransportCodec::decodeBodySize(uint16_t rawLengthHeader)
 }
 
 void TransportCodec::encodeOutbound(Protocol &protocol, OutputMessage &msg) const {
-	// Checksum/compression selection still follows Protocol state so existing
-	// login and game contracts remain byte-compatible while multiprotocol is
-	// phased in. TransportProfile documents the intended contract, but it is not
-	// yet the sole runtime authority for these fields.
-	const uint32_t sendMessageChecksum = msg.getLength() >= 128 && protocol.compression(msg) ? (1U << 31) : 0;
+	const bool compressed = msg.getLength() >= 128 && protocol.compression(msg, profile.compression);
+	const uint32_t compressionSignal = compressed && profile.sequenceHighBitSignalsCompression ? (1U << 31) : 0;
 
 	const auto writeOuterLength = [&msg, this] {
 		if (profile.outerLength == OuterLengthEncoding::ModernBlockCount) {
@@ -58,26 +55,28 @@ void TransportCodec::encodeOutbound(Protocol &protocol, OutputMessage &msg) cons
 	}
 
 	encryptXtea(protocol, msg);
-	if (protocol.checksumMethod == CHECKSUM_METHOD_NONE) {
-		writeOuterLength();
-	} else if (protocol.checksumMethod == CHECKSUM_METHOD_ADLER32) {
-		msg.writeChecksum(adlerChecksum(msg.getOutputBuffer(), msg.getLength()));
-		writeOuterLength();
-	} else if (protocol.checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
-		msg.writeChecksum(sendMessageChecksum | (++protocol.serverSequenceNumber));
-		writeOuterLength();
-		if (protocol.serverSequenceNumber >= 0x7FFFFFFF) {
-			protocol.serverSequenceNumber = 0;
-		}
+	switch (profile.outboundChecksum) {
+		case CHECKSUM_METHOD_NONE:
+			writeOuterLength();
+			break;
+		case CHECKSUM_METHOD_ADLER32:
+			msg.writeChecksum(adlerChecksum(msg.getOutputBuffer(), msg.getLength()));
+			writeOuterLength();
+			break;
+		case CHECKSUM_METHOD_SEQUENCE:
+			msg.writeChecksum(compressionSignal | (++protocol.serverSequenceNumber));
+			writeOuterLength();
+			if (protocol.serverSequenceNumber >= 0x7FFFFFFF) {
+				protocol.serverSequenceNumber = 0;
+			}
+			break;
 	}
 }
 
 bool TransportCodec::prepareInbound(Protocol &protocol, NetworkMessage &msg) const {
-	// See encodeOutbound(): inbound checksum handling still mirrors the active
-	// Protocol state to preserve current login/game behavior.
-	if (protocol.checksumMethod != CHECKSUM_METHOD_NONE) {
+	if (profile.inboundChecksum != CHECKSUM_METHOD_NONE) {
 		const auto recvChecksum = msg.get<uint32_t>();
-		if (protocol.checksumMethod == CHECKSUM_METHOD_SEQUENCE) {
+		if (profile.inboundChecksum == CHECKSUM_METHOD_SEQUENCE) {
 			if (recvChecksum == 0) {
 				return false;
 			}
@@ -114,7 +113,13 @@ bool TransportCodec::prepareInbound(Protocol &protocol, NetworkMessage &msg) con
 }
 
 bool TransportCodec::decryptXtea(Protocol &protocol, NetworkMessage &msg) const {
-	uint16_t msgLength = msg.getLength() - (protocol.checksumMethod == CHECKSUM_METHOD_NONE ? HEADER_LENGTH : HEADER_LENGTH + CHECKSUM_LENGTH);
+	const auto checksumLength = profile.inboundChecksum == CHECKSUM_METHOD_NONE ? HEADER_LENGTH : HEADER_LENGTH + CHECKSUM_LENGTH;
+	if (msg.getLength() < checksumLength) {
+		g_logger().error("[TransportCodec::decryptXtea] - message shorter than transport header: {} < {}", msg.getLength(), checksumLength);
+		return false;
+	}
+
+	uint16_t msgLength = msg.getLength() - checksumLength;
 	uint8_t* buffer = msg.getBuffer() + msg.getBufferPosition();
 	if ((msgLength % XTEA_MULTIPLE) != 0) {
 		g_logger().error("[TransportCodec::decryptXtea] - invalid block size: {}", msgLength);
@@ -137,6 +142,11 @@ bool TransportCodec::decryptXtea(Protocol &protocol, NetworkMessage &msg) const 
 	}
 
 	uint8_t paddingSize = msg.getByte();
+	if (paddingSize > messageLength) {
+		g_logger().error("[TransportCodec::decryptXtea] - invalid modern padding: {} > {}", paddingSize, messageLength);
+		return false;
+	}
+
 	uint16_t innerLength = messageLength - paddingSize;
 	if (innerLength + paddingSize > msgLength) {
 		g_logger().error("[TransportCodec::decryptXtea] - invalid modern inner length: {} + {} > {}", innerLength, paddingSize, msgLength);
@@ -161,8 +171,12 @@ void TransportCodec::encryptXtea(Protocol &protocol, OutputMessage &msg) const {
 const TransportCodec &TransportCodecs::get(TransportProfileId id) {
 	using enum TransportProfileId;
 	switch (id) {
-		case CurrentModern:
-			return currentModern();
+		case CurrentLogin:
+			return currentLogin();
+		case CurrentGameSequence:
+			return currentGameSequence();
+		case CurrentGamePlain:
+			return currentGamePlain();
 		case LegacyRawWithLoginHeader:
 			return legacyRawWithLoginHeader();
 		case LegacyClassic:
@@ -177,8 +191,18 @@ const TransportCodec &TransportCodecs::rawClientFirst() {
 	return codec;
 }
 
-const TransportCodec &TransportCodecs::currentModern() {
-	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::CurrentModern));
+const TransportCodec &TransportCodecs::currentLogin() {
+	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::CurrentLogin));
+	return codec;
+}
+
+const TransportCodec &TransportCodecs::currentGameSequence() {
+	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::CurrentGameSequence));
+	return codec;
+}
+
+const TransportCodec &TransportCodecs::currentGamePlain() {
+	static const TransportCodec codec(ProtocolProfileRegistry::getTransportProfile(TransportProfileId::CurrentGamePlain));
 	return codec;
 }
 

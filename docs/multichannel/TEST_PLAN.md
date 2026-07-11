@@ -187,3 +187,15 @@ with a real commit, per the repo's own CI-repair policy. This document
 will not claim a CI status that wasn't actually observed — see the PR
 description / final report for the true, current CI state at hand-off
 time.
+
+One failure observed during this PR's CI runs was **not** a code bug:
+`Build - Docker / Image Build` failed with
+`Error response from daemon: ... registry-1.docker.io ... 502 Bad Gateway`
+while the `docker/setup-buildx-action` step was pulling the
+`moby/buildkit` builder image itself, before this PR's `Dockerfile` was
+even reached. That is a transient upstream Docker Hub registry error, not
+something a source change can fix. The automation account pushing this
+PR does not hold `actions:write` (re-running a specific failed job via
+the API returns `403 Resource not accessible by integration`), so the
+only retry lever available here is a new commit, which starts a fresh
+workflow run and gives the same job a new attempt.

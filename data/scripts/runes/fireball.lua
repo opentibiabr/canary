@@ -12,6 +12,7 @@ end
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local AnalyticsSpell = dofile("data/scripts/lib/gameplay_analytics_spell.lua")
+local AnalyticsPrices = dofile("data/scripts/lib/gameplay_analytics_prices.lua")
 local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
 if not analyticsOk then
 	Analytics = nil
@@ -20,9 +21,13 @@ end
 local rune = Spell("rune")
 
 function rune.onCastSpell(creature, var, isHotkey)
-	return AnalyticsSpell.recordCast(Analytics, creature, "Fireball Rune", 0, 1, function()
+	local success = AnalyticsSpell.recordCast(Analytics, creature, "Fireball Rune", 0, 1, function()
 		return combat:execute(creature, var)
 	end)
+	if success and Analytics then
+		Analytics.recordSupply(creature, 3189, 1, AnalyticsPrices.buyPrice(3189))
+	end
+	return success
 end
 
 rune:id(15)

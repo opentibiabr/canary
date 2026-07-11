@@ -1,0 +1,104 @@
+---
+name: Gameplay Analytics Supply and Loot Telemetry
+
+on:
+  pull_request:
+    paths:
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data/scripts/lib/gameplay_analytics_prices.lua"
+      - "data/scripts/lib/gameplay_analytics_loot.lua"
+      - "data/scripts/actions/items/potions.lua"
+      - "data/scripts/runes/fireball.lua"
+      - "data/scripts/runes/intense_healing_rune.lua"
+      - "data/scripts/eventcallbacks/monster/postdroploot_gameplay_analytics.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_prices.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_integration.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_prices.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_supply_loot_integration.py"
+      - "tools/analytics/validate_gameplay_analytics_supply_loot_integration.py"
+      - "tools/analytics/test_mariadb_integration.sh"
+      - "docs/systems/gameplay-analytics-supply-loot.md"
+      - ".github/workflows/gameplay-analytics-supply-loot.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
+      - "data/scripts/lib/gameplay_analytics_prices.lua"
+      - "data/scripts/lib/gameplay_analytics_loot.lua"
+      - "data/scripts/actions/items/potions.lua"
+      - "data/scripts/runes/fireball.lua"
+      - "data/scripts/runes/intense_healing_rune.lua"
+      - "data/scripts/eventcallbacks/monster/postdroploot_gameplay_analytics.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_prices.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_integration.lua"
+      - "tools/analytics/test_gameplay_analytics_supply_loot_prices.sh"
+      - "tools/analytics/test_validate_gameplay_analytics_supply_loot_integration.py"
+      - "tools/analytics/validate_gameplay_analytics_supply_loot_integration.py"
+      - "tools/analytics/test_mariadb_integration.sh"
+      - "docs/systems/gameplay-analytics-supply-loot.md"
+      - ".github/workflows/gameplay-analytics-supply-loot.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate supply/loot integration contract
+        run: python tools/analytics/validate_gameplay_analytics_supply_loot_integration.py
+      - name: Run supply/loot integration validator tests
+        run: python -m unittest discover -s tools/analytics -p "test_validate_gameplay_analytics_supply_loot_integration.py" -v
+      - name: Install LuaJIT
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y luajit
+      - name: Run gameplay analytics supply/loot price table test
+        run: luajit tools/analytics/test_gameplay_analytics_supply_loot_prices.lua
+      - name: Run gameplay analytics supply/loot integration test
+        run: luajit tools/analytics/test_gameplay_analytics_supply_loot_integration.lua
+      - name: Check persistence test shell syntax
+        run: bash -n tools/analytics/test_gameplay_analytics_supply_loot_prices.sh
+
+  mariadb-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      mariadb:
+        image: mariadb:11.4
+        env:
+          MARIADB_ROOT_PASSWORD: root
+          MARIADB_DATABASE: canary_test
+        ports:
+          - 3306:3306
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install MariaDB client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mariadb-client
+      - name: Test verified supply/loot price persistence
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: canary_test
+        run: |
+          set -o pipefail
+          {
+            bash tools/analytics/test_mariadb_integration.sh
+            bash tools/analytics/test_gameplay_analytics_supply_loot_prices.sh
+          } 2>&1 | tee supply-loot-mariadb.log
+      - name: Upload MariaDB integration log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameplay-analytics-supply-loot-mariadb-log
+          path: supply-loot-mariadb.log
+          if-no-files-found: error
+          retention-days: 7

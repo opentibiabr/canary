@@ -59,6 +59,7 @@ jobs:
               assert count == 1, pattern
           game.write_text(text)
           PY
+          rm -f .github/automation/combat-policy-trigger.txt
           rm .github/workflows/apply-combat-policy-fixes.yml
           git diff --check
       - name: Commit source fixes

@@ -2456,26 +2456,35 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 		doRandomStep(nextDirection, result);
 	}
 
-	if (result && (canPushItems() || canPushCreatures())) {
-		const Position &pos = getNextPosition(nextDirection, getPosition());
-		const auto &posTile = g_game().map.getTile(pos);
-		if (posTile) {
-			if (canPushItems()) {
-				Monster::pushItems(posTile, nextDirection);
-			}
+	if (!result || (!canPushItems() && !canPushCreatures())) {
+		return result;
+	}
 
-			if (canPushCreatures()) {
-				if (g_dispatcher().context().isMovementCommit()) {
-					Monster::pushCreatures(posTile);
-				} else {
-					const auto lane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
-					g_dispatcher().addCreatureWalkEvent([=] {
-						Monster::pushCreatures(posTile);
-					},
-					                                    lane);
-				}
-			}
-		}
+	const Position &pos = getNextPosition(nextDirection, getPosition());
+	const auto &posTile = g_game().map.getTile(pos);
+	if (!posTile) {
+		return result;
+	}
+
+	if (canPushItems()) {
+		Monster::pushItems(posTile, nextDirection);
+	}
+
+	if (!canPushCreatures()) {
+		return result;
+	}
+	if (g_dispatcher().context().isMovementCommit()) {
+		Monster::pushCreatures(posTile);
+		return result;
+	}
+
+	const auto lane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
+	if (!g_dispatcher().addCreatureWalkEvent([posTile] {
+		Monster::pushCreatures(posTile);
+	},
+	                                         lane)) {
+		forceUpdateFollowPath = true;
+		result = false;
 	}
 
 	return result;

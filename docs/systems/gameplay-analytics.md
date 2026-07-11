@@ -16,6 +16,10 @@ data-otservbr-global/scripts/config/gameplay_analytics.lua
 6. Verify startup logs contain `[GameplayAnalytics] Enabled`.
 7. Run `/analytics status` as a gamemaster.
 
+For a repeatable production rollout with an example environment file, an
+installation script and rollback guidance, see
+`docs/systems/gameplay-analytics-deployment.md`.
+
 The feature does not issue SQL writes for individual hits. Data is accumulated in memory and flushed as completed sessions. A retry writes the complete in-memory session snapshot and upserts every aggregate by its natural key.
 
 ## Configuration

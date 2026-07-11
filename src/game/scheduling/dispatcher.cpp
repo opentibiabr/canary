@@ -890,6 +890,10 @@ void Dispatcher::executeScheduledTask(const std::shared_ptr<Task> &task) {
 }
 
 void Dispatcher::mergeEvents() {
+	if (!hasUnmergedEvents.exchange(false, std::memory_order_acq_rel)) {
+		return;
+	}
+
 	for (const auto &thread : threads) {
 		std::scoped_lock lock(thread->mutex);
 		for (size_t laneId = 0; laneId < m_tasks.size(); ++laneId) {
@@ -967,7 +971,7 @@ bool Dispatcher::addEvent(std::function<void(void)> &&f, std::string_view contex
 		releaseLaneSlot(lane);
 		throw;
 	}
-	notify();
+	notifyThreadTaskPublished();
 	return true;
 }
 
@@ -995,7 +999,7 @@ bool Dispatcher::addWalkEvent(std::function<void(void)> &&f, uint32_t expiresAft
 		releaseLaneSlot(lane);
 		throw;
 	}
-	notify();
+	notifyThreadTaskPublished();
 	return true;
 }
 
@@ -1020,7 +1024,7 @@ bool Dispatcher::addCreatureWalkEvent(std::function<void(void)> &&f, DispatcherL
 		releaseLaneSlot(lane);
 		throw;
 	}
-	notify();
+	notifyThreadTaskPublished();
 	return true;
 }
 
@@ -1043,7 +1047,7 @@ bool Dispatcher::addDeferredGameplayEvent(std::function<void(void)> &&f, std::st
 		releaseLaneSlot(lane);
 		throw;
 	}
-	notify();
+	notifyThreadTaskPublished();
 	return true;
 }
 
@@ -1069,7 +1073,7 @@ bool Dispatcher::addBarrierEvent(std::function<void(void)> &&f, DispatcherLane l
 		releaseLaneSlot(lane);
 		throw;
 	}
-	notify();
+	notifyThreadTaskPublished();
 	return true;
 }
 
@@ -1102,7 +1106,7 @@ uint64_t Dispatcher::scheduleEvent(const std::shared_ptr<Task> &task) {
 					   .emplace(task->getId(), thread->scheduledTasks.emplace_back(task))
 					   .first->first;
 
-	notify();
+	notifyThreadTaskPublished();
 	return eventId;
 }
 void Dispatcher::stopEvent(uint64_t eventId) {

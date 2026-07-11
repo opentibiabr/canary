@@ -232,6 +232,11 @@ private:
 		}
 	}
 
+	void notifyThreadTaskPublished() {
+		hasUnmergedEvents.store(true, std::memory_order_release);
+		notify();
+	}
+
 	std::vector<std::pair<uint64_t, uint64_t>> generatePartition(size_t size) const {
 		if (size == 0) {
 			return {};
@@ -258,6 +263,7 @@ private:
 	Task::Clock::time_point nextAdaptiveBudgetUpdateAt {};
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
+	std::atomic_bool hasUnmergedEvents = false;
 	std::atomic_uint64_t visibleCreatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
 	std::atomic_uint64_t backgroundCreatureAsyncSliceLimits = (uint64_t { 16 } << 32) | 2000;
 	std::mutex dummyMutex; // This is only used for signaling the condition variable and not as an actual lock.

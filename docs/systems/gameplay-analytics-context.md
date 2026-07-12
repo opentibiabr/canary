@@ -39,6 +39,10 @@ huntAreas = {
 
 The first matching rectangle wins. Keep names stable because dashboards group historical sessions by this value. Names are truncated to 128 bytes before persistence.
 
+For tooling that generates and validates this table (overlap and duplicate-name
+detection, a candidate-file workflow, and why it starts empty), see
+`docs/systems/gameplay-analytics-hunt-areas.md`.
+
 ## Fallback grid areas
 
 When no named rectangle matches and `trackFallbackGridAreas = true`, Analytics generates a coarse identifier:

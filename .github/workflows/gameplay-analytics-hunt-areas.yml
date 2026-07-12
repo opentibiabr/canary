@@ -1,0 +1,47 @@
+---
+name: Gameplay Analytics Hunt Areas
+
+on:
+  pull_request:
+    paths:
+      - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
+      - "docs/systems/gameplay-analytics-context.md"
+      - "docs/systems/gameplay-analytics-hunt-areas.md"
+      - "tools/analytics/gameplay_analytics_hunt_areas_lib.py"
+      - "tools/analytics/validate_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/generate_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/gameplay_analytics_hunt_area_candidates.example.json"
+      - "tools/analytics/test_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/fixtures/hunt_areas/**"
+      - ".github/workflows/gameplay-analytics-hunt-areas.yml"
+  push:
+    branches: [main]
+    paths:
+      - "data-otservbr-global/scripts/config/gameplay_analytics.lua"
+      - "docs/systems/gameplay-analytics-context.md"
+      - "docs/systems/gameplay-analytics-hunt-areas.md"
+      - "tools/analytics/gameplay_analytics_hunt_areas_lib.py"
+      - "tools/analytics/validate_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/generate_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/gameplay_analytics_hunt_area_candidates.example.json"
+      - "tools/analytics/test_gameplay_analytics_hunt_areas.py"
+      - "tools/analytics/fixtures/hunt_areas/**"
+      - ".github/workflows/gameplay-analytics-hunt-areas.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate shipped hunt-area catalogue
+        run: python tools/analytics/validate_gameplay_analytics_hunt_areas.py
+      - name: Validate the example candidate file generates cleanly
+        run: python tools/analytics/generate_gameplay_analytics_hunt_areas.py tools/analytics/gameplay_analytics_hunt_area_candidates.example.json
+      - name: Run hunt-area tooling tests
+        run: python -m unittest discover -s tools/analytics -p "test_gameplay_analytics_hunt_areas.py" -v

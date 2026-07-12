@@ -1,0 +1,5 @@
+[
+  { "name": "fixture-area-alpha", "from": { "x": 100, "y": 100, "z": 7 }, "to": { "x": 199, "y": 199, "z": 7 } },
+  { "name": "fixture-area-beta", "from": { "x": 300, "y": 300, "z": 7 }, "to": { "x": 399, "y": 399, "z": 9 } },
+  { "name": "fixture-area-gamma-different-floor", "from": { "x": 100, "y": 100, "z": 8 }, "to": { "x": 199, "y": 199, "z": 8 } }
+]

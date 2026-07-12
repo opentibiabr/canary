@@ -35,6 +35,18 @@ class GameplayAnalyticsSpellIntegrationValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "shared spell analytics helper"):
             validator.validate_integrated_file(path, broken)
 
+    def test_rejects_integrated_file_reloading_core(self) -> None:
+        path = validator.INTEGRATED_FILES[0]
+        broken = self.integrated[path] + f'\nlocal Analytics = dofile("{validator.CORE_PATH}")\n'
+        with self.assertRaisesRegex(AssertionError, "must not reload"):
+            validator.validate_integrated_file(path, broken)
+
+    def test_rejects_integrated_file_without_live_global(self) -> None:
+        path = validator.INTEGRATED_FILES[0]
+        broken = self.integrated[path].replace("GameplayAnalytics", "nil")
+        with self.assertRaisesRegex(AssertionError, "live GameplayAnalytics global"):
+            validator.validate_integrated_file(path, broken)
+
     def test_rejects_integrated_file_with_direct_recording_call(self) -> None:
         path = validator.INTEGRATED_FILES[0]
         broken = self.integrated[path] + "\nAnalytics.recordHealing(creature, creature, 10, 0)\n"

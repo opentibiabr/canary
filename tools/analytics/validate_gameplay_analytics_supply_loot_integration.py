@@ -13,6 +13,7 @@ POTIONS = ROOT / "data/scripts/actions/items/potions.lua"
 FIREBALL_RUNE = ROOT / "data/scripts/runes/fireball.lua"
 HEALING_RUNE = ROOT / "data/scripts/runes/intense_healing_rune.lua"
 DOCS = ROOT / "docs/systems/gameplay-analytics-supply-loot.md"
+CORE_PATH = "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
 
 SUPPLY_FILES = [POTIONS, FIREBALL_RUNE, HEALING_RUNE]
 
@@ -62,13 +63,18 @@ def validate_loot_callback(text: str) -> None:
         "loot callback must use the shared loot helper",
     )
     require(
-        'pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")' in text,
-        "loot callback must safely load the analytics library so it stays a no-op under other data packs",
+        CORE_PATH not in text,
+        "loot callback must not reload the Gameplay Analytics core; doing so can overwrite installed runtime wrappers",
     )
+    require("GameplayAnalytics" in text, "loot callback must resolve the live GameplayAnalytics global at event time")
     require("monsterPostDropLoot" in text, "loot callback must register on monsterPostDropLoot")
     require(
         "corpse:getCorpseOwner()" in text,
         "loot must be attributed to the corpse owner, not every party member",
+    )
+    require(
+        "corpse:getItems(true)" in text,
+        "loot callback must walk nested corpse containers recursively so their contents are not omitted",
     )
     for forbidden in ("participants", "getMembers()"):
         require(forbidden not in text, f"loot callback must not iterate party members ({forbidden}), which would double-count the same corpse")
@@ -81,11 +87,28 @@ def validate_supply_integration(path: Path, text: str) -> None:
         f"{label} must load the shared price table",
     )
     require(
-        'pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")' in text,
-        f"{label} must safely load the analytics library so it stays a no-op under other data packs",
+        CORE_PATH not in text,
+        f"{label} must not reload the Gameplay Analytics core; doing so can overwrite installed runtime wrappers",
     )
-    require("Analytics.recordSupply(" in text, f"{label} must call Analytics.recordSupply")
+    require("GameplayAnalytics" in text, f"{label} must resolve the live GameplayAnalytics global at use time")
+    require(
+        "recordSupply(" in text,
+        f"{label} must call Gameplay Analytics recordSupply",
+    )
     require("AnalyticsPrices.buyPrice(" in text, f"{label} must price supply consumption from the verified table")
+
+
+def validate_docs(text: str) -> None:
+    for phrase in (
+        "Value-source precedence",
+        "never guessed",
+        "marketValue",
+        "gameplay_analytics_prices.lua",
+        "corpse owner",
+        "nested containers",
+    ):
+        require(phrase in text, f"supply/loot documentation lacks: {phrase}")
+    require("live" in text and "`GameplayAnalytics` global" in text, "supply/loot documentation must describe live GameplayAnalytics global lookup")
 
 
 def main() -> int:
@@ -96,15 +119,7 @@ def main() -> int:
         validate_loot_callback(read(LOOT_CALLBACK))
         for path in SUPPLY_FILES:
             validate_supply_integration(path, read(path))
-        docs = read(DOCS)
-        for phrase in (
-            "Value-source precedence",
-            "never guessed",
-            "marketValue",
-            "gameplay_analytics_prices.lua",
-            "corpse owner",
-        ):
-            require(phrase in docs, f"supply/loot documentation lacks: {phrase}")
+        validate_docs(read(DOCS))
     except AssertionError as error:
         print(f"gameplay analytics supply/loot validation failed: {error}", file=sys.stderr)
         return 1

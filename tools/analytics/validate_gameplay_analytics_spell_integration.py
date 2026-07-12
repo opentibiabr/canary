@@ -2,12 +2,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[2]
 HELPER = ROOT / "data/scripts/lib/gameplay_analytics_spell.lua"
 DOCS = ROOT / "docs/systems/gameplay-analytics-spells.md"
+CORE_PATH = "data-otservbr-global/scripts/lib/gameplay_analytics.lua"
 
 # Representative spell/rune scripts wired up in this change: one offensive
 # spell, one healing spell, one offensive rune and one healing rune.
@@ -63,8 +63,12 @@ def validate_integrated_file(path: Path, text: str) -> None:
         f"{label} must load the shared spell analytics helper",
     )
     require(
-        'pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")' in text,
-        f"{label} must safely load the analytics library so it stays a no-op under other data packs",
+        CORE_PATH not in text,
+        f"{label} must not reload the Gameplay Analytics core; re-executing it can overwrite installed context, batching and reliability wrappers",
+    )
+    require(
+        "GameplayAnalytics" in text,
+        f"{label} must resolve the live GameplayAnalytics global at cast time so script load order stays safe",
     )
     require("AnalyticsSpell.recordCast(" in text, f"{label} must route its cast through AnalyticsSpell.recordCast")
     for forbidden in FORBIDDEN_CALLS:
@@ -93,6 +97,8 @@ def validate_docs(text: str) -> None:
         "critical",
         "data/scripts/spells",
         "data/scripts/runes",
+        "live `GameplayAnalytics` global",
+        "must never `dofile` the Analytics core",
     ):
         require(phrase in text, f"spell integration documentation lacks: {phrase}")
 

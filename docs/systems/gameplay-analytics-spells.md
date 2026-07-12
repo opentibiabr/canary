@@ -58,21 +58,32 @@ guess, this integration always reports `critical = false`. Extending
 Spell and rune scripts live under the shared `data/scripts/spells` and
 `data/scripts/runes` folders, loaded together with whichever data pack
 (`data-otservbr-global`, `data-canary`, ...) is configured. The Gameplay
-Analytics library currently only ships with `data-otservbr-global`. Because of
-that, every integrated spell loads it defensively:
+Analytics runtime currently only ships with `data-otservbr-global`.
+
+Integrated scripts must never `dofile` the Analytics core. Re-executing
+`data-otservbr-global/scripts/lib/gameplay_analytics.lua` after the context,
+batching and reliability layers were installed can replace their wrapped
+functions while leaving the installation flags set, silently disabling those
+layers. It also makes behaviour depend on script load order.
+
+Instead, each cast passes the live `GameplayAnalytics` global to the helper at
+the moment the cast happens:
 
 ```lua
 local AnalyticsSpell = dofile("data/scripts/lib/gameplay_analytics_spell.lua")
-local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
-if not analyticsOk then
-	Analytics = nil
+
+function spell.onCastSpell(creature, variant)
+	return AnalyticsSpell.recordCast(GameplayAnalytics, creature, "Spell Name", 100, 1, function()
+		return combat:execute(creature, variant)
+	end)
 end
 ```
 
-`AnalyticsSpell.recordCast(nil, ...)` is a pure pass-through: it just calls
-and returns the original cast closure. A server running a data pack without
-the Gameplay Analytics library, or running with Analytics or spell tracking
-disabled, pays only the cost of that one extra function call per cast.
+When the active data pack does not provide Analytics, `GameplayAnalytics` is
+`nil`. `AnalyticsSpell.recordCast(nil, ...)` is a pure pass-through: it calls
+and returns the original cast closure without reporting anything. Resolving
+the global at cast time also remains safe when shared spell scripts are loaded
+before the OTServBR-Global Analytics runtime.
 
 ## Integrated spells and runes
 
@@ -93,10 +104,10 @@ rune-based casts, not an exhaustive audit of every spell file.
    example `isSelfTarget(true)` or `needTarget(true)` with no `area()` call
    means `1`). Do not guess a count for area-of-effect spells; extending this
    pattern to those needs a per-target hit count, which is not wired up yet.
-2. Add the two-line safe-load block shown above near the top of the file,
-   after the existing `combat:setCallback(...)` calls.
+2. Load only `data/scripts/lib/gameplay_analytics_spell.lua`. Do not load or
+   re-execute the Analytics core from the spell/rune script.
 3. Wrap the existing `combat:execute(...)` call in
-   `AnalyticsSpell.recordCast(Analytics, creature, "<Spell Name>", <mana>, <targets>, function() ... end)`,
+   `AnalyticsSpell.recordCast(GameplayAnalytics, creature, "<Spell Name>", <mana>, <targets>, function() ... end)`,
    keeping the original return value.
 4. Pass the same mana value already configured via `spell:mana(...)` /
    `rune:mana(...)` (or `0` when the script has no such call, as with runes).

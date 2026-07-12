@@ -28,16 +28,26 @@ configured per NPC, exist), so there is no trustworthy source to read from —
 per the documented contract in `docs/systems/gameplay-analytics.md`, a
 missing value stays at zero rather than being invented.
 
+## Runtime access and script load order
+
+Shared action, rune and event-callback scripts use the live
+`GameplayAnalytics` global at the moment an event occurs. They do not
+`dofile` the Analytics core themselves. Re-executing the core after context,
+batching and reliability wrappers have been installed could replace wrapped
+functions while leaving their installation flags set, so the validators
+explicitly reject that pattern. When the current data pack does not provide
+Analytics, the global is `nil` and the integrations remain no-ops.
+
 ## Supply telemetry
 
 ### Potions
 
-`data/scripts/actions/items/potions.lua` calls `Analytics.recordSupply` at
-the existing `player:updateSupplyTracker(item)` call site, right before the
-potion is actually removed from the player's inventory. This is the same
-established, single hook the client-facing supply tracker UI already uses,
-so there is exactly one recording point per potion consumed — no separate
-code path was added that could double-count it.
+`data/scripts/actions/items/potions.lua` calls `recordSupply` at the existing
+`player:updateSupplyTracker(item)` call site, right before the potion is
+actually removed from the player's inventory. This is the same established,
+single hook the client-facing supply tracker UI already uses, so there is
+exactly one recording point per potion consumed — no separate code path was
+added that could double-count it.
 
 11 of the potions in that file have a verified NPC buy price (sourced from
 `data-otservbr-global/npc/chuckles.lua`); the rest (buff potions, the antidote
@@ -49,8 +59,8 @@ no verified price was found, not because they were skipped by mistake.
 `data/scripts/runes/fireball.lua` and
 `data/scripts/runes/intense_healing_rune.lua` (already wired for spell
 telemetry — see `docs/systems/gameplay-analytics-spells.md`) additionally call
-`Analytics.recordSupply` once per successful cast, using the same rune item
-ID already configured via `rune:runeId(...)` and a verified buy price
+`recordSupply` once per successful cast, using the same rune item ID already
+configured via `rune:runeId(...)` and a verified buy price
 (`data-otservbr-global/npc/alexander.lua` for the fireball rune,
 `data-otservbr-global/npc/asima.lua` for the intense healing rune). This is a
 separate aggregate table from the spell-cast data `recordSpell` stores; the
@@ -74,9 +84,11 @@ item to the callback.
 registers on the existing `monsterPostDropLoot` event (see
 `data/scripts/eventcallbacks/README.md`), which fires once per corpse, after
 `data/scripts/eventcallbacks/monster/ondroploot__base.lua` has already
-generated and added the monster's loot to it. The callback reads the
-corpse's final contents (`Container:getItems(false)`, one level deep) and
-calls `Analytics.recordLoot` once per item.
+generated and added the monster's loot to it. The callback reads the corpse's
+final contents with `Container:getItems(true)`. The recursive flag is
+important: items inside backpacks, bags or other nested containers are
+physical loot too and would otherwise be omitted. The callback calls
+`recordLoot` once for each returned item, including the container itself.
 
 Loot is attributed **only to the corpse owner**
 (`Container:getCorpseOwner()`), never to every shared-experience party
@@ -86,7 +98,8 @@ that same loot to every party member it would multiply the reported loot
 value by party size in aggregate dashboards. This is a deliberate difference
 from the kill-tracker pattern it otherwise resembles, and the static
 validator (`tools/analytics/validate_gameplay_analytics_supply_loot_integration.py`)
-asserts the callback never iterates party members.
+asserts the callback never iterates party members and always includes nested
+containers.
 
 The logic itself lives in `data/scripts/lib/gameplay_analytics_loot.lua`
 (`GameplayAnalyticsLoot.recordCorpseLoot`) so it can be unit tested without a
@@ -97,16 +110,17 @@ running game engine.
 - Potions: one call site, immediately before the one existing `item:remove(1)`.
 - Runes: one call per successful cast, gated on the same success result the
   spell-cast wrapper already returns.
-- Loot: one call per item per corpse, from a callback that itself only fires
-  once per monster death, attributed to a single player.
+- Loot: one call per physical item per corpse, including items in nested
+  containers, from a callback that itself only fires once per monster death
+  and is attributed to a single player.
 
 ## Disabled by default
 
 `trackSupplies` and `trackLoot` both default to `false`. Every call site in
-this integration goes through `Analytics.recordSupply` / `Analytics.recordLoot`,
-which already no-op when their respective tracking flag is off or Analytics
-itself is disabled — this change does not alter those defaults or add a new
-bypass around them.
+this integration goes through `recordSupply` / `recordLoot`, which already
+no-op when their respective tracking flag is off or Analytics itself is
+disabled — this change does not alter those defaults or add a new bypass
+around them.
 
 ## Aggregated, not per-event, writes
 

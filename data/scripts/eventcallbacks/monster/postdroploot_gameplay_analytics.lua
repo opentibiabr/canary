@@ -8,15 +8,11 @@
 -- data/scripts/lib/gameplay_analytics_loot.lua for why.
 local AnalyticsLoot = dofile("data/scripts/lib/gameplay_analytics_loot.lua")
 local AnalyticsPrices = dofile("data/scripts/lib/gameplay_analytics_prices.lua")
-local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
-if not analyticsOk then
-	Analytics = nil
-end
 
 local callback = EventCallback("GameplayAnalyticsPostDropLoot")
 
 function callback.monsterPostDropLoot(monster, corpse)
-	AnalyticsLoot.recordCorpseLoot(Analytics, AnalyticsPrices, Player(corpse:getCorpseOwner()), corpse:getItems(false))
+	AnalyticsLoot.recordCorpseLoot(GameplayAnalytics, AnalyticsPrices, Player(corpse:getCorpseOwner()), corpse:getItems(true))
 end
 
 callback:register()

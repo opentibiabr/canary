@@ -13,15 +13,11 @@ end
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
 local AnalyticsSpell = dofile("data/scripts/lib/gameplay_analytics_spell.lua")
-local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
-if not analyticsOk then
-	Analytics = nil
-end
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	return AnalyticsSpell.recordCast(Analytics, creature, "Ultimate Healing", 160, 1, function()
+	return AnalyticsSpell.recordCast(GameplayAnalytics, creature, "Ultimate Healing", 160, 1, function()
 		return combat:execute(creature, variant)
 	end)
 end

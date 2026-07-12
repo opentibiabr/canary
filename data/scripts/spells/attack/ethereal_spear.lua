@@ -16,15 +16,11 @@ end
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
 
 local AnalyticsSpell = dofile("data/scripts/lib/gameplay_analytics_spell.lua")
-local analyticsOk, Analytics = pcall(dofile, "data-otservbr-global/scripts/lib/gameplay_analytics.lua")
-if not analyticsOk then
-	Analytics = nil
-end
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	return AnalyticsSpell.recordCast(Analytics, creature, "Ethereal Spear", 25, 1, function()
+	return AnalyticsSpell.recordCast(GameplayAnalytics, creature, "Ethereal Spear", 25, 1, function()
 		return combat:execute(creature, var)
 	end)
 end

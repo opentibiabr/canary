@@ -41,10 +41,26 @@ class GameplayAnalyticsSupplyLootValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "double-count"):
             validator.validate_loot_callback(broken)
 
+    def test_rejects_non_recursive_loot_callback(self) -> None:
+        broken = self.loot_callback.replace("corpse:getItems(true)", "corpse:getItems(false)")
+        with self.assertRaisesRegex(AssertionError, "nested corpse containers"):
+            validator.validate_loot_callback(broken)
+
+    def test_rejects_loot_callback_reloading_core(self) -> None:
+        broken = self.loot_callback + f'\nlocal Analytics = dofile("{validator.CORE_PATH}")\n'
+        with self.assertRaisesRegex(AssertionError, "must not reload"):
+            validator.validate_loot_callback(broken)
+
     def test_rejects_supply_integration_missing_price_table(self) -> None:
         path = validator.SUPPLY_FILES[0]
         broken = self.supply_files[path].replace('dofile("data/scripts/lib/gameplay_analytics_prices.lua")', "")
         with self.assertRaisesRegex(AssertionError, "must load the shared price table"):
+            validator.validate_supply_integration(path, broken)
+
+    def test_rejects_supply_integration_reloading_core(self) -> None:
+        path = validator.SUPPLY_FILES[0]
+        broken = self.supply_files[path] + f'\nlocal Analytics = dofile("{validator.CORE_PATH}")\n'
+        with self.assertRaisesRegex(AssertionError, "must not reload"):
             validator.validate_supply_integration(path, broken)
 
 

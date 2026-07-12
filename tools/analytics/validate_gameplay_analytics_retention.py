@@ -22,7 +22,7 @@ def read(path: Path) -> str:
 
 
 def validate_schema(text: str) -> None:
-    for table in ("analytics_daily_balance", "analytics_maintenance_state"):
+    for table in ("analytics_daily_balance", "analytics_daily_party_balance", "analytics_maintenance_state"):
         require(f"CREATE TABLE IF NOT EXISTS `{table}`" in text, f"retention schema lacks {table}")
     for column in (
         "session_date",
@@ -36,9 +36,10 @@ def validate_schema(text: str) -> None:
         "shared_experience_seconds",
     ):
         require(f"`{column}`" in text, f"daily aggregate lacks {column}")
+    require("`party_mode`" in text, "party aggregate lacks party_mode")
     require("analytics_sessions_started_id" in text, "retention schema lacks raw-session cleanup index")
     require("IF NOT EXISTS" in text, "retention schema must be repeatable")
-    require(text.count("ENGINE=InnoDB") == 2, "retention tables must use InnoDB")
+    require(text.count("ENGINE=InnoDB") == 3, "retention tables must use InnoDB")
 
 
 def validate_runner(text: str) -> None:
@@ -46,30 +47,47 @@ def validate_runner(text: str) -> None:
         "set -euo pipefail",
         "REQUIRED_SCHEMA_VERSION=3",
         "analytics_daily_balance",
+        "analytics_daily_party_balance",
         "analytics_maintenance_state",
         "daily_aggregate_through",
         "MAX_DAYS_PER_RUN",
+        "REAGGREGATE_DAYS",
         "DELETE_RAW_SESSIONS",
         "DELETE_BATCH_SIZE",
         "DELETE_MAX_BATCHES",
-        "ON DUPLICATE KEY UPDATE",
-        "GREATEST(combat_seconds, 1)",
         "aggregate_through",
+        "START TRANSACTION",
+        "COMMIT",
+        "COALESCE(SUM(LEAST(COALESCE(shared_experience_seconds, 0), combat_seconds)), 0)",
     ):
         require(token in text, f"maintenance runner lacks {token}")
 
-    daily_start = text.find("INSERT INTO analytics_daily_balance")
-    state_start = text.find("INSERT INTO analytics_maintenance_state", daily_start)
-    require(daily_start >= 0 and state_start > daily_start, "maintenance runner lacks the daily aggregate statement")
-    daily_statement = text[daily_start:state_start]
     require(
-        "ON DUPLICATE KEY UPDATE" in daily_statement,
-        "daily aggregate must use ON DUPLICATE KEY UPDATE",
+        "DELETE FROM analytics_daily_balance WHERE session_date" in text,
+        "daily aggregate rebuild must delete the complete day before inserting replacement rows",
     )
-
+    require(
+        "DELETE FROM analytics_daily_party_balance WHERE session_date" in text,
+        "party aggregate rebuild must delete the complete day before inserting replacement rows",
+    )
+    require(
+        "CASE WHEN COALESCE(party_size_avg, party_size, 1) <= 1 THEN 'solo' ELSE 'party' END" in text,
+        "party aggregate must classify each raw session before grouping",
+    )
+    require(
+        'REAGGREGATE_DAYS="${REAGGREGATE_DAYS:-7}"' in text,
+        "runner must rebuild a bounded recent window by default",
+    )
+    require(
+        "RAW_RETENTION_DAYS must be greater than REAGGREGATE_DAYS + AGGREGATION_LAG_DAYS" in text,
+        "raw deletion must stay outside the rolling rebuild window",
+    )
     require('DELETE_RAW_SESSIONS="${DELETE_RAW_SESSIONS:-false}"' in text, "raw deletion must be disabled by default")
     require('if [[ "${DELETE_RAW_SESSIONS}" != "true" ]]' in text, "raw deletion must require explicit opt-in")
-    require("table_name IN ('analytics_daily_balance','analytics_maintenance_state')" in text, "runner must verify optional retention schema")
+    require(
+        "table_name IN ('analytics_daily_balance','analytics_daily_party_balance','analytics_maintenance_state')" in text,
+        "runner must verify the complete optional retention schema",
+    )
     require("started_at < UNIX_TIMESTAMP(DATE_ADD('${aggregate_through}', INTERVAL 1 DAY))" in text, "deletion must stay behind the aggregate checkpoint")
     require("LIMIT ${DELETE_BATCH_SIZE}" in text, "raw deletion must be batched")
     require("value_bigint=value_bigint + VALUES(value_bigint)" in text, "deleted-row counter must accumulate")
@@ -78,11 +96,16 @@ def validate_runner(text: str) -> None:
 
 def validate_test(text: str) -> None:
     for phrase in (
-        "idempotent aggregate groups",
+        "party aggregate groups",
+        "solo aggregate sessions",
+        "party aggregate sessions",
+        "shared seconds are clamped per session",
+        "late session rebuilt into daily aggregate",
+        "stale aggregate group removed",
         "raw sessions preserved by default",
-        "expired raw sessions deleted",
-        "detail rows deleted by cascade",
-        "daily aggregates retained",
+        "only expired raw session deleted",
+        "old detail rows deleted by cascade",
+        "party aggregates retained",
     ):
         require(phrase in text, f"retention integration test lacks {phrase}")
 
@@ -94,6 +117,8 @@ def validate_docs(text: str) -> None:
         "systemd timer",
         "Back up",
         "analytics_daily_balance",
+        "analytics_daily_party_balance",
+        "REAGGREGATE_DAYS",
         "gameplay_analytics_retention.sql",
     ):
         require(phrase in text, f"retention documentation lacks {phrase}")

@@ -18,8 +18,9 @@ have been applied.
 ## Prerequisites
 
 1. `schema/gameplay_analytics.sql` and its migrations (`docs/systems/gameplay-analytics-migrations.md`).
-2. `schema/gameplay_analytics_retention.sql` (`docs/systems/gameplay-analytics-retention.md`) — the views depend on `analytics_daily_balance` and the `(started_at, id)` index it adds.
-3. `schema/gameplay_analytics_views.sql`:
+2. `schema/gameplay_analytics_retention.sql` (`docs/systems/gameplay-analytics-retention.md`) — the views depend on `analytics_daily_balance`, `analytics_daily_party_balance` and the `(started_at, id)` index it adds.
+3. Run `tools/analytics/maintain_gameplay_analytics.sh` at least once so the daily tables contain data.
+4. Apply `schema/gameplay_analytics_views.sql`:
 
    ```bash
    mariadb -u canary -p canary < schema/gameplay_analytics_views.sql
@@ -32,25 +33,29 @@ have been applied.
 | View | Reads | Used for |
 |---|---|---|
 | `analytics_daily_vocation_metrics` | `analytics_daily_balance` | EXP/h, DPS, damage taken/s, healing/s, deaths per 100 sessions, NPC profit/h, supply cost/h, shared experience %, session counts |
-| `analytics_daily_party_mode_metrics` | `analytics_daily_balance` | Solo versus party |
+| `analytics_daily_party_mode_metrics` | `analytics_daily_party_balance` | Solo versus party without combining the two modes into one daily row |
 | `analytics_dead_letter_health` | `analytics_dead_letters` | Pending dead-letter count, oldest/newest failure |
-| `analytics_session_drilldown` | `analytics_sessions` (raw) | Ad-hoc drill-down only; not used by a shipped panel, provided for building your own short-range queries |
+| `analytics_session_drilldown` | `analytics_sessions` (raw) | Ad-hoc drill-down only; not used by a shipped panel, provided for building short-range queries |
 | `analytics_spell_efficiency_drilldown` | `analytics_session_spells` + `analytics_sessions` (raw) | Spell efficiency table |
 
-The first two views read only the daily aggregate and are safe over long
-date ranges. The last two read raw per-session detail and should only be
-queried over short ranges (hours to a few days) — see "Daily aggregates
-versus drill-down" below.
+The first two views read only daily aggregates and are safe over long date
+ranges. The last two read raw per-session detail and should only be queried
+over short ranges (hours to a few days) — see "Daily aggregates versus
+drill-down" below.
 
 ## Daily aggregates versus drill-down
 
 `analytics_daily_balance` is written once per day per
-(vocation, level bracket, hunt area, server version) by
-`tools/analytics/maintain_gameplay_analytics.sh`. Querying it over months of
-history touches at most a few hundred rows. Querying raw `analytics_sessions`
-or `analytics_session_spells` over the same range touches every individual
-hunting session — bounded in principle by `RAW_RETENTION_DAYS`, but still
-much larger. The shipped dashboard therefore:
+(vocation, level bracket, hunt area, server version). The separate
+`analytics_daily_party_balance` table adds the `solo`/`party` dimension.
+Both are rebuilt by `tools/analytics/maintain_gameplay_analytics.sh` over a
+rolling correction window, so delayed sessions and corrected raw dimensions
+replace stale daily rows.
+
+Querying the aggregate tables over months touches at most a few hundred rows.
+Querying raw `analytics_sessions` or `analytics_session_spells` over the same
+range touches every individual hunting session — bounded in principle by
+`RAW_RETENTION_DAYS`, but still much larger. The shipped dashboard therefore:
 
 - uses `analytics_daily_vocation_metrics` / `analytics_daily_party_mode_metrics`
   for every long-range chart;
@@ -60,6 +65,27 @@ much larger. The shipped dashboard therefore:
 
 If you add your own panels, keep this split: aggregate for trends, raw for a
 specific short window.
+
+## Solo versus party semantics
+
+The maintenance runner classifies each raw session before grouping it into
+`analytics_daily_party_balance`. A time-weighted average party size at or below
+`1` is `solo`; a value above `1` is `party`. This fixes the earlier reporting
+error where separate solo and party sessions were first merged into one daily
+row and the whole row was then labeled from its average.
+
+A single raw session that itself moves between solo and party is assigned one
+mode from its time-weighted average. Exact within-session splitting would
+require segment-level damage, EXP and loot telemetry, which is not stored by
+the current privacy-conscious aggregate design.
+
+## Shared-experience percentage
+
+The maintenance runner clamps each session's shared-experience seconds to that
+session's combat seconds before summing. The reporting view also caps the final
+percentage at `100`. This prevents context sampling outside the effective
+combat window, malformed historical rows or imported data from producing a
+shared-experience percentage above `100%`.
 
 ## Minimum sample size
 
@@ -114,6 +140,11 @@ once) a real market value integration exists.
 4. Import. Adjust the `vocation_id` / `hunt_area` / `server_version`
    variables from the values your own data contains.
 
+The existing solo-versus-party panel queries
+`analytics_daily_party_mode_metrics`, so replacing the SQL view is sufficient
+to switch that panel to the corrected dedicated aggregate. Reimport the JSON
+only when the dashboard file itself changes.
+
 ## Provisioning (repeatable deployment)
 
 1. Copy `grafana/provisioning/datasources/mariadb.yaml.example` to your
@@ -131,16 +162,18 @@ once) a real market value integration exists.
 
 ## Upgrade
 
-1. Re-run `schema/gameplay_analytics_views.sql`; every view uses
+1. Re-apply `schema/gameplay_analytics_retention.sql` before the views so the
+   dedicated party table exists.
+2. Run maintenance once with `DELETE_RAW_SESSIONS=false` to backfill both daily
+   tables from the retained raw sessions.
+3. Re-run `schema/gameplay_analytics_views.sql`; every view uses
    `CREATE OR REPLACE VIEW`, so upgrading is repeatable and non-destructive.
-2. Replace the provisioned `gameplay-analytics-dashboard.json` file with the
-   new version. A file-provisioned dashboard is reloaded automatically within
-   `updateIntervalSeconds`; a manually imported one must be re-imported.
-3. Diff the new JSON's `templating.list` against the old one before
-   replacing if you have made local edits in the Grafana UI — provisioned
-   dashboards are read-only for structural changes made outside Grafana
-   unless `allowUiUpdates: true` (as in the example) is set, in which case
-   Grafana-side edits can be overwritten by the next provisioning reload.
+4. Replace the provisioned `gameplay-analytics-dashboard.json` file only when
+   that file changed. A file-provisioned dashboard is reloaded automatically
+   within `updateIntervalSeconds`; a manually imported one must be re-imported.
+5. Diff the new JSON's `templating.list` against the old one before replacing
+   it if you have made local edits in the Grafana UI — provisioned dashboards
+   can overwrite local structural edits.
 
 ## Empty datasets
 
@@ -152,10 +185,11 @@ Grafana panels display "No data" for a zero-row result and blank cells for
 
 ## Indexes and query cost
 
-- `analytics_daily_vocation_metrics` / `analytics_daily_party_mode_metrics`
-  filters on `vocation_id` and `session_date` use
-  `analytics_daily_balance`'s primary key and
-  `analytics_daily_balance_vocation_date` index.
+- `analytics_daily_vocation_metrics` filters on `vocation_id` and
+  `session_date` use `analytics_daily_balance_vocation_date`.
+- `analytics_daily_party_mode_metrics` filters on `vocation_id` and
+  `session_date` use `analytics_daily_party_vocation_date`; mode/date filters
+  can use `analytics_daily_party_mode_date`.
 - `analytics_session_drilldown` filters on `started_at` use the
   `analytics_sessions_started_id (started_at, id)` index added by
   `schema/gameplay_analytics_retention.sql`.
@@ -163,6 +197,6 @@ Grafana panels display "No data" for a zero-row result and blank cells for
   (primary key) and `analytics_session_spells (session_id, spell_name)`
   (primary key).
 
-`tools/analytics/test_gameplay_analytics_dashboard_views.sh` asserts (via
-`EXPLAIN`) that the time-filtered queries above do not fall back to a full
-table scan.
+`tools/analytics/test_gameplay_analytics_dashboard_views.sh` asserts against a
+real MariaDB service that the views compute the corrected values, tolerate
+empty data and use indexes for the bounded queries.

@@ -8,13 +8,14 @@ DB_PASSWORD="${DB_PASSWORD:-}"
 DB_NAME="${DB_NAME:-canary}"
 AGGREGATION_LAG_DAYS="${AGGREGATION_LAG_DAYS:-1}"
 MAX_DAYS_PER_RUN="${MAX_DAYS_PER_RUN:-31}"
+REAGGREGATE_DAYS="${REAGGREGATE_DAYS:-7}"
 RAW_RETENTION_DAYS="${RAW_RETENTION_DAYS:-180}"
 DELETE_RAW_SESSIONS="${DELETE_RAW_SESSIONS:-false}"
 DELETE_BATCH_SIZE="${DELETE_BATCH_SIZE:-5000}"
 DELETE_MAX_BATCHES="${DELETE_MAX_BATCHES:-20}"
 REQUIRED_SCHEMA_VERSION=3
 
-for numeric_name in DB_PORT AGGREGATION_LAG_DAYS MAX_DAYS_PER_RUN RAW_RETENTION_DAYS DELETE_BATCH_SIZE DELETE_MAX_BATCHES; do
+for numeric_name in DB_PORT AGGREGATION_LAG_DAYS MAX_DAYS_PER_RUN REAGGREGATE_DAYS RAW_RETENTION_DAYS DELETE_BATCH_SIZE DELETE_MAX_BATCHES; do
 	value="${!numeric_name}"
 	if [[ ! "${value}" =~ ^[0-9]+$ ]]; then
 		echo "${numeric_name} must be a non-negative integer" >&2
@@ -22,13 +23,21 @@ for numeric_name in DB_PORT AGGREGATION_LAG_DAYS MAX_DAYS_PER_RUN RAW_RETENTION_
 	fi
 done
 
-if [[ "${MAX_DAYS_PER_RUN}" -lt 1 || "${DELETE_BATCH_SIZE}" -lt 1 || "${DELETE_MAX_BATCHES}" -lt 1 ]]; then
-	echo "MAX_DAYS_PER_RUN, DELETE_BATCH_SIZE and DELETE_MAX_BATCHES must be positive" >&2
+if [[ "${MAX_DAYS_PER_RUN}" -lt 1 || "${REAGGREGATE_DAYS}" -lt 1 || "${DELETE_BATCH_SIZE}" -lt 1 || "${DELETE_MAX_BATCHES}" -lt 1 ]]; then
+	echo "MAX_DAYS_PER_RUN, REAGGREGATE_DAYS, DELETE_BATCH_SIZE and DELETE_MAX_BATCHES must be positive" >&2
 	exit 1
 fi
 
 if [[ "${DELETE_RAW_SESSIONS}" != "true" && "${DELETE_RAW_SESSIONS}" != "false" ]]; then
 	echo "DELETE_RAW_SESSIONS must be true or false" >&2
+	exit 1
+fi
+
+# The rolling rebuild must never reach dates whose raw sessions may already
+# have been deleted, otherwise a rebuild could erase the only retained
+# aggregate for that day.
+if [[ "${DELETE_RAW_SESSIONS}" == "true" && "${RAW_RETENTION_DAYS}" -le $((REAGGREGATE_DAYS + AGGREGATION_LAG_DAYS)) ]]; then
+	echo "RAW_RETENTION_DAYS must be greater than REAGGREGATE_DAYS + AGGREGATION_LAG_DAYS when raw deletion is enabled" >&2
 	exit 1
 fi
 
@@ -45,31 +54,23 @@ if [[ "${schema_version}" -lt "${REQUIRED_SCHEMA_VERSION}" ]]; then
 	exit 1
 fi
 
-retention_tables="$(query_scalar "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name IN ('analytics_daily_balance','analytics_maintenance_state')")"
-if [[ "${retention_tables}" != "2" ]]; then
+retention_tables="$(query_scalar "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='${DB_NAME}' AND table_name IN ('analytics_daily_balance','analytics_daily_party_balance','analytics_maintenance_state')")"
+if [[ "${retention_tables}" != "3" ]]; then
 	echo "Gameplay Analytics retention schema is missing; apply schema/gameplay_analytics_retention.sql" >&2
 	exit 1
 fi
 
-target_date="$(query_scalar "SELECT DATE_FORMAT(DATE_SUB(UTC_DATE(), INTERVAL ${AGGREGATION_LAG_DAYS} DAY), '%Y-%m-%d')")"
-last_aggregated="$(query_scalar "SELECT COALESCE(DATE_FORMAT(value_date, '%Y-%m-%d'), '') FROM analytics_maintenance_state WHERE state_key = 'daily_aggregate_through' LIMIT 1")"
-
-if [[ -n "${last_aggregated}" ]]; then
-	current_date="$(query_scalar "SELECT DATE_FORMAT(DATE_ADD('${last_aggregated}', INTERVAL 1 DAY), '%Y-%m-%d')")"
-else
-	current_date="$(query_scalar "SELECT COALESCE(DATE_FORMAT(DATE(FROM_UNIXTIME(MIN(started_at))), '%Y-%m-%d'), '') FROM analytics_sessions")"
-fi
-
-processed_days=0
-while [[ -n "${current_date}" && "${processed_days}" -lt "${MAX_DAYS_PER_RUN}" ]]; do
-	if [[ "${current_date}" > "${target_date}" ]]; then
-		break
-	fi
-
-	next_date="$(query_scalar "SELECT DATE_FORMAT(DATE_ADD('${current_date}', INTERVAL 1 DAY), '%Y-%m-%d')")"
+aggregate_date() {
+	local current_date="$1"
+	local next_date="$2"
 	echo "Aggregating Gameplay Analytics date ${current_date}"
 
+	# Delete and rebuild the complete day in one transaction. This is stronger
+	# than an upsert-only pass: late rows, corrected dimensions and removed raw
+	# rows cannot leave stale aggregate groups behind.
 	query_scalar "
+START TRANSACTION;
+DELETE FROM analytics_daily_balance WHERE session_date = '${current_date}';
 INSERT INTO analytics_daily_balance
     (session_date,server_version,hunt_area,vocation_id,level_bracket,source_sessions,combat_seconds,experience_raw,experience_final,damage_dealt,damage_received,healing_total,overhealing,mana_spent,monsters_killed,deaths,loot_value_npc,loot_value_market,supplies_value,party_size_weighted,party_weight_seconds,shared_experience_seconds)
 SELECT
@@ -92,15 +93,70 @@ SELECT
     COALESCE(SUM(loot_value_npc), 0),
     COALESCE(SUM(loot_value_market), 0),
     COALESCE(SUM(supplies_value), 0),
-    COALESCE(SUM(COALESCE(party_size_avg, party_size, 1) * GREATEST(combat_seconds, 1)), 0),
-    COALESCE(SUM(GREATEST(combat_seconds, 1)), 0),
-    COALESCE(SUM(shared_experience_seconds), 0)
+    COALESCE(SUM(COALESCE(party_size_avg, party_size, 1) * combat_seconds), 0),
+    COALESCE(SUM(combat_seconds), 0),
+    COALESCE(SUM(LEAST(COALESCE(shared_experience_seconds, 0), combat_seconds)), 0)
 FROM analytics_sessions
 WHERE started_at >= UNIX_TIMESTAMP('${current_date} 00:00:00')
   AND started_at < UNIX_TIMESTAMP('${next_date} 00:00:00')
-GROUP BY COALESCE(server_version, ''), COALESCE(hunt_area, ''), vocation_id, FLOOR(level_start / 100) * 100
-ON DUPLICATE KEY UPDATE
-    source_sessions=VALUES(source_sessions),combat_seconds=VALUES(combat_seconds),experience_raw=VALUES(experience_raw),experience_final=VALUES(experience_final),damage_dealt=VALUES(damage_dealt),damage_received=VALUES(damage_received),healing_total=VALUES(healing_total),overhealing=VALUES(overhealing),mana_spent=VALUES(mana_spent),monsters_killed=VALUES(monsters_killed),deaths=VALUES(deaths),loot_value_npc=VALUES(loot_value_npc),loot_value_market=VALUES(loot_value_market),supplies_value=VALUES(supplies_value),party_size_weighted=VALUES(party_size_weighted),party_weight_seconds=VALUES(party_weight_seconds),shared_experience_seconds=VALUES(shared_experience_seconds)" >/dev/null
+GROUP BY COALESCE(server_version, ''), COALESCE(hunt_area, ''), vocation_id, FLOOR(level_start / 100) * 100;
+
+DELETE FROM analytics_daily_party_balance WHERE session_date = '${current_date}';
+INSERT INTO analytics_daily_party_balance
+    (session_date,server_version,hunt_area,vocation_id,level_bracket,party_mode,source_sessions,combat_seconds,experience_raw,experience_final,damage_dealt,damage_received,healing_total,overhealing,mana_spent,monsters_killed,deaths,loot_value_npc,loot_value_market,supplies_value,party_size_weighted,party_weight_seconds,shared_experience_seconds)
+SELECT
+    '${current_date}',
+    COALESCE(server_version, ''),
+    COALESCE(hunt_area, ''),
+    vocation_id,
+    FLOOR(level_start / 100) * 100,
+    CASE WHEN COALESCE(party_size_avg, party_size, 1) <= 1 THEN 'solo' ELSE 'party' END,
+    COUNT(*),
+    COALESCE(SUM(combat_seconds), 0),
+    COALESCE(SUM(experience_raw), 0),
+    COALESCE(SUM(experience_final), 0),
+    COALESCE(SUM(damage_dealt), 0),
+    COALESCE(SUM(damage_received), 0),
+    COALESCE(SUM(healing_self + healing_others), 0),
+    COALESCE(SUM(overhealing), 0),
+    COALESCE(SUM(mana_spent), 0),
+    COALESCE(SUM(monsters_killed), 0),
+    COALESCE(SUM(deaths), 0),
+    COALESCE(SUM(loot_value_npc), 0),
+    COALESCE(SUM(loot_value_market), 0),
+    COALESCE(SUM(supplies_value), 0),
+    COALESCE(SUM(COALESCE(party_size_avg, party_size, 1) * combat_seconds), 0),
+    COALESCE(SUM(combat_seconds), 0),
+    COALESCE(SUM(LEAST(COALESCE(shared_experience_seconds, 0), combat_seconds)), 0)
+FROM analytics_sessions
+WHERE started_at >= UNIX_TIMESTAMP('${current_date} 00:00:00')
+  AND started_at < UNIX_TIMESTAMP('${next_date} 00:00:00')
+GROUP BY
+    COALESCE(server_version, ''),
+    COALESCE(hunt_area, ''),
+    vocation_id,
+    FLOOR(level_start / 100) * 100,
+    CASE WHEN COALESCE(party_size_avg, party_size, 1) <= 1 THEN 'solo' ELSE 'party' END;
+COMMIT;" >/dev/null
+}
+
+target_date="$(query_scalar "SELECT DATE_FORMAT(DATE_SUB(UTC_DATE(), INTERVAL ${AGGREGATION_LAG_DAYS} DAY), '%Y-%m-%d')")"
+last_aggregated="$(query_scalar "SELECT COALESCE(DATE_FORMAT(value_date, '%Y-%m-%d'), '') FROM analytics_maintenance_state WHERE state_key = 'daily_aggregate_through' LIMIT 1")"
+
+if [[ -n "${last_aggregated}" ]]; then
+	current_date="$(query_scalar "SELECT DATE_FORMAT(DATE_ADD('${last_aggregated}', INTERVAL 1 DAY), '%Y-%m-%d')")"
+else
+	current_date="$(query_scalar "SELECT COALESCE(DATE_FORMAT(DATE(FROM_UNIXTIME(MIN(started_at))), '%Y-%m-%d'), '') FROM analytics_sessions")"
+fi
+
+processed_days=0
+while [[ -n "${current_date}" && "${processed_days}" -lt "${MAX_DAYS_PER_RUN}" ]]; do
+	if [[ "${current_date}" > "${target_date}" ]]; then
+		break
+	fi
+
+	next_date="$(query_scalar "SELECT DATE_FORMAT(DATE_ADD('${current_date}', INTERVAL 1 DAY), '%Y-%m-%d')")"
+	aggregate_date "${current_date}" "${next_date}"
 
 	query_scalar "
 INSERT INTO analytics_maintenance_state (state_key, value_date, value_bigint)
@@ -111,8 +167,24 @@ ON DUPLICATE KEY UPDATE value_date=VALUES(value_date), updated_at=CURRENT_TIMEST
 	processed_days=$((processed_days + 1))
 done
 
+# Rebuild a bounded recent window every run. This picks up delayed session
+# flushes and corrected raw rows even after the sequential checkpoint has
+# advanced past their day.
+reaggregate_offset=$((REAGGREGATE_DAYS - 1))
+reaggregate_date="$(query_scalar "SELECT DATE_FORMAT(DATE_SUB('${target_date}', INTERVAL ${reaggregate_offset} DAY), '%Y-%m-%d')")"
+reprocessed_days=0
+while [[ "${reaggregate_date}" < "${target_date}" || "${reaggregate_date}" == "${target_date}" ]]; do
+	next_date="$(query_scalar "SELECT DATE_FORMAT(DATE_ADD('${reaggregate_date}', INTERVAL 1 DAY), '%Y-%m-%d')")"
+	aggregate_date "${reaggregate_date}" "${next_date}"
+	reaggregate_date="${next_date}"
+	reprocessed_days=$((reprocessed_days + 1))
+	if [[ "${reprocessed_days}" -ge "${REAGGREGATE_DAYS}" ]]; then
+		break
+	fi
+done
+
 aggregate_through="$(query_scalar "SELECT COALESCE(DATE_FORMAT(value_date, '%Y-%m-%d'), '') FROM analytics_maintenance_state WHERE state_key = 'daily_aggregate_through' LIMIT 1")"
-echo "Gameplay Analytics aggregation processed ${processed_days} day(s); checkpoint=${aggregate_through:-none}; target=${target_date}"
+echo "Gameplay Analytics aggregation processed ${processed_days} catch-up day(s), rebuilt ${reprocessed_days} recent day(s); checkpoint=${aggregate_through:-none}; target=${target_date}"
 
 if [[ "${DELETE_RAW_SESSIONS}" != "true" ]]; then
 	echo "Raw-session deletion disabled; set DELETE_RAW_SESSIONS=true after validating aggregates"

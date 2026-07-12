@@ -29,6 +29,16 @@ class GameplayAnalyticsRetentionSystemdValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "placeholder database password"):
             validator.validate_env_example(broken)
 
+    def test_rejects_missing_reaggregate_window(self) -> None:
+        broken = self.env_example.replace("REAGGREGATE_DAYS=7\n", "", 1)
+        with self.assertRaisesRegex(AssertionError, "REAGGREGATE_DAYS"):
+            validator.validate_env_example(broken)
+
+    def test_rejects_unbounded_reaggregate_default(self) -> None:
+        broken = self.env_example.replace("REAGGREGATE_DAYS=7", "REAGGREGATE_DAYS=3650", 1)
+        with self.assertRaisesRegex(AssertionError, "seven-day rolling rebuild"):
+            validator.validate_env_example(broken)
+
     def test_rejects_non_oneshot_service(self) -> None:
         broken = self.service.replace("Type=oneshot", "Type=simple", 1)
         with self.assertRaisesRegex(AssertionError, "Type=oneshot"):

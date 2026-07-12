@@ -9,6 +9,7 @@ target_sources(
             player_stats_test.cpp
             spawn_monster_test.cpp
             use_with_policy_test.cpp
+            instance/instance_manager_test.cpp
             multichannel/channel_context_test.cpp
             multichannel/channel_registry_test.cpp
             multichannel/position_resolver_test.cpp

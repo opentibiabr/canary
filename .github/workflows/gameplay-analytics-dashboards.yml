@@ -4,6 +4,7 @@ name: Gameplay Analytics Dashboards
 on:
   pull_request:
     paths:
+      - "schema/gameplay_analytics_retention.sql"
       - "schema/gameplay_analytics_views.sql"
       - "grafana/gameplay-analytics-dashboard.json"
       - "grafana/provisioning/datasources/mariadb.yaml.example"
@@ -16,6 +17,7 @@ on:
   push:
     branches: [main]
     paths:
+      - "schema/gameplay_analytics_retention.sql"
       - "schema/gameplay_analytics_views.sql"
       - "grafana/gameplay-analytics-dashboard.json"
       - "grafana/provisioning/datasources/mariadb.yaml.example"

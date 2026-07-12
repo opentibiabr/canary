@@ -58,14 +58,13 @@ namespace {
 		variant.pos = Spells::getCasterPosition(player, direction);
 	}
 
-	bool expertPvpAllowsSecureModeTarget(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
-		if (!player || !target || !ExpertPvp::isEnabled() || !Combat::isPlayerCombat(target)) {
-			return false;
-		}
-
+	ReturnValue getExpertPvpRuneTargetReturnValue(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
 		const auto relation = ExpertPvp::classifyRelation(player, target);
 		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::RuneTarget, relation.facts);
-		return decision.handled && decision.allowed;
+		if (!decision.handled || decision.allowed) {
+			return RETURNVALUE_NOERROR;
+		}
+		return target->getPlayer() ? RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER : RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 	}
 
 	bool shouldApplyLegacySpellPzLock(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
@@ -708,13 +707,21 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 		return false;
 	}
 
-	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
-		const auto &targetPlayer = topVisibleCreature->getPlayer();
-		if (!expertPvpAllowsSecureModeTarget(player, topVisibleCreature) && targetPlayer && targetPlayer != player
-		    && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
-			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
-			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
-			return false;
+	if (aggressive && needTarget && topVisibleCreature) {
+		if (ExpertPvp::isEnabled() && Combat::isPlayerCombat(topVisibleCreature)) {
+			const auto expertPvpRet = getExpertPvpRuneTargetReturnValue(player, topVisibleCreature);
+			if (expertPvpRet != RETURNVALUE_NOERROR) {
+				player->sendCancelMessage(expertPvpRet);
+				g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+				return false;
+			}
+		} else if (player->hasSecureMode()) {
+			const auto &targetPlayer = topVisibleCreature->getPlayer();
+			if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
+				player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
+				g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+				return false;
+			}
 		}
 	}
 	return true;

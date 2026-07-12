@@ -7,10 +7,9 @@
 -- docs/systems/gameplay-analytics-dashboards.md for the full explanation of
 -- which view backs which panel and why.
 --
--- Long-range dashboard panels query the two daily-aggregate views below,
--- which read only from `analytics_daily_balance` (already grouped by day).
--- Drill-down views further down read `analytics_sessions` / its detail
--- tables directly and are intended for bounded, recent-range queries only.
+-- Long-range dashboard panels query the two daily aggregate tables below.
+-- Drill-down views further down read analytics_sessions / its detail tables
+-- directly and are intended for bounded, recent-range queries only.
 
 -- Daily performance metrics per vocation, level bracket, hunt area and
 -- server version. One row per analytics_daily_balance row; every ratio is
@@ -33,24 +32,26 @@ SELECT
     ROUND(`supplies_value` / NULLIF(`combat_seconds`, 0) * 3600) AS `supply_cost_per_hour`,
     ROUND(`loot_value_market` / NULLIF(`combat_seconds`, 0) * 3600) AS `market_loot_per_hour`,
     ROUND(`party_size_weighted` / NULLIF(`party_weight_seconds`, 0), 2) AS `avg_party_size`,
-    ROUND(`shared_experience_seconds` / NULLIF(`combat_seconds`, 0) * 100, 2) AS `shared_experience_percent`
+    LEAST(100.00, ROUND(`shared_experience_seconds` / NULLIF(`combat_seconds`, 0) * 100, 2)) AS `shared_experience_percent`
 FROM `analytics_daily_balance`;
 
--- Solo versus party performance, also from the daily aggregate. Sessions
--- with an average party size at or below 1 for the day are treated as
--- "solo"; anything above is "party". This intentionally reuses the same
--- daily rows as analytics_daily_vocation_metrics rather than raw sessions,
--- so long date ranges stay index-free-scan-free (aggregated already).
+-- Solo versus party performance from a dedicated aggregate whose grouping
+-- includes party_mode at raw-session classification time. This prevents one
+-- daily row containing a mixture of solo and party sessions from being
+-- labelled entirely as party because its average party size is above one.
 CREATE OR REPLACE VIEW `analytics_daily_party_mode_metrics` AS
 SELECT
     `session_date`,
+    `server_version`,
+    `hunt_area`,
     `vocation_id`,
-    CASE WHEN `party_size_weighted` / NULLIF(`party_weight_seconds`, 0) <= 1 THEN 'solo' ELSE 'party' END AS `mode`,
+    `level_bracket`,
+    `party_mode` AS `mode`,
     `source_sessions` AS `sessions`,
     `combat_seconds`,
     ROUND(`experience_raw` / NULLIF(`combat_seconds`, 0) * 3600) AS `exp_per_hour`,
     ROUND((`loot_value_npc` - `supplies_value`) / NULLIF(`combat_seconds`, 0) * 3600) AS `npc_profit_per_hour`
-FROM `analytics_daily_balance`;
+FROM `analytics_daily_party_balance`;
 
 -- Dead-letter queue health. Backed by the persisted dead-letter table, so
 -- this is real MariaDB data rather than a snapshot of process-local
@@ -66,13 +67,9 @@ SELECT
     MIN(`failed_at`) AS `oldest_failure_at`
 FROM `analytics_dead_letters`;
 
--- Drill-down: solo versus party at raw-session granularity, for shorter
--- ranges than the daily view covers (e.g. the last few hours). Filters on
--- combat_seconds to exclude noise sessions, matching the example query in
--- docs/systems/gameplay-analytics.md. started_at is left unaggregated so a
--- dashboard time-range filter on this column can use the
--- analytics_sessions_started_id (started_at, id) index from
--- schema/gameplay_analytics_retention.sql instead of scanning the table.
+-- Drill-down: session-level fields for short, bounded ranges. Filters on
+-- started_at can use analytics_sessions_started_id (started_at, id) from the
+-- retention schema instead of scanning the table.
 CREATE OR REPLACE VIEW `analytics_session_drilldown` AS
 SELECT
     `id`,
@@ -95,11 +92,7 @@ FROM `analytics_sessions`
 WHERE `combat_seconds` >= 300;
 
 -- Drill-down: spell efficiency. Spell aggregates only exist at raw-session
--- detail level (analytics_daily_balance has no per-spell dimension), so
--- this view necessarily reads analytics_session_spells joined to
--- analytics_sessions. Bound the panel's own query by a started_at range;
--- the join predicate itself uses the analytics_session_spells primary key
--- (session_id, spell_name) and analytics_sessions' primary key.
+-- detail level, so bound panel queries by a started_at range.
 CREATE OR REPLACE VIEW `analytics_spell_efficiency_drilldown` AS
 SELECT
     `s`.`started_at`,

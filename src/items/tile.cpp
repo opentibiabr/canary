@@ -38,7 +38,8 @@ namespace {
 		}
 
 		bool handledExpertField = false;
-		if (ground && ground->hasProperty(CONST_PROP_BLOCKSOLID)) {
+		const bool pathfinding = hasBitSet(FLAG_PATHFINDING, tileFlags);
+		if (ground && (ground->hasProperty(CONST_PROP_BLOCKSOLID) || (pathfinding && ground->hasProperty(CONST_PROP_BLOCKPATH)))) {
 			return false;
 		}
 
@@ -69,7 +70,7 @@ namespace {
 				}
 			}
 
-			if (!handledItem && item->hasProperty(CONST_PROP_BLOCKSOLID)) {
+			if (!handledItem && (item->hasProperty(CONST_PROP_BLOCKSOLID) || (pathfinding && item->hasProperty(CONST_PROP_BLOCKPATH)))) {
 				return false;
 			}
 		}
@@ -791,6 +792,10 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_BLOCKPATH)) {
+				ReturnValue expertPvpFieldStepRet = RETURNVALUE_NOERROR;
+				if (queryExpertPvpFieldStep(creature, ground, getItemList(), tileFlags, expertPvpFieldStepRet)) {
+					return expertPvpFieldStepRet;
+				}
 				return RETURNVALUE_NOTPOSSIBLE;
 			}
 

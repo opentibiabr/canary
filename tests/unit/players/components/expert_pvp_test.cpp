@@ -391,6 +391,38 @@ TEST(ExpertPvpFieldStepDecisionTest, ActiveCombatPlayersAreBlockedByWall) {
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
 }
 
+TEST(ExpertPvpFieldStepDecisionTest, WhiteFieldBlocksProtectedAllyAttacker) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_WHITE_HAND, ITEM_MAGICWALL, true);
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_FALSE(decision.canStep);
+	EXPECT_FALSE(decision.appliesPzLock);
+	EXPECT_EQ(ExpertPvpRelation::ProtectedAllyAttacker, decision.relation);
+}
+
+TEST(ExpertPvpFieldStepDecisionTest, YellowFieldBlocksSkulledNonAlly) {
+	const auto field = ExpertPvp::makeFieldContext(100, PVP_MODE_YELLOW_HAND, ITEM_WILDGROWTH, true);
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.actorMode = field.ownerMode;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.skulledTarget = true;
+
+	const auto decision = ExpertPvp::evaluateFieldStep(field, context);
+
+	EXPECT_FALSE(decision.canStep);
+	EXPECT_FALSE(decision.appliesPzLock);
+	EXPECT_EQ(ExpertPvpRelation::SkulledTarget, decision.relation);
+}
+
 TEST(ExpertPvpWalkthroughDecisionTest, DoveDoesNotBlockProtectedAllyAttacker) {
 	ExpertPvpRelationContext context;
 	context.actorMode = PVP_MODE_DOVE;

@@ -735,49 +735,61 @@ ExpertPvpFieldStepDecision ExpertPvp::evaluateFieldStep(const ExpertFieldContext
 		return decision;
 	}
 
-	switch (relation.relation) {
-		case ExpertPvpRelation::Self:
-			decision.canStep = false;
-			decision.reason = ExpertPvpDecisionReason::Self;
+	if (relation.relation == ExpertPvpRelation::Self) {
+		decision.canStep = false;
+		decision.reason = ExpertPvpDecisionReason::Self;
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::AccessPlayer) {
+		decision.reason = ExpertPvpDecisionReason::AccessPlayer;
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::PartyAlly || relation.relation == ExpertPvpRelation::GuildAlly) {
+		decision.reason = ExpertPvpDecisionReason::Ally;
+		return decision;
+	}
+
+	if (relationContext.directTarget && !relationContext.directAttacker) {
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+		return decision;
+	}
+
+	bool blocks = relationContext.warEnemy;
+	switch (mode.mode) {
+		case PVP_MODE_DOVE:
+			blocks = blocks || relationContext.directAttacker;
 			break;
-		case ExpertPvpRelation::AccessPlayer:
-			decision.canStep = true;
-			decision.reason = ExpertPvpDecisionReason::AccessPlayer;
+		case PVP_MODE_WHITE_HAND:
+			blocks = blocks || relationContext.directAttacker || relationContext.protectedAllyAttacker;
 			break;
-		case ExpertPvpRelation::PartyAlly:
-		case ExpertPvpRelation::GuildAlly:
-			decision.canStep = true;
-			decision.reason = ExpertPvpDecisionReason::Ally;
+		case PVP_MODE_YELLOW_HAND:
+			blocks = blocks || relationContext.directAttacker || relationContext.skulledTarget;
 			break;
-		case ExpertPvpRelation::DirectAttacker:
-			decision.canStep = false;
-			decision.reason = ExpertPvpDecisionReason::DirectCombat;
-			break;
-		case ExpertPvpRelation::DirectTarget:
-			decision.canStep = true;
-			decision.reason = ExpertPvpDecisionReason::DirectCombat;
-			break;
-		case ExpertPvpRelation::WarEnemy:
-			decision.canStep = false;
-			decision.reason = ExpertPvpDecisionReason::War;
-			break;
-		case ExpertPvpRelation::SkulledTarget:
-			decision.canStep = false;
-			decision.reason = ExpertPvpDecisionReason::SkulledTarget;
-			break;
-		case ExpertPvpRelation::NeutralPlayer:
-			decision.canStep = mode.mode != PVP_MODE_RED_FIST;
-			decision.reason = ExpertPvpDecisionReason::Neutral;
-			if (!decision.canStep) {
-				decision.sideEffectOwnerGuid = fieldContext.ownerGuid;
-				decision.skullAction = ExpertPvpSkullAction::White;
-				decision.appliesPzLock = true;
-			}
+		case PVP_MODE_RED_FIST:
+			blocks = blocks || relationContext.directAttacker || relationContext.protectedAllyAttacker || relationContext.skulledTarget || relationContext.subjectIsPlayer || relationContext.subjectIsPlayerSummon;
 			break;
 		default:
 			decision.canStep = false;
-			decision.reason = ExpertPvpDecisionReason::MissingPlayer;
-			break;
+			decision.reason = ExpertPvpDecisionReason::InvalidMode;
+			return decision;
+	}
+
+	decision.canStep = !blocks;
+	if (relationContext.warEnemy) {
+		decision.reason = ExpertPvpDecisionReason::War;
+	} else if (relationContext.directAttacker || relationContext.protectedAllyAttacker || relationContext.directTarget) {
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+	} else if (relationContext.skulledTarget) {
+		decision.reason = ExpertPvpDecisionReason::SkulledTarget;
+	}
+
+	const bool unjustifiedRedBlock = blocks && mode.mode == PVP_MODE_RED_FIST && !relationContext.directAttacker && !relationContext.protectedAllyAttacker && !relationContext.warEnemy && !relationContext.skulledTarget;
+	if (unjustifiedRedBlock) {
+		decision.sideEffectOwnerGuid = fieldContext.ownerGuid;
+		decision.skullAction = ExpertPvpSkullAction::White;
+		decision.appliesPzLock = true;
 	}
 
 	return decision;

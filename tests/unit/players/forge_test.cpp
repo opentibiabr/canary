@@ -10,6 +10,7 @@
 #include <gtest/gtest.h>
 
 #include "creatures/players/player.hpp"
+#include "game/functions/forge_transfer_policy.hpp"
 #include "lib/di/container.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 #include "utils/utils_definitions.hpp"
@@ -100,4 +101,22 @@ TEST_F(ForgePlayerTest, HasItemCountById_StashNotCheckedWhenFlagFalse) {
 	player->addItemOnStash(ITEM_FORGE_CORE, 10);
 	// checkStash = false: stash items must be ignored.
 	EXPECT_FALSE(player->hasItemCountById(ITEM_FORGE_CORE, 1, false));
+}
+
+TEST(ForgeTransferPolicyTest, MatchesOnlyNonZeroEqualClassifications) {
+	EXPECT_TRUE(ForgeTransferPolicy::hasMatchingClassification(4, 4));
+	EXPECT_FALSE(ForgeTransferPolicy::hasMatchingClassification(4, 3));
+	EXPECT_FALSE(ForgeTransferPolicy::hasMatchingClassification(0, 0));
+}
+
+TEST(ForgeTransferPolicyTest, ValidatesDonorTierByTransferMode) {
+	EXPECT_FALSE(ForgeTransferPolicy::isValidDonorTier(1, false));
+	EXPECT_TRUE(ForgeTransferPolicy::isValidDonorTier(2, false));
+	EXPECT_TRUE(ForgeTransferPolicy::isValidDonorTier(1, true));
+}
+
+TEST(ForgeTransferPolicyTest, UsesDonorTierForResourcesAndCalculatesResultTier) {
+	EXPECT_EQ(3, ForgeTransferPolicy::resourceTier(3));
+	EXPECT_EQ(2, ForgeTransferPolicy::resultTier(3, false));
+	EXPECT_EQ(3, ForgeTransferPolicy::resultTier(3, true));
 }

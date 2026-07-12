@@ -93,10 +93,10 @@ namespace {
 			classification->addTier(1, 3, 200, 140, 120);
 			classification->addTier(2, 4, 320, 160, 140);
 
-			setupItemType(firstForgeItemId);
-			setupItemType(secondForgeItemId);
-			setupItemType(donorItemId);
-			setupItemType(receiveItemId);
+			setupItemType(firstForgeItemId, "forge fusion item one", 0);
+			setupItemType(secondForgeItemId, "forge fusion item two", 0);
+			setupItemType(donorItemId, "forge donor item", SLOTP_HAND);
+			setupItemType(receiveItemId, "forge receiver item", SLOTP_ARMOR);
 			ready = true;
 		}
 
@@ -153,14 +153,15 @@ namespace {
 			return 1;
 		}
 
-		void setupItemType(uint16_t itemId) const {
+		void setupItemType(uint16_t itemId, std::string name, uint32_t slotPosition) const {
 			auto &itemType = Item::items.getItemType(itemId);
 			itemType = ItemType {};
 			itemType.id = itemId;
-			itemType.name = "Forge test item";
+			itemType.article = "a";
+			itemType.name = std::move(name);
 			itemType.pickupable = true;
 			itemType.movable = true;
-			itemType.slotPosition = 0;
+			itemType.slotPosition = slotPosition;
 			itemType.type = ITEM_TYPE_TOOLS;
 			itemType.upgradeClassification = classificationId;
 		}
@@ -303,8 +304,8 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierViaGameFlowTransfersHigherTier
 	const uint8_t transferFromTier = 2;
 	const auto* classification = fixture.getClassification();
 	ASSERT_NE(nullptr, classification);
-	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
-	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);
+	const auto transferCoreCost = classification->tiers.contains(transferFromTier) ? classification->tiers.at(transferFromTier).corePrice : 0;
+	const auto transferGoldCost = fixture.fusionCostForTier(transferFromTier);
 	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
 
 	setPlayerResources(dustCost, transferGoldCost + 7);
@@ -327,6 +328,18 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierViaGameFlowTransfersHigherTier
 	EXPECT_FALSE(hasItem(*player, fixture.receiveItemId, 0));
 	EXPECT_TRUE(hasItem(*player, fixture.receiveItemId, 1));
 	EXPECT_GT(countItem(*player, ITEM_EXALTATION_CHEST, 0), startChest);
+	EXPECT_NE(Item::items[fixture.donorItemId].slotPosition, Item::items[fixture.receiveItemId].slotPosition);
+
+	const auto &historyEntries = player->forgeHistory().get();
+	ASSERT_FALSE(historyEntries.empty());
+	const auto &history = historyEntries.back();
+	EXPECT_EQ(transferGoldCost, history.cost);
+	EXPECT_EQ(transferCoreCost, history.coresCost);
+	EXPECT_EQ(dustCost, history.dustCost);
+	EXPECT_NE(std::string::npos, history.description.find("First item: a forge donor item, tier 2"));
+	EXPECT_NE(std::string::npos, history.description.find("Second item: a forge receiver item, tier 0"));
+	EXPECT_NE(std::string::npos, history.description.find("First item: consumed"));
+	EXPECT_NE(std::string::npos, history.description.find("Second item: a forge receiver item, tier 1"));
 }
 
 TEST_F(ForgeIntegrationTest, ForgeFuseItemsFromGameFlowFailsWhenBackpackIsFull) {
@@ -425,8 +438,8 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierWithIdenticalItemIdUsesDistinc
 	const uint8_t transferFromTier = 2;
 	const auto* classification = fixture.getClassification();
 	ASSERT_NE(nullptr, classification);
-	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
-	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);
+	const auto transferCoreCost = classification->tiers.contains(transferFromTier) ? classification->tiers.at(transferFromTier).corePrice : 0;
+	const auto transferGoldCost = fixture.fusionCostForTier(transferFromTier);
 	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
 
 	setPlayerResources(dustCost, transferGoldCost + 7);

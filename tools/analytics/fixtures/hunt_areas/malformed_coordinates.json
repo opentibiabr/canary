@@ -1,0 +1,3 @@
+[
+  { "name": "fixture-area-inverted", "from": { "x": 200, "y": 100, "z": 7 }, "to": { "x": 199, "y": 199, "z": 7 } }
+]

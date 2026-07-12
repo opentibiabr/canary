@@ -1,0 +1,8 @@
+[
+  {
+    "name": "REPLACE_WITH_REAL_HUNT_NAME",
+    "from": { "x": 0, "y": 0, "z": 7 },
+    "to": { "x": 0, "y": 0, "z": 7 },
+    "_comment": "EXAMPLE ONLY. These coordinates are placeholders, not a real location. Confirm the real rectangle in-game or in the map editor before replacing this entry - see docs/systems/gameplay-analytics-hunt-areas.md. The generator ignores unknown keys like this comment field, but ships it here as a reminder; remove it once you replace the coordinates."
+  }
+]

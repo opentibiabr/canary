@@ -1,0 +1,4 @@
+[
+  { "name": "fixture-area-alpha", "from": { "x": 100, "y": 100, "z": 7 }, "to": { "x": 199, "y": 199, "z": 7 } },
+  { "name": "fixture-area-overlap", "from": { "x": 150, "y": 150, "z": 7 }, "to": { "x": 249, "y": 249, "z": 7 } }
+]

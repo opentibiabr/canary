@@ -1,0 +1,4 @@
+[
+  { "name": "Fixture-Area-Alpha", "from": { "x": 100, "y": 100, "z": 7 }, "to": { "x": 199, "y": 199, "z": 7 } },
+  { "name": "fixture-area-alpha", "from": { "x": 300, "y": 300, "z": 7 }, "to": { "x": 399, "y": 399, "z": 7 } }
+]

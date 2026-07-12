@@ -794,9 +794,12 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_BLOCKPATH)) {
 				ReturnValue expertPvpFieldStepRet = RETURNVALUE_NOERROR;
 				if (queryExpertPvpFieldStep(creature, ground, getItemList(), tileFlags, expertPvpFieldStepRet)) {
-					return expertPvpFieldStepRet;
+					if (expertPvpFieldStepRet != RETURNVALUE_NOERROR) {
+						return expertPvpFieldStepRet;
+					}
+				} else {
+					return RETURNVALUE_NOTPOSSIBLE;
 				}
-				return RETURNVALUE_NOTPOSSIBLE;
 			}
 
 			if (player->getParent() == nullptr && hasFlag(TILESTATE_NOLOGOUT)) {

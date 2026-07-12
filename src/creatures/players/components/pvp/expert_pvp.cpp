@@ -11,7 +11,9 @@
 
 #include "config/configmanager.hpp"
 #include "creatures/creature.hpp"
+#include "creatures/players/grouping/guild.hpp"
 #include "creatures/players/grouping/groups.hpp"
+#include "creatures/players/grouping/party.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "items/item.hpp"
@@ -320,14 +322,19 @@ namespace {
 			return false;
 		}
 
-		for (const auto &[guid, player] : g_game().getPlayers()) {
-			(void)guid;
-			if (!player || player == actor || player == subjectPlayer) {
-				continue;
+		if (const auto &party = actor->getParty()) {
+			for (const auto &partyPlayer : party->getPlayers()) {
+				if (partyPlayer && partyPlayer != actor && partyPlayer != subjectPlayer && subjectPlayer->hasAttacked(partyPlayer)) {
+					return true;
+				}
 			}
+		}
 
-			if ((actor->isPartner(player) || actor->isGuildMate(player)) && subjectPlayer->hasAttacked(player)) {
-				return true;
+		if (const auto &guild = actor->getGuild()) {
+			for (const auto &guildPlayer : guild->getMembersOnline()) {
+				if (guildPlayer && guildPlayer != actor && guildPlayer != subjectPlayer && subjectPlayer->hasAttacked(guildPlayer)) {
+					return true;
+				}
 			}
 		}
 		return false;

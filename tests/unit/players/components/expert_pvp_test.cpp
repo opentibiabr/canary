@@ -126,6 +126,17 @@ TEST(ExpertPvpRelationTest, KeepsAlliesAheadOfStaleAggression) {
 	EXPECT_EQ(ExpertPvpRelation::PartyAlly, result.relation);
 }
 
+TEST(ExpertPvpRelationTest, KeepsWarAheadOfStaleDirectTarget) {
+	ExpertPvpRelationContext context;
+	context.subjectIsPlayer = true;
+	context.warEnemy = true;
+	context.directTarget = true;
+
+	const auto result = ExpertPvp::classifyRelation(context);
+
+	EXPECT_EQ(ExpertPvpRelation::WarEnemy, result.relation);
+}
+
 TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerCombat) {
 	ExpertPvpRelationContext context;
 	context.actorGuid = 100;
@@ -171,6 +182,22 @@ TEST(ExpertPvpCombatDecisionTest, WhiteProtectsPartyAndGuildMembers) {
 	EXPECT_TRUE(whiteDecision.allowed);
 	EXPECT_FALSE(whiteDecision.appliesPzLock);
 	EXPECT_EQ(ExpertPvpRelation::ProtectedAllyAttacker, whiteDecision.relation);
+}
+
+TEST(ExpertPvpCombatDecisionTest, YellowRequiresSkullForProtectedAllyAttacker) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto unskulledDecision = ExpertPvp::evaluateCombatAction(PVP_MODE_YELLOW_HAND, ExpertPvpActionKind::DirectAttack, context);
+	context.skulledTarget = true;
+	const auto skulledDecision = ExpertPvp::evaluateCombatAction(PVP_MODE_YELLOW_HAND, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_FALSE(unskulledDecision.allowed);
+	EXPECT_TRUE(skulledDecision.allowed);
+	EXPECT_FALSE(skulledDecision.appliesPzLock);
 }
 
 TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerSummonCombat) {

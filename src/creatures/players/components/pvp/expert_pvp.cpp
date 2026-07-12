@@ -508,6 +508,11 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 		return result;
 	}
 
+	if (context.warEnemy) {
+		result.relation = ExpertPvpRelation::WarEnemy;
+		return result;
+	}
+
 	if (context.protectedAllyAttacker) {
 		result.relation = ExpertPvpRelation::ProtectedAllyAttacker;
 		return result;
@@ -515,11 +520,6 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 
 	if (context.directTarget) {
 		result.relation = ExpertPvpRelation::DirectTarget;
-		return result;
-	}
-
-	if (context.warEnemy) {
-		result.relation = ExpertPvpRelation::WarEnemy;
 		return result;
 	}
 
@@ -680,7 +680,7 @@ ExpertPvpDecision ExpertPvp::evaluateCombatAction(PvpMode_t actorMode, ExpertPvp
 
 	if (relation.relation == ExpertPvpRelation::ProtectedAllyAttacker) {
 		decision.reason = ExpertPvpDecisionReason::DirectCombat;
-		if (mode.mode == PVP_MODE_WHITE_HAND || mode.mode == PVP_MODE_YELLOW_HAND || mode.mode == PVP_MODE_RED_FIST) {
+		if (mode.mode == PVP_MODE_WHITE_HAND || mode.mode == PVP_MODE_RED_FIST || (mode.mode == PVP_MODE_YELLOW_HAND && relationContext.skulledTarget)) {
 			decision.allowed = true;
 			describePvpPressure(decision, relationContext);
 			decision.appliesPzLock = false;

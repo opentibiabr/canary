@@ -34,6 +34,16 @@ class GameplayAnalyticsDashboardValidationTest(unittest.TestCase):
         with self.assertRaisesRegex(AssertionError, "missing repeatable reporting view"):
             validator.validate_views(broken)
 
+    def test_rejects_party_view_using_combined_aggregate(self) -> None:
+        broken = self.views.replace("FROM `analytics_daily_party_balance`", "FROM `analytics_daily_balance`", 1)
+        with self.assertRaisesRegex(AssertionError, "dedicated party aggregate"):
+            validator.validate_views(broken)
+
+    def test_rejects_uncapped_shared_experience(self) -> None:
+        broken = self.views.replace("LEAST(100.00, ", "", 1).replace(" AS `shared_experience_percent`", " AS `shared_experience_percent`", 1)
+        with self.assertRaisesRegex(AssertionError, "100 percent"):
+            validator.validate_views(broken)
+
     def test_rejects_missing_panel(self) -> None:
         dashboard = json.loads(self.dashboard_raw)
         dashboard["panels"] = [panel for panel in dashboard["panels"] if panel.get("title") != "Pending dead-letter sessions"]
@@ -49,7 +59,7 @@ class GameplayAnalyticsDashboardValidationTest(unittest.TestCase):
     def test_rejects_non_mariadb_datasource(self) -> None:
         dashboard = json.loads(self.dashboard_raw)
         dashboard["panels"][1]["datasource"]["type"] = "postgres"
-        with self.assertRaisesRegex(AssertionError, "mysql \\(MariaDB-compatible\\) datasource"):
+        with self.assertRaisesRegex(AssertionError, "mysql \(MariaDB-compatible\) datasource"):
             validator.validate_dashboard(json.dumps(dashboard))
 
     def test_rejects_committed_datasource_password(self) -> None:

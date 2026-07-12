@@ -10,11 +10,16 @@
 #include "creatures/monsters/monster.hpp"
 
 #include "config/configmanager.hpp"
+#include "creatures/combat/combat.hpp"
 #include "creatures/combat/spells.hpp"
+#include "creatures/monsters/monster_combat_intention.hpp"
+#include "creatures/monsters/monster_pathfinding.hpp"
+#include "creatures/monsters/monster_targeting.hpp"
 #include "creatures/monsters/monsters.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "items/tile.hpp"
 #include "lua/callbacks/events_callbacks.hpp"
 #include "map/map.hpp"
@@ -27,11 +32,50 @@ int32_t Monster::despawnRadius;
 uint32_t Monster::monsterAutoID = 0x50000001;
 
 namespace {
+	constexpr uint8_t MAX_BACKGROUND_FOLLOW_PATH_RADIUS = 12;
+	constexpr size_t MAX_COMBAT_INTENTION_SPELLS = 256;
+	constexpr size_t MAX_TARGET_RANK_CANDIDATES = 256;
+	constexpr auto WALK_PLAYER_VISIBLE_HOLD = std::chrono::seconds(3);
+
 	bool isMonsterPerfTestFriendlyFireTarget(const Monster &monster, const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) {
-		return monsterPerfTestFriendlyFire && !monster.isSummon() && creature
+		const auto* targetMonster = creature ? creature->getMonsterRaw() : nullptr;
+		return monsterPerfTestFriendlyFire && monster.isHostile() && !monster.isSummon() && targetMonster && targetMonster->isHostile()
 			&& creature.get() != static_cast<const Creature*>(&monster)
-			&& creature->getMonsterRaw() && !creature->isSummon();
+			&& !creature->isSummon();
 	}
+
+	[[nodiscard]] bool pathReachesEndpoint(const NavRegionSnapshot &navigation, const Position &start, const std::vector<Direction> &directions, const Position &expectedEndpoint) {
+		Position position = start;
+		for (auto it = directions.rbegin(); it != directions.rend(); ++it) {
+			if (*it > DIRECTION_LAST) {
+				return false;
+			}
+			position = getNextPosition(*it, position);
+			if (!navigation.getCell(position)) {
+				return false;
+			}
+		}
+		return position == expectedEndpoint;
+	}
+
+	bool isPlayerControlledCreature(const std::shared_ptr<Creature> &creature) {
+		if (!creature) {
+			return false;
+		}
+		if (creature->getPlayerRaw()) {
+			return true;
+		}
+		const auto &master = creature->getMaster();
+		return master && master->getPlayerRaw();
+	}
+}
+
+bool Monster::FollowPathComputeRequest::matches(const FollowPathComputeRequest &other) const {
+	return start == other.start && target == other.target && targetId == other.targetId && executeOnFollow == other.executeOnFollow
+		&& params.fullPathSearch == other.params.fullPathSearch && params.clearSight == other.params.clearSight
+		&& params.allowDiagonal == other.params.allowDiagonal && params.keepDistance == other.params.keepDistance
+		&& params.maxSearchDist == other.params.maxSearchDist && params.minTargetDist == other.params.minTargetDist
+		&& params.maxTargetDist == other.params.maxTargetDist;
 }
 
 std::shared_ptr<Monster> Monster::createMonster(const std::string &name) {
@@ -334,6 +378,9 @@ void Monster::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool i
 		updateTargetList();
 		updateIdleStatus();
 	} else {
+		if (creature->getPlayerRaw() && canSee(creature->getPosition())) {
+			observeVisiblePlayerForScheduling(creature);
+		}
 		addAsyncTask([this, creature] {
 			onCreatureEnter(creature);
 		});
@@ -420,7 +467,7 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 		updateTargetList();
 		updateIdleStatus();
 	} else {
-		if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
+		if (g_dispatcher().context().isMovementCommit()) {
 			queueMovementAiRefresh(creature, oldPos, newPos);
 		} else {
 			processMovementAiRefresh(creature, oldPos, newPos);
@@ -429,7 +476,11 @@ void Monster::onCreatureMove(const std::shared_ptr<Creature> &creature, const st
 }
 
 void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos) {
-	if (pendingMovementAiRefresh.scheduled) {
+	if (creature->getPlayerRaw() && canSee(newPos) && !canSee(oldPos)) {
+		observeVisiblePlayerForScheduling(creature);
+	}
+
+	if (!pendingMovementAiRefresh.state.tryEnqueue()) {
 		pendingMovementAiRefresh.needsFullRefresh = true;
 		return;
 	}
@@ -437,7 +488,6 @@ void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, 
 	pendingMovementAiRefresh.creature = creature;
 	pendingMovementAiRefresh.oldPos = oldPos;
 	pendingMovementAiRefresh.newPos = newPos;
-	pendingMovementAiRefresh.scheduled = true;
 	pendingMovementAiRefresh.needsFullRefresh = false;
 
 	addAsyncTask([this] {
@@ -446,14 +496,23 @@ void Monster::queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, 
 }
 
 void Monster::executeMovementAiRefresh() {
+	const auto readyAt = pendingMovementAiRefresh.state.consume();
+	if (!readyAt) {
+		return;
+	}
+
 	const bool needsFullRefresh = pendingMovementAiRefresh.needsFullRefresh;
 	const auto movedCreature = pendingMovementAiRefresh.creature.lock();
 	const Position oldPos = pendingMovementAiRefresh.oldPos;
 	const Position newPos = pendingMovementAiRefresh.newPos;
 
 	pendingMovementAiRefresh.creature.reset();
-	pendingMovementAiRefresh.scheduled = false;
 	pendingMovementAiRefresh.needsFullRefresh = false;
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::MonsterMovementRefreshLateness,
+		1,
+		DispatcherPolicy::elapsed(*readyAt, Task::Clock::now())
+	);
 
 	if (needsFullRefresh || !movedCreature) {
 		updateTargetList();
@@ -495,13 +554,13 @@ void Monster::processMovementAiRefresh(const std::shared_ptr<Creature> &creature
 			if (const auto &nextTile = g_game().map.getTile(checkPosition)) {
 				const auto &topCreature = nextTile->getTopCreature();
 				if (followCreature != topCreature && isOpponent(topCreature)) {
-					selectTarget(topCreature);
+					deferTargetSelection(topCreature->getID());
 				}
 			}
 		}
 	} else if (isOpponent(creature)) {
 		// We have no target, so try to pick this one.
-		selectTarget(creature);
+		deferTargetSelection(creature->getID());
 	}
 }
 
@@ -643,6 +702,7 @@ bool Monster::addTarget(const std::shared_ptr<Creature> &creature, bool pushFron
 		totalPlayersOnScreen++;
 	}
 
+	markTargetStateChanged();
 	return true;
 }
 
@@ -660,17 +720,19 @@ bool Monster::removeTarget(const std::shared_ptr<Creature> &creature) {
 	if (!target) {
 		forgetTargetReference(*it);
 		targetList.erase(it);
+		markTargetStateChanged();
 		return false;
 	}
 
 	forgetTargetReference(*it);
 	targetList.erase(it);
+	markTargetStateChanged();
 
 	return true;
 }
 
 void Monster::updateTargetList() {
-	if (!g_dispatcher().context().isAsync()) {
+	if (!g_dispatcher().context().isBarrierParallel()) {
 		setAsyncTaskFlag(UpdateTargetList, true);
 		return;
 	}
@@ -680,6 +742,7 @@ void Monster::updateTargetList() {
 		return !target || target->getHealth() <= 0 || !canSee(target->getPosition());
 	});
 
+	const auto targetCountBeforeCleanup = targetList.size();
 	std::erase_if(targetList, [this](const TargetReference &ref) {
 		const auto &target = ref.creature.lock();
 		const bool shouldErase = !target || target->getHealth() <= 0 || !canSee(target->getPosition());
@@ -688,16 +751,27 @@ void Monster::updateTargetList() {
 		}
 		return shouldErase;
 	});
+	if (targetList.size() != targetCountBeforeCleanup) {
+		markTargetStateChanged();
+	}
 
+	if (!visiblePlayerSpectatorIds.empty()) {
+		playerVisibleUntil = MonsterRelevancePolicy::Clock::now() + WALK_PLAYER_VISIBLE_HOLD;
+		visiblePlayerSpectatorIds.clear();
+	}
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	for (const auto &spectator : Spectators().find<Creature>(position, true, 0, 0, 0, 0, false)) {
 		if (spectator.get() != this && canSee(spectator->getPosition())) {
+			addVisiblePlayerSpectator(spectator);
 			onCreatureFound(spectator, false, monsterPerfTestFriendlyFire);
 		}
 	}
 }
 
 void Monster::clearTargetList() {
+	if (!targetList.empty()) {
+		markTargetStateChanged();
+	}
 	targetList.clear();
 	totalPlayersOnScreen = 0;
 }
@@ -726,6 +800,7 @@ void Monster::onCreatureFound(const std::shared_ptr<Creature> &creature, bool pu
 }
 
 void Monster::onCreatureEnter(const std::shared_ptr<Creature> &creature) {
+	observeVisiblePlayerForScheduling(creature);
 	onCreatureFound(creature, true);
 }
 
@@ -805,6 +880,7 @@ uint16_t Monster::getLookCorpse() const {
 
 void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	removeVisiblePlayerSpectator(creature);
 
 	// update friendList
 	if (isFriend(creature, monsterPerfTestFriendlyFire)) {
@@ -820,6 +896,13 @@ void Monster::onCreatureLeave(const std::shared_ptr<Creature> &creature) {
 }
 
 bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAULT*/) {
+	if (g_dispatcher().context().isBarrierParallel()) {
+		return requestTargetSearchCompute(searchType);
+	}
+	return searchTargetImmediate(searchType);
+}
+
+bool Monster::searchTargetImmediate(TargetSearchType_t searchType) {
 	if (searchType == TARGETSEARCH_DEFAULT) {
 		int32_t rnd = uniform_random(1, 100);
 
@@ -878,12 +961,13 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 
 				if (++it != resultList.end()) {
 					const Position &targetPosition = getTarget->getPosition();
-					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition));
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100;
+					int32_t minRange = std::max<int32_t>(Position::getDistanceX(myPos, targetPosition), Position::getDistanceY(myPos, targetPosition))
+						+ static_cast<int32_t>(getTarget->getFaction()) * 100;
 					do {
 						const Position &pos = (*it)->getPosition();
 
-						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos)) + factionOffset;
+						int32_t distance = std::max<int32_t>(Position::getDistanceX(myPos, pos), Position::getDistanceY(myPos, pos))
+							+ static_cast<int32_t>((*it)->getFaction()) * 100;
 						if (distance < minRange) {
 							getTarget = *it;
 							minRange = distance;
@@ -918,11 +1002,9 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t factionOffset = static_cast<int32_t>(getTarget->getFaction()) * 100000;
-					int32_t minHp = getTarget->getHealth() + factionOffset;
+					int32_t minHp = getTarget->getHealth() + static_cast<int32_t>(getTarget->getFaction()) * 100000;
 					do {
-						auto hp = (*it)->getHealth() + factionOffset;
-						factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
+						auto hp = (*it)->getHealth() + static_cast<int32_t>((*it)->getFaction()) * 100000;
 						if (hp < minHp) {
 							getTarget = *it;
 							minHp = hp;
@@ -941,12 +1023,15 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 				auto it = resultList.begin();
 				getTarget = *it;
 				if (++it != resultList.end()) {
-					int32_t mostDamage = 0;
+					const auto firstDamage = damageMap.find(getTarget->getID());
+					int32_t mostDamage = firstDamage == damageMap.end()
+						? std::numeric_limits<int32_t>::min()
+						: firstDamage->second.total + static_cast<int32_t>(getTarget->getFaction()) * 100000;
 					do {
 						int32_t factionOffset = static_cast<int32_t>((*it)->getFaction()) * 100000;
 						const auto dmg = damageMap.find((*it)->getID());
 						if (dmg != damageMap.end() && dmg->second.total + factionOffset > mostDamage) {
-							mostDamage = dmg->second.total;
+							mostDamage = dmg->second.total + factionOffset;
 							getTarget = *it;
 						}
 					} while (++it != resultList.end());
@@ -977,10 +1062,324 @@ bool Monster::searchTarget(TargetSearchType_t searchType /*= TARGETSEARCH_DEFAUL
 	});
 }
 
+bool Monster::requestTargetSearchCompute(TargetSearchType_t searchType) {
+	if (targetSearchComputeOutstanding && pendingTargetSearchCompute && pendingTargetSearchCompute->searchType == searchType && pendingTargetSearchCompute->stateEpoch == targetStateEpoch && pendingTargetSearchCompute->decisionEpoch == targetDecisionEpoch) {
+		return true;
+	}
+
+	pendingTargetSearchCompute = TargetSearchComputeRequest { searchType, targetStateEpoch, targetDecisionEpoch };
+	const auto generation = nextTargetSearchComputeGeneration();
+	if (targetSearchComputeOutstanding) {
+		return true;
+	}
+
+	targetSearchComputeOutstanding = true;
+	activeTargetSearchComputeGeneration = generation;
+	const auto monsterId = getID();
+	const bool accepted = safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareTargetSearchCompute(generation);
+		}
+	});
+	if (!accepted) {
+		clearTargetSearchCompute();
+		return false;
+	}
+	return true;
+}
+
+void Monster::prepareTargetSearchCompute(uint64_t generation) {
+	if (!targetSearchComputeOutstanding || activeTargetSearchComputeGeneration != generation || !pendingTargetSearchCompute) {
+		return;
+	}
+	if (generation != targetSearchComputeGeneration) {
+		activeTargetSearchComputeGeneration = targetSearchComputeGeneration;
+		prepareTargetSearchCompute(activeTargetSearchComputeGeneration);
+		return;
+	}
+	if (pendingTargetSearchCompute->decisionEpoch != targetDecisionEpoch) {
+		clearTargetSearchCompute();
+		return;
+	}
+	pendingTargetSearchCompute->stateEpoch = targetStateEpoch;
+	if (isRemoved() || isDead()) {
+		clearTargetSearchCompute();
+		return;
+	}
+
+	auto searchType = pendingTargetSearchCompute->searchType;
+	if (searchType == TARGETSEARCH_DEFAULT) {
+		const int32_t randomValue = uniform_random(1, 100);
+		searchType = TARGETSEARCH_NEAREST;
+		int32_t strategyTotal = m_monsterType->info.strategiesTargetNearest;
+		if (randomValue > strategyTotal) {
+			searchType = TARGETSEARCH_HP;
+			strategyTotal += m_monsterType->info.strategiesTargetHealth;
+			if (randomValue > strategyTotal) {
+				searchType = TARGETSEARCH_DAMAGE;
+				strategyTotal += m_monsterType->info.strategiesTargetDamage;
+				if (randomValue > strategyTotal) {
+					searchType = TARGETSEARCH_RANDOM;
+				}
+			}
+		}
+	}
+
+	const Position origin = getPosition();
+	const uint64_t stateEpoch = targetStateEpoch;
+	const uint64_t decisionEpoch = targetDecisionEpoch;
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	const auto &currentAttacked = getAttackedCreature();
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
+	std::vector<std::shared_ptr<Creature>> eligibleTargets;
+	std::vector<uint32_t> fallbackIds;
+	MonsterTargetRankingRequest rankingRequest;
+	rankingRequest.origin = origin;
+	eligibleTargets.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+	fallbackIds.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+	rankingRequest.candidates.reserve(std::min(targetList.size(), MAX_TARGET_RANK_CANDIDATES));
+
+	for (const auto &targetRef : targetList) {
+		const auto &creature = targetRef.creature.lock();
+		if (!creature || creature->getHealth() <= 0 || !isTarget(creature, monsterPerfTestFriendlyFire)) {
+			continue;
+		}
+		if (fallbackIds.size() < MAX_TARGET_RANK_CANDIDATES) {
+			fallbackIds.emplace_back(creature->getID());
+		}
+		if (rankingRequest.candidates.size() >= MAX_TARGET_RANK_CANDIDATES) {
+			continue;
+		}
+		if (skipCurrentUnreachable && creature == currentAttacked) {
+			continue;
+		}
+		if (targetDistance != 1 && !canUseAttack(origin, creature)) {
+			continue;
+		}
+
+		int32_t damage = 0;
+		const auto damageIt = damageMap.find(creature->getID());
+		const bool hasDamage = damageIt != damageMap.end();
+		if (hasDamage) {
+			damage = damageIt->second.total;
+		}
+		rankingRequest.candidates.emplace_back(MonsterTargetCandidate {
+			.creatureId = creature->getID(),
+			.position = creature->getPosition(),
+			.faction = static_cast<int32_t>(creature->getFaction()),
+			.health = creature->getHealth(),
+			.damage = damage,
+			.hasDamage = hasDamage,
+		});
+		eligibleTargets.emplace_back(creature);
+	}
+
+	if (rankingRequest.candidates.empty()) {
+		clearTargetSearchCompute();
+		return;
+	}
+
+	if (searchType == TARGETSEARCH_RANDOM || (searchType != TARGETSEARCH_NEAREST && searchType != TARGETSEARCH_HP && searchType != TARGETSEARCH_DAMAGE)) {
+		const auto selectedIndex = static_cast<size_t>(uniform_random(0, eligibleTargets.size() - 1));
+		const auto selectedTarget = eligibleTargets[selectedIndex];
+		clearTargetSearchCompute();
+		selectTarget(selectedTarget, monsterPerfTestFriendlyFire);
+		return;
+	}
+
+	switch (searchType) {
+		case TARGETSEARCH_HP:
+			rankingRequest.mode = MonsterTargetRankMode::Health;
+			break;
+		case TARGETSEARCH_DAMAGE:
+			rankingRequest.mode = MonsterTargetRankMode::Damage;
+			break;
+		case TARGETSEARCH_NEAREST:
+		default:
+			rankingRequest.mode = MonsterTargetRankMode::Nearest;
+			break;
+	}
+
+	if (rankingRequest.candidates.size() == 1) {
+		MonsterTargetRankingResult result;
+		result.suggestedCreatureId = rankingRequest.candidates.front().creatureId;
+		completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, std::move(fallbackIds), result);
+		return;
+	}
+
+	const auto monsterId = getID();
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), rankingRequest = std::move(rankingRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterTargetRanker::rank(rankingRequest, stopToken);
+			return [monsterId, generation, stateEpoch, decisionEpoch, origin, searchType, fallbackIds = std::move(fallbackIds), result]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, std::move(fallbackIds), result);
+				}
+			};
+		},
+		"Monster::targetRanking",
+		[monsterId, generation, stateEpoch, decisionEpoch, origin, searchType] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->completeTargetSearchCompute(generation, stateEpoch, decisionEpoch, origin, searchType, {}, { .canceled = true });
+			}
+		}
+	);
+	if (!submission.accepted()) {
+		clearTargetSearchCompute();
+	}
+}
+
+void Monster::completeTargetSearchCompute(uint64_t generation, uint64_t stateEpoch, uint64_t decisionEpoch, Position origin, TargetSearchType_t searchType, std::vector<uint32_t> fallbackIds, MonsterTargetRankingResult result) {
+	if (!targetSearchComputeOutstanding || activeTargetSearchComputeGeneration != generation || !pendingTargetSearchCompute) {
+		return;
+	}
+	if (generation != targetSearchComputeGeneration) {
+		const auto latestSearchType = pendingTargetSearchCompute->searchType;
+		retryTargetSearchCompute(latestSearchType);
+		return;
+	}
+	if (result.canceled) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (isRemoved() || isDead()) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (targetDecisionEpoch != decisionEpoch) {
+		clearTargetSearchCompute();
+		return;
+	}
+	if (targetStateEpoch != stateEpoch || getPosition() != origin) {
+		if (targetList.empty()) {
+			clearTargetSearchCompute();
+		} else {
+			retryTargetSearchCompute(searchType);
+		}
+		return;
+	}
+
+	clearTargetSearchCompute();
+	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+	const auto &currentAttacked = getAttackedCreature();
+	const bool skipCurrentUnreachable = currentAttacked && targetDistance <= 1 && !hasFollowPath;
+	if (const auto &suggested = g_game().getCreatureByID(result.suggestedCreatureId)) {
+		const bool eligible = suggested->getHealth() > 0
+			&& isTarget(suggested, monsterPerfTestFriendlyFire)
+			&& (!skipCurrentUnreachable || suggested != currentAttacked)
+			&& (targetDistance == 1 || canUseAttack(origin, suggested));
+		if (eligible && selectTarget(suggested, monsterPerfTestFriendlyFire)) {
+			return;
+		}
+	}
+
+	for (const auto creatureId : fallbackIds) {
+		if (creatureId == result.suggestedCreatureId) {
+			continue;
+		}
+		const auto &candidate = g_game().getCreatureByID(creatureId);
+		if (!candidate || candidate->getHealth() <= 0 || !isTarget(candidate, monsterPerfTestFriendlyFire) || (skipCurrentUnreachable && candidate == currentAttacked)) {
+			continue;
+		}
+		if (selectTarget(candidate, monsterPerfTestFriendlyFire)) {
+			return;
+		}
+	}
+}
+
+void Monster::retryTargetSearchCompute(TargetSearchType_t searchType) {
+	clearTargetSearchCompute(false);
+	if (isRemoved() || isDead()) {
+		return;
+	}
+	pendingTargetSearchCompute = TargetSearchComputeRequest { searchType, targetStateEpoch, targetDecisionEpoch };
+	setAsyncTaskFlag(TargetRanking, true);
+}
+
+void Monster::clearTargetSearchCompute(bool releasePostThink) {
+	targetSearchComputeOutstanding = false;
+	activeTargetSearchComputeGeneration = 0;
+	pendingTargetSearchCompute.reset();
+	if (releasePostThink && postThinkWaitingForTargetDecision) {
+		postThinkWaitingForTargetDecision = false;
+		queuePostThinkAfterAsync();
+	}
+}
+
+void Monster::markTargetStateChanged() {
+	if (++targetStateEpoch == 0) {
+		targetStateEpoch = 1;
+	}
+}
+
+void Monster::markTargetDecisionChanged() {
+	markTargetStateChanged();
+	if (++targetDecisionEpoch == 0) {
+		targetDecisionEpoch = 1;
+	}
+}
+
+uint64_t Monster::nextTargetSearchComputeGeneration() {
+	if (++targetSearchComputeGeneration == 0) {
+		targetSearchComputeGeneration = 1;
+	}
+	return targetSearchComputeGeneration;
+}
+
+void Monster::updateSummonTarget() {
+	const auto &attackedCreature = getAttackedCreature();
+	const auto &followCreature = getFollowCreature();
+	const auto &master = getMaster();
+	if (attackedCreature.get() == this) {
+		setFollowCreature(nullptr);
+	} else if (attackedCreature && followCreature != attackedCreature) {
+		setFollowCreature(attackedCreature);
+	} else if (master && master->getAttackedCreature()) {
+		selectTarget(master->getAttackedCreature());
+	} else if (master && master != followCreature) {
+		setFollowCreature(master);
+	}
+}
+
+void Monster::deferTargetSelection(uint32_t creatureId) {
+	if (creatureId == 0) {
+		return;
+	}
+	const auto monsterId = getID();
+	const auto decisionEpoch = targetDecisionEpoch;
+	safeCall([monsterId, creatureId, decisionEpoch] {
+		const auto &monster = g_game().getMonsterByID(monsterId);
+		const auto &creature = g_game().getCreatureByID(creatureId);
+		if (monster && creature && monster->targetDecisionEpoch == decisionEpoch) {
+			monster->selectTarget(creature);
+		}
+	});
+}
+
 void Monster::onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) {
 	if (removeTarget(creature) && (hasFollowPath || !isSummon())) {
 		addTarget(creature, hasFollowPath);
 	}
+}
+
+bool Monster::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
+	const auto previous = getAttackedCreature();
+	const bool result = Creature::setAttackedCreature(creature);
+	if (previous != getAttackedCreature()) {
+		markTargetDecisionChanged();
+	}
+	return result;
+}
+
+bool Monster::setFollowCreature(const std::shared_ptr<Creature> &creature) {
+	const auto previous = getFollowCreature();
+	const bool result = Creature::setFollowCreature(creature);
+	if (previous != getFollowCreature()) {
+		markTargetDecisionChanged();
+	}
+	return result;
 }
 
 RaceType_t Monster::getRace() const {
@@ -1084,6 +1483,7 @@ bool Monster::selectTarget(const std::shared_ptr<Creature> &creature, bool monst
 	if (it->creature.expired()) {
 		forgetTargetReference(*it);
 		targetList.erase(it);
+		markTargetStateChanged();
 		return false;
 	}
 
@@ -1118,12 +1518,20 @@ void Monster::setIdle(bool idle) {
 }
 
 void Monster::updateIdleStatus() {
-	if (!g_dispatcher().context().isAsync()) {
+	const bool forceActive = g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE);
+	if (forceActive && !g_dispatcher().context().isBarrierParallel()) {
+		// The stress flag must wake idle monsters before background AI service;
+		// otherwise the benchmark activates only after visibility promotion.
+		setIdle(false);
+		return;
+	}
+
+	if (!g_dispatcher().context().isBarrierParallel()) {
 		setAsyncTaskFlag(UpdateIdleStatus, true);
 		return;
 	}
 
-	if (g_configManager().getBoolean(MONSTER_PERF_TEST_FORCE_ACTIVE)) {
+	if (forceActive) {
 		setIdle(false);
 		return;
 	}
@@ -1221,31 +1629,100 @@ void Monster::onThink(uint32_t interval) {
 	setAsyncTaskFlag(OnThink, true);
 }
 
-void Monster::onThink_async() {
-	if (isIdle) { // updateIdleStatus(); is executed before this method
+bool Monster::trySchedulePostThink() {
+	if (!hasAsyncTaskFlag(OnThink)) {
+		return false;
+	}
+	return pendingPostThink.tryEnqueue();
+}
+
+void Monster::cancelScheduledPostThink(bool playerVisible) {
+	if (!postThinkQueued || postThinkPlayerVisible != playerVisible) {
 		return;
+	}
+
+	postThinkQueued = false;
+	postThinkWaitingForTargetDecision = false;
+	(void)pendingPostThink.consume();
+}
+
+void Monster::executePostThink(uint32_t interval, bool playerVisible) {
+	if (!postThinkQueued || postThinkPlayerVisible != playerVisible) {
+		return;
+	}
+
+	if (targetSearchComputeOutstanding) {
+		postThinkQueued = false;
+		postThinkWaitingForTargetDecision = true;
+		return;
+	}
+
+	postThinkQueued = false;
+	const auto readyAt = pendingPostThink.consume();
+	if (!readyAt) {
+		return;
+	}
+
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::MonsterPostThinkLateness,
+		1,
+		DispatcherPolicy::elapsed(*readyAt, Task::Clock::now())
+	);
+	if (isRemoved() || !isAlive()) {
+		return;
+	}
+
+	// A coalesced tick advances combat and conditions once. Missed wall-clock
+	// intervals are intentionally not replayed as a catch-up burst.
+	onAttacking(interval);
+	executeConditions(interval);
+}
+
+void Monster::queuePostThinkAfterAsync() {
+	if (!pendingPostThink.isPending() || postThinkQueued) {
+		return;
+	}
+	if (targetSearchComputeOutstanding) {
+		postThinkWaitingForTargetDecision = true;
+		return;
+	}
+
+	postThinkWaitingForTargetDecision = false;
+	postThinkQueued = true;
+	postThinkPlayerVisible = isPlayerVisibleForScheduling();
+	if (!g_game().queueMonsterPostThink(getID(), postThinkPlayerVisible)) {
+		cancelScheduledPostThink(postThinkPlayerVisible);
+	}
+}
+
+void Monster::promotePostThinkToPlayerVisibleQueue() {
+	if (!postThinkQueued || !pendingPostThink.isPending()) {
+		return;
+	}
+
+	postThinkQueued = false;
+	queuePostThinkAfterAsync();
+}
+
+bool Monster::onThink_async() {
+	if (isIdle) { // updateIdleStatus(); is executed before this method
+		return false;
 	}
 
 	addEventWalk();
 
-	const auto &attackedCreature = getAttackedCreature();
-	const auto &followCreature = getFollowCreature();
-	const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 	if (isSummon()) {
-		const auto &master = getMaster();
-		if (attackedCreature.get() == this) {
-			setFollowCreature(nullptr);
-		} else if (attackedCreature && followCreature != attackedCreature) {
-			// This happens just after a master orders an attack, so lets follow it aswell.
-			setFollowCreature(attackedCreature);
-		} else if (master && master->getAttackedCreature()) {
-			// This happens if the monster is summoned during combat
-			selectTarget(master->getAttackedCreature());
-		} else if (master && master != followCreature) {
-			// Our master has not ordered us to attack anything, lets follow him around instead.
-			setFollowCreature(master);
-		}
+		const auto monsterId = getID();
+		const auto decisionEpoch = targetDecisionEpoch;
+		safeCall([monsterId, decisionEpoch] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId); monster && monster->targetDecisionEpoch == decisionEpoch) {
+				monster->updateSummonTarget();
+			}
+		});
 	} else {
+		const auto &attackedCreature = getAttackedCreature();
+		const auto &followCreature = getFollowCreature();
+		const bool monsterPerfTestFriendlyFire = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
 		if (monsterPerfTestFriendlyFire && targetList.empty()) {
 			updateTargetList();
 		}
@@ -1265,10 +1742,11 @@ void Monster::onThink_async() {
 
 	onThinkTarget(EVENT_CREATURE_THINK_INTERVAL);
 
-	safeCall([this] {
+	return safeCall([this] {
 		onThinkYell(EVENT_CREATURE_THINK_INTERVAL);
 		onThinkDefense(EVENT_CREATURE_THINK_INTERVAL);
 		onThinkSound(EVENT_CREATURE_THINK_INTERVAL);
+		queuePostThinkAfterAsync();
 	});
 }
 
@@ -1283,21 +1761,207 @@ void Monster::doAttacking(uint32_t interval) {
 		return;
 	}
 
-	bool updateLook = true;
-	bool resetTicks = interval != 0;
 	attackTicks += interval;
+	requestCombatIntention(interval, attackedCreature);
+}
 
-	const Position &myPos = getPosition();
-	const Position &targetPos = attackedCreature->getPosition();
+void Monster::requestCombatIntention(uint32_t interval, const std::shared_ptr<Creature> &target) {
+	CombatIntentionComputeRequest request;
+	request.generation = nextCombatIntentionGeneration();
+	request.targetDecisionEpoch = targetDecisionEpoch;
+	request.monsterReloadEpoch = g_monsters().getReloadEpoch();
+	request.interval = interval;
+	request.targetId = target->getID();
+	request.attackTicksSnapshot = attackTicks;
+	request.origin = getPosition();
+	request.target = target->getPosition();
+	request.fleeing = isFleeing();
+	pendingCombatIntention = request;
 
-	for (const spellBlock_t &spellBlock : attackSpells) {
+	if (!combatIntentionOutstanding) {
+		startPendingCombatIntention();
+	}
+}
+
+void Monster::startPendingCombatIntention() {
+	if (combatIntentionOutstanding || !pendingCombatIntention) {
+		return;
+	}
+
+	combatIntentionOutstanding = true;
+	activeCombatIntentionGeneration = pendingCombatIntention->generation;
+	const auto monsterId = getID();
+	const auto generation = activeCombatIntentionGeneration;
+	const bool accepted = safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareCombatIntention(generation);
+		}
+	});
+	if (!accepted) {
+		clearCombatIntention();
+	}
+}
+
+void Monster::prepareCombatIntention(uint64_t generation) {
+	if (!combatIntentionOutstanding || activeCombatIntentionGeneration != generation || !pendingCombatIntention) {
+		return;
+	}
+	if (pendingCombatIntention->generation != generation || combatIntentionGeneration != generation) {
+		combatIntentionOutstanding = false;
+		activeCombatIntentionGeneration = 0;
+		startPendingCombatIntention();
+		return;
+	}
+
+	const auto request = *pendingCombatIntention;
+	const auto &target = g_game().getCreatureByID(request.targetId);
+	const auto &currentTarget = getAttackedCreature();
+	const bool invalid = isRemoved() || isDead() || !target || target != currentTarget
+		|| target->isLifeless() || targetDecisionEpoch != request.targetDecisionEpoch
+		|| g_monsters().getReloadEpoch() != request.monsterReloadEpoch
+		|| getPosition() != request.origin || target->getPosition() != request.target
+		|| attackTicks != request.attackTicksSnapshot || isFleeing() != request.fleeing;
+	if (invalid) {
+		clearCombatIntention();
+		return;
+	}
+
+	if (attackSpells.empty() || attackSpells.size() > MAX_COMBAT_INTENTION_SPELLS) {
+		clearCombatIntention();
+		commitCombatIntention(request, target, {}, false);
+		return;
+	}
+
+	MonsterCombatIntentionRequest workerRequest;
+	workerRequest.origin = request.origin;
+	workerRequest.target = request.target;
+	workerRequest.fleeing = request.fleeing;
+	workerRequest.spells.reserve(attackSpells.size());
+	for (size_t index = 0; index < attackSpells.size(); ++index) {
+		const auto &spell = attackSpells[index];
+		workerRequest.spells.emplace_back(MonsterCombatSpellGeometry {
+			.index = static_cast<uint32_t>(index),
+			.range = spell.range,
+			.enabled = spell.spell != nullptr,
+			.melee = spell.isMelee,
+		});
+	}
+
+	const auto monsterId = getID();
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterCombatIntentionEvaluator::evaluate(workerRequest, stopToken);
+			return [monsterId, generation, result = std::move(result)]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeCombatIntention(generation, std::move(result));
+				}
+			};
+		},
+		"Monster::combatIntention",
+		[monsterId, generation] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->completeCombatIntention(generation, { .geometricallyEligibleSpellIndices = {}, .canceled = true });
+			}
+		}
+	);
+	if (!submission.accepted()) {
+		clearCombatIntention();
+		updateLookDirection();
+	}
+}
+
+void Monster::completeCombatIntention(uint64_t generation, MonsterCombatIntentionResult result) {
+	if (!combatIntentionOutstanding || activeCombatIntentionGeneration != generation || !pendingCombatIntention) {
+		return;
+	}
+	if (pendingCombatIntention->generation != generation || combatIntentionGeneration != generation) {
+		deferPendingCombatIntention();
+		return;
+	}
+	if (result.canceled) {
+		clearCombatIntention();
+		return;
+	}
+
+	const auto request = *pendingCombatIntention;
+	const auto &target = g_game().getCreatureByID(request.targetId);
+	const auto &currentTarget = getAttackedCreature();
+	const auto &player = target ? target->getPlayer() : nullptr;
+	const bool invalid = isRemoved() || isDead() || !target || target != currentTarget
+		|| target->isLifeless() || (player && player->isLoginProtected())
+		|| targetDecisionEpoch != request.targetDecisionEpoch
+		|| g_monsters().getReloadEpoch() != request.monsterReloadEpoch
+		|| getPosition() != request.origin || target->getPosition() != request.target
+		|| attackTicks != request.attackTicksSnapshot || isFleeing() != request.fleeing
+		|| getZoneType() == ZONE_PROTECTION || target->getZoneType() == ZONE_PROTECTION
+		|| !isTarget(target) || !g_game().isSightClear(request.origin, request.target, true);
+	if (invalid) {
+		clearCombatIntention();
+		return;
+	}
+
+	uint32_t previousIndex = 0;
+	bool firstIndex = true;
+	for (const auto index : result.geometricallyEligibleSpellIndices) {
+		if (index >= attackSpells.size() || (!firstIndex && index <= previousIndex)) {
+			clearCombatIntention();
+			return;
+		}
+		firstIndex = false;
+		previousIndex = index;
+	}
+
+	clearCombatIntention();
+	commitCombatIntention(request, target, result.geometricallyEligibleSpellIndices, true);
+}
+
+void Monster::deferPendingCombatIntention() {
+	combatIntentionOutstanding = false;
+	activeCombatIntentionGeneration = 0;
+	if (pendingCombatIntention) {
+		setAsyncTaskFlag(CombatIntention, true);
+	}
+}
+
+void Monster::clearCombatIntention() {
+	combatIntentionOutstanding = false;
+	activeCombatIntentionGeneration = 0;
+	pendingCombatIntention.reset();
+}
+
+void Monster::commitCombatIntention(const CombatIntentionComputeRequest &request, const std::shared_ptr<Creature> &target, const std::vector<uint32_t> &geometricallyEligibleSpellIndices, bool requireGeometryHint) {
+	bool updateLook = true;
+	bool resetTicks = request.interval != 0;
+	size_t eligibleIndex = 0;
+
+	for (size_t spellIndex = 0; spellIndex < attackSpells.size(); ++spellIndex) {
+		if (combatIntentionGeneration != request.generation || isRemoved() || isDead() || !target || target->isLifeless() || getAttackedCreature() != target) {
+			break;
+		}
+		if (targetDecisionEpoch != request.targetDecisionEpoch || g_monsters().getReloadEpoch() != request.monsterReloadEpoch || getPosition() != request.origin || target->getPosition() != request.target || isFleeing() != request.fleeing) {
+			break;
+		}
+		const auto &player = target->getPlayer();
+		if ((player && player->isLoginProtected()) || getZoneType() == ZONE_PROTECTION || target->getZoneType() == ZONE_PROTECTION || !isTarget(target) || !g_game().isSightClear(getPosition(), target->getPosition(), true)) {
+			break;
+		}
+
+		const spellBlock_t &spellBlock = attackSpells[spellIndex];
 		bool inRange = false;
 
 		if (spellBlock.spell == nullptr || (spellBlock.isMelee && isFleeing())) {
 			continue;
 		}
 
-		if (canUseSpell(myPos, targetPos, spellBlock, interval, inRange, resetTicks)) {
+		while (eligibleIndex < geometricallyEligibleSpellIndices.size() && geometricallyEligibleSpellIndices[eligibleIndex] < spellIndex) {
+			++eligibleIndex;
+		}
+		const bool geometrySuggested = !requireGeometryHint
+			|| (eligibleIndex < geometricallyEligibleSpellIndices.size() && geometricallyEligibleSpellIndices[eligibleIndex] == spellIndex);
+
+		if (canUseSpell(getPosition(), target->getPosition(), spellBlock, request.interval, inRange, resetTicks) && geometrySuggested) {
 			if (spellBlock.chance >= static_cast<uint32_t>(uniform_random(1, 100))) {
 				if (updateLook) {
 					updateLookDirection();
@@ -1311,7 +1975,7 @@ void Monster::doAttacking(uint32_t interval) {
 					continue;
 				}
 
-				spellBlock.spell->castSpell(getMonster(), attackedCreature);
+				spellBlock.spell->castSpell(getMonster(), target);
 
 				if (spellBlock.isMelee) {
 					extraMeleeAttack = false;
@@ -1325,12 +1989,101 @@ void Monster::doAttacking(uint32_t interval) {
 		}
 	}
 
-	if (updateLook) {
+	if (updateLook && !isRemoved()) {
 		updateLookDirection();
 	}
 
-	if (resetTicks) {
+	if (resetTicks && combatIntentionGeneration == request.generation) {
 		attackTicks = 0;
+	}
+}
+
+uint64_t Monster::nextCombatIntentionGeneration() {
+	if (++combatIntentionGeneration == 0) {
+		combatIntentionGeneration = 1;
+	}
+	return combatIntentionGeneration;
+}
+
+MonsterRelevanceSnapshot Monster::captureComputeRelevance() const {
+	MonsterRelevanceSnapshot snapshot;
+	const auto observe = [this, &snapshot](const std::shared_ptr<Creature> &creature) {
+		if (!isPlayerControlledCreature(creature)) {
+			return;
+		}
+
+		if (snapshot.playerSpectators < std::numeric_limits<uint16_t>::max()) {
+			++snapshot.playerSpectators;
+		}
+		const auto distance = std::max<uint32_t>(
+			Position::getDistanceX(getPosition(), creature->getPosition()),
+			Position::getDistanceY(getPosition(), creature->getPosition())
+		);
+		snapshot.nearestPlayerDistance = static_cast<uint16_t>(std::min<uint32_t>(
+			std::numeric_limits<uint16_t>::max(),
+			std::min<uint32_t>(snapshot.nearestPlayerDistance, distance)
+		));
+	};
+
+	for (const auto &target : targetList) {
+		observe(target.creature.lock());
+	}
+	for (const auto &friendEntry : friendList) {
+		observe(friendEntry.second.lock());
+	}
+
+	snapshot.engagedWithPlayer = isPlayerControlledCreature(getAttackedCreature()) || isPlayerControlledCreature(getFollowCreature());
+	return snapshot;
+}
+
+bool Monster::isComputeRelevant() {
+	computeRelevance = MonsterRelevancePolicy::update(computeRelevance, captureComputeRelevance(), MonsterRelevancePolicy::Clock::now());
+	return computeRelevance.tier == MonsterRelevanceTier::Visible;
+}
+
+bool Monster::isPlayerVisibleForScheduling() {
+	const auto now = MonsterRelevancePolicy::Clock::now();
+	if (!visiblePlayerSpectatorIds.empty()) {
+		playerVisibleUntil = now + WALK_PLAYER_VISIBLE_HOLD;
+		return true;
+	}
+	return now < playerVisibleUntil;
+}
+
+void Monster::observeVisiblePlayerForScheduling(const std::shared_ptr<Creature> &creature) {
+	if (!creature || !creature->getPlayerRaw()) {
+		return;
+	}
+
+	const bool wasPlayerVisible = isPlayerVisibleForScheduling();
+	const bool becamePlayerVisible = addVisiblePlayerSpectator(creature);
+	if (becamePlayerVisible && !wasPlayerVisible) {
+		promoteWalkEventToPlayerVisibleLane();
+		promotePostThinkToPlayerVisibleQueue();
+	}
+}
+
+bool Monster::addVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature) {
+	if (!creature || !creature->getPlayerRaw()) {
+		return false;
+	}
+
+	const auto playerId = creature->getID();
+	if (std::ranges::find(visiblePlayerSpectatorIds, playerId) != visiblePlayerSpectatorIds.end()) {
+		return false;
+	}
+
+	const bool becameVisible = visiblePlayerSpectatorIds.empty();
+	visiblePlayerSpectatorIds.emplace_back(playerId);
+	return becameVisible;
+}
+
+void Monster::removeVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature) {
+	if (creature && creature->getPlayerRaw()) {
+		const auto removed = std::erase(visiblePlayerSpectatorIds, creature->getID());
+		if (removed > 0 && visiblePlayerSpectatorIds.empty()) {
+			playerVisibleUntil = MonsterRelevancePolicy::Clock::now() + WALK_PLAYER_VISIBLE_HOLD;
+		}
 	}
 }
 
@@ -1428,11 +2181,17 @@ void Monster::onThinkTarget(uint32_t interval) {
 						challengeFocusDuration = 0;
 					}
 
-					if (m_monsterType->info.changeTargetChance >= uniform_random(1, 100)) {
-						const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
-							|| m_monsterType->info.targetDistance <= 1;
-						searchTarget(useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST);
-					}
+					const bool useRandomSearch = g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE)
+						|| m_monsterType->info.targetDistance <= 1;
+					const auto searchType = useRandomSearch ? TARGETSEARCH_RANDOM : TARGETSEARCH_NEAREST;
+					const auto changeTargetChance = m_monsterType->info.changeTargetChance;
+					const auto monsterId = getID();
+					const auto decisionEpoch = targetDecisionEpoch;
+					safeCall([monsterId, searchType, changeTargetChance, decisionEpoch] {
+						if (const auto &monster = g_game().getMonsterByID(monsterId); monster && monster->targetDecisionEpoch == decisionEpoch && changeTargetChance >= uniform_random(1, 100)) {
+							monster->requestTargetSearchCompute(searchType);
+						}
+					});
 				}
 			}
 		}
@@ -1697,24 +2456,35 @@ bool Monster::getNextStep(Direction &nextDirection, uint32_t &flags) {
 		doRandomStep(nextDirection, result);
 	}
 
-	if (result && (canPushItems() || canPushCreatures())) {
-		const Position &pos = getNextPosition(nextDirection, getPosition());
-		const auto &posTile = g_game().map.getTile(pos);
-		if (posTile) {
-			if (canPushItems()) {
-				Monster::pushItems(posTile, nextDirection);
-			}
+	if (!result || (!canPushItems() && !canPushCreatures())) {
+		return result;
+	}
 
-			if (canPushCreatures()) {
-				if (g_dispatcher().context().getGroup() == TaskGroup::Walk) {
-					Monster::pushCreatures(posTile);
-				} else {
-					g_dispatcher().addWalkEvent([=] {
-						Monster::pushCreatures(posTile);
-					});
-				}
-			}
-		}
+	const Position &pos = getNextPosition(nextDirection, getPosition());
+	const auto &posTile = g_game().map.getTile(pos);
+	if (!posTile) {
+		return result;
+	}
+
+	if (canPushItems()) {
+		Monster::pushItems(posTile, nextDirection);
+	}
+
+	if (!canPushCreatures()) {
+		return result;
+	}
+	if (g_dispatcher().context().isMovementCommit()) {
+		Monster::pushCreatures(posTile);
+		return result;
+	}
+
+	const auto lane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
+	if (!g_dispatcher().addCreatureWalkEvent([posTile] {
+			Monster::pushCreatures(posTile);
+		},
+	                                         lane)) {
+		forceUpdateFollowPath = true;
+		result = false;
 	}
 
 	return result;
@@ -2793,6 +3563,259 @@ float Monster::getDefenseMultiplier() const {
 	return multiplier;
 }
 
+bool Monster::requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow) {
+	if (!followCreature || followCreature->getID() == 0 || params.maxSearchDist <= 0 || params.maxSearchDist > MAX_BACKGROUND_FOLLOW_PATH_RADIUS) {
+		return false;
+	}
+
+	FollowPathComputeRequest request;
+	request.start = getPosition();
+	request.target = followCreature->getPosition();
+	request.params = params;
+	request.targetId = followCreature->getID();
+	request.executeOnFollow = executeOnFollow;
+	if (followPathComputeOutstanding && pendingFollowPathCompute && pendingFollowPathCompute->matches(request)) {
+		return true;
+	}
+
+	pendingFollowPathCompute = request;
+	const auto generation = nextFollowPathComputeGeneration();
+	followPathComputeSuperseded = false;
+	if (followPathComputeOutstanding) {
+		return true;
+	}
+
+	followPathComputeOutstanding = true;
+	activeFollowPathComputeGeneration = generation;
+	const auto monsterId = getID();
+	const bool accepted = safeCall([monsterId, generation] {
+		if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+			monster->prepareFollowPathCompute(generation);
+		}
+	});
+	if (!accepted) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		pendingFollowPathCompute.reset();
+		forceUpdateFollowPath = true;
+		return true;
+	}
+	return true;
+}
+
+void Monster::supersedeFollowPathCompute() {
+	if (!followPathComputeOutstanding) {
+		pendingFollowPathCompute.reset();
+		followPathComputeSuperseded = false;
+		return;
+	}
+
+	static_cast<void>(nextFollowPathComputeGeneration());
+	pendingFollowPathCompute.reset();
+	followPathComputeSuperseded = true;
+}
+
+void Monster::prepareFollowPathCompute(uint64_t generation) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		activeFollowPathComputeGeneration = followPathComputeGeneration;
+		prepareFollowPathCompute(activeFollowPathComputeGeneration);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	if (isRemoved() || isDead() || getPosition() != request.start || !followCreature || followCreature->getID() != request.targetId || followCreature->getPosition() != request.target) {
+		discardFollowPathCompute(followCreature != nullptr);
+		return;
+	}
+
+	auto navigation = g_game().map.getNavigationSnapshot(request.start, MAX_BACKGROUND_FOLLOW_PATH_RADIUS);
+	MonsterPathRequest workerRequest;
+	workerRequest.navigation = navigation;
+	workerRequest.start = request.start;
+	workerRequest.target = request.target;
+	workerRequest.params = request.params;
+	workerRequest.traits = capturePathTraits(*navigation);
+
+	const auto monsterId = getID();
+	const auto priority = isPlayerVisibleForScheduling() || isComputeRelevant() ? MonsterComputePriority::Visible : MonsterComputePriority::Background;
+	const auto submission = g_monsterComputeService().submit(
+		priority,
+		[monsterId, generation, workerRequest = std::move(workerRequest)](MonsterComputeToken, std::stop_token stopToken) mutable {
+			auto result = MonsterPathfinder::find(workerRequest, stopToken);
+			auto resultNavigation = std::move(workerRequest.navigation);
+			return [monsterId, generation, navigation = std::move(resultNavigation), result = std::move(result)]() mutable {
+				if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+					monster->completeFollowPathCompute(generation, std::move(navigation), std::move(result));
+				}
+			};
+		},
+		"Monster::followPath",
+		[monsterId, generation] {
+			if (const auto &monster = g_game().getMonsterByID(monsterId)) {
+				monster->rejectFollowPathCompute(generation);
+			}
+		}
+	);
+	if (!submission.accepted()) {
+		rejectFollowPathCompute(generation);
+	}
+}
+
+void Monster::completeFollowPathCompute(uint64_t generation, std::shared_ptr<const NavRegionSnapshot> navigation, MonsterPathResult result) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		discardFollowPathCompute(true);
+		return;
+	}
+	if (result.status == MonsterPathStatus::Cancelled) {
+		discardFollowPathCompute(false);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	const auto &resolvedTarget = g_game().getCreatureByID(request.targetId);
+	const bool identityIsCurrent = !isRemoved() && !isDead() && getPosition() == request.start && followCreature && resolvedTarget && followCreature == resolvedTarget && resolvedTarget->getPosition() == request.target;
+	if (!identityIsCurrent || !navigation || !g_game().map.isNavigationTopologyCurrent(*navigation)) {
+		discardFollowPathCompute(followCreature != nullptr);
+		return;
+	}
+
+	if (result.found()) {
+		int32_t bestMatchDistance = 0;
+		const bool endpointIsCurrent = FrozenPathingConditionCall(request.target)(request.start, result.endpoint, request.params, bestMatchDistance);
+		if (!endpointIsCurrent || !pathReachesEndpoint(*navigation, request.start, result.directions, result.endpoint)) {
+			discardFollowPathCompute(true);
+			return;
+		}
+	}
+
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	hasFollowPath = result.found();
+	startAutoWalk(result.directions);
+	if (request.executeOnFollow) {
+		onFollowCreatureComplete(resolvedTarget);
+	}
+}
+
+void Monster::rejectFollowPathCompute(uint64_t generation) {
+	if (!followPathComputeOutstanding || activeFollowPathComputeGeneration != generation) {
+		return;
+	}
+	if (followPathComputeSuperseded && !pendingFollowPathCompute) {
+		followPathComputeOutstanding = false;
+		activeFollowPathComputeGeneration = 0;
+		followPathComputeSuperseded = false;
+		return;
+	}
+	if (!pendingFollowPathCompute) {
+		discardFollowPathCompute(false);
+		return;
+	}
+	if (generation != followPathComputeGeneration) {
+		activeFollowPathComputeGeneration = followPathComputeGeneration;
+		prepareFollowPathCompute(activeFollowPathComputeGeneration);
+		return;
+	}
+
+	const auto request = *pendingFollowPathCompute;
+	const auto &followCreature = getFollowCreature();
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	hasFollowPath = false;
+	startAutoWalk({});
+	if (request.executeOnFollow && followCreature && followCreature->getID() == request.targetId) {
+		onFollowCreatureComplete(followCreature);
+	}
+}
+
+void Monster::discardFollowPathCompute(bool requestRefresh) {
+	followPathComputeOutstanding = false;
+	activeFollowPathComputeGeneration = 0;
+	followPathComputeSuperseded = false;
+	pendingFollowPathCompute.reset();
+	if (requestRefresh && !isRemoved() && !isDead() && getFollowCreature()) {
+		goToFollowCreature_async();
+	}
+}
+
+MonsterPathTraits Monster::capturePathTraits(const NavRegionSnapshot &navigation) const {
+	MonsterPathTraits traits;
+	traits.canPushItems = canPushItems();
+	traits.canPushCreatures = canPushCreatures();
+	traits.isSummon = isSummon();
+	traits.canSeeInvisibility = canSeeInvisibility();
+	traits.moveLocked = isMoveLocked();
+	const auto &master = getMaster();
+	traits.canEnterProtectionZone = isFamiliar() && (!master || !master->getAttackedCreature());
+	if (traits.isSummon && master) {
+		if (const auto &masterPlayer = master->getPlayer()) {
+			std::vector<uint32_t> checkedHouseIds;
+			for (const auto &sector : navigation.getSectors()) {
+				for (const auto &cell : sector->getCells()) {
+					if (cell.houseId == 0 || std::ranges::find(checkedHouseIds, cell.houseId) != checkedHouseIds.end()) {
+						continue;
+					}
+					checkedHouseIds.emplace_back(cell.houseId);
+					if (const auto &house = g_game().map.houses.getHouse(cell.houseId); house && house->isInvited(masterPlayer)) {
+						traits.summonInvitedHouseIds.emplace_back(cell.houseId);
+					}
+				}
+			}
+			std::ranges::sort(traits.summonInvitedHouseIds);
+		}
+	}
+
+	const bool ignoresFieldDamage = getIgnoreFieldDamage();
+	for (size_t index = 0; index < COMBAT_COUNT; ++index) {
+		const auto combatType = static_cast<CombatType_t>(index);
+		const bool immune = isImmune(combatType);
+		const bool canWalk = canWalkOnFieldType(combatType);
+		traits.fieldAllowed[index] = immune || ignoresFieldDamage || canWalk;
+		traits.fieldPenalty[index] = !immune && !canWalk && !hasCondition(Combat::DamageToConditionType(combatType));
+	}
+	return traits;
+}
+
+uint64_t Monster::nextFollowPathComputeGeneration() {
+	if (++followPathComputeGeneration == 0) {
+		followPathComputeGeneration = 1;
+	}
+	return followPathComputeGeneration;
+}
+
 bool Monster::isDead() const {
 	return m_isDead;
 }
@@ -2954,8 +3977,20 @@ void Monster::onExecuteAsyncTasks() {
 		updateIdleStatus();
 	}
 
+	if (hasAsyncTaskFlag(TargetRanking) && pendingTargetSearchCompute) {
+		const auto searchType = pendingTargetSearchCompute->searchType;
+		pendingTargetSearchCompute.reset();
+		requestTargetSearchCompute(searchType);
+	}
+
+	if (hasAsyncTaskFlag(CombatIntention)) {
+		startPendingCombatIntention();
+	}
+
 	if (hasAsyncTaskFlag(OnThink)) {
-		onThink_async();
+		if (!onThink_async()) {
+			queuePostThinkAfterAsync();
+		}
 	}
 }
 

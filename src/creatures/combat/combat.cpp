@@ -77,8 +77,22 @@ namespace {
 
 		const auto relation = ExpertPvp::classifyRelation(actorPlayer, target);
 		const auto decision = ExpertPvp::evaluateCombatAction(actionKind, relation.facts);
-		ExpertPvp::applyCombatSideEffects(decision, relation.facts);
 		return getExpertPvpTargetReturnValue(decision, target);
+	}
+
+	void applyExpertPvpCombatSideEffects(ExpertPvpActionKind actionKind, const std::shared_ptr<Creature> &actor, const std::shared_ptr<Creature> &target) {
+		if (!target || !ExpertPvp::isEnabled() || !Combat::isPlayerCombat(target)) {
+			return;
+		}
+
+		const auto actorPlayer = getExpertPvpActorPlayer(actor);
+		if (!actorPlayer) {
+			return;
+		}
+
+		const auto relation = ExpertPvp::classifyRelation(actorPlayer, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(actionKind, relation.facts);
+		ExpertPvp::applyCombatSideEffects(decision, relation.facts);
 	}
 
 	bool canDoCombatWithExpertPvp(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive, ExpertPvpActionKind actionKind) {
@@ -90,7 +104,7 @@ namespace {
 	}
 
 	bool applyExpertPvpFieldDamage(const std::shared_ptr<MagicField> &field, const std::shared_ptr<Condition> &condition, const std::shared_ptr<Creature> &creature) {
-		if (!field || !condition || !creature || !creature->getPlayer() || !ExpertPvp::isEnabled()) {
+		if (!field || !condition || !creature || !Combat::isPlayerCombat(creature) || !ExpertPvp::isEnabled()) {
 			return false;
 		}
 
@@ -1593,6 +1607,9 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 				}
 
 				if (!params.aggressive || (caster != creature && canDoCombatWithExpertPvp(caster, creature, params.aggressive, ExpertPvpActionKind::AreaSpell))) {
+					if (params.aggressive) {
+						applyExpertPvpCombatSideEffects(ExpertPvpActionKind::AreaSpell, caster, creature);
+					}
 					// Wheel of destiny update beam mastery damage
 					if (casterPlayer) {
 						casterPlayer->wheel().updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
@@ -1671,6 +1688,10 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 	applyExtensions(caster, affectedTargets, damage, params);
 
 	if (canCombat) {
+		if (params.aggressive && caster != target) {
+			applyExpertPvpCombatSideEffects(getExpertPvpTargetActionKind(params), caster, target);
+		}
+
 		if (target && caster && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, origin, target->getPosition(), params.distanceEffect);
 		}
@@ -1710,6 +1731,10 @@ void Combat::doCombatMana(const std::shared_ptr<Creature> &caster, const std::sh
 	applyExtensions(caster, affectedTargets, damage, params);
 
 	if (canCombat) {
+		if (params.aggressive && caster != target) {
+			applyExpertPvpCombatSideEffects(getExpertPvpTargetActionKind(params), caster, target);
+		}
+
 		if (caster && target && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, origin, target->getPosition(), params.distanceEffect);
 		}
@@ -1744,6 +1769,10 @@ void Combat::doCombatCondition(const std::shared_ptr<Creature> &caster, const st
 	}
 
 	if (canCombat) {
+		if (params.aggressive && caster != target) {
+			applyExpertPvpCombatSideEffects(getExpertPvpTargetActionKind(params), caster, target);
+		}
+
 		if (caster && target && params.distanceEffect != CONST_ANI_NONE) {
 			addDistanceEffect(caster, caster->getPosition(), target->getPosition(), params.distanceEffect);
 		}
@@ -1775,6 +1804,10 @@ void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const std::
 	}
 
 	if (canCombat) {
+		if (params.aggressive && caster != target) {
+			applyExpertPvpCombatSideEffects(getExpertPvpTargetActionKind(params), caster, target);
+		}
+
 		CombatDispelFunc(caster, target, params, nullptr);
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
@@ -1798,6 +1831,10 @@ void Combat::doCombatDispel(const std::shared_ptr<Creature> &caster, const std::
 
 void Combat::doCombatDefault(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, const CombatParams &params) {
 	if (!params.aggressive || (caster != target && canDoCombatWithExpertPvp(caster, target, params.aggressive, getExpertPvpTargetActionKind(params)))) {
+		if (params.aggressive && caster != target) {
+			applyExpertPvpCombatSideEffects(getExpertPvpTargetActionKind(params), caster, target);
+		}
+
 		auto spectators = Spectators().find<Player>(target->getPosition(), true);
 
 		CombatNullFunc(caster, target, params, nullptr);

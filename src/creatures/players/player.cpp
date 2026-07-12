@@ -6458,44 +6458,7 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 	}
 
 	const auto &targetPlayer = target->getPlayer();
-	const auto &targetMaster = target->getMaster();
-	const auto targetSummonOwnerPlayer = (!targetPlayer && target->isSummon() && targetMaster) ? targetMaster->getPlayer() : nullptr;
-	const auto self = static_self_cast<Player>();
-	const auto applyExpertPvpAttackSideEffects = [this, &self](const std::shared_ptr<Player> &subjectPlayer, const std::shared_ptr<Creature> &subjectCreature) {
-		if (!subjectPlayer || !subjectCreature || !ExpertPvp::isEnabled()) {
-			return false;
-		}
-
-		const auto relation = ExpertPvp::classifyRelation(self, subjectCreature);
-		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::DirectAttack, relation.facts);
-		if (!decision.handled) {
-			return false;
-		}
-
-		if (decision.allowed) {
-			if (decision.startsFight && !Combat::isInPvpZone(self, subjectPlayer) && !isInWar(subjectPlayer)) {
-				const bool alreadyAttacked = hasAttacked(subjectPlayer);
-				addAttacked(subjectPlayer);
-				if (!alreadyAttacked) {
-					ExpertPvp::refreshVisibleSituationMarks(self, subjectPlayer);
-				}
-			}
-
-			if (decision.appliesPzLock && !pzLocked) {
-				pzLocked = true;
-				sendIcons();
-			}
-
-			if (decision.skullAction == ExpertPvpSkullAction::White && subjectPlayer->getSkull() == SKULL_NONE && getSkull() == SKULL_NONE && !subjectPlayer->hasKilled(self)) {
-				setSkull(SKULL_WHITE);
-			}
-		}
-
-		return true;
-	};
-
-	const bool handledExpertPvpTarget = targetPlayer && applyExpertPvpAttackSideEffects(targetPlayer, target);
-	if (targetPlayer && !handledExpertPvpTarget && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
+	if (targetPlayer && !ExpertPvp::isEnabled() && !isPartner(targetPlayer) && !isGuildMate(targetPlayer)) {
 		if (!pzLocked && g_game().getWorldType() == WORLD_TYPE_PVP_ENFORCED) {
 			pzLocked = true;
 			sendIcons();
@@ -6522,8 +6485,6 @@ void Player::onAttackedCreature(const std::shared_ptr<Creature> &target) {
 				}
 			}
 		}
-	} else if (targetSummonOwnerPlayer) {
-		applyExpertPvpAttackSideEffects(targetSummonOwnerPlayer, target);
 	}
 
 	addInFightTicks();

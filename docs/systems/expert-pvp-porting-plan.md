@@ -21,6 +21,30 @@ existing secure mode behavior.
 Do not treat the older Shadowborn work as source code to copy. Use it only as
 evidence of failure modes and missing contracts.
 
+## Implementation Status
+
+This branch implements the roadmap through persistence: world-type selection,
+the `ExpertPvp` and `PlayerPvp` components, hand-mode state, combat permission,
+secure-mode defense, body blocking, field context, MW/WG collision and visual
+selection, field damage, situation marks, and database persistence.
+
+The stabilization pass also enforces these boundaries:
+
+- combat validation is pure; skull, PZ lock, and situation changes happen only
+  on the execution path;
+- White Hand includes aggressors against the player's party or guild allies;
+- walkthrough uses the blocker's mode;
+- MW/WG path probes do not bypass later movement restrictions;
+- player summons use their master player's relation;
+- global mark refreshes are limited to visible players and reuse one relation
+  snapshot.
+
+Protocol support remains profile-specific. Tibia 11.00 has a verified four-byte
+fight-mode layout in this branch and can select all hands. The current 15.25
+parser has a verified three-byte Set Tactics layout with no separate hand-mode
+byte; it therefore keeps Expert controls disabled and normalizes the server mode
+to Dove. Do not append a speculative byte to 15.25.
+
 ## Public Behavior References
 
 The current behavior contract should prefer public Tibia references over old
@@ -40,9 +64,9 @@ porting attempts when they disagree:
   [TibiaQA PvP rules discussion](https://www.tibiaqa.com/34100/how-to-know-the-exact-frag-%25-ill-get-from-killing-a-player)
   are secondary evidence for hand modes, PvP situations, and MW/WG behavior.
 
-## Current Canary Baseline
+## Baseline At The Start Of The Port
 
-Current Canary already has partial building blocks:
+The Canary baseline used when this work started had partial building blocks:
 
 - `src/creatures/creatures_definitions.hpp` defines `PvpMode_t`.
 - `src/server/network/protocol/protocolgame.cpp` sends a default Dove byte in
@@ -207,184 +231,38 @@ Additional Codex, VS Code, and Copilot recovery added these source facts:
   That is useful protocol/UI context only; server behavior still belongs in the
   Canary helper layer.
 
-## Local Recovery Index
+## Recovered Evidence Summary
 
-This section intentionally contains machine-local paths. It is not portable
-documentation; it exists so a future Codex chat on this same PC can reopen the
-old chats and implementation fragments without rediscovering them.
+The historical evidence came from Codex sessions, editor history, Antigravity
+notes, a client-side backup, and an old TibiaDuality-oriented patch. Those
+machine-local artifacts are intentionally not indexed in repository
+documentation. The behavior conclusions extracted from them are retained in
+this plan.
 
-Start with these index files:
+Useful conclusions:
 
-- `C:\Users\eduar\.codex\session_index.jsonl` lists Codex thread ids and names.
-- `C:\Users\eduar\.codex\history.jsonl` has raw user prompts, including the
-  `reset_pvp.lua` error at the old deleted repo path.
-- `C:\Users\eduar\AppData\Roaming\Code\User\workspaceStorage\253970b36fce45e5bf50c789873b38d0\workspace.json`
-  points to the VS Code workspace storage that contains Copilot chat editing
-  sessions for the old work.
+- Keep runtime PvP situations pairwise and keyed by stable player GUID.
+- Serialize situation marks per viewer: yellow for a direct participant, orange
+  for a party/guild ally's opponent, brown for an unrelated fight, and unmarked
+  otherwise.
+- Separate player-owned field bystanders from players involved with the owner.
+- Capture field owner mode and relation snapshots at cast time.
+- Keep player body blocking based on the blocker's hand mode, not merely on
+  active situation membership.
+- Treat top-stack restrictions, caster-only wild-growth cutting, debug commands,
+  and unfair-frag weighting as separate product decisions.
 
-Useful search commands:
+Rejected implementation shapes:
 
-```powershell
-rg -n "canary-ashadow-global|Expert|PVP|pvp|Red Fist|magic wall|wild_growth|reset_pvp|frame|piscando" "C:\Users\eduar\.codex"
-rg -n "TOGGLE_EXPERT|canAttackPlayerInExpertPvP|PVP_MODE|pvpMode|TILESTATE_BLOCKPATH|magic_wall|wild_growth" "C:\Users\eduar\AppData\Roaming\Code\User"
-rg -n "Expert|PVP|pvp|Red Fist|magic wall|wild growth|TILESTATE_BLOCKPATH|addInFightTicks|yellow frame" "C:\Users\eduar\AppData\Roaming\Antigravity"
-```
-
-Important Codex sessions:
-
-- `C:\Users\eduar\.codex\sessions\2026\02\05\rollout-2026-02-05T22-09-05-019c307e-d8e3-7562-a400-541c6e1b78d8.jsonl`
-  is a Codex CLI session in the deleted `canary-ashadow-global` workspace. It
-  records the old remote, branch, and commit metadata, and contains the
-  `reset_pvp.lua` / `Game.updateCreatureSkull()` binding fix.
-- `C:\Users\eduar\.codex\sessions\2026\02\06\rollout-2026-02-06T19-17-55-019c3508-813b-73e1-b82a-284ebc498d90.jsonl`
-  is a Codex VS Code session opened directly in the deleted
-  `canary-ashadow-global` workspace. It is mostly provenance, not a rich source
-  of final behavior.
-- `C:\Users\eduar\.codex\sessions\2026\02\16\rollout-2026-02-16T08-12-43-019c6627-1460-7483-b309-375f9aec2f8c.jsonl`
-  is important newer Codex work in the current `canary` workspace. Search it for
-  `secure mode`, `area spells`, `frame`, `piscando`, and `Expert PvP`. Its final
-  summary says secure-mode byte parsing/sending was fixed, area spells were made
-  to respect Expert PvP, and the yellow combat frame was limited to the start of
-  combat. Treat this as newer than the February 5-6 initial implementation.
-- `C:\Users\eduar\.codex\sessions\2026\02\28\rollout-2026-02-28T00-14-50-019ca23d-e2a7-7a92-925c-09184969c2eb.jsonl`
-  references commit `adaacdb2b9899693272187bd2816a057d897ecd4`. That commit is
-  not Expert PvP; it is task board, SoulPit, and NPC work.
-
-Important VS Code / Copilot chat editing sessions:
-
-- `C:\Users\eduar\AppData\Roaming\Code\User\workspaceStorage\253970b36fce45e5bf50c789873b38d0\chatEditingSessions\20bc5ace-0bc1-4e91-84f8-4ddb9049ce5b\contents`
-  contains large recovered Copilot chat edits. Search this folder for
-  `TOGGLE_EXPERT_PVP`, `EXPERT_PVP_CANWALKTHROUGHOTHERPLAYERS`,
-  `EXPERT_PVP_CANWALKTHROUGHMAGICWALLS`,
-  `EXPERT_PVP_DEFAULT_HAND_WHEN_CLIENT_NO_BYTE`, and
-  `canAttackPlayerInExpertPvP`.
-- In that folder, `ff63209` is useful for old config flags and protocol
-  compatibility hints.
-- In that folder, `fe151fe` is useful for the old `Player`-based
-  `canAttackPlayerInExpertPvP` rules, including war, skull, guild, and party
-  checks. It is also evidence of stale design choices such as permissive unknown
-  mode fallback and large in-place patches.
-- `C:\Users\eduar\AppData\Roaming\Code\User\workspaceStorage\253970b36fce45e5bf50c789873b38d0\chatEditingSessions\1d174950a4350897aa410a339b5d0ef6417712eb\contents`
-  contains later bug-fix oriented snapshots.
-- In that folder, `2b97587` is useful for old `tile.cpp` behavior, including
-  owner fallback, Red Fist field behavior, and movement side effects.
-- In that folder, `5e376ab` and `2eace64` are useful for the old Lua rune
-  approach that selected safe or blocking MW/WG item IDs at cast time.
-
-Important VS Code History folders:
-
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-15a09809` maps to the old
-  `src/items/tile.cpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-5d1dc79c` maps to the old
-  `src/creatures/combat/combat.cpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-19df39b2` maps to the old
-  `src/server/network/protocol/protocolgame.cpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-19df26ed` maps to the old
-  `src/server/network/protocol/protocolgame.hpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-19ae5a38` maps to the old
-  `fix_redmode_logic.py` helper.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-1d221352` maps to the old
-  `config.lua.dist`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-6e5cb268` maps to the old
-  `src/creatures/players/player.hpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\57dd4d24` maps to the old
-  `src/game/game.hpp`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\5f9df745` and
-  `C:\Users\eduar\AppData\Roaming\Code\User\History\12ee064e` map to player
-  load/save persistence attempts.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\-6b26ff82` maps to the old
-  `data/scripts/runes/wild_growth.lua`.
-- `C:\Users\eduar\AppData\Roaming\Code\User\History\29e6a78e` maps to the old
-  `data/scripts/runes/magic_wall.lua`.
-
-Each VS Code History folder has an `entries.json` file. Read `entries.json`
-before trusting a snapshot: it records the original resource and the snapshot
-timestamp. Prefer the latest timestamp only after checking whether later notes
-say the behavior was still buggy.
-
-Important Antigravity sources:
-
-- `C:\Users\eduar\AppData\Roaming\Antigravity\User\History\54fcb75` contains
-  Markdown walkthroughs for later Expert PvP fixes. `qKC1.md` is the newest
-  useful file in this cluster and covers yellow frame flicker, Red Fist MW/WG
-  blocking, rune aggression on cast, and pathfinding regressions.
-- `C:\Users\eduar\AppData\Roaming\Antigravity\User\History\51eea8c` contains
-  early notes about world type and field damage. `8ddp.md` is the useful file.
-- `C:\Users\eduar\AppData\Roaming\Antigravity\User\History\-15a09809` contains
-  Antigravity `tile.cpp` snapshots. Use `entries.json` and timestamps; `5eAI.cpp`
-  was the latest recovered snapshot in that folder.
-- `C:\Users\eduar\AppData\Roaming\Antigravity\User\History\5aa68515` contains
-  Lua enum snapshots. `joMP.cpp` registered `PVP_MODE_RED_FIST`.
-- `C:\Users\eduar\AppData\Roaming\Antigravity\User\workspaceStorage` and
-  `C:\Users\eduar\.antigravity` contain workspace metadata that can help trace
-  more Antigravity context if the direct History folders are not enough.
-
-Client-only backup:
-
-- `C:\Users\eduar\.codex-backups\codex-20260527-011246\worktrees\9c44\otclient-mehah-global\src\client\protocolgameparse.cpp`
-  and `C:\Users\eduar\.codex-backups\codex-20260527-011246\worktrees\9c44\otclient-mehah-global\src\client\game.h`
-  show OTC-side parsing/storage of an Expert PvP mode byte. Use this only for
-  protocol/UI expectations, not as server-side behavior.
-
-Additional local patch:
-
-- `C:\Users\eduar\Downloads\0001-feat-open-pvp-tibiaduality-2014-rules (2).patch`
-  is useful as a behavior proposal and implementation sketch for "Open PvP
-  TibiaDuality 2014 rules".
-- It does not apply cleanly to the current worktree. The check failed on missing
-  `data-global/scripts/lib/register_actions.lua` and several stale C++ contexts.
-  Do not apply it directly.
-- It touches 20 files and mixes several concerns: Expert hand modes, runtime PvP
-  situations, field behavior, per-viewer field visuals, creature marks, stack
-  rules, debug talkactions, and frag-share database changes.
-- Useful search terms inside the patch: `checkExpertPvpMode`,
-  `isOwnedFieldBystander`, `isPveWall`, `pveWall`, `pvpSituations`,
-  `getPvpSituationMarkFor`, `isFirstInStack`, `tailRemaining`, `pvp_mark_test`,
-  and `weight`.
-
-Useful ideas from that patch:
-
-- It introduces a runtime pairwise `pvpSituations` map keyed by player GUID, with
-  expiry based on pz-lock duration. This can be a cleaner source for "active PvP
-  with this player" than repeatedly interpreting `hasAttacked()` in every call
-  site.
-- It maps persistent PvP situation boxes per viewer: yellow for the participant,
-  orange when fighting the viewer's party or guild ally, brown when fighting
-  someone else, and unmarked otherwise.
-- It separates player-owned field bystanders from players involved with the
-  owner. Bystanders see harmless/safe visuals and avoid damage or blocking.
-- It adds the "top player in stack" rule: a player hidden below another player in
-  a tile stack cannot initiate aggressive PvP or aggressive area spells unless
-  already defending/involved.
-- It suggests that a 15.25 fight-mode packet tail may contain `[pvpMode:u8]`
-  followed by an extra byte. Treat this as protocol evidence to verify, not a
-  buffer-position formula to copy.
-- It adds a `/pvpmark` god talkaction to reverse-engineer opcode `0x93`
-  creature-mark values. That is useful as QA/debug tooling only.
-- It adds a rule that rune-cast wild growth can only be cut by its caster. That
-  is a new product decision, not previously locked in this plan.
-
-Risky or conflicting ideas from that patch:
-
-- It uses old world-type names such as `WORLDTYPE_OPEN` and
-  `WORLDTYPE_OPTIONAL`; current Canary uses `WORLD_TYPE_PVP`,
-  `WORLD_TYPE_NO_PVP`, and `WORLD_TYPE_PVP_ENFORCED`.
-- It says Open PvP characters never block each other, while public references
-  describe player body blocking as a hand-mode decision: Dove blocks only
-  aggressors, White Hand blocks aggressors against self/party/guild, Yellow Hand
-  blocks skulled non-allies, and Red Fist blocks non-allies. Do not implement a
-  blanket "same battle blocks each other" rule.
-- It marks MW/WG cast outside a PvP situation as `pveWall`, where every player,
-  including the caster, walks through it. That conflicts with the earlier
-  Tibia-like assumption that the owner sees a blocking wall.
-- It stores `pveWall` as a custom attribute and reads it from multiple places.
-  Prefer explicit field context and one resolver in the new helper layer.
-- It mixes unrelated frag-share behavior into the same patch by adding
-  `player_kills.weight`, schema/migration changes, and weighted kill counting.
-  Keep that out of the first Expert PvP port unless the user explicitly expands
-  scope.
-- It exposes `Player.sendCreatureSquare()` and `Player.hasActivePvpSituation()`
-  to Lua for debugging and scripts. Keep those APIs narrow and gated if retained.
+- Do not apply the old patch directly or use its stale world-type names.
+- Do not make shared item identity viewer-specific.
+- Do not scatter field custom-attribute interpretation across combat, tile, and
+  protocol code.
+- Do not mix `player_kills.weight`, debug talkactions, or frag sharing into this
+  implementation.
+- Do not infer packet tails from buffer length or old client code. The official
+  15.25 parser confirms a three-byte Set Tactics payload; profiles without a
+  verified hand-mode byte must default safely to Dove.
 
 ## Using Old Sources Safely
 
@@ -956,7 +834,8 @@ explicitly says otherwise.
 Before testing:
 
 - Set `worldType = "expert-pvp"` in `config.lua` and restart the server.
-- Use a client/profile that shows the Expert PvP hand controls.
+- Use the Tibia 11.00 profile for full hand-mode selection. The current 15.25
+  profile has no verified hand-mode byte and is intentionally limited to Dove.
 - Prepare at least three normal characters:
   - `Attacker`: starts aggression, commonly a druid/sorcerer for runes and MW.
   - `Defender`: gets attacked first and tries to defend with secure mode on.
@@ -976,9 +855,11 @@ Before testing:
 1. Start the server and confirm the startup log reports Expert PvP as the world
    type.
 2. Log in with `Attacker`, `Defender`, and `Spectator`.
-3. Confirm the Expert PvP hand control is enabled and each hand mode can be
-   selected: Dove, White Hand, Yellow Hand, and Red Fist.
+3. On Tibia 11.00, confirm the Expert PvP hand control is enabled and each hand
+   mode can be selected: Dove, White Hand, Yellow Hand, and Red Fist.
 4. Toggle secure mode on and off, then select Dove again.
+5. Separately log in with 15.25 and confirm the client stays synchronized, the
+   unavailable Expert control remains disabled, and the server uses Dove.
 
 Expected result: the client does not desync, the hand mode button remains
 usable, and Dove is safe as the default/neutral mode.
@@ -1020,6 +901,29 @@ receives the expected aggressive PvP pressure, including PZ lock/skull where
 the current contract requires it. `Defender` can defend but does not become PZ
 locked merely for defending.
 
+### White Hand Ally Defense
+
+1. Put `Defender` and `Party Ally` in the same party; repeat later with only the
+   same guild.
+2. `Defender`: White Hand and secure mode on.
+3. `Attacker` attacks `Party Ally`, but does not attack `Defender`.
+4. `Defender` attacks `Attacker` directly and with a targeted rune.
+5. Repeat with `Defender` in Dove.
+
+Expected result: White Hand allows defense of the party/guild ally without an
+unjustified PZ lock. Dove does not allow that relation. Party and guild allies
+must never be treated as hostile because of stale attack state.
+
+### Yellow Hand Skulled Target
+
+1. Give `Attacker` a visible non-green skull by opening aggression elsewhere.
+2. `Defender`: Yellow Hand and secure mode on.
+3. `Defender` attacks and tries to body-block `Attacker`.
+4. Repeat against a neutral, unskulled `Spectator`.
+
+Expected result: Yellow Hand permits and blocks the skulled non-ally, but does
+not open aggression against the neutral spectator.
+
 ### Magic Wall And Wild Growth Visuals
 
 Run the same steps for both Magic Wall and Wild Growth.
@@ -1033,6 +937,7 @@ Run the same steps for both Magic Wall and Wild Growth.
 6. Try to walk through the same existing wall again.
 7. Cast a new MW/WG after `Defender` has already retaliated and repeat the
    visual/pass-through checks.
+8. Use map click or auto-walk to cross every wall that is safe for that viewer.
 
 Expected result: the caster sees the blocking visual and cannot walk through
 their own MW/WG. A neutral spectator sees the safe/yellow visual and can pass.
@@ -1040,12 +945,15 @@ If the wall was cast before `Defender` retaliated, `Defender` keeps seeing the
 safe/yellow visual and can pass through that existing wall even after
 retaliating. A new wall cast after both players are already in direct combat can
 block active PvP opponents according to the current Expert PvP relation.
+Auto-walk and manual movement must agree, and PZ/no-logout restrictions must
+still reject movement after a safe-field path probe.
 
 ### Field Damage
 
 1. `Attacker`: Dove mode.
 2. Cast damaging fields/bombs where `Spectator` can step on them.
 3. Repeat with White Hand, Yellow Hand, and Red Fist.
+4. Repeat with a player summon owned by `Spectator` stepping into the field.
 
 Expected result: Dove/White should not damage unrelated neutral players through
 player-owned fields. Red Fist can create aggression through damaging fields when
@@ -1059,11 +967,23 @@ owner, not to bystanders or the defender.
 3. Repeat after one player has attacked the other.
 4. Repeat with the blocker in White Hand, Yellow Hand, and Red Fist.
 
-Expected result: neutral Expert PvP players should not be blanket-blocked by
-old Retro PvP body-blocking behavior. Body blocking should follow the Expert
-PvP relation/mode contract: neutral bystanders can pass, active PvP opponents
-can be blocked, and party/guild exceptions should behave according to the hand
-mode being tested.
+Expected result: Dove blocks only an aggressor against the blocker; White Hand
+also blocks aggressors against the blocker's party/guild allies; Yellow Hand
+blocks skulled non-allies; Red Fist blocks non-allies. Neutral players pass Dove,
+White, and Yellow blockers. Party/guild allies pass every mode.
+
+### Situation Marks
+
+1. Start direct combat between `Attacker` and `Defender`.
+2. Observe `Attacker` from `Defender`, from a party/guild ally of `Defender`, and
+   from unrelated `Spectator`.
+3. End the battle state, leave/join the party, and relog one participant.
+
+Expected result: a direct participant sees yellow, an ally sees orange, an
+unrelated viewer sees brown, and all marks clear when the relation ends. Joining
+or leaving party/guild updates visible marks without reconnecting. Run this on
+the current profile whose persistent mark packet is verified; legacy profiles
+must remain synchronized and unmarked rather than showing a stale mark.
 
 ### Regression Checks For Other World Types
 
@@ -1171,8 +1091,8 @@ Out-of-scope touch points from the TibiaDuality patch unless explicitly chosen:
   Canary and mixes multiple scopes.
 - Do not copy `tailRemaining` packet parsing heuristics without replacing them
   with protocol-profile based parsing.
-- Do not mix unfair-frag share, schema migrations, or kill weighting into the
-  first Expert PvP behavior port.
+- Do not mix unfair-frag share, `player_kills` schema changes, or kill weighting
+  into the Expert PvP behavior port.
 - Do not scatter `pveWall` custom-attribute reads across Lua, combat, tile, and
   protocol. If selected, model it as explicit field context.
 - Do not expose debug reset commands or new Lua combat bindings to normal

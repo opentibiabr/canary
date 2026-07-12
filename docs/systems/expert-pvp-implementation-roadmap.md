@@ -5,6 +5,21 @@ This roadmap turns the contracts from the
 steps. The goal is to keep each commit reviewable, atomic, and safe while
 Expert PvP is selected explicitly through `worldType = "expert-pvp"`.
 
+## Current Status
+
+Phases 1 through 8 are implemented in the branch. The current review scope is
+therefore stabilization and regression validation, not a Phase 1-only PR.
+
+- Foundation, player state, combat, walkthrough, field context, collision,
+  viewer visuals, situations, marks, and persistence are present.
+- White/Yellow/Red relation matrices, pure combat validation, summon ownership,
+  field pathfinding, and bounded mark refreshes have dedicated fixes.
+- Tibia 11.00 carries the verified hand-mode byte. Current 15.25 has a verified
+  three-byte Set Tactics packet, so it defaults to Dove and does not expose the
+  hand selector.
+- Frag sharing, `player_kills.weight`, debug commands, caster-only wild-growth
+  cutting, and the top-stack product decision remain out of scope.
+
 ## Ground Rules
 
 - Keep `worldType = "retro-pvp"` as the explicit default; keep `worldType = "pvp"`
@@ -17,8 +32,8 @@ Expert PvP is selected explicitly through `worldType = "expert-pvp"`.
   `src/creatures/players/components/pvp/`.
 - Do not apply old Shadowborn or TibiaDuality patches directly.
 - Do not copy old code without adapting it to current Canary contracts.
-- Do not mix frag-share, `player_kills.weight`, schema migrations, debug
-  talkactions, or unrelated protocol work into the first implementation chain.
+- Do not mix frag-share, `player_kills.weight`, related kill-schema migrations,
+  debug talkactions, or unrelated protocol work into the implementation chain.
 - Separate protocol, player state, combat, walkthrough, field context, field
   visuals, and side effects into different commits or PRs.
 - Update every maintained build entry point when adding C++ source files.
@@ -499,21 +514,18 @@ Rules:
   existing PvP enum unless a later PR proves a separate enum is required.
 - Broad `WORLD_TYPE_PVP` behavior changes outside `worldType = "expert-pvp"`.
 
-## Recommended First PR
+## Review And Revert Boundaries
 
-The first PR should include only Phase 1:
+Keep the existing commit groups separate when reviewing or reverting:
 
-1. `feat(pvp): add expert pvp world type`
-2. `feat(pvp): add expert pvp decision skeleton`
-3. `test(pvp): cover expert pvp pure helpers`
+1. world type and component foundation;
+2. player state, protocol profile gates, and persistence;
+3. combat permission and delayed side effects;
+4. player body blocking;
+5. field ownership, damage, collision, and per-viewer visuals;
+6. runtime situations and marks;
+7. post-merge stabilization fixes.
 
-Expected result:
-
-- `worldType = "expert-pvp"` enables Expert PvP.
-- `worldType = "retro-pvp"` and legacy `"pvp"` keep Retro PvP behavior.
-- The helper layer exists.
-- A `PlayerPvp` component shell exists for the later player-state slice.
-- Maintained build manifests know about the new `.cpp`.
-- Pure helper tests document mode normalization and relation classification.
-- No combat, movement, protocol, MW/WG, Lua, persistence, or schema behavior
-  changes.
+The in-game matrix in the porting plan is required before release. A failure in
+one group should be fixed or reverted without folding unrelated phases into the
+same commit.

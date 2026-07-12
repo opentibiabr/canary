@@ -262,7 +262,7 @@ namespace {
 		}
 	}
 
-	void refreshCreatureMarkForViewer(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject, const SituationSnapshot &snapshot) {
+	void refreshCreatureMarkFromSnapshot(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject, const SituationSnapshot &snapshot) {
 		if (!viewer || !subject) {
 			return;
 		}
@@ -967,7 +967,7 @@ void ExpertPvp::refreshAllVisibleSituationMarks() {
 		}
 
 		for (const auto &subject : Spectators().find<Player>(viewer->getPosition(), true)) {
-			refreshCreatureMarkForViewer(viewer, subject ? subject->getPlayer() : nullptr, snapshot);
+			refreshCreatureMarkFromSnapshot(viewer, subject ? subject->getPlayer() : nullptr, snapshot);
 		}
 	}
 }

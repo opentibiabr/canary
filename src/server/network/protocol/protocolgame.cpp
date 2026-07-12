@@ -1024,6 +1024,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 			return;
 		}
+		if (ExpertPvp::isEnabled() && !hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
+			player->setPvpMode(PVP_MODE_DOVE);
+		}
 
 		player->setOperatingSystem(operatingSystem);
 
@@ -1105,6 +1108,9 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	}
 
 	player = foundPlayer;
+	if (ExpertPvp::isEnabled() && !hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
+		player->setPvpMode(PVP_MODE_DOVE);
+	}
 
 	g_chat().removeUserFromAllChannels(player);
 	player->clearModalWindows();

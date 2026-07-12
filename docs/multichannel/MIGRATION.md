@@ -222,10 +222,24 @@ is the sole session-enforcement mechanism; and target-channel online/
 capacity checks are optimistic placeholders since no heartbeat loop exists
 yet to check them for real).
 
-**Still not enforced**, and still the reason not to enable this flag in
-production yet: the economy ledger and house purchase/transfer
-transactional rewrites (§7, §8) — a switch or a normal login does not yet
-touch money-moving state at all, which is the safe side to be wrong on,
-but also means this is not yet a complete cluster. Do not enable
-`multiChannelEnabled = true` in production until those ship and are
-tested.
+**Phase 3:** `House::setOwner` — the one real chokepoint every ownership
+change (auction win, trade-based sale, rent/inactivity repossession)
+funnels through — now mirrors every grant/revoke into
+`account_house_ownership` for real, verified against a real MariaDB
+(grant, re-grant moves the row, revoke deletes it; see ARCHITECTURE.md
+§7 and TEST_PLAN.md). This makes the cluster-wide "one house per account"
+table accurate as of *this* PR, not just from whenever an operator
+eventually flips the flag — no backfill migration will be needed later.
+
+**Still not enforced**, and still the reason not to enable
+`multiChannelEnabled = true` in production yet: nothing yet *blocks* an
+account from bidding on or trading for a second house before an already-
+decided purchase for a different one settles (the mirror above only
+records an outcome once `setOwner` is actually called, which for auctions
+happens on the next restart, not at bid-placement time) — see
+ARCHITECTURE.md §7's stated gap. The economy ledger (§8) — market/mail/
+bank idempotency — is also still entirely unwired; a switch or a normal
+login does not touch money-moving state at all today, which is the safe
+side to be wrong on, but also means this is not yet a complete cluster.
+Do not enable `multiChannelEnabled = true` in production until those ship
+and are tested.

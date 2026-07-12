@@ -11,6 +11,7 @@
 
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
+#include "game/multichannel/channel_context.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "io/ioguild.hpp"
 #include "io/iologindata.hpp"
@@ -97,6 +98,20 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 		std::ostringstream query;
 		query << "UPDATE `houses` SET `owner` = " << guid << ", `new_owner` = -1, `paid` = 0, `bidder` = 0, `bidder_name` = '', `highest_bid` = 0, `internal_bid` = 0, `bid_end_date` = 0, `state` = " << (guid > 0 ? 2 : 0) << " WHERE `id` = " << id;
 		db.executeQuery(query.str());
+
+		// Clear this house's row from the cluster-wide "one house per
+		// account" mirror (docs/multichannel/ARCHITECTURE.md §7) regardless
+		// of guid: for a revoke (guid == 0) this is the whole job; for a
+		// grant it clears any stale row before the insert below. Keyed by
+		// (channel_id, house_id) via account_house_ownership_house_unique,
+		// not by the previous owner's account, so it works even when the
+		// previous owner's account can no longer be resolved. Not wrapped
+		// in an explicit transaction with the UPDATE above, matching every
+		// other write in this function - see MIGRATION.md for the accepted
+		// risk window this shares with the existing owner/name writes.
+		std::ostringstream clearOwnershipQuery;
+		clearOwnershipQuery << "DELETE FROM `account_house_ownership` WHERE `channel_id` = " << g_channelContext().getChannelId() << " AND `house_id` = " << id;
+		db.executeQuery(clearOwnershipQuery.str());
 	}
 
 	if (isLoaded && owner == guid) {
@@ -146,6 +161,27 @@ void House::setOwner(uint32_t guid, bool updateDatabase /* = true*/, const std::
 			ownerName = name;
 			ownerAccountId = result->getNumber<uint32_t>("account_id");
 			m_state = CyclopediaHouseState::Rented;
+
+			// Record the grant in the cluster-wide mirror (see the DELETE
+			// above) - gated on updateDatabase to respect the same "don't
+			// touch the DB" contract that flag already has for the houses
+			// UPDATE, even though the players SELECT above runs regardless
+			// (pre-existing behavior, not changed here). One row per
+			// account (PRIMARY KEY(account_id)): clear whatever house this
+			// account previously held anywhere in the cluster before
+			// inserting the new one - this makes the mirror consistent,
+			// it does not by itself stop an account from bidding on a
+			// second house before this settlement runs (see
+			// DECISION_MATRIX.md for that still-open gap).
+			if (updateDatabase) {
+				std::ostringstream clearAccountQuery;
+				clearAccountQuery << "DELETE FROM `account_house_ownership` WHERE `account_id` = " << ownerAccountId;
+				db.executeQuery(clearAccountQuery.str());
+
+				std::ostringstream grantQuery;
+				grantQuery << "INSERT INTO `account_house_ownership` (`account_id`, `channel_id`, `house_id`, `since`) VALUES (" << ownerAccountId << ", " << g_channelContext().getChannelId() << ", " << id << ", " << time(nullptr) << ")";
+				db.executeQuery(grantQuery.str());
+			}
 		}
 	}
 

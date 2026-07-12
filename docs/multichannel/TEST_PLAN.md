@@ -151,6 +151,35 @@ per-account checks, `cycleEvent` registration, `queryAdd`-based tile
 legality, etc.) - **CI is the first real compiler for these**, per this
 repo's established CI-repair policy from #69.
 
+### Phase 3: house ownership mirror
+
+`House::setOwner`'s new `account_house_ownership` sync (ARCHITECTURE.md
+§7) is DB-write glue inside a `.cpp` that transitively pulls in the full
+engine (`game/game.hpp`), so it hits the same standalone-compile wall as
+every other engine call site in this document. What was verified instead,
+against a real MariaDB 10.11 (fresh `schema.sql` install, two real
+accounts, two real houses on channel 1):
+
+- **Grant**: the exact `UPDATE houses` + `DELETE ... WHERE channel_id=?
+  AND house_id=?` + `SELECT ... FROM players` + `DELETE ... WHERE
+  account_id=?` + `INSERT` sequence the new code issues, run in order,
+  produces exactly one `account_house_ownership` row for the new owner.
+- **Re-grant**: the same account "buying" a second house on the same
+  channel moves the row (the old house's row disappears, a new one
+  appears for the new house) rather than leaving two - confirms the
+  `PRIMARY KEY(account_id)` semantics work as the one-house-per-account
+  invariant this table exists to hold, even without any new application-
+  level gate.
+- **Revoke**: `guid = 0` deletes the row and leaves none behind.
+- **Cross-channel collision**: attempting to give two different channels
+  a house with the same numeric id (to check `(channel_id, house_id)`
+  scoping in isolation) hit `houses_id_unique` first - a real, pre-
+  existing Phase 1 constraint (see MIGRATION.md's "Known limitation"),
+  confirming this is not a new gap the mirror introduces; today every
+  `house_id` the mirror will ever see is already globally unique on its
+  own, so the `channel_id` scoping is inert until that separate,
+  documented limitation is lifted.
+
 ## 15.1b Redis Lua CAS script validation — ✅ run against a real `redis-server`
 
 The acquire/renew/release Lua scripts in

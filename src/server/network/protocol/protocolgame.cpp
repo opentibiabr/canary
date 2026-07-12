@@ -9685,7 +9685,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 
 	auto bubble = creature->getSpeechBubble();
 	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? static_cast<uint8_t>(SPEECHBUBBLE_NONE) : bubble);
-	msg.addByte(ExpertPvp::getSituationCreatureMark(otherPlayer, player));
+	msg.addByte(isCurrentProtocolProfile(protocolProfile) ? ExpertPvp::getSituationCreatureMark(otherPlayer, player) : CREATURE_MARK_UNMARKED);
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type
 	} else if (otherPlayer) {

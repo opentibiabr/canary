@@ -141,7 +141,7 @@ TEST(ProtocolProfileRegistryTest, CurrentAnd1100UseDifferentInitialWireBehavior)
 	ASSERT_NE(nullptr, tibia1100);
 	EXPECT_NE(current.id, tibia1100->id);
 	EXPECT_FALSE(current.initialBehavior.hasSameWireBehavior(tibia1100->initialBehavior));
-	EXPECT_TRUE(current.hasFeature(ProtocolFeature::ExpertPvpModeByte));
+	EXPECT_FALSE(current.hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::OldProtocolCompat));
 	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(tibia1100->id));

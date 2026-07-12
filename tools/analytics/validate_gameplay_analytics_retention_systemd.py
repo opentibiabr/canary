@@ -20,6 +20,7 @@ REQUIRED_ENV_KEYS = {
     "DB_NAME",
     "AGGREGATION_LAG_DAYS",
     "MAX_DAYS_PER_RUN",
+    "REAGGREGATE_DAYS",
     "RAW_RETENTION_DAYS",
     "DELETE_RAW_SESSIONS",
     "DELETE_BATCH_SIZE",
@@ -46,8 +47,16 @@ def validate_env_example(text: str) -> None:
         "retention systemd env example must ship a placeholder database password",
     )
     require(
+        re.search(r"^REAGGREGATE_DAYS=7$", text, flags=re.MULTILINE) is not None,
+        "retention systemd env example must ship a bounded seven-day rolling rebuild window",
+    )
+    require(
         re.search(r"^DELETE_RAW_SESSIONS=false$", text, flags=re.MULTILINE) is not None,
         "retention systemd env example must default raw deletion to false",
+    )
+    require(
+        "RAW_RETENTION_DAYS must be greater than" in text,
+        "retention systemd env example must document the rebuild/retention safety margin",
     )
     require("Never commit a" in text, "retention systemd env example must warn against committing real credentials")
 
@@ -88,6 +97,7 @@ def validate_docs(text: str) -> None:
         "gameplay-analytics-maintenance.env.example",
         "systemctl enable --now gameplay-analytics-maintenance.timer",
         "systemctl disable --now gameplay-analytics-maintenance.timer",
+        "REAGGREGATE_DAYS",
         "### Install",
         "### Uninstall",
     ):

@@ -54,6 +54,18 @@ def validate_views(text: str) -> None:
         )
     for column in ("NULLIF(", "`combat_seconds`"):
         require(column in text, f"reporting views must guard divide-by-zero with {column}")
+    require(
+        "FROM `analytics_daily_party_balance`" in text,
+        "solo-versus-party reporting must read the dedicated party aggregate",
+    )
+    require(
+        "`party_mode` AS `mode`" in text,
+        "solo-versus-party reporting must preserve the mode assigned before daily grouping",
+    )
+    require(
+        "LEAST(100.00" in text,
+        "shared-experience reporting must cap malformed or legacy values at 100 percent",
+    )
 
 
 def validate_dashboard(raw: str) -> dict:
@@ -124,7 +136,10 @@ def validate_docs(text: str) -> None:
         "## No per-player variables",
         "## Minimum sample size",
         "## Indexes and query cost",
+        "## Solo versus party semantics",
+        "## Shared-experience percentage",
         "CREATE OR REPLACE VIEW",
+        "analytics_daily_party_balance",
         "drill-down",
     ):
         require(phrase in text, f"dashboard documentation lacks: {phrase}")

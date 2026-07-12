@@ -256,18 +256,20 @@ public:
 	std::shared_ptr<Item> getGround() const {
 		return ground;
 	}
-	void setGround(const std::shared_ptr<Item> &item) {
-		if (ground) {
-			resetTileFlags(ground);
-		}
+	void setGround(const std::shared_ptr<Item> &item);
 
-		if ((ground = item)) {
-			setTileFlags(item);
-		}
-	}
-
-	// This method maintains safety in asynchronous calls, avoiding competition between threads.
-	void safeCall(std::function<void(void)> &&action) const;
+	/**
+	 * Runs an action immediately or defers it back to the dispatcher.
+	 *
+	 * Deferred execution is guarded by a weak tile self reference. The action
+	 * must not capture borrowed raw pointers from the caller's stack; use strong
+	 * ownership, weak ownership, or an audited stable identity for anything that
+	 * must survive the async boundary.
+	 *
+	 * @return true when the action ran immediately or was admitted for deferred
+	 * execution; false when dispatcher admission fails.
+	 */
+	bool safeCall(std::function<void(void)> &&action) const;
 
 private:
 	void onAddTileItem(const std::shared_ptr<Item> &item);

@@ -5215,7 +5215,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:takeScreenshot(screenshotType: any)`
+#### `Player:takeScreenshot(screenshotType: any, skillId?: number, skillLevel?: number, achievementName?: string, raceId?: number, bestiaryStep?: number)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`

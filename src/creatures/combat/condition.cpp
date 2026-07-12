@@ -17,6 +17,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "io/fileloader.hpp"
 #include "kv/kv.hpp"
+#include "map/map.hpp"
 #include "map/spectators.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/players/player.hpp"
@@ -2151,8 +2152,9 @@ void ConditionDamage::generateDamageList(int32_t amount, int32_t start, std::lis
  *  ConditionFeared
  */
 bool ConditionFeared::isStuck(const std::shared_ptr<Creature> &creature, Position pos) const {
+	MapCacheFloorCursor floorCursor;
 	return std::ranges::all_of(m_directionsVector, [&](Direction dir) {
-		return !canWalkTo(creature, pos, dir);
+		return !canWalkTo(creature, pos, dir, floorCursor);
 	});
 }
 
@@ -2170,8 +2172,9 @@ bool ConditionFeared::getRandomDirection(const std::shared_ptr<Creature> &creatu
 
 	std::ranges::shuffle(directions, getRandomGenerator());
 
+	MapCacheFloorCursor floorCursor;
 	auto it = std::ranges::find_if(directions, [&](Direction dir) {
-		return canWalkTo(creature, pos, dir);
+		return canWalkTo(creature, pos, dir, floorCursor);
 	});
 
 	if (it != directions.end()) {
@@ -2183,13 +2186,18 @@ bool ConditionFeared::getRandomDirection(const std::shared_ptr<Creature> &creatu
 }
 
 bool ConditionFeared::canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection) const {
+	MapCacheFloorCursor floorCursor;
+	return canWalkTo(creature, pos, moveDirection, floorCursor);
+}
+
+bool ConditionFeared::canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection, MapCacheFloorCursor &floorCursor) const {
 	pos = getNextPosition(moveDirection, pos);
 	if (!creature) {
 		g_logger().error("[{}] creature is nullptr", __FUNCTION__);
 		return false;
 	}
 
-	auto tile = g_game().map.getTile(pos);
+	auto tile = g_game().map.getTileWithFloorCursor(pos, floorCursor);
 	if (tile && tile->getTopVisibleCreature(creature) == nullptr && tile->queryAdd(0, creature, 1, FLAG_PATHFINDING) == RETURNVALUE_NOERROR) {
 		const auto &field = tile->getFieldItem();
 		if (field && !field->isBlocking() && field->getDamage() != 0) {

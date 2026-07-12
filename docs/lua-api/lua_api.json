@@ -7798,7 +7798,12 @@
       {
         "name": "takeScreenshot",
         "params": [
-          "screenshotType: any"
+          "screenshotType: any",
+          "skillId?: number",
+          "skillLevel?: number",
+          "achievementName?: string",
+          "raceId?: number",
+          "bestiaryStep?: number"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

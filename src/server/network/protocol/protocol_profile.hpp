@@ -52,6 +52,9 @@ enum class ItemMapperPolicy : uint8_t {
 
 enum class ProtocolFeature : uint64_t {
 	None = 0,
+	// When a feature is build/version-specific, document the first confirmed
+	// protocol version here. Use verified client parser evidence or captures;
+	// do not infer from the current profile alone.
 	CurrentPayload = 1ULL << 0,
 	OldProtocolCompat = 1ULL << 1,
 	LegacyPayload = 1ULL << 2,
@@ -70,7 +73,13 @@ enum class ProtocolFeature : uint64_t {
 	PlayerDataLevelPercentU16 = 1ULL << 14,
 	// 0x75 uses a client event selector before event-specific fields.
 	GameEventPayload = 1ULL << 15,
-	ExpertPvpModeByte = 1ULL << 16,
+	OfficialTaskboardPackets = 1ULL << 16,
+	OfficialVocationSpecificPlayerData = 1ULL << 17,
+	OfficialWeaponProficiencyPayload = 1ULL << 18,
+	GraphicalEffectSourceByte = 1ULL << 19,
+	OfficialSoulSealsPackets = 1ULL << 20,
+	OfficialSkillWheelPayload = 1ULL << 21, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
+	ExpertPvpModeByte = 1ULL << 22,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

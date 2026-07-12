@@ -257,6 +257,14 @@ public:
 
 	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, const std::string &context);
 
+	/**
+	 * Assigns the player's runtime creature ID from the database GUID range.
+	 *
+	 * Player runtime IDs are stable for a character identity, not for a single
+	 * online object generation. Delayed or async work must not treat a player
+	 * ID as a generation-safe handle because the same character can reconnect
+	 * and produce a different `Player` object with the same runtime ID.
+	 */
 	void setID() override;
 
 	void setOnline(bool value) override {

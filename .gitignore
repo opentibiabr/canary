@@ -218,6 +218,9 @@ ecf/
 rcf/
 
 # Windows Store app package directories and files
+
+# Local protocol payload probes used by /protocolprobe.
+/data/scripts/talkactions/god/protocol_probe.local.json
 AppPackages/
 BundleArtifacts/
 Package.StoreAssociation.xml

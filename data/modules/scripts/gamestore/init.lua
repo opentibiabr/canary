@@ -88,6 +88,8 @@ sendRequestPurchaseData = senders.sendRequestPurchaseData
 sendHomePage = senders.sendHomePage
 
 parseTransferableCoins = parsers.parseTransferableCoins
+parseGetOfferDescription = parsers.parseGetOfferDescription
+parseStoreEvent = parsers.parseStoreEvent
 parseOpenStore = parsers.parseOpenStore
 parseRequestStoreOffers = parsers.parseRequestStoreOffers
 parseBuyStoreOffer = parsers.parseBuyStoreOffer

@@ -13,6 +13,12 @@
 	<!-- Quest Tracking -->
 	<module type="recvbyte" byte="208" script="questtrack/questtrack.lua"/>
 
+	<!-- Taskboard official packet shim -->
+	<module type="recvbyte" byte="95" script="taskboard/taskboard.lua"/>
+
+	<!-- Soul Seals official packet shim -->
+	<module type="recvbyte" byte="186" script="soulseals/soulseals.lua"/>
+
 	<!-- Cults of Tibia -->
 	<module type="recvbyte" byte="15" script="cults_of_tibia/death.lua" />
 

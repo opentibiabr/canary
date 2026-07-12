@@ -507,7 +507,10 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				}
 			}
 		} else if (targetMonster) {
-			if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
+			const bool allowMonsterPerfTestFriendlyFire = attackerMonster && attacker != target
+				&& !attacker->isSummon() && !target->isSummon()
+				&& g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+			if (!allowMonsterPerfTestFriendlyFire && attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
@@ -519,7 +522,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				if (target->isSummon() && targetMasterPlayer && target->getZoneType() == ZONE_NOPVP) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
-			} else if (attackerMonster) {
+			} else if (attackerMonster && !allowMonsterPerfTestFriendlyFire) {
 				if ((!targetMaster || !targetMasterPlayer) && attacker->getFaction() == FACTION_DEFAULT) {
 					if (!attackerMaster || !masterAttackerPlayer) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;

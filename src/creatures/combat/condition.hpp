@@ -15,6 +15,7 @@
 enum class PlayerIcon : uint8_t;
 
 class Creature;
+struct MapCacheFloorCursor;
 class Player;
 class PropStream;
 class PropWriteStream;
@@ -355,6 +356,7 @@ public:
 
 private:
 	bool canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection) const;
+	bool canWalkTo(const std::shared_ptr<Creature> &creature, Position pos, Direction moveDirection, MapCacheFloorCursor &floorCursor) const;
 	bool getFleeDirection(const std::shared_ptr<Creature> &creature);
 	bool getFleePath(const std::shared_ptr<Creature> &creature, const Position &pos, std::vector<Direction> &dirList);
 	bool getRandomDirection(const std::shared_ptr<Creature> &creature, Position pos);

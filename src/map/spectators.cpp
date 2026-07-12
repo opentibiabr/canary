@@ -14,29 +14,69 @@
 
 phmap::flat_hash_map<Position, SpectatorsCache> Spectators::spectatorsCache;
 
+namespace {
+	void deduplicateCreatureSnapshot(CreatureVector &creatures) {
+		// Transient identity keys only; the snapshot keeps owning shared_ptrs.
+		phmap::flat_hash_set<const Creature*> seenCreatures;
+		seenCreatures.reserve(creatures.size());
+
+		CreatureVector uniqueCreatures;
+		uniqueCreatures.reserve(creatures.size());
+
+		for (auto &creature : creatures) {
+			if (seenCreatures.emplace(creature.get()).second) {
+				uniqueCreatures.emplace_back(std::move(creature));
+			}
+		}
+
+		creatures = std::move(uniqueCreatures);
+	}
+}
+
 void Spectators::clearCache() {
 	spectatorsCache.clear();
 }
 
-Spectators Spectators::insert(const std::shared_ptr<Creature> &creature) {
+Spectators &Spectators::insert(const std::shared_ptr<Creature> &creature) {
 	if (creature) {
 		creatures.emplace_back(creature);
 	}
 	return *this;
 }
 
-Spectators Spectators::insertAll(const CreatureVector &list) {
+Spectators &Spectators::insertAll(const CreatureVector &list) {
 	if (!list.empty()) {
 		const bool hasValue = !creatures.empty();
 
+		creatures.reserve(creatures.size() + list.size());
 		creatures.insert(creatures.end(), list.begin(), list.end());
 
-		// Remove duplicate
+		// Current getSpectators callers build already unique snapshots; only
+		// merged snapshots need deduplication.
 		if (hasValue) {
-			std::unordered_set uset(creatures.begin(), creatures.end());
-			creatures.clear();
-			creatures.insert(creatures.end(), uset.begin(), uset.end());
+			deduplicateCreatureSnapshot(creatures);
 		}
+	}
+	return *this;
+}
+
+Spectators &Spectators::insertAll(CreatureVector &&list) {
+	if (!list.empty()) {
+		const bool hasValue = !creatures.empty();
+
+		if (!hasValue) {
+			// Current getSpectators callers build already unique snapshots; only
+			// merged snapshots need deduplication.
+			creatures = std::move(list);
+			return *this;
+		}
+
+		creatures.reserve(creatures.size() + list.size());
+		for (auto &creature : list) {
+			creatures.emplace_back(std::move(creature));
+		}
+
+		deduplicateCreatureSnapshot(creatures);
 	}
 	return *this;
 }
@@ -55,7 +95,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 
 	if (checkDistance) {
 		CreatureVector spectators;
-		spectators.reserve(creatures.size());
+		spectators.reserve(list->size());
 		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
 			if ((centerPos.x - specPos.x >= minRangeX
@@ -70,7 +110,7 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 				spectators.emplace_back(creature);
 			}
 		}
-		insertAll(spectators);
+		insertAll(std::move(spectators));
 	} else {
 		insertAll(*list);
 	}
@@ -120,8 +160,11 @@ CreatureVector Spectators::getSpectators(const Position &centerPos, bool multifl
 	const int32_t endx2 = x2 - (x2 & SECTOR_MASK);
 	const int32_t endy2 = y2 - (y2 & SECTOR_MASK);
 
+	const auto sectorColumns = static_cast<size_t>(((endx2 - startx1) / SECTOR_SIZE) + 1);
+	const auto sectorRows = static_cast<size_t>(((endy2 - starty1) / SECTOR_SIZE) + 1);
+
 	CreatureVector spectators;
-	spectators.reserve(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2);
+	spectators.reserve(std::max<size_t>(std::max<uint8_t>(MAP_MAX_VIEW_PORT_X, MAP_MAX_VIEW_PORT_Y) * 2, sectorColumns * sectorRows * 8));
 
 	const MapSector* startSector = g_game().map.getMapSector(startx1, starty1);
 	const MapSector* sectorS = startSector;
@@ -207,7 +250,7 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 		}
 	}
 
-	const auto &spectators = getSpectators(centerPos, multifloor, onlyPlayers, onlyMonsters, onlyNpcs, minRangeX, maxRangeX, minRangeY, maxRangeY);
+	auto spectators = getSpectators(centerPos, multifloor, onlyPlayers, onlyMonsters, onlyNpcs, minRangeX, maxRangeX, minRangeY, maxRangeY);
 
 	// It is necessary to create the cache even if no spectators is found, so that there is no future query.
 	auto &cache = cacheFound ? it->second : spectatorsCache.emplace(centerPos, SpectatorsCache { .minRangeX = minRangeX, .maxRangeX = maxRangeX, .minRangeY = minRangeY, .maxRangeY = maxRangeY, .creatures = {}, .monsters = {}, .npcs = {}, .players = {} }).first->second;
@@ -223,9 +266,8 @@ Spectators Spectators::find(const Position &centerPos, bool multifloor, bool onl
 	}
 
 	if (!spectators.empty()) {
-		insertAll(spectators);
-
 		creatureList->insert(creatureList->end(), spectators.begin(), spectators.end());
+		insertAll(std::move(spectators));
 	}
 
 	return *this;

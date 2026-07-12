@@ -2964,6 +2964,10 @@ void Player::setNextWalkActionTask(const std::shared_ptr<Task> &task) {
 		walkTaskEvent = 0;
 	}
 
+	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
+	}
 	walkTask = task;
 }
 
@@ -2974,7 +2978,13 @@ void Player::setNextWalkTask(const std::shared_ptr<Task> &task) {
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerWalk);
+		task->setProducerToken(getID());
 		nextStepEvent = g_dispatcher().scheduleEvent(task);
+		if (nextStepEvent == 0) {
+			sendCancelWalk();
+			return;
+		}
 		resetIdleTime();
 	}
 }
@@ -2990,7 +3000,13 @@ void Player::setNextActionTask(const std::shared_ptr<Task> &task, bool resetIdle
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionTaskEvent = g_dispatcher().scheduleEvent(task);
+		if (actionTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return;
+		}
 		if (resetIdleTime) {
 			this->resetIdleTime();
 		}
@@ -3004,7 +3020,12 @@ void Player::setNextActionPushTask(const std::shared_ptr<Task> &task) {
 	}
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionTaskEventPush = g_dispatcher().scheduleEvent(task);
+		if (actionTaskEventPush == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 	}
 }
 
@@ -3017,7 +3038,12 @@ void Player::setNextPotionActionTask(const std::shared_ptr<Task> &task) {
 	cancelPush();
 
 	if (task) {
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 		actionPotionTaskEvent = g_dispatcher().scheduleEvent(task);
+		if (actionPotionTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 		// resetIdleTime();
 	}
 }
@@ -3344,8 +3370,13 @@ void Player::updateImbuementTrackerStats() const {
 					player->m_pendingImbuementTrackerEventId = 0;
 					player->updateImbuementTrackerStats();
 				},
-				__FUNCTION__
+				__FUNCTION__,
+				DispatcherLane::PlayerAction,
+				getID()
 			);
+			if (m_pendingImbuementTrackerEventId == 0) {
+				m_hasPendingImbuementTrackerUpdate = false;
+			}
 		}
 		return;
 	}
@@ -3963,6 +3994,8 @@ void Player::doAttacking(uint32_t interval) {
 					creature->checkCreatureAttack(true);
 				} }, __FUNCTION__
 		);
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
 
 		if (!classicSpeed) {
 			setNextActionTask(task, false);
@@ -4184,10 +4217,12 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 			auto condition = *it;
 			// isSupress block to delete spells conditions (ensures that the player cannot, for example, reset the cooldown time of the familiar and summon several)
 			if (condition->isPersistent() && condition->isRemovableOnDeath()) {
+				const ConditionType_t type = condition->getType();
 				it = conditions.erase(it);
+				trackRemovedCondition(type);
 
 				condition->endCondition(static_self_cast<Player>());
-				onEndCondition(condition->getType());
+				onEndCondition(type);
 			} else {
 				++it;
 			}
@@ -4200,10 +4235,12 @@ void Player::death(const std::shared_ptr<Creature> &lastHitCreature) {
 		while (it != end) {
 			auto condition = *it;
 			if (condition->isPersistent()) {
+				const ConditionType_t type = condition->getType();
 				it = conditions.erase(it);
+				trackRemovedCondition(type);
 
 				condition->endCondition(static_self_cast<Player>());
-				onEndCondition(condition->getType());
+				onEndCondition(type);
 			} else {
 				++it;
 			}
@@ -6195,7 +6232,12 @@ void Player::onWalkComplete() {
 	}
 
 	if (walkTask) {
+		walkTask->setLane(DispatcherLane::PlayerAction);
+		walkTask->setProducerToken(getID());
 		walkTaskEvent = g_dispatcher().scheduleEvent(walkTask);
+		if (walkTaskEvent == 0) {
+			sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+		}
 		walkTask = nullptr;
 	}
 }
@@ -10399,7 +10441,14 @@ void Player::initializeTaskHunting() {
 		}
 	}
 
-	if (client && g_configManager().getBoolean(TASK_HUNTING_ENABLED) && !client->oldProtocol) {
+	const auto* protocolProfile = client ? client->getProtocolProfile() : nullptr;
+	const bool usesOfficialTaskboardPackets = protocolProfile
+		&& protocolProfile->hasFeature(ProtocolFeature::OfficialTaskboardPackets);
+	const bool canSendLegacyTaskHuntingBaseData = client
+		&& g_configManager().getBoolean(TASK_HUNTING_ENABLED)
+		&& !client->oldProtocol
+		&& !usesOfficialTaskboardPackets;
+	if (canSendLegacyTaskHuntingBaseData) {
 		auto buffer = g_ioprey().getTaskHuntingBaseDate();
 		client->writeToOutputBuffer(buffer);
 	}
@@ -11107,7 +11156,16 @@ void Player::triggerTranscendence() {
 			},
 			__FUNCTION__
 		);
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
+		task->setLane(DispatcherLane::PlayerAction);
+		task->setProducerToken(getID());
+		auto eventId = g_dispatcher().scheduleEvent(task);
+		if (eventId == 0) {
+			task->setLane(DispatcherLane::Maintenance);
+			eventId = g_dispatcher().scheduleEvent(task);
+			if (eventId == 0) {
+				g_logger().warn("[Player::triggerTranscendence] Failed to schedule the post-transcendence refresh for player {}", getName());
+			}
+		}
 
 		wheel().sendGiftOfLifeCooldown();
 		g_game().reloadCreature(getPlayer());
@@ -12451,12 +12509,15 @@ bool Player::canAutoWalk(const Position &toPosition, const std::function<void()>
 		// Check if can walk to the toPosition and send event to use function
 		std::vector<Direction> listDir;
 		if (getPathTo(toPosition, listDir, 0, 1, true, true)) {
-			g_dispatcher().addEvent([creatureId = getID(), listDir] { g_game().playerAutoWalk(creatureId, listDir); }, __FUNCTION__);
+			if (!g_game().queuePlayerAutoWalk(getID(), std::move(listDir))) {
+				return true;
+			}
 			const auto &task = createPlayerTask(delay, function, __FUNCTION__);
 			setNextWalkActionTask(task);
 			return true;
 		} else {
 			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+			return true;
 		}
 	}
 	return false;

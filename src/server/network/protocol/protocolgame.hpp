@@ -18,6 +18,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <optional>
+	#include <string>
 #endif
 
 enum class PlayerIcon : uint8_t;
@@ -193,6 +194,20 @@ private:
 	void parseImbuementAction(NetworkMessage &msg);
 	void parseWeaponProficiency(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
+	void parseSetClientOptions(NetworkMessage &msg);
+	void parseClientCheck(NetworkMessage &msg);
+	void parseSetVocation(NetworkMessage &msg);
+	void parseStartOfflineTraining(NetworkMessage &msg);
+	void parseContainerAction(NetworkMessage &msg);
+	void parseCharacterTradeConfigurationAction(NetworkMessage &msg);
+	void parseJoinAggression(NetworkMessage &msg);
+	void parseEditGuildMessage(NetworkMessage &msg);
+	void parseGetTextForReport(NetworkMessage &msg);
+	void parseClientDetails(NetworkMessage &msg);
+	void parseBossDifficultySelection(NetworkMessage &msg);
+	void parseInspectPlayer(NetworkMessage &msg);
+	void parseCyclopediaMapAction(NetworkMessage &msg);
+	void parseSetHirelingName(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
 
@@ -201,6 +216,9 @@ private:
 	void parseOfferDescription(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
+	void parseSendResourceBalance(NetworkMessage &msg);
+	void parseGetTransactionDetails(NetworkMessage &msg);
+	void parseGetObjectInfo(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarySendRaces();
@@ -555,6 +573,7 @@ private:
 	// Wheel
 	void parseOpenWheel(NetworkMessage &msg);
 	void sendOpenWheelWindow(uint32_t ownerId);
+	void sendGemAtelierGemRevealed(uint16_t gemIndex);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
@@ -599,6 +618,7 @@ private:
 	uint32_t challengeTimestamp = 0;
 	uint16_t version = 0;
 	int32_t clientVersion = 0;
+	std::string clientVersionString;
 	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
 	InitialConnectionBehavior initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
 	std::optional<ProtocolSessionHintLease> sessionHintLease;

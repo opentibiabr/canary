@@ -288,8 +288,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 }
 
 std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<Floor> &floor, uint16_t x, uint16_t y) {
-	const auto* cachedTile = floor->getTileCache(x, y);
-	const auto oldTile = floor->getTile(x, y);
+	auto [oldTile, cachedTile] = floor->getTileAndCache(x, y);
 	if (!cachedTile) {
 		return oldTile;
 	}
@@ -315,11 +314,9 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 	if (cachedTile->isHouse()) {
 		if (const auto &house = map->houses.getHouse(cachedTile->houseId)) {
 			tile = std::make_shared<HouseTile>(pos, house);
-			tile->safeCall([tile] {
-				tile->getHouse()->addTile(tile->static_self_cast<HouseTile>());
-			});
 		} else {
 			g_logger().error("[{}] house not found for houseId {}", std::source_location::current().function_name(), cachedTile->houseId);
+			return oldTile;
 		}
 	} else if (cachedTile->isStatic) {
 		tile = std::make_shared<StaticTile>(pos);
@@ -341,7 +338,10 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 
 	tile->setFlag(static_cast<TileFlags_t>(cachedTile->flags));
 
-	tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+	const bool commitAccepted = tile->safeCall([tile, pos, movedOldCreatureList = std::move(oldCreatureList)]() {
+		if (const auto &house = tile->getHouse()) {
+			house->addTile(tile->static_self_cast<HouseTile>());
+		}
 		for (const auto &creature : movedOldCreatureList) {
 			tile->internalAddThing(creature);
 		}
@@ -350,8 +350,12 @@ std::shared_ptr<Tile> MapCache::getOrCreateTileFromCache(const std::shared_ptr<F
 			tile->addZone(zone);
 		}
 	});
+	if (!commitAccepted) {
+		return oldTile;
+	}
 
 	floor->setTile(x, y, tile);
+	map->markNavigationTopologyChanged(pos);
 
 	// Remove Tile from cache
 	floor->setTileCache(x, y, nullptr);
@@ -395,6 +399,7 @@ void MapCache::setBasicTile(uint16_t x, uint16_t y, uint8_t z, const BasicTile &
 
 	if (floor) {
 		floor->setTileCache(x, y, tile);
+		static_cast<Map*>(this)->markNavigationTopologyChanged(Position(x, y, z));
 	}
 }
 

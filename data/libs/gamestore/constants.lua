@@ -133,6 +133,7 @@ GameStore.SendingPackets = {
 }
 
 GameStore.RecivedPackets = {
+	C_GetOfferDescription = 0xE8, -- 232
 	C_StoreEvent = 0xE9, -- 233
 	C_TransferCoins = 0xEF, -- 239
 	C_ParseHirelingName = 0xEC, -- 236

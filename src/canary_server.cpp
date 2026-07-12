@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "game/zones/zone.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
@@ -150,6 +151,7 @@ bool CanaryServer::generateLuaApiDocs(const bool force) const {
 
 int CanaryServer::generateLuaApiDocsOnly() {
 	const auto shutdownDocgenRuntime = [] {
+		g_monsterComputeService().shutdown();
 		g_dispatcher().shutdown();
 		g_threadPool().shutdown();
 	};
@@ -205,6 +207,18 @@ int CanaryServer::run() {
 				loadModules();
 				setWorldType();
 				loadMaps();
+
+				MonsterComputeConfig monsterComputeConfig;
+				monsterComputeConfig.configuredThreads = static_cast<uint32_t>(std::max<int32_t>(0, g_configManager().getNumber(MONSTER_COMPUTE_THREADS)));
+				monsterComputeConfig.capacity = static_cast<size_t>(std::max<int32_t>(1, g_configManager().getNumber(MONSTER_COMPUTE_QUEUE_CAPACITY)));
+				g_monsterComputeService().start(monsterComputeConfig);
+				const auto monsterComputeStats = g_monsterComputeService().getStats();
+				logger.info(
+					"Monster compute service initialized: mode={}, workers={}, capacity={}",
+					monsterComputeStats.inlineMode ? "inline" : "workers",
+					monsterComputeStats.workerCount,
+					monsterComputeStats.capacity
+				);
 
 				logger.info("Initializing gamestate...");
 				g_game().setGameState(GAME_STATE_INIT);
@@ -293,6 +307,7 @@ int CanaryServer::run() {
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
+	g_dispatcher().setQueueLatencyLoggingEnabled(true);
 
 	serviceManager.run();
 
@@ -609,6 +624,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string_view identifier) {
 }
 
 void CanaryServer::shutdown() {
+	g_monsterComputeService().shutdown();
 	g_database().createDatabaseBackup(true);
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();

@@ -23,6 +23,37 @@
 #include "creatures/players/player.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
+	#include <array>
+	#include <cstddef>
+	#include <deque>
+	#include <mutex>
+#endif
+
+namespace {
+	struct CreatureAsyncTaskBucket {
+		std::mutex mutex;
+		std::deque<std::weak_ptr<Creature>> creatures;
+		bool scheduled = false;
+	};
+
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> visibleCreatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> backgroundCreatureAsyncTaskBuckets;
+
+	auto &getCreatureAsyncTaskBuckets(bool playerVisible) {
+		return playerVisible ? visibleCreatureAsyncTaskBuckets : backgroundCreatureAsyncTaskBuckets;
+	}
+
+	DispatcherLane getCreatureAsyncTaskLane(bool playerVisible) {
+		return playerVisible ? DispatcherLane::VisibleMonsterAI : DispatcherLane::MonsterAI;
+	}
+
+	size_t getCreatureAsyncTaskBucketIndex(uint32_t creatureId) noexcept {
+		return creatureId % DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE;
+	}
+}
+
 Creature::Creature() {
 	Creature::onIdleStatus();
 }
@@ -194,7 +225,7 @@ void Creature::onCreatureWalk() {
 
 	auto selfCreature = getCreature();
 
-	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(selfCreature), this] {
+	auto walkTask = [self = std::weak_ptr<Creature>(selfCreature), this] {
 		const auto &creatureEvent = self.lock();
 		if (!creatureEvent) {
 			return;
@@ -237,7 +268,24 @@ void Creature::onCreatureWalk() {
 			eventWalk = 0;
 			addEventWalk();
 		}
-	});
+	};
+
+	const bool playerWalk = getPlayerRaw() != nullptr;
+	const auto creatureWalkLane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
+	const bool accepted = playerWalk
+		? g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID())
+		: g_dispatcher().addCreatureWalkEvent(std::move(walkTask), creatureWalkLane);
+	if (!accepted) {
+		checkingWalkCreature = false;
+		eventWalk = 0;
+		if (playerWalk) {
+			listWalkDir.clear();
+			cancelNextWalk = false;
+			onWalkAborted();
+		} else {
+			forceUpdateFollowPath = true;
+		}
+	}
 }
 
 void Creature::onWalk(Direction &dir) {
@@ -316,14 +364,21 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 			onCreatureWalk();
 		}
 
+		const bool playerWalk = getPlayerRaw() != nullptr;
+		const auto lane = playerWalk
+			? DispatcherLane::PlayerWalk
+			: (isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster);
 		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
 				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
 				}
 			},
-			"Game::checkCreatureWalk"
+			"Game::checkCreatureWalk", lane, playerWalk ? getID() : 0
 		);
+		if (eventWalk == 0 && !playerWalk) {
+			forceUpdateFollowPath = true;
+		}
 	});
 }
 
@@ -332,6 +387,17 @@ void Creature::stopEventWalk() {
 		g_dispatcher().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
+}
+
+void Creature::promoteWalkEventToPlayerVisibleLane() {
+	(void)safeCall([this] {
+		if (eventWalk == 0 || checkingWalkCreature || !isPlayerVisibleForScheduling()) {
+			return;
+		}
+
+		stopEventWalk();
+		addEventWalk();
+	});
 }
 
 void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
@@ -434,12 +500,23 @@ void Creature::checkSummonMove(const Position &newPos, bool teleportSummon) {
 
 void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, const Position &newPos, const std::shared_ptr<Tile> &oldTile, const Position &oldPos, bool teleport) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
-	if (hasCondition(CONDITION_ROOTED)) {
+	if (hasTrackedConditionType(CONDITION_ROOTED) && hasCondition(CONDITION_ROOTED)) {
 		resetMovementState();
 		return;
 	}
 
-	if (creature.get() == this) {
+	const bool selfMove = creature.get() == this;
+	if (!selfMove) {
+		// Compare control-block identity without promoting weak references for every spectator movement.
+		const auto isTrackedCreature = [&creature](const std::weak_ptr<Creature> &trackedCreature) {
+			return !trackedCreature.owner_before(creature) && !creature.owner_before(trackedCreature);
+		};
+		if (!isTrackedCreature(m_followCreature) && !isTrackedCreature(m_attackedCreature)) {
+			return;
+		}
+	}
+
+	if (selfMove) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;
 
@@ -782,13 +859,19 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		std::function<void()> deathEvent = [self = std::weak_ptr<Creature>(getCreature())] {
 			if (const auto &creature = self.lock()) {
 				if (!creature->isRemoved()) {
 					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
 					creature->onDeath();
 				}
-			} }, "Game::executeDeath");
+			}
+		};
+		if (!g_dispatcher().addEvent(std::move(deathEvent), "Game::executeDeath")
+		    && g_dispatcher().context().getType() != DispatcherType::None
+		    && !g_dispatcher().context().isBarrierParallel()) {
+			deathEvent();
+		}
 	}
 }
 
@@ -982,10 +1065,13 @@ void Creature::goToFollowCreature() {
 	const auto &monster = getMonster();
 
 	if (isSummon() && !monster->isFamiliar() && !canFollowMaster()) {
+		monster->supersedeFollowPathCompute();
 		listWalkDir.clear();
 		return;
 	}
 
+	const Position followPosition = followCreature->getPosition();
+	const Position currentPosition = getPosition();
 	bool executeOnFollow = true;
 	std::vector<Direction> listDir;
 	listDir.reserve(128);
@@ -997,8 +1083,8 @@ void Creature::goToFollowCreature() {
 		Direction dir = DIRECTION_NONE;
 
 		if (monster->isFleeing()) {
-			monster->getDistanceStep(followCreature->getPosition(), dir, true);
-		} else if (!monster->getDistanceStep(followCreature->getPosition(), dir)) { // maxTargetDist > 1
+			monster->getDistanceStep(followPosition, dir, true);
+		} else if (!monster->getDistanceStep(followPosition, dir)) { // maxTargetDist > 1
 			// if we can't get anything then let the A* calculate
 			executeOnFollow = false;
 		} else if (dir != DIRECTION_NONE) {
@@ -1008,9 +1094,25 @@ void Creature::goToFollowCreature() {
 	}
 
 	if (listDir.empty()) {
-		hasFollowPath = getPathTo(followCreature->getPosition(), listDir, fpp);
+		bool currentPositionSatisfiesFollow = false;
+		if (fpp.minTargetDist == fpp.maxTargetDist) {
+			// Flexible ranges may still need A* to find a better distance.
+			int32_t bestMatch = 0;
+			currentPositionSatisfiesFollow = FrozenPathingConditionCall(followPosition)(currentPosition, currentPosition, fpp, bestMatch);
+		}
+
+		if (currentPositionSatisfiesFollow) {
+			hasFollowPath = true;
+		} else if (monster && monster->requestFollowPathCompute(followCreature, fpp, executeOnFollow)) {
+			return;
+		} else {
+			hasFollowPath = getPathTo(followPosition, listDir, fpp);
+		}
 	}
 
+	if (monster) {
+		monster->supersedeFollowPathCompute();
+	}
 	startAutoWalk(listDir);
 
 	if (executeOnFollow) {
@@ -1272,10 +1374,11 @@ bool Creature::addCondition(const std::shared_ptr<Condition> &condition, bool at
 	if (condition == nullptr) {
 		return false;
 	}
-	if (isSuppress(condition->getType(), attackerPlayer)) {
+	const ConditionType_t type = condition->getType();
+	if (isSuppress(type, attackerPlayer)) {
 		return false;
 	}
-	const auto &prevCond = getCondition(condition->getType(), condition->getId(), condition->getSubId());
+	const auto &prevCond = getCondition(type, condition->getId(), condition->getSubId());
 	if (prevCond) {
 		prevCond->addCondition(getCreature(), condition);
 		return true;
@@ -1283,7 +1386,8 @@ bool Creature::addCondition(const std::shared_ptr<Condition> &condition, bool at
 
 	if (condition->startCondition(getCreature())) {
 		conditions.emplace_back(condition);
-		onAddCondition(condition->getType());
+		trackAddedCondition(type);
+		onAddCondition(type);
 		return true;
 	}
 
@@ -1307,6 +1411,10 @@ bool Creature::addCombatCondition(const std::shared_ptr<Condition> &condition, b
 
 void Creature::removeCondition(ConditionType_t type) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(type)) {
+		return;
+	}
+
 	auto it = conditions.begin(), end = conditions.end();
 	while (it != end) {
 		std::shared_ptr<Condition> condition = *it;
@@ -1316,6 +1424,7 @@ void Creature::removeCondition(ConditionType_t type) {
 		}
 
 		it = conditions.erase(it);
+		trackRemovedCondition(type);
 
 		condition->endCondition(getCreature());
 
@@ -1325,6 +1434,10 @@ void Creature::removeCondition(ConditionType_t type) {
 
 void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t conditionId, bool force /* = false*/) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(conditionType)) {
+		return;
+	}
+
 	auto it = conditions.begin();
 	const auto end = conditions.end();
 	while (it != end) {
@@ -1345,6 +1458,7 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 		}
 
 		it = conditions.erase(it);
+		trackRemovedCondition(conditionType);
 
 		condition->endCondition(getCreature());
 
@@ -1353,6 +1467,10 @@ void Creature::removeCondition(ConditionType_t conditionType, ConditionId_t cond
 }
 
 void Creature::removeCombatCondition(ConditionType_t type) {
+	if (!hasTrackedConditionType(type)) {
+		return;
+	}
+
 	std::vector<std::shared_ptr<Condition>> removeConditions;
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
@@ -1371,13 +1489,19 @@ void Creature::removeCondition(const std::shared_ptr<Condition> &condition) {
 		return;
 	}
 
+	const ConditionType_t type = condition->getType();
 	conditions.erase(it);
+	trackRemovedCondition(type);
 
 	condition->endCondition(getCreature());
-	onEndCondition(condition->getType());
+	onEndCondition(type);
 }
 
 std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type) const {
+	if (!hasTrackedConditionType(type)) {
+		return nullptr;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
 			return condition;
@@ -1388,6 +1512,10 @@ std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type) const {
 
 std::shared_ptr<Condition> Creature::getCondition(ConditionType_t type, ConditionId_t conditionId, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	if (!hasTrackedConditionType(type)) {
+		return nullptr;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type && condition->getId() == conditionId && condition->getSubId() == subId) {
 			return condition;
@@ -1422,6 +1550,10 @@ std::vector<std::shared_ptr<Condition>> Creature::getCleansableConditions() cons
 
 std::vector<std::shared_ptr<Condition>> Creature::getConditionsByType(ConditionType_t type) const {
 	std::vector<std::shared_ptr<Condition>> conditionsVec;
+	if (!hasTrackedConditionType(type)) {
+		return conditionsVec;
+	}
+
 	for (const auto &condition : conditions) {
 		if (condition->getType() == type) {
 			conditionsVec.emplace_back(condition);
@@ -1439,6 +1571,7 @@ void Creature::executeConditions(uint32_t interval) {
 			ConditionType_t type = condition->getType();
 
 			it = conditions.erase(it);
+			trackRemovedCondition(type);
 
 			condition->endCondition(getCreature());
 
@@ -1452,6 +1585,9 @@ void Creature::executeConditions(uint32_t interval) {
 bool Creature::hasCondition(ConditionType_t type, uint32_t subId /* = 0*/) const {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (isSuppress(type, false)) {
+		return false;
+	}
+	if (!hasTrackedConditionType(type)) {
 		return false;
 	}
 
@@ -1892,46 +2028,188 @@ void Creature::iconChanged() {
 	}
 }
 
+void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible) {
+	const auto bucketIndex = getCreatureAsyncTaskBucketIndex(creatureId);
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
+
+	bool shouldSchedule = false;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		bucket.creatures.emplace_back(std::move(self));
+		if (!bucket.scheduled) {
+			bucket.scheduled = true;
+			shouldSchedule = true;
+		}
+	}
+
+	if (shouldSchedule) {
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
+		},
+		                                                           getCreatureAsyncTaskLane(playerVisible));
+		if (!accepted) {
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
+		}
+	}
+}
+
+void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
+	const auto startedAt = Task::Clock::now();
+	const auto limits = g_dispatcher().getCreatureAsyncSliceLimits(playerVisible);
+	const auto deadline = startedAt + limits.maxRuntime;
+	const auto batchLimit = limits.tasksPerBucket;
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
+
+	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
+	pendingCreatures.clear();
+
+	bool shouldReschedule = false;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		// Keep creature async work in bounded slices so Serial dispatcher tasks
+		// such as login challenge and connection close cannot starve behind a
+		// large monster movement batch.
+		const auto batchSize = std::min(bucket.creatures.size(), batchLimit);
+		pendingCreatures.reserve(batchSize);
+		for (size_t i = 0; i < batchSize; ++i) {
+			pendingCreatures.emplace_back(std::move(bucket.creatures.front()));
+			bucket.creatures.pop_front();
+		}
+		shouldReschedule = !bucket.creatures.empty();
+		bucket.scheduled = shouldReschedule;
+	}
+
+	size_t consumedCreatures = 0;
+	size_t processedCreatures = 0;
+	while (consumedCreatures < pendingCreatures.size()) {
+		if (consumedCreatures > 0 && Task::Clock::now() >= deadline) {
+			break;
+		}
+
+		auto &weakCreature = pendingCreatures[consumedCreatures++];
+		if (const auto &creature = weakCreature.lock()) {
+			if (!playerVisible && creature->isPlayerVisibleForScheduling()) {
+				enqueueAsyncTask(weakCreature, creature->getID(), true);
+				continue;
+			}
+			++processedCreatures;
+			creature->executeAsyncTasks();
+		}
+	}
+
+	size_t requeuedCreatures = 0;
+	if (consumedCreatures < pendingCreatures.size()) {
+		std::scoped_lock lock(bucket.mutex);
+		requeuedCreatures = DispatcherPolicy::requeueUnprocessed(bucket.creatures, pendingCreatures, consumedCreatures);
+		if (!bucket.scheduled) {
+			bucket.scheduled = true;
+			shouldReschedule = true;
+		}
+	}
+
+	pendingCreatures.clear();
+
+	if (shouldReschedule) {
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
+		},
+		                                                           getCreatureAsyncTaskLane(playerVisible));
+		if (!accepted) {
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
+		}
+	}
+
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::CreatureAsyncBucket,
+		processedCreatures,
+		std::chrono::duration_cast<std::chrono::microseconds>(Task::Clock::now() - startedAt)
+	);
+	if (requeuedCreatures > 0) {
+		g_dispatcher().observeInternalWork(DispatcherInternalWork::CreatureAsyncRequeue, requeuedCreatures, std::chrono::microseconds::zero());
+	}
+}
+
+void Creature::rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
+	std::deque<std::weak_ptr<Creature>> rejectedCreatures;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		bucket.scheduled = false;
+		rejectedCreatures.swap(bucket.creatures);
+	}
+
+	for (const auto &weakCreature : rejectedCreatures) {
+		if (const auto &creature = weakCreature.lock()) {
+			creature->setAsyncTaskFlag(AsyncTaskRunning, false);
+		}
+	}
+}
+
+void Creature::executeAsyncTasks() {
+	std::vector<std::function<void()>> currentTasks;
+	currentTasks.swap(asyncTasks);
+
+	const uint8_t currentFlags = m_flagAsyncTask & ~AsyncTaskRunning;
+	m_deferredAsyncTaskFlags = 0;
+	m_isExecutingAsyncTasks = true;
+
+	if (!isRemoved() && isAlive()) {
+		for (auto &task : currentTasks) {
+			task();
+		}
+
+		m_flagAsyncTask = AsyncTaskRunning | currentFlags;
+		if ((currentFlags & Pathfinder) != 0) {
+			goToFollowCreature();
+		}
+
+		onExecuteAsyncTasks();
+	}
+
+	m_isExecutingAsyncTasks = false;
+	currentTasks.clear();
+	if (asyncTasks.empty()) {
+		asyncTasks.swap(currentTasks);
+	}
+
+	const uint8_t deferredFlags = m_deferredAsyncTaskFlags;
+	m_deferredAsyncTaskFlags = 0;
+	m_flagAsyncTask = deferredFlags;
+
+	if (!asyncTasks.empty() || deferredFlags != 0) {
+		sendAsyncTasks();
+	} else {
+		m_flagAsyncTask = 0;
+	}
+}
+
 void Creature::sendAsyncTasks() {
 	if (hasAsyncTaskFlag(AsyncTaskRunning)) {
 		return;
 	}
 
-	setAsyncTaskFlag(AsyncTaskRunning, true);
-	g_dispatcher().asyncEvent([self = std::weak_ptr<Creature>(getCreature())] {
-		if (const auto &creature = self.lock()) {
-			if (!creature->isRemoved() && creature->isAlive()) {
-				for (const auto &task : creature->asyncTasks) {
-					task();
-				}
-
-				if (creature->hasAsyncTaskFlag(Pathfinder)) {
-					creature->goToFollowCreature();
-				}
-
-				creature->onExecuteAsyncTasks();
-			}
-
-			creature->asyncTasks.clear();
-			creature->m_flagAsyncTask = 0;
-		}
-	},
-	                          TaskGroup::WalkParallel);
+	m_flagAsyncTask |= AsyncTaskRunning;
+	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID(), isPlayerVisibleForScheduling());
 }
 
-void Creature::safeCall(std::function<void(void)> &&action) const {
-	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
+bool Creature::safeCall(std::function<void(void)> &&action) const {
+	if (g_dispatcher().context().isBarrierParallel()) {
+		const auto continuationLane = barrierContinuationLane(g_dispatcher().context().getLane());
+		return g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
 			if (const auto self = weak_self.lock()) {
 				if (!self->isInternalRemoved) {
 					action();
 				}
 			}
 		},
-		                        g_dispatcher().context().getName());
-	} else if (!isInternalRemoved) {
-		action();
+		                               g_dispatcher().context().getName(), 0, continuationLane);
 	}
+	if (isInternalRemoved) {
+		return false;
+	}
+
+	action();
+	return true;
 }
 
 void Creature::setCombatDamage(const CombatDamage &damage) {

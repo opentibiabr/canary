@@ -7,6 +7,15 @@ target_sources(
             movement/teleport.cpp
             scheduling/events_scheduler.cpp
             scheduling/dispatcher.cpp
+            scheduling/dispatcher_budget.cpp
+            scheduling/dispatcher_budget.hpp
+            scheduling/dispatcher_policy.hpp
+            scheduling/dispatcher_telemetry.hpp
+            scheduling/dispatcher_wdrr.cpp
+            scheduling/dispatcher_wdrr.hpp
+            scheduling/dispatcher_types.hpp
+            scheduling/monster_compute_service.cpp
+            scheduling/monster_compute_service.hpp
             scheduling/task.cpp
             scheduling/save_manager.cpp
             zones/zone.cpp

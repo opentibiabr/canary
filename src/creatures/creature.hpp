@@ -822,11 +822,17 @@ protected:
 		UpdateIdleStatus = 1 << 2,
 		Pathfinder = 1 << 3,
 		OnThink = 1 << 4,
+		TargetRanking = 1 << 5,
+		CombatIntention = 1 << 6,
 	};
 
 	virtual bool isDead() const {
 		return false;
 	}
+	virtual bool isPlayerVisibleForScheduling() {
+		return true;
+	}
+	void promoteWalkEventToPlayerVisibleLane();
 
 	Position position;
 
@@ -1014,8 +1020,11 @@ protected:
 	 * not capture borrowed raw pointers from the caller's stack; use strong
 	 * ownership, weak ownership, or an audited stable identity for anything that
 	 * must survive the async boundary.
+	 *
+	 * @return true when the action ran immediately or was admitted for deferred
+	 * execution; false when the creature is removed or dispatcher admission fails.
 	 */
-	void safeCall(std::function<void(void)> &&action) const;
+	bool safeCall(std::function<void(void)> &&action) const;
 
 private:
 	bool canFollowMaster() const;
@@ -1027,8 +1036,9 @@ private:
 	 * per-creature guard that prevents duplicate entries while a batch is
 	 * pending or executing.
 	 */
-	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId);
-	static void processAsyncTaskBucket(size_t bucketIndex);
+	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible);
+	static void processAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
+	static void rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
 	void executeAsyncTasks();
 	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);

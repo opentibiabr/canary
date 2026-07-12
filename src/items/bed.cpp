@@ -175,6 +175,21 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	}
 
 	const auto &nextBedItem = getNextBedItem();
+	const auto self = static_self_cast<BedItem>();
+	const auto client = player->client;
+	const bool walkAccepted = g_dispatcher().addWalkEvent([player, self, client] {
+		g_game().map.moveCreature(player, self->getTile());
+		const auto logoutEvent = g_dispatcher().scheduleEvent(
+			SCHEDULER_MINTICKS, [client] { client->logout(false, false); }, "ProtocolGame::logout", DispatcherLane::PlayerAction, player->getID()
+		);
+		if (logoutEvent == 0) {
+			client->logout(false, false);
+		}
+	},
+	                                                      0, player->getID());
+	if (!walkAccepted) {
+		return false;
+	}
 
 	internalSetSleeper(player);
 
@@ -185,18 +200,8 @@ bool BedItem::sleep(const std::shared_ptr<Player> &player) {
 	// update the bedSleepersMap
 	g_game().setBedSleeper(static_self_cast<BedItem>(), player->getGUID());
 
-	// make the player walk onto the bed
-	g_dispatcher().addWalkEvent([player, this] {
-		g_game().map.moveCreature(player, getTile());
-	});
-
 	// display 'Zzzz'/sleep effect
 	g_game().addMagicEffect(player->getPosition(), CONST_ME_SLEEP);
-
-	// logout player after he sees himself walk onto the bed and it change id
-	g_dispatcher().scheduleEvent(
-		SCHEDULER_MINTICKS, [client = player->client] { client->logout(false, false); }, "ProtocolGame::logout"
-	);
 
 	// change self and partner's appearance
 	updateAppearance(player);

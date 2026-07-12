@@ -32,19 +32,25 @@
 #endif
 
 namespace {
-	constexpr size_t CREATURE_ASYNC_TASK_BUCKET_COUNT = 32;
-	constexpr size_t CREATURE_ASYNC_TASK_BATCH_SIZE = 32;
-
 	struct CreatureAsyncTaskBucket {
 		std::mutex mutex;
 		std::deque<std::weak_ptr<Creature>> creatures;
 		bool scheduled = false;
 	};
 
-	std::array<CreatureAsyncTaskBucket, CREATURE_ASYNC_TASK_BUCKET_COUNT> creatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> visibleCreatureAsyncTaskBuckets;
+	std::array<CreatureAsyncTaskBucket, DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE> backgroundCreatureAsyncTaskBuckets;
+
+	auto &getCreatureAsyncTaskBuckets(bool playerVisible) {
+		return playerVisible ? visibleCreatureAsyncTaskBuckets : backgroundCreatureAsyncTaskBuckets;
+	}
+
+	DispatcherLane getCreatureAsyncTaskLane(bool playerVisible) {
+		return playerVisible ? DispatcherLane::VisibleMonsterAI : DispatcherLane::MonsterAI;
+	}
 
 	size_t getCreatureAsyncTaskBucketIndex(uint32_t creatureId) noexcept {
-		return creatureId % CREATURE_ASYNC_TASK_BUCKET_COUNT;
+		return creatureId % DISPATCHER_CREATURE_ASYNC_BUCKET_RESERVE;
 	}
 }
 
@@ -219,7 +225,7 @@ void Creature::onCreatureWalk() {
 
 	auto selfCreature = getCreature();
 
-	g_dispatcher().addWalkEvent([self = std::weak_ptr<Creature>(selfCreature), this] {
+	auto walkTask = [self = std::weak_ptr<Creature>(selfCreature), this] {
 		const auto &creatureEvent = self.lock();
 		if (!creatureEvent) {
 			return;
@@ -262,7 +268,24 @@ void Creature::onCreatureWalk() {
 			eventWalk = 0;
 			addEventWalk();
 		}
-	});
+	};
+
+	const bool playerWalk = getPlayerRaw() != nullptr;
+	const auto creatureWalkLane = isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster;
+	const bool accepted = playerWalk
+		? g_dispatcher().addWalkEvent(std::move(walkTask), 0, getID())
+		: g_dispatcher().addCreatureWalkEvent(std::move(walkTask), creatureWalkLane);
+	if (!accepted) {
+		checkingWalkCreature = false;
+		eventWalk = 0;
+		if (playerWalk) {
+			listWalkDir.clear();
+			cancelNextWalk = false;
+			onWalkAborted();
+		} else {
+			forceUpdateFollowPath = true;
+		}
+	}
 }
 
 void Creature::onWalk(Direction &dir) {
@@ -341,14 +364,21 @@ void Creature::addEventWalk(WalkStartPolicy startPolicy /* = WalkStartPolicy::Re
 			onCreatureWalk();
 		}
 
+		const bool playerWalk = getPlayerRaw() != nullptr;
+		const auto lane = playerWalk
+			? DispatcherLane::PlayerWalk
+			: (isPlayerVisibleForScheduling() ? DispatcherLane::VisibleMonster : DispatcherLane::BackgroundMonster);
 		eventWalk = g_dispatcher().scheduleEvent(
 			static_cast<uint32_t>(ticks), [self = std::weak_ptr<Creature>(getCreature())] {
 				if (const auto &creature = self.lock()) {
 					creature->onCreatureWalk();
 				}
 			},
-			"Game::checkCreatureWalk"
+			"Game::checkCreatureWalk", lane, playerWalk ? getID() : 0
 		);
+		if (eventWalk == 0 && !playerWalk) {
+			forceUpdateFollowPath = true;
+		}
 	});
 }
 
@@ -357,6 +387,17 @@ void Creature::stopEventWalk() {
 		g_dispatcher().stopEvent(eventWalk);
 		eventWalk = 0;
 	}
+}
+
+void Creature::promoteWalkEventToPlayerVisibleLane() {
+	(void)safeCall([this] {
+		if (eventWalk == 0 || checkingWalkCreature || !isPlayerVisibleForScheduling()) {
+			return;
+		}
+
+		stopEventWalk();
+		addEventWalk();
+	});
 }
 
 void Creature::onCreatureAppear(const std::shared_ptr<Creature> &creature, bool isLogin) {
@@ -464,7 +505,18 @@ void Creature::onCreatureMove(const std::shared_ptr<Creature> &creature, const s
 		return;
 	}
 
-	if (creature.get() == this) {
+	const bool selfMove = creature.get() == this;
+	if (!selfMove) {
+		// Compare control-block identity without promoting weak references for every spectator movement.
+		const auto isTrackedCreature = [&creature](const std::weak_ptr<Creature> &trackedCreature) {
+			return !trackedCreature.owner_before(creature) && !creature.owner_before(trackedCreature);
+		};
+		if (!isTrackedCreature(m_followCreature) && !isTrackedCreature(m_attackedCreature)) {
+			return;
+		}
+	}
+
+	if (selfMove) {
 		lastStep = OTSYS_TIME();
 		lastStepCost = 1;
 
@@ -807,13 +859,19 @@ void Creature::changeHealth(int32_t healthChange, bool sendHealthChange /* = tru
 		g_game().addCreatureHealth(static_self_cast<Creature>());
 	}
 	if (health <= 0) {
-		g_dispatcher().addEvent([self = std::weak_ptr<Creature>(getCreature())] {
+		std::function<void()> deathEvent = [self = std::weak_ptr<Creature>(getCreature())] {
 			if (const auto &creature = self.lock()) {
 				if (!creature->isRemoved()) {
 					g_game().afterCreatureZoneChange(creature, creature->getZones(), {});
 					creature->onDeath();
 				}
-			} }, "Game::executeDeath");
+			}
+		};
+		if (!g_dispatcher().addEvent(std::move(deathEvent), "Game::executeDeath")
+		    && g_dispatcher().context().getType() != DispatcherType::None
+		    && !g_dispatcher().context().isBarrierParallel()) {
+			deathEvent();
+		}
 	}
 }
 
@@ -1007,6 +1065,7 @@ void Creature::goToFollowCreature() {
 	const auto &monster = getMonster();
 
 	if (isSummon() && !monster->isFamiliar() && !canFollowMaster()) {
+		monster->supersedeFollowPathCompute();
 		listWalkDir.clear();
 		return;
 	}
@@ -1042,9 +1101,18 @@ void Creature::goToFollowCreature() {
 			currentPositionSatisfiesFollow = FrozenPathingConditionCall(followPosition)(currentPosition, currentPosition, fpp, bestMatch);
 		}
 
-		hasFollowPath = currentPositionSatisfiesFollow || getPathTo(followPosition, listDir, fpp);
+		if (currentPositionSatisfiesFollow) {
+			hasFollowPath = true;
+		} else if (monster && monster->requestFollowPathCompute(followCreature, fpp, executeOnFollow)) {
+			return;
+		} else {
+			hasFollowPath = getPathTo(followPosition, listDir, fpp);
+		}
 	}
 
+	if (monster) {
+		monster->supersedeFollowPathCompute();
+	}
 	startAutoWalk(listDir);
 
 	if (executeOnFollow) {
@@ -1960,9 +2028,9 @@ void Creature::iconChanged() {
 	}
 }
 
-void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId) {
+void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible) {
 	const auto bucketIndex = getCreatureAsyncTaskBucketIndex(creatureId);
-	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
 
 	bool shouldSchedule = false;
 	{
@@ -1975,15 +2043,22 @@ void Creature::enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureI
 	}
 
 	if (shouldSchedule) {
-		g_dispatcher().asyncEvent([bucketIndex] {
-			Creature::processAsyncTaskBucket(bucketIndex);
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                          TaskGroup::WalkParallel);
+		                                                           getCreatureAsyncTaskLane(playerVisible));
+		if (!accepted) {
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
+		}
 	}
 }
 
-void Creature::processAsyncTaskBucket(size_t bucketIndex) {
-	auto &bucket = creatureAsyncTaskBuckets[bucketIndex];
+void Creature::processAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
+	const auto startedAt = Task::Clock::now();
+	const auto limits = g_dispatcher().getCreatureAsyncSliceLimits(playerVisible);
+	const auto deadline = startedAt + limits.maxRuntime;
+	const auto batchLimit = limits.tasksPerBucket;
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
 
 	static thread_local std::vector<std::weak_ptr<Creature>> pendingCreatures;
 	pendingCreatures.clear();
@@ -1994,7 +2069,7 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		// Keep creature async work in bounded slices so Serial dispatcher tasks
 		// such as login challenge and connection close cannot starve behind a
 		// large monster movement batch.
-		const auto batchSize = std::min(bucket.creatures.size(), CREATURE_ASYNC_TASK_BATCH_SIZE);
+		const auto batchSize = std::min(bucket.creatures.size(), batchLimit);
 		pendingCreatures.reserve(batchSize);
 		for (size_t i = 0; i < batchSize; ++i) {
 			pendingCreatures.emplace_back(std::move(bucket.creatures.front()));
@@ -2004,19 +2079,69 @@ void Creature::processAsyncTaskBucket(size_t bucketIndex) {
 		bucket.scheduled = shouldReschedule;
 	}
 
-	for (auto &weakCreature : pendingCreatures) {
+	size_t consumedCreatures = 0;
+	size_t processedCreatures = 0;
+	while (consumedCreatures < pendingCreatures.size()) {
+		if (consumedCreatures > 0 && Task::Clock::now() >= deadline) {
+			break;
+		}
+
+		auto &weakCreature = pendingCreatures[consumedCreatures++];
 		if (const auto &creature = weakCreature.lock()) {
+			if (!playerVisible && creature->isPlayerVisibleForScheduling()) {
+				enqueueAsyncTask(weakCreature, creature->getID(), true);
+				continue;
+			}
+			++processedCreatures;
 			creature->executeAsyncTasks();
+		}
+	}
+
+	size_t requeuedCreatures = 0;
+	if (consumedCreatures < pendingCreatures.size()) {
+		std::scoped_lock lock(bucket.mutex);
+		requeuedCreatures = DispatcherPolicy::requeueUnprocessed(bucket.creatures, pendingCreatures, consumedCreatures);
+		if (!bucket.scheduled) {
+			bucket.scheduled = true;
+			shouldReschedule = true;
 		}
 	}
 
 	pendingCreatures.clear();
 
 	if (shouldReschedule) {
-		g_dispatcher().asyncEvent([bucketIndex] {
-			Creature::processAsyncTaskBucket(bucketIndex);
+		const bool accepted = g_dispatcher().addCreatureAsyncEvent([bucketIndex, playerVisible] {
+			Creature::processAsyncTaskBucket(bucketIndex, playerVisible);
 		},
-		                          TaskGroup::WalkParallel);
+		                                                           getCreatureAsyncTaskLane(playerVisible));
+		if (!accepted) {
+			rollbackAsyncTaskBucket(bucketIndex, playerVisible);
+		}
+	}
+
+	g_dispatcher().observeInternalWork(
+		DispatcherInternalWork::CreatureAsyncBucket,
+		processedCreatures,
+		std::chrono::duration_cast<std::chrono::microseconds>(Task::Clock::now() - startedAt)
+	);
+	if (requeuedCreatures > 0) {
+		g_dispatcher().observeInternalWork(DispatcherInternalWork::CreatureAsyncRequeue, requeuedCreatures, std::chrono::microseconds::zero());
+	}
+}
+
+void Creature::rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible) {
+	auto &bucket = getCreatureAsyncTaskBuckets(playerVisible)[bucketIndex];
+	std::deque<std::weak_ptr<Creature>> rejectedCreatures;
+	{
+		std::scoped_lock lock(bucket.mutex);
+		bucket.scheduled = false;
+		rejectedCreatures.swap(bucket.creatures);
+	}
+
+	for (const auto &weakCreature : rejectedCreatures) {
+		if (const auto &creature = weakCreature.lock()) {
+			creature->setAsyncTaskFlag(AsyncTaskRunning, false);
+		}
 	}
 }
 
@@ -2064,22 +2189,27 @@ void Creature::sendAsyncTasks() {
 	}
 
 	m_flagAsyncTask |= AsyncTaskRunning;
-	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID());
+	enqueueAsyncTask(std::weak_ptr<Creature>(getCreature()), getID(), isPlayerVisibleForScheduling());
 }
 
-void Creature::safeCall(std::function<void(void)> &&action) const {
-	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
+bool Creature::safeCall(std::function<void(void)> &&action) const {
+	if (g_dispatcher().context().isBarrierParallel()) {
+		const auto continuationLane = barrierContinuationLane(g_dispatcher().context().getLane());
+		return g_dispatcher().addEvent([weak_self = std::weak_ptr<const Creature>(static_self_cast<Creature>()), action = std::move(action)] {
 			if (const auto self = weak_self.lock()) {
 				if (!self->isInternalRemoved) {
 					action();
 				}
 			}
 		},
-		                        g_dispatcher().context().getName());
-	} else if (!isInternalRemoved) {
-		action();
+		                               g_dispatcher().context().getName(), 0, continuationLane);
 	}
+	if (isInternalRemoved) {
+		return false;
+	}
+
+	action();
+	return true;
 }
 
 void Creature::setCombatDamage(const CombatDamage &damage) {

@@ -10,3 +10,4 @@ points.
 - [Lua shared userdata ownership](lua-shared-userdata.md)
 - [Multiprotocol runtime profiles](multiprotocol.md)
 - [Performance and lifetime roadmap](performance-lifetime/README.md)
+- [Parallel monster AI and dispatcher fairness roadmap](performance-lifetime/parallel-monster-ai-roadmap.md)

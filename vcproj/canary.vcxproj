@@ -75,6 +75,8 @@
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
+    <ClInclude Include="..\src\game\instance\instance_id.hpp" />
+    <ClInclude Include="..\src\game\instance\instance_manager.hpp" />
     <ClInclude Include="..\src\game\multichannel\channel_context.hpp" />
     <ClInclude Include="..\src\game\multichannel\channel_info.hpp" />
     <ClInclude Include="..\src\game\multichannel\channel_registry.hpp" />
@@ -316,6 +318,7 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
+    <ClCompile Include="..\src\game\instance\instance_manager.cpp" />
     <ClCompile Include="..\src\game\multichannel\channel_context.cpp" />
     <ClCompile Include="..\src\game\multichannel\channel_registry.cpp" />
     <ClCompile Include="..\src\game\multichannel\channel_switch_service.cpp" />

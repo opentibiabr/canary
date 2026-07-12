@@ -105,6 +105,27 @@ TEST(ExpertPvpRelationTest, ClassifiesNeutralPlayerAsFallback) {
 	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, result.relation);
 }
 
+TEST(ExpertPvpRelationTest, ClassifiesProtectedAllyAttacker) {
+	ExpertPvpRelationContext context;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto result = ExpertPvp::classifyRelation(context);
+
+	EXPECT_EQ(ExpertPvpRelation::ProtectedAllyAttacker, result.relation);
+}
+
+TEST(ExpertPvpRelationTest, KeepsAlliesAheadOfStaleAggression) {
+	ExpertPvpRelationContext context;
+	context.subjectIsPlayer = true;
+	context.partyAlly = true;
+	context.directAttacker = true;
+
+	const auto result = ExpertPvp::classifyRelation(context);
+
+	EXPECT_EQ(ExpertPvpRelation::PartyAlly, result.relation);
+}
+
 TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerCombat) {
 	ExpertPvpRelationContext context;
 	context.actorGuid = 100;
@@ -134,6 +155,22 @@ TEST(ExpertPvpCombatDecisionTest, DoveAllowsDirectDefenseWithoutPzLock) {
 	EXPECT_FALSE(decision.appliesPzLock);
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}
+
+TEST(ExpertPvpCombatDecisionTest, WhiteProtectsPartyAndGuildMembers) {
+	ExpertPvpRelationContext context;
+	context.actorGuid = 100;
+	context.subjectGuid = 200;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto doveDecision = ExpertPvp::evaluateCombatAction(PVP_MODE_DOVE, ExpertPvpActionKind::DirectAttack, context);
+	const auto whiteDecision = ExpertPvp::evaluateCombatAction(PVP_MODE_WHITE_HAND, ExpertPvpActionKind::DirectAttack, context);
+
+	EXPECT_FALSE(doveDecision.allowed);
+	EXPECT_TRUE(whiteDecision.allowed);
+	EXPECT_FALSE(whiteDecision.appliesPzLock);
+	EXPECT_EQ(ExpertPvpRelation::ProtectedAllyAttacker, whiteDecision.relation);
 }
 
 TEST(ExpertPvpCombatDecisionTest, DoveDeniesNeutralPlayerSummonCombat) {
@@ -352,6 +389,64 @@ TEST(ExpertPvpFieldStepDecisionTest, ActiveCombatPlayersAreBlockedByWall) {
 	EXPECT_FALSE(decision.canStep);
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, decision.relation);
 	EXPECT_EQ(ExpertPvpDecisionReason::DirectCombat, decision.reason);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, DoveDoesNotBlockProtectedAllyAttacker) {
+	ExpertPvpRelationContext context;
+	context.actorMode = PVP_MODE_DOVE;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_TRUE(decision.canWalkThrough);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, WhiteBlocksProtectedAllyAttacker) {
+	ExpertPvpRelationContext context;
+	context.actorMode = PVP_MODE_WHITE_HAND;
+	context.subjectIsPlayer = true;
+	context.protectedAllyAttacker = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_FALSE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpRelation::ProtectedAllyAttacker, decision.relation);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, YellowBlocksSkulledNonAlly) {
+	ExpertPvpRelationContext context;
+	context.actorMode = PVP_MODE_YELLOW_HAND;
+	context.subjectIsPlayer = true;
+	context.skulledTarget = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_FALSE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpDecisionReason::SkulledTarget, decision.reason);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, RedBlocksNeutralNonAlly) {
+	ExpertPvpRelationContext context;
+	context.actorMode = PVP_MODE_RED_FIST;
+	context.subjectIsPlayer = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_FALSE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpRelation::NeutralPlayer, decision.relation);
+}
+
+TEST(ExpertPvpWalkthroughDecisionTest, RedLetsPartyAllyPass) {
+	ExpertPvpRelationContext context;
+	context.actorMode = PVP_MODE_RED_FIST;
+	context.subjectIsPlayer = true;
+	context.partyAlly = true;
+
+	const auto decision = ExpertPvp::evaluateWalkthrough(context);
+
+	EXPECT_TRUE(decision.canWalkThrough);
+	EXPECT_EQ(ExpertPvpRelation::PartyAlly, decision.relation);
 }
 
 TEST(ExpertPvpFieldStepDecisionTest, RedFieldVictimWhoHasNotRetaliatedCanStep) {

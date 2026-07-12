@@ -251,6 +251,24 @@ namespace {
 		return skull != SKULL_NONE && skull != SKULL_GREEN;
 	}
 
+	[[nodiscard]] bool hasAttackedProtectedAlly(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
+		if (!actor || !subjectPlayer || actor == subjectPlayer) {
+			return false;
+		}
+
+		for (const auto &[guid, player] : g_game().getPlayers()) {
+			(void)guid;
+			if (!player || player == actor || player == subjectPlayer) {
+				continue;
+			}
+
+			if ((actor->isPartner(player) || actor->isGuildMate(player)) && subjectPlayer->hasAttacked(player)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	[[nodiscard]] bool isAlwaysAllowedRelation(ExpertPvpRelation relation) {
 		switch (relation) {
 			case ExpertPvpRelation::Self:
@@ -404,8 +422,23 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 		return result;
 	}
 
+	if (context.partyAlly) {
+		result.relation = ExpertPvpRelation::PartyAlly;
+		return result;
+	}
+
+	if (context.guildAlly) {
+		result.relation = ExpertPvpRelation::GuildAlly;
+		return result;
+	}
+
 	if (context.directAttacker) {
 		result.relation = ExpertPvpRelation::DirectAttacker;
+		return result;
+	}
+
+	if (context.protectedAllyAttacker) {
+		result.relation = ExpertPvpRelation::ProtectedAllyAttacker;
 		return result;
 	}
 
@@ -421,16 +454,6 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 
 	if (context.skulledTarget) {
 		result.relation = ExpertPvpRelation::SkulledTarget;
-		return result;
-	}
-
-	if (context.partyAlly) {
-		result.relation = ExpertPvpRelation::PartyAlly;
-		return result;
-	}
-
-	if (context.guildAlly) {
-		result.relation = ExpertPvpRelation::GuildAlly;
 		return result;
 	}
 
@@ -480,6 +503,7 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player
 		context.guildAlly = actor->isGuildMate(subjectOwnerPlayer);
 		context.warEnemy = actor->isInWar(subjectOwnerPlayer);
 		context.directAttacker = subjectOwnerPlayer->hasAttacked(actor);
+		context.protectedAllyAttacker = hasAttackedProtectedAlly(actor, subjectOwnerPlayer);
 		context.directTarget = actor->hasAttacked(subjectOwnerPlayer);
 		context.skulledTarget = isSkulledClientTarget(actor, subjectOwnerPlayer);
 	}
@@ -583,6 +607,16 @@ ExpertPvpDecision ExpertPvp::evaluateCombatAction(PvpMode_t actorMode, ExpertPvp
 		return decision;
 	}
 
+	if (relation.relation == ExpertPvpRelation::ProtectedAllyAttacker) {
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+		if (mode.mode == PVP_MODE_WHITE_HAND || mode.mode == PVP_MODE_YELLOW_HAND || mode.mode == PVP_MODE_RED_FIST) {
+			decision.allowed = true;
+			describePvpPressure(decision, relationContext);
+			decision.appliesPzLock = false;
+		}
+		return decision;
+	}
+
 	if (relation.relation == ExpertPvpRelation::DirectTarget) {
 		decision.reason = ExpertPvpDecisionReason::DirectCombat;
 		if (mode.mode == PVP_MODE_YELLOW_HAND || mode.mode == PVP_MODE_RED_FIST) {
@@ -632,34 +666,50 @@ ExpertPvpWalkthroughDecision ExpertPvp::evaluateWalkthrough(const ExpertPvpRelat
 	decision.relation = relation.relation;
 	decision.reason = ExpertPvpDecisionReason::Neutral;
 
-	switch (relation.relation) {
-		case ExpertPvpRelation::Self:
-		case ExpertPvpRelation::AccessPlayer:
-			decision.canWalkThrough = true;
-			decision.reason = reasonForAllowedRelation(relation.relation);
+	if (relation.relation == ExpertPvpRelation::Self || relation.relation == ExpertPvpRelation::AccessPlayer) {
+		decision.canWalkThrough = true;
+		decision.reason = reasonForAllowedRelation(relation.relation);
+		return decision;
+	}
+
+	if (relation.relation == ExpertPvpRelation::PartyAlly || relation.relation == ExpertPvpRelation::GuildAlly) {
+		decision.canWalkThrough = true;
+		decision.reason = ExpertPvpDecisionReason::Ally;
+		return decision;
+	}
+
+	const auto mode = normalizeMode(relationContext.actorMode, ExpertPvpModeSource::StoredPlayerState);
+	if (!mode.accepted) {
+		decision.reason = ExpertPvpDecisionReason::InvalidMode;
+		return decision;
+	}
+
+	bool blocks = relationContext.warEnemy;
+	switch (mode.mode) {
+		case PVP_MODE_DOVE:
+			blocks = blocks || relationContext.directAttacker;
 			break;
-		case ExpertPvpRelation::NeutralPlayer:
-			decision.canWalkThrough = true;
-			decision.reason = ExpertPvpDecisionReason::Neutral;
+		case PVP_MODE_WHITE_HAND:
+			blocks = blocks || relationContext.directAttacker || relationContext.protectedAllyAttacker;
 			break;
-		case ExpertPvpRelation::PartyAlly:
-		case ExpertPvpRelation::GuildAlly:
-			decision.canWalkThrough = true;
-			decision.reason = ExpertPvpDecisionReason::Ally;
+		case PVP_MODE_YELLOW_HAND:
+			blocks = blocks || relationContext.directAttacker || relationContext.skulledTarget;
 			break;
-		case ExpertPvpRelation::DirectAttacker:
-		case ExpertPvpRelation::DirectTarget:
-			decision.reason = ExpertPvpDecisionReason::DirectCombat;
-			break;
-		case ExpertPvpRelation::WarEnemy:
-			decision.reason = ExpertPvpDecisionReason::War;
-			break;
-		case ExpertPvpRelation::SkulledTarget:
-			decision.reason = ExpertPvpDecisionReason::SkulledTarget;
+		case PVP_MODE_RED_FIST:
+			blocks = blocks || relationContext.subjectIsPlayer || relationContext.subjectIsPlayerSummon;
 			break;
 		default:
-			decision.reason = ExpertPvpDecisionReason::MissingPlayer;
-			break;
+			decision.reason = ExpertPvpDecisionReason::InvalidMode;
+			return decision;
+	}
+
+	decision.canWalkThrough = !blocks;
+	if (relationContext.warEnemy) {
+		decision.reason = ExpertPvpDecisionReason::War;
+	} else if (relationContext.directAttacker || relationContext.protectedAllyAttacker) {
+		decision.reason = ExpertPvpDecisionReason::DirectCombat;
+	} else if (relationContext.skulledTarget) {
+		decision.reason = ExpertPvpDecisionReason::SkulledTarget;
 	}
 
 	return decision;

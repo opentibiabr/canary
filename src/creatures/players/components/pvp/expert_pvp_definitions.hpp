@@ -32,6 +32,7 @@ enum class ExpertPvpRelation : uint8_t {
 	GuildAlly,
 	WarEnemy,
 	DirectAttacker,
+	ProtectedAllyAttacker,
 	DirectTarget,
 	SkulledTarget,
 	NeutralPlayer,
@@ -106,6 +107,7 @@ struct ExpertPvpRelationContext {
 	bool guildAlly = false;
 	bool warEnemy = false;
 	bool directAttacker = false;
+	bool protectedAllyAttacker = false;
 	bool directTarget = false;
 	bool skulledTarget = false;
 };

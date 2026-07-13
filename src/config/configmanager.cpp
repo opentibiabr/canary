@@ -265,7 +265,7 @@ bool ConfigManager::load() {
 	loadIntConfig(L, FORGE_FIENDISH_CREATURES_LIMIT, "forgeFiendishLimit", 3);
 	loadIntConfig(L, FORGE_FUSION_DUST_COST, "forgeFusionDustCost", 100);
 	loadIntConfig(L, FORGE_INFLUENCED_CREATURES_LIMIT, "forgeInfluencedLimit", 300);
-	loadIntConfig(L, FORGE_MAX_DUST, "forgeMaxDust", 225);
+	loadIntConfig(L, FORGE_MAX_DUST, "forgeMaxDust", 4600);
 	loadIntConfig(L, FORGE_MAX_ITEM_TIER, "forgeMaxItemTier", 10);
 	loadIntConfig(L, FORGE_MAX_SLIVERS, "forgeMaxSlivers", 7);
 	loadIntConfig(L, FORGE_MIN_SLIVERS, "forgeMinSlivers", 3);

@@ -11547,7 +11547,11 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 			return;
 		}
 
-		const auto upgradeCost = dustLevel - 75;
+		constexpr uint64_t baseDustLimit = 100;
+		constexpr uint64_t dustLimitIncrease = 20;
+		constexpr uint64_t baseUpgradeCost = 25;
+		const auto completedUpgrades = dustLevel > baseDustLimit ? (dustLevel - baseDustLimit) / dustLimitIncrease : 0;
+		const auto upgradeCost = baseUpgradeCost + completedUpgrades;
 		if (const auto dusts = getForgeDusts();
 		    upgradeCost > dusts) {
 			g_logger().error("[{}] Not enough dust", __FUNCTION__);
@@ -11556,9 +11560,9 @@ void Player::forgeResourceConversion(ForgeAction_t actionType) {
 		}
 
 		history.cost = upgradeCost;
-		history.gained = dustLevel;
+		history.gained = dustLevel + dustLimitIncrease;
 		removeForgeDusts(upgradeCost);
-		addForgeDustLevel(1);
+		addForgeDustLevel(dustLimitIncrease);
 	}
 
 	history.createdAt = getTimeMsNow();
@@ -11786,7 +11790,7 @@ void Player::registerForgeHistoryDescription(ForgeHistory history) {
 		detailsResponse << fmt::format("Converted {:d} slivers to {:d} exalted core.", history.cost, history.gained);
 	} else if (history.actionType == ForgeAction_t::INCREASELIMIT) {
 		history.actionType = ForgeAction_t::DUSTTOSLIVERS;
-		detailsResponse << fmt::format("Spent {:d} dust to increase the dust limit to {:d}.", history.cost, history.gained + 1);
+		detailsResponse << fmt::format("Spent {:d} dust to increase the dust limit to {:d}.", history.cost, history.gained);
 	} else {
 		detailsResponse << "(unknown)";
 	}

@@ -765,7 +765,22 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			}
 		}
 
+		const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
+		if (isAutoAttack && attackerPlayer->hasVirtuePartyBonus(VOCATION_PALADIN_CIP)) {
+			damage.damageMultiplier += 6;
+		}
+
+		const bool isSpellOrRuneDamage = damage.origin == ORIGIN_CONDITION
+			|| (damage.origin == ORIGIN_SPELL && (!damage.instantSpellName.empty() || !damage.runeSpellName.empty()));
+		if (damage.primary.type != COMBAT_HEALING && isSpellOrRuneDamage && attackerPlayer->hasVirtuePartyBonus(VOCATION_SORCERER_CIP)) {
+			damage.damageMultiplier += 6;
+		}
+
 		if (damage.primary.type == COMBAT_HEALING) {
+			if (attackerPlayer->hasVirtuePartyBonus(VOCATION_DRUID_CIP)) {
+				damage.healingMultiplier += 12;
+			}
+
 			damage.primary.value *= attackerPlayer->getBuff(BUFF_HEALINGDEALT) / 100.;
 
 			if (targetPlayer) {

@@ -202,6 +202,7 @@ public:
 	 * @return The virtue as Virtue_t.
 	 */
 	Virtue_t getVirtue() const;
+	[[nodiscard]] bool hasVirtuePartyBonus(Vocation_t vocation) const;
 
 	/**
 	 * @brief Sets the player's virtue.

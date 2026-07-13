@@ -8433,24 +8433,35 @@ void Player::sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId, ui
 }
 
 namespace {
-	bool hasVisiblePartyMember(Player &player) {
+	bool isEligiblePartyMember(const Player &player, const std::shared_ptr<Player> &member) {
+		return member && member.get() != &player && !member->isRemoved() && !member->isLifeless();
+	}
+
+	bool isInGameWindow(const Player &viewer, const Player &target) {
+		const auto &viewerPosition = viewer.getPosition();
+		const auto &targetPosition = target.getPosition();
+		if (viewerPosition.z != targetPosition.z) {
+			return false;
+		}
+
+		const int32_t offsetX = static_cast<int32_t>(targetPosition.x) - static_cast<int32_t>(viewerPosition.x);
+		const int32_t offsetY = static_cast<int32_t>(targetPosition.y) - static_cast<int32_t>(viewerPosition.y);
+		return offsetX >= -MAP_MAX_CLIENT_VIEW_PORT_X && offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X + 1
+			&& offsetY >= -MAP_MAX_CLIENT_VIEW_PORT_Y && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y + 1;
+	}
+
+	bool isVisiblePartyMember(const Player &player, const std::shared_ptr<Player> &member) {
+		return isEligiblePartyMember(player, member) && isInGameWindow(player, *member);
+	}
+
+	bool hasVisiblePartyMember(const Player &player) {
 		const auto &party = player.getParty();
 		if (!party) {
 			return false;
 		}
 
-		const Position &playerPosition = player.getPosition();
 		for (const auto &member : party->getPlayers()) {
-			if (!member || member.get() == &player) {
-				continue;
-			}
-			const Position &memberPosition = member->getPosition();
-			if (Position::getDistanceZ(playerPosition, memberPosition) > 0) {
-				continue;
-			}
-			const auto offsetX = Position::getDistanceX(playerPosition, memberPosition);
-			const auto offsetY = Position::getDistanceY(playerPosition, memberPosition);
-			if (offsetX <= MAP_MAX_CLIENT_VIEW_PORT_X && offsetY <= MAP_MAX_CLIENT_VIEW_PORT_Y) {
+			if (isVisiblePartyMember(player, member)) {
 				return true;
 			}
 		}
@@ -13040,6 +13051,41 @@ const BaseCritical &Player::getBaseCritical() const {
 
 Virtue_t Player::getVirtue() const {
 	return virtue;
+}
+
+bool Player::hasVirtuePartyBonus(Vocation_t vocation) const {
+	if (vocation != VOCATION_KNIGHT_CIP && vocation != VOCATION_PALADIN_CIP && vocation != VOCATION_SORCERER_CIP && vocation != VOCATION_DRUID_CIP) {
+		return false;
+	}
+
+	const auto &party = getParty();
+	if (!party) {
+		return false;
+	}
+
+	const auto playerVocation = getPlayerVocationEnum();
+	if (playerVocation == vocation) {
+		for (const auto &member : party->getPlayers()) {
+			if (isEligiblePartyMember(*this, member)
+				&& member->getPlayerVocationEnum() == VOCATION_MONK_CIP
+				&& member->getVirtue() != Virtue_t::None
+				&& isInGameWindow(*member, *this)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	if (playerVocation != VOCATION_MONK_CIP || getVirtue() == Virtue_t::None || !hasCondition(CONDITION_SERENE)) {
+		return false;
+	}
+
+	for (const auto &member : party->getPlayers()) {
+		if (isVisiblePartyMember(*this, member) && member->getPlayerVocationEnum() == vocation) {
+			return true;
+		}
+	}
+	return false;
 }
 
 void Player::setVirtue(Virtue_t newVirtue) {

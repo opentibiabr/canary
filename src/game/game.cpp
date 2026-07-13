@@ -167,6 +167,27 @@ namespace {
 		damage.stanceModifiersApplied = true;
 	}
 
+	void applyMonkVirtuePartyDamageReceivedBonus(CombatDamage &damage, const std::shared_ptr<Player> &targetPlayer) {
+		if (!targetPlayer || !targetPlayer->hasVirtuePartyBonus(VOCATION_KNIGHT_CIP)) {
+			return;
+		}
+
+		const auto isHealthDamage = [](CombatType_t combatType) {
+			return combatType != COMBAT_NONE && combatType != COMBAT_HEALING && combatType != COMBAT_MANADRAIN;
+		};
+		const auto applyReduction = [](int32_t &value) {
+			const int64_t scaledValue = static_cast<int64_t>(value) * 97 / 100;
+			value = static_cast<int32_t>(std::clamp<int64_t>(scaledValue, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
+		};
+
+		if (isHealthDamage(damage.primary.type)) {
+			applyReduction(damage.primary.value);
+		}
+		if (isHealthDamage(damage.secondary.type)) {
+			applyReduction(damage.secondary.value);
+		}
+	}
+
 	MonsterPostThinkQueue &getMonsterPostThinkQueue(bool playerVisible) {
 		return playerVisible ? visibleMonsterPostThinkQueue : backgroundMonsterPostThinkQueue;
 	}
@@ -8628,6 +8649,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
 		applyVocationStanceDamageModifiers(damage, attacker, target);
+		applyMonkVirtuePartyDamageReceivedBonus(damage, targetPlayer);
 		applySanctuaryAdjacentBonus(damage, attacker, target);
 		applyWayOfTheMonkMeleeReduction(damage, targetPlayer);
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {

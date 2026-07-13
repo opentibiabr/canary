@@ -7193,12 +7193,24 @@ bool Player::hasAttacked(const std::shared_ptr<Player> &attacked) const {
 	return attackedSet.contains(attacked->guid);
 }
 
+const phmap::flat_hash_set<uint32_t> &Player::getAttackedPlayerGuids() const {
+	return attackedSet;
+}
+
+const phmap::flat_hash_set<uint32_t> &Player::getAttackerPlayerGuids() const {
+	return attackerSet;
+}
+
 void Player::addAttacked(const std::shared_ptr<Player> &attacked) {
 	if (hasFlag(PlayerFlags_t::NotGainInFight) || !attacked || attacked == getPlayer()) {
 		return;
 	}
 
-	attackedSet.emplace(attacked->guid);
+	const auto [iterator, inserted] = attackedSet.emplace(attacked->guid);
+	(void)iterator;
+	if (inserted) {
+		(void)attacked->attackerSet.emplace(guid);
+	}
 }
 
 void Player::removeAttacked(const std::shared_ptr<Player> &attacked) {
@@ -7206,13 +7218,23 @@ void Player::removeAttacked(const std::shared_ptr<Player> &attacked) {
 		return;
 	}
 
-	if (attackedSet.erase(attacked->guid) > 0 && ExpertPvp::isEnabled()) {
+	if (attackedSet.erase(attacked->guid) == 0) {
+		return;
+	}
+
+	(void)attacked->attackerSet.erase(guid);
+	if (ExpertPvp::isEnabled()) {
 		ExpertPvp::refreshVisibleSituationMarks(static_self_cast<Player>(), attacked);
 	}
 }
 
 void Player::clearAttacked() {
 	const bool shouldRefreshExpertMarks = ExpertPvp::isEnabled() && !attackedSet.empty();
+	for (const auto attackedGuid : attackedSet) {
+		if (const auto &attacked = g_game().getPlayerByGUID(attackedGuid)) {
+			(void)attacked->attackerSet.erase(guid);
+		}
+	}
 	attackedSet.clear();
 	if (shouldRefreshExpertMarks) {
 		ExpertPvp::refreshAllVisibleSituationMarks();

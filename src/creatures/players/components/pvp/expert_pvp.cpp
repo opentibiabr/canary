@@ -142,98 +142,33 @@ namespace {
 		return left && right && left != right && (left->hasAttacked(right) || right->hasAttacked(left));
 	}
 
-	struct SituationSnapshot {
-		std::unordered_map<uint32_t, std::unordered_set<uint32_t>> opponentsByGuid;
-	};
-
-	[[nodiscard]] SituationSnapshot buildSituationSnapshot() {
-		SituationSnapshot snapshot;
-		std::vector<std::shared_ptr<Player>> players;
-		players.reserve(g_game().getPlayers().size());
-		for (const auto &[id, player] : g_game().getPlayers()) {
-			(void)id;
-			if (player) {
-				players.emplace_back(player);
-			}
-		}
-
-		for (auto leftIt = players.begin(); leftIt != players.end(); ++leftIt) {
-			for (auto rightIt = std::next(leftIt); rightIt != players.end(); ++rightIt) {
-				const auto &left = *leftIt;
-				const auto &right = *rightIt;
-				if (!hasPvpSituationBetween(left, right)) {
-					continue;
-				}
-
-				snapshot.opponentsByGuid[left->getGUID()].emplace(right->getGUID());
-				snapshot.opponentsByGuid[right->getGUID()].emplace(left->getGUID());
-			}
-		}
-		return snapshot;
-	}
-
 	[[nodiscard]] bool isViewerAlly(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &player) {
 		return viewer && player && viewer != player && (viewer->isPartner(player) || viewer->isGuildMate(player));
 	}
 
-	[[nodiscard]] bool hasAllyInSituationWithSubject(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject) {
-		if (!viewer || !subject) {
-			return false;
-		}
-
-		for (const auto &playerEntry : g_game().getPlayers()) {
-			const auto &player = playerEntry.second;
-			if (!player || !isViewerAlly(viewer, player)) {
-				continue;
-			}
-
-			if (hasPvpSituationBetween(subject, player)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	[[nodiscard]] bool hasAnyPvpSituation(const std::shared_ptr<Player> &subject) {
+	template <typename Predicate>
+	[[nodiscard]] bool hasPvpOpponentMatching(const std::shared_ptr<Player> &subject, Predicate &&predicate) {
 		if (!subject) {
 			return false;
 		}
 
-		for (const auto &playerEntry : g_game().getPlayers()) {
-			const auto &player = playerEntry.second;
-			if (!player || player == subject) {
-				continue;
-			}
-
-			if (hasPvpSituationBetween(subject, player)) {
-				return true;
-			}
-		}
-		return false;
+		const auto matches = [&predicate, &subject](uint32_t opponentGuid) {
+			const auto &opponent = g_game().getPlayerByGUID(opponentGuid);
+			return opponent && opponent != subject && predicate(opponent);
+		};
+		return std::ranges::any_of(subject->getAttackedPlayerGuids(), matches) || std::ranges::any_of(subject->getAttackerPlayerGuids(), matches);
 	}
 
-	[[nodiscard]] ExpertPvpSituationMark getSituationMark(const std::shared_ptr<Player> &subject, const std::shared_ptr<Player> &viewer, const SituationSnapshot &snapshot) {
-		if (!subject || !viewer || subject == viewer) {
-			return ExpertPvpSituationMark::None;
-		}
+	[[nodiscard]] bool hasAllyInSituationWithSubject(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject) {
+		return viewer && hasPvpOpponentMatching(subject, [&viewer](const std::shared_ptr<Player> &opponent) {
+				   return isViewerAlly(viewer, opponent);
+			   });
+	}
 
-		const auto opponentsIt = snapshot.opponentsByGuid.find(subject->getGUID());
-		if (opponentsIt == snapshot.opponentsByGuid.end()) {
-			return ExpertPvpSituationMark::None;
-		}
-
-		const auto &opponents = opponentsIt->second;
-		if (opponents.contains(viewer->getGUID())) {
-			return ExpertPvpSituationMark::Yellow;
-		}
-
-		for (const auto opponentGuid : opponents) {
-			const auto &opponent = g_game().getPlayerByGUID(opponentGuid);
-			if (isViewerAlly(viewer, opponent)) {
-				return ExpertPvpSituationMark::Orange;
-			}
-		}
-		return ExpertPvpSituationMark::Brown;
+	[[nodiscard]] bool hasAnyPvpSituation(const std::shared_ptr<Player> &subject) {
+		return hasPvpOpponentMatching(subject, [](const std::shared_ptr<Player> &) {
+			return true;
+		});
 	}
 
 	[[nodiscard]] CreatureMark_t toCreatureMark(ExpertPvpSituationMark mark) {
@@ -262,30 +197,19 @@ namespace {
 		}
 	}
 
-	void refreshCreatureMarkFromSnapshot(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Player> &subject, const SituationSnapshot &snapshot) {
-		if (!viewer || !subject) {
-			return;
-		}
-
-		viewer->sendCreatureMark(subject, toCreatureMark(getSituationMark(subject, viewer, snapshot)));
-	}
-
 	void snapshotFieldRelationsAtCast(ExpertFieldContext &context, const std::shared_ptr<Player> &ownerPlayer) {
 		if (!ownerPlayer) {
 			return;
 		}
 
-		for (const auto &playerEntry : g_game().getPlayers()) {
-			const auto &player = playerEntry.second;
-			if (!player || player == ownerPlayer) {
-				continue;
+		for (const auto targetGuid : ownerPlayer->getAttackedPlayerGuids()) {
+			if (g_game().getPlayerByGUID(targetGuid)) {
+				context.ownerTargetsAtCast.emplace_back(targetGuid);
 			}
-
-			if (ownerPlayer->hasAttacked(player)) {
-				context.ownerTargetsAtCast.emplace_back(player->getGUID());
-			}
-			if (player->hasAttacked(ownerPlayer)) {
-				context.ownerAttackersAtCast.emplace_back(player->getGUID());
+		}
+		for (const auto attackerGuid : ownerPlayer->getAttackerPlayerGuids()) {
+			if (g_game().getPlayerByGUID(attackerGuid)) {
+				context.ownerAttackersAtCast.emplace_back(attackerGuid);
 			}
 		}
 	}
@@ -959,7 +883,6 @@ void ExpertPvp::refreshAllVisibleSituationMarks() {
 		return;
 	}
 
-	const auto snapshot = buildSituationSnapshot();
 	for (const auto &viewerEntry : g_game().getPlayers()) {
 		const auto &viewer = viewerEntry.second;
 		if (!viewer) {
@@ -967,7 +890,7 @@ void ExpertPvp::refreshAllVisibleSituationMarks() {
 		}
 
 		for (const auto &subject : Spectators().find<Player>(viewer->getPosition(), true)) {
-			refreshCreatureMarkFromSnapshot(viewer, subject ? subject->getPlayer() : nullptr, snapshot);
+			refreshCreatureMarkForViewer(viewer, subject ? subject->getPlayer() : nullptr);
 		}
 	}
 }

@@ -925,6 +925,8 @@ public:
 	void setSkullTicks(int64_t ticks);
 
 	bool hasAttacked(const std::shared_ptr<Player> &attacked) const;
+	[[nodiscard]] const phmap::flat_hash_set<uint32_t> &getAttackedPlayerGuids() const;
+	[[nodiscard]] const phmap::flat_hash_set<uint32_t> &getAttackerPlayerGuids() const;
 	void addAttacked(const std::shared_ptr<Player> &attacked);
 	void removeAttacked(const std::shared_ptr<Player> &attacked);
 	void clearAttacked();
@@ -1656,6 +1658,7 @@ private:
 	void healFromHarmony(uint8_t charges = 1);
 
 	phmap::flat_hash_set<uint32_t> attackedSet {};
+	phmap::flat_hash_set<uint32_t> attackerSet {};
 
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;

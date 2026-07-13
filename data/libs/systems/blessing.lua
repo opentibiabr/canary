@@ -255,7 +255,7 @@ Blessings.BuyAllBlesses = function(player)
 		return not p:hasBlessing(b)
 	end
 
-	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
+	local hasToF = not Blessings.Config.HasToF or player:hasBlessing(1)
 	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost = 0

@@ -1,21 +1,45 @@
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITAREA)
-combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
-combat:setParameter(COMBAT_PARAM_USECHARGES, 1)
-combat:setArea(createCombatArea(AREA_WAVE6, AREADIAGONAL_WAVE6))
+local SPELL_BASE_POWER = 80
+
+local AREA_FRONT_SWEEP_WHEEL = {
+	{ 1, 1, 3, 1, 1 },
+}
+
+local AREADIAGONAL_FRONT_SWEEP_WHEEL = {
+	{ 0, 0, 0, 0, 1 },
+	{ 0, 0, 0, 1, 0 },
+	{ 0, 0, 3, 0, 0 },
+	{ 0, 1, 0, 0, 0 },
+	{ 1, 0, 0, 0, 0 },
+}
+
+local function createFrontSweepCombat(area, diagonalArea)
+	local sweepCombat = Combat()
+	sweepCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
+	sweepCombat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HITAREA)
+	sweepCombat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
+	sweepCombat:setParameter(COMBAT_PARAM_USECHARGES, 1)
+	sweepCombat:setArea(createCombatArea(area, diagonalArea))
+	return sweepCombat
+end
+
+local combat = createFrontSweepCombat(AREA_WAVE6, AREADIAGONAL_WAVE6)
+local wheelCombat = createFrontSweepCombat(AREA_FRONT_SWEEP_WHEEL, AREADIAGONAL_FRONT_SWEEP_WHEEL)
 
 function onGetFormulaValues(player, skill, attack, factor)
-	local skillTotal = skill * attack
-	local levelTotal = player:getLevel() / 5
-	return -(((skillTotal * 0.04) + 31) + levelTotal) * 1.1, -(((skillTotal * 0.08) + 45) + levelTotal) * 1.1 -- TODO : Use New Real Formula instead of an %
+	local damage = SPELL_BASE_POWER * (skill / 100) * (attack / 10) + player:calculateFlatDamageHealing()
+	return -damage * 0.9, -damage * 1.1
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+wheelCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	local player = creature:getPlayer()
+	if player and player:getWheelSpellAdditionalArea("Front Sweep") then
+		return wheelCombat:execute(creature, var)
+	end
 	return combat:execute(creature, var)
 end
 

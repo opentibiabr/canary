@@ -260,16 +260,16 @@ void IOWheel::initializeDruidSpells() {
 
 void IOWheel::initializeKnightSpells() {
 	m_wheelBonusData.spells.knight[0].name = "Front Sweep";
-	m_wheelBonusData.spells.knight[0].grade[1].leech.life = 5;
-	m_wheelBonusData.spells.knight[0].grade[2].increase.damage = 14;
+	m_wheelBonusData.spells.knight[0].grade[1].increase.damage = 40;
+	m_wheelBonusData.spells.knight[0].grade[2].increase.area = true;
 
 	m_wheelBonusData.spells.knight[1].name = "Groundshaker";
-	m_wheelBonusData.spells.knight[1].grade[1].increase.damage = static_cast<int>(std::round(12.5));
-	m_wheelBonusData.spells.knight[1].grade[2].decrease.cooldown = 2;
+	m_wheelBonusData.spells.knight[1].grade[1].decrease.cooldown = 2;
+	m_wheelBonusData.spells.knight[1].grade[2].increase.damage = static_cast<int>(std::round(12.5));
 
-	m_wheelBonusData.spells.knight[2].name = "Chivalrous Challenge";
-	m_wheelBonusData.spells.knight[2].grade[1].decrease.manaCost = 20;
-	m_wheelBonusData.spells.knight[2].grade[2].increase.additionalTarget = 1;
+	m_wheelBonusData.spells.knight[2].name = "Shield Slam";
+	m_wheelBonusData.spells.knight[2].grade[1].leech.life = 15;
+	m_wheelBonusData.spells.knight[2].grade[2].increase.damageReduction = 25;
 
 	m_wheelBonusData.spells.knight[3].name = "Intense Wound Cleansing";
 	m_wheelBonusData.spells.knight[3].grade[1].increase.heal = 125;
@@ -560,7 +560,7 @@ void IOWheel::slotGreenBottom150(const std::shared_ptr<Player> &player, uint16_t
 // SLOT_GREEN_MIDDLE_100 = 8
 void IOWheel::slotGreenMiddle100(const std::shared_ptr<Player> &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	if (isKnight(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Groundshaker");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Shield Slam");
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId) || isMonk(vocationCipId)) {
 		if (isPaladin(vocationCipId)) {
@@ -610,7 +610,7 @@ void IOWheel::slotRedTop75(const std::shared_ptr<Player> &player, uint16_t point
 // SLOT_RED_MIDDLE_100 = 11
 void IOWheel::slotRedMiddle100(const std::shared_ptr<Player> &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	if (isKnight(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Chivalrous Challenge");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Groundshaker");
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Divine Dazzle");
@@ -829,7 +829,7 @@ void IOWheel::slotPurpleTop75(const std::shared_ptr<Player> &player, uint16_t po
 void IOWheel::slotPurpleTop100(const std::shared_ptr<Player> &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	if (isKnight(vocationCipId) || isMonk(vocationCipId)) {
 		if (isKnight(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Groundshaker");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Shield Slam");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Mass Spirit Mend");
 		}
@@ -865,7 +865,7 @@ void IOWheel::slotBlueTop150(const std::shared_ptr<Player> &player, uint16_t poi
 void IOWheel::slotBlueMiddle100(const std::shared_ptr<Player> &player, uint16_t points, uint8_t vocationCipId, PlayerWheelMethodsBonusData &bonusData) const {
 	bonusData.mitigation += MITIGATION_INCREASE * points;
 	if (isKnight(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Chivalrous Challenge");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Groundshaker");
 	} else if (isPaladin(vocationCipId)) {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Divine Dazzle");
 	} else if (isSorcerer(vocationCipId) || isDruid(vocationCipId)) {

@@ -199,7 +199,29 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = currentInitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::CustomMonkPackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::MemorialPackets | ProtocolFeature::PlayerDataLevelPercentU16 | ProtocolFeature::GameEventPayload | ProtocolFeature::OfficialTaskboardPackets | ProtocolFeature::OfficialVocationSpecificPlayerData | ProtocolFeature::OfficialWeaponProficiencyPayload | ProtocolFeature::GraphicalEffectSourceByte | ProtocolFeature::OfficialSoulSealsPackets | ProtocolFeature::OfficialSkillWheelPayload),
+		.features = protocolFeatureMask(
+			ProtocolFeature::CurrentPayload
+			| ProtocolFeature::LoginSpeedFormula
+			| ProtocolFeature::ModernLoginSideSystems
+			| ProtocolFeature::ResourceBalancePackets
+			| ProtocolFeature::CustomMonkPackets
+			| ProtocolFeature::MarketPackets
+			| ProtocolFeature::ImbuementWindow
+			| ProtocolFeature::MemorialPackets
+			| ProtocolFeature::PlayerDataLevelPercentU16
+			| ProtocolFeature::GameEventPayload
+			| ProtocolFeature::OfficialTaskboardPackets
+			| ProtocolFeature::OfficialVocationSpecificPlayerData
+			| ProtocolFeature::OfficialWeaponProficiencyPayload
+			| ProtocolFeature::GraphicalEffectSourceByte
+			| ProtocolFeature::OfficialSoulSealsPackets
+			| ProtocolFeature::OfficialSkillWheelPayload
+			| ProtocolFeature::WeaponProficiencyShapingPayload
+			| ProtocolFeature::CompactExaltationBaseData
+			| ProtocolFeature::ExtendedCreatureIconPayload
+			| ProtocolFeature::ExtendedUpdateTargetPayload
+			| ProtocolFeature::ReworkedMonsterCyclopediaPayload
+		),
 		.name = "current",
 		.supportLabel = "",
 	};

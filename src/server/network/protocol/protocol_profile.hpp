@@ -79,6 +79,16 @@ enum class ProtocolFeature : uint64_t {
 	GraphicalEffectSourceByte = 1ULL << 19,
 	OfficialSoulSealsPackets = 1ULL << 20,
 	OfficialSkillWheelPayload = 1ULL << 21, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
+	// 15.30 confirmed: 0xB3 actions 4-9 and the required improved-perk list in 0xC4.
+	WeaponProficiencyShapingPayload = 1ULL << 22,
+	// 15.30 confirmed: 0x86 replaces the legacy 13-field configuration tail with one byte.
+	CompactExaltationBaseData = 1ULL << 23,
+	// 15.30 confirmed: creature icons carry a trailing byte and full instances carry a second icon list.
+	ExtendedCreatureIconPayload = 1ULL << 24,
+	// 15.30 confirmed: 0xA3 carries two u32 fields.
+	ExtendedUpdateTargetPayload = 1ULL << 25,
+	// 15.30 confirmed: 0xD6 and 0xD7 use the reworked monster-cyclopedia layouts.
+	ReworkedMonsterCyclopediaPayload = 1ULL << 26,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

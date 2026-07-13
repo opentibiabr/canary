@@ -123,9 +123,12 @@ namespace {
 	 * list count is sent, while captured later builds require that list boundary.
 	 */
 	[[nodiscard]] bool shouldSendWeaponProficiencyDetailList(const ProtocolProfile* profile, std::string_view versionString) {
-		return profile
-			&& profile->hasFeature(ProtocolFeature::OfficialWeaponProficiencyPayload)
-			&& supportsWeaponProficiencyDetailList(versionString);
+		if (!profile || !profile->hasFeature(ProtocolFeature::OfficialWeaponProficiencyPayload)) {
+			return false;
+		}
+
+		return profile->hasFeature(ProtocolFeature::WeaponProficiencyShapingPayload)
+			|| supportsWeaponProficiencyDetailList(versionString);
 	}
 
 	[[nodiscard]] bool shouldDispatchRecvbyteModuleForProfile(const ProtocolProfile* profile, uint8_t recvbyte) {
@@ -3076,11 +3079,60 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 	}
 
 	const auto action = msg.getByte();
+	const bool usesShapingPayload = hasProtocolFeature(protocolProfile, ProtocolFeature::WeaponProficiencyShapingPayload);
 
 	if (action == 0x01) {
 		for (const auto weaponId : player->weaponProficiency().getTrackedWeaponIds()) {
 			sendWeaponProficiencyWindow(weaponId);
 		}
+		return;
+	}
+
+	if (usesShapingPayload) {
+		if (!msg.canRead(sizeof(uint16_t))) {
+			return;
+		}
+
+		const auto weaponId = msg.get<uint16_t>();
+		uint8_t proficiencyLevel = 0;
+		uint8_t perkIndex = 0;
+		switch (action) {
+			case 0x00:
+				break;
+			case 0x04:
+			case 0x05:
+			case 0x06:
+			case 0x07:
+			case 0x09:
+				if (!msg.canRead(2)) {
+					return;
+				}
+				proficiencyLevel = msg.getByte();
+				perkIndex = msg.getByte();
+				break;
+			case 0x08:
+				if (!msg.canRead(3)) {
+					return;
+				}
+				msg.getByte(true); // Proficiency-tree index
+				msg.getByte(true); // Perk slot
+				msg.getByte(true); // Selected reshape offer
+				break;
+			default:
+				return;
+		}
+
+		// The wire contract is handled here. Shaping mutations are applied by the
+		// proficiency component once perk ids, ranks, and costs are validated.
+		if (action == 0x07) {
+			sendWeaponProficiencyReshapeOffers(weaponId, proficiencyLevel, perkIndex);
+		}
+		sendWeaponProficiencyWindow(weaponId);
+		sendWeaponProficiency(weaponId);
+		return;
+	}
+
+	if (!msg.canRead(sizeof(uint16_t))) {
 		return;
 	}
 
@@ -3482,6 +3534,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	uint32_t killCounter = player->getBestiaryKillCount(raceId);
 	uint8_t currentLevel = g_iobestiary().getKillStatus(mtype, killCounter);
+	const bool usesReworkedPayload = hasProtocolFeature(protocolProfile, ProtocolFeature::ReworkedMonsterCyclopediaPayload);
 
 	NetworkMessage newmsg;
 	newmsg.addByte(0xD7);
@@ -3490,53 +3543,68 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 
 	newmsg.addByte(currentLevel);
 
-	if (player->animusMastery().has(mtype->name)) {
-		newmsg.add<uint16_t>(static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))); // Animus Mastery Bonus
-		newmsg.add<uint16_t>(player->animusMastery().getPoints()); // Animus Mastery Points
+	const bool hasAnimusMastery = player->animusMastery().has(mtype->name);
+	const auto animusMasteryBonus = hasAnimusMastery
+		? static_cast<uint16_t>(std::round((player->animusMastery().getExperienceMultiplier() - 1) * 1000))
+		: 0;
+	const auto animusMasteryPoints = hasAnimusMastery ? player->animusMastery().getPoints() : 0;
+
+	if (usesReworkedPayload) {
+		newmsg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
+		newmsg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
+		newmsg.add<uint32_t>(killCounter);
+		newmsg.add<uint16_t>(mtype->info.bestiaryToUnlock);
+		newmsg.add<uint16_t>(animusMasteryBonus);
+		newmsg.add<uint16_t>(animusMasteryPoints);
+		newmsg.addByte(0x00); // Reserved boolean in the 15.30 payload.
 	} else {
-		newmsg.add<uint16_t>(0);
-		newmsg.add<uint16_t>(0);
+		newmsg.add<uint16_t>(animusMasteryBonus);
+		newmsg.add<uint16_t>(animusMasteryPoints);
+		newmsg.add<uint32_t>(killCounter);
+		newmsg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
+		newmsg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
+		newmsg.add<uint16_t>(mtype->info.bestiaryToUnlock);
 	}
-	newmsg.add<uint32_t>(killCounter);
 
-	newmsg.add<uint16_t>(mtype->info.bestiaryFirstUnlock);
-	newmsg.add<uint16_t>(mtype->info.bestiarySecondUnlock);
-	newmsg.add<uint16_t>(mtype->info.bestiaryToUnlock);
+	if (!usesReworkedPayload || currentLevel != 0) {
+		newmsg.addByte(mtype->info.bestiaryStars);
+		newmsg.addByte(mtype->info.bestiaryOccurrence);
 
-	newmsg.addByte(mtype->info.bestiaryStars);
-	newmsg.addByte(mtype->info.bestiaryOccurrence);
+		const std::vector<LootBlock> &lootList = mtype->info.lootItems;
+		const auto lootCount = static_cast<uint8_t>(std::min<size_t>(lootList.size(), std::numeric_limits<uint8_t>::max()));
+		newmsg.addByte(lootCount);
+		for (size_t index = 0; index < lootCount; ++index) {
+			const auto &loot = lootList[index];
+			int8_t difficult = g_iobestiary().calculateDifficult(loot.chance);
+			bool shouldAddItem = false;
 
-	const std::vector<LootBlock> &lootList = mtype->info.lootItems;
-	newmsg.addByte(lootList.size());
-	for (const LootBlock &loot : lootList) {
-		int8_t difficult = g_iobestiary().calculateDifficult(loot.chance);
-		bool shouldAddItem = false;
-
-		switch (currentLevel) {
-			case 1:
-				shouldAddItem = false;
-				break;
-			case 2:
-				if (difficult < 2) {
+			switch (currentLevel) {
+				case 1:
+					shouldAddItem = false;
+					break;
+				case 2:
+					if (difficult < 2) {
+						shouldAddItem = true;
+					}
+					break;
+				case 3:
+					if (difficult < 3) {
+						shouldAddItem = true;
+					}
+					break;
+				case 4:
 					shouldAddItem = true;
-				}
-				break;
-			case 3:
-				if (difficult < 3) {
-					shouldAddItem = true;
-				}
-				break;
-			case 4:
-				shouldAddItem = true;
-				break;
-		}
+					break;
+			}
 
-		newmsg.add<uint16_t>(g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY) || shouldAddItem == true ? loot.id : 0);
-		newmsg.addByte(difficult);
-		newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
-		if (g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY) || shouldAddItem == true) {
-			newmsg.addString(loot.name);
-			newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
+			const bool showLoot = g_configManager().getBoolean(SHOW_LOOTS_IN_BESTIARY) || shouldAddItem;
+			newmsg.add<uint16_t>(showLoot ? loot.id : 0);
+			newmsg.addByte(difficult);
+			newmsg.addByte(0); // 1 if special event - 0 if regular loot (?)
+			if (showLoot) {
+				newmsg.addString(loot.name);
+				newmsg.addByte(loot.countmax > 0 ? 0x1 : 0x0);
+			}
 		}
 	}
 
@@ -3550,7 +3618,7 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		}
 
 		newmsg.addByte(attackmode);
-		newmsg.addByte(0x02);
+		newmsg.addByte(usesReworkedPayload ? 0x00 : 0x02);
 		newmsg.add<uint32_t>(mtype->info.healthMax);
 		newmsg.add<uint32_t>(mtype->info.experience);
 		newmsg.add<uint16_t>(mtype->getBaseSpeed());
@@ -3564,7 +3632,11 @@ void ProtocolGame::parseBestiarysendMonsterData(NetworkMessage &msg) {
 		newmsg.addByte(elements.size());
 		for (auto &element : elements) {
 			newmsg.addByte(element.first);
-			newmsg.add<uint16_t>(element.second);
+			if (usesReworkedPayload) {
+				newmsg.add<int16_t>(element.second);
+			} else {
+				newmsg.add<uint16_t>(element.second);
+			}
 		}
 
 		newmsg.add<uint16_t>(1);
@@ -4143,10 +4215,15 @@ void ProtocolGame::parseBestiarySendCreatures(NetworkMessage &msg) {
 	newmsg.addString(text);
 	newmsg.add<uint16_t>(race.size());
 	std::map<uint16_t, uint32_t> creaturesKilled = g_iobestiary().getBestiaryKillCountByMonsterIDs(player, race);
+	const bool usesReworkedPayload = hasProtocolFeature(protocolProfile, ProtocolFeature::ReworkedMonsterCyclopediaPayload);
 
 	for (const auto &it_ : race) {
 		uint16_t raceid_ = it_.first;
 		newmsg.add<uint16_t>(raceid_);
+		if (usesReworkedPayload) {
+			// Canary does not persist the client-side "new entry" acknowledgement.
+			newmsg.addByte(0x00);
+		}
 
 		uint8_t progress = 0;
 		uint8_t occurrence = 0;
@@ -4164,6 +4241,9 @@ void ProtocolGame::parseBestiarySendCreatures(NetworkMessage &msg) {
 		if (progress > 0) {
 			newmsg.addByte(progress);
 			newmsg.addByte(occurrence);
+			if (usesReworkedPayload) {
+				newmsg.addByte(occurrence);
+			}
 		} else {
 			newmsg.addByte(0);
 		}
@@ -4506,6 +4586,9 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 		msg.addByte(icon.serialize());
 		msg.addByte(static_cast<uint8_t>(icon.category));
 		msg.add<uint16_t>(icon.count);
+		if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExtendedCreatureIconPayload)) {
+			msg.addByte(0x00);
+		}
 	}
 }
 
@@ -7028,32 +7111,37 @@ void ProtocolGame::sendForgingData() {
 		msg.add<uint64_t>(price);
 	}
 
-	// (conversion) (left column top) Cost to make 1 bottom item - 20
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
-	// (conversion) (left column bottom) How many items to make - 3
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT)));
-	// (conversion) (middle column top) Cost to make 1 - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST)));
-	// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
-	msg.addByte(75);
-	// (conversion) (right column bottom) Starting stored dust limit
-	msg.add<uint16_t>(player->getForgeDustLevel());
-	// (conversion) (right column bottom) Max stored dust limit - 325
-	msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST));
-	// (normal fusion) dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
-	// (convergence fusion) dust cost - 130
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST)));
-	// (normal transfer) dust cost - 100
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)));
-	// (convergence transfer) dust cost - 160
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST)));
-	// (fusion) Base success rate - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE)));
-	// (fusion) Bonus success rate - 15
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)));
-	// (fusion) Tier loss chance after reduction - 50
-	msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CompactExaltationBaseData)) {
+		// 15.30 keeps only this currently unknown byte after the tier tables.
+		msg.addByte(0x00);
+	} else {
+		// (conversion) (left column top) Cost to make 1 bottom item - 20
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
+		// (conversion) (left column bottom) How many items to make - 3
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_SLIVER_AMOUNT)));
+		// (conversion) (middle column top) Cost to make 1 - 50
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CORE_COST)));
+		// (conversion) (right column top) Current stored dust limit minus this number = cost to increase stored dust limit - 75
+		msg.addByte(75);
+		// (conversion) (right column bottom) Starting stored dust limit
+		msg.add<uint16_t>(player->getForgeDustLevel());
+		// (conversion) (right column bottom) Max stored dust limit - 325
+		msg.add<uint16_t>(g_configManager().getNumber(FORGE_MAX_DUST));
+		// (normal fusion) dust cost - 100
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_FUSION_DUST_COST)));
+		// (convergence fusion) dust cost - 130
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_FUSION_DUST_COST)));
+		// (normal transfer) dust cost - 100
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TRANSFER_DUST_COST)));
+		// (convergence transfer) dust cost - 160
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_CONVERGENCE_TRANSFER_DUST_COST)));
+		// (fusion) Base success rate - 50
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BASE_SUCCESS_RATE)));
+		// (fusion) Bonus success rate - 15
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_BONUS_SUCCESS_RATE)));
+		// (fusion) Tier loss chance after reduction - 50
+		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_TIER_LOSS_REDUCTION)));
+	}
 
 	// Update player resources
 	parseSendResourceBalance();
@@ -8035,6 +8123,11 @@ void ProtocolGame::sendCancelTarget() {
 	NetworkMessage msg;
 	msg.addByte(0xA3);
 	msg.add<uint32_t>(0x00);
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExtendedUpdateTargetPayload)) {
+		// The 15.30 UpdateTarget message carries a second u32 field. Both fields
+		// are cleared for the cancel-target state.
+		msg.add<uint32_t>(0x00);
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -9606,6 +9699,11 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 
 	if (!cipsoft860) {
 		addCreatureIcon(msg, creature);
+		if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExtendedCreatureIconPayload)) {
+			// 15.30 full creature instances carry a second icon collection.
+			// Canary does not expose entries for this collection yet.
+			msg.addByte(0x00);
+		}
 	}
 
 	msg.addByte(player->getSkullClient(creature));
@@ -12225,6 +12323,20 @@ void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
 		msg.addByte(0x00);
 	}
 
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendWeaponProficiencyReshapeOffers(uint16_t weaponId, uint8_t proficiencyLevel, uint8_t perkIndex) {
+	if (!player || oldProtocol || !hasProtocolFeature(protocolProfile, ProtocolFeature::WeaponProficiencyShapingPayload)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xBB);
+	msg.add<uint16_t>(weaponId);
+	msg.addByte(proficiencyLevel);
+	msg.addByte(perkIndex);
+	msg.addByte(0x00); // Reshape offer count; populated by the shaping backend.
 	writeToOutputBuffer(msg);
 }
 

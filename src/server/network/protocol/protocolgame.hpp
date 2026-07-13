@@ -578,6 +578,7 @@ private:
 
 	void sendWeaponProficiency(uint16_t weaponId);
 	void sendWeaponProficiencyWindow(uint16_t weaponId);
+	void sendWeaponProficiencyReshapeOffers(uint16_t weaponId, uint8_t proficiencyLevel, uint8_t perkIndex);
 
 	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
 	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);

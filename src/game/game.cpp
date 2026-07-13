@@ -8291,6 +8291,12 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 	}
 
 	if (attackerPlayer) {
+		const int32_t combatMasteryBonus = attackerPlayer->wheel().getCombatMasteryDamageBonus(target);
+		if (combatMasteryBonus > 0) {
+			damage.primary.value += (damage.primary.value * combatMasteryBonus) / 100;
+			damage.secondary.value += (damage.secondary.value * combatMasteryBonus) / 100;
+		}
+
 		damage.primary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
 		if (damage.secondary.value != 0) {
 			damage.secondary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
@@ -8315,6 +8321,14 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 				damage.primary.value += (damage.primary.value * damageBonus) / 100.;
 				damage.secondary.value += (damage.secondary.value * damageBonus) / 100.;
 			}
+		}
+	}
+
+	if (const auto &targetPlayer = target->getPlayer()) {
+		const int32_t combatMasteryReduction = targetPlayer->wheel().getCombatMasteryDamageReduction();
+		if (combatMasteryReduction > 0) {
+			damage.primary.value -= (damage.primary.value * combatMasteryReduction) / 100;
+			damage.secondary.value -= (damage.secondary.value * combatMasteryReduction) / 100;
 		}
 	}
 }

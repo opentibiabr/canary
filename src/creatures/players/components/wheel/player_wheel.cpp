@@ -3006,50 +3006,51 @@ bool PlayerWheel::checkBallisticMastery() {
 	return updateClient;
 }
 
-bool PlayerWheel::checkCombatMastery() {
-	setOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY, OTSYS_TIME() + 2000);
-	bool updateClient = false;
+int32_t PlayerWheel::getCombatMasteryDamageBonus(const std::shared_ptr<Creature> &target) const {
 	const uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
-
-	const auto &item = m_player.getWeapon();
-	if (item && item->getSlotPosition() & SLOTP_TWO_HAND) {
-		int32_t criticalSkill = 0;
-		if (stage >= 3) {
-			criticalSkill = 1200;
-		} else if (stage >= 2) {
-			criticalSkill = 800;
-		} else if (stage >= 1) {
-			criticalSkill = 400;
-		}
-
-		if (getMajorStat(WheelMajor_t::CRITICAL_DMG_2) != criticalSkill) {
-			setMajorStat(WheelMajor_t::CRITICAL_DMG_2, criticalSkill);
-			updateClient = true;
-		}
-		if (getMajorStat(WheelMajor_t::DEFENSE) != 0) {
-			setMajorStat(WheelMajor_t::DEFENSE, 0);
-			updateClient = true;
-		}
-	} else {
-		if (getMajorStat(WheelMajor_t::CRITICAL_DMG_2) != 0) {
-			setMajorStat(WheelMajor_t::CRITICAL_DMG_2, 0);
-			updateClient = true;
-		}
-		if (getMajorStat(WheelMajor_t::DEFENSE) == 0) {
-			int32_t shieldSkill = 0;
-			if (stage >= 3) {
-				shieldSkill = 30;
-			} else if (stage >= 2) {
-				shieldSkill = 20;
-			} else if (stage >= 1) {
-				shieldSkill = 10;
-			}
-			setMajorStat(WheelMajor_t::DEFENSE, shieldSkill);
-			updateClient = true;
-		}
+	if (stage == 0 || !target || target->getMaxHealth() <= 0) {
+		return 0;
 	}
 
-	return updateClient;
+	int32_t healthStep = 14;
+	if (stage >= 3) {
+		healthStep = 10;
+	} else if (stage == 2) {
+		healthStep = 12;
+	}
+	const int64_t missingHealth = std::max<int64_t>(0, target->getMaxHealth() - target->getHealth());
+	int32_t damageBonus = static_cast<int32_t>((missingHealth * 100 / target->getMaxHealth()) / healthStep);
+
+	const auto &weapon = m_player.getWeapon();
+	if (weapon && weapon->getSlotPosition() & SLOTP_TWO_HAND) {
+		damageBonus *= 2;
+	}
+
+	return damageBonus;
+}
+
+int32_t PlayerWheel::getCombatMasteryDamageReduction() const {
+	const uint8_t stage = getStage(WheelStage_t::COMBAT_MASTERY);
+	if (stage == 0 || m_player.getMaxHealth() <= 0) {
+		return 0;
+	}
+
+	int32_t healthStep = 14;
+	if (stage >= 3) {
+		healthStep = 10;
+	} else if (stage == 2) {
+		healthStep = 12;
+	}
+	const int64_t missingHealth = std::max<int64_t>(0, m_player.getMaxHealth() - m_player.getHealth());
+	int32_t damageReduction = static_cast<int32_t>((missingHealth * 100 / m_player.getMaxHealth()) / healthStep);
+
+	const auto &leftHand = m_player.getInventoryItem(CONST_SLOT_LEFT);
+	const auto &rightHand = m_player.getInventoryItem(CONST_SLOT_RIGHT);
+	if ((leftHand && leftHand->isShield()) || (rightHand && rightHand->isShield())) {
+		damageReduction *= 2;
+	}
+
+	return damageReduction;
 }
 
 bool PlayerWheel::checkDivineEmpowerment() {
@@ -3324,7 +3325,7 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	if (getGiftOfCooldown() > 0 /*getInstant("Gift of Life")*/ && getOnThinkTimer(WheelOnThink_t::GIFT_OF_LIFE) <= OTSYS_TIME()) {
 		decreaseGiftOfCooldown(1);
 	}
-	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tactics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Combat Mastery") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
+	if (!m_player.hasCondition(CONDITION_INFIGHT) || m_player.getZoneType() == ZONE_PROTECTION || (!getInstant("Battle Instinct") && !getInstant("Positional Tactics") && !getInstant("Ballistic Mastery") && !getInstant("Gift of Life") && !getInstant("Divine Empowerment") && getGiftOfCooldown() == 0)) {
 		bool mustReset = false;
 		for (int i = 0; i < static_cast<int>(WheelMajor_t::TOTAL_COUNT); i++) {
 			if (getMajorStat(static_cast<WheelMajor_t>(i)) != 0) {
@@ -3355,10 +3356,6 @@ void PlayerWheel::onThink(bool force /* = false*/) {
 	}
 	// Ballistic Mastery
 	if (getInstant("Ballistic Mastery") && (force || getOnThinkTimer(WheelOnThink_t::BALLISTIC_MASTERY) < OTSYS_TIME()) && checkBallisticMastery()) {
-		updateClient = true;
-	}
-	// Combat Mastery
-	if (getInstant("Combat Mastery") && (force || getOnThinkTimer(WheelOnThink_t::COMBAT_MASTERY) < OTSYS_TIME()) && checkCombatMastery()) {
 		updateClient = true;
 	}
 	// Divine Empowerment
@@ -4042,10 +4039,6 @@ float PlayerWheel::calculateMitigation() const {
 			shieldFactor = m_player.vocation->mitigationPrimaryShield;
 		}
 		defenseValue = shield->getDefense();
-		// Wheel of destiny
-		if (shield->getDefense() > 0) {
-			defenseValue += getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
-		}
 	}
 
 	const auto &weapon = m_player.inventory[CONST_SLOT_LEFT];

@@ -293,9 +293,10 @@ public:
 	bool checkBattleInstinct();
 	bool checkPositionalTactics();
 	bool checkBallisticMastery();
-	bool checkCombatMastery();
 	bool checkDivineEmpowerment();
 	int32_t checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const;
+	int32_t getCombatMasteryDamageBonus(const std::shared_ptr<Creature> &target) const;
+	int32_t getCombatMasteryDamageReduction() const;
 	int32_t checkBeamMasteryDamage() const;
 	int32_t checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const;
 	int32_t checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const;

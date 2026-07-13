@@ -771,10 +771,6 @@ int32_t Player::getDefense(bool sendToClient /* = false*/) const {
 		defenseValue = (weapon != nullptr)
 			? shield->getDefense() + weapon->getExtraDefense()
 			: shield->getDefense();
-		// Wheel of destiny - Combat Mastery
-		if (shield->getDefense() > 0) {
-			defenseValue += wheel().getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
-		}
 		defenseSkill = getSkillLevel(SKILL_SHIELD);
 	}
 
@@ -808,9 +804,6 @@ uint16_t Player::getDefenseEquipment() const {
 
 	if (shield) {
 		defenseValue = weapon != nullptr ? shield->getDefense() + weapon->getExtraDefense() : shield->getDefense();
-		if (shield->getDefense() > 0) {
-			defenseValue += wheel().getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
-		}
 	}
 
 	defenseValue += weaponProficiency().getStat(WeaponProficiencyBonus_t::DEFENSE_BONUS);
@@ -7363,7 +7356,6 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::MANA_LEECH);
 	} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
 		skillLevel += m_wheelPlayer.getStat(WheelStat_t::CRITICAL_DAMAGE);
-		skillLevel += m_wheelPlayer.getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 		skillLevel += m_wheelPlayer.getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
 		skillLevel += m_wheelPlayer.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
 		skillLevel += m_weaponProficiency.getGeneralCritical().damage * 10000;

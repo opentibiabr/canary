@@ -434,7 +434,6 @@ namespace {
 			skillWheel = playerWheel.getStat(WheelStat_t::MANA_LEECH);
 		} else if (skill == SKILL_CRITICAL_HIT_DAMAGE) {
 			skillWheel = playerWheel.getStat(WheelStat_t::CRITICAL_DAMAGE);
-			skillWheel += playerWheel.getMajorStatConditional("Combat Mastery", WheelMajor_t::CRITICAL_DMG_2);
 			skillWheel += playerWheel.getMajorStatConditional("Ballistic Mastery", WheelMajor_t::CRITICAL_DMG);
 			skillWheel += playerWheel.checkAvatarSkill(WheelAvatarSkill_t::CRITICAL_DAMAGE);
 		}
@@ -5645,12 +5644,11 @@ void ProtocolGame::sendCyclopediaCharacterDefenceStats() {
 	msg.add<uint16_t>(player->getMantra());
 
 	const auto shieldingSkill = player->getSkillLevel(SKILL_SHIELD);
-	const uint16_t defenseWheel = player->wheel().getMajorStatConditional("Combat Mastery", WheelMajor_t::DEFENSE);
 	msg.add<uint16_t>(player->getDefense(true));
 	msg.add<uint16_t>(player->getDefenseEquipment());
 	msg.addByte(0x06);
 	msg.add<uint16_t>(shieldingSkill);
-	msg.add<uint16_t>(defenseWheel);
+	msg.add<uint16_t>(0); // Dynamic Combat Mastery reduction is not a flat defence value.
 
 	const auto wheelMultiplier = player->wheel().getMitigationMultiplier();
 	msg.addDouble(player->getMitigation() / 100.);

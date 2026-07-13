@@ -217,8 +217,8 @@ public:
 			addValue(Augment_t::BaseHealing, bonus.increase.heal / 100.0);
 			addValue(Augment_t::DurationIncreased, bonus.increase.duration);
 			addValue(Augment_t::AdditionalTargets, bonus.increase.additionalTarget);
-			addValue(Augment_t::Cooldown, -(bonus.decrease.cooldown / 1000.0));
-			addValue(Augment_t::SecondaryGroupCooldown, -(bonus.decrease.secondaryGroupCooldown / 1000.0));
+			addValue(Augment_t::Cooldown, -bonus.decrease.cooldown);
+			addValue(Augment_t::SecondaryGroupCooldown, -bonus.decrease.secondaryGroupCooldown);
 			addValue(Augment_t::AffectedAreaEnlarged, bonus.increase.area);
 			addValue(Augment_t::IncreasedDamageReduction, bonus.increase.damageReduction / 100.0);
 			addValue(Augment_t::LifeLeech, bonus.leech.life / 100.0);

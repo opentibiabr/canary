@@ -7483,6 +7483,9 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 	if (isStanceActive(314) && (combat == COMBAT_HOLYDAMAGE || combat == COMBAT_HEALING)) {
 		result += getSkillLevel(SKILL_DISTANCE) * 6 / 100;
 	}
+	if (isStanceActive(319) && (combat == COMBAT_ICEDAMAGE || combat == COMBAT_EARTHDAMAGE)) {
+		result += getMagicLevel() * 10 / 100;
+	}
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {

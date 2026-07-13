@@ -36,6 +36,7 @@ void ItemTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "ItemType", "isQuiver", ItemTypeFunctions::luaItemTypeIsQuiver);
 	Lua::registerMethod(L, "ItemType", "isPodium", ItemTypeFunctions::luaItemTypeIsPodium);
 	Lua::registerMethod(L, "ItemType", "isWeapon", ItemTypeFunctions::luaItemTypeIsWeapon);
+	Lua::registerMethod(L, "ItemType", "isShield", ItemTypeFunctions::luaItemTypeIsShield);
 
 	Lua::registerMethod(L, "ItemType", "getType", ItemTypeFunctions::luaItemTypeGetType);
 	Lua::registerMethod(L, "ItemType", "getId", ItemTypeFunctions::luaItemTypeGetId);
@@ -302,6 +303,17 @@ int ItemTypeFunctions::luaItemTypeIsWeapon(lua_State* L) {
 	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
 	if (itemType) {
 		Lua::pushBoolean(L, itemType->isWeapon());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeIsShield(lua_State* L) {
+	// itemType:isShield()
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (itemType) {
+		Lua::pushBoolean(L, itemType->isShield());
 	} else {
 		lua_pushnil(L);
 	}

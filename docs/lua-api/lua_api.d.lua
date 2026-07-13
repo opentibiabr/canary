@@ -1578,6 +1578,9 @@ function ItemType:isReadable() end
 function ItemType:isRune() end
 
 ---@return boolean|nil
+function ItemType:isShield() end
+
+---@return boolean|nil
 function ItemType:isStackable() end
 
 ---@return boolean|nil

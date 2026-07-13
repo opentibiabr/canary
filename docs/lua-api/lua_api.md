@@ -2012,6 +2012,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/items/item_type_functions.cpp`
 
+#### `ItemType:isShield()`
+
+- Returns: `boolean|nil`
+- Source: `src/lua/functions/items/item_type_functions.cpp`
+
 #### `ItemType:isStackable()`
 
 - Returns: `boolean|nil`

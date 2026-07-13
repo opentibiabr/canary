@@ -275,7 +275,7 @@ void ItemParse::parseWeaponType(const std::string &stringValue, pugi::xml_attrib
 		auto lowerString = asLowerCaseString(valueAttribute.as_string());
 		const auto &itemMap = WeaponTypesMap.find(lowerString);
 		if (itemMap != WeaponTypesMap.end()) {
-			if (stringValue == "spellbook") {
+			if (lowerString == "spellbook") {
 				itemType.spellbook = true;
 			}
 			itemType.weaponType = itemMap->second;

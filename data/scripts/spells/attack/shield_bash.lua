@@ -6,7 +6,7 @@ local function getShieldDefense(player)
 		local item = player:getSlotItem(slot)
 		if item then
 			local itemType = ItemType(item:getId())
-			if itemType:getType() == ITEM_TYPE_SHIELD and itemType:getWeaponType() == WEAPON_SHIELD then
+			if itemType:isShield() then
 				return itemType:getDefense()
 			end
 		end

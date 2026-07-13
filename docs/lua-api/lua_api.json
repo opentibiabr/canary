@@ -2930,6 +2930,12 @@
         "source": "src/lua/functions/items/item_type_functions.cpp"
       },
       {
+        "name": "isShield",
+        "params": [],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/items/item_type_functions.cpp"
+      },
+      {
         "name": "isStackable",
         "params": [],
         "return": "boolean|nil",

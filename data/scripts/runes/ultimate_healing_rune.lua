@@ -28,8 +28,8 @@ function rune.onCastSpell(creature, var, isHotkey)
 		return false
 	end
 
-	if Monster(var:getNumber(1073762188)) then
-		player:sendCancelMessage("Sorry, not possible.")
+	if var:getNumber() ~= player:getId() then
+		player:sendCancelMessage("You can only use this rune on yourself.")
 		player:getPosition():sendMagicEffect(CONST_ME_POFF)
 		return false
 	end

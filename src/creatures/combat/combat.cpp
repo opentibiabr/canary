@@ -2491,12 +2491,41 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 
 void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std::vector<std::shared_ptr<Creature>> targets, CombatDamage &damage, const CombatParams &params) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
-	if (damage.extension || !caster || damage.primary.type == COMBAT_HEALING) {
+	if (damage.extension || !caster) {
 		return;
 	}
 
 	const auto &player = caster->getPlayer();
 	const auto &monster = caster->getMonster();
+	if (damage.primary.type == COMBAT_HEALING) {
+		if (!player || !player->wheel().getInstant("Blessing of the Grove")) {
+			return;
+		}
+
+		uint16_t criticalChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
+		int32_t criticalDamage = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
+		criticalChance += static_cast<uint16_t>(damage.criticalChance);
+		criticalDamage += damage.criticalDamage;
+
+		if (criticalChance == 0 || uniform_random(1, 10000) > criticalChance) {
+			return;
+		}
+
+		const double criticalMultiplier = 1.0 + static_cast<double>(criticalDamage) / 10000.0;
+		CombatDamage criticalHealing = damage;
+		criticalHealing.critical = true;
+		criticalHealing.primary.value *= criticalMultiplier;
+		criticalHealing.secondary.value *= criticalMultiplier;
+
+		if (targets.size() == 1) {
+			damage = criticalHealing;
+		} else {
+			for (const auto &target : targets) {
+				target->setCombatDamage(criticalHealing);
+			}
+		}
+		return;
+	}
 
 	if (player) {
 		uint16_t baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;

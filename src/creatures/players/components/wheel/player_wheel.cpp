@@ -3133,29 +3133,26 @@ void PlayerWheel::checkGiftOfLife() {
 }
 
 int32_t PlayerWheel::checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const {
-	if (!target || target == m_player.getPlayer()) {
+	if (!target || target == m_player.getPlayer() || target->getMaxHealth() <= 0) {
 		return 0;
 	}
 
-	int32_t healingBonus = 0;
 	const uint8_t stage = getStage(WheelStage_t::BLESSING_OF_THE_GROVE);
-	const int32_t healthPercent = std::round((static_cast<double>(target->getHealth()) * 100) / static_cast<double>(target->getMaxHealth()));
-	if (healthPercent <= 30) {
-		if (stage >= 3) {
-			healingBonus = 24;
-		} else if (stage >= 2) {
-			healingBonus = 18;
-		} else if (stage >= 1) {
-			healingBonus = 12;
-		}
-	} else if (healthPercent <= 60) {
-		if (stage >= 3) {
-			healingBonus = 12;
-		} else if (stage >= 2) {
-			healingBonus = 9;
-		} else if (stage >= 1) {
-			healingBonus = 6;
-		}
+	if (stage == 0) {
+		return 0;
+	}
+
+	int32_t healingBonus = 500;
+	if (stage >= 3) {
+		healingBonus = 1000;
+	} else if (stage == 2) {
+		healingBonus = 750;
+	}
+	const int64_t health = std::max<int64_t>(0, target->getHealth());
+	if (health * 100 < static_cast<int64_t>(target->getMaxHealth()) * 30) {
+		healingBonus *= 2;
+	} else if (health * 100 >= static_cast<int64_t>(target->getMaxHealth()) * 60) {
+		return 0;
 	}
 
 	return healingBonus;

@@ -92,6 +92,49 @@ namespace {
 	MonsterPostThinkQueue backgroundMonsterPostThinkQueue;
 	std::array<std::atomic_uint64_t, 2> rejectedMonsterPostThinkTasks {};
 
+	void applyVocationStanceDamageModifiers(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target) {
+		if (damage.stanceModifiersApplied) {
+			return;
+		}
+
+		const bool hasPrimaryDamage = damage.primary.type != COMBAT_NONE && damage.primary.type != COMBAT_HEALING;
+		const bool hasSecondaryDamage = damage.secondary.type != COMBAT_NONE && damage.secondary.type != COMBAT_HEALING;
+		if (!hasPrimaryDamage && !hasSecondaryDamage) {
+			return;
+		}
+
+		uint32_t dealtMultiplier = 100;
+		if (const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr; attackerPlayer && attackerPlayer->isStanceActive(132)) {
+			dealtMultiplier = 85;
+		}
+
+		uint32_t receivedMultiplier = 100;
+		if (const auto &targetPlayer = target ? target->getPlayer() : nullptr) {
+			if (targetPlayer->isStanceActive(133)) {
+				receivedMultiplier = 115;
+			} else if (targetPlayer->isStanceActive(132)) {
+				receivedMultiplier = 85;
+			}
+		}
+		if (dealtMultiplier == 100 && receivedMultiplier == 100) {
+			return;
+		}
+
+		const int64_t combinedMultiplier = static_cast<int64_t>(dealtMultiplier) * receivedMultiplier;
+		const auto applyMultiplier = [combinedMultiplier](int32_t &value) {
+			const int64_t scaledValue = static_cast<int64_t>(value) * combinedMultiplier / 10000;
+			value = static_cast<int32_t>(std::clamp<int64_t>(scaledValue, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
+		};
+
+		if (hasPrimaryDamage) {
+			applyMultiplier(damage.primary.value);
+		}
+		if (hasSecondaryDamage) {
+			applyMultiplier(damage.secondary.value);
+		}
+		damage.stanceModifiersApplied = true;
+	}
+
 	MonsterPostThinkQueue &getMonsterPostThinkQueue(bool playerVisible) {
 		return playerVisible ? visibleMonsterPostThinkQueue : backgroundMonsterPostThinkQueue;
 	}
@@ -7870,7 +7913,6 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 	if (damage.primary.value > 0 || damage.primary.type == COMBAT_AGONYDAMAGE) {
 		return false;
 	}
-
 	// Skill dodge (ruse)
 	if (targetPlayer) {
 		auto chance = targetPlayer->getDodgeChance();
@@ -8469,7 +8511,6 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		if (attackerPlayer && targetPlayer && attackerPlayer->getSkull() == SKULL_BLACK && attackerPlayer->getSkullClient(targetPlayer) == SKULL_NONE) {
 			return false;
 		}
-
 		if (damage.origin != ORIGIN_NONE) {
 			const auto events = target->getCreatureEvents(CREATURE_EVENT_HEALTHCHANGE);
 			if (!events.empty()) {
@@ -8540,6 +8581,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			g_events().eventCreatureOnDrainHealth(target, attacker, damage.primary.type, damage.primary.value, damage.secondary.type, damage.secondary.value, message.primary.color, message.secondary.color);
 			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
+		applyVocationStanceDamageModifiers(damage, attacker, target);
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 			const auto shieldAttackDebuff = isAutoAttack
@@ -9219,6 +9261,8 @@ bool Game::combatChangeMana(const std::shared_ptr<Creature> &attacker, const std
 			return false;
 		}
 
+		applyVocationStanceDamageModifiers(damage, attacker, target);
+		manaChange = damage.primary.value + damage.secondary.value;
 		auto manaLoss = std::min<int32_t>(target->getMana(), -manaChange);
 		BlockType_t blockType = target->blockHit(attacker, COMBAT_MANADRAIN, manaLoss);
 		if (blockType != BLOCK_NONE) {

@@ -7373,6 +7373,17 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel = avatarCritChance; // 100%
 	}
 
+	uint32_t stanceMultiplier = 100;
+	if (isStanceActive(133) && (skill == SKILL_SWORD || skill == SKILL_AXE || skill == SKILL_CLUB)) {
+		stanceMultiplier = 125;
+	} else if (isStanceActive(132) && skill == SKILL_SHIELD) {
+		stanceMultiplier = 130;
+	}
+	if (stanceMultiplier != 100) {
+		const uint64_t boostedSkill = static_cast<uint64_t>(skillLevel) * stanceMultiplier / 100;
+		skillLevel = static_cast<uint16_t>(std::min<uint64_t>(boostedSkill, std::numeric_limits<uint16_t>::max()));
+	}
+
 	if (skill == SKILL_FIST && isStanceActive(275)) {
 		const uint64_t bonus = static_cast<uint64_t>(getBaseSkill(SKILL_FIST)) * (hasCondition(CONDITION_SERENE) ? 16 : 8) / 100;
 		skillLevel = static_cast<uint16_t>(std::min<uint64_t>(static_cast<uint64_t>(skillLevel) + bonus, std::numeric_limits<uint16_t>::max()));

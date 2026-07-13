@@ -1,0 +1,102 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/canary-symbol-registry.schema.json",
+  "title": "Canary typed fact registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "toolVersion", "revision", "profiles", "summary", "coverage", "facts"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "toolVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "revision": { "$ref": "#/$defs/revision" },
+    "profiles": { "$ref": "#/$defs/profiles" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["factCount", "countsByDomain", "countsByRole", "unresolvedCount"],
+      "properties": {
+        "factCount": { "type": "integer", "minimum": 0 },
+        "countsByDomain": { "$ref": "#/$defs/counts" },
+        "countsByRole": { "$ref": "#/$defs/counts" },
+        "unresolvedCount": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "coverage": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["domain", "status", "details"],
+        "properties": {
+          "domain": { "type": "string", "minLength": 1 },
+          "status": { "enum": ["authoritative", "partial", "registrations-only", "unavailable"] },
+          "details": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "facts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/fact" }
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^/]+(?:/[^/]+)*$"
+    },
+    "sha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headSha", "baseSha", "workingTreeDirty"],
+      "properties": {
+        "headSha": { "$ref": "#/$defs/sha" },
+        "baseSha": { "$ref": "#/$defs/sha" },
+        "workingTreeDirty": { "type": ["boolean", "null"] }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "column"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "fact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["domain", "role", "value", "layer", "profiles", "location", "extractor", "confidence"],
+      "properties": {
+        "domain": { "type": "string", "minLength": 1 },
+        "role": { "enum": ["definition", "reference", "registration", "unresolved"] },
+        "value": { "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 }] },
+        "endValue": { "type": "integer", "minimum": 0 },
+        "layer": { "type": "string", "minLength": 1 },
+        "profiles": { "$ref": "#/$defs/profiles" },
+        "location": { "$ref": "#/$defs/location" },
+        "extractor": { "type": "string", "minLength": 1 },
+        "confidence": { "enum": ["exact", "derived", "dynamic"] },
+        "symbol": { "type": "string", "minLength": 1 },
+        "owner": { "type": "string", "minLength": 1 },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    }
+  }
+}

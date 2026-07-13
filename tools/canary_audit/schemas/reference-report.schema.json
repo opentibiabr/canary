@@ -1,0 +1,140 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/canary-reference-report.schema.json",
+  "title": "Canary semantic reference report",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "toolVersion",
+    "revision",
+    "profiles",
+    "status",
+    "gateSeverity",
+    "summary",
+    "diagnostics",
+    "findings"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "toolVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "revision": { "$ref": "#/$defs/revision" },
+    "profiles": { "$ref": "#/$defs/profiles" },
+    "status": { "enum": ["complete", "incomplete"] },
+    "gateSeverity": { "$ref": "#/$defs/severity" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "findingCount",
+        "newFindingCount",
+        "waivedFindingCount",
+        "blockingFindingCount",
+        "diagnosticCount",
+        "staleWaiverCount",
+        "countsBySeverity",
+        "countsByRule"
+      ],
+      "properties": {
+        "findingCount": { "type": "integer", "minimum": 0 },
+        "newFindingCount": { "type": "integer", "minimum": 0 },
+        "waivedFindingCount": { "type": "integer", "minimum": 0 },
+        "blockingFindingCount": { "type": "integer", "minimum": 0 },
+        "diagnosticCount": { "type": "integer", "minimum": 0 },
+        "staleWaiverCount": { "type": "integer", "minimum": 0 },
+        "countsBySeverity": { "$ref": "#/$defs/counts" },
+        "countsByRule": { "$ref": "#/$defs/counts" }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/diagnostic" }
+    },
+    "findings": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/finding" }
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^/]+(?:/[^/]+)*$"
+    },
+    "sha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headSha", "baseSha", "workingTreeDirty"],
+      "properties": {
+        "headSha": { "$ref": "#/$defs/sha" },
+        "baseSha": { "$ref": "#/$defs/sha" },
+        "workingTreeDirty": { "type": ["boolean", "null"] }
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "severity": { "enum": ["info", "warning", "error"] },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    },
+    "location": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "line", "column"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "line": { "type": "integer", "minimum": 1 },
+        "column": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "diagnostic": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "severity", "message"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "#/$defs/severity" },
+        "message": { "type": "string", "minLength": 1 },
+        "location": { "$ref": "#/$defs/location" }
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "severity",
+        "confidence",
+        "profile",
+        "domain",
+        "value",
+        "message",
+        "locations",
+        "fingerprint",
+        "baselineStatus"
+      ],
+      "properties": {
+        "ruleId": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "#/$defs/severity" },
+        "confidence": { "enum": ["exact", "derived", "dynamic"] },
+        "profile": { "type": "string", "minLength": 1 },
+        "domain": { "type": "string", "minLength": 1 },
+        "value": { "oneOf": [{ "type": "integer", "minimum": 0 }, { "type": "string", "minLength": 1 }] },
+        "message": { "type": "string", "minLength": 1 },
+        "locations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/location" }
+        },
+        "fingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+        "baselineStatus": { "enum": ["new", "waived"] }
+      }
+    }
+  }
+}

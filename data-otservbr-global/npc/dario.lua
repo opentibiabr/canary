@@ -228,9 +228,14 @@ npcConfig.shop = {
 	{ itemName = "bolt", clientId = 3446, buy = 4 },
 	{ itemName = "bow", clientId = 3350, buy = 400, sell = 100 },
 	{ itemName = "crossbow", clientId = 3349, buy = 500, sell = 120 },
+	{ itemName = "firestorm arrow", clientId = 53169, buy = 75 },
+	{ itemName = "froststorm arrow", clientId = 53171, buy = 75 },
 	{ itemName = "quiver", clientId = 35562, buy = 400 },
 	{ itemName = "red quiver", clientId = 35849, buy = 400 },
+	{ itemName = "shatterstorm arrow", clientId = 53168, buy = 45 },
 	{ itemName = "spear", clientId = 3277, buy = 9, sell = 3 },
+	{ itemName = "terrastorm arrow", clientId = 53170, buy = 75 },
+	{ itemName = "thunderstorm arrow", clientId = 53172, buy = 75 },
 }
 -- On buy npc shop message
 npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBackpacks, totalCost)

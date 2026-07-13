@@ -7,6 +7,7 @@ local area = createCombatArea({
 })
 
 local combat = Combat()
+combat:setOrigin(ORIGIN_RANGED)
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYHIT)
 combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_DIAMONDARROW)

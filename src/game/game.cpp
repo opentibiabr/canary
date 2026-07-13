@@ -8518,6 +8518,24 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
+			const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
+			const auto shieldAttackDebuff = isAutoAttack
+				? attacker->getCondition(CONDITION_ATTRIBUTES, CONDITIONID_COMBAT, magic_enum::enum_integer(AttrSubId_t::ShieldAttackDebuff))
+				: nullptr;
+			if (shieldAttackDebuff) {
+				damage.primary.value *= 0.5;
+				damage.secondary.value *= 0.5;
+
+				g_dispatcher().addEvent(
+					[weakAttacker = std::weak_ptr<Creature>(attacker), shieldAttackDebuff] {
+						if (const auto debuffedAttacker = weakAttacker.lock()) {
+							debuffedAttacker->removeCondition(shieldAttackDebuff);
+						}
+					},
+					"Game::consumeShieldAttackDebuff"
+				);
+			}
+
 			damage.primary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 			damage.secondary.value *= attacker->getBuff(BUFF_DAMAGEDEALT) / 100.;
 		}

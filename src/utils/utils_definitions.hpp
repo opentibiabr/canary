@@ -268,6 +268,15 @@ enum MagicEffectClasses : uint16_t {
 	CONST_ME_GREEN_ELECTRIC_SPARK = 302,
 	CONST_ME_PURPLE_ELECTRIC_SPARK = 303,
 
+	// 15.30 vocation adjustment effects
+	CONST_ME_BASH = 318,
+	CONST_ME_DIVINE_BARRAGE = 319,
+	CONST_ME_ETHEREAL_BARRAGE = 320,
+	CONST_ME_DEATH_ECHO = 321,
+	CONST_ME_FORKED_GLACIER = 324,
+	CONST_ME_FORKED_THORNS = 325,
+	CONST_ME_THOUSAND_FIST_BLOWS = 326,
+
 	CONST_ME_LAST
 };
 
@@ -775,6 +784,7 @@ enum class AttrSubId_t {
 	MentorOther,
 	Sanctuary,
 	VirtueOfJustice,
+	ShieldAttackDebuff,
 };
 
 enum Concoction_t : uint16_t {

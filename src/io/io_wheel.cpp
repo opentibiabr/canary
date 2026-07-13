@@ -246,7 +246,7 @@ void IOWheel::initializeDruidSpells() {
 
 	m_wheelBonusData.spells.druid[3].name = "Terra Wave";
 	m_wheelBonusData.spells.druid[3].grade[1].increase.damage = static_cast<int>(std::round(6.5));
-	m_wheelBonusData.spells.druid[3].grade[2].leech.life = 5;
+	m_wheelBonusData.spells.druid[3].grade[2].leech.life = 10;
 
 	m_wheelBonusData.spells.druid[4].name = "Heal Friend";
 	m_wheelBonusData.spells.druid[4].grade[1].decrease.manaCost = 10;

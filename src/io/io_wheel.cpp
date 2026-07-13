@@ -273,7 +273,7 @@ void IOWheel::initializeKnightSpells() {
 
 	m_wheelBonusData.spells.knight[3].name = "Intense Wound Cleansing";
 	m_wheelBonusData.spells.knight[3].grade[1].increase.heal = 125;
-	m_wheelBonusData.spells.knight[3].grade[2].decrease.cooldown = 300;
+	m_wheelBonusData.spells.knight[3].grade[2].decrease.cooldown = 60;
 
 	m_wheelBonusData.spells.knight[4].name = "Fierce Berserk";
 	m_wheelBonusData.spells.knight[4].grade[1].decrease.manaCost = 30;

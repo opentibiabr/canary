@@ -76668,7 +76668,7 @@ Granted by TibiaGoals.com"/>
 		</attribute>
 		<attribute key="augments" value="1">
 			<attribute key="intense wound cleansing" value="cooldown">
-				<attribute key="value" value="120000" />
+				<attribute key="value" value="24000" />
 			</attribute>
 		</attribute>
 		<attribute key="script" value="moveevent">

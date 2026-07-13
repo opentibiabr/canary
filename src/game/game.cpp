@@ -9028,7 +9028,9 @@ void Game::buildMessageAsAttacker(
 	ss.str({});
 	ss << ucfirst(target->getNameDescription()) << " loses " << damageString << " due to your " << (damage.critical ? "critical " : " ") << "attack.";
 
-	if (damage.critical && target->getMonster() && attackerPlayer) {
+	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
+	const bool canApplyOffensiveCharm = !isAutoAttack || (attackerPlayer && target == attackerPlayer->getAttackedCreature());
+	if (canApplyOffensiveCharm && damage.critical && target->getMonster() && attackerPlayer) {
 		const auto &targetMonster = target->getMonster();
 		static const std::pair<charmRune_t, std::string_view> charms[] = {
 			{ CHARM_LOW, " (low blow charm)" },
@@ -9107,7 +9109,9 @@ void Game::applyManaLeech(
 	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
 
 	// Void charm rune
-	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
+	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
+	const bool canApplyOffensiveCharm = !isAutoAttack || target == attackerPlayer->getAttackedCreature();
+	if (canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 			manaSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VOID)] * 100;
 		}
@@ -9136,7 +9140,9 @@ void Game::applyLifeLeech(
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
 	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
 
-	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
+	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
+	const bool canApplyOffensiveCharm = !isAutoAttack || target == attackerPlayer->getAttackedCreature();
+	if (canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 			lifeSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VAMP)] * 100;
 		}

@@ -842,6 +842,11 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			return;
 		}
 
+		const bool isAutoAttack = params.origin == ORIGIN_MELEE || params.origin == ORIGIN_RANGED || params.origin == ORIGIN_FIST;
+		if (isAutoAttack && target != attackerPlayer->getAttackedCreature()) {
+			return;
+		}
+
 		const uint16_t playerCharmRaceid = attackerPlayer->parseRacebyCharm(CHARM_FATAL);
 		if (playerCharmRaceid == 0) {
 			return;
@@ -2665,6 +2670,12 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 	}
 
 	if (player) {
+		const bool isAutoAttack = params.origin == ORIGIN_MELEE || params.origin == ORIGIN_RANGED || params.origin == ORIGIN_FIST;
+		const auto &primaryTarget = player->getAttackedCreature();
+		const auto canApplyOffensiveCharm = [&](const std::shared_ptr<Creature> &target) {
+			return !isAutoAttack || target == primaryTarget;
+		};
+
 		uint16_t baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
 		int32_t baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
 
@@ -2698,6 +2709,10 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 				uint16_t lowBlowChance = baseChance + (charm->chance[charmTier] * 100);
 
 				for (const auto &target : targets) {
+					if (!canApplyOffensiveCharm(target)) {
+						continue;
+					}
+
 					const auto &targetMonster = target->getMonster();
 					if (!targetMonster) {
 						continue;
@@ -2743,11 +2758,11 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 				uint16_t raceId = mType->info.raceid;
 
-				if (!canApplyCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
+				if (canApplyOffensiveCharm(targetCreature) && !canApplyCritical && lowBlowCrits.contains(raceId) && lowBlowCrits[raceId]) {
 					isTargetCritical = true;
 				}
 
-				if (raceId == savageBlowRaceid) {
+				if (canApplyOffensiveCharm(targetCreature) && raceId == savageBlowRaceid) {
 					finalBonus = savageBlowBonus;
 				}
 			}

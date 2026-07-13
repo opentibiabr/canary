@@ -156,6 +156,8 @@ public:
 	void addCondition(std::shared_ptr<Creature> creature, std::shared_ptr<Condition> condition) final;
 
 	bool setParam(ConditionParam_t param, int32_t value) final;
+	uint8_t getShieldAttackDamageReductionBonus() const;
+	void setShieldAttackDamageReductionBonus(int32_t value);
 
 	std::shared_ptr<Condition> clone() const override;
 
@@ -186,6 +188,7 @@ private:
 	int32_t currentBuff = 0;
 
 	int8_t charmChanceModifier = 0;
+	uint8_t shieldAttackDamageReductionBonus = 0;
 
 	// 12.72 mechanics
 	std::array<int32_t, COMBAT_COUNT> absorbs = {};

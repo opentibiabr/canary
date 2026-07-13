@@ -1026,6 +1026,13 @@ void Combat::CombatConditionFunc(const std::shared_ptr<Creature> &caster, const 
 			if (const auto &conditionDamage = conditionCopy->dynamic_self_cast<ConditionDamage>()) {
 				conditionDamage->setSourceSpellType(params.sourceSpellType);
 			}
+			const bool isShieldAttackDebuff = conditionCopy->getType() == CONDITION_ATTRIBUTES
+				&& conditionCopy->getSubId() == static_cast<uint32_t>(AttrSubId_t::ShieldAttackDebuff);
+			if (data && isShieldAttackDebuff) {
+				if (const auto &conditionAttributes = conditionCopy->dynamic_self_cast<ConditionAttributes>()) {
+					conditionAttributes->setShieldAttackDamageReductionBonus(data->damageReductionMultiplier);
+				}
+			}
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());

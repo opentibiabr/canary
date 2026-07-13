@@ -8658,8 +8658,11 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				? attacker->getCondition(CONDITION_ATTRIBUTES, CONDITIONID_COMBAT, magic_enum::enum_integer(AttrSubId_t::ShieldAttackDebuff))
 				: nullptr;
 			if (shieldAttackDebuff) {
-				damage.primary.value *= 0.5;
-				damage.secondary.value *= 0.5;
+				const auto &conditionAttributes = shieldAttackDebuff->dynamic_self_cast<ConditionAttributes>();
+				const uint8_t augmentBonus = conditionAttributes ? conditionAttributes->getShieldAttackDamageReductionBonus() : 0;
+				const double damageMultiplier = (100 - std::clamp<int32_t>(50 + augmentBonus, 0, 100)) / 100.;
+				damage.primary.value *= damageMultiplier;
+				damage.secondary.value *= damageMultiplier;
 
 				g_dispatcher().addEvent(
 					[weakAttacker = std::weak_ptr<Creature>(attacker), shieldAttackDebuff] {

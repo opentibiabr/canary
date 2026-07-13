@@ -713,6 +713,7 @@ void ConditionAttributes::addCondition(std::shared_ptr<Creature> creature, const
 		increases = conditionAttrs->increases;
 		increasesPercent = conditionAttrs->increasesPercent;
 		charmChanceModifier = conditionAttrs->charmChanceModifier;
+		shieldAttackDamageReductionBonus = conditionAttrs->shieldAttackDamageReductionBonus;
 
 		updatePercentBuffs(creature);
 		updateBuffs(creature);
@@ -768,6 +769,14 @@ bool ConditionAttributes::unserializeProp(ConditionAttr_t attr, PropStream &prop
 		return true;
 	} else if (attr == CONDITIONATTR_CHARM_CHANCE_MODIFIER) {
 		return propStream.read<int8_t>(charmChanceModifier);
+	} else if (attr == CONDITIONATTR_SHIELD_ATTACK_DAMAGE_REDUCTION_BONUS) {
+		uint8_t value;
+		if (!propStream.read<uint8_t>(value) || value > 50) {
+			return false;
+		}
+
+		shieldAttackDamageReductionBonus = value;
+		return true;
 	}
 	return Condition::unserializeProp(attr, propStream);
 }
@@ -811,6 +820,11 @@ void ConditionAttributes::serialize(PropWriteStream &propWriteStream) {
 	// Save charm percent
 	propWriteStream.write<uint8_t>(CONDITIONATTR_CHARM_CHANCE_MODIFIER);
 	propWriteStream.write<int8_t>(charmChanceModifier);
+
+	if (shieldAttackDamageReductionBonus != 0) {
+		propWriteStream.write<uint8_t>(CONDITIONATTR_SHIELD_ATTACK_DAMAGE_REDUCTION_BONUS);
+		propWriteStream.write<uint8_t>(shieldAttackDamageReductionBonus);
+	}
 }
 
 ConditionAttributes::ConditionAttributes(ConditionId_t initId, ConditionType_t initType, int32_t initTicks, bool initBuff, uint32_t initSubId) :
@@ -1335,6 +1349,14 @@ bool ConditionAttributes::setParam(ConditionParam_t param, int32_t value) {
 
 std::shared_ptr<Condition> ConditionAttributes::clone() const {
 	return std::make_shared<ConditionAttributes>(*this);
+}
+
+uint8_t ConditionAttributes::getShieldAttackDamageReductionBonus() const {
+	return shieldAttackDamageReductionBonus;
+}
+
+void ConditionAttributes::setShieldAttackDamageReductionBonus(int32_t value) {
+	shieldAttackDamageReductionBonus = static_cast<uint8_t>(std::clamp(value, 0, 50));
 }
 
 int32_t ConditionAttributes::getAbsorbByIndex(uint8_t index) const {

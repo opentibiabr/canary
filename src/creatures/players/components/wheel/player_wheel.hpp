@@ -297,7 +297,6 @@ public:
 	bool checkDivineEmpowerment();
 	int32_t checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const;
 	int32_t checkBeamMasteryDamage() const;
-	int32_t checkBattleHealingAmount() const;
 	int32_t checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const;
 	int32_t checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const;
 	int32_t checkExecutionersThrow(const std::shared_ptr<Creature> &target) const;
@@ -436,16 +435,6 @@ public:
 	// Combat functions
 	uint8_t getBeamAffectedTotal(const CombatDamage &tmpDamage) const;
 	void updateBeamMasteryDamage(CombatDamage &tmpDamage, uint8_t &beamAffectedTotal, uint8_t &beamAffectedCurrent) const;
-	/**
-	 * @brief Checks if the player has the "Battle Healing" instant active and, if so, heals the player.
-	 *
-	 * This function checks if a creature is a player and if the player is not removed from the game world.
-	 * If the player has the "Battle Healing" instant active, the player is healed by an amount defined by the
-	 * checkBattleHealingAmount() function.
-	 *
-	 * @param creature The creature to check and potentially heal.
-	 */
-	void healIfBattleHealingActive() const;
 	/**
 	 * @brief Adjusts the incoming damage based on the player's resistance and avatar skill.
 	 *

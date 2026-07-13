@@ -8257,6 +8257,15 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 			damage.secondary.value += attackerPlayer->wheel().getStat(WheelStat_t::HEALING);
 		}
 
+		if (!damage.instantSpellName.empty() && attackerPlayer->wheel().getInstant("Battle Healing")) {
+			const auto &leftHand = attackerPlayer->getInventoryItem(CONST_SLOT_LEFT);
+			const auto &rightHand = attackerPlayer->getInventoryItem(CONST_SLOT_RIGHT);
+			const bool wearsShield = (leftHand && leftHand->isShield()) || (rightHand && rightHand->isShield());
+			const int32_t healingBonus = wearsShield ? 20 : 10;
+			damage.primary.value += (damage.primary.value * healingBonus) / 100;
+			damage.secondary.value += (damage.secondary.value * healingBonus) / 100;
+		}
+
 		if (damage.healingLink > 0) {
 			CombatDamage tmpDamage;
 			tmpDamage.primary.value = (damage.primary.value * damage.healingLink) / 100;

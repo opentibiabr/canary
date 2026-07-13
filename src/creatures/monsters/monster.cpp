@@ -3475,11 +3475,6 @@ bool Monster::challengeCreature(const std::shared_ptr<Creature> &creature, int t
 	if (result) {
 		challengeFocusDuration = targetChangeCooldown;
 		targetChangeTicks = 0;
-		// Wheel of destiny
-		const auto &player = creature ? creature->getPlayer() : nullptr;
-		if (player && !player->isRemoved()) {
-			player->wheel().healIfBattleHealingActive();
-		}
 	}
 	return result;
 }

@@ -221,6 +221,7 @@ namespace {
 			| ProtocolFeature::ExtendedCreatureIconPayload
 			| ProtocolFeature::ExtendedUpdateTargetPayload
 			| ProtocolFeature::ReworkedMonsterCyclopediaPayload
+			| ProtocolFeature::CombatModesRemoved
 		),
 		.name = "current",
 		.supportLabel = "",

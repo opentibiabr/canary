@@ -89,6 +89,8 @@ enum class ProtocolFeature : uint64_t {
 	ExtendedUpdateTargetPayload = 1ULL << 25,
 	// 15.30 confirmed: 0xD6 and 0xD7 use the reworked monster-cyclopedia layouts.
 	ReworkedMonsterCyclopediaPayload = 1ULL << 26,
+	// 15.30 confirmed: 0xA0 and 0xA7 no longer carry a fight-mode byte.
+	CombatModesRemoved = 1ULL << 27,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

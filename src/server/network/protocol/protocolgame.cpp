@@ -2706,6 +2706,15 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseFightModes(NetworkMessage &msg) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CombatModesRemoved)) {
+		const bool chaseMode = msg.getByte() != 0;
+		const bool secureMode = msg.getByte() != 0;
+		msg.getByte(); // PvP mode
+
+		g_game().playerSetFightModes(player->getID(), FIGHTMODE_ATTACK, chaseMode, secureMode);
+		return;
+	}
+
 	uint8_t rawFightMode = msg.getByte(); // 1 - offensive, 2 - balanced, 3 - defensive
 	uint8_t rawChaseMode = msg.getByte(); // 0 - stand while fightning, 1 - chase opponent
 	uint8_t rawSecureMode = msg.getByte(); // 0 - can't attack unmarked, 1 - can attack unmarked
@@ -8564,11 +8573,17 @@ void ProtocolGame::sendEnterWorld() {
 void ProtocolGame::sendFightModes() {
 	NetworkMessage msg;
 	msg.addByte(0xA7);
-	msg.addByte(player->fightMode);
-	msg.addByte(player->chaseMode);
-	msg.addByte(player->secureMode);
-	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CombatModesRemoved)) {
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
 		msg.addByte(PVP_MODE_DOVE);
+	} else {
+		msg.addByte(player->fightMode);
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
+		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+			msg.addByte(PVP_MODE_DOVE);
+		}
 	}
 	writeToOutputBuffer(msg);
 }

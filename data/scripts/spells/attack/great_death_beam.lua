@@ -1,6 +1,9 @@
+local SPELL_BASE_POWER = 155
+
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 5.5)
-	local max = (level / 5) + (maglevel * 9)
+	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * maglevel) + (SPELL_BASE_POWER / 4)
+	local min = damage * 0.9
+	local max = damage * 1.1
 	return -min, -max
 end
 

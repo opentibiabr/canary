@@ -1,13 +1,30 @@
+local SPELL_BASE_POWER = 800
+
+local function getMassHealing(player)
+	local healing = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * player:getMagicLevel()) + (SPELL_BASE_POWER / 4)
+	return healing * 0.9, healing * 1.1
+end
+
+local function getSelfHealing(player)
+	local level = player:getLevel()
+	local magicLevel = player:getMagicLevel()
+	local min = (level * 0.2 + magicLevel * 7.22) + 44
+	local max = (level * 0.2 + magicLevel * 12.79) + 79
+	return min, max
+end
+
 local function targetFunction(creature, target)
 	local player = creature:getPlayer()
-	local baseMin = ((player:getLevel() / 5) + (player:getMagicLevel() * 5.7) + 26)
-	local baseMax = ((player:getLevel() / 5) + (player:getMagicLevel() * 10.43) + 62)
-
-	local min, max = player:getHarmonyDamage(baseMin, baseMax)
+	local min, max
+	if creature == target then
+		min, max = getSelfHealing(player)
+	else
+		min, max = getMassHealing(player)
+	end
 
 	local bosses = { "leiden", "ravennous hunger", "dorokoll the mystic", "eshtaba the conjurer", "eliz the unyielding", "mezlon the defiler", "malkhar deathbringer", "containment crystal" }
 	local master = target:getMaster()
-	if target:isMonster() and not master or master and master:isMonster() then
+	if (target:isMonster() and not master) or (master and master:isMonster()) then
 		if not table.contains(bosses, target:getName():lower()) then
 			return true
 		end
@@ -17,11 +34,6 @@ local function targetFunction(creature, target)
 end
 
 function onTargetCreature(creature, target)
-	targetFunction(creature, target)
-	return true
-end
-
-function onTargetCreatureWOD(creature, target)
 	targetFunction(creature, target)
 	return true
 end
@@ -37,17 +49,10 @@ local function createCombat(area, combatFunc)
 end
 
 local combat = createCombat(AREA_MASS_SPIRIT_MEND, "onTargetCreature")
-local combatWOD = createCombat(AREA_MASS_SPIRIT_MEND_WOD, "onTargetCreatureWOD")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	local player = creature:getPlayer()
-	if creature and player then
-		if player:getWheelSpellAdditionalArea("Mass Spirit Mend") then
-			return combatWOD:execute(creature, var)
-		end
-	end
 	return combat:execute(creature, var)
 end
 

@@ -110,6 +110,20 @@ namespace {
 		applyBonus(damage.secondary.value);
 	}
 
+	void applyWayOfTheMonkMeleeReduction(CombatDamage &damage, const std::shared_ptr<Player> &targetPlayer) {
+		if (!targetPlayer || targetPlayer->getPlayerVocationEnum() != VOCATION_MONK_CIP || (damage.origin != ORIGIN_MELEE && damage.origin != ORIGIN_FIST)) {
+			return;
+		}
+
+		const int32_t shrinesCompleted = std::clamp(targetPlayer->getStorageValue(STORAGEVALUE_WAY_OF_THE_MONK_SHRINES_COUNT) - 1, 0, 10);
+		const int32_t multiplier = 100 - (shrinesCompleted * 2);
+		const auto applyReduction = [multiplier](int32_t &value) {
+			value = static_cast<int32_t>(static_cast<int64_t>(value) * multiplier / 100);
+		};
+		applyReduction(damage.primary.value);
+		applyReduction(damage.secondary.value);
+	}
+
 	void applyVocationStanceDamageModifiers(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target) {
 		if (damage.stanceModifiersApplied) {
 			return;
@@ -8615,6 +8629,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		}
 		applyVocationStanceDamageModifiers(damage, attacker, target);
 		applySanctuaryAdjacentBonus(damage, attacker, target);
+		applyWayOfTheMonkMeleeReduction(damage, targetPlayer);
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 			const auto shieldAttackDebuff = isAutoAttack

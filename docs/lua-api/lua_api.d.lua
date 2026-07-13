@@ -3477,6 +3477,9 @@ function Player:getPreyLootPercentage(raceId) end
 ---@return number|nil
 function Player:getPronoun() end
 
+---@return number|nil
+function Player:getPvpMode() end
+
 ---@param rewardId number
 ---@param autoCreate? boolean
 ---@return boolean|nil|Item
@@ -3589,6 +3592,10 @@ function Player:hasAchievement(idOrName) end
 ---@param monsterType string
 ---@return boolean
 function Player:hasAnimusMastery(monsterType) end
+
+---@param targetPlayer Player
+---@return boolean|nil
+function Player:hasAttacked(targetPlayer) end
 
 ---@param blessing number
 ---@return boolean|nil

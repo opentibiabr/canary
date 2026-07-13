@@ -6560,6 +6560,12 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "getPvpMode",
+        "params": [],
+        "return": "number|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "getReward",
         "params": [
           "rewardId: number",
@@ -6782,6 +6788,14 @@
           "monsterType: string"
         ],
         "return": "boolean",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
+        "name": "hasAttacked",
+        "params": [
+          "targetPlayer: Player"
+        ],
+        "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {

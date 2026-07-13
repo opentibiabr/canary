@@ -1,67 +1,3 @@
-local function getExpertPvpFieldOwner(creature)
-	if not creature then
-		return nil
-	end
-
-	if creature.getPvpMode then
-		return creature
-	end
-
-	if not creature.getMaster then
-		return nil
-	end
-
-	local master = creature:getMaster()
-	if master and master.getPvpMode then
-		return master
-	end
-
-	return nil
-end
-
-local function getExpertPvpFieldRelationSnapshot(owner)
-	local ownerTargets = {}
-	local ownerAttackers = {}
-
-	if not owner or not owner.hasAttacked then
-		return "", ""
-	end
-
-	for _, player in ipairs(Game.getPlayers()) do
-		if player ~= owner then
-			if owner:hasAttacked(player) then
-				ownerTargets[#ownerTargets + 1] = player:getGuid()
-			end
-			if player:hasAttacked(owner) then
-				ownerAttackers[#ownerAttackers + 1] = player:getGuid()
-			end
-		end
-	end
-
-	return table.concat(ownerTargets, ","), table.concat(ownerAttackers, ",")
-end
-
-local function attachExpertPvpFieldContext(item, creature)
-	if not item or not IsExpertPVP() then
-		return
-	end
-
-	local owner = getExpertPvpFieldOwner(creature)
-	if not owner then
-		return
-	end
-
-	local ownerTargetsAtCast, ownerAttackersAtCast = getExpertPvpFieldRelationSnapshot(owner)
-	item:setCustomAttribute("expertPvpOwnerGuid", owner:getGuid())
-	item:setCustomAttribute("expertPvpOwnerMode", owner:getPvpMode() or 0)
-	item:setCustomAttribute("expertPvpCanonicalItemId", ITEM_MAGICWALL)
-	item:setCustomAttribute("expertPvpSafeVisualItemId", ITEM_MAGICWALL_SAFE)
-	item:setCustomAttribute("expertPvpBlockingVisualItemId", ITEM_MAGICWALL)
-	item:setCustomAttribute("expertPvpOwnerTargetsAtCast", ownerTargetsAtCast)
-	item:setCustomAttribute("expertPvpOwnerAttackersAtCast", ownerAttackersAtCast)
-	item:setCustomAttribute("expertPvpOwnerWasPlayerOrSummon", true)
-end
-
 function onCreateMagicWall(creature, position)
 	local tile = Tile(position)
 	if not tile then
@@ -85,7 +21,7 @@ function onCreateMagicWall(creature, position)
 
 	local item = Game.createItem(magicWall, 1)
 	if item then
-		attachExpertPvpFieldContext(item, creature)
+		item:setExpertPvpFieldContext(creature)
 		item:setDuration(16, 24)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
 		if tile:addItemEx(item, FLAG_NOLIMIT) ~= RETURNVALUE_NOERROR then

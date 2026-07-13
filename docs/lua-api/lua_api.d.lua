@@ -1385,6 +1385,10 @@ function Item:setCustomAttribute(key, value) end
 ---@return boolean
 function Item:setDuration(minDuration, maxDuration, decayTo, showDuration) end
 
+---@param owner Creature
+---@return boolean
+function Item:setExpertPvpFieldContext(owner) end
+
 ---@param creatureOrCreatureId number|Creature
 ---@return boolean
 function Item:setOwner(creatureOrCreatureId) end
@@ -3594,7 +3598,7 @@ function Player:hasAchievement(idOrName) end
 function Player:hasAnimusMastery(monsterType) end
 
 ---@param targetPlayer Player
----@return boolean|nil
+---@return boolean
 function Player:hasAttacked(targetPlayer) end
 
 ---@param blessing number

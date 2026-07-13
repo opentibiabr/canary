@@ -2563,6 +2563,14 @@
         "source": "src/lua/functions/items/item_functions.cpp"
       },
       {
+        "name": "setExpertPvpFieldContext",
+        "params": [
+          "owner: Creature"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/items/item_functions.cpp"
+      },
+      {
         "name": "setOwner",
         "params": [
           "creatureOrCreatureId: number|Creature"
@@ -6795,7 +6803,7 @@
         "params": [
           "targetPlayer: Player"
         ],
-        "return": "boolean|nil",
+        "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {

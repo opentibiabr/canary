@@ -3882,8 +3882,12 @@ int PlayerFunctions::luaPlayerGetPvpMode(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:hasAttacked
+ * @param targetPlayer Player
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerHasAttacked(lua_State* L) {
-	// player:hasAttacked(targetPlayer)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	const auto &targetPlayer = Lua::getUserdataShared<Player>(L, 2, "Player");
 	if (player && targetPlayer) {

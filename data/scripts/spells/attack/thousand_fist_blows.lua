@@ -22,10 +22,6 @@ combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
-	local target = creature:getTarget()
-	if target then
-		var = Variant(target)
-	end
 	return combat:execute(creature, var)
 end
 
@@ -38,7 +34,7 @@ spell:mana(145)
 spell:isAggressive(true)
 spell:isPremium(true)
 spell:range(7)
-spell:isSelfTarget(true)
+spell:optionalTarget(true)
 spell:blockWalls(true)
 spell:cooldown(12 * 1000)
 spell:groupCooldown(2 * 1000)

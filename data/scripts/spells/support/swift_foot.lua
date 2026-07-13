@@ -29,24 +29,10 @@ function spell.onCastSpell(creature, var)
 	end
 
 	if combat:execute(creature, var) then
-		local grade = creature:upgradeSpellsWOD("Swift Foot")
-		if grade == WHEEL_GRADE_NONE then
-			local exhaust = Condition(CONDITION_EXHAUST_COMBAT)
-			exhaust:setParameter(CONDITION_PARAM_TICKS, spellDuration)
-			creature:addCondition(exhaust)
-			local disable = Condition(CONDITION_PACIFIED)
-			disable:setParameter(CONDITION_PARAM_TICKS, spellDuration)
-			creature:addCondition(disable)
-			local exhaustAttackGroup = Condition(CONDITION_SPELLGROUPCOOLDOWN)
-			exhaustAttackGroup:setParameter(CONDITION_PARAM_SUBID, 1)
-			exhaustAttackGroup:setParameter(CONDITION_PARAM_TICKS, spellDuration)
-			creature:addCondition(exhaustAttackGroup)
-		elseif grade == WHEEL_GRADE_REGULAR then
-			local damageDebuff = Condition(CONDITION_ATTRIBUTES)
-			damageDebuff:setParameter(CONDITION_PARAM_TICKS, spellDuration)
-			damageDebuff:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, 50)
-			creature:addCondition(damageDebuff)
-		end
+		local damageDebuff = Condition(CONDITION_ATTRIBUTES)
+		damageDebuff:setParameter(CONDITION_PARAM_TICKS, spellDuration)
+		damageDebuff:setParameter(CONDITION_PARAM_BUFF_DAMAGEDEALT, 70)
+		creature:addCondition(damageDebuff)
 		return true
 	end
 
@@ -59,8 +45,8 @@ spell:group("support", "focus")
 spell:vocation("paladin;true", "royal paladin;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SWIFT_FOOT)
 spell:id(134)
-spell:cooldown(10 * 1000)
-spell:groupCooldown(2 * 1000, 10 * 1000)
+spell:cooldown(4 * 1000)
+spell:groupCooldown(2 * 1000, 2 * 1000)
 spell:level(55)
 spell:mana(400)
 spell:isSelfTarget(true)

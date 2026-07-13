@@ -85279,4 +85279,19 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="imbuement scrolls"/>
 		<attribute key="weight" value="250"/>
 	</item>
+	<item id="53162" article="a" name="superior mana potion">
+		<attribute key="primarytype" value="liquids"/>
+		<attribute key="description" value="This potion can only be consumed by sorcerers, druids, paladins and monks of level 100 or higher."/>
+		<attribute key="weight" value="310"/>
+	</item>
+	<item id="53163" article="a" name="distilled superior mana potion">
+		<attribute key="primarytype" value="liquids"/>
+		<attribute key="description" value="This potion can only be consumed by players of level 130 or higher."/>
+		<attribute key="weight" value="310"/>
+	</item>
+	<item id="53164" article="a" name="distilled ultimate mana potion">
+		<attribute key="primarytype" value="liquids"/>
+		<attribute key="description" value="This potion can only be consumed by players of level 200 or higher."/>
+		<attribute key="weight" value="310"/>
+	</item>
 </items>

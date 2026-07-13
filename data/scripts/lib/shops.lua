@@ -133,6 +133,8 @@ SupplyShopConfigTable = {
 		{ itemName = "energy ring", clientId = 3051, buy = 2000 },
 	},
 	["potions"] = {
+		{ itemName = "distilled superior mana potion", clientId = 53163, buy = 381 },
+		{ itemName = "distilled ultimate mana potion", clientId = 53164, buy = 732 },
 		{ itemName = "great health potion", clientId = 239, buy = 225 },
 		{ itemName = "great mana potion", clientId = 238, buy = 158 },
 		{ itemName = "great spirit potion", clientId = 7642, buy = 254 },
@@ -145,6 +147,7 @@ SupplyShopConfigTable = {
 		{ itemName = "supreme health potion", clientId = 23375, buy = 650 },
 		{ itemName = "strong health potion", clientId = 236, buy = 115 },
 		{ itemName = "strong mana potion", clientId = 237, buy = 108 },
+		{ itemName = "superior mana potion", clientId = 53162, buy = 254 },
 	},
 }
 

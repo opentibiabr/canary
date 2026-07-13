@@ -53,6 +53,16 @@ enum class Virtue_t : uint8_t {
 	Sustain = 0x03, ///< Virtue of endurance and support.
 };
 
+/**
+ * @brief Identifies the mutually exclusive slot occupied by an active stance.
+ */
+enum class StanceSlot_t : uint8_t {
+	None = 0x00,
+	Standard = 0x01,
+	Elemental = 0x02,
+	Crippling = 0x03,
+};
+
 enum SkillsId_t {
 	SKILLVALUE_LEVEL = 0,
 	SKILLVALUE_TRIES = 1,

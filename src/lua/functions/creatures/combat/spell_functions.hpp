@@ -20,6 +20,7 @@ private:
 	static int luaSpellRegister(lua_State* L);
 	static int luaSpellName(lua_State* L);
 	static int luaSpellId(lua_State* L);
+	static int luaSpellStance(lua_State* L);
 	static int luaSpellGroup(lua_State* L);
 	static int luaSpellCooldown(lua_State* L);
 	static int luaSpellGroupCooldown(lua_State* L);

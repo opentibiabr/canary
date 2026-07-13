@@ -13030,6 +13030,68 @@ void Player::setVirtue(Virtue_t newVirtue) {
 	sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
 }
 
+bool Player::toggleStance(uint16_t spellId) {
+	const auto &spell = g_spells().getInstantSpellById(spellId);
+	if (!spell || spell->getStanceSlot() == StanceSlot_t::None) {
+		return false;
+	}
+
+	const auto &vocMap = spell->getVocMap();
+	if (!vocMap.empty() && !vocMap.contains(getVocationId())) {
+		return false;
+	}
+
+	const auto slot = spell->getStanceSlot();
+	const auto current = activeStances.find(slot);
+	if (current != activeStances.end() && current->second == spellId) {
+		activeStances.erase(current);
+	} else {
+		activeStances[slot] = spellId;
+	}
+
+	virtue = Virtue_t::None;
+	if (const auto standard = activeStances.find(StanceSlot_t::Standard); standard != activeStances.end()) {
+		switch (standard->second) {
+			case 274:
+				virtue = Virtue_t::Harmony;
+				break;
+			case 275:
+				virtue = Virtue_t::Justice;
+				break;
+			case 276:
+				virtue = Virtue_t::Sustain;
+				break;
+			default:
+				break;
+		}
+	}
+
+	sendStats();
+	sendSkills();
+	if (client) {
+		client->sendVocationSpecificActiveSpells(getActiveStanceSpellIds());
+	}
+	return true;
+}
+
+bool Player::isStanceActive(uint16_t spellId) const {
+	for (const auto &entry : activeStances) {
+		if (entry.second == spellId) {
+			return true;
+		}
+	}
+	return false;
+}
+
+std::vector<uint16_t> Player::getActiveStanceSpellIds() const {
+	std::vector<uint16_t> spellIds;
+	spellIds.reserve(activeStances.size());
+	for (const auto &entry : activeStances) {
+		spellIds.emplace_back(entry.second);
+	}
+	return spellIds;
+}
+
 void Player::setSerene(bool b, int32_t ticks /* = -1 */) {
 	const auto &condition = getCondition(CONDITION_SERENE);
 	if (condition && condition->getTicks() > 0) {

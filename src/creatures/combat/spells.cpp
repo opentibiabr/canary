@@ -873,6 +873,14 @@ void Spell::setSpellId(uint16_t id) {
 	m_spellId = id;
 }
 
+StanceSlot_t Spell::getStanceSlot() const {
+	return stanceSlot;
+}
+
+void Spell::setStanceSlot(StanceSlot_t slot) {
+	stanceSlot = slot;
+}
+
 void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
 		if (isSpender()) {
@@ -1262,6 +1270,9 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	bool result = executeCastSpell(player, var);
 	if (result) {
 		postCastSpell(player);
+		if (getStanceSlot() != StanceSlot_t::None) {
+			player->toggleStance(getSpellId());
+		}
 	}
 
 	return result;

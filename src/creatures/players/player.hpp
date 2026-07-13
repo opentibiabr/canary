@@ -209,6 +209,10 @@ public:
 	 */
 	void setVirtue(Virtue_t virtue);
 
+	bool toggleStance(uint16_t spellId);
+	[[nodiscard]] bool isStanceActive(uint16_t spellId) const;
+	[[nodiscard]] std::vector<uint16_t> getActiveStanceSpellIds() const;
+
 	/**
 	 * @brief Sets the player's serene state.
 	 * @param b Whether the player is serene.
@@ -1684,6 +1688,7 @@ private:
 
 	uint8_t harmony = 0;
 	Virtue_t virtue = Virtue_t::None;
+	std::map<StanceSlot_t, uint16_t> activeStances;
 	std::unordered_set<uint16_t> aimAtTargetSpellIds;
 
 	std::string name;

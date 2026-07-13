@@ -28,6 +28,14 @@ void SpellFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Spell", "register", SpellFunctions::luaSpellRegister);
 	Lua::registerMethod(L, "Spell", "name", SpellFunctions::luaSpellName);
 	Lua::registerMethod(L, "Spell", "id", SpellFunctions::luaSpellId);
+	/***
+	 * Assigns an instant spell to a persistent vocation stance slot.
+	 *
+	 * @function Spell:stance
+	 * @param slot 'standard'|'elemental'|'crippling'
+	 * @return boolean
+	 */
+	Lua::registerMethod(L, "Spell", "stance", SpellFunctions::luaSpellStance);
 	Lua::registerMethod(L, "Spell", "group", SpellFunctions::luaSpellGroup);
 	Lua::registerMethod(L, "Spell", "cooldown", SpellFunctions::luaSpellCooldown);
 	Lua::registerMethod(L, "Spell", "groupCooldown", SpellFunctions::luaSpellGroupCooldown);
@@ -237,6 +245,33 @@ int SpellFunctions::luaSpellId(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int SpellFunctions::luaSpellStance(lua_State* L) {
+	// spell:stance(slot)
+	const auto &spell = Lua::getUserdataShared<Spell>(L, 1, "Spell");
+	if (!spell || spell->spellType != SPELL_INSTANT) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	const auto slotName = asLowerCaseString(Lua::getString(L, 2));
+	StanceSlot_t slot = StanceSlot_t::None;
+	if (slotName == "standard") {
+		slot = StanceSlot_t::Standard;
+	} else if (slotName == "elemental") {
+		slot = StanceSlot_t::Elemental;
+	} else if (slotName == "crippling") {
+		slot = StanceSlot_t::Crippling;
+	} else {
+		g_logger().warn("[SpellFunctions::luaSpellStance] - Unknown stance slot: {}", slotName);
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	spell->setStanceSlot(slot);
+	Lua::pushBoolean(L, true);
 	return 1;
 }
 

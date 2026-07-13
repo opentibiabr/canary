@@ -5616,6 +5616,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|number|nil`
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
+#### `Spell:stance(slot: 'standard'|'elemental'|'crippling')`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
+
 #### `Spell:vocation(vocation: any)`
 
 - Returns: `boolean|table|nil|Spell`

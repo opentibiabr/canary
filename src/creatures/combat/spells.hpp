@@ -135,6 +135,8 @@ public:
 	void setName(std::string n);
 	[[nodiscard]] uint16_t getSpellId() const;
 	void setSpellId(uint16_t id);
+	[[nodiscard]] StanceSlot_t getStanceSlot() const;
+	void setStanceSlot(StanceSlot_t slot);
 
 	void postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast = true, bool payCost = true) const;
 	static void postCastSpell(const std::shared_ptr<Player> &player, uint32_t manaCost, uint32_t soulCost);
@@ -305,6 +307,7 @@ private:
 	bool premium = false;
 
 	MonkSpell_t monkSpellType = MonkSpell_t::None;
+	StanceSlot_t stanceSlot = StanceSlot_t::None;
 
 	std::string name;
 	std::string m_words;

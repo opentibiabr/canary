@@ -8430,6 +8430,14 @@
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
       {
+        "name": "stance",
+        "params": [
+          "slot: 'standard'|'elemental'|'crippling'"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
+      },
+      {
         "name": "vocation",
         "params": [
           "vocation: any"

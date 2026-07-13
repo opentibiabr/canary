@@ -4470,6 +4470,10 @@ function Spell:setPzLocked(value) end
 ---@return boolean|number|nil
 function Spell:soul(soul) end
 
+---@param slot 'standard'|'elemental'|'crippling'
+---@return boolean
+function Spell:stance(slot) end
+
 ---@param vocation any
 ---@return boolean|table|nil|Spell
 function Spell:vocation(vocation) end

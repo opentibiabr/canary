@@ -31,7 +31,7 @@ combatRecast:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChainRecast")
 
 function getChainValueRecast(creature)
 	local targets = 7
-	return targets, 3, false
+	return targets, 4, false
 end
 
 combatRecast:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValueRecast")
@@ -63,7 +63,7 @@ combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
 	local targets = 7
-	return targets, 3, false
+	return targets, 4, false
 end
 
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")

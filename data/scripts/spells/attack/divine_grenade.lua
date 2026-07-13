@@ -46,20 +46,6 @@ local function removeGrenadeEffect(position)
 	position:removeMagicEffect(CONST_ME_DIVINE_GRENADE)
 end
 
-function onTargetCreature(creature, target)
-	if not (creature and target and creature:isPlayer()) then
-		return false
-	end
-
-	local position = creature:getPosition():getWithinRange(target:getPosition(), 4)
-	addEvent(explodeGrenade, 3000, position, creature:getId())
-	addEvent(removeGrenadeEffect, 3000, position)
-	return true
-end
-
-local combatCast = Combat()
-combatCast:setCallback(CALLBACK_PARAM_TARGETCREATURE, "onTargetCreature")
-
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
@@ -78,17 +64,26 @@ function spell.onCastSpell(creature, var)
 	local cooldownByGrade = { 26, 20, 14 }
 	local cooldown = cooldownByGrade[grade]
 
-	var.instantName = "Divine Grenade Cast"
-	if combatCast:execute(creature, var) then
-		local target = Creature(var:getNumber())
-		local position = creature:getPosition():getWithinRange(target:getPosition(), 4)
-		position:sendMagicEffect(CONST_ME_DIVINE_GRENADE)
-		local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 258)
-		condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
-		creature:addCondition(condition)
-		return true
+	local position = Variant.getPosition(var)
+	local tile = Tile(position)
+	if not tile then
+		return false
 	end
-	return false
+
+	if tile:hasFlag(TILESTATE_PROTECTIONZONE) and not creature:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
+		creature:sendCancelMessage(RETURNVALUE_NOTPOSSIBLE)
+		creature:getPosition():sendMagicEffect(CONST_ME_POFF)
+		return false
+	end
+
+	position:sendMagicEffect(CONST_ME_DIVINE_GRENADE)
+	addEvent(explodeGrenade, 3000, position, creature:getId())
+	addEvent(removeGrenadeEffect, 3000, position)
+
+	local condition = Condition(CONDITION_SPELLCOOLDOWN, CONDITIONID_DEFAULT, 258)
+	condition:setTicks((cooldown * 1000) / configManager.getFloat(configKeys.RATE_SPELL_COOLDOWN))
+	creature:addCondition(condition)
+	return true
 end
 
 spell:group("attack")
@@ -98,8 +93,8 @@ spell:words("exevo tempo mas san")
 spell:level(300)
 spell:mana(160)
 spell:isPremium(true)
-spell:range(7)
-spell:needTarget(true)
+spell:range(4)
+spell:optionalTarget(true)
 spell:blockWalls(true)
 spell:cooldown(1000) -- Cooldown is calculated on the casting
 spell:groupCooldown(2 * 1000)

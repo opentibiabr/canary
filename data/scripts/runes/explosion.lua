@@ -3,7 +3,7 @@ combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONAREA)
 combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_EXPLOSION)
 combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
-combat:setArea(createCombatArea(AREA_CIRCLE1X1))
+combat:setArea(createCombatArea(AREA_SQUARE1X1))
 
 function onGetFormulaValues(player, level, maglevel)
 	local min = 0

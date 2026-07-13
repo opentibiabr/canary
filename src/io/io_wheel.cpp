@@ -62,6 +62,12 @@ namespace InternalPlayerWheel {
 			registerWheelSpellTable(spellData, "Forked Thorns", gradeType);
 			return;
 		}
+		if (name == "Special Spells") {
+			registerWheelSpellTable(spellData, "Lightning", gradeType);
+			registerWheelSpellTable(spellData, "Strong Energy Strike", gradeType);
+			registerWheelSpellTable(spellData, "Strong Flame Strike", gradeType);
+			return;
+		}
 
 		const auto &spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
@@ -304,16 +310,18 @@ void IOWheel::initializePaladinSpells() {
 }
 
 void IOWheel::initializeSorcererSpells() {
-	m_wheelBonusData.spells.sorcerer[0].name = "Magic Shield";
-	m_wheelBonusData.spells.sorcerer[0].grade[2].decrease.cooldown = 6;
+	m_wheelBonusData.spells.sorcerer[0].name = "Special Spells";
+	m_wheelBonusData.spells.sorcerer[0].grade[1].decrease.cooldown = 4;
+	m_wheelBonusData.spells.sorcerer[0].grade[1].decrease.secondaryGroupCooldown = 4;
+	m_wheelBonusData.spells.sorcerer[0].grade[2].increase.damage = 50;
 
 	m_wheelBonusData.spells.sorcerer[1].name = "Sap Strength";
 	m_wheelBonusData.spells.sorcerer[1].grade[1].increase.area = true;
 	m_wheelBonusData.spells.sorcerer[1].grade[2].increase.damageReduction = 1;
 
 	m_wheelBonusData.spells.sorcerer[2].name = "Energy Wave";
-	m_wheelBonusData.spells.sorcerer[2].grade[1].increase.damage = 5;
-	m_wheelBonusData.spells.sorcerer[2].grade[2].increase.area = true;
+	m_wheelBonusData.spells.sorcerer[2].grade[1].increase.area = true;
+	m_wheelBonusData.spells.sorcerer[2].grade[2].increase.damage = 10;
 
 	m_wheelBonusData.spells.sorcerer[3].name = "Great Fire Wave";
 	m_wheelBonusData.spells.sorcerer[3].grade[1].increase.criticalDamage = 15;
@@ -571,7 +579,9 @@ void IOWheel::slotGreenMiddle100(const std::shared_ptr<Player> &player, uint16_t
 		bonusData.stats.health += 2 * points;
 	} else {
 		if (isSorcerer(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Magic Shield");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Lightning");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Strong Energy Strike");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Strong Flame Strike");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_MIDDLE_100, points, "Mass Healing");
 		}
@@ -839,7 +849,9 @@ void IOWheel::slotPurpleTop100(const std::shared_ptr<Player> &player, uint16_t p
 		bonusData.stats.capacity += 4 * points;
 	} else {
 		if (isSorcerer(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Magic Shield");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Lightning");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Strong Energy Strike");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Strong Flame Strike");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_TOP_100, points, "Mass Healing");
 		}

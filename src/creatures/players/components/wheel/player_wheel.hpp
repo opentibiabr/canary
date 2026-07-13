@@ -187,6 +187,13 @@ public:
 		const VocationArray &vocSpells,
 		std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> &map
 	) const {
+		std::string_view wheelSpellName = spellName;
+		if (spellName == "Forked Glacier" || spellName == "Forked Thorns") {
+			wheelSpellName = "Forked Spells";
+		} else if (spellName == "Lightning" || spellName == "Strong Energy Strike" || spellName == "Strong Flame Strike") {
+			wheelSpellName = "Special Spells";
+		}
+
 		// helper: add or accumulate value into map
 		auto addValue = [&](Augment_t augmentType, double value) {
 			if (value == 0.0) {
@@ -197,7 +204,7 @@ public:
 		};
 
 		for (const auto &spellBonus : vocSpells) {
-			if (spellBonus.name != spellName) {
+			if (spellBonus.name != wheelSpellName) {
 				continue;
 			}
 

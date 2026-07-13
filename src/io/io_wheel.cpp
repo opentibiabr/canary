@@ -276,9 +276,9 @@ void IOWheel::initializeKnightSpells() {
 }
 
 void IOWheel::initializePaladinSpells() {
-	m_wheelBonusData.spells.paladin[0].name = "Sharpshooter";
-	m_wheelBonusData.spells.paladin[0].grade[1].decrease.secondaryGroupCooldown = 8;
-	m_wheelBonusData.spells.paladin[0].grade[2].decrease.cooldown = 6;
+	m_wheelBonusData.spells.paladin[0].name = "Ethereal Barrage";
+	m_wheelBonusData.spells.paladin[0].grade[1].leech.life = 10;
+	m_wheelBonusData.spells.paladin[0].grade[2].increase.criticalChance = 10;
 
 	m_wheelBonusData.spells.paladin[1].name = "Strong Ethereal Spear";
 	m_wheelBonusData.spells.paladin[1].grade[1].decrease.cooldown = 2;
@@ -289,9 +289,9 @@ void IOWheel::initializePaladinSpells() {
 	m_wheelBonusData.spells.paladin[2].grade[2].increase.duration = 4;
 	m_wheelBonusData.spells.paladin[2].grade[2].decrease.cooldown = 4;
 
-	m_wheelBonusData.spells.paladin[3].name = "Swift Foot";
-	m_wheelBonusData.spells.paladin[3].grade[1].decrease.secondaryGroupCooldown = 8;
-	m_wheelBonusData.spells.paladin[3].grade[2].decrease.cooldown = 6;
+	m_wheelBonusData.spells.paladin[3].name = "Divine Barrage";
+	m_wheelBonusData.spells.paladin[3].grade[1].increase.damage = 8;
+	m_wheelBonusData.spells.paladin[3].grade[2].increase.damage = 12;
 
 	m_wheelBonusData.spells.paladin[4].name = "Divine Caldera";
 	m_wheelBonusData.spells.paladin[4].grade[1].decrease.manaCost = 20;
@@ -527,7 +527,7 @@ void IOWheel::slotRed200(const std::shared_ptr<Player> &player, uint16_t points,
 		bonusData.stats.health += 3 * points;
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, "Sharpshooter");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, "Ethereal Barrage");
 		bonusData.stats.health += 2 * points;
 		bonusData.stats.mana += 3 * points;
 	} else if (isSorcerer(vocationCipId) || isDruid(vocationCipId)) {
@@ -645,7 +645,7 @@ void IOWheel::slotGreenBottom100(const std::shared_ptr<Player> &player, uint16_t
 		bonusData.stats.health += 3 * points;
 	} else if (isPaladin(vocationCipId) || isMonk(vocationCipId)) {
 		if (isPaladin(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_BOTTOM_100, points, "Swift Foot");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_BOTTOM_100, points, "Divine Barrage");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_GREEN_BOTTOM_100, points, "Chained Penance");
 		}
@@ -768,7 +768,7 @@ void IOWheel::slotBlue50(const std::shared_ptr<Player> &player, uint16_t points,
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Front Sweep");
 		bonusData.stats.mana += 1 * points;
 	} else if (isPaladin(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Sharpshooter");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Ethereal Barrage");
 		bonusData.stats.mana += 3 * points;
 	} else if (isSorcerer(vocationCipId) || isDruid(vocationCipId)) {
 		if (isSorcerer(vocationCipId)) {
@@ -904,7 +904,7 @@ void IOWheel::slotPurpleMiddle100(const std::shared_ptr<Player> &player, uint16_
 		}
 		bonusData.stats.capacity += 5 * points;
 	} else if (isPaladin(vocationCipId)) {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_MIDDLE_100, points, "Swift Foot");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_PURPLE_MIDDLE_100, points, "Divine Barrage");
 		bonusData.stats.capacity += 4 * points;
 	} else {
 		if (isSorcerer(vocationCipId)) {

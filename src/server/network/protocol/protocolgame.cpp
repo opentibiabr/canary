@@ -658,7 +658,7 @@ void ProtocolGame::onConnectionAccepted() {
 	}
 
 	if (initialConnectionBehavior.challenge.flow == GameHandshakeFlow::ServerChallengeBeforeLogin) {
-		g_dispatcher().addEvent([self = getThis()] { self->sendLoginChallenge(); }, "ProtocolGame::sendLoginChallenge", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+		dispatchProtocolTask([self = getThis()] { self->sendLoginChallenge(); }, "ProtocolGame::sendLoginChallenge", std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
 	}
 }
 
@@ -1050,10 +1050,14 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			foundPlayer->disconnect();
 			foundPlayer->isConnecting = true;
 
-			eventConnect = g_dispatcher().scheduleEvent(
+			eventConnect = scheduleProtocolTask(
 				1000,
 				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }, "ProtocolGame::connect"
 			);
+			if (eventConnect == 0) {
+				foundPlayer->isConnecting = false;
+				return;
+			}
 		} else {
 			connect(foundPlayer->getName(), operatingSystem);
 		}
@@ -1376,10 +1380,11 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 	}
 
 	if (accountDescriptor == "@livestream") {
-		g_dispatcher().addEvent([self = getThis(), characterName, password, operatingSystem] {
+		// dispatchProtocolTask force-closes the connection when admission fails.
+		(void)dispatchProtocolTask([self = getThis(), characterName, password, operatingSystem] {
 			self->castViewerLogin(characterName, password, operatingSystem);
 		},
-		                        "ProtocolGame::castViewerLogin");
+		                           "ProtocolGame::castViewerLogin");
 		return;
 	}
 
@@ -1396,13 +1401,13 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		output->addByte(0x14);
 		output->addString(ss.str());
 		send(output);
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
+		[[maybe_unused]] auto eventId = scheduleProtocolTask(
 			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect"
 		);
 		return;
 	}
 
-	g_dispatcher().addEvent([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
+	dispatchProtocolTask([self = getThis(), characterName, accountId, operatingSystem] { self->login(characterName, accountId, operatingSystem); }, __FUNCTION__);
 }
 
 void ProtocolGame::sendLoginChallenge() {
@@ -1485,8 +1490,8 @@ void ProtocolGame::writeToOutputBuffer(NetworkMessage &msg) {
 		}
 	};
 
-	if (g_dispatcher().context().isAsync()) {
-		g_dispatcher().addEvent(std::move(writeMessage), __FUNCTION__);
+	if (g_dispatcher().context().isBarrierParallel()) {
+		dispatchProtocolTask(std::move(writeMessage), __FUNCTION__);
 	} else {
 		writeMessage();
 	}
@@ -1554,9 +1559,12 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 			return;
 		}
 
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
+		const auto eventId = scheduleProtocolTask(
 			100, [self = getThis()] { self->sendPing(); }, "ProtocolGame::sendPing"
 		);
+		if (eventId == 0) {
+			return;
+		}
 
 		if (!player->spawn()) {
 			disconnect();
@@ -1572,7 +1580,7 @@ void ProtocolGame::parsePacketDead(uint8_t recvbyte) {
 
 	if (recvbyte == 0x1D) {
 		// keep the connection alive
-		[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(
+		[[maybe_unused]] auto eventId = scheduleProtocolTask(
 			100, [self = getThis()] { self->sendPingBack(); }, "ProtocolGame::sendPingBack"
 		);
 		return;
@@ -3604,7 +3612,7 @@ void ProtocolGame::parseCyclopediaMonsterTracker(NetworkMessage &msg) {
 
 void ProtocolGame::parsePlayerTyping(NetworkMessage &msg) {
 	uint8_t typing = msg.getByte();
-	g_dispatcher().addEvent([self = getThis(), playerID = player->getID(), typing] { g_game().playerSetTyping(playerID, typing); }, __FUNCTION__);
+	g_dispatcher().addEvent([self = getThis(), playerID = player->getID(), typing] { g_game().playerSetTyping(playerID, typing); }, __FUNCTION__, 0, DispatcherLane::PlayerAction, player->getID());
 }
 
 void ProtocolGame::sendTeamFinderList() {
@@ -6731,7 +6739,10 @@ void ProtocolGame::updateCoinBalance() {
 				threadPlayer->sendCoinBalance();
 			}
 		},
-		__FUNCTION__
+		__FUNCTION__,
+		0,
+		DispatcherLane::PlayerAction,
+		player->getID()
 	);
 }
 

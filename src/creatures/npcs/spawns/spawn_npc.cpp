@@ -156,7 +156,7 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
 		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(
-			getInterval(), [this] { checkSpawnNpc(); }, "SpawnNpc::checkSpawnNpc"
+			getInterval(), [this] { checkSpawnNpc(); }, "SpawnNpc::checkSpawnNpc", DispatcherLane::Maintenance
 		);
 	}
 }
@@ -247,7 +247,7 @@ void SpawnNpc::checkSpawnNpc() {
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
 		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(
-			getInterval(), [this] { checkSpawnNpc(); }, __FUNCTION__
+			getInterval(), [this] { checkSpawnNpc(); }, __FUNCTION__, DispatcherLane::Maintenance
 		);
 	}
 }
@@ -258,7 +258,7 @@ void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t 
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
 		g_dispatcher().scheduleEvent(
-			1400, [=, this, &sb] { scheduleSpawnNpc(spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL); }, __FUNCTION__
+			1400, [=, this, &sb] { scheduleSpawnNpc(spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL); }, __FUNCTION__, DispatcherLane::Maintenance
 		);
 	}
 }

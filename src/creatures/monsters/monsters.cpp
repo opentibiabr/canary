@@ -341,6 +341,13 @@ Monsters &Monsters::getInstance() {
 
 void Monsters::clear() {
 	monsters.clear();
+	if (++reloadEpoch == 0) {
+		reloadEpoch = 1;
+	}
+}
+
+uint64_t Monsters::getReloadEpoch() const {
+	return reloadEpoch;
 }
 
 std::shared_ptr<MonsterType> Monsters::getMonsterType(const std::string &name, bool silent /* = false*/) const {

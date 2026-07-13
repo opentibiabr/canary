@@ -290,9 +290,9 @@ void IOWheel::initializePaladinSpells() {
 	m_wheelBonusData.spells.paladin[1].grade[2].increase.damage = 380;
 
 	m_wheelBonusData.spells.paladin[2].name = "Divine Dazzle";
-	m_wheelBonusData.spells.paladin[2].grade[1].increase.additionalTarget = 1;
+	m_wheelBonusData.spells.paladin[2].grade[1].increase.additionalTarget = 2;
 	m_wheelBonusData.spells.paladin[2].grade[2].increase.duration = 4;
-	m_wheelBonusData.spells.paladin[2].grade[2].decrease.cooldown = 4;
+	m_wheelBonusData.spells.paladin[2].grade[2].decrease.cooldown = 8;
 
 	m_wheelBonusData.spells.paladin[3].name = "Divine Barrage";
 	m_wheelBonusData.spells.paladin[3].grade[1].increase.damage = 8;

@@ -15,7 +15,7 @@ end
 combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
-	local targets = 3
+	local targets = 2
 	local player = creature:getPlayer()
 	if creature and player then
 		targets = targets + player:getWheelSpellAdditionalTarget("Divine Dazzle")
@@ -26,7 +26,7 @@ end
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")
 
 function onChain(creature, target)
-	local duration = 12000
+	local duration = 8000
 	local player = creature:getPlayer()
 	if creature and player then
 		duration = duration + (player:getWheelSpellAdditionalDuration("Divine Dazzle") * 1000)

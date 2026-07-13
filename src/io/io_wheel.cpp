@@ -295,7 +295,7 @@ void IOWheel::initializePaladinSpells() {
 
 	m_wheelBonusData.spells.paladin[4].name = "Divine Caldera";
 	m_wheelBonusData.spells.paladin[4].grade[1].decrease.manaCost = 20;
-	m_wheelBonusData.spells.paladin[4].grade[2].increase.damage = static_cast<int>(std::round(8.5));
+	m_wheelBonusData.spells.paladin[4].grade[2].increase.damage = 10;
 }
 
 void IOWheel::initializeSorcererSpells() {

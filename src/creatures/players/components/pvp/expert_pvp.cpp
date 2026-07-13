@@ -49,7 +49,7 @@ namespace {
 		return asLowerCaseString(g_configManager().getString(WORLD_TYPE));
 	}
 
-	[[nodiscard]] bool isAccessPlayer(const std::shared_ptr<Player> &player) {
+	[[nodiscard]] bool isAccessPlayer(const std::shared_ptr<const Player> &player) {
 		if (!player) {
 			return false;
 		}
@@ -59,6 +59,11 @@ namespace {
 	}
 
 	[[nodiscard]] std::shared_ptr<Player> getMasterPlayer(const std::shared_ptr<Creature> &creature) {
+		const auto &master = creature ? creature->getMaster() : nullptr;
+		return master ? master->getPlayer() : nullptr;
+	}
+
+	[[nodiscard]] std::shared_ptr<const Player> getMasterPlayer(const std::shared_ptr<const Creature> &creature) {
 		const auto &master = creature ? creature->getMaster() : nullptr;
 		return master ? master->getPlayer() : nullptr;
 	}
@@ -232,16 +237,24 @@ namespace {
 		}
 	}
 
-	[[nodiscard]] bool isSkulledClientTarget(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
+	[[nodiscard]] bool isSkulledClientTarget(const std::shared_ptr<Player> &actor, const std::shared_ptr<const Player> &subjectPlayer) {
 		if (!actor || !subjectPlayer) {
 			return false;
 		}
 
-		const auto skull = actor->getSkullClient(subjectPlayer);
-		return skull != SKULL_NONE && skull != SKULL_GREEN;
+		if (g_game().getWorldType() != WORLD_TYPE_PVP || actor.get() == subjectPlayer.get()) {
+			return false;
+		}
+
+		const auto skull = subjectPlayer->getSkull();
+		if (skull != SKULL_NONE) {
+			return skull != SKULL_GREEN;
+		}
+
+		return subjectPlayer->hasKilled(actor) || subjectPlayer->hasAttacked(actor);
 	}
 
-	[[nodiscard]] bool hasAttackedProtectedAlly(const std::shared_ptr<Player> &actor, const std::shared_ptr<Player> &subjectPlayer) {
+	[[nodiscard]] bool hasAttackedProtectedAlly(const std::shared_ptr<Player> &actor, const std::shared_ptr<const Player> &subjectPlayer) {
 		if (!actor || !subjectPlayer || actor == subjectPlayer) {
 			return false;
 		}
@@ -469,7 +482,7 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const ExpertPvpRelationConte
 	return result;
 }
 
-ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<Creature> &subject) {
+ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<const Creature> &subject) {
 	ExpertPvpRelationContext context;
 	if (!actor || !subject) {
 		return classifyRelation(context);
@@ -494,12 +507,15 @@ ExpertPvpRelationResult ExpertPvp::classifyRelation(const std::shared_ptr<Player
 	context.isSelf = subjectOwnerPlayer == actor;
 
 	if (subjectOwnerPlayer && subjectOwnerPlayer != actor) {
-		context.partyAlly = actor->isPartner(subjectOwnerPlayer);
-		context.guildAlly = actor->isGuildMate(subjectOwnerPlayer);
-		context.warEnemy = actor->isInWar(subjectOwnerPlayer);
+		const auto &actorParty = actor->getParty();
+		const auto &actorGuild = actor->getGuild();
+		const auto &subjectGuild = subjectOwnerPlayer->getGuild();
+		context.partyAlly = actorParty && actorParty == subjectOwnerPlayer->getParty();
+		context.guildAlly = actorGuild && actorGuild == subjectGuild;
+		context.warEnemy = actorGuild && subjectGuild && actor->isInWarList(subjectGuild->getId()) && subjectOwnerPlayer->isInWarList(actorGuild->getId());
 		context.directAttacker = subjectOwnerPlayer->hasAttacked(actor);
 		context.protectedAllyAttacker = hasAttackedProtectedAlly(actor, subjectOwnerPlayer);
-		context.directTarget = actor->hasAttacked(subjectOwnerPlayer);
+		context.directTarget = !actor->hasFlag(PlayerFlags_t::NotGainInFight) && actor->getAttackedPlayerGuids().contains(subjectOwnerPlayer->getGUID());
 		context.skulledTarget = isSkulledClientTarget(actor, subjectOwnerPlayer);
 	}
 

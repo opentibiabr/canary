@@ -37,7 +37,7 @@ public:
 	[[nodiscard]] static ExpertPvpModeResult normalizeMode(PvpMode_t requestedMode, ExpertPvpModeSource source = ExpertPvpModeSource::StoredPlayerState);
 
 	[[nodiscard]] static ExpertPvpRelationResult classifyRelation(const ExpertPvpRelationContext &context);
-	[[nodiscard]] static ExpertPvpRelationResult classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<Creature> &subject);
+	[[nodiscard]] static ExpertPvpRelationResult classifyRelation(const std::shared_ptr<Player> &actor, const std::shared_ptr<const Creature> &subject);
 	[[nodiscard]] static ExpertPvpRelationResult classifyFieldRelation(const ExpertFieldContext &fieldContext, const std::shared_ptr<Creature> &subject);
 	[[nodiscard]] static ExpertPvpDecision evaluateCombatAction(ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext);
 	[[nodiscard]] static ExpertPvpDecision evaluateCombatAction(PvpMode_t actorMode, ExpertPvpActionKind actionKind, const ExpertPvpRelationContext &relationContext);

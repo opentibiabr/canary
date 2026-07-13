@@ -1491,8 +1491,7 @@ bool Player::canWalkthroughEx(const std::shared_ptr<Creature> &creature) const {
 		const auto &playerTile = player->getTile();
 		const bool legacyWalkthroughZone = playerTile && (playerTile->hasFlag(TILESTATE_NOPVPZONE) || playerTile->hasFlag(TILESTATE_PROTECTIONZONE) || player->getLevel() <= static_cast<uint32_t>(g_configManager().getNumber(PROTECTION_LEVEL)) || g_game().getWorldType() == WORLD_TYPE_NO_PVP);
 		if (playerTile && !legacyWalkthroughZone && ExpertPvp::isEnabled()) {
-			const auto self = std::const_pointer_cast<Player>(getPlayer());
-			const auto relation = ExpertPvp::classifyRelation(player, self);
+			const auto relation = ExpertPvp::classifyRelation(player, getPlayer());
 			const auto decision = ExpertPvp::canWalkThrough(relation.facts);
 			if (decision.handled) {
 				return decision.canWalkThrough;

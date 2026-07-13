@@ -66,33 +66,38 @@ porting attempts when they disagree:
 
 ## Baseline At The Start Of The Port
 
-The Canary baseline used when this work started had partial building blocks:
+The behavior in this section is pinned to Canary commit
+`749af991479516b9e9f5b7a10bc009f7c20ec374` from 2026-07-03
+(`fix(protocol): align 15.13 game event payload (#4022)`). It is historical
+pre-port evidence, not a description of the current implementation.
 
-- `src/creatures/creatures_definitions.hpp` defines `PvpMode_t`.
-- `src/server/network/protocol/protocolgame.cpp` sends a default Dove byte in
+That baseline had partial building blocks:
+
+- `src/creatures/creatures_definitions.hpp` defined `PvpMode_t`.
+- `src/server/network/protocol/protocolgame.cpp` sent a default Dove byte in
   `sendFightModes()` for profiles without `ProtocolFeature::CurrentPayload`.
-- `src/server/network/protocol/protocolgame.cpp` currently ignores the client
+- `src/server/network/protocol/protocolgame.cpp` ignored the client
   PvP mode byte in `parseFightModes()`.
-- `src/server/network/protocol/protocolgame.cpp` currently writes a hard-coded
+- `src/server/network/protocol/protocolgame.cpp` wrote a hard-coded
   `0x00` expert-mode login byte for newer clients. Confirm the client-side
   meaning before changing it; recovered comments disagreed on enabled versus
   disabled wording.
-- `src/items/tile.cpp` currently removes `ITEM_MAGICWALL_SAFE` and
+- `src/items/tile.cpp` removed `ITEM_MAGICWALL_SAFE` and
   `ITEM_WILDGROWTH_SAFE` when a player walks through them.
-- `src/creatures/combat/combat.cpp` maps magic wall and wild growth to safe
+- `src/creatures/combat/combat.cpp` mapped magic wall and wild growth to safe
   variants only for Optional PvP or no-PvP zones.
-- `src/creatures/combat/combat.cpp` currently calls `addInFightTicks()` when a
+- `src/creatures/combat/combat.cpp` called `addInFightTicks()` when a
   player casts MW/WG outside no-PvP contexts. That conflicts with the delayed
   aggression contract if MW/WG cast alone should not create fight state.
 - `data/scripts/runes/magic_wall.lua` and
   `data/scripts/runes/wild_growth.lua` create fields but do not record a stable
   player GUID owner.
-- `src/creatures/players/player.cpp` has `canWalkthroughEx()`, but its current
+- `src/creatures/players/player.cpp` had `canWalkthroughEx()`, but its
   contract is Optional PvP, protection-zone, and low-level walkthrough only.
-- `Game::playerSetFightModes()` currently receives fight, chase, and secure
+- `Game::playerSetFightModes()` received fight, chase, and secure
   modes only. It does not receive or store a PvP hand mode.
-- No current player persistence path for PvP hand mode was found. A commented
-  Lua helper in `data/modules/lib/modules.lua` mentions `getPvpMode()`, but the
+- No player persistence path for PvP hand mode was found. A commented Lua
+  helper in `data/modules/lib/modules.lua` mentioned `getPvpMode()`, but the
   server-side API is not implemented.
 
 These pieces are not a complete Expert PvP system.

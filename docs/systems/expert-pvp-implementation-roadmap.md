@@ -7,8 +7,8 @@ Expert PvP is selected explicitly through `worldType = "expert-pvp"`.
 
 ## Current Status
 
-Phases 1 through 8 are implemented in the branch. The current review scope is
-therefore stabilization and regression validation, not a Phase 1-only PR.
+Phases 1 through 8 are implemented. The remaining work is stabilization and
+regression validation.
 
 - Foundation, player state, combat, walkthrough, field context, collision,
   viewer visuals, situations, marks, and persistence are present.

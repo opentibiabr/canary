@@ -85294,4 +85294,49 @@ Granted by TibiaGoals.com"/>
 		<attribute key="description" value="This potion can only be consumed by players of level 200 or higher."/>
 		<attribute key="weight" value="310"/>
 	</item>
+	<item id="53168" article="a" name="shatterstorm arrow">
+		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="shatterstormarrow"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="attack" value="27"/>
+		<attribute key="weight" value="80"/>
+	</item>
+	<item id="53169" article="a" name="firestorm arrow">
+		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="firestormarrow"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="attack" value="21"/>
+		<attribute key="weight" value="80"/>
+	</item>
+	<item id="53170" article="a" name="terrastorm arrow">
+		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="terrastormarrow"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="attack" value="21"/>
+		<attribute key="weight" value="80"/>
+	</item>
+	<item id="53171" article="a" name="froststorm arrow">
+		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="froststormarrow"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="attack" value="21"/>
+		<attribute key="weight" value="80"/>
+	</item>
+	<item id="53172" article="a" name="thunderstorm arrow">
+		<attribute key="primarytype" value="ammunition"/>
+		<attribute key="weaponType" value="ammunition"/>
+		<attribute key="ammotype" value="arrow"/>
+		<attribute key="shootType" value="thunderstormarrow"/>
+		<attribute key="maxhitchance" value="100"/>
+		<attribute key="attack" value="21"/>
+		<attribute key="weight" value="80"/>
+	</item>
 </items>

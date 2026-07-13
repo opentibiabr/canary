@@ -8715,10 +8715,10 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
 		sendMonkData(MonkData_t::Harmony, player->getHarmony());
-		auto virtue = player->getVirtue();
-		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
-		sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
-		sendMonkData(MonkData_t::Serenity, 1);
+		sendMonkData(MonkData_t::Virtue, enumToValue(player->getVirtue()));
+		sendMonkData(MonkData_t::Serenity, player->hasCondition(CONDITION_SERENE) ? 1 : 0);
+	} else {
+		sendVocationSpecificActiveSpells({});
 	}
 
 	if (version >= 1100) {
@@ -12129,6 +12129,25 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CustomMonkPackets) && !hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData)) {
 		return;
 	}
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData) && type == MonkData_t::Virtue) {
+		uint16_t spellId = 0;
+		switch (static_cast<Virtue_t>(value)) {
+			case Virtue_t::Harmony:
+				spellId = 274;
+				break;
+			case Virtue_t::Justice:
+				spellId = 275;
+				break;
+			case Virtue_t::Sustain:
+				spellId = 276;
+				break;
+			case Virtue_t::None:
+				break;
+		}
+
+		sendVocationSpecificActiveSpells(spellId != 0 ? std::vector<uint16_t> { spellId } : std::vector<uint16_t> {});
+		return;
+	}
 
 	NetworkMessage msg;
 
@@ -12143,19 +12162,33 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 			case MonkData_t::Serenity:
 				msg.addByte(value != 0 ? 0x01 : 0x00);
 				break;
-			case MonkData_t::Virtue: {
-				const uint8_t virtueCount = value != 0 ? 1 : 0;
-				msg.addByte(virtueCount);
-				if (virtueCount != 0) {
-					msg.add<uint16_t>(value);
-				}
+			case MonkData_t::Virtue:
 				break;
-			}
 		}
 	} else {
 		msg.addByte(value);
 	}
 
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendVocationSpecificActiveSpells(const std::vector<uint16_t> &spellIds) {
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData)) {
+		return;
+	}
+
+	if (spellIds.size() > std::numeric_limits<uint8_t>::max()) {
+		g_logger().warn("[ProtocolGame::sendVocationSpecificActiveSpells] - Too many active spells: {}", spellIds.size());
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xC1); // VocationSpecificPlayerData
+	msg.addByte(enumToValue(MonkData_t::Virtue));
+	msg.addByte(static_cast<uint8_t>(spellIds.size()));
+	for (const uint16_t spellId : spellIds) {
+		msg.add<uint16_t>(spellId);
+	}
 	writeToOutputBuffer(msg);
 }
 

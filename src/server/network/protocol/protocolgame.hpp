@@ -590,12 +590,18 @@ private:
 	/**
 	 * @brief Sends monk-specific data to the client.
 	 *
-	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or Virtue states.
+	 * This function is used to communicate changes related to monk gameplay elements, like Harmony, Serenity, or legacy Virtue states.
 	 *
 	 * @param type The type of monk data to send (e.g., Harmony, Serenity).
 	 * @param value The value associated with the monk data type (e.g., on/off or specific level).
 	 */
 	void sendMonkData(MonkData_t type, uint8_t value);
+
+	/**
+	 * @brief Sends the complete list of vocation-specific active spell IDs.
+	 */
+	void sendVocationSpecificActiveSpells(const std::vector<uint16_t> &spellIds);
+
 	/**
 	 * @brief Parses and updates the "Aim At Target" spell state sent by the client.
 	 *

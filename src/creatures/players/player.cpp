@@ -8458,16 +8458,14 @@ namespace {
 		return false;
 	}
 
-	bool hasTooManyCreaturesNearby(Player &player) {
+	bool hasTooManyMonstersNearby(Player &player) {
 		Spectators spectators;
 		auto nearbyCreatures = spectators.find<Creature>(player.getPosition(), false, 1, 1, 1, 1);
 		int count = 0;
 
 		for (const auto &creature : nearbyCreatures) {
-			if (creature.get() == &player) {
-				continue;
-			}
-			if (creature->getType() == CREATURETYPE_NPC) {
+			const auto &monster = creature->getMonster();
+			if (!monster || monster->getMaster()) {
 				continue;
 			}
 			if (++count >= 6) {
@@ -8486,8 +8484,8 @@ void Player::updateSerenityState() {
 
 	bool isSerene = hasCondition(CONDITION_SERENE);
 	const bool visiblePartyMember = hasVisiblePartyMember(*this);
-	const bool tooManyCreaturesNearby = visiblePartyMember && hasTooManyCreaturesNearby(*this);
-	const bool checkSerenity = !(visiblePartyMember && tooManyCreaturesNearby);
+	const bool tooManyMonstersNearby = visiblePartyMember && hasTooManyMonstersNearby(*this);
+	const bool checkSerenity = !(visiblePartyMember && tooManyMonstersNearby);
 
 	if (isSerene != checkSerenity) {
 		setSerene(!isSerene);

@@ -327,31 +327,30 @@ void IOWheel::initializeSorcererSpells() {
 }
 
 void IOWheel::initializeMonkSpells() {
-	// Mass Spirit Mend: Grade 1 increases healing; Grade 2 adds area effect
+	// Mass Spirit Mend: Grade 1 increases healing; Grade 2 reduces cooldown
 	m_wheelBonusData.spells.monk[0].name = "Mass Spirit Mend";
 	m_wheelBonusData.spells.monk[0].grade[1].increase.heal = 8;
-	m_wheelBonusData.spells.monk[0].grade[2].increase.area = true;
+	m_wheelBonusData.spells.monk[0].grade[2].decrease.cooldown = 4;
 
 	// Mystic Repulse: Grade 1 reduces cooldown; Grade 2 increases damage
 	m_wheelBonusData.spells.monk[1].name = "Mystic Repulse";
-	m_wheelBonusData.spells.monk[1].grade[1].decrease.cooldown = 4;
+	m_wheelBonusData.spells.monk[1].grade[1].decrease.cooldown = 6;
 	m_wheelBonusData.spells.monk[1].grade[2].increase.damage = 40;
 
-	// Chained Penance: Grade 1 adds 1 extra target; Grade 2 adds 2 extra targets
+	// Chained Penance: Grade 1 adds one target; Grade 2 increases damage
 	m_wheelBonusData.spells.monk[2].name = "Chained Penance";
 	m_wheelBonusData.spells.monk[2].grade[1].increase.additionalTarget = 1;
-	m_wheelBonusData.spells.monk[2].grade[2].increase.additionalTarget = 2;
+	m_wheelBonusData.spells.monk[2].grade[2].increase.damage = 18;
 
-	// Flurry of Blows: Grade 1 grants life leech; Grade 2 increases damage
+	// Flurry of Blows: Grade 1 enlarges the area; Grade 2 increases damage
 	m_wheelBonusData.spells.monk[3].name = "Flurry of Blows";
-	m_wheelBonusData.spells.monk[3].grade[1].leech.life = 5;
-	m_wheelBonusData.spells.monk[3].grade[2].increase.damage = 12;
+	m_wheelBonusData.spells.monk[3].grade[1].increase.area = true;
+	m_wheelBonusData.spells.monk[3].grade[2].increase.damage = 15;
 
-	// Sweeping Takedown: Grade 1 grants mana leech; Grade 2 increases critical stats
-	m_wheelBonusData.spells.monk[4].name = "Sweeping Takedown";
-	m_wheelBonusData.spells.monk[4].grade[1].leech.mana = 3;
-	m_wheelBonusData.spells.monk[4].grade[2].increase.criticalDamage = 25;
-	m_wheelBonusData.spells.monk[4].grade[2].increase.criticalChance = 10;
+	// Thousand Fist Blows: Grade 1 increases critical damage; Grade 2 reduces cooldown
+	m_wheelBonusData.spells.monk[4].name = "Thousand Fist Blows";
+	m_wheelBonusData.spells.monk[4].grade[1].increase.criticalDamage = 40;
+	m_wheelBonusData.spells.monk[4].grade[2].decrease.cooldown = 6;
 }
 
 bool IOWheel::isMaxPointAddedToSlot(const std::shared_ptr<Player> &player, uint16_t points, WheelSlots_t slotType) const {
@@ -546,7 +545,7 @@ void IOWheel::slotRed200(const std::shared_ptr<Player> &player, uint16_t points,
 		bonusData.stats.health += 1 * points;
 		bonusData.stats.mana += 6 * points;
 	} else {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, "Sweeping Takedown");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_RED_200, points, "Thousand Fist Blows");
 		bonusData.stats.health += 2 * points;
 		bonusData.stats.mana += 2 * points;
 	}
@@ -786,7 +785,7 @@ void IOWheel::slotBlue50(const std::shared_ptr<Player> &player, uint16_t points,
 		}
 		bonusData.stats.mana += 6 * points;
 	} else {
-		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Sweeping Takedown");
+		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_50, points, "Thousand Fist Blows");
 		bonusData.stats.mana += 2 * points;
 	}
 }

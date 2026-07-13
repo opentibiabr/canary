@@ -770,8 +770,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 			damage.damageMultiplier += 6;
 		}
 
-		const bool isSpellOrRuneDamage = damage.origin == ORIGIN_CONDITION
-			|| (damage.origin == ORIGIN_SPELL && (!damage.instantSpellName.empty() || !damage.runeSpellName.empty()));
+		const bool isSpellOrRuneDamage = damage.origin == ORIGIN_SPELL && (!damage.instantSpellName.empty() || !damage.runeSpellName.empty());
 		if (damage.primary.type != COMBAT_HEALING && isSpellOrRuneDamage && attackerPlayer->hasVirtuePartyBonus(VOCATION_SORCERER_CIP)) {
 			damage.damageMultiplier += 6;
 		}
@@ -1024,6 +1023,9 @@ void Combat::CombatConditionFunc(const std::shared_ptr<Creature> &caster, const 
 
 		if (caster == target || (target && !target->isImmune(condition->getType()))) {
 			auto conditionCopy = condition->clone();
+			if (const auto &conditionDamage = conditionCopy->dynamic_self_cast<ConditionDamage>()) {
+				conditionDamage->setSourceSpellType(params.sourceSpellType);
+			}
 			if (caster) {
 				conditionCopy->setParam(CONDITION_PARAM_OWNER, caster->getID());
 				conditionCopy->setPositionParam(CONDITION_PARAM_CASTER_POSITION, caster->getPosition());
@@ -1170,6 +1172,9 @@ void Combat::combatTileEffects(const CreatureVector &spectators, const std::shar
 		const auto &item = Item::CreateItem(itemId);
 		if (caster) {
 			item->setOwner(caster);
+		}
+		if (const auto &magicField = item->getMagicField()) {
+			magicField->setSourceSpellType(params.sourceSpellType);
 		}
 
 		ReturnValue ret = g_game().internalAddItem(tile, item);
@@ -1806,10 +1811,16 @@ void Combat::doCombatDefault(const std::shared_ptr<Creature> &caster, const std:
 
 void Combat::setInstantSpellName(const std::string &value) {
 	instantSpellName = value;
+	updateSourceSpellType();
 }
 
 void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
+	updateSourceSpellType();
+}
+
+void Combat::updateSourceSpellType() {
+	params.sourceSpellType = !instantSpellName.empty() ? SPELL_INSTANT : (!runeSpellName.empty() ? SPELL_RUNE : SPELL_UNDEFINED);
 }
 
 std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, uint8_t initialRange, bool aggressive, bool backtracking, const std::shared_ptr<Creature> &initialTarget /* = nullptr */) {
@@ -2618,6 +2629,9 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 	const ItemType &it = items[getID()];
 	if (it.conditionDamage) {
 		const auto &conditionCopy = it.conditionDamage->clone();
+		if (const auto &conditionDamage = conditionCopy->dynamic_self_cast<ConditionDamage>()) {
+			conditionDamage->setSourceSpellType(sourceSpellType);
+		}
 		auto ownerId = getOwnerId();
 		if (ownerId) {
 			bool harmfulField = true;
@@ -2831,6 +2845,10 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 
 MagicField::MagicField(uint16_t type) :
 	Item(type), createTime(OTSYS_TIME()) { }
+
+void MagicField::setSourceSpellType(SpellType_t spellType) {
+	sourceSpellType = spellType;
+}
 
 std::shared_ptr<MagicField> MagicField::getMagicField() {
 	return static_self_cast<MagicField>();

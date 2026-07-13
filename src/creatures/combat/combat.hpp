@@ -96,6 +96,7 @@ struct CombatParams {
 	ConditionType_t dispelType = CONDITION_NONE;
 	CombatType_t combatType = COMBAT_NONE;
 	CombatOrigin origin = ORIGIN_SPELL;
+	SpellType_t sourceSpellType = SPELL_UNDEFINED;
 
 	uint16_t impactEffect = CONST_ME_NONE;
 	SoundEffect_t soundImpactEffect = SoundEffect_t::SILENCE;
@@ -273,6 +274,8 @@ public:
 	static void harmonyHeal(const std::shared_ptr<Player> &casterPlayer, const std::shared_ptr<Player> &targetPlayer, const uint8_t charges);
 
 private:
+	void updateSourceSpellType();
+
 	static void doChainEffect(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, uint16_t effect);
 	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, uint8_t initialRange, bool aggressive, bool backtracking, const std::shared_ptr<Creature> &initialTarget = nullptr);
 	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickForkTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t forkDistance, uint8_t maxTargets, uint8_t initialRange, bool aggressive, const std::shared_ptr<Creature> &requestedTarget);
@@ -370,8 +373,10 @@ public:
 	bool isReplaceable() const;
 	CombatType_t getCombatType() const;
 	int32_t getDamage() const;
+	void setSourceSpellType(SpellType_t spellType);
 	void onStepInField(const std::shared_ptr<Creature> &creature);
 
 private:
 	int64_t createTime;
+	SpellType_t sourceSpellType = SPELL_UNDEFINED;
 };

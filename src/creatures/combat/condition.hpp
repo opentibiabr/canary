@@ -312,6 +312,7 @@ public:
 	bool addDamage(int32_t rounds, int32_t time, int32_t value);
 	bool doForceUpdate() const;
 	int32_t getTotalDamage() const;
+	void setSourceSpellType(SpellType_t spellType);
 
 	// serialization
 	void serialize(PropWriteStream &propWriteStream) override;
@@ -328,6 +329,7 @@ private:
 	bool forceUpdate = false;
 	bool delayed = false;
 	bool field = false;
+	SpellType_t sourceSpellType = SPELL_UNDEFINED;
 
 	bool init();
 

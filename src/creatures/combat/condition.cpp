@@ -1803,6 +1803,14 @@ bool ConditionDamage::unserializeProp(ConditionAttr_t attr, PropStream &propStre
 		return propStream.read<int32_t>(periodDamage);
 	} else if (attr == CONDITIONATTR_OWNER) {
 		return propStream.read<uint32_t>(owner);
+	} else if (attr == CONDITIONATTR_SOURCE_SPELL_TYPE) {
+		uint8_t value;
+		if (!propStream.read<uint8_t>(value) || value > static_cast<uint8_t>(SPELL_RUNE)) {
+			return false;
+		}
+
+		sourceSpellType = static_cast<SpellType_t>(value);
+		return true;
 	} else if (attr == CONDITIONATTR_INTERVALDATA) {
 		IntervalInfo damageInfo {};
 		if (!propStream.read<IntervalInfo>(damageInfo)) {
@@ -1830,6 +1838,11 @@ void ConditionDamage::serialize(PropWriteStream &propWriteStream) {
 	if (owner != 0) {
 		propWriteStream.write<uint8_t>(CONDITIONATTR_OWNER);
 		propWriteStream.write<uint32_t>(owner);
+	}
+
+	if (sourceSpellType != SPELL_UNDEFINED) {
+		propWriteStream.write<uint8_t>(CONDITIONATTR_SOURCE_SPELL_TYPE);
+		propWriteStream.write<uint8_t>(static_cast<uint8_t>(sourceSpellType));
 	}
 
 	for (const IntervalInfo &intervalInfo : damageList) {
@@ -1996,6 +2009,10 @@ bool ConditionDamage::doDamage(const std::shared_ptr<Creature> &creature, int32_
 	damage.origin = ORIGIN_CONDITION;
 	damage.primary.value = healthChange;
 	damage.primary.type = Combat::ConditionToDamageType(conditionType);
+	const bool isSpellOrRune = sourceSpellType == SPELL_INSTANT || sourceSpellType == SPELL_RUNE;
+	if (attackerPlayer && isSpellOrRune && attackerPlayer->hasVirtuePartyBonus(VOCATION_SORCERER_CIP)) {
+		damage.damageMultiplier += 6;
+	}
 
 	if (field && creature->getPlayer() && attackerPlayer) {
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value / 2.));
@@ -2041,6 +2058,7 @@ void ConditionDamage::addCondition(std::shared_ptr<Creature> creature, const std
 	startDamage = conditionDamage->startDamage;
 	tickInterval = conditionDamage->tickInterval;
 	periodDamage = conditionDamage->periodDamage;
+	sourceSpellType = conditionDamage->sourceSpellType;
 	int32_t nextTimeLeft = tickInterval;
 
 	if (!damageList.empty()) {
@@ -2079,6 +2097,10 @@ int32_t ConditionDamage::getTotalDamage() const {
 		result = minDamage + (maxDamage - minDamage) / 2;
 	}
 	return std::abs(result);
+}
+
+void ConditionDamage::setSourceSpellType(SpellType_t spellType) {
+	sourceSpellType = spellType;
 }
 
 std::unordered_set<PlayerIcon> ConditionDamage::getIcons() const {

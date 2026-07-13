@@ -1,22 +1,18 @@
 local combat = Combat()
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_EXPLOSIONAREA)
+combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_BLOW_GREEN)
 combat:setParameter(COMBAT_PARAM_AGGRESSIVE, false)
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, variant)
-	if creature:getCondition(CONDITION_ATTRIBUTES, CONDITIONID_COMBAT, AttrSubId_Sharpshooter) then
-		creature:removeCondition(CONDITION_ATTRIBUTES, CONDITIONID_COMBAT, AttrSubId_Sharpshooter)
-	end
 	return combat:execute(creature, variant)
 end
 
-spell:name("Sharpshooter")
-spell:words("utori con")
+spell:name("Divine Defiance")
+spell:words("utori hur")
 spell:group("support", "stance")
 spell:vocation("royal paladin;true")
-spell:castSound(SOUND_EFFECT_TYPE_SPELL_SHARPSHOOTER)
-spell:id(313)
+spell:id(314)
 spell:stance("standard")
 spell:cooldown(10 * 1000)
 spell:groupCooldown(2 * 1000, 10 * 1000)

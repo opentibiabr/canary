@@ -7378,6 +7378,8 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		stanceMultiplier = 125;
 	} else if (isStanceActive(132) && skill == SKILL_SHIELD) {
 		stanceMultiplier = 130;
+	} else if (isStanceActive(313) && skill == SKILL_DISTANCE) {
+		stanceMultiplier = 132;
 	}
 	if (stanceMultiplier != 100) {
 		const uint64_t boostedSkill = static_cast<uint64_t>(skillLevel) * stanceMultiplier / 100;
@@ -7478,6 +7480,9 @@ int32_t Player::getSpecializedMagicLevel(CombatType_t combat, bool useCharges) c
 	int32_t result = specializedMagicLevel[combatTypeToIndex(combat)];
 	result += m_wheelPlayer.getSpecializedMagic(combat);
 	result += m_weaponProficiency.getSpecializedMagic(combat);
+	if (isStanceActive(314) && (combat == COMBAT_HOLYDAMAGE || combat == COMBAT_HEALING)) {
+		result += getSkillLevel(SKILL_DISTANCE) * 6 / 100;
+	}
 	for (const auto &item : getEquippedItems()) {
 		const ItemType &itemType = Item::items[item->getID()];
 		if (!itemType.abilities) {

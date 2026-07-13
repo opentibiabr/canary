@@ -28,20 +28,46 @@
 
 #include "kv/kv.hpp"
 
-namespace AugmentType {
-	constexpr uint8_t DAMAGE = 2;
-	constexpr uint8_t HEAL = 3;
-	constexpr uint8_t COOLDOWN = 6;
-	constexpr uint8_t LIFE_LEECH = 14;
-	constexpr uint8_t MANA_LEECH = 15;
-	constexpr uint8_t CRITICAL_DAMAGE = 16;
-	constexpr uint8_t CRITICAL_CHANCE = 17;
-}
-
 namespace {
+	enum class WeaponProficiencyAugmentType : uint8_t {
+		DAMAGE = 2,
+		HEAL = 3,
+		COOLDOWN = 6,
+		LIFE_LEECH = 14,
+		MANA_LEECH = 15,
+		CRITICAL_DAMAGE = 16,
+		CRITICAL_CHANCE = 17,
+	};
+
+	enum class KnightHealingSpell : uint16_t {
+		WOUND_CLEANSING = 123,
+		INTENSE_WOUND_CLEANSING = 158,
+	};
+
 	constexpr int32_t MIN_TRACKED_SKILL = static_cast<int32_t>(SKILL_FIRST);
 	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
 	constexpr size_t MASTERY_EXPERIENCE_OFFSET = 2;
+
+	// The 15.30 client asset still carries the pre-adjustment values for these server-side vocation changes.
+	[[nodiscard]] double_t getServerAdjustedSpellAugmentValue(const ProficiencyPerk &perk, WeaponProficiencyAugmentType augmentType) {
+		const auto spellId = static_cast<KnightHealingSpell>(perk.spellId);
+
+		if (augmentType == WeaponProficiencyAugmentType::COOLDOWN && spellId == KnightHealingSpell::INTENSE_WOUND_CLEANSING) {
+			return perk.value * 0.2;
+		}
+
+		if (augmentType != WeaponProficiencyAugmentType::HEAL) {
+			return perk.value;
+		}
+
+		switch (spellId) {
+			case KnightHealingSpell::WOUND_CLEANSING:
+			case KnightHealingSpell::INTENSE_WOUND_CLEANSING:
+				return perk.value * 2.0;
+			default:
+				return perk.value;
+		}
+	}
 
 	[[nodiscard]] bool isTrackedWeaponProficiencySkill(skills_t skill) {
 		const auto enumValue = static_cast<int32_t>(skill);
@@ -463,27 +489,29 @@ void WeaponProficiency::applyPerks(uint16_t weaponId, bool sendSkillUpdate /* = 
 		switch (selectedPerk.type) {
 			case SPELL_AUGMENT: {
 				WeaponProficiencySpells::Bonus augmentBonus;
-				switch (selectedPerk.augmentType) {
-					case AugmentType::DAMAGE:
-						augmentBonus.increase.damage = selectedPerk.value;
+				const auto augmentType = static_cast<WeaponProficiencyAugmentType>(selectedPerk.augmentType);
+				const auto augmentValue = getServerAdjustedSpellAugmentValue(selectedPerk, augmentType);
+				switch (augmentType) {
+					case WeaponProficiencyAugmentType::DAMAGE:
+						augmentBonus.increase.damage = augmentValue;
 						break;
-					case AugmentType::HEAL:
-						augmentBonus.increase.heal = selectedPerk.value;
+					case WeaponProficiencyAugmentType::HEAL:
+						augmentBonus.increase.heal = augmentValue;
 						break;
-					case AugmentType::COOLDOWN:
-						augmentBonus.decrease.cooldown = static_cast<int32_t>(std::lround(std::abs(selectedPerk.value) * 1000.0));
+					case WeaponProficiencyAugmentType::COOLDOWN:
+						augmentBonus.decrease.cooldown = static_cast<int32_t>(std::lround(std::abs(augmentValue) * 1000.0));
 						break;
-					case AugmentType::LIFE_LEECH:
-						augmentBonus.leech.life = selectedPerk.value;
+					case WeaponProficiencyAugmentType::LIFE_LEECH:
+						augmentBonus.leech.life = augmentValue;
 						break;
-					case AugmentType::MANA_LEECH:
-						augmentBonus.leech.mana = selectedPerk.value;
+					case WeaponProficiencyAugmentType::MANA_LEECH:
+						augmentBonus.leech.mana = augmentValue;
 						break;
-					case AugmentType::CRITICAL_DAMAGE:
-						augmentBonus.increase.criticalDamage = selectedPerk.value;
+					case WeaponProficiencyAugmentType::CRITICAL_DAMAGE:
+						augmentBonus.increase.criticalDamage = augmentValue;
 						break;
-					case AugmentType::CRITICAL_CHANCE:
-						augmentBonus.increase.criticalChance = selectedPerk.value;
+					case WeaponProficiencyAugmentType::CRITICAL_CHANCE:
+						augmentBonus.increase.criticalChance = augmentValue;
 						break;
 					default:
 						g_logger().error("[{}] - Unknown augment type {}", __FUNCTION__, selectedPerk.augmentType);
@@ -674,7 +702,8 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 	for (const auto &perk : perks) {
 		if (perk.spellId && perk.augmentType) {
 			const auto key = std::make_pair(perk.spellId, perk.augmentType);
-			augments[key] += perk.value;
+			const auto augmentType = static_cast<WeaponProficiencyAugmentType>(perk.augmentType);
+			augments[key] += getServerAdjustedSpellAugmentValue(perk, augmentType);
 		}
 	}
 

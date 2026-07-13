@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "waivers": [
+    {
+      "fingerprint": "a2d89429072e2baf6b707dfb04f072e80ae4fa0964c269bcf70af002e4024f57",
+      "reason": "Existing reversed items.xml range 22328-22323 in the Canary profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "252795deab5ed28d8b56c0b73c5d1f286659a0ed78f885cea5e494e2cc1ce3c7",
+      "reason": "Existing reversed items.xml range 22328-22323 in the global profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "2ff14bfd5d93b9db67cf3b36e678ad67977545aa554f3745ab535313499705a8",
+      "reason": "Existing reversed items.xml range 25139-25134 in the Canary profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "2e9ff76b39f1b0d5b54d8ee7e0d598774dcba10d4a6f8c5c33f36cf49d40fd14",
+      "reason": "Existing reversed items.xml range 25139-25134 in the global profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "7a7191014b45313b60e27558028f7acd80089abf9ef679adec742f384ed4079a",
+      "reason": "Existing reversed items.xml range 33231-33227 in the Canary profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "f31419c2a4cadea91e4f5143faeb971cb95accb6d0830a0b3291aa3e80395aef",
+      "reason": "Existing reversed items.xml range 33231-33227 in the global profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "f92dd971c8b7ed4c464cc3b1276081c23d0dd22d26ab46ee1e0b658671588cbe",
+      "reason": "Existing reversed items.xml range 49318-39321 in the Canary profile; repair separately from introducing the auditor."
+    },
+    {
+      "fingerprint": "6e28fa0f2005c0d92a609d9cab852844e0e622e7c6817ecdf22bf606822e1398",
+      "reason": "Existing reversed items.xml range 49318-39321 in the global profile; repair separately from introducing the auditor."
+    }
+  ]
+}

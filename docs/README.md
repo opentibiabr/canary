@@ -15,6 +15,7 @@ references in the surrounding subdirectories:
 | [`architecture.md`](architecture.md)      | System design, components and technical architecture                 |
 | [`development.md`](development.md)        | Development environment, coding standards and contribution workflow  |
 | [`operations.md`](operations.md)          | Deployment, monitoring, security, backups and production operations  |
+| [`systems/content-reference-auditor.md`](systems/content-reference-auditor.md) | Profile-aware gameplay content and identifier auditing |
 
 ---
 

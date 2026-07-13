@@ -34,7 +34,7 @@ function onGetFormulaValues(player, skill, attack, factor)
 
 	local shielding = player:getEffectiveSkillLevel(SKILL_SHIELD)
 	local damage = SPELL_BASE_POWER * (shielding / 100) * (shieldDefense / 10) + player:calculateFlatDamageHealing()
-	return damage * 0.9, damage * 1.1
+	return -damage * 0.9, -damage * 1.1
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")

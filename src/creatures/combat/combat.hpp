@@ -110,6 +110,7 @@ struct CombatParams {
 	bool aggressive = true;
 	bool useCharges = false;
 	bool suppressCharms = false;
+	bool ignoreCasterFloor = false;
 
 	uint16_t chainEffect = CONST_ME_NONE;
 };
@@ -210,7 +211,7 @@ public:
 	static CombatType_t ConditionToDamageType(ConditionType_t type);
 	static ConditionType_t DamageToConditionType(CombatType_t type);
 	static ReturnValue canTargetCreature(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Creature> &target);
-	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive);
+	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive, bool ignoreCasterFloor = false);
 	static ReturnValue canDoCombat(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, bool aggressive);
 	static void postCombatEffects(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const CombatParams &params);
 

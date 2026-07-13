@@ -300,7 +300,7 @@ ReturnValue Combat::canTargetCreature(const std::shared_ptr<Player> &player, con
 	return canDoCombat(player, target, true);
 }
 
-ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive) {
+ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, bool aggressive, bool ignoreCasterFloor) {
 	if (!aggressive || !tile) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -331,12 +331,14 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &caster, const s
 	}
 
 	if (caster) {
-		const Position &casterPosition = caster->getPosition();
-		const Position &tilePosition = tile->getPosition();
-		if (casterPosition.z < tilePosition.z) {
-			return RETURNVALUE_FIRSTGODOWNSTAIRS;
-		} else if (casterPosition.z > tilePosition.z) {
-			return RETURNVALUE_FIRSTGOUPSTAIRS;
+		if (!ignoreCasterFloor) {
+			const Position &casterPosition = caster->getPosition();
+			const Position &tilePosition = tile->getPosition();
+			if (casterPosition.z < tilePosition.z) {
+				return RETURNVALUE_FIRSTGODOWNSTAIRS;
+			} else if (casterPosition.z > tilePosition.z) {
+				return RETURNVALUE_FIRSTGOUPSTAIRS;
+			}
 		}
 
 		if (const auto &player = caster->getPlayer()) {
@@ -583,6 +585,11 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 
 		case COMBAT_PARAM_SUPPRESSCHARMS: {
 			params.suppressCharms = (value != 0);
+			return true;
+		}
+
+		case COMBAT_PARAM_IGNORECASTERFLOOR: {
+			params.ignoreCasterFloor = (value != 0);
 			return true;
 		}
 	}
@@ -1501,7 +1508,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 			maxY = diff;
 		}
 
-		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
+		if (canDoCombat(caster, tile, params.aggressive, params.ignoreCasterFloor) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 
@@ -1548,7 +1555,7 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 		tmpDamage = extensionsDamage;
 	}
 	for (const auto &tile : tileList) {
-		if (canDoCombat(caster, tile, params.aggressive) != RETURNVALUE_NOERROR) {
+		if (canDoCombat(caster, tile, params.aggressive, params.ignoreCasterFloor) != RETURNVALUE_NOERROR) {
 			continue;
 		}
 

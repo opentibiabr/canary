@@ -1,4 +1,4 @@
-local SPELL_BASE_POWER = 100
+local SPELL_BASE_POWER = 86
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)

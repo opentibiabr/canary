@@ -1,11 +1,17 @@
-local SPELL_BASE_POWER = 65
+local SPELL_BASE_POWER = 55
 
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_WHIRLWIND_BLOW_WHITE)
-combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
-combat:setParameter(COMBAT_PARAM_USECHARGES, 1)
-combat:setArea(createCombatArea(AREA_FLURRY_OF_BLOWS))
+local function createCombat(area)
+	local combat = Combat()
+	combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
+	combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_WHIRLWIND_BLOW_WHITE)
+	combat:setParameter(COMBAT_PARAM_BLOCKARMOR, 1)
+	combat:setParameter(COMBAT_PARAM_USECHARGES, 1)
+	combat:setArea(createCombatArea(area))
+	return combat
+end
+
+local combat = createCombat(AREA_FLURRY_OF_BLOWS)
+local enlargedCombat = createCombat(AREA_GREATER_FLURRY_OF_BLOWS)
 
 function onGetFormulaValues(player, skill, attack, factor)
 	local damageHealing = player:calculateFlatDamageHealing()
@@ -19,10 +25,15 @@ function onGetFormulaValues(player, skill, attack, factor)
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+enlargedCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	local player = creature:getPlayer()
+	if player and player:getWheelSpellAdditionalArea("Flurry of Blows") then
+		return enlargedCombat:execute(creature, var)
+	end
 	return combat:execute(creature, var)
 end
 

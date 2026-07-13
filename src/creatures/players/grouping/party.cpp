@@ -307,7 +307,7 @@ bool Party::passPartyLeadership(const std::shared_ptr<Player> &player) {
 
 void Party::applyGuidingPresence(const std::vector<std::shared_ptr<Player>> &members) {
 	const auto &mantraHolder = m_mantraHolder.lock();
-	const int32_t sharedMantra = mantraHolder ? mantraHolder->getMantra() / 2 : 0;
+	const int32_t sharedMantra = mantraHolder ? mantraHolder->getMantra() : 0;
 	for (const auto &member : members) {
 		if (mantraHolder == member) {
 			continue;

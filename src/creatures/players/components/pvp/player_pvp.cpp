@@ -11,9 +11,6 @@
 
 #include "creatures/players/components/pvp/expert_pvp.hpp"
 
-PlayerPvp::PlayerPvp(Player &initPlayer) :
-	m_player(initPlayer) { }
-
 bool PlayerPvp::isExpertPvpEnabled() const {
 	return ExpertPvp::isEnabled();
 }

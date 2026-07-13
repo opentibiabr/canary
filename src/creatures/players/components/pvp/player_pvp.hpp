@@ -11,11 +11,9 @@
 
 #include "creatures/players/components/pvp/expert_pvp_definitions.hpp"
 
-class Player;
-
 class PlayerPvp {
 public:
-	explicit PlayerPvp(Player &initPlayer);
+	PlayerPvp() = default;
 
 	[[nodiscard]] bool isExpertPvpEnabled() const;
 	[[nodiscard]] PvpMode_t getMode() const;
@@ -25,6 +23,5 @@ public:
 	ExpertPvpModeResult setMode(PvpMode_t requestedMode, ExpertPvpModeSource source = ExpertPvpModeSource::StoredPlayerState);
 
 private:
-	Player &m_player;
 	PvpMode_t m_mode = PVP_MODE_DOVE;
 };

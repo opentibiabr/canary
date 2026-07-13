@@ -114,7 +114,6 @@ MuteCountMap Player::muteCountMap;
  */
 Player::Player() :
 	m_wheelPlayer(*this),
-	m_pvpPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
@@ -133,7 +132,6 @@ Player::Player(std::shared_ptr<ProtocolGame> p) :
 	inbox(std::make_shared<Inbox>(ITEM_INBOX)),
 	client(std::move(p)),
 	m_wheelPlayer(*this),
-	m_pvpPlayer(*this),
 	m_playerAchievement(*this),
 	m_playerBadge(*this),
 	m_playerCyclopedia(*this),
@@ -6206,7 +6204,7 @@ void Player::setSecureMode(bool mode) {
 }
 
 void Player::setPvpMode(PvpMode_t mode) {
-	m_pvpPlayer.setMode(mode);
+	(void)m_pvpPlayer.setMode(mode);
 }
 
 PvpMode_t Player::getPvpMode() const {

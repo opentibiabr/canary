@@ -154,7 +154,7 @@ void WheelModifierContext::addStrategies(WheelGemBasicModifier_t modifier, uint8
 			m_strategies.emplace_back(std::make_unique<GemModifierResistanceStrategy>(m_wheel, CombatType_t::COMBAT_LIFEDRAIN, 150 * gradeMultiplier));
 			break;
 		case WheelGemBasicModifier_t::General_MitigationMultiplier:
-			m_strategies.emplace_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MITIGATION, 500 * gradeMultiplier));
+			m_strategies.emplace_back(std::make_unique<GemModifierStatStrategy>(m_wheel, WheelStat_t::MITIGATION, 2000 * gradeMultiplier));
 			break;
 
 		case WheelGemBasicModifier_t::Vocation_Health:

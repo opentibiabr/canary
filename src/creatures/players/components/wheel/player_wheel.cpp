@@ -3114,13 +3114,14 @@ int32_t PlayerWheel::checkDivineGrenade(const std::shared_ptr<Creature> &target)
 }
 
 void PlayerWheel::checkGiftOfLife() {
-	// Healing
+	// Health and mana restoration
 	CombatDamage giftDamage;
 	giftDamage.primary.value = (m_player.getMaxHealth() * getGiftOfLifeValue()) / 100;
 	giftDamage.primary.type = COMBAT_HEALING;
 	m_player.sendTextMessage(MESSAGE_EVENT_ADVANCE, "That was close! Fortunately, your were saved by the Gift of Life.");
 	g_game().addMagicEffect(m_player.getPosition(), CONST_ME_WATER_DROP);
 	g_game().combatChangeHealth(m_player.getPlayer(), m_player.getPlayer(), giftDamage);
+	m_player.changeMana((m_player.getMaxMana() * getGiftOfLifeValue()) / 100);
 	// Condition cooldown reduction
 	constexpr uint16_t reductionTimer = 60000;
 	reduceAllSpellsCooldownTimer(reductionTimer);

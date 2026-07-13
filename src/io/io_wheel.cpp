@@ -16,7 +16,7 @@
 #include "creatures/combat/spells.hpp"
 #include "utils/tools.hpp"
 
-#define MITIGATION_INCREASE 0.03
+#define MITIGATION_INCREASE 0.075
 #define MANA_LEECH_INCREASE 0.25
 #define HEALTH_LEECH_INCREASE 0.75
 

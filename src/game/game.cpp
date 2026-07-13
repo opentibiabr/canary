@@ -8893,6 +8893,9 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			damage.secondary.value = std::min<int32_t>(damage.secondary.value, targetHealth - damage.primary.value);
 		}
 
+		if (targetMonster) {
+			targetMonster->setLastHitSuppressCharms(damage.suppressCharms);
+		}
 		target->drainHealth(attacker, realDamage);
 		if (realDamage > 0 && targetMonster) {
 			if (targetMonster->israndomStepping()) {
@@ -8921,7 +8924,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
 				const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
-				if (!isAutoAttack || target == attackerPlayer->getAttackedCreature()) {
+				if (!damage.suppressCharms && (!isAutoAttack || target == attackerPlayer->getAttackedCreature())) {
 					applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
 				}
 				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
@@ -9090,7 +9093,7 @@ void Game::buildMessageAsAttacker(
 
 	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 	const bool canApplyOffensiveCharm = !isAutoAttack || (attackerPlayer && target == attackerPlayer->getAttackedCreature());
-	if (canApplyOffensiveCharm && damage.critical && target->getMonster() && attackerPlayer) {
+	if (!damage.suppressCharms && canApplyOffensiveCharm && damage.critical && target->getMonster() && attackerPlayer) {
 		const auto &targetMonster = target->getMonster();
 		static const std::pair<charmRune_t, std::string_view> charms[] = {
 			{ CHARM_LOW, " (low blow charm)" },
@@ -9171,7 +9174,7 @@ void Game::applyManaLeech(
 	// Void charm rune
 	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 	const bool canApplyOffensiveCharm = !isAutoAttack || target == attackerPlayer->getAttackedCreature();
-	if (canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
+	if (!damage.suppressCharms && canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VOID)) {
 			manaSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VOID)] * 100;
 		}
@@ -9202,7 +9205,7 @@ void Game::applyLifeLeech(
 
 	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 	const bool canApplyOffensiveCharm = !isAutoAttack || target == attackerPlayer->getAttackedCreature();
-	if (canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
+	if (!damage.suppressCharms && canApplyOffensiveCharm && targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
 			lifeSkill += charm->chance[attackerPlayer->getCharmTier(CHARM_VAMP)] * 100;
 		}

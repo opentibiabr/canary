@@ -324,6 +324,8 @@ public:
 	bool isDead() const override;
 
 	void setDead(bool isDead);
+	bool getLastHitSuppressCharms() const;
+	void setLastHitSuppressCharms(bool suppressCharms);
 
 	void setCriticalChance(uint16_t chance);
 	uint16_t getCriticalChance() const;
@@ -467,6 +469,7 @@ private:
 
 	bool m_isDead = false;
 	bool m_isImmune = false;
+	bool lastHitSuppressCharms = false;
 
 	void onCreatureEnter(const std::shared_ptr<Creature> &creature);
 	void onCreatureLeave(const std::shared_ptr<Creature> &creature);

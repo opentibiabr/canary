@@ -3280,7 +3280,7 @@ void Monster::death(const std::shared_ptr<Creature> &lastHitCreature) {
 	targetPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::KILL);
 
 	auto [activeCharm, _] = g_iobestiary().getCharmFromTarget(targetPlayer, m_monsterType);
-	if (activeCharm == CHARM_CARNAGE) {
+	if (!getLastHitSuppressCharms() && activeCharm == CHARM_CARNAGE) {
 		const auto &charm = g_iobestiary().getBestiaryCharm(activeCharm);
 		const auto charmTier = targetPlayer->getCharmTier(activeCharm);
 		if (charm && charm->chance[charmTier] >= normal_random(1, 10000) / 100.0) {
@@ -3817,6 +3817,14 @@ bool Monster::isDead() const {
 
 void Monster::setDead(bool isDead) {
 	m_isDead = isDead;
+}
+
+bool Monster::getLastHitSuppressCharms() const {
+	return lastHitSuppressCharms;
+}
+
+void Monster::setLastHitSuppressCharms(bool suppressCharms) {
+	lastHitSuppressCharms = suppressCharms;
 }
 
 void Monster::getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) {

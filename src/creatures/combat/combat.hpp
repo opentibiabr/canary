@@ -109,6 +109,7 @@ struct CombatParams {
 	bool targetCasterOrTopMost = false;
 	bool aggressive = true;
 	bool useCharges = false;
+	bool suppressCharms = false;
 
 	uint16_t chainEffect = CONST_ME_NONE;
 };

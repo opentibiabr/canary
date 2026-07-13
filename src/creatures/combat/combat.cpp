@@ -87,6 +87,7 @@ int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std
 CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
 	CombatDamage damage;
 	damage.origin = params.origin;
+	damage.suppressCharms = params.suppressCharms;
 	damage.primary.type = params.combatType;
 
 	// If the caster is a player and their vocation is "Monk" (CipSoft style),
@@ -579,6 +580,11 @@ bool Combat::setParam(CombatParam_t param, uint32_t value) {
 			params.chainEffect = static_cast<uint16_t>(value);
 			return true;
 		}
+
+		case COMBAT_PARAM_SUPPRESSCHARMS: {
+			params.suppressCharms = (value != 0);
+			return true;
+		}
 	}
 	return false;
 }
@@ -852,7 +858,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 		CombatConditionFunc(caster, target, params, &damage);
 		CombatDispelFunc(caster, target, params, nullptr);
 
-		if (!targetMonster || !attackerPlayer) {
+		if (damage.suppressCharms || !targetMonster || !attackerPlayer) {
 			return;
 		}
 
@@ -2677,6 +2683,7 @@ void MagicField::onStepInField(const std::shared_ptr<Creature> &creature) {
 
 void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std::vector<std::shared_ptr<Creature>> targets, CombatDamage &damage, const CombatParams &params) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
+	damage.suppressCharms = damage.suppressCharms || params.suppressCharms;
 	if (damage.extension || !caster) {
 		return;
 	}
@@ -2717,14 +2724,14 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 		const bool isAutoAttack = params.origin == ORIGIN_MELEE || params.origin == ORIGIN_RANGED || params.origin == ORIGIN_FIST;
 		const auto &primaryTarget = player->getAttackedCreature();
 		const auto canApplyOffensiveCharm = [&](const std::shared_ptr<Creature> &target) {
-			return !isAutoAttack || target == primaryTarget;
+			return !damage.suppressCharms && (!isAutoAttack || target == primaryTarget);
 		};
 
 		uint16_t baseChance = player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) + player->getBaseCritical().chance * 10000;
 		int32_t baseBonus = player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) + player->getBaseCritical().damage * 10000;
 
-		uint16_t lowBlowRaceid = player->parseRacebyCharm(CHARM_LOW);
-		uint16_t savageBlowRaceid = player->parseRacebyCharm(CHARM_SAVAGE);
+		uint16_t lowBlowRaceid = damage.suppressCharms ? 0 : player->parseRacebyCharm(CHARM_LOW);
+		uint16_t savageBlowRaceid = damage.suppressCharms ? 0 : player->parseRacebyCharm(CHARM_SAVAGE);
 
 		player->weaponProficiency().applyAutoAttackCritical(damage);
 		player->weaponProficiency().applyRunesCritical(damage, params.aggressive);

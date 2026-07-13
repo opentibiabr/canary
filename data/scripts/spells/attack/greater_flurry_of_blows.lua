@@ -15,7 +15,7 @@ function onGetFormulaValues(player, skill, attack, factor)
 	local min = damage - (damage / 10)
 	local max = damage + (damage / 10)
 
-	return min, max
+	return -min, -max
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")

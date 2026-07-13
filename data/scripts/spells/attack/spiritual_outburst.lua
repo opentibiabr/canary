@@ -16,7 +16,8 @@ function onGetFormulaValuesRecast(player, skill, attack, factor)
 	local min = (damage - (damage / 10)) * defaultDecreasedDamage
 	local max = (damage + (damage / 10)) * defaultDecreasedDamage
 
-	return player:getHarmonyDamage(min, max)
+	local harmonyMin, harmonyMax = player:getHarmonyDamage(min, max)
+	return -harmonyMin, -harmonyMax
 end
 combatRecast:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValuesRecast")
 
@@ -48,7 +49,8 @@ function onGetFormulaValues(player, skill, attack, factor)
 	local min = damage - (damage / 10)
 	local max = damage + (damage / 10)
 
-	return player:getHarmonyDamage(min, max)
+	local harmonyMin, harmonyMax = player:getHarmonyDamage(min, max)
+	return -harmonyMin, -harmonyMax
 end
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
 

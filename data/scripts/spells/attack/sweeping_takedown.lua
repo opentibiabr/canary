@@ -47,7 +47,7 @@ end
 function onGetFormulaValuesInner(player, skill, attack, factor)
 	local min, max = calculateSweepingDamage(player, skill, attack, SPELL_BASE_POWER_CENTER)
 	sweepingTakedownCache[player:getId()] = { min = min, max = max }
-	return min, max
+	return -min, -max
 end
 
 function onGetFormulaValuesOuter(player, skill, attack, factor)
@@ -62,7 +62,7 @@ function onGetFormulaValuesOuter(player, skill, attack, factor)
 
 	logger.trace(string.format("[Sweeping Takedown - Outer] Player: %s | Outer scaled to 75%% of Center | Final: %.2f ~ %.2f", player:getName(), min, max))
 
-	return min, max
+	return -min, -max
 end
 
 combatInner:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValuesInner")

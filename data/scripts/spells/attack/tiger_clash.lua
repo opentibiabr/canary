@@ -22,7 +22,8 @@ function onGetFormulaValues(player, skill, attack, factor)
 		max = 10
 	end
 
-	return player:getHarmonyDamage(min, max)
+	local harmonyMin, harmonyMax = player:getHarmonyDamage(min, max)
+	return -harmonyMin, -harmonyMax
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")

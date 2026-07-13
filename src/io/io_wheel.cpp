@@ -57,6 +57,11 @@ namespace InternalPlayerWheel {
 			}
 			return;
 		}
+		if (name == "Forked Spells") {
+			registerWheelSpellTable(spellData, "Forked Glacier", gradeType);
+			registerWheelSpellTable(spellData, "Forked Thorns", gradeType);
+			return;
+		}
 
 		const auto &spell = g_spells().getInstantSpellByName(name);
 		if (spell) {
@@ -233,24 +238,24 @@ void IOWheel::initializeMapData() {
 
 void IOWheel::initializeDruidSpells() {
 	m_wheelBonusData.spells.druid[0].name = "Strong Ice Wave";
-	m_wheelBonusData.spells.druid[0].grade[1].leech.mana = 3;
-	m_wheelBonusData.spells.druid[0].grade[2].increase.damage = 10;
+	m_wheelBonusData.spells.druid[0].grade[1].increase.damage = 6;
+	m_wheelBonusData.spells.druid[0].grade[2].increase.area = true;
 
 	m_wheelBonusData.spells.druid[1].name = "Mass Healing";
 	m_wheelBonusData.spells.druid[1].grade[1].increase.heal = 4;
 	m_wheelBonusData.spells.druid[1].grade[2].increase.area = true;
 
-	m_wheelBonusData.spells.druid[2].name = "Nature's Embrace";
-	m_wheelBonusData.spells.druid[2].grade[1].increase.heal = 11;
-	m_wheelBonusData.spells.druid[2].grade[2].decrease.cooldown = 10;
+	m_wheelBonusData.spells.druid[2].name = "Forked Spells";
+	m_wheelBonusData.spells.druid[2].grade[1].decrease.cooldown = 2;
+	m_wheelBonusData.spells.druid[2].grade[2].increase.additionalTarget = 1;
 
 	m_wheelBonusData.spells.druid[3].name = "Terra Wave";
 	m_wheelBonusData.spells.druid[3].grade[1].increase.damage = static_cast<int>(std::round(6.5));
 	m_wheelBonusData.spells.druid[3].grade[2].leech.life = 10;
 
 	m_wheelBonusData.spells.druid[4].name = "Heal Friend";
-	m_wheelBonusData.spells.druid[4].grade[1].decrease.manaCost = 10;
-	m_wheelBonusData.spells.druid[4].grade[2].increase.heal = static_cast<int>(std::round(5.5));
+	m_wheelBonusData.spells.druid[4].grade[1].increase.heal = 4;
+	m_wheelBonusData.spells.druid[4].grade[2].increase.heal = 6;
 }
 
 void IOWheel::initializeKnightSpells() {
@@ -615,7 +620,8 @@ void IOWheel::slotRedMiddle100(const std::shared_ptr<Player> &player, uint16_t p
 		if (isSorcerer(vocationCipId)) {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Sap Strength");
 		} else {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Nature's Embrace");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Forked Glacier");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Forked Thorns");
 		}
 		bonusData.stats.mana += 6 * points;
 	} else {
@@ -867,7 +873,8 @@ void IOWheel::slotBlueMiddle100(const std::shared_ptr<Player> &player, uint16_t 
 		if (isSorcerer(vocationCipId)) {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Sap Strength");
 		} else {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Nature's Embrace");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Forked Glacier");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Forked Thorns");
 		}
 	} else {
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Mystic Repulse");

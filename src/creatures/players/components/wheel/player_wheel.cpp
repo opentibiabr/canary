@@ -321,6 +321,9 @@ namespace {
 
 	template <typename SpellType>
 	int checkSpellAdditionalTarget(const std::array<SpellType, 5> &spellsTable, std::string_view spellName, uint8_t stage) {
+		if (spellName == "Forked Glacier" || spellName == "Forked Thorns") {
+			spellName = "Forked Spells";
+		}
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell target stage {}, grade {}", stage, size);

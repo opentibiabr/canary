@@ -1,20 +1,46 @@
 local SPELL_BASE_POWER = 110
-
-local combat = Combat()
-combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
-combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
-combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
+local CHAIN_ADDITIONAL_TARGETS = 2
+local CHAIN_DISTANCE = 4
 
 function onGetFormulaValues(player, level, maglevel)
 	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * maglevel) + (SPELL_BASE_POWER / 4)
 	return -(damage * 0.9), -(damage * 1.1)
 end
 
-combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+function canLightningChain(creature, target)
+	return not target:isNpc() and creature ~= target and not target:getTile():hasFlag(TILESTATE_PROTECTIONZONE)
+end
+
+function getLightningChainValues(creature)
+	return CHAIN_ADDITIONAL_TARGETS, CHAIN_DISTANCE, false
+end
+
+local function createLightningCombat(chain)
+	local lightningCombat = Combat()
+	lightningCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
+	lightningCombat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
+	lightningCombat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
+	lightningCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+
+	if chain then
+		lightningCombat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_PINK_ENERGY_SPARK)
+		lightningCombat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canLightningChain")
+		lightningCombat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getLightningChainValues")
+	end
+
+	return lightningCombat
+end
+
+local combat = createLightningCombat(false)
+local chainCombat = createLightningCombat(true)
 
 local spell = Spell("instant")
 
 function spell.onCastSpell(creature, var)
+	if var:getNumber() ~= 0 then
+		return chainCombat:execute(creature, var)
+	end
+
 	return combat:execute(creature, var)
 end
 

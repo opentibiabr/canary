@@ -42,8 +42,13 @@ namespace {
 		}
 
 		std::shared_ptr<Player> selectedTarget;
+		const bool casterInProtectionZone = caster->getZoneType() == ZONE_PROTECTION;
 		for (const auto &partyMember : party->getPlayers()) {
 			if (!partyMember || partyMember == originalTarget || partyMember->isRemoved() || partyMember->isDead() || partyMember->getHealth() >= partyMember->getMaxHealth()) {
+				continue;
+			}
+
+			if ((partyMember->getZoneType() == ZONE_PROTECTION) != casterInProtectionZone) {
 				continue;
 			}
 

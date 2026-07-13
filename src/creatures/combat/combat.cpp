@@ -30,6 +30,36 @@
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 
+namespace {
+	std::shared_ptr<Player> getSharedConservationTarget(const std::shared_ptr<Player> &caster, const std::shared_ptr<Player> &originalTarget) {
+		if (!caster || !originalTarget || !caster->isStanceActive(309)) {
+			return nullptr;
+		}
+
+		const auto &party = caster->getParty();
+		if (!party) {
+			return nullptr;
+		}
+
+		std::shared_ptr<Player> selectedTarget;
+		for (const auto &partyMember : party->getPlayers()) {
+			if (!partyMember || partyMember == originalTarget || partyMember->isRemoved() || partyMember->isDead() || partyMember->getHealth() >= partyMember->getMaxHealth()) {
+				continue;
+			}
+
+			if (!Position::areInRange<MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, 0>(caster->getPosition(), partyMember->getPosition())) {
+				continue;
+			}
+
+			if (!selectedTarget || partyMember->getHealth() < selectedTarget->getHealth()) {
+				selectedTarget = partyMember;
+			}
+		}
+
+		return selectedTarget;
+	}
+}
+
 int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const {
 	if (!player) {
 		return 0;
@@ -1557,6 +1587,20 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 		}
 	}
 
+	std::shared_ptr<Player> sharedConservationTarget;
+	CombatDamage sharedConservationDamage;
+	const bool isSharedConservationSpell = damage.instantSpellName == "Heal Friend" || damage.instantSpellName == "Nature's Embrace";
+	if (canCombat && !damage.sharedConservationSecondary && isSharedConservationSpell) {
+		const auto &casterPlayer = caster ? caster->getPlayer() : nullptr;
+		const auto &targetPlayer = target ? target->getPlayer() : nullptr;
+		sharedConservationTarget = getSharedConservationTarget(casterPlayer, targetPlayer);
+		if (sharedConservationTarget) {
+			sharedConservationDamage = damage;
+			sharedConservationDamage.sharedConservationSecondary = true;
+			sharedConservationDamage.healingLink = 0;
+		}
+	}
+
 	std::vector<std::shared_ptr<Creature>> affectedTargets;
 	affectedTargets.push_back(target);
 	applyExtensions(caster, affectedTargets, damage, params);
@@ -1567,6 +1611,14 @@ void Combat::doCombatHealth(const std::shared_ptr<Creature> &caster, const std::
 		}
 
 		CombatHealthFunc(caster, target, params, &damage);
+		if (sharedConservationTarget) {
+			CombatParams sharedConservationParams;
+			sharedConservationParams.combatType = COMBAT_HEALING;
+			sharedConservationParams.origin = params.origin;
+			sharedConservationParams.aggressive = false;
+			doCombatHealth(caster, sharedConservationTarget, origin, sharedConservationDamage, sharedConservationParams);
+		}
+
 		if (params.targetCallback) {
 			params.targetCallback->onTargetCombat(caster, target);
 		}

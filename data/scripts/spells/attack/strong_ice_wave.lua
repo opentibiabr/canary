@@ -25,7 +25,7 @@ spell:castSound(SOUND_EFFECT_TYPE_SPELL_STRONG_ICE_WAVE)
 spell:level(40)
 spell:mana(170)
 spell:needDirection(true)
-spell:cooldown(8 * 1000)
+spell:cooldown(4 * 1000)
 spell:groupCooldown(2 * 1000)
 
 spell:vocation("druid;true", "elder druid;true")

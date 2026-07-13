@@ -3458,7 +3458,7 @@ std::shared_ptr<Spell> PlayerWheel::getCombatDataSpell(CombatDamage &damage) {
 
 		damage.damageMultiplier += checkFocusMasteryDamage();
 		if (getHealingLinkUpgrade(spellName)) {
-			damage.healingLink += 10;
+			damage.healingLink += 25;
 		}
 		if (spell->getSecondaryGroup() == SPELLGROUP_FOCUS && getInstant("Focus Mastery")) {
 			setOnThinkTimer(WheelOnThink_t::FOCUS_MASTERY, (OTSYS_TIME() + 12000));

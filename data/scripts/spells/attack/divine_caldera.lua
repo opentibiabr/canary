@@ -1,11 +1,14 @@
+local SPELL_BASE_POWER = 150
+
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_HOLYDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_HOLYAREA)
 combat:setArea(createCombatArea(AREA_CIRCLE3X3))
 
 function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 4)
-	local max = (level / 5) + (maglevel * 6)
+	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * maglevel) + (SPELL_BASE_POWER / 4)
+	local min = damage * 0.9
+	local max = damage * 1.1
 	return -min, -max
 end
 

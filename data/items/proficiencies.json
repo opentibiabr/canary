@@ -15337,7 +15337,7 @@
             "AugmentType": 3,
             "SpellId": 123,
             "Type": 5,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       }
@@ -23330,7 +23330,7 @@
             "AugmentType": 3,
             "SpellId": 158,
             "Type": 5,
-            "Value": 0.25
+            "Value": 0.5
           },
           {
             "SkillId": 10,
@@ -24317,7 +24317,7 @@
             "AugmentType": 3,
             "SpellId": 123,
             "Type": 5,
-            "Value": 0.1
+            "Value": 0.2
           }
         ]
       },

@@ -92,6 +92,24 @@ namespace {
 	MonsterPostThinkQueue backgroundMonsterPostThinkQueue;
 	std::array<std::atomic_uint64_t, 2> rejectedMonsterPostThinkTasks {};
 
+	void applySanctuaryAdjacentBonus(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target) {
+		const auto &attackerPlayer = attacker ? attacker->getPlayer() : nullptr;
+		if (!attackerPlayer || !target || attacker == target || attackerPlayer->getPlayerVocationEnum() != VOCATION_MONK_CIP || !attackerPlayer->wheel().getInstant(WheelInstant_t::SANCTUARY)) {
+			return;
+		}
+
+		if (attacker->getPosition() == target->getPosition() || !Position::areInRange<1, 1, 0>(attacker->getPosition(), target->getPosition())) {
+			return;
+		}
+
+		const auto applyBonus = [](int32_t &value) {
+			const int64_t scaledValue = static_cast<int64_t>(value) * 110 / 100;
+			value = static_cast<int32_t>(std::clamp<int64_t>(scaledValue, std::numeric_limits<int32_t>::min(), std::numeric_limits<int32_t>::max()));
+		};
+		applyBonus(damage.primary.value);
+		applyBonus(damage.secondary.value);
+	}
+
 	void applyVocationStanceDamageModifiers(CombatDamage &damage, const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target) {
 		if (damage.stanceModifiersApplied) {
 			return;
@@ -8438,6 +8456,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		// Wheel of destiny combat healing
 		applyWheelOfDestinyHealing(damage, attackerPlayer, target);
+		applySanctuaryAdjacentBonus(damage, attacker, target);
 
 		auto realHealthChange = target->getHealth();
 		target->gainHealth(attacker, damage.primary.value);
@@ -8595,6 +8614,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
 		applyVocationStanceDamageModifiers(damage, attacker, target);
+		applySanctuaryAdjacentBonus(damage, attacker, target);
 		if (damage.origin != ORIGIN_NONE && attacker && damage.primary.type != COMBAT_HEALING) {
 			const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 			const auto shieldAttackDebuff = isAutoAttack

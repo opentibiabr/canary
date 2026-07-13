@@ -1,4 +1,4 @@
-local SPELL_BASE_POWER = 74
+local SPELL_BASE_POWER = 70
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_PHYSICALDAMAGE)
@@ -26,12 +26,12 @@ end
 combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
-	local targets = 3
+	local targets = 4
 	local player = creature:getPlayer()
 	if player then
 		targets = targets + player:getWheelSpellAdditionalTarget("Chained Penance")
 	end
-	return targets, 4, false
+	return targets, 4, false, false, 4, 5
 end
 
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")

@@ -14,7 +14,7 @@ end
 spell:name("Protector")
 spell:words("utamo tempo")
 spell:group("support", "stance")
-spell:vocation("knight;true", "elite knight;true")
+spell:vocation("elite knight;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_PROTECTOR)
 spell:id(132)
 spell:stance("standard")

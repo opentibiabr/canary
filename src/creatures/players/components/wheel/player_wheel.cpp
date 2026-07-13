@@ -2230,15 +2230,6 @@ void PlayerWheel::registerPlayerBonusData() {
 		for (int i = 0; i < m_playerBonusData.stages.beamMastery; ++i) {
 			setSpellInstant("Beam Mastery", true);
 		}
-		WheelSpells::Bonus deathBeamBonus;
-		deathBeamBonus.decrease.cooldown = 2 * 1000;
-		deathBeamBonus.increase.damage = 6;
-		if (m_playerBonusData.stages.beamMastery >= 2) {
-			addSpellBonus("Great Death Beam", deathBeamBonus);
-		}
-		if (m_playerBonusData.stages.beamMastery >= 3) {
-			addSpellBonus("Great Death Beam", deathBeamBonus);
-		}
 	} else {
 		setSpellInstant("Beam Mastery", false);
 	}
@@ -2724,9 +2715,6 @@ void PlayerWheel::applyRedStageBonus(uint8_t stageValue, Vocation_t vocationEnum
 		}
 	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
 		m_playerBonusData.stages.beamMastery = stageValue;
-		for (uint8_t i = 0; i < stageValue; ++i) {
-			addSpellToVector("Great Death Beam");
-		}
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		m_playerBonusData.stages.divineGrenade = stageValue;
 		for (uint8_t i = 0; i < stageValue; ++i) {

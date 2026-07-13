@@ -134,12 +134,14 @@ static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &pro
 
 		ProficiencyPerk proficiencyPerk;
 		proficiencyPerk.type = perkJson["Type"].get<WeaponProficiencyBonus_t>();
-		proficiencyPerk.value = perkJson["Value"].get<double_t>();
+		if (proficiencyPerk.type != HOMING_MISSILE) {
+			proficiencyPerk.value = perkJson["Value"].get<double_t>();
+		}
 
 		uint64_t shiftedValue = 0;
 		if (proficiencyPerk.type == SPECIALIZED_MAGIC_LEVEL) {
 			shiftedValue = perkJson["DamageType"].get<uint64_t>();
-		} else if (proficiencyPerk.type == ELEMENTAL_HIT_CHANCE || proficiencyPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE || proficiencyPerk.type == ELEMENTAL_PIERCE) {
+		} else if (proficiencyPerk.type == ELEMENTAL_HIT_CHANCE || proficiencyPerk.type == ELEMENTAL_CRITICAL_EXTRA_DAMAGE || proficiencyPerk.type == ELEMENTAL_PIERCE || proficiencyPerk.type == HOMING_MISSILE) {
 			shiftedValue = perkJson["ElementId"].get<uint64_t>();
 		}
 
@@ -156,6 +158,11 @@ static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &pro
 		}
 		if (perkJson.contains("SpellId")) {
 			proficiencyPerk.spellId = perkJson["SpellId"].get<uint16_t>();
+		}
+		if (proficiencyPerk.type == HOMING_MISSILE) {
+			proficiencyPerk.missileId = perkJson["MissileId"].get<uint16_t>();
+			proficiencyPerk.multiplier = perkJson["Multiplier"].get<double_t>();
+			proficiencyPerk.probability = perkJson["Probability"].get<double_t>();
 		}
 		if (perkJson.contains("SkillId")) {
 			const auto skill = perkJson["SkillId"].get<uint8_t>();
@@ -401,6 +408,13 @@ ProficiencyPerk WeaponProficiency::deserializePerk(const ValueWrapper &val) {
 	perk.range = static_cast<uint8_t>(getInt("range"));
 	perk.skillId = static_cast<skills_t>(getInt("skillId"));
 	perk.spellId = static_cast<uint16_t>(getInt("spellId"));
+	perk.missileId = static_cast<uint16_t>(getInt("missileId"));
+	if (auto it = map.find("multiplier"); it != map.end()) {
+		perk.multiplier = it->second->get<DoubleType>();
+	}
+	if (auto it = map.find("probability"); it != map.end()) {
+		perk.probability = it->second->get<DoubleType>();
+	}
 
 	return perk;
 }
@@ -426,6 +440,9 @@ ValueWrapper WeaponProficiency::serializePerk(const ProficiencyPerk &perk) const
 		{ "range", static_cast<IntType>(perk.range) },
 		{ "skillId", static_cast<IntType>(perk.skillId) },
 		{ "spellId", static_cast<IntType>(perk.spellId) },
+		{ "missileId", static_cast<IntType>(perk.missileId) },
+		{ "multiplier", perk.multiplier },
+		{ "probability", perk.probability },
 	};
 }
 
@@ -508,6 +525,9 @@ void WeaponProficiency::applyPerks(uint16_t weaponId, bool sendSkillUpdate /* = 
 			case SKILL_PERCENTAGE_SPELL_DAMAGE:
 			case SKILL_PERCENTAGE_SPELL_HEALING:
 				applySkillPercentageBonus(selectedPerk);
+				break;
+			case HOMING_MISSILE:
+				// Runtime target selection for area spells requires a gameplay capture.
 				break;
 			default:
 				addStat(selectedPerk.type, selectedPerk.value);

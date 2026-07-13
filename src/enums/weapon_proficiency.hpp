@@ -48,6 +48,7 @@ enum class WeaponProficiencyBonus_t : uint8_t {
 	OMEGA_STRIKE_EXTRA_DAMAGE = 29, // extra damage against creatures below the low-health threshold
 	ARMOR_PENETRATION = 30, // physical armor penetration percentage
 	ELEMENTAL_PIERCE = 31, // elemental resistance penetration percentage
+	HOMING_MISSILE = 32, // chance for offensive spells to fire a level-scaled elemental missile
 };
 
 enum class SkillPercentage_t : uint8_t {
@@ -99,10 +100,13 @@ struct ProficiencyPerk {
 	double_t value = 0.0;
 
 	uint16_t spellId = 0;
+	uint16_t missileId = 0;
 	uint8_t range = 0;
 	uint16_t bestiaryId = 0;
 	std::string bestiaryName = "";
 	uint8_t augmentType = 0;
+	double_t multiplier = 0.0;
+	double_t probability = 0.0;
 	skills_t skillId = SKILL_NONE;
 	CombatType_t element = COMBAT_NONE;
 	WeaponProficiencyBonus_t type = WeaponProficiencyBonus_t::ATTACK_DAMAGE;

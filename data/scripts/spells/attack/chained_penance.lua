@@ -26,12 +26,12 @@ end
 combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canChain")
 
 function getChainValue(creature)
-	local targets = 4
+	local targets = 3
 	local player = creature:getPlayer()
 	if player then
 		targets = targets + player:getWheelSpellAdditionalTarget("Chained Penance")
 	end
-	return targets, 3, false
+	return targets, 4, false
 end
 
 combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getChainValue")

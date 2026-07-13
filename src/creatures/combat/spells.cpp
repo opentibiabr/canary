@@ -72,7 +72,7 @@ namespace {
 			return true;
 		}
 
-		return target && !Combat::isPlayerCombat(target);
+		return !target || !Combat::isPlayerCombat(target);
 	}
 }
 

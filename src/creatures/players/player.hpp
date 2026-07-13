@@ -1856,6 +1856,7 @@ private:
 	bool ghostMode = false;
 	bool pzLocked = false;
 	int64_t pzLockOnlyUntil = 0;
+	uint64_t pzLockEventId = 0;
 	bool isConnecting = false;
 	bool addAttackSkillPoint = false;
 	bool inventoryAbilities[CONST_SLOT_LAST + 1] = {};

@@ -4424,17 +4424,27 @@ void Player::addPzLockTicks() {
 
 	const auto duration = static_cast<uint32_t>(g_configManager().getNumber(PZ_LOCKED));
 	const auto expiresAt = OTSYS_TIME() + duration;
-	if (pzLockOnlyUntil < expiresAt) {
-		pzLockOnlyUntil = expiresAt;
+	if (pzLockOnlyUntil >= expiresAt) {
+		return;
 	}
+
+	pzLockOnlyUntil = expiresAt;
 	pzLocked = true;
 	sendIcons();
+	if (pzLockEventId != 0) {
+		g_dispatcher().stopEvent(pzLockEventId);
+	}
 
 	const auto &task = createPlayerTask(
 		duration,
 		[playerId = getID()] {
 			const auto &player = g_game().getPlayerByID(playerId);
-			if (!player || player->hasCondition(CONDITION_INFIGHT) || player->pzLockOnlyUntil > OTSYS_TIME()) {
+			if (!player) {
+				return;
+			}
+
+			player->pzLockEventId = 0;
+			if (player->hasCondition(CONDITION_INFIGHT) || player->pzLockOnlyUntil > OTSYS_TIME()) {
 				return;
 			}
 
@@ -4449,7 +4459,7 @@ void Player::addPzLockTicks() {
 		},
 		__FUNCTION__
 	);
-	[[maybe_unused]] auto eventId = g_dispatcher().scheduleEvent(task);
+	pzLockEventId = g_dispatcher().scheduleEvent(task);
 }
 
 void Player::addInFightTicks(bool pzlock /*= false*/) {

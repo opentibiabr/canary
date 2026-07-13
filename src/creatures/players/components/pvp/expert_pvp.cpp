@@ -610,7 +610,7 @@ ExpertPvpRelationResult ExpertPvp::classifyFieldRelation(const ExpertFieldContex
 	context.subjectIsMonster = subjectMonster != nullptr;
 	context.subjectIsPlayerSummon = !subjectPlayer && subject->isSummon() && subjectOwnerPlayer != nullptr;
 	context.subjectIsNpc = subject->getNpc() != nullptr;
-	context.subjectIsAccessPlayer = isAccessPlayer(subjectPlayer);
+	context.subjectIsAccessPlayer = isAccessPlayer(subjectOwnerPlayer);
 	context.isSelf = subjectPlayer && subjectPlayer->getGUID() == fieldContext.ownerGuid;
 	applyFieldRelationSnapshot(fieldContext, context);
 

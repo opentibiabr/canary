@@ -96,6 +96,17 @@ TEST(ExpertPvpRelationTest, ClassifiesPlayerSummonOwnerCombatBeforeSummonFallbac
 	EXPECT_EQ(ExpertPvpRelation::DirectAttacker, result.relation);
 }
 
+TEST(ExpertPvpRelationTest, ClassifiesAccessPlayerBeforePlayerSummonFallback) {
+	ExpertPvpRelationContext context;
+	context.subjectIsAccessPlayer = true;
+	context.subjectIsMonster = true;
+	context.subjectIsPlayerSummon = true;
+
+	const auto result = ExpertPvp::classifyRelation(context);
+
+	EXPECT_EQ(ExpertPvpRelation::AccessPlayer, result.relation);
+}
+
 TEST(ExpertPvpRelationTest, ClassifiesNeutralPlayerAsFallback) {
 	ExpertPvpRelationContext context;
 	context.subjectIsPlayer = true;

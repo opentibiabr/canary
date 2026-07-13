@@ -69,11 +69,14 @@ function Party:onShareExperience(exp)
 	local uniqueVocationsCount = self:getUniqueVocationsCount()
 	local partySize = self:getMemberCount() + 1
 
-	-- Formula to calculate the % based on the vocations amount
-	local sharedExperienceMultiplier = ((0.1 * (uniqueVocationsCount ^ 2)) - (0.2 * uniqueVocationsCount) + 1.3)
-	-- Since the formula its non linear, we need to subtract 0.1 if all vocations are present,
-	-- because on all vocations the multiplier is 2.1 and it should be 2.0
-	sharedExperienceMultiplier = partySize < 4 and sharedExperienceMultiplier or sharedExperienceMultiplier - 0.1
+	local sharedExperienceMultiplier = 2
+	if uniqueVocationsCount == 1 then
+		sharedExperienceMultiplier = 1.2
+	elseif uniqueVocationsCount == 2 then
+		sharedExperienceMultiplier = 1.35
+	elseif uniqueVocationsCount == 3 then
+		sharedExperienceMultiplier = 1.7
+	end
 
 	return math.ceil((exp * sharedExperienceMultiplier) / partySize)
 end

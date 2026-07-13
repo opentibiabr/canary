@@ -898,12 +898,12 @@ void Creature::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t da
 	}
 }
 
-void Creature::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss) {
+void Creature::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss, int32_t creditedDamage) {
 	onAttacked();
 	changeMana(-manaLoss);
 
 	if (attacker) {
-		addDamagePoints(attacker, manaLoss);
+		addDamagePoints(attacker, creditedDamage >= 0 ? creditedDamage : manaLoss);
 	}
 }
 

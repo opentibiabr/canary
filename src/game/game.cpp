@@ -8617,19 +8617,22 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		std::stringstream ss;
 
 		if (target->hasCondition(CONDITION_MANASHIELD) && damage.primary.type != COMBAT_UNDEFINEDDAMAGE) {
-			int32_t manaDamage = std::min<int32_t>(target->getMana(), healthChange);
-			uint32_t manaShield = target->getManaShield();
-			if (manaShield > 0) {
-				if (manaShield > manaDamage) {
-					target->setManaShield(manaShield - manaDamage);
-					manaShield = manaShield - manaDamage;
-				} else {
-					manaDamage = manaShield;
-					target->removeCondition(CONDITION_MANASHIELD);
-					manaShield = 0;
+			auto getManaCostPerDamage = [&]() -> int32_t {
+				const auto &ring = targetPlayer ? targetPlayer->getInventoryItem(CONST_SLOT_RING) : nullptr;
+				return target->getManaShield() == 0 && ring && ring->getID() == ITEM_ENERGY_RING_ACTIVATED ? 2 : 1;
+			};
+			auto getAbsorbedDamage = [&](int32_t manaCostPerDamage) -> int32_t {
+				int32_t absorbed = std::min<int32_t>(target->getMana() / manaCostPerDamage, healthChange);
+				const uint32_t manaShieldCapacity = target->getManaShield();
+				if (manaShieldCapacity > 0) {
+					absorbed = std::min<int32_t>(absorbed, manaShieldCapacity);
 				}
-			}
-			if (manaDamage != 0) {
+				return std::max<int32_t>(0, absorbed);
+			};
+
+			int32_t manaCostPerDamage = getManaCostPerDamage();
+			int32_t absorbedDamage = getAbsorbedDamage(manaCostPerDamage);
+			if (absorbedDamage > 0) {
 				if (damage.origin != ORIGIN_NONE) {
 					const auto events = target->getCreatureEvents(CREATURE_EVENT_MANACHANGE);
 					if (!events.empty()) {
@@ -8640,90 +8643,106 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 						if (healthChange == 0) {
 							return true;
 						}
-						manaDamage = std::min<int32_t>(target->getMana(), healthChange);
+						manaCostPerDamage = getManaCostPerDamage();
+						absorbedDamage = getAbsorbedDamage(manaCostPerDamage);
 					}
 				}
 
-				target->drainMana(attacker, manaDamage);
-
-				if (target->getMana() == 0 && manaShield > 0) {
-					target->removeCondition(CONDITION_MANASHIELD);
-				}
-
-				addMagicEffect(spectators.data(), targetPos, CONST_ME_LOSEENERGY);
-
-				std::string damageString = std::to_string(manaDamage);
-
-				std::string spectatorMessage;
-
-				message.primary.value = manaDamage;
-				message.primary.color = TEXTCOLOR_BLUE;
-
-				for (const auto &spectator : spectators) {
-					const auto &tmpPlayer = spectator->getPlayer();
-					if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
-						continue;
-					}
-
-					if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-						ss.str({});
-						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your " << attackMsg << ".";
-
-						if (!damage.exString.empty()) {
-							ss << " (" << damage.exString << ")";
-						}
-						message.type = MESSAGE_DAMAGE_DEALT;
-						message.text = ss.str();
-					} else if (tmpPlayer == targetPlayer) {
-						ss.str({});
-						ss << "You lose " << damageString << " mana";
-						if (!attacker) {
-							ss << '.';
-						} else if (targetPlayer == attackerPlayer) {
-							ss << " due to your own " << attackMsg << ".";
+				if (absorbedDamage > 0) {
+					uint32_t manaShield = target->getManaShield();
+					if (manaShield > 0) {
+						absorbedDamage = std::min<int32_t>(absorbedDamage, manaShield);
+						if (manaShield > absorbedDamage) {
+							target->setManaShield(manaShield - absorbedDamage);
+							manaShield -= absorbedDamage;
 						} else {
-							ss << " due to an " << attackMsg << " by " << attacker->getNameDescription() << '.';
+							target->removeCondition(CONDITION_MANASHIELD);
+							manaShield = 0;
 						}
-						message.type = MESSAGE_DAMAGE_RECEIVED;
-						message.text = ss.str();
-					} else {
-						if (spectatorMessage.empty()) {
+					}
+
+					const int32_t manaDamage = absorbedDamage * manaCostPerDamage;
+					target->drainMana(attacker, manaDamage, absorbedDamage);
+
+					if (target->getMana() == 0 && manaShield > 0) {
+						target->removeCondition(CONDITION_MANASHIELD);
+					}
+
+					addMagicEffect(spectators.data(), targetPos, CONST_ME_LOSEENERGY);
+
+					std::string damageString = std::to_string(manaDamage);
+
+					std::string spectatorMessage;
+
+					message.primary.value = manaDamage;
+					message.primary.color = TEXTCOLOR_BLUE;
+
+					for (const auto &spectator : spectators) {
+						const auto &tmpPlayer = spectator->getPlayer();
+						if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+							continue;
+						}
+
+						if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
 							ss.str({});
-							ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana";
-							if (attacker) {
-								ss << " due to ";
-								if (attacker == target) {
-									ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
-								} else {
-									ss << "an " << attackMsg << " by " << attacker->getNameDescription();
-								}
+							ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your " << attackMsg << ".";
+
+							if (!damage.exString.empty()) {
+								ss << " (" << damage.exString << ")";
 							}
-							ss << '.';
-							spectatorMessage = ss.str();
+							message.type = MESSAGE_DAMAGE_DEALT;
+							message.text = ss.str();
+						} else if (tmpPlayer == targetPlayer) {
+							ss.str({});
+							ss << "You lose " << damageString << " mana";
+							if (!attacker) {
+								ss << '.';
+							} else if (targetPlayer == attackerPlayer) {
+								ss << " due to your own " << attackMsg << ".";
+							} else {
+								ss << " due to an " << attackMsg << " by " << attacker->getNameDescription() << '.';
+							}
+							message.type = MESSAGE_DAMAGE_RECEIVED;
+							message.text = ss.str();
+						} else {
+							if (spectatorMessage.empty()) {
+								ss.str({});
+								ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana";
+								if (attacker) {
+									ss << " due to ";
+									if (attacker == target) {
+										ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
+									} else {
+										ss << "an " << attackMsg << " by " << attacker->getNameDescription();
+									}
+								}
+								ss << '.';
+								spectatorMessage = ss.str();
+							}
+							message.type = MESSAGE_DAMAGE_OTHERS;
+							message.text = spectatorMessage;
 						}
-						message.type = MESSAGE_DAMAGE_OTHERS;
-						message.text = spectatorMessage;
+						tmpPlayer->sendTextMessage(message);
 					}
-					tmpPlayer->sendTextMessage(message);
-				}
 
-				damage.primary.value -= manaDamage;
-				if (damage.primary.value < 0) {
-					damage.secondary.value = std::max<int32_t>(0, damage.secondary.value + damage.primary.value);
-					damage.primary.value = 0;
-				}
-
-				if (attackerPlayer) {
-					attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
-					if (damage.secondary.type != COMBAT_NONE) {
-						attackerPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					damage.primary.value -= absorbedDamage;
+					if (damage.primary.value < 0) {
+						damage.secondary.value = std::max<int32_t>(0, damage.secondary.value + damage.primary.value);
+						damage.primary.value = 0;
 					}
-				}
 
-				if (targetPlayer) {
-					targetPlayer->updateImpactTracker(damage.primary.type, manaDamage);
-					if (damage.secondary.type != COMBAT_NONE) {
-						targetPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+					if (attackerPlayer) {
+						attackerPlayer->updateImpactTracker(damage.primary.type, damage.primary.value);
+						if (damage.secondary.type != COMBAT_NONE) {
+							attackerPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+						}
+					}
+
+					if (targetPlayer) {
+						targetPlayer->updateImpactTracker(damage.primary.type, absorbedDamage);
+						if (damage.secondary.type != COMBAT_NONE) {
+							targetPlayer->updateImpactTracker(damage.secondary.type, damage.secondary.value);
+						}
 					}
 				}
 			}

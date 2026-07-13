@@ -538,7 +538,7 @@ public:
 
 	void gainHealth(const std::shared_ptr<Creature> &attacker, int32_t healthGain);
 	virtual void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage);
-	virtual void drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss);
+	virtual void drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss, int32_t creditedDamage = -1);
 
 	virtual bool challengeCreature(const std::shared_ptr<Creature> &, [[maybe_unused]] int targetChangeCooldown) {
 		return false;

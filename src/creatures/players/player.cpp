@@ -3486,8 +3486,8 @@ void Player::drainHealth(const std::shared_ptr<Creature> &attacker, int32_t dama
 	sendStats();
 }
 
-void Player::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss) {
-	Creature::drainMana(attacker, manaLoss);
+void Player::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss, int32_t creditedDamage) {
+	Creature::drainMana(attacker, manaLoss, creditedDamage);
 	sendStats();
 }
 

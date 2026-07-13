@@ -863,7 +863,7 @@ public:
 	std::vector<double> getDamageAccuracy(const ItemType &it) const;
 
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
-	void drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss) override;
+	void drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLoss, int32_t creditedDamage = -1) override;
 	void addManaSpent(uint64_t amount);
 	void addSkillAdvance(skills_t skill, uint64_t count);
 

@@ -176,6 +176,7 @@ bool Player::setVocation(uint16_t vocId) {
 	vocation = voc;
 
 	updateRegeneration();
+	pruneStances();
 	g_game().addPlayerVocation(static_self_cast<Player>());
 	return true;
 }
@@ -7372,6 +7373,11 @@ uint16_t Player::getSkillLevel(skills_t skill) const {
 		skillLevel = avatarCritChance; // 100%
 	}
 
+	if (skill == SKILL_FIST && isStanceActive(275)) {
+		const uint64_t bonus = static_cast<uint64_t>(getBaseSkill(SKILL_FIST)) * (hasCondition(CONDITION_SERENE) ? 16 : 8) / 100;
+		skillLevel = static_cast<uint16_t>(std::min<uint64_t>(static_cast<uint64_t>(skillLevel) + bonus, std::numeric_limits<uint16_t>::max()));
+	}
+
 	return std::min<uint16_t>(std::numeric_limits<uint16_t>::max(), std::max<uint16_t>(0, static_cast<uint16_t>(skillLevel)));
 }
 
@@ -13020,17 +13026,40 @@ Virtue_t Player::getVirtue() const {
 }
 
 void Player::setVirtue(Virtue_t newVirtue) {
-	if (virtue == newVirtue) {
+	uint16_t spellId = 0;
+	switch (newVirtue) {
+		case Virtue_t::Harmony:
+			spellId = 274;
+			break;
+		case Virtue_t::Justice:
+			spellId = 275;
+			break;
+		case Virtue_t::Sustain:
+			spellId = 276;
+			break;
+		case Virtue_t::None:
+			break;
+	}
+
+	if (spellId != 0) {
+		updateStance(spellId, false, true, true);
 		return;
 	}
 
-	virtue = newVirtue;
+	const auto standard = activeStances.find(StanceSlot_t::Standard);
+	if (standard == activeStances.end() || standard->second < 274 || standard->second > 276) {
+		return;
+	}
 
-	sendSkills();
-	sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+	activeStances.erase(standard);
+	refreshStanceState(true);
 }
 
 bool Player::toggleStance(uint16_t spellId) {
+	return updateStance(spellId, true, true, true);
+}
+
+bool Player::updateStance(uint16_t spellId, bool toggle, bool notifyClient, bool replaceSlot) {
 	const auto &spell = g_spells().getInstantSpellById(spellId);
 	if (!spell || spell->getStanceSlot() == StanceSlot_t::None) {
 		return false;
@@ -13043,12 +13072,31 @@ bool Player::toggleStance(uint16_t spellId) {
 
 	const auto slot = spell->getStanceSlot();
 	const auto current = activeStances.find(slot);
-	if (current != activeStances.end() && current->second == spellId) {
-		activeStances.erase(current);
-	} else {
-		activeStances[slot] = spellId;
+	if (current != activeStances.end()) {
+		if (current->second == spellId) {
+			if (!toggle) {
+				return true;
+			}
+			activeStances.erase(current);
+			refreshStanceState(notifyClient);
+			return true;
+		}
+
+		if (!replaceSlot) {
+			return false;
+		}
 	}
 
+	activeStances[slot] = spellId;
+	refreshStanceState(notifyClient);
+	return true;
+}
+
+void Player::restoreStance(uint16_t spellId) {
+	updateStance(spellId, false, false, false);
+}
+
+void Player::refreshStanceState(bool notifyClient) {
 	virtue = Virtue_t::None;
 	if (const auto standard = activeStances.find(StanceSlot_t::Standard); standard != activeStances.end()) {
 		switch (standard->second) {
@@ -13066,12 +13114,34 @@ bool Player::toggleStance(uint16_t spellId) {
 		}
 	}
 
+	if (!notifyClient) {
+		return;
+	}
+
 	sendStats();
 	sendSkills();
 	if (client) {
 		client->sendVocationSpecificActiveSpells(getActiveStanceSpellIds());
 	}
-	return true;
+}
+
+void Player::pruneStances() {
+	bool changed = false;
+	for (auto it = activeStances.begin(); it != activeStances.end();) {
+		const auto &spell = g_spells().getInstantSpellById(it->second);
+		const bool invalidSpell = !spell || spell->getStanceSlot() != it->first;
+		const bool invalidVocation = spell && !spell->getVocMap().empty() && !spell->getVocMap().contains(getVocationId());
+		if (invalidSpell || invalidVocation) {
+			it = activeStances.erase(it);
+			changed = true;
+		} else {
+			++it;
+		}
+	}
+
+	if (changed) {
+		refreshStanceState(true);
+	}
 }
 
 bool Player::isStanceActive(uint16_t spellId) const {

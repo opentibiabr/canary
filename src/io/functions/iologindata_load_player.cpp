@@ -31,6 +31,10 @@
 #include "io/player_storage_repository.hpp"
 #include "kv/kv.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <limits>
+#endif
+
 void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
 	try {
 		do {
@@ -1016,10 +1020,40 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 
 	player->initializePrey();
 	player->initializeTaskHunting();
-	// Load and apply the player's Virtue from the saved spell data, if available
 	auto kv = player->kv()->scoped("spells");
-	if (auto kvOpt = kv->get("virtue")) {
-		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()));
+	bool loadedActiveStances = false;
+	if (const auto kvOpt = kv->get("active-stances"); kvOpt && std::holds_alternative<ArrayType>(kvOpt->getVariant())) {
+		loadedActiveStances = true;
+		for (const auto &stance : kvOpt->get<ArrayType>()) {
+			if (!std::holds_alternative<IntType>(stance.getVariant())) {
+				continue;
+			}
+			const auto spellId = stance.get<IntType>();
+			if (spellId <= 0 || spellId > std::numeric_limits<uint16_t>::max()) {
+				continue;
+			}
+			player->restoreStance(static_cast<uint16_t>(spellId));
+		}
+	}
+
+	// Migrate the legacy single Monk virtue value when no modern stance list exists.
+	if (!loadedActiveStances) {
+		if (const auto kvOpt = kv->get("virtue")) {
+			const int32_t virtue = std::holds_alternative<IntType>(kvOpt->getVariant()) ? kvOpt->get<IntType>() : 0;
+			switch (virtue) {
+				case enumToValue(Virtue_t::Harmony):
+					player->restoreStance(274);
+					break;
+				case enumToValue(Virtue_t::Justice):
+					player->restoreStance(275);
+					break;
+				case enumToValue(Virtue_t::Sustain):
+					player->restoreStance(276);
+					break;
+				default:
+					break;
+			}
+		}
 	}
 
 	if (auto kvOpt = kv->get("harmony")) {

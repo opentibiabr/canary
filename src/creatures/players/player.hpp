@@ -1592,6 +1592,10 @@ private:
 
 	void updateInventoryWeight();
 	void updateSerenityState();
+	bool updateStance(uint16_t spellId, bool toggle, bool notifyClient, bool replaceSlot);
+	void restoreStance(uint16_t spellId);
+	void refreshStanceState(bool notifyClient);
+	void pruneStances();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);

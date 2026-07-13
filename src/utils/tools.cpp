@@ -1659,8 +1659,8 @@ SpellGroup_t stringToSpellGroup(const std::string &value) {
 	if (tmpStr == "greatbeams" || tmpStr == "10") {
 		return SPELLGROUP_GREAT_BEAMS;
 	}
-	if (tmpStr == "virtue" || tmpStr == "11") {
-		return SPELLGROUP_VIRTUE;
+	if (tmpStr == "stance" || tmpStr == "virtue" || tmpStr == "11") {
+		return SPELLGROUP_STANCE;
 	}
 
 	return SPELLGROUP_NONE;

@@ -8730,11 +8730,9 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
 		sendMonkData(MonkData_t::Harmony, player->getHarmony());
-		sendMonkData(MonkData_t::Virtue, enumToValue(player->getVirtue()));
 		sendMonkData(MonkData_t::Serenity, player->hasCondition(CONDITION_SERENE) ? 1 : 0);
-	} else {
-		sendVocationSpecificActiveSpells({});
 	}
+	sendVocationSpecificActiveSpells(player->getActiveStanceSpellIds());
 
 	if (version >= 1100) {
 		sendVIPGroups();
@@ -12189,6 +12187,25 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 
 void ProtocolGame::sendVocationSpecificActiveSpells(const std::vector<uint16_t> &spellIds) {
 	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData)) {
+		if (hasProtocolFeature(protocolProfile, ProtocolFeature::CustomMonkPackets) && player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
+			Virtue_t virtue = Virtue_t::None;
+			for (const uint16_t spellId : spellIds) {
+				switch (spellId) {
+					case 274:
+						virtue = Virtue_t::Harmony;
+						break;
+					case 275:
+						virtue = Virtue_t::Justice;
+						break;
+					case 276:
+						virtue = Virtue_t::Sustain;
+						break;
+					default:
+						break;
+				}
+			}
+			sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+		}
 		return;
 	}
 

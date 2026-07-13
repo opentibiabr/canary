@@ -862,15 +862,24 @@ void IOLoginDataSave::savePlayerSystems(const std::shared_ptr<Player> &player) {
 		return;
 	}
 
-	// Save the player's Virtue to persistent storage if it's set
-	auto virtue = player->getVirtue();
-	if (virtue > Virtue_t::None) {
-		player->kv()->scoped("spells")->set("virtue", static_cast<uint8_t>(virtue));
+	auto spells = player->kv()->scoped("spells");
+	ArrayType activeStances;
+	for (const uint16_t spellId : player->getActiveStanceSpellIds()) {
+		activeStances.emplace_back(static_cast<int>(spellId));
 	}
 
-	auto harmony = player->getHarmony();
+	if (activeStances.empty()) {
+		spells->remove("active-stances");
+	} else {
+		spells->set("active-stances", ValueWrapper(activeStances));
+	}
+	spells->remove("virtue");
+
+	const auto harmony = player->getHarmony();
 	if (harmony > 0) {
-		player->kv()->scoped("spells")->set("harmony", harmony);
+		spells->set("harmony", harmony);
+	} else {
+		spells->remove("harmony");
 	}
 }
 

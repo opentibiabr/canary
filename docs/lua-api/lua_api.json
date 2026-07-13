@@ -8392,6 +8392,14 @@
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
       {
+        "name": "optionalTarget",
+        "params": [
+          "value?: boolean"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
+      },
+      {
         "name": "range",
         "params": [
           "range?: number"

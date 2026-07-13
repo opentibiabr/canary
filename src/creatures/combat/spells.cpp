@@ -61,7 +61,7 @@ namespace {
 Spells::Spells() = default;
 Spells::~Spells() = default;
 
-TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player, std::string &words) {
+TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player, std::string &words, const Position* optionalTarget) {
 	auto maxOnline = g_configManager().getNumber(MAX_PLAYERS_PER_ACCOUNT);
 	const auto &tile = player->getTile();
 	if (maxOnline > 1 && player->getAccountType() < ACCOUNT_TYPE_GAMEMASTER && tile && !tile->hasFlag(TILESTATE_PROTECTIONZONE)) {
@@ -130,7 +130,7 @@ TalkActionResult_t Spells::playerSaySpell(const std::shared_ptr<Player> &player,
 		return TALKACTION_FAILED;
 	}
 
-	if (instantSpell->playerCastInstant(player, param)) {
+	if (instantSpell->playerCastInstant(player, param, optionalTarget)) {
 		words = instantSpell->getWords();
 
 		if (instantSpell->getHasParam() && !param.empty()) {
@@ -1149,7 +1149,7 @@ void Spell::setLockedPZ(bool b) {
 
 InstantSpell::InstantSpell() = default;
 
-bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const {
+bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std::string &param, const Position* optionalTargetPosition) const {
 	if (!playerSpellCheck(player)) {
 		return false;
 	}
@@ -1162,7 +1162,36 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	var.instantName = getName();
 	std::shared_ptr<Player> playerTarget = nullptr;
 
-	if (selfTarget) {
+	if (optionalTargetPosition) {
+		if (!optionalTarget) {
+			player->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+			return false;
+		}
+
+		var.type = VARIANT_POSITION;
+		var.pos = *optionalTargetPosition;
+		if (!canThrowSpell(player, var.pos)) {
+			player->sendCancelMessage(RETURNVALUE_CREATUREISNOTREACHABLE);
+			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+			return false;
+		}
+		if (!playerInstantSpellCheck(player, var.pos)) {
+			return false;
+		}
+	} else if (optionalTarget) {
+		const auto &target = player->getAttackedCreature();
+		var.type = VARIANT_POSITION;
+		var.pos = target && !target->isRemoved() && target->getHealth() > 0 ? target->getPosition() : player->getPosition();
+
+		if (!canThrowSpell(player, var.pos)) {
+			player->sendCancelMessage(RETURNVALUE_CREATUREISNOTREACHABLE);
+			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+			return false;
+		}
+		if (!playerInstantSpellCheck(player, var.pos)) {
+			return false;
+		}
+	} else if (selfTarget) {
 		var.type = VARIANT_NUMBER;
 		var.number = player->getID();
 	} else if (needTarget || casterTargetOrDirection) {
@@ -1282,9 +1311,15 @@ bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, cons
 	if (!creature || !target) {
 		return false;
 	}
+	return canThrowSpell(creature, target->getPosition());
+}
 
+bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, const Position &targetPosition) const {
+	if (!creature) {
+		return false;
+	}
 	const Position &fromPos = creature->getPosition();
-	const Position &toPos = target->getPosition();
+	const Position &toPos = targetPosition;
 	if (fromPos.z != toPos.z || (range == -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck)) || (range != -1 && !g_game().canThrowObjectTo(fromPos, toPos, checkLineOfSight ? SightLine_CheckSightLineAndFloor : SightLine_NoCheck, range, range))) {
 		return false;
 	}
@@ -1388,6 +1423,14 @@ bool InstantSpell::getNeedCasterTargetOrDirection() const {
 
 void InstantSpell::setNeedCasterTargetOrDirection(bool d) {
 	casterTargetOrDirection = d;
+}
+
+bool InstantSpell::getOptionalTarget() const {
+	return optionalTarget;
+}
+
+void InstantSpell::setOptionalTarget(bool value) {
+	optionalTarget = value;
 }
 
 bool InstantSpell::getBlockWalls() const {

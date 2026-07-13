@@ -7433,7 +7433,7 @@ void Game::playerShowQuestLine(uint32_t playerId, uint16_t questId) {
 	g_callbacks().executeCallback(EventCallback_t::playerOnRequestQuestLine, player, questId);
 }
 
-void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text) {
+void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, const std::string &receiver, const std::string &text, const Position* optionalTarget) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -7442,7 +7442,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 	player->resetLoginProtection();
 	player->resetIdleTime();
 
-	if (playerSaySpell(player, type, text)) {
+	if (playerSaySpell(player, type, text, optionalTarget)) {
 		return;
 	}
 
@@ -7499,7 +7499,7 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 	}
 }
 
-bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text) {
+bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text, const Position* optionalTarget) {
 	if (player->walkExhausted()) {
 		return true;
 	}
@@ -7510,7 +7510,7 @@ bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses ty
 		return true;
 	}
 
-	result = g_spells().playerSaySpell(player, words);
+	result = g_spells().playerSaySpell(player, words, optionalTarget);
 	if (result == TALKACTION_BREAK) {
 		if (!g_configManager().getBoolean(PUSH_WHEN_ATTACKING)) {
 			player->cancelPush();

@@ -66,6 +66,15 @@ void SpellFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Spell", "hasParams", SpellFunctions::luaSpellHasParams);
 	Lua::registerMethod(L, "Spell", "hasPlayerNameParam", SpellFunctions::luaSpellHasPlayerNameParam);
 	Lua::registerMethod(L, "Spell", "needCasterTargetOrDirection", SpellFunctions::luaSpellNeedCasterTargetOrDirection);
+	/***
+	 * Enables the 15.25+ optional spell targeting modes. Without an explicit position,
+	 * the spell is centred below the attacked creature or below the caster.
+	 *
+	 * @function Spell:optionalTarget
+	 * @param value? boolean
+	 * @return boolean
+	 */
+	Lua::registerMethod(L, "Spell", "optionalTarget", SpellFunctions::luaSpellOptionalTarget);
 	Lua::registerMethod(L, "Spell", "isBlockingWalls", SpellFunctions::luaSpellIsBlockingWalls);
 
 	// Only for RuneSpells.
@@ -837,6 +846,29 @@ int SpellFunctions::luaSpellNeedCasterTargetOrDirection(lua_State* L) {
 			Lua::pushBoolean(L, spell->getNeedCasterTargetOrDirection());
 		} else {
 			spell->setNeedCasterTargetOrDirection(Lua::getBoolean(L, 2));
+			Lua::pushBoolean(L, true);
+		}
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+// only for InstantSpells
+int SpellFunctions::luaSpellOptionalTarget(lua_State* L) {
+	// spell:optionalTarget(bool)
+	const auto &spellBase = Lua::getUserdataShared<Spell>(L, 1, "Spell");
+	const auto &spell = std::static_pointer_cast<InstantSpell>(spellBase);
+	if (spell) {
+		if (spell->spellType != SPELL_INSTANT) {
+			lua_pushnil(L);
+			return 1;
+		}
+
+		if (lua_gettop(L) == 1) {
+			Lua::pushBoolean(L, spell->getOptionalTarget());
+		} else {
+			spell->setOptionalTarget(Lua::getBoolean(L, 2));
 			Lua::pushBoolean(L, true);
 		}
 	} else {

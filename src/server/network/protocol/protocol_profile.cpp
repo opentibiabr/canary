@@ -222,6 +222,7 @@ namespace {
 			| ProtocolFeature::ExtendedUpdateTargetPayload
 			| ProtocolFeature::ReworkedMonsterCyclopediaPayload
 			| ProtocolFeature::CombatModesRemoved
+			| ProtocolFeature::SpellCastOptionalTarget
 		),
 		.name = "current",
 		.supportLabel = "",

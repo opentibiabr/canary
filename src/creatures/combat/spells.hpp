@@ -45,7 +45,7 @@ public:
 
 	std::shared_ptr<InstantSpell> getInstantSpellById(uint16_t spellId);
 
-	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words);
+	TalkActionResult_t playerSaySpell(const std::shared_ptr<Player> &player, std::string &words, const Position* optionalTarget);
 
 	static Position getCasterPosition(const std::shared_ptr<Creature> &creature, Direction dir);
 
@@ -319,7 +319,7 @@ private:
 class InstantSpell final : public Spell {
 public:
 	InstantSpell();
-	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param) const;
+	bool playerCastInstant(const std::shared_ptr<Player> &player, std::string &param, const Position* optionalTarget) const;
 
 	bool castSpell(const std::shared_ptr<Creature> &creature) override;
 	bool castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) override;
@@ -336,17 +336,22 @@ public:
 	void setNeedDirection(bool n);
 	[[nodiscard]] bool getNeedCasterTargetOrDirection() const;
 	void setNeedCasterTargetOrDirection(bool d);
+	[[nodiscard]] bool getOptionalTarget() const;
+	void setOptionalTarget(bool value);
 	[[nodiscard]] bool getBlockWalls() const;
 	void setBlockWalls(bool w);
 	bool canCast(const std::shared_ptr<Player> &player) const;
 	bool canThrowSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const;
 
 private:
+	bool canThrowSpell(const std::shared_ptr<Creature> &creature, const Position &targetPosition) const;
+
 	bool needDirection = false;
 	bool hasParam = false;
 	bool hasPlayerNameParam = false;
 	bool checkLineOfSight = true;
 	bool casterTargetOrDirection = false;
+	bool optionalTarget = false;
 };
 
 class RuneSpell final : public Action, public Spell {

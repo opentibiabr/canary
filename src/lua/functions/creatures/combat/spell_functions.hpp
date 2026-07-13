@@ -51,6 +51,7 @@ private:
 	static int luaSpellHasParams(lua_State* L);
 	static int luaSpellHasPlayerNameParam(lua_State* L);
 	static int luaSpellNeedCasterTargetOrDirection(lua_State* L);
+	static int luaSpellOptionalTarget(lua_State* L);
 	static int luaSpellIsBlockingWalls(lua_State* L);
 
 	// Only for RuneSpells.

@@ -2692,6 +2692,19 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 		return;
 	}
 
+	Position optionalTargetPosition;
+	const Position* optionalTarget = nullptr;
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::SpellCastOptionalTarget)) {
+		const uint8_t optionalTargetMode = msg.getByte();
+		if (optionalTargetMode > 2) {
+			return;
+		}
+		if (optionalTargetMode != 0) {
+			optionalTargetPosition = msg.getPosition();
+			optionalTarget = &optionalTargetPosition;
+		}
+	}
+
 	if (channelId == CHANNEL_LIVESTREAM) {
 		g_livestream().handleChat(getThis(), text);
 		return;
@@ -2702,7 +2715,7 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 		return;
 	}
 
-	g_game().playerSay(player->getID(), channelId, type, receiver, text);
+	g_game().playerSay(player->getID(), channelId, type, receiver, text, optionalTarget);
 }
 
 void ProtocolGame::parseFightModes(NetworkMessage &msg) {

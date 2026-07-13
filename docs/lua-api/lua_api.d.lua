@@ -4451,6 +4451,10 @@ function Spell:needWeapon(value) end
 ---@return boolean
 function Spell:onCastSpell(callback) end
 
+---@param value? boolean
+---@return boolean
+function Spell:optionalTarget(value) end
+
 ---@param range? number
 ---@return boolean|number|nil
 function Spell:range(range) end

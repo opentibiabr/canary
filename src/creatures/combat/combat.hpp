@@ -60,17 +60,19 @@ protected:
 class ChainCallback final : public CallBack {
 public:
 	ChainCallback() = default;
-	ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking);
+	ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking, const bool &fanOut = false, const uint8_t &initialRange = 0);
 
-	void getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking);
+	void getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking, bool &fanOut, uint8_t &initialRange);
 	void setFromLua(bool fromLua);
 
 private:
-	void onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking) const;
+	void onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &chainTargets, uint8_t &chainDistance, bool &backtracking, bool &fanOut, uint8_t &initialRange) const;
 
 	uint8_t m_chainDistance = 0;
 	uint8_t m_chainTargets = 0;
+	uint8_t m_initialRange = 0;
 	bool m_backtracking = false;
+	bool m_fanOut = false;
 	bool m_fromLua = false;
 };
 
@@ -272,6 +274,7 @@ public:
 private:
 	static void doChainEffect(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, uint16_t effect);
 	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, const std::shared_ptr<Creature> &initialTarget = nullptr);
+	static std::vector<std::pair<Position, std::vector<uint32_t>>> pickForkTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t forkDistance, uint8_t maxTargets, uint8_t initialRange, bool aggressive, const std::shared_ptr<Creature> &requestedTarget);
 	static bool isValidChainTarget(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &currentTarget, const std::shared_ptr<Creature> &potentialTarget, const CombatParams &params, bool aggressive);
 
 	static void doCombatDefault(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params);

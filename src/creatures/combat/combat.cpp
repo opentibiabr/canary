@@ -1332,18 +1332,25 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 		return false;
 	}
 
-	uint8_t maxTargets;
-	uint8_t chainDistance;
+	uint8_t maxTargets = 0;
+	uint8_t chainDistance = 0;
+	uint8_t initialRange = 0;
 	bool backtracking = false;
-	params.chainCallback->getChainValues(caster, maxTargets, chainDistance, backtracking);
-	auto targets = pickChainTargets(caster, params, chainDistance, maxTargets, aggressive, backtracking, target);
+	bool fanOut = false;
+	params.chainCallback->getChainValues(caster, maxTargets, chainDistance, backtracking, fanOut, initialRange);
+	auto targets = fanOut
+	                 ? pickForkTargets(caster, params, chainDistance, maxTargets, initialRange, aggressive, target)
+	                 : pickChainTargets(caster, params, chainDistance, maxTargets, aggressive, backtracking, target);
 
 	g_logger().debug("[{}] Chain targets: {}", __FUNCTION__, targets.size());
 	if (targets.empty() || (targets.size() == 1 && targets.begin()->second.empty())) {
 		return false;
 	}
 
-	auto affected = targets.size();
+	int affected = 0;
+	for (const auto &entry : targets) {
+		affected += static_cast<int>(entry.second.size());
+	}
 	int i = 0;
 	auto combat = this;
 	for (const auto &[from, toVector] : targets) {
@@ -1781,7 +1788,7 @@ void Combat::setRuneSpellName(const std::string &value) {
 	runeSpellName = value;
 }
 
-std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool backtracking, bool aggressive, const std::shared_ptr<Creature> &initialTarget /* = nullptr */) {
+std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t chainDistance, uint8_t maxTargets, bool aggressive, bool backtracking, const std::shared_ptr<Creature> &initialTarget /* = nullptr */) {
 	Benchmark bm_pickChain;
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (!caster) {
@@ -1854,6 +1861,75 @@ std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickChainTargets
 	}
 
 	g_logger().debug("[{}] resultMap: {} in {} ms", __FUNCTION__, resultMap.size(), bm_pickChain.duration());
+	return resultMap;
+}
+
+std::vector<std::pair<Position, std::vector<uint32_t>>> Combat::pickForkTargets(const std::shared_ptr<Creature> &caster, const CombatParams &params, uint8_t forkDistance, uint8_t maxTargets, uint8_t initialRange, bool aggressive, const std::shared_ptr<Creature> &requestedTarget) {
+	if (!caster || maxTargets == 0 || forkDistance == 0 || initialRange == 0) {
+		return {};
+	}
+
+	const auto isValidTarget = [&](const std::shared_ptr<Creature> &origin, const std::shared_ptr<Creature> &candidate) {
+		return candidate && candidate != caster && isValidChainTarget(caster, origin, candidate, params, aggressive);
+	};
+
+	std::shared_ptr<Creature> initialTarget;
+	if (requestedTarget && requestedTarget != caster && isValidTarget(caster, requestedTarget)) {
+		initialTarget = requestedTarget;
+	} else if (!requestedTarget || requestedTarget == caster) {
+		double closestDistance = std::numeric_limits<double>::max();
+		auto spectators = Spectators().find<Creature>(caster->getPosition(), false, initialRange, initialRange, initialRange, initialRange);
+		for (const auto &spectator : spectators) {
+			if (!isValidTarget(caster, spectator)) {
+				continue;
+			}
+
+			const double distance = Position::getEuclideanDistance(caster->getPosition(), spectator->getPosition());
+			if (distance < closestDistance || (distance == closestDistance && initialTarget && spectator->getID() < initialTarget->getID())) {
+				closestDistance = distance;
+				initialTarget = spectator;
+			}
+		}
+	}
+
+	if (!initialTarget) {
+		return {};
+	}
+
+	std::vector<std::pair<Position, std::vector<uint32_t>>> resultMap;
+	resultMap.emplace_back(caster->getPosition(), std::vector<uint32_t> { initialTarget->getID() });
+	if (maxTargets == 1) {
+		return resultMap;
+	}
+
+	auto spectators = Spectators().find<Creature>(initialTarget->getPosition(), false, forkDistance, forkDistance, forkDistance, forkDistance);
+	std::vector<std::shared_ptr<Creature>> additionalTargets;
+	additionalTargets.reserve(spectators.size());
+	for (const auto &spectator : spectators) {
+		if (spectator == initialTarget || !isValidTarget(initialTarget, spectator)) {
+			continue;
+		}
+		additionalTargets.emplace_back(spectator);
+	}
+
+	std::sort(additionalTargets.begin(), additionalTargets.end(), [&initialTarget](const auto &left, const auto &right) {
+		const double leftDistance = Position::getEuclideanDistance(initialTarget->getPosition(), left->getPosition());
+		const double rightDistance = Position::getEuclideanDistance(initialTarget->getPosition(), right->getPosition());
+		return leftDistance != rightDistance ? leftDistance < rightDistance : left->getID() < right->getID();
+	});
+
+	std::vector<uint32_t> additionalTargetIds;
+	additionalTargetIds.reserve(std::min<size_t>(additionalTargets.size(), maxTargets - 1));
+	for (const auto &additionalTarget : additionalTargets) {
+		if (additionalTargetIds.size() >= maxTargets - 1) {
+			break;
+		}
+		additionalTargetIds.emplace_back(additionalTarget->getID());
+	}
+
+	if (!additionalTargetIds.empty()) {
+		resultMap.emplace_back(initialTarget->getPosition(), std::move(additionalTargetIds));
+	}
 	return resultMap;
 }
 
@@ -2061,12 +2137,12 @@ void TargetCallback::onTargetCombat(const std::shared_ptr<Creature> &creature, c
 
 //**********************************************************//
 
-ChainCallback::ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking) :
-	m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_backtracking(backtracking) { }
+ChainCallback::ChainCallback(const uint8_t &chainTargets, const uint8_t &chainDistance, const bool &backtracking, const bool &fanOut, const uint8_t &initialRange) :
+	m_chainDistance(chainDistance), m_chainTargets(chainTargets), m_initialRange(initialRange), m_backtracking(backtracking), m_fanOut(fanOut) { }
 
-void ChainCallback::getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) {
+void ChainCallback::getChainValues(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking, bool &fanOut, uint8_t &initialRange) {
 	if (m_fromLua) {
-		onChainCombat(creature, maxTargets, chainDistance, backtracking);
+		onChainCombat(creature, maxTargets, chainDistance, backtracking, fanOut, initialRange);
 		return;
 	}
 
@@ -2074,6 +2150,8 @@ void ChainCallback::getChainValues(const std::shared_ptr<Creature> &creature, ui
 		maxTargets = m_chainTargets;
 		chainDistance = m_chainDistance;
 		backtracking = m_backtracking;
+		fanOut = m_fanOut;
+		initialRange = m_initialRange;
 	}
 }
 
@@ -2081,7 +2159,7 @@ void ChainCallback::setFromLua(bool fromLua) {
 	m_fromLua = fromLua;
 }
 
-void ChainCallback::onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking) const {
+void ChainCallback::onChainCombat(const std::shared_ptr<Creature> &creature, uint8_t &maxTargets, uint8_t &chainDistance, bool &backtracking, bool &fanOut, uint8_t &initialRange) const {
 	// onChainCombat(creature)
 	if (!LuaScriptInterface::reserveScriptEnv()) {
 		g_logger().error("[ChainCallback::onTargetCombat - Creature {}] "
@@ -2108,13 +2186,15 @@ void ChainCallback::onChainCombat(const std::shared_ptr<Creature> &creature, uin
 	}
 
 	int size0 = lua_gettop(L);
-	if (lua_pcall(L, 1, 3 /*nReturnValues*/, 0) != 0) {
+	if (lua_pcall(L, 1, 5 /*nReturnValues*/, 0) != 0) {
 		LuaScriptInterface::reportError(nullptr, LuaScriptInterface::popString(L));
 	}
-	maxTargets = LuaScriptInterface::getNumber<uint8_t>(L, -3);
-	chainDistance = LuaScriptInterface::getNumber<uint8_t>(L, -2);
-	backtracking = LuaScriptInterface::getBoolean(L, -1);
-	lua_pop(L, 3);
+	maxTargets = LuaScriptInterface::getNumber<uint8_t>(L, -5);
+	chainDistance = LuaScriptInterface::getNumber<uint8_t>(L, -4);
+	backtracking = LuaScriptInterface::getBoolean(L, -3);
+	fanOut = LuaScriptInterface::getBoolean(L, -2);
+	initialRange = LuaScriptInterface::getNumber<uint8_t>(L, -1);
+	lua_pop(L, 5);
 
 	if ((lua_gettop(L) + 1 /*nParams*/ + 1) != size0) {
 		LuaScriptInterface::reportError(nullptr, "Stack size changed!");

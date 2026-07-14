@@ -86,6 +86,32 @@ namespace {
 		}
 	}
 
+	[[nodiscard]] constexpr int32_t getLordOfDestructionElementalBonus(uint8_t stage) {
+		switch (stage) {
+			case 0:
+				return 0;
+			case 1:
+				return 2;
+			case 2:
+				return 3;
+			default:
+				return 4;
+		}
+	}
+
+	[[nodiscard]] constexpr int32_t getLordOfDestructionDecayBonus(uint8_t stage) {
+		switch (stage) {
+			case 0:
+				return 0;
+			case 1:
+				return 1500;
+			case 2:
+				return 2250;
+			default:
+				return 3000;
+		}
+	}
+
 	[[nodiscard]] double getItemImbuementSkillEquipment(const std::shared_ptr<Item> &item, uint16_t skill) {
 		double imbuementSkill = 0.0;
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -13182,17 +13208,19 @@ ElementalSpellCastSnapshot Player::createElementalSpellCastSnapshot(CombatType_t
 }
 
 void Player::applyElementalStanceBonuses(ElementalSpellCastSnapshot &snapshot) const {
-	// Keep stance bonuses centralized so Wheel stages can extend the base values
-	// without changing the per-cast transport or Combat execution paths.
+	const uint8_t lordOfDestructionStage = wheel().getStage(WheelStage_t::DRAIN_BODY);
+	const int32_t elementalBonus = getLordOfDestructionElementalBonus(lordOfDestructionStage);
+	const int32_t decayBonus = getLordOfDestructionDecayBonus(lordOfDestructionStage);
+
 	switch (snapshot.stanceSpellId) {
 		case MASTER_OF_FLAMES_SPELL_ID:
-			snapshot.damageMultiplier = 4;
+			snapshot.damageMultiplier = 4 + elementalBonus;
 			break;
 		case MASTER_OF_THUNDER_SPELL_ID:
-			snapshot.criticalChance = 400;
+			snapshot.criticalChance = (4 + elementalBonus) * 100;
 			break;
 		case MASTER_OF_DECAY_SPELL_ID:
-			snapshot.criticalDamage = 3000;
+			snapshot.criticalDamage = 3000 + decayBonus;
 			break;
 		default:
 			break;

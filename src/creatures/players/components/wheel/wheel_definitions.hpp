@@ -83,7 +83,7 @@ enum class WheelStage_t : uint8_t {
 	GIFT_OF_LIFE = 0,
 	COMBAT_MASTERY = 1,
 	BLESSING_OF_THE_GROVE = 2,
-	DRAIN_BODY = 3,
+	DRAIN_BODY = 3, // Legacy ID used by Lord of Destruction since 15.30.
 	BEAM_MASTERY = 4,
 	DIVINE_EMPOWERMENT = 5,
 	TWIN_BURST = 6,
@@ -262,7 +262,7 @@ struct PlayerWheelMethodsBonusData {
 		int divineEmpowerment = 0; // Paladin
 		int divineGrenade = 0; // Paladin
 		int blessingOfTheGrove = 0; // Druid
-		int drainBody = 0; // Sorcerer
+		int lordOfDestruction = 0; // Sorcerer
 		int beamMastery = 0; // Sorcerer
 		int twinBurst = 0; // Druid
 		int executionersThrow = 0; // Knight

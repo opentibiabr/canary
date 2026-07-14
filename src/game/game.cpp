@@ -9269,9 +9269,7 @@ void Game::applyCharmRune(
 void Game::applyManaLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	// Wheel of destiny bonus - mana leech chance and amount
-	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
+	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + damage.manaLeech;
 
 	// Void charm rune
 	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
@@ -9301,9 +9299,7 @@ void Game::applyManaLeech(
 void Game::applyLifeLeech(
 	const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
-	// Wheel of destiny bonus - life leech chance and amount
-	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
+	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + damage.lifeLeech;
 
 	const bool isAutoAttack = damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_FIST;
 	const bool canApplyOffensiveCharm = !isAutoAttack || target == attackerPlayer->getAttackedCreature();

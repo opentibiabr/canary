@@ -301,7 +301,6 @@ public:
 	bool checkPositionalTactics();
 	bool checkBallisticMastery();
 	bool checkDivineEmpowerment();
-	int32_t checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const;
 	int32_t getCombatMasteryDamageBonus(const std::shared_ptr<Creature> &target) const;
 	int32_t getCombatMasteryDamageReduction() const;
 	int32_t checkBeamMasteryDamage() const;

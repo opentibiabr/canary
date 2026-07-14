@@ -2216,12 +2216,12 @@ void PlayerWheel::registerPlayerBonusData() {
 		setSpellInstant("Divine Grenade", false);
 	}
 
-	if (m_playerBonusData.stages.drainBody > 0) {
-		for (int i = 0; i < m_playerBonusData.stages.drainBody; ++i) {
-			setSpellInstant("Drain Body", true);
+	if (m_playerBonusData.stages.lordOfDestruction > 0) {
+		for (int i = 0; i < m_playerBonusData.stages.lordOfDestruction; ++i) {
+			setSpellInstant("Lord of Destruction", true);
 		}
 	} else {
-		setSpellInstant("Drain Body", false);
+		setSpellInstant("Lord of Destruction", false);
 	}
 	if (m_playerBonusData.stages.beamMastery > 0) {
 		m_beamMasterySpells.emplace("Energy Beam");
@@ -2515,8 +2515,8 @@ void PlayerWheel::printPlayerWheelMethodsBonusData(const PlayerWheelMethodsBonus
 	if (bonusData.stages.blessingOfTheGrove > 0) {
 		g_logger().debug("  blessingOfTheGrove: {}", bonusData.stages.blessingOfTheGrove);
 	}
-	if (bonusData.stages.drainBody > 0) {
-		g_logger().debug("  drainBody: {}", bonusData.stages.drainBody);
+	if (bonusData.stages.lordOfDestruction > 0) {
+		g_logger().debug("  lordOfDestruction: {}", bonusData.stages.lordOfDestruction);
 	}
 	if (bonusData.stages.beamMastery > 0) {
 		g_logger().debug("  beamMastery: {}", bonusData.stages.beamMastery);
@@ -2761,10 +2761,7 @@ void PlayerWheel::applyBlueStageBonus(uint8_t stageValue, Vocation_t vocationEnu
 	if (vocationEnum == Vocation_t::VOCATION_KNIGHT_CIP) {
 		m_playerBonusData.stages.combatMastery = stageValue;
 	} else if (vocationEnum == Vocation_t::VOCATION_SORCERER_CIP) {
-		m_playerBonusData.stages.drainBody = stageValue;
-		for (uint8_t i = 0; i <= stageValue; ++i) {
-			addSpellToVector("Drain_Body_Spells");
-		}
+		m_playerBonusData.stages.lordOfDestruction = stageValue;
 	} else if (vocationEnum == Vocation_t::VOCATION_PALADIN_CIP) {
 		m_playerBonusData.stages.divineEmpowerment = stageValue;
 		for (uint8_t i = 0; i <= stageValue; ++i) {
@@ -3205,39 +3202,6 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
-int32_t PlayerWheel::checkDrainBodyLeech(const std::shared_ptr<Creature> &target, skills_t skill) const {
-	if (!target || !target->getMonster() || target->getWheelOfDestinyDrainBodyDebuff() == 0) {
-		return 0;
-	}
-
-	const uint8_t stage = target->getWheelOfDestinyDrainBodyDebuff();
-	if (target->getBuff(BUFF_DAMAGERECEIVED) > 100 && skill == SKILL_MANA_LEECH_AMOUNT) {
-		int32_t manaLeechSkill = 0;
-		if (stage >= 3) {
-			manaLeechSkill = 400;
-		} else if (stage >= 2) {
-			manaLeechSkill = 300;
-		} else if (stage >= 1) {
-			manaLeechSkill = 200;
-		}
-		return manaLeechSkill;
-	}
-
-	if (target->getBuff(BUFF_DAMAGEDEALT) < 100 && skill == SKILL_LIFE_LEECH_AMOUNT) {
-		int32_t lifeLeechSkill = 0;
-		if (stage >= 3) {
-			lifeLeechSkill = 500;
-		} else if (stage >= 2) {
-			lifeLeechSkill = 400;
-		} else if (stage >= 1) {
-			lifeLeechSkill = 300;
-		}
-		return lifeLeechSkill;
-	}
-
-	return 0;
-}
-
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	if (skill == WheelAvatarSkill_t::NONE || (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) <= OTSYS_TIME() && getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME())) {
 		return 0;
@@ -3614,7 +3578,7 @@ void PlayerWheel::setSpellInstant(const std::string &name, bool value) {
 		} else {
 			setStage(WheelStage_t::BLESSING_OF_THE_GROVE, 0);
 		}
-	} else if (name == "Drain Body") {
+	} else if (name == "Lord of Destruction") {
 		if (value) {
 			setStage(WheelStage_t::DRAIN_BODY, getStage(WheelStage_t::DRAIN_BODY) + 1);
 		} else {
@@ -3722,6 +3686,7 @@ uint8_t PlayerWheel::getStage(std::string_view name) const {
 		{ "Combat Mastery", COMBAT_MASTERY },
 		{ "Gift of Life", GIFT_OF_LIFE },
 		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
+		{ "Lord of Destruction", DRAIN_BODY },
 		{ "Drain Body", DRAIN_BODY },
 		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
 		{ "Divine Grenade", DIVINE_GRENADE },
@@ -3855,6 +3820,7 @@ bool PlayerWheel::getInstant(std::string_view name) const {
 		{ "Combat Mastery", COMBAT_MASTERY },
 		{ "Gift of Life", GIFT_OF_LIFE },
 		{ "Blessing of the Grove", BLESSING_OF_THE_GROVE },
+		{ "Lord of Destruction", DRAIN_BODY },
 		{ "Drain Body", DRAIN_BODY },
 		{ "Divine Empowerment", DIVINE_EMPOWERMENT },
 		{ "Divine Grenade", DIVINE_GRENADE },

@@ -315,9 +315,9 @@ void IOWheel::initializeSorcererSpells() {
 	m_wheelBonusData.spells.sorcerer[0].grade[1].decrease.secondaryGroupCooldown = 4;
 	m_wheelBonusData.spells.sorcerer[0].grade[2].increase.damage = 50;
 
-	m_wheelBonusData.spells.sorcerer[1].name = "Sap Strength";
-	m_wheelBonusData.spells.sorcerer[1].grade[1].increase.area = true;
-	m_wheelBonusData.spells.sorcerer[1].grade[2].increase.damageReduction = 1;
+	m_wheelBonusData.spells.sorcerer[1].name = "Death Echo";
+	m_wheelBonusData.spells.sorcerer[1].grade[1].decrease.cooldown = 2;
+	m_wheelBonusData.spells.sorcerer[1].grade[2].increase.damage = 12;
 
 	m_wheelBonusData.spells.sorcerer[2].name = "Energy Wave";
 	m_wheelBonusData.spells.sorcerer[2].grade[1].increase.area = true;
@@ -627,7 +627,7 @@ void IOWheel::slotRedMiddle100(const std::shared_ptr<Player> &player, uint16_t p
 		bonusData.stats.mana += 3 * points;
 	} else if (isSorcerer(vocationCipId) || isDruid(vocationCipId)) {
 		if (isSorcerer(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Sap Strength");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Death Echo");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Forked Glacier");
 			addSpell(player, bonusData, WheelSlots_t::SLOT_RED_MIDDLE_100, points, "Forked Thorns");
@@ -882,7 +882,7 @@ void IOWheel::slotBlueMiddle100(const std::shared_ptr<Player> &player, uint16_t 
 		addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Divine Dazzle");
 	} else if (isSorcerer(vocationCipId) || isDruid(vocationCipId)) {
 		if (isSorcerer(vocationCipId)) {
-			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Sap Strength");
+			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Death Echo");
 		} else {
 			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Forked Glacier");
 			addSpell(player, bonusData, WheelSlots_t::SLOT_BLUE_MIDDLE_100, points, "Forked Thorns");

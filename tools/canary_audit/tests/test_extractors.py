@@ -148,6 +148,44 @@ event:register()
 			[("item.name", "reference", "gold coin")],
 		)
 
+	def test_storage_calls_only_promote_authoritative_static_keys(self) -> None:
+		source = '''local STATIC_KEY = 400
+player:getStorageValue(Storage.Quest.Known)
+player:setStorageValue(config.storage, 1)
+player:getStorageValue(STATIC_KEY)
+Game.getStorageValue("ephemeral-key")
+Game.setStorageValue(GlobalStorage.Event.Active, 1)
+'''
+		with tempfile.TemporaryDirectory() as temporary:
+			path = discovered_file(Path(temporary), "data/scripts/storage.lua", source)
+			result = extract_lua(path, self.config)
+
+		references = {
+			(fact.domain, fact.value, fact.symbol)
+			for fact in result.facts
+			if fact.role == "reference"
+		}
+		self.assertEqual(
+			references,
+			{
+				("storage.player", "Storage.Quest.Known", "Storage.Quest.Known"),
+				("storage.player", 400, None),
+				("storage.global", "GlobalStorage.Event.Active", "GlobalStorage.Event.Active"),
+			},
+		)
+		unresolved = {
+			(fact.domain, fact.value)
+			for fact in result.facts
+			if fact.role == "unresolved"
+		}
+		self.assertEqual(
+			unresolved,
+			{
+				("storage.player", "config.storage"),
+				("storage.global", "'ephemeral-key'"),
+			},
+		)
+
 
 class XmlAndProtobufExtractorTests(unittest.TestCase):
 	def setUp(self) -> None:

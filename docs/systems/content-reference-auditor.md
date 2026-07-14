@@ -147,6 +147,12 @@ their runtime domain. The default configuration includes:
 For an XML storage, the effective value is `range.start + storage.key`. Invalid,
 overlapping, or out-of-range XML declarations produce error diagnostics.
 
+Only numeric literals, unambiguous numeric aliases, and symbols below a
+configured storage-table root become storage references. Other dotted Lua
+expressions and string keys remain unresolved: the auditor cannot prove that a
+local table field is an authoritative storage declaration, and string keys may
+address the process-local `Game` storage table without a numeric registry.
+
 Player and global storage values are separate domains because they use
 different runtime maps. A repeated numeric value across those domains is not by
 itself a collision. Dynamic receiver expressions and string-keyed in-memory

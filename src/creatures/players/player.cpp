@@ -1146,6 +1146,14 @@ void Player::updateLastAttack() {
 	lastAttack = OTSYS_TIME();
 }
 
+bool Player::checkLastManaBufferSurchargeWithin(uint32_t interval) const {
+	return lastManaBufferSurcharge > 0 && ((OTSYS_TIME() - lastManaBufferSurcharge) < interval);
+}
+
+void Player::updateLastManaBufferSurcharge() {
+	lastManaBufferSurcharge = OTSYS_TIME();
+}
+
 uint64_t Player::getLastAggressiveAction() const {
 	return lastAggressiveAction;
 }

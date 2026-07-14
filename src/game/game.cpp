@@ -8730,6 +8730,73 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		std::string attackMsg = fmt::format("{} attack", damage.critical ? "critical " : " ");
 		std::stringstream ss;
+		auto sendManaDamageMessage = [&](int32_t manaDamage) {
+			addMagicEffect(spectators.data(), targetPos, CONST_ME_LOSEENERGY);
+
+			const std::string damageString = std::to_string(manaDamage);
+			std::string spectatorMessage;
+
+			message.primary.value = manaDamage;
+			message.primary.color = TEXTCOLOR_BLUE;
+
+			for (const auto &spectator : spectators) {
+				const auto &tmpPlayer = spectator->getPlayer();
+				if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
+					continue;
+				}
+
+				if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
+					ss.str({});
+					ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your " << attackMsg << ".";
+
+					if (!damage.exString.empty()) {
+						ss << " (" << damage.exString << ")";
+					}
+					message.type = MESSAGE_DAMAGE_DEALT;
+					message.text = ss.str();
+				} else if (tmpPlayer == targetPlayer) {
+					ss.str({});
+					ss << "You lose " << damageString << " mana";
+					if (!attacker) {
+						ss << '.';
+					} else if (targetPlayer == attackerPlayer) {
+						ss << " due to your own " << attackMsg << ".";
+					} else {
+						ss << " due to an " << attackMsg << " by " << attacker->getNameDescription() << '.';
+					}
+					message.type = MESSAGE_DAMAGE_RECEIVED;
+					message.text = ss.str();
+				} else {
+					if (spectatorMessage.empty()) {
+						ss.str({});
+						ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana";
+						if (attacker) {
+							ss << " due to ";
+							if (attacker == target) {
+								ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
+							} else {
+								ss << "an " << attackMsg << " by " << attacker->getNameDescription();
+							}
+						}
+						ss << '.';
+						spectatorMessage = ss.str();
+					}
+					message.type = MESSAGE_DAMAGE_OTHERS;
+					message.text = spectatorMessage;
+				}
+				tmpPlayer->sendTextMessage(message);
+			}
+		};
+		auto drainManaBuffer = [&](uint32_t manaLoss, int32_t creditedDamage) {
+			bool firstDrain = true;
+			while (manaLoss > 0) {
+				const int32_t chunk = static_cast<int32_t>(std::min<uint32_t>(manaLoss, std::numeric_limits<int32_t>::max()));
+				target->drainMana(attacker, chunk, firstDrain ? creditedDamage : 0);
+				sendManaDamageMessage(chunk);
+				manaLoss -= chunk;
+				firstDrain = false;
+			}
+		};
 
 		if (target->hasCondition(CONDITION_MANASHIELD) && damage.primary.type != COMBAT_UNDEFINEDDAMAGE) {
 			auto getManaCostPerDamage = [&]() -> int32_t {
@@ -8783,62 +8850,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 						target->removeCondition(CONDITION_MANASHIELD);
 					}
 
-					addMagicEffect(spectators.data(), targetPos, CONST_ME_LOSEENERGY);
-
-					std::string damageString = std::to_string(manaDamage);
-
-					std::string spectatorMessage;
-
-					message.primary.value = manaDamage;
-					message.primary.color = TEXTCOLOR_BLUE;
-
-					for (const auto &spectator : spectators) {
-						const auto &tmpPlayer = spectator->getPlayer();
-						if (!tmpPlayer || tmpPlayer->getPosition().z != targetPos.z) {
-							continue;
-						}
-
-						if (tmpPlayer == attackerPlayer && attackerPlayer != targetPlayer) {
-							ss.str({});
-							ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana due to your " << attackMsg << ".";
-
-							if (!damage.exString.empty()) {
-								ss << " (" << damage.exString << ")";
-							}
-							message.type = MESSAGE_DAMAGE_DEALT;
-							message.text = ss.str();
-						} else if (tmpPlayer == targetPlayer) {
-							ss.str({});
-							ss << "You lose " << damageString << " mana";
-							if (!attacker) {
-								ss << '.';
-							} else if (targetPlayer == attackerPlayer) {
-								ss << " due to your own " << attackMsg << ".";
-							} else {
-								ss << " due to an " << attackMsg << " by " << attacker->getNameDescription() << '.';
-							}
-							message.type = MESSAGE_DAMAGE_RECEIVED;
-							message.text = ss.str();
-						} else {
-							if (spectatorMessage.empty()) {
-								ss.str({});
-								ss << ucfirst(target->getNameDescription()) << " loses " << damageString + " mana";
-								if (attacker) {
-									ss << " due to ";
-									if (attacker == target) {
-										ss << (targetPlayer ? targetPlayer->getPossessivePronoun() : "its") << " own attack";
-									} else {
-										ss << "an " << attackMsg << " by " << attacker->getNameDescription();
-									}
-								}
-								ss << '.';
-								spectatorMessage = ss.str();
-							}
-							message.type = MESSAGE_DAMAGE_OTHERS;
-							message.text = spectatorMessage;
-						}
-						tmpPlayer->sendTextMessage(message);
-					}
+					sendManaDamageMessage(manaDamage);
 
 					damage.primary.value -= absorbedDamage;
 					if (damage.primary.value < 0) {
@@ -8873,8 +8885,39 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			applyPvPDamage(damage, attackerPlayer, targetPlayer);
 		}
 
+		bool failedManaBuffer = false;
+		bool manaBufferSurchargeApplies = false;
+		if (targetPlayer && damage.primary.type != COMBAT_UNDEFINEDDAMAGE) {
+			const auto vocation = static_cast<Vocation_t>(targetPlayer->getPlayerVocationEnum());
+			const bool hasManaBuffer = vocation == VOCATION_SORCERER_CIP || vocation == VOCATION_DRUID_CIP;
+			const int32_t currentHealth = target->getHealth();
+			const int64_t incomingDamage = static_cast<int64_t>(damage.primary.value) + damage.secondary.value;
+			if (hasManaBuffer && currentHealth > 0 && incomingDamage > currentHealth) {
+				constexpr uint32_t surchargeInterval = 2000;
+				constexpr uint64_t overkillMultiplier = 10;
+				const uint64_t overkill = static_cast<uint64_t>(incomingDamage - currentHealth);
+				manaBufferSurchargeApplies = !targetPlayer->checkLastManaBufferSurchargeWithin(surchargeInterval);
+				const uint64_t surcharge = manaBufferSurchargeApplies ? static_cast<uint64_t>(targetPlayer->getMaxMana()) * 25 / 100 : 0;
+				const uint64_t manaCost = overkill * overkillMultiplier + surcharge;
+
+				if (targetPlayer->getMana() > manaCost) {
+					drainManaBuffer(static_cast<uint32_t>(manaCost), static_cast<int32_t>(overkill));
+					if (manaBufferSurchargeApplies) {
+						targetPlayer->updateLastManaBufferSurcharge();
+					}
+
+					const int32_t healthDamage = std::max<int32_t>(0, currentHealth - 1);
+					damage.primary.value = std::min(damage.primary.value, healthDamage);
+					damage.secondary.value = std::min(damage.secondary.value, healthDamage - damage.primary.value);
+				} else {
+					failedManaBuffer = true;
+				}
+			}
+		}
+
 		auto targetHealth = target->getHealth();
-		realDamage = std::min<int32_t>(targetHealth, damage.primary.value + damage.secondary.value);
+		const int64_t remainingDamage = static_cast<int64_t>(damage.primary.value) + damage.secondary.value;
+		realDamage = static_cast<int32_t>(std::min<int64_t>(targetHealth, remainingDamage));
 		if (realDamage == 0) {
 			return true;
 		} else if (realDamage >= targetHealth) {
@@ -8882,6 +8925,16 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 				if (!creatureEvent->executeOnPrepareDeath(target, attacker, std::ref(realDamage))) {
 					return false;
 				}
+			}
+		}
+
+		if (failedManaBuffer) {
+			const uint32_t manaToDrain = targetPlayer->getMana();
+			if (manaToDrain > 0) {
+				drainManaBuffer(manaToDrain, 0);
+			}
+			if (manaBufferSurchargeApplies) {
+				targetPlayer->updateLastManaBufferSurcharge();
 			}
 		}
 

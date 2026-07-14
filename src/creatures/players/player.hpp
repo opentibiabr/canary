@@ -836,6 +836,10 @@ public:
 
 	void updateLastAttack();
 
+	bool checkLastManaBufferSurchargeWithin(uint32_t interval) const;
+
+	void updateLastManaBufferSurcharge();
+
 	uint64_t getLastAggressiveAction() const;
 
 	bool checkLastAggressiveActionWithin(uint32_t interval) const;
@@ -1713,6 +1717,7 @@ private:
 	uint64_t experience = 0;
 	uint64_t manaSpent = 0;
 	uint64_t lastAttack = 0;
+	uint64_t lastManaBufferSurcharge = 0;
 	std::unordered_map<uint8_t, uint64_t> lastConditionTime;
 	uint64_t lastAggressiveAction = 0;
 	uint64_t bankBalance = 0;

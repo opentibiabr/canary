@@ -1,6 +1,22 @@
 local SPELL_BASE_POWER = 75
 local ECHO_DAMAGE_MULTIPLIER = 0.5
 local ECHO_DELAY = 1000
+local ELEMENTAL_STANCE_FIELDS = {
+	"elementalStanceIntrinsicType",
+	"elementalStanceResolvedType",
+	"elementalStanceStateRevision",
+	"elementalStanceSpellId",
+	"elementalStanceDamageMultiplier",
+	"elementalStanceCriticalChance",
+	"elementalStanceCriticalDamage",
+	"elementalStanceConverted",
+}
+
+local function copyElementalStanceContext(source, target)
+	for _, field in ipairs(ELEMENTAL_STANCE_FIELDS) do
+		target[field] = source[field]
+	end
+end
 
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_DEATHDAMAGE)
@@ -30,7 +46,7 @@ end
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 echoCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetEchoFormulaValues")
 
-local function executeEcho(position, playerId, playerGuid)
+local function executeEcho(position, playerId, playerGuid, elementalStanceContext)
 	local player = Player(playerId)
 	if not player or player:getGuid() ~= playerGuid then
 		return
@@ -42,6 +58,7 @@ local function executeEcho(position, playerId, playerGuid)
 		type = VARIANT_POSITION,
 		pos = position,
 	}
+	copyElementalStanceContext(elementalStanceContext, variant)
 	echoCombat:execute(player, variant)
 end
 
@@ -58,7 +75,9 @@ function spell.onCastSpell(creature, variant)
 		return false
 	end
 
-	addEvent(executeEcho, ECHO_DELAY, position, player:getId(), player:getGuid())
+	local elementalStanceContext = {}
+	copyElementalStanceContext(variant, elementalStanceContext)
+	addEvent(executeEcho, ECHO_DELAY, position, player:getId(), player:getGuid(), elementalStanceContext)
 	return true
 end
 

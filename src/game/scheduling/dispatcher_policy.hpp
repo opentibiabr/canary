@@ -255,7 +255,7 @@ public:
 	) {
 		warningThreshold = std::max(std::chrono::microseconds(1), warningThreshold);
 		if (!hasOnlinePlayers || backlog.queued == 0 || backlog.oldestReadyAge < warningThreshold) {
-			consecutiveBacklogWindows = 0;
+			reset();
 			return false;
 		}
 

@@ -163,6 +163,30 @@ TEST(DispatcherBacklogWarningPolicyTest, RateLimitsAContinuingBacklog) {
 	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 31s, 100ms));
 }
 
+TEST(DispatcherBacklogWarningPolicyTest, WarnsAgainAfterBacklogRecovery) {
+	DispatcherBacklogWarningPolicy warningPolicy;
+	const auto base = Task::Clock::time_point(10s);
+	const DispatcherQueueSnapshot backlog {
+		.queued = 8,
+		.oldestReadyAge = 500ms,
+		.oldestContext = "player-walk",
+	};
+
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + index * 250ms, 100ms));
+	}
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 750ms, 100ms));
+
+	DispatcherQueueSnapshot recovered = backlog;
+	recovered.oldestReadyAge = 99ms;
+	EXPECT_FALSE(warningPolicy.update(true, recovered, base + 1s, 100ms));
+
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + 1250ms + index * 250ms, 100ms));
+	}
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 2s, 100ms));
+}
+
 TEST(DispatcherPolicyTest, ClampsNegativeDurationsAndAppliesDeterministicBudgets) {
 	const auto now = Task::Clock::time_point(10s);
 	DispatcherPolicy policy([now] { return now; });

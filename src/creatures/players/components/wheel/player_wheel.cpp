@@ -3202,6 +3202,24 @@ int32_t PlayerWheel::checkBeamMasteryDamage() const {
 	return damageBoost;
 }
 
+uint8_t PlayerWheel::getBeamMasterySideDamage(const std::string &spellName) const {
+	if (!getInstant("Beam Mastery") || !m_beamMasterySpells.contains(spellName)) {
+		return 0;
+	}
+
+	const uint8_t stage = getStage(WheelStage_t::BEAM_MASTERY);
+	if (stage >= 3) {
+		return 70;
+	}
+	if (stage >= 2) {
+		return 40;
+	}
+	if (stage >= 1) {
+		return 25;
+	}
+	return 0;
+}
+
 int32_t PlayerWheel::checkAvatarSkill(WheelAvatarSkill_t skill) const {
 	if (skill == WheelAvatarSkill_t::NONE || (getOnThinkTimer(WheelOnThink_t::AVATAR_SPELL) <= OTSYS_TIME() && getOnThinkTimer(WheelOnThink_t::AVATAR_FORGE) <= OTSYS_TIME())) {
 		return 0;

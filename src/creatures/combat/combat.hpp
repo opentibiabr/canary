@@ -162,6 +162,7 @@ public:
 	AreaCombat &operator=(const AreaCombat &) = delete;
 
 	void getList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const;
+	void getBeamMasteryList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const;
 
 	void setupArea(const std::list<uint32_t> &list, uint32_t rows);
 	void setupArea(int32_t length, int32_t spread);
@@ -175,6 +176,7 @@ private:
 	std::unique_ptr<MatrixArea> createArea(const std::list<uint32_t> &list, uint32_t rows);
 	void copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const;
 
+	Direction getAreaDirection(const Position &centerPos, const Position &targetPos) const;
 	const std::unique_ptr<MatrixArea> &getArea(const Position &centerPos, const Position &targetPos) const;
 
 	std::array<std::unique_ptr<MatrixArea>, Direction::DIRECTION_LAST + 1> areas {};
@@ -290,6 +292,7 @@ private:
 	static void doCombatDefault(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, const CombatParams &params);
 
 	static void CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data);
+	static void CombatBeamMasteryFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &pos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data, uint8_t sideDamagePercent);
 
 	static void CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const CombatParams &params, CombatDamage* data);
 	static CombatDamage applyImbuementElementalDamage(const std::shared_ptr<Player> &attackerPlayer, std::shared_ptr<Item> item, CombatDamage damage);

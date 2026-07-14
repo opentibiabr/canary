@@ -8432,6 +8432,9 @@ void Game::applyWheelOfDestinyHealing(CombatDamage &damage, const std::shared_pt
 }
 
 void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target) const {
+	const uint8_t beamMasterySideDamagePercent = damage.beamMasterySideDamagePercent;
+	damage.beamMasterySideDamagePercent = 0;
+
 	// If damage is 0, it means the target is immune to the damage type, or that we missed.
 	if (damage.primary.value == 0 && damage.secondary.value == 0) {
 		return;
@@ -8449,9 +8452,13 @@ void Game::applyWheelOfDestinyEffectsToDamage(CombatDamage &damage, const std::s
 			damage.secondary.value += (damage.secondary.value * combatMasteryBonus) / 100;
 		}
 
-		damage.primary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
+		int32_t flatDamageBonus = attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
+		if (beamMasterySideDamagePercent != 0) {
+			flatDamageBonus = static_cast<int32_t>(std::round(static_cast<double>(flatDamageBonus) * beamMasterySideDamagePercent / 100.0));
+		}
+		damage.primary.value -= flatDamageBonus;
 		if (damage.secondary.value != 0) {
-			damage.secondary.value -= attackerPlayer->wheel().getStat(WheelStat_t::DAMAGE);
+			damage.secondary.value -= flatDamageBonus;
 		}
 		if (damage.instantSpellName == "Ice Burst" || damage.instantSpellName == "Terra Burst") {
 			int32_t damageBonus = attackerPlayer->wheel().checkTwinBurstByTarget(target);

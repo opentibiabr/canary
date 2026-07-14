@@ -9,6 +9,11 @@
 
 #include "creatures/combat/combat.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <unordered_map>
+	#include <unordered_set>
+#endif
+
 #include "config/configmanager.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/combat/spells.hpp"
@@ -835,6 +840,11 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 		g_logger().trace("Wheel Divine Empowerment damage multiplier {}", damage.damageMultiplier);
 	}
 
+	if (damage.beamMasterySideDamagePercent != 0) {
+		damage.primary.value = static_cast<int32_t>(std::round(static_cast<double>(damage.primary.value) * damage.beamMasterySideDamagePercent / 100.0));
+		damage.secondary.value = static_cast<int32_t>(std::round(static_cast<double>(damage.secondary.value) * damage.beamMasterySideDamagePercent / 100.0));
+	}
+
 	if (g_game().combatBlockHit(damage, caster, target, params.blockedByShield, params.blockedByArmor, params.itemId != 0)) {
 		return;
 	}
@@ -1490,10 +1500,168 @@ bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &p
 	return true;
 }
 
+void Combat::CombatBeamMasteryFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &toPos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data, uint8_t sideDamagePercent) {
+	std::vector<std::shared_ptr<Tile>> centralTileList;
+	std::vector<std::shared_ptr<Tile>> sideTileList;
+	getCombatArea(caster->getPosition(), toPos, area, centralTileList);
+	area->getBeamMasteryList(caster->getPosition(), toPos, sideTileList, getDirectionTo(toPos, caster->getPosition()));
+
+	const auto &casterPlayer = caster->getPlayer();
+	uint32_t maxX = 0;
+	uint32_t maxY = 0;
+	std::vector<std::shared_ptr<Creature>> centralTargets;
+	std::vector<std::shared_ptr<Creature>> sideTargets;
+
+	const auto collectTargets = [&](const std::vector<std::shared_ptr<Tile>> &tileList, std::vector<std::shared_ptr<Creature>> &targets) {
+		for (const auto &tile : tileList) {
+			if (g_game().getWorldType() == WORLD_TYPE_NO_PVP && tile->getPosition() == origin && !casterPlayer->isFirstOnStack()) {
+				casterPlayer->sendCancelMessage(RETURNVALUE_NOTPOSSIBLE);
+				casterPlayer->sendMagicEffect(origin, CONST_ME_POFF);
+				return false;
+			}
+
+			const Position &tilePos = tile->getPosition();
+			maxX = std::max<uint32_t>(maxX, Position::getDistanceX(tilePos, toPos));
+			maxY = std::max<uint32_t>(maxY, Position::getDistanceY(tilePos, toPos));
+
+			if (canDoCombat(caster, tile, params.aggressive, params.ignoreCasterFloor) != RETURNVALUE_NOERROR) {
+				continue;
+			}
+
+			if (CreatureVector* creatures = tile->getCreatures()) {
+				const auto &topCreature = tile->getTopCreature();
+				CreatureVector creaturesCopy = *creatures;
+				for (const auto &creature : creaturesCopy) {
+					if (params.targetCasterOrTopMost) {
+						if (caster->getTile() == tile) {
+							if (creature != caster) {
+								continue;
+							}
+						} else if (creature != topCreature) {
+							continue;
+						}
+					}
+
+					if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
+						targets.emplace_back(creature);
+					}
+				}
+			}
+		}
+		return true;
+	};
+
+	if (!collectTargets(centralTileList, centralTargets) || !collectTargets(sideTileList, sideTargets)) {
+		return;
+	}
+
+	std::vector<std::shared_ptr<Creature>> affectedTargets;
+	affectedTargets.reserve(centralTargets.size() + sideTargets.size());
+	affectedTargets.insert(affectedTargets.end(), centralTargets.begin(), centralTargets.end());
+	affectedTargets.insert(affectedTargets.end(), sideTargets.begin(), sideTargets.end());
+
+	CombatDamage tmpDamage = *data;
+	tmpDamage.affected = static_cast<int>(affectedTargets.size());
+	const int32_t baseDamageMultiplier = tmpDamage.damageMultiplier;
+	casterPlayer->wheel().applyBeamMasteryBonus(tmpDamage, centralTargets.size());
+	const int32_t centralDamageMultiplierDelta = tmpDamage.damageMultiplier - baseDamageMultiplier;
+
+	// Resolve critical and fatal extensions once for the complete beam.
+	auto extensionsDamage = tmpDamage;
+	applyExtensions(caster, affectedTargets, extensionsDamage, params);
+	if (affectedTargets.size() == 1) {
+		tmpDamage = extensionsDamage;
+	}
+
+	std::unordered_map<Creature*, CombatDamage> resolvedDamages;
+	resolvedDamages.reserve(affectedTargets.size());
+	for (const auto &target : affectedTargets) {
+		CombatDamage targetDamage = target->getCombatDamage();
+		if (targetDamage.isEmpty()) {
+			targetDamage = tmpDamage;
+		}
+		resolvedDamages.emplace(target.get(), std::move(targetDamage));
+		target->setCombatDamage(CombatDamage());
+	}
+
+	const int32_t rangeX = maxX + MAP_MAX_VIEW_PORT_X;
+	const int32_t rangeY = maxY + MAP_MAX_VIEW_PORT_Y;
+	auto spectators = Spectators().find<Player>(toPos, true, rangeX, rangeX, rangeY, rangeY);
+	std::unordered_set<Creature*> processedTargets;
+	processedTargets.reserve(affectedTargets.size());
+	std::unordered_set<Creature*> sideTargetSet;
+	sideTargetSet.reserve(sideTargets.size());
+	for (const auto &sideTarget : sideTargets) {
+		sideTargetSet.emplace(sideTarget.get());
+	}
+
+	const auto executeTiles = [&](const std::vector<std::shared_ptr<Tile>> &tileList) {
+		for (const auto &tile : tileList) {
+			if (canDoCombat(caster, tile, params.aggressive, params.ignoreCasterFloor) != RETURNVALUE_NOERROR) {
+				continue;
+			}
+
+			if (CreatureVector* creatures = tile->getCreatures()) {
+				const auto &topCreature = tile->getTopCreature();
+				CreatureVector creaturesCopy = *creatures;
+				for (const auto &creature : creaturesCopy) {
+					if (params.targetCasterOrTopMost) {
+						if (caster->getTile() == tile) {
+							if (creature != caster) {
+								continue;
+							}
+						} else if (creature != topCreature) {
+							continue;
+						}
+					}
+
+					if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
+						const auto damageIt = resolvedDamages.find(creature.get());
+						if (damageIt == resolvedDamages.end() || !processedTargets.emplace(creature.get()).second) {
+							continue;
+						}
+
+						if (func) {
+							CombatDamage creatureDamage = damageIt->second;
+
+							if (sideTargetSet.contains(creature.get())) {
+								// The legacy damage bonus applies only to targets in the central beam.
+								creatureDamage.damageMultiplier -= centralDamageMultiplierDelta;
+								creatureDamage.beamMasterySideDamagePercent = sideDamagePercent;
+							}
+
+							func(caster, creature, params, &creatureDamage);
+						}
+						if (params.targetCallback) {
+							params.targetCallback->onTargetCombat(caster, creature);
+						}
+
+						if (params.targetCasterOrTopMost) {
+							break;
+						}
+					}
+				}
+			}
+			combatTileEffects(spectators.data(), caster, tile, params);
+		}
+	};
+
+	executeTiles(centralTileList);
+	executeTiles(sideTileList);
+	postCombatEffects(caster, origin, toPos, params);
+}
+
 void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position &origin, const Position &toPos, const std::unique_ptr<AreaCombat> &area, const CombatParams &params, const CombatFunction &func, CombatDamage* data) {
 	std::vector<std::shared_ptr<Tile>> tileList;
 
 	const std::shared_ptr<Player> &casterPlayer = caster ? caster->getPlayer() : nullptr;
+	if (casterPlayer && data && area) {
+		const uint8_t sideDamagePercent = casterPlayer->wheel().getBeamMasterySideDamage(data->instantSpellName);
+		if (sideDamagePercent != 0) {
+			CombatBeamMasteryFunc(caster, origin, toPos, area, params, func, data, sideDamagePercent);
+			return;
+		}
+	}
 
 	if (caster) {
 		getCombatArea(caster->getPosition(), toPos, area, tileList);
@@ -2387,6 +2555,97 @@ void AreaCombat::getList(const Position &centerPos, const Position &targetPos, s
 	}
 }
 
+void AreaCombat::getBeamMasteryList(const Position &centerPos, const Position &targetPos, std::vector<std::shared_ptr<Tile>> &list, const Direction dir) const {
+	const std::unique_ptr<MatrixArea> &area = getArea(centerPos, targetPos);
+	if (!area) {
+		return;
+	}
+
+	std::array<std::pair<int32_t, int32_t>, 2> offsets;
+	switch (getAreaDirection(centerPos, targetPos)) {
+		case DIRECTION_NORTH:
+		case DIRECTION_SOUTH:
+			offsets = { std::pair { -1, 0 }, std::pair { 1, 0 } };
+			break;
+		case DIRECTION_EAST:
+		case DIRECTION_WEST:
+			offsets = { std::pair { 0, -1 }, std::pair { 0, 1 } };
+			break;
+		case DIRECTION_NORTHWEST:
+			offsets = { std::pair { 1, 0 }, std::pair { 0, 1 } };
+			break;
+		case DIRECTION_NORTHEAST:
+			offsets = { std::pair { -1, 0 }, std::pair { 0, 1 } };
+			break;
+		case DIRECTION_SOUTHWEST:
+			offsets = { std::pair { 1, 0 }, std::pair { 0, -1 } };
+			break;
+		case DIRECTION_SOUTHEAST:
+			offsets = { std::pair { -1, 0 }, std::pair { 0, -1 } };
+			break;
+		default:
+			return;
+	}
+
+	uint32_t centerY;
+	uint32_t centerX;
+	area->getCenter(centerY, centerX);
+
+	const uint32_t rows = area->getRows();
+	const uint32_t cols = area->getCols();
+	const int32_t originX = static_cast<int32_t>(targetPos.x) - static_cast<int32_t>(centerX);
+	const int32_t originY = static_cast<int32_t>(targetPos.y) - static_cast<int32_t>(centerY);
+
+	std::vector<Position> centralPositions;
+	centralPositions.reserve(rows * cols);
+	std::unordered_set<Position> centralPositionSet;
+	centralPositionSet.reserve(rows * cols);
+	for (uint32_t y = 0; y < rows; ++y) {
+		for (uint32_t x = 0; x < cols; ++x) {
+			if (!area->getValue(y, x)) {
+				continue;
+			}
+
+			const int32_t positionX = originX + static_cast<int32_t>(x);
+			const int32_t positionY = originY + static_cast<int32_t>(y);
+			if (positionX < 0 || positionY < 0 || positionX > std::numeric_limits<uint16_t>::max() || positionY > std::numeric_limits<uint16_t>::max()) {
+				continue;
+			}
+
+			Position position(static_cast<uint16_t>(positionX), static_cast<uint16_t>(positionY), targetPos.z);
+			centralPositions.emplace_back(position);
+			centralPositionSet.emplace(position);
+		}
+	}
+
+	const Position casterPos = getNextPosition(dir, targetPos);
+	std::unordered_set<Position> adjacentPositionSet;
+	adjacentPositionSet.reserve(centralPositions.size() * offsets.size());
+	for (const auto &centralPosition : centralPositions) {
+		for (const auto &[offsetX, offsetY] : offsets) {
+			const int32_t positionX = static_cast<int32_t>(centralPosition.x) + offsetX;
+			const int32_t positionY = static_cast<int32_t>(centralPosition.y) + offsetY;
+			if (positionX < 0 || positionY < 0 || positionX > std::numeric_limits<uint16_t>::max() || positionY > std::numeric_limits<uint16_t>::max()) {
+				continue;
+			}
+
+			Position position(static_cast<uint16_t>(positionX), static_cast<uint16_t>(positionY), targetPos.z);
+			if (position == centerPos || centralPositionSet.contains(position) || !adjacentPositionSet.emplace(position).second) {
+				continue;
+			}
+
+			const auto &tile = g_game().map.getTile(position);
+			if (tile && tile->hasFlag(TILESTATE_FLOORCHANGE)) {
+				continue;
+			}
+
+			if (g_game().isSightClear(casterPos, position, true)) {
+				list.emplace_back(g_game().map.getOrCreateTile(position));
+			}
+		}
+	}
+}
+
 void AreaCombat::copyArea(const std::unique_ptr<MatrixArea> &input, const std::unique_ptr<MatrixArea> &output, MatrixOperation_t op) const {
 	uint32_t centerY, centerX;
 	input->getCenter(centerY, centerX);
@@ -2468,7 +2727,7 @@ void AreaCombat::copyArea(const std::unique_ptr<MatrixArea> &input, const std::u
 	}
 }
 
-const std::unique_ptr<MatrixArea> &AreaCombat::getArea(const Position &centerPos, const Position &targetPos) const {
+Direction AreaCombat::getAreaDirection(const Position &centerPos, const Position &targetPos) const {
 	int32_t dx = Position::getOffsetX(targetPos, centerPos);
 	int32_t dy = Position::getOffsetY(targetPos, centerPos);
 
@@ -2495,7 +2754,11 @@ const std::unique_ptr<MatrixArea> &AreaCombat::getArea(const Position &centerPos
 		}
 	}
 
-	return areas[dir];
+	return dir;
+}
+
+const std::unique_ptr<MatrixArea> &AreaCombat::getArea(const Position &centerPos, const Position &targetPos) const {
+	return areas[getAreaDirection(centerPos, targetPos)];
 }
 
 std::unique_ptr<MatrixArea> AreaCombat::createArea(const std::list<uint32_t> &list, uint32_t rows) {

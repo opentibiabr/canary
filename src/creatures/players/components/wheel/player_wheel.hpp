@@ -304,6 +304,7 @@ public:
 	int32_t getCombatMasteryDamageBonus(const std::shared_ptr<Creature> &target) const;
 	int32_t getCombatMasteryDamageReduction() const;
 	int32_t checkBeamMasteryDamage() const;
+	uint8_t getBeamMasterySideDamage(const std::string &spellName) const;
 	int32_t checkBlessingGroveHealingByTarget(const std::shared_ptr<Creature> &target) const;
 	int32_t checkTwinBurstByTarget(const std::shared_ptr<Creature> &target) const;
 	int32_t checkExecutionersThrow(const std::shared_ptr<Creature> &target) const;

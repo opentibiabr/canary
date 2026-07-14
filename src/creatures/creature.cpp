@@ -975,6 +975,12 @@ BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const 
 
 		if (checkArmor) {
 			int32_t armor = getArmor();
+			if (combatType == COMBAT_PHYSICALDAMAGE && attacker) {
+				if (const auto &attackerPlayer = attacker->getPlayer()) {
+					const double armorPenetration = std::clamp(attackerPlayer->weaponProficiency().getStat(WeaponProficiencyBonus_t::ARMOR_PENETRATION), 0.0, 1.0);
+					armor = static_cast<int32_t>(std::round(static_cast<double>(armor) * (1.0 - armorPenetration)));
+				}
+			}
 			if (armor > 3) {
 				damage -= uniform_random(armor / 2, armor - (armor % 2 + 1));
 			} else if (armor > 0) {

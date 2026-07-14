@@ -507,6 +507,10 @@ DispatcherQueueSnapshot Dispatcher::playerVisibleBacklogSnapshot(Task::Clock::ti
 	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
 	DispatcherQueueSnapshot backlog;
 	const auto mergeSnapshot = [&backlog](const DispatcherQueueSnapshot &snapshot) {
+		if (snapshot.queued == 0) {
+			return;
+		}
+
 		backlog.queued += std::min(snapshot.queued, std::numeric_limits<size_t>::max() - backlog.queued);
 		if (snapshot.oldestReadyAge > backlog.oldestReadyAge) {
 			backlog.oldestReadyAge = snapshot.oldestReadyAge;

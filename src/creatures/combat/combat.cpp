@@ -36,6 +36,36 @@
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 
 namespace {
+	void applyWeaponProficiencyThresholdDamage(const std::shared_ptr<Player> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage) {
+		if (!attacker || !target || target->getMaxHealth() <= 0) {
+			return;
+		}
+
+		const int64_t targetHealth = target->getHealth();
+		const int64_t targetMaxHealth = target->getMaxHealth();
+		double bonus = 0.0;
+		if (targetHealth * 100 > targetMaxHealth * 95) {
+			bonus = attacker->weaponProficiency().getStat(WeaponProficiencyBonus_t::ALPHA_STRIKE_EXTRA_DAMAGE);
+		} else if (targetHealth * 100 < targetMaxHealth * 30) {
+			bonus = attacker->weaponProficiency().getStat(WeaponProficiencyBonus_t::OMEGA_STRIKE_EXTRA_DAMAGE);
+		}
+
+		if (bonus <= 0.0) {
+			return;
+		}
+
+		const double multiplier = 1.0 + bonus;
+		auto applyBonus = [multiplier](auto &component) {
+			if (component.type == COMBAT_NONE || component.type == COMBAT_HEALING || component.value >= 0) {
+				return;
+			}
+			component.value = static_cast<int32_t>(std::round(static_cast<double>(component.value) * multiplier));
+		};
+
+		applyBonus(damage.primary);
+		applyBonus(damage.secondary);
+	}
+
 	std::shared_ptr<Player> getSharedConservationTarget(const std::shared_ptr<Player> &caster, const std::shared_ptr<Player> &originalTarget) {
 		if (!caster || !originalTarget || !caster->isStanceActive(309)) {
 			return nullptr;
@@ -850,6 +880,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 	}
 
 	if (attackerPlayer) {
+		applyWeaponProficiencyThresholdDamage(attackerPlayer, target, damage);
 		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::LIFE, WeaponProficiencyGain_t::HIT);
 		attackerPlayer->weaponProficiency().applyOn(WeaponProficiencyHealth_t::MANA, WeaponProficiencyGain_t::HIT);
 	}

@@ -1577,6 +1577,7 @@ public:
 	void updateFood(uint16_t itemId, uint32_t timeLeft);
 	const std::map<uint16_t, uint32_t> &getActiveFoods() const;
 	bool isFoodActive(uint16_t itemId) const;
+	bool isDead() const override;
 
 private:
 	friend class PlayerLock;
@@ -1929,7 +1930,6 @@ private:
 	void getPathSearchParams(const std::shared_ptr<Creature> &creature, FindPathParams &fpp) override;
 
 	void setDead(bool isDead);
-	bool isDead() const override;
 
 	void triggerMomentum();
 	void triggerTranscendence();

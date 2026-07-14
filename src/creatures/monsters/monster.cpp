@@ -1398,8 +1398,8 @@ int32_t Monster::getArmor() const {
 	return m_monsterType->info.armor * getDefenseMultiplier();
 }
 
-BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool /* field = false */) {
-	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor);
+BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false*/, bool checkArmor /* = false*/, bool field /* = false */, bool applyElementalPierce /* = true */) {
+	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field, applyElementalPierce);
 
 	if (damage != 0) {
 		int32_t elementMod = 0;
@@ -1407,6 +1407,7 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 		if (it != m_monsterType->info.elementMap.end()) {
 			elementMod = it->second;
 		}
+		const double originalSensitivity = 100.0 - elementMod;
 
 		// Wheel of destiny
 		const auto &player = attacker ? attacker->getPlayer() : nullptr;
@@ -1414,8 +1415,23 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 			elementMod -= player->wheel().checkElementSensitiveReduction(combatType);
 		}
 
-		if (elementMod != 0) {
-			damage = static_cast<int32_t>(std::round(damage * ((100 - elementMod) / 100.)));
+		double sensitivity = 100.0 - elementMod;
+		if (applyElementalPierce && player && originalSensitivity > 0) {
+			double pierce = player->weaponProficiency().getElementalPierce(combatType) * 100.0;
+			const double maximumSensitivity = std::max(sensitivity, originalSensitivity * 2.0);
+			if (pierce > 0 && sensitivity < 100.0) {
+				const double fullEffect = std::min(pierce, 100.0 - sensitivity);
+				sensitivity += fullEffect;
+				pierce -= fullEffect;
+			}
+			if (pierce > 0) {
+				sensitivity += pierce / 2.0;
+			}
+			sensitivity = std::min(sensitivity, maximumSensitivity);
+		}
+
+		if (elementMod != 0 || sensitivity != 100.0) {
+			damage = static_cast<int32_t>(std::round(damage * sensitivity / 100.0));
 			if (damage <= 0) {
 				damage = 0;
 				blockType = BLOCK_ARMOR;

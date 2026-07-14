@@ -811,7 +811,7 @@ public:
 	void changeSoul(int32_t soulChange);
 
 	bool isPzLocked() const;
-	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false, bool applyElementalPierce = true) override;
 	void doAttacking(uint32_t interval) override;
 	bool hasExtraSwing() override;
 

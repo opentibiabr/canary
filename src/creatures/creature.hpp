@@ -453,7 +453,7 @@ public:
 	 * @param damage Reference to the amount of damage inflicted, which will be reduced by the creature's mitigation factor.
 	 */
 	void mitigateDamage(const CombatType_t &combatType, BlockType_t &blockType, int32_t &damage) const;
-	virtual BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false);
+	virtual BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false, bool applyElementalPierce = true);
 
 	void applyAbsorbDamageModifications(const std::shared_ptr<Creature> &attacker, int32_t &damage, CombatType_t combatType) const;
 

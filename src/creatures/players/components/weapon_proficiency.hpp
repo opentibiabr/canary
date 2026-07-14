@@ -86,6 +86,9 @@ public:
 	[[nodiscard]] WeaponProficiencyCriticalBonus getElementCritical(CombatType_t type) const;
 	void addElementCritical(CombatType_t type, const WeaponProficiencyCriticalBonus &bonus);
 
+	[[nodiscard]] double_t getElementalPierce(CombatType_t type) const;
+	void addElementalPierce(CombatType_t type, double_t value);
+
 	[[nodiscard]] uint32_t getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const;
 	void addSpellBonus(uint16_t spellId, const WeaponProficiencySpells::Bonus &bonus);
 
@@ -117,6 +120,7 @@ public:
 
 	[[nodiscard]] std::vector<std::pair<std::string, double>> getActiveBestiariesDamage() const;
 	[[nodiscard]] std::optional<std::pair<uint8_t, double>> getActiveElementalCriticalType(WeaponProficiencyBonus_t criticalType) const;
+	[[nodiscard]] std::vector<std::pair<CombatType_t, double_t>> getActiveElementalPierces() const;
 
 	void clearAllStats();
 
@@ -155,6 +159,7 @@ private:
 	WeaponProficiencyCriticalBonus m_generalCritical;
 
 	std::array<WeaponProficiencyCriticalBonus, COMBAT_COUNT> m_elementCritical = { 0 };
+	std::array<double_t, COMBAT_COUNT> m_elementalPierce = { 0 };
 
 	std::unordered_map<uint16_t, WeaponProficiencySpells::Bonus> m_spellsBonuses;
 

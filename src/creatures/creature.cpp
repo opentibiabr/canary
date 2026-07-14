@@ -941,7 +941,7 @@ void Creature::applyAbsorbDamageModifications(const std::shared_ptr<Creature> &a
 	}
 }
 
-BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */) {
+BlockType_t Creature::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense /* = false */, bool checkArmor /* = false */, bool /* field  = false */, bool /* applyElementalPierce = true */) {
 	BlockType_t blockType = BLOCK_NONE;
 
 	// Apply skills 12.72 absorbs damage

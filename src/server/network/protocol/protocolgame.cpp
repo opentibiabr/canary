@@ -5634,7 +5634,13 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 	msg.addDouble(0.0); // Full hit points extra damage
 	msg.addDouble(0.0); // Low hit points extra damage
 	msg.addDouble(0.0); // Armor penetration
-	msg.addByte(0x00); // Elemental pierces count
+
+	const auto elementalPierces = player->weaponProficiency().getActiveElementalPierces();
+	msg.addByte(static_cast<uint8_t>(elementalPierces.size())); // Elemental pierces count
+	for (const auto &[combatType, amount] : elementalPierces) {
+		msg.addByte(getCipbiaElement(combatType));
+		msg.addDouble(amount);
+	}
 
 	writeToOutputBuffer(msg);
 }

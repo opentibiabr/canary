@@ -8017,7 +8017,8 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 			damage.primary.value = std::max<int32_t>(damage.primary.value, 0);
 		}
 
-		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field);
+		const bool applyElementalPierce = !damage.extension && damage.origin != ORIGIN_CONDITION;
+		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field, applyElementalPierce);
 
 		damage.primary.value = -damage.primary.value;
 		InternalGame::sendBlockEffect(primaryBlockType, damage.primary.type, target->getPosition(), attacker);
@@ -8092,7 +8093,8 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 			damage.secondary.value = std::max<int32_t>(damage.secondary.value, 0);
 		}
 
-		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field);
+		const bool applyElementalPierce = !damage.extension && damage.origin != ORIGIN_CONDITION;
+		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field, applyElementalPierce);
 
 		damage.secondary.value = -damage.secondary.value;
 		InternalGame::sendBlockEffect(secondaryBlockType, damage.secondary.type, target->getPosition(), attacker);

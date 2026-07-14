@@ -533,6 +533,9 @@ void WeaponProficiency::applyPerks(uint16_t weaponId, bool sendSkillUpdate /* = 
 			case CRITICAL_EXTRA_DAMAGE:
 				applyCriticalBonus(selectedPerk);
 				break;
+			case ELEMENTAL_PIERCE:
+				addElementalPierce(selectedPerk.element, selectedPerk.value);
+				break;
 			case WEAPON_PROFICIENCY_BESTIARY:
 				addBestiaryDamage(selectedPerk.bestiaryId, selectedPerk.value);
 				break;
@@ -1187,6 +1190,33 @@ void WeaponProficiency::addElementCritical(CombatType_t type, const WeaponProfic
 	m_elementCritical[enumValue].damage += bonus.damage;
 }
 
+double_t WeaponProficiency::getElementalPierce(CombatType_t type) const {
+	if (type == COMBAT_NONE) {
+		return 0;
+	}
+
+	const auto enumValue = static_cast<uint8_t>(type);
+	if (enumValue < m_elementalPierce.size()) {
+		return m_elementalPierce[enumValue];
+	}
+	g_logger().error("[{}]. Element type {} is out of range.", __FUNCTION__, enumValue);
+	return 0;
+}
+
+void WeaponProficiency::addElementalPierce(CombatType_t type, double_t value) {
+	if (type == COMBAT_NONE) {
+		return;
+	}
+
+	const auto enumValue = static_cast<uint8_t>(type);
+	if (enumValue >= m_elementalPierce.size()) {
+		g_logger().error("[{}]. Element type {} is out of range.", __FUNCTION__, enumValue);
+		return;
+	}
+
+	m_elementalPierce[enumValue] += value;
+}
+
 uint32_t WeaponProficiency::getSpellBonus(uint16_t spellId, WeaponProficiencySpellBoost_t boost) const {
 	using enum WeaponProficiencySpellBoost_t;
 
@@ -1530,6 +1560,18 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 	return std::nullopt;
 }
 
+std::vector<std::pair<CombatType_t, double_t>> WeaponProficiency::getActiveElementalPierces() const {
+	std::vector<std::pair<CombatType_t, double_t>> elementalPierces;
+	for (uint8_t index = 0; index < m_elementalPierce.size(); ++index) {
+		const auto value = m_elementalPierce[index];
+		if (value > 0) {
+			elementalPierces.emplace_back(static_cast<CombatType_t>(index), value);
+		}
+	}
+
+	return elementalPierces;
+}
+
 void WeaponProficiency::clearAllStats() {
 	resetStats();
 	resetSpecializedMagic();
@@ -1542,6 +1584,7 @@ void WeaponProficiency::clearAllStats() {
 	m_runesCritical.clear();
 	m_generalCritical.clear();
 	m_elementCritical.fill({});
+	m_elementalPierce.fill(0);
 	m_spellsBonuses.clear();
 	resetPerfectShotBonus();
 }

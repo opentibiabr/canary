@@ -281,7 +281,7 @@ public:
 	void clearTargetList();
 	void clearFriendList();
 
-	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false) override;
+	BlockType_t blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense = false, bool checkArmor = false, bool field = false, bool applyElementalPierce = true) override;
 
 	static uint32_t monsterAutoID;
 

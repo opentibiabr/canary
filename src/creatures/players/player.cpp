@@ -3850,8 +3850,8 @@ bool Player::isPzLocked() const {
 	return pzLocked;
 }
 
-BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense, bool checkArmor, bool field) {
-	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field);
+BlockType_t Player::blockHit(const std::shared_ptr<Creature> &attacker, const CombatType_t &combatType, int32_t &damage, bool checkDefense, bool checkArmor, bool field, bool applyElementalPierce) {
+	BlockType_t blockType = Creature::blockHit(attacker, combatType, damage, checkDefense, checkArmor, field, applyElementalPierce);
 	if (attacker) {
 		sendCreatureSquare(attacker, SQ_COLOR_BLACK);
 	}

@@ -226,7 +226,8 @@ def _static_or_unresolved_fact(
 	token: Token,
 	extractor: str,
 	owner: str,
-	allow_symbol: bool = False,
+	allowed_symbol_roots: frozenset[str] = frozenset(),
+	allow_string_literal: bool = True,
 ) -> Fact:
 	value = resolve_scalar(argument, constants)
 	symbol = dotted_identifier(argument)
@@ -237,7 +238,18 @@ def _static_or_unresolved_fact(
 		and argument[0].kind == "identifier"
 		and str(argument[0].value) in constants
 	)
-	if value is not None and (allow_symbol or symbol is None or is_constant_alias):
+	is_allowed_symbol = symbol is not None and any(
+		symbol == root or symbol.startswith(f"{root}.")
+		for root in allowed_symbol_roots
+	)
+	is_allowed_string = (
+		allow_string_literal
+		or not isinstance(value, str)
+		or is_allowed_symbol
+	)
+	if value is not None and is_allowed_string and (
+		symbol is None or is_constant_alias or is_allowed_symbol
+	):
 		return Fact(
 			domain=domain,
 			role=role,  # type: ignore[arg-type]
@@ -247,7 +259,7 @@ def _static_or_unresolved_fact(
 			location=_location(path, argument[0] if argument else token),
 			extractor=extractor,
 			confidence="derived" if len(argument) == 1 and argument[0].kind == "identifier" else "exact",
-			symbol=symbol if allow_symbol else None,
+			symbol=symbol if is_allowed_symbol else None,
 			owner=owner,
 		)
 	return Fact(
@@ -303,6 +315,7 @@ def extract_lua(path: DiscoveredFile, config: AuditConfig) -> ExtractionResult:
 		return result
 
 	constants = collect_static_bindings(tokens)
+	storage_symbol_roots = frozenset(table.root for table in config.storage_tables)
 	delimiter_pairs = matching_delimiters(tokens)
 	assignments = _assignment_calls(
 		tokens,
@@ -476,7 +489,8 @@ def extract_lua(path: DiscoveredFile, config: AuditConfig) -> ExtractionResult:
 					token=token,
 					extractor="lua.storage-call",
 					owner=f"{receiver}.{method}",
-					allow_symbol=True,
+					allowed_symbol_roots=storage_symbol_roots,
+					allow_string_literal=False,
 				)
 			)
 		elif receiver == "Game" and method in {"createMonster", "createNpc", "createItem"}:

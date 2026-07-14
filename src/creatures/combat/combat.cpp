@@ -1541,12 +1541,12 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 		tmpDamage = *data;
 	}
 
-	// Wheel of destiny get beam affected total
 	auto spectators = Spectators().find<Player>(toPos, true, rangeX, rangeX, rangeY, rangeY);
-	uint8_t beamAffectedTotal = casterPlayer ? casterPlayer->wheel().getBeamAffectedTotal(tmpDamage) : 0;
-	uint8_t beamAffectedCurrent = 0;
 
 	tmpDamage.affected = affectedTargets.size();
+	if (casterPlayer) {
+		casterPlayer->wheel().applyBeamMasteryBonus(tmpDamage, affectedTargets.size());
+	}
 
 	// The apply extensions can't modifify the damage value, so we need to create a copy of the damage value
 	auto extensionsDamage = tmpDamage;
@@ -1575,11 +1575,6 @@ void Combat::CombatFunc(const std::shared_ptr<Creature> &caster, const Position 
 				}
 
 				if (!params.aggressive || (caster != creature && Combat::canDoCombat(caster, creature, params.aggressive) == RETURNVALUE_NOERROR)) {
-					// Wheel of destiny update beam mastery damage
-					if (casterPlayer) {
-						casterPlayer->wheel().updateBeamMasteryDamage(tmpDamage, beamAffectedTotal, beamAffectedCurrent);
-					}
-
 					if (func) {
 						auto creatureDamage = creature->getCombatDamage();
 						if (!creatureDamage.isEmpty()) {

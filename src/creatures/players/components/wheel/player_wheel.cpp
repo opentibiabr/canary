@@ -3970,21 +3970,14 @@ void PlayerWheel::setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusD
 }
 
 // Functions used to Manage Combat
-uint8_t PlayerWheel::getBeamAffectedTotal(const CombatDamage &tmpDamage) const {
-	uint8_t beamAffectedTotal = 0; // Removed const
-	if (m_beamMasterySpells.contains(tmpDamage.instantSpellName) && getInstant("Beam Mastery")) {
-		beamAffectedTotal = 3;
+void PlayerWheel::applyBeamMasteryBonus(CombatDamage &damage, size_t affectedTargets) const {
+	if (affectedTargets == 0 || !m_beamMasterySpells.contains(damage.instantSpellName) || !getInstant("Beam Mastery")) {
+		return;
 	}
-	return beamAffectedTotal;
-}
 
-void PlayerWheel::updateBeamMasteryDamage(CombatDamage &tmpDamage, uint8_t &beamAffectedTotal, uint8_t &beamAffectedCurrent) const {
-	if (beamAffectedTotal > 0) {
-		tmpDamage.damageMultiplier += checkBeamMasteryDamage();
-		reduceAllSpellsCooldownTimer(1000); // Reduces all spell cooldown by 1 second per target hit (max 3 seconds)
-		--beamAffectedTotal;
-		beamAffectedCurrent++;
-	}
+	const auto targetCount = static_cast<int32_t>(std::min<size_t>(affectedTargets, 3));
+	damage.damageMultiplier += checkBeamMasteryDamage() * targetCount;
+	reduceAllSpellsCooldownTimer(1000 * targetCount);
 }
 
 void PlayerWheel::adjustDamageBasedOnResistanceAndSkill(int32_t &damage, CombatType_t combatType) const {

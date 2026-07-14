@@ -441,8 +441,7 @@ public:
 	void setWheelBonusData(const PlayerWheelMethodsBonusData &newBonusData);
 
 	// Combat functions
-	uint8_t getBeamAffectedTotal(const CombatDamage &tmpDamage) const;
-	void updateBeamMasteryDamage(CombatDamage &tmpDamage, uint8_t &beamAffectedTotal, uint8_t &beamAffectedCurrent) const;
+	void applyBeamMasteryBonus(CombatDamage &damage, size_t affectedTargets) const;
 	/**
 	 * @brief Adjusts the incoming damage based on the player's resistance and avatar skill.
 	 *

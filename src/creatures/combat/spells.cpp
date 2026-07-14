@@ -881,6 +881,14 @@ void Spell::setStanceSlot(StanceSlot_t slot) {
 	stanceSlot = slot;
 }
 
+CombatType_t Spell::getElement() const {
+	return element;
+}
+
+void Spell::setElement(CombatType_t type) {
+	element = type;
+}
+
 void Spell::postCastSpell(const std::shared_ptr<Player> &player, bool finishedCast /*= true*/, bool payCost /*= true*/) const {
 	if (finishedCast) {
 		if (isSpender()) {
@@ -1296,8 +1304,10 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 		player->updateLastAggressiveAction();
 	}
 
+	var.elementalSpellCast = player->createElementalSpellCastSnapshot(getElement());
 	bool result = executeCastSpell(player, var);
 	if (result) {
+		player->commitElementalSpellCast(var.elementalSpellCast);
 		postCastSpell(player);
 		if (getStanceSlot() != StanceSlot_t::None) {
 			player->toggleStance(getSpellId());
@@ -1329,6 +1339,18 @@ bool InstantSpell::canThrowSpell(const std::shared_ptr<Creature> &creature, cons
 bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 	LuaVariant var;
 	var.instantName = getName();
+	const auto &player = creature ? creature->getPlayer() : nullptr;
+	if (player) {
+		var.elementalSpellCast = player->createElementalSpellCastSnapshot(getElement());
+	}
+
+	auto execute = [this, &creature, &player](const LuaVariant &variant) {
+		const bool result = executeCastSpell(creature, variant);
+		if (result && player) {
+			player->commitElementalSpellCast(variant.elementalSpellCast);
+		}
+		return result;
+	};
 
 	if (casterTargetOrDirection) {
 		const auto &target = creature->getAttackedCreature();
@@ -1340,7 +1362,7 @@ bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
 			var.instantName = getName();
-			return executeCastSpell(creature, var);
+			return execute(var);
 		}
 
 		return false;
@@ -1352,7 +1374,7 @@ bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature) {
 		var.pos = creature->getPosition();
 	}
 
-	return executeCastSpell(creature, var);
+	return execute(var);
 }
 
 bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) {
@@ -1360,7 +1382,16 @@ bool InstantSpell::castSpell(const std::shared_ptr<Creature> &creature, const st
 		LuaVariant var;
 		var.type = VARIANT_NUMBER;
 		var.number = target->getID();
-		return executeCastSpell(creature, var);
+		var.instantName = getName();
+		const auto &player = creature ? creature->getPlayer() : nullptr;
+		if (player) {
+			var.elementalSpellCast = player->createElementalSpellCastSnapshot(getElement());
+		}
+		const bool result = executeCastSpell(creature, var);
+		if (result && player) {
+			player->commitElementalSpellCast(var.elementalSpellCast);
+		}
+		return result;
 	}
 	return castSpell(creature);
 }

@@ -4352,6 +4352,10 @@ function Spell:checkFloor(value) end
 ---@return boolean|number|nil
 function Spell:cooldown(cooldown) end
 
+---@param combatType? CombatType
+---@return boolean|CombatType
+function Spell:element(combatType) end
+
 ---@param primaryGroup? string
 ---@param secondaryGroup? string
 ---@return boolean|number|nil

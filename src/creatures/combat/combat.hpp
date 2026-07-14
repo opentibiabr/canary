@@ -217,9 +217,9 @@ public:
 
 	static void addDistanceEffect(const std::shared_ptr<Creature> &caster, const Position &fromPos, const Position &toPos, uint16_t effect);
 
-	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target) const;
-	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected = 1, double damageMultiplier = 1.0) const;
-	bool doCombat(const std::shared_ptr<Creature> &caster, const Position &pos) const;
+	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, ElementalSpellCastSnapshot elementalSpellCast = {}) const;
+	bool doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected = 1, double damageMultiplier = 1.0, ElementalSpellCastSnapshot elementalSpellCast = {}) const;
+	bool doCombat(const std::shared_ptr<Creature> &caster, const Position &pos, ElementalSpellCastSnapshot elementalSpellCast = {}) const;
 
 	bool setCallback(CallBackParam_t key);
 	void setChainCallback(uint8_t chainTargets, uint8_t chainDistance, bool backtracking);
@@ -249,7 +249,7 @@ public:
 	void setRuneSpellName(const std::string &value);
 
 	void setupChain(const std::shared_ptr<Weapon> &weapon);
-	bool doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive) const;
+	bool doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive, ElementalSpellCastSnapshot elementalSpellCast = {}) const;
 
 	/**
 	 * @brief Applies mantra absorption to elemental combat damage.
@@ -348,7 +348,7 @@ private:
 	 * @return The calculated level formula.
 	 */
 	int32_t getLevelFormula(const std::shared_ptr<Player> &player, const std::shared_ptr<Spell> &wheelSpell, const CombatDamage &damage) const;
-	CombatDamage getCombatDamage(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const;
+	CombatDamage getCombatDamage(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target, ElementalSpellCastSnapshot elementalSpellCast) const;
 
 	// configureable
 	CombatParams params;

@@ -69,6 +69,23 @@
 #include "utils/tools.hpp"
 
 namespace {
+	constexpr uint16_t MASTER_OF_FLAMES_SPELL_ID = 304;
+	constexpr uint16_t MASTER_OF_THUNDER_SPELL_ID = 305;
+	constexpr uint16_t MASTER_OF_DECAY_SPELL_ID = 306;
+
+	[[nodiscard]] constexpr CombatType_t getElementalStanceType(uint16_t spellId) {
+		switch (spellId) {
+			case MASTER_OF_FLAMES_SPELL_ID:
+				return COMBAT_FIREDAMAGE;
+			case MASTER_OF_THUNDER_SPELL_ID:
+				return COMBAT_ENERGYDAMAGE;
+			case MASTER_OF_DECAY_SPELL_ID:
+				return COMBAT_DEATHDAMAGE;
+			default:
+				return COMBAT_NONE;
+		}
+	}
+
 	[[nodiscard]] double getItemImbuementSkillEquipment(const std::shared_ptr<Item> &item, uint16_t skill) {
 		double imbuementSkill = 0.0;
 		for (uint8_t slotid = 0; slotid < item->getImbuementSlot(); slotid++) {
@@ -13130,6 +13147,93 @@ bool Player::toggleStance(uint16_t spellId) {
 	return updateStance(spellId, true, true, true);
 }
 
+ElementalSpellCastSnapshot Player::createElementalSpellCastSnapshot(CombatType_t intrinsicType) const {
+	ElementalSpellCastSnapshot snapshot;
+	snapshot.intrinsicType = intrinsicType;
+	snapshot.resolvedType = intrinsicType;
+	snapshot.stateRevision = elementalStanceRevision;
+
+	if (intrinsicType == COMBAT_NONE || getPlayerVocationEnum() != VOCATION_SORCERER_CIP) {
+		return snapshot;
+	}
+
+	const auto stance = activeStances.find(StanceSlot_t::Elemental);
+	if (stance == activeStances.end()) {
+		return snapshot;
+	}
+
+	const auto stanceType = getElementalStanceType(stance->second);
+	if (stanceType == COMBAT_NONE) {
+		return snapshot;
+	}
+
+	if (intrinsicType == stanceType) {
+		snapshot.stanceSpellId = stance->second;
+	} else if (pendingElementalSpell == stanceType) {
+		snapshot.stanceSpellId = stance->second;
+		snapshot.resolvedType = stanceType;
+		snapshot.converted = true;
+	} else {
+		return snapshot;
+	}
+
+	applyElementalStanceBonuses(snapshot);
+	return snapshot;
+}
+
+void Player::applyElementalStanceBonuses(ElementalSpellCastSnapshot &snapshot) const {
+	// Keep stance bonuses centralized so Wheel stages can extend the base values
+	// without changing the per-cast transport or Combat execution paths.
+	switch (snapshot.stanceSpellId) {
+		case MASTER_OF_FLAMES_SPELL_ID:
+			snapshot.damageMultiplier = 4;
+			break;
+		case MASTER_OF_THUNDER_SPELL_ID:
+			snapshot.criticalChance = 400;
+			break;
+		case MASTER_OF_DECAY_SPELL_ID:
+			snapshot.criticalDamage = 3000;
+			break;
+		default:
+			break;
+	}
+}
+
+void Player::commitElementalSpellCast(const ElementalSpellCastSnapshot &snapshot) {
+	if (snapshot.stanceSpellId == 0 || snapshot.stateRevision != elementalStanceRevision) {
+		return;
+	}
+
+	const auto stance = activeStances.find(StanceSlot_t::Elemental);
+	if (stance == activeStances.end() || stance->second != snapshot.stanceSpellId) {
+		return;
+	}
+
+	const auto stanceType = getElementalStanceType(stance->second);
+	if (stanceType == COMBAT_NONE || snapshot.resolvedType != stanceType) {
+		return;
+	}
+
+	if (snapshot.converted) {
+		if (pendingElementalSpell != stanceType) {
+			return;
+		}
+		pendingElementalSpell = COMBAT_NONE;
+	} else {
+		if (snapshot.intrinsicType != stanceType) {
+			return;
+		}
+		pendingElementalSpell = stanceType;
+	}
+
+	++elementalStanceRevision;
+}
+
+void Player::clearPendingElementalSpell() {
+	pendingElementalSpell = COMBAT_NONE;
+	++elementalStanceRevision;
+}
+
 bool Player::updateStance(uint16_t spellId, bool toggle, bool notifyClient, bool replaceSlot) {
 	const auto &spell = g_spells().getInstantSpellById(spellId);
 	if (!spell || spell->getStanceSlot() == StanceSlot_t::None) {
@@ -13148,6 +13252,9 @@ bool Player::updateStance(uint16_t spellId, bool toggle, bool notifyClient, bool
 			if (!toggle) {
 				return true;
 			}
+			if (slot == StanceSlot_t::Elemental) {
+				clearPendingElementalSpell();
+			}
 			activeStances.erase(current);
 			refreshStanceState(notifyClient);
 			return true;
@@ -13158,6 +13265,9 @@ bool Player::updateStance(uint16_t spellId, bool toggle, bool notifyClient, bool
 		}
 	}
 
+	if (slot == StanceSlot_t::Elemental) {
+		clearPendingElementalSpell();
+	}
 	activeStances[slot] = spellId;
 	refreshStanceState(notifyClient);
 	return true;
@@ -13203,6 +13313,9 @@ void Player::pruneStances() {
 		const bool invalidSpell = !spell || spell->getStanceSlot() != it->first;
 		const bool invalidVocation = spell && !spell->getVocMap().empty() && !spell->getVocMap().contains(getVocationId());
 		if (invalidSpell || invalidVocation) {
+			if (it->first == StanceSlot_t::Elemental) {
+				clearPendingElementalSpell();
+			}
 			it = activeStances.erase(it);
 			changed = true;
 		} else {

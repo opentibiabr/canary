@@ -213,6 +213,8 @@ public:
 	bool toggleStance(uint16_t spellId);
 	[[nodiscard]] bool isStanceActive(uint16_t spellId) const;
 	[[nodiscard]] std::vector<uint16_t> getActiveStanceSpellIds() const;
+	[[nodiscard]] ElementalSpellCastSnapshot createElementalSpellCastSnapshot(CombatType_t intrinsicType) const;
+	void commitElementalSpellCast(const ElementalSpellCastSnapshot &snapshot);
 
 	/**
 	 * @brief Sets the player's serene state.
@@ -1601,6 +1603,8 @@ private:
 	void restoreStance(uint16_t spellId);
 	void refreshStanceState(bool notifyClient);
 	void pruneStances();
+	void applyElementalStanceBonuses(ElementalSpellCastSnapshot &snapshot) const;
+	void clearPendingElementalSpell();
 
 	void setNextWalkActionTask(const std::shared_ptr<Task> &task);
 	void setNextWalkTask(const std::shared_ptr<Task> &task);
@@ -1698,6 +1702,8 @@ private:
 	uint8_t harmony = 0;
 	Virtue_t virtue = Virtue_t::None;
 	std::map<StanceSlot_t, uint16_t> activeStances;
+	CombatType_t pendingElementalSpell = COMBAT_NONE;
+	uint32_t elementalStanceRevision = 0;
 	std::unordered_set<uint16_t> aimAtTargetSpellIds;
 
 	std::string name;

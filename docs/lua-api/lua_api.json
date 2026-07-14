@@ -8197,6 +8197,14 @@
         "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
       },
       {
+        "name": "element",
+        "params": [
+          "combatType?: CombatType"
+        ],
+        "return": "boolean|CombatType",
+        "source": "src/lua/functions/creatures/combat/spell_functions.cpp"
+      },
+      {
         "name": "group",
         "params": [
           "primaryGroup?: string",

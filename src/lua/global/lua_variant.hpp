@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "creatures/creatures_definitions.hpp"
 #include "enums/lua_variant_type.hpp"
 #include "game/movement/position.hpp"
 
@@ -24,4 +25,5 @@ struct LuaVariant {
 	std::string runeName;
 	Position pos;
 	uint32_t number = 0;
+	ElementalSpellCastSnapshot elementalSpellCast;
 };

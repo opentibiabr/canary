@@ -198,21 +198,21 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 			}
 
 			if (combat->hasArea()) {
-				combat->doCombat(creature, target->getPosition());
+				result = combat->doCombat(creature, target->getPosition(), variant.elementalSpellCast);
 			} else {
-				combat->doCombat(creature, target);
+				result = combat->doCombat(creature, target, variant.elementalSpellCast);
 			}
 			break;
 		}
 
 		case VARIANT_POSITION: {
-			result = combat->doCombat(creature, variant.pos);
+			result = combat->doCombat(creature, variant.pos, variant.elementalSpellCast);
 			break;
 		}
 
 		case VARIANT_TARGETPOSITION: {
 			if (combat->hasArea()) {
-				result = combat->doCombat(creature, variant.pos);
+				result = combat->doCombat(creature, variant.pos, variant.elementalSpellCast);
 			} else {
 				combat->postCombatEffects(creature, creature->getPosition(), variant.pos);
 				g_game().addMagicEffect(variant.pos, CONST_ME_POFF);
@@ -227,7 +227,7 @@ int CombatFunctions::luaCombatExecute(lua_State* L) {
 				return 1;
 			}
 
-			result = combat->doCombat(creature, target);
+			result = combat->doCombat(creature, target, variant.elementalSpellCast);
 			break;
 		}
 

@@ -164,7 +164,7 @@ void Lua::pushVariant(lua_State* L, const LuaVariant &var) {
 		return;
 	}
 
-	lua_createtable(L, 0, 4);
+	lua_createtable(L, 0, 14);
 	setField(L, "type", var.type);
 	switch (var.type) {
 		case VARIANT_NUMBER:
@@ -184,6 +184,14 @@ void Lua::pushVariant(lua_State* L, const LuaVariant &var) {
 	}
 	setField(L, "instantName", var.instantName);
 	setField(L, "runeName", var.runeName);
+	setField(L, "elementalStanceIntrinsicType", var.elementalSpellCast.intrinsicType);
+	setField(L, "elementalStanceResolvedType", var.elementalSpellCast.resolvedType);
+	setField(L, "elementalStanceStateRevision", var.elementalSpellCast.stateRevision);
+	setField(L, "elementalStanceSpellId", var.elementalSpellCast.stanceSpellId);
+	setField(L, "elementalStanceDamageMultiplier", var.elementalSpellCast.damageMultiplier);
+	setField(L, "elementalStanceCriticalChance", var.elementalSpellCast.criticalChance);
+	setField(L, "elementalStanceCriticalDamage", var.elementalSpellCast.criticalDamage);
+	setField(L, "elementalStanceConverted", var.elementalSpellCast.converted ? 1 : 0);
 	setMetatable(L, -1, "Variant");
 }
 
@@ -467,6 +475,19 @@ LuaVariant Lua::getVariant(lua_State* L, int32_t arg) {
 	LuaVariant var;
 	var.instantName = getFieldString(L, arg, "instantName");
 	var.runeName = getFieldString(L, arg, "runeName");
+	ElementalSpellCastSnapshot elementalSpellCast;
+	elementalSpellCast.intrinsicType = getField<CombatType_t>(L, arg, "elementalStanceIntrinsicType");
+	elementalSpellCast.resolvedType = getField<CombatType_t>(L, arg, "elementalStanceResolvedType");
+	elementalSpellCast.stateRevision = getField<uint32_t>(L, arg, "elementalStanceStateRevision");
+	elementalSpellCast.stanceSpellId = getField<uint16_t>(L, arg, "elementalStanceSpellId");
+	elementalSpellCast.damageMultiplier = getField<int32_t>(L, arg, "elementalStanceDamageMultiplier");
+	elementalSpellCast.criticalChance = getField<int32_t>(L, arg, "elementalStanceCriticalChance");
+	elementalSpellCast.criticalDamage = getField<int32_t>(L, arg, "elementalStanceCriticalDamage");
+	elementalSpellCast.converted = getField<uint8_t>(L, arg, "elementalStanceConverted") != 0;
+	lua_pop(L, 8);
+	if (elementalSpellCast.stanceSpellId != 0) {
+		var.elementalSpellCast = elementalSpellCast;
+	}
 	switch (var.type = getField<LuaVariantType_t>(L, arg, "type")) {
 		case VARIANT_NUMBER: {
 			var.number = getField<uint32_t>(L, arg, "number");

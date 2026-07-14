@@ -867,6 +867,29 @@ enum CombatType_t : uint8_t {
 	COMBAT_NONE = 255
 };
 
+/**
+ * @brief Immutable per-cast context for a Sorcerer elemental stance.
+ *
+ * The context is created before an instant spell enters Lua and is committed
+ * only after Lua reports a successful cast. It travels with the spell variant
+ * and each Combat execution so shared Combat objects never hold cast-specific
+ * stance state.
+ */
+struct ElementalSpellCastSnapshot {
+	CombatType_t intrinsicType = COMBAT_NONE;
+	CombatType_t resolvedType = COMBAT_NONE;
+	uint32_t stateRevision = 0;
+	uint16_t stanceSpellId = 0;
+	int32_t damageMultiplier = 0;
+	int32_t criticalChance = 0;
+	int32_t criticalDamage = 0;
+	bool converted = false;
+
+	[[nodiscard]] bool appliesTo(CombatType_t combatType) const {
+		return stanceSpellId != 0 && intrinsicType == combatType && resolvedType != COMBAT_NONE;
+	}
+};
+
 enum PlayerAsyncOngoingTaskFlags : uint64_t {
 	PlayerAsyncTask_Highscore = 1 << 0,
 	PlayerAsyncTask_RecentDeaths = 1 << 1,
@@ -1765,6 +1788,7 @@ struct CombatDamage {
 
 	std::string instantSpellName;
 	std::string runeSpellName;
+	ElementalSpellCastSnapshot elementalSpellCast;
 
 	CombatDamage() = default;
 

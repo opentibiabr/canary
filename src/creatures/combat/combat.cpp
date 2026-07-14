@@ -84,7 +84,7 @@ int32_t Combat::getLevelFormula(const std::shared_ptr<Player> &player, const std
 	return levelFormula;
 }
 
-CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target) const {
+CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Creature> &target, ElementalSpellCastSnapshot elementalSpellCast) const {
 	CombatDamage damage;
 	damage.origin = params.origin;
 	damage.suppressCharms = params.suppressCharms;
@@ -109,6 +109,13 @@ CombatDamage Combat::getCombatDamage(const std::shared_ptr<Creature> &creature, 
 
 	damage.instantSpellName = instantSpellName;
 	damage.runeSpellName = runeSpellName;
+	if (elementalSpellCast.appliesTo(params.combatType)) {
+		damage.primary.type = elementalSpellCast.resolvedType;
+		damage.damageMultiplier += elementalSpellCast.damageMultiplier;
+		damage.criticalChance += elementalSpellCast.criticalChance;
+		damage.criticalDamage += elementalSpellCast.criticalDamage;
+		damage.elementalSpellCast = elementalSpellCast;
+	}
 	// Wheel of destiny
 	const auto &wheelSpell = casterPlayer ? casterPlayer->wheel().getCombatDataSpell(damage) : nullptr;
 	// End
@@ -1024,18 +1031,30 @@ void Combat::CombatConditionFunc(const std::shared_ptr<Creature> &caster, const 
 	}
 
 	for (const auto &condition : params.conditionList) {
+		ConditionType_t appliedConditionType = condition->getType();
+		const bool convertedDamageCondition = data
+			&& data->elementalSpellCast.converted
+			&& condition->dynamic_self_cast<ConditionDamage>() != nullptr;
+		if (convertedDamageCondition) {
+			const auto convertedType = DamageToConditionType(data->elementalSpellCast.resolvedType);
+			if (convertedType != CONDITION_NONE) {
+				appliedConditionType = convertedType;
+			}
+		}
+
 		if (targetPlayer) {
-			if (condition->getType() != CONDITION_FEARED && targetPlayer->isImmuneCleanse(condition->getType())) {
+			if (appliedConditionType != CONDITION_FEARED && targetPlayer->isImmuneCleanse(appliedConditionType)) {
 				return;
 			}
 
-			if (condition->getType() == CONDITION_FEARED && !checkFearConditionAffected(targetPlayer)) {
+			if (appliedConditionType == CONDITION_FEARED && !checkFearConditionAffected(targetPlayer)) {
 				return;
 			}
 		}
 
-		if (caster == target || (target && !target->isImmune(condition->getType()))) {
+		if (caster == target || (target && !target->isImmune(appliedConditionType))) {
 			auto conditionCopy = condition->clone();
+			conditionCopy->setType(appliedConditionType);
 			if (const auto &conditionDamage = conditionCopy->dynamic_self_cast<ConditionDamage>()) {
 				conditionDamage->setSourceSpellType(params.sourceSpellType);
 			}
@@ -1371,7 +1390,7 @@ void Combat::setupChain(const std::shared_ptr<Weapon> &weapon) {
 	}
 }
 
-bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive) const {
+bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, bool aggressive, ElementalSpellCastSnapshot elementalSpellCast) const {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (!params.chainCallback) {
 		return false;
@@ -1409,10 +1428,10 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 				continue;
 			}
 			g_dispatcher().scheduleEvent(
-				delay, [combat, caster, nextTarget, from, affected, damageMultiplier]() {
+				delay, [combat, caster, nextTarget, from, affected, damageMultiplier, elementalSpellCast]() {
 					if (combat && caster && nextTarget) {
 						Combat::doChainEffect(caster, from, nextTarget->getPosition(), combat->params.chainEffect);
-						combat->doCombat(caster, nextTarget, from, affected, damageMultiplier);
+						combat->doCombat(caster, nextTarget, from, affected, damageMultiplier, elementalSpellCast);
 					}
 				},
 				"Combat::doCombatChain"
@@ -1423,18 +1442,18 @@ bool Combat::doCombatChain(const std::shared_ptr<Creature> &caster, const std::s
 	return true;
 }
 
-bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target) const {
+bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, ElementalSpellCastSnapshot elementalSpellCast) const {
 	if (caster != nullptr && params.chainCallback) {
-		return doCombatChain(caster, target, params.aggressive);
+		return doCombatChain(caster, target, params.aggressive, elementalSpellCast);
 	}
 
-	return doCombat(caster, target, caster != nullptr ? caster->getPosition() : Position());
+	return doCombat(caster, target, caster != nullptr ? caster->getPosition() : Position(), 1, 1.0, elementalSpellCast);
 }
 
-bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected /* = 1 */, double damageMultiplier /* = 1.0 */) const {
+bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const std::shared_ptr<Creature> &target, const Position &origin, int affected /* = 1 */, double damageMultiplier /* = 1.0 */, ElementalSpellCastSnapshot elementalSpellCast) const {
 	// target combat callback function
 	if (params.combatType != COMBAT_NONE) {
-		CombatDamage damage = getCombatDamage(caster, target);
+		CombatDamage damage = getCombatDamage(caster, target, elementalSpellCast);
 		damage.primary.value = static_cast<int32_t>(std::round(damage.primary.value * damageMultiplier));
 		damage.secondary.value = static_cast<int32_t>(std::round(damage.secondary.value * damageMultiplier));
 		damage.affected = affected;
@@ -1450,14 +1469,14 @@ bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const std::shared
 	return true;
 }
 
-bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &position) const {
+bool Combat::doCombat(const std::shared_ptr<Creature> &caster, const Position &position, ElementalSpellCastSnapshot elementalSpellCast) const {
 	if (caster != nullptr && params.chainCallback) {
-		return doCombatChain(caster, caster, params.aggressive);
+		return doCombatChain(caster, caster, params.aggressive, elementalSpellCast);
 	}
 
 	// area combat callback function
 	if (params.combatType != COMBAT_NONE) {
-		CombatDamage damage = getCombatDamage(caster, nullptr);
+		CombatDamage damage = getCombatDamage(caster, nullptr, elementalSpellCast);
 		if (damage.primary.type != COMBAT_MANADRAIN) {
 			doCombatHealth(caster, position, area, damage, params);
 		} else {

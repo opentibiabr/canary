@@ -521,6 +521,10 @@ ConditionType_t Condition::getType() const {
 	return conditionType;
 }
 
+void Condition::setType(ConditionType_t type) {
+	conditionType = type;
+}
+
 int64_t Condition::getEndTime() const {
 	return endTime;
 }

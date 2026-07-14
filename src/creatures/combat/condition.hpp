@@ -37,6 +37,7 @@ public:
 	virtual std::shared_ptr<Condition> clone() const = 0;
 
 	ConditionType_t getType() const;
+	void setType(ConditionType_t type);
 	int64_t getEndTime() const;
 	int32_t getTicks() const;
 	void setTicks(int32_t newTicks);

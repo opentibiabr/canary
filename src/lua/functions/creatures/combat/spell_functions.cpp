@@ -36,6 +36,15 @@ void SpellFunctions::init(lua_State* L) {
 	 * @return boolean
 	 */
 	Lua::registerMethod(L, "Spell", "stance", SpellFunctions::luaSpellStance);
+	/***
+	 * Declares the intrinsic damage element of an instant spell for Sorcerer
+	 * elemental stance handling. Rune spells do not support this property.
+	 *
+	 * @function Spell:element
+	 * @param combatType? CombatType
+	 * @return boolean|CombatType
+	 */
+	Lua::registerMethod(L, "Spell", "element", SpellFunctions::luaSpellElement);
 	Lua::registerMethod(L, "Spell", "group", SpellFunctions::luaSpellGroup);
 	Lua::registerMethod(L, "Spell", "cooldown", SpellFunctions::luaSpellCooldown);
 	Lua::registerMethod(L, "Spell", "groupCooldown", SpellFunctions::luaSpellGroupCooldown);
@@ -282,6 +291,39 @@ int SpellFunctions::luaSpellStance(lua_State* L) {
 	spell->setStanceSlot(slot);
 	Lua::pushBoolean(L, true);
 	return 1;
+}
+
+int SpellFunctions::luaSpellElement(lua_State* L) {
+	// get: spell:element() set: spell:element(combatType)
+	const auto &spell = Lua::getUserdataShared<Spell>(L, 1, "Spell");
+	if (!spell || spell->spellType != SPELL_INSTANT) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+
+	if (lua_gettop(L) == 1) {
+		lua_pushnumber(L, spell->getElement());
+		return 1;
+	}
+
+	const auto element = Lua::getNumber<CombatType_t>(L, 2);
+	switch (element) {
+		case COMBAT_FIREDAMAGE:
+		case COMBAT_EARTHDAMAGE:
+		case COMBAT_ENERGYDAMAGE:
+		case COMBAT_ICEDAMAGE:
+		case COMBAT_DEATHDAMAGE:
+			spell->setElement(element);
+			Lua::pushBoolean(L, true);
+			return 1;
+		default:
+			g_logger().warn(
+				"[SpellFunctions::luaSpellElement] - Unsupported spell element: {}",
+				static_cast<uint16_t>(element)
+			);
+			Lua::pushBoolean(L, false);
+			return 1;
+	}
 }
 
 int SpellFunctions::luaSpellGroup(lua_State* L) {

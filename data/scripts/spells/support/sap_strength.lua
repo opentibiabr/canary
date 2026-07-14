@@ -9,7 +9,7 @@ function spell.onCastSpell(creature, variant)
 end
 
 spell:name("Aura of Sapped Strength")
-spell:words("exori kor tempo")
+spell:words("exori moe tempo")
 spell:group("support", "crippling")
 spell:vocation("master sorcerer;true")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SAP_STRENGTH)

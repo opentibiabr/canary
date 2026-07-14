@@ -85273,4 +85273,8 @@ Granted by TibiaGoals.com"/>
 		<attribute key="attack" value="21"/>
 		<attribute key="weight" value="80"/>
 	</item>
+	<item id="54266" article="a" name="lesser proficiency catalyst">
+		<attribute key="primarytype" value="other items"/>
+		<attribute key="weight" value="200"/>
+	</item>
 </items>

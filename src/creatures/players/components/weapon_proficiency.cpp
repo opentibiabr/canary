@@ -804,7 +804,6 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 	weaponId = weaponId == 0 ? m_player.getWeaponId(true) : weaponId;
 
 	if (weaponId == 0) {
-		g_logger().error("{} - Invalid weapon ID: {}", __FUNCTION__, weaponId);
 		return augments;
 	}
 

@@ -2,9 +2,17 @@ local SPELL_BASE_POWER = 110
 local CHAIN_ADDITIONAL_TARGETS = 2
 local CHAIN_DISTANCE = 4
 
-function onGetFormulaValues(player, level, maglevel)
+local function calculateDamage(player, maglevel)
 	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * maglevel) + (SPELL_BASE_POWER / 4)
 	return -(damage * 0.9), -(damage * 1.1)
+end
+
+function onGetFormulaValues(player, level, maglevel)
+	return calculateDamage(player, maglevel)
+end
+
+function onGetChainFormulaValues(player, level, maglevel)
+	return calculateDamage(player, maglevel)
 end
 
 function canLightningChain(creature, target)
@@ -20,7 +28,7 @@ local function createLightningCombat(chain)
 	lightningCombat:setParameter(COMBAT_PARAM_TYPE, COMBAT_ENERGYDAMAGE)
 	lightningCombat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_ENERGYAREA)
 	lightningCombat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_ENERGY)
-	lightningCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+	lightningCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, chain and "onGetChainFormulaValues" or "onGetFormulaValues")
 
 	if chain then
 		lightningCombat:setParameter(COMBAT_PARAM_CHAIN_EFFECT, CONST_ME_PINK_ENERGY_SPARK)

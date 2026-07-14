@@ -18,13 +18,21 @@ end
 local combat = createStrongIceWaveCombat(AREA_STRONG_ICE_WAVE)
 local enlargedCombat = createStrongIceWaveCombat(AREA_WAVE7)
 
-function onGetFormulaValues(player, level, maglevel)
+local function calculateDamage(player, maglevel)
 	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * maglevel) + (SPELL_BASE_POWER / 4)
 	return -(damage * 0.9), -(damage * 1.1)
 end
 
+function onGetFormulaValues(player, level, maglevel)
+	return calculateDamage(player, maglevel)
+end
+
+function onGetEnlargedFormulaValues(player, level, maglevel)
+	return calculateDamage(player, maglevel)
+end
+
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
-enlargedCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
+enlargedCombat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetEnlargedFormulaValues")
 
 local spell = Spell("instant")
 

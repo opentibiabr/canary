@@ -25,13 +25,21 @@ end
 local combat = createFrontSweepCombat(AREA_WAVE6, AREADIAGONAL_WAVE6)
 local wheelCombat = createFrontSweepCombat(AREA_FRONT_SWEEP_WHEEL, AREADIAGONAL_FRONT_SWEEP_WHEEL)
 
-function onGetFormulaValues(player, skill, attack, factor)
+local function calculateDamage(player, skill, attack)
 	local damage = SPELL_BASE_POWER * (skill / 100) * (attack / 10) + player:calculateFlatDamageHealing()
 	return -damage * 0.9, -damage * 1.1
 end
 
+function onGetFormulaValues(player, skill, attack, factor)
+	return calculateDamage(player, skill, attack)
+end
+
+function onGetWheelFormulaValues(player, skill, attack, factor)
+	return calculateDamage(player, skill, attack)
+end
+
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
-wheelCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+wheelCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetWheelFormulaValues")
 
 local spell = Spell("instant")
 

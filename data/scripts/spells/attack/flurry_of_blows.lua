@@ -13,7 +13,7 @@ end
 local combat = createCombat(AREA_FLURRY_OF_BLOWS)
 local enlargedCombat = createCombat(AREA_GREATER_FLURRY_OF_BLOWS)
 
-function onGetFormulaValues(player, skill, attack, factor)
+local function calculateDamage(player, skill, attack)
 	local damageHealing = player:calculateFlatDamageHealing()
 
 	local damage = SPELL_BASE_POWER * (skill / 100) * (attack / 10) + damageHealing
@@ -24,8 +24,16 @@ function onGetFormulaValues(player, skill, attack, factor)
 	return -min, -max
 end
 
+function onGetFormulaValues(player, skill, attack, factor)
+	return calculateDamage(player, skill, attack)
+end
+
+function onGetEnlargedFormulaValues(player, skill, attack, factor)
+	return calculateDamage(player, skill, attack)
+end
+
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
-enlargedCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+enlargedCombat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetEnlargedFormulaValues")
 
 local spell = Spell("instant")
 

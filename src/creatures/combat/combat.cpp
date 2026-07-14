@@ -3041,7 +3041,11 @@ void Combat::applyExtensions(const std::shared_ptr<Creature> &caster, const std:
 			const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_LOW);
 			if (charm) {
 				auto charmTier = player->getCharmTier(CHARM_LOW);
-				uint16_t lowBlowChance = baseChance + (charm->chance[charmTier] * 100);
+				const uint16_t lowBlowChance = static_cast<uint16_t>(std::clamp<int32_t>(
+					static_cast<int32_t>(baseChance) + (static_cast<int32_t>(charm->chance[charmTier]) + player->getCharmChanceModifier()) * 100,
+					0,
+					10000
+				));
 
 				for (const auto &target : targets) {
 					if (!canApplyOffensiveCharm(target)) {

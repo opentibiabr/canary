@@ -126,9 +126,17 @@ struct Proficiency {
 	uint8_t maxLevel = 0;
 };
 
+struct ShapedProficiencyPerk {
+	uint8_t level = 0;
+	uint8_t index = 0;
+	uint16_t perkId = 0;
+	uint8_t rank = 0;
+};
+
 struct WeaponProficiencyData {
 	uint32_t experience = 0;
 	std::vector<ProficiencyPerk> perks = {};
+	std::vector<ShapedProficiencyPerk> shapedPerks = {};
 	bool mastered = false;
 };
 

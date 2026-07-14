@@ -64,6 +64,7 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <chrono>
+	#include <optional>
 	#include <string_view>
 #endif
 
@@ -80,6 +81,35 @@ namespace {
 	constexpr uint8_t CLIENT_PACKET_TASKBOARD = 0x5F;
 	constexpr uint8_t CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER = 0xBA;
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
+
+	enum class WeaponProficiencyCommand : uint8_t {
+		GetProficiency = 0x00,
+		GetAllProficiencies = 0x01,
+		ResetProficiency = 0x02,
+		PickPerks = 0x03,
+		ShapePerk = 0x04,
+		RefineShapedPerk = 0x05,
+		MaximizeShapedPerk = 0x06,
+		ReshapeShapedPerk = 0x07,
+		SelectReshapeOption = 0x08,
+		ClearShapedPerk = 0x09,
+	};
+
+	struct WeaponProficiencyPerkPick {
+		uint8_t level = 0;
+		uint8_t index = 0;
+	};
+
+	[[nodiscard]] std::optional<WeaponProficiencyPerkPick> readWeaponProficiencyPerkPick(NetworkMessage &msg) {
+		if (!msg.canRead(2)) {
+			return std::nullopt;
+		}
+
+		return WeaponProficiencyPerkPick {
+			.level = msg.getByte(),
+			.index = msg.getByte(),
+		};
+	}
 
 	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
 		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
@@ -3099,57 +3129,13 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 		return;
 	}
 
-	const auto action = msg.getByte();
+	const auto command = static_cast<WeaponProficiencyCommand>(msg.getByte());
 	const bool usesShapingPayload = hasProtocolFeature(protocolProfile, ProtocolFeature::WeaponProficiencyShapingPayload);
 
-	if (action == 0x01) {
+	if (command == WeaponProficiencyCommand::GetAllProficiencies) {
 		for (const auto weaponId : player->weaponProficiency().getTrackedWeaponIds()) {
 			sendWeaponProficiencyWindow(weaponId);
 		}
-		return;
-	}
-
-	if (usesShapingPayload) {
-		if (!msg.canRead(sizeof(uint16_t))) {
-			return;
-		}
-
-		const auto weaponId = msg.get<uint16_t>();
-		uint8_t proficiencyLevel = 0;
-		uint8_t perkIndex = 0;
-		switch (action) {
-			case 0x00:
-				break;
-			case 0x04:
-			case 0x05:
-			case 0x06:
-			case 0x07:
-			case 0x09:
-				if (!msg.canRead(2)) {
-					return;
-				}
-				proficiencyLevel = msg.getByte();
-				perkIndex = msg.getByte();
-				break;
-			case 0x08:
-				if (!msg.canRead(3)) {
-					return;
-				}
-				msg.getByte(true); // Proficiency-tree index
-				msg.getByte(true); // Perk slot
-				msg.getByte(true); // Selected reshape offer
-				break;
-			default:
-				return;
-		}
-
-		// The wire contract is handled here. Shaping mutations are applied by the
-		// proficiency component once perk ids, ranks, and costs are validated.
-		if (action == 0x07) {
-			sendWeaponProficiencyReshapeOffers(weaponId, proficiencyLevel, perkIndex);
-		}
-		sendWeaponProficiencyWindow(weaponId);
-		sendWeaponProficiency(weaponId);
 		return;
 	}
 
@@ -3160,6 +3146,124 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 	const auto weaponId = msg.get<uint16_t>();
 	const auto equippedWeaponId = player->getWeaponId(true);
 	const bool isEquippedWeapon = equippedWeaponId != 0 && weaponId == equippedWeaponId;
+	const auto resetSelectedPerks = [this, weaponId, isEquippedWeapon]() {
+		if (isEquippedWeapon) {
+			player->weaponProficiency().clearAllStats();
+			player->sendSkills();
+		}
+		player->weaponProficiency().clearSelectedPerks(weaponId);
+	};
+	const auto pickPerks = [this, weaponId, isEquippedWeapon](const std::vector<WeaponProficiencyPerkPick> &picks) {
+		if (isEquippedWeapon) {
+			player->weaponProficiency().clearAllStats();
+		}
+		player->weaponProficiency().clearSelectedPerks(weaponId);
+
+		for (const auto &pick : picks) {
+			player->weaponProficiency().setSelectedPerk(pick.level, pick.index, weaponId);
+		}
+
+		if (isEquippedWeapon) {
+			player->weaponProficiency().applyPerks(weaponId);
+		}
+	};
+	const auto canChangeSelectedPerks = [this, weaponId](const std::vector<WeaponProficiencyPerkPick> &picks) {
+		if (player->getZoneType() == ZONE_PROTECTION) {
+			return true;
+		}
+
+		for (const auto &selectedPerk : player->weaponProficiency().getSelectedPerks(weaponId)) {
+			const bool keepsSelectedPerk = std::ranges::any_of(picks, [&selectedPerk](const auto &pick) {
+				return pick.level == selectedPerk.level && pick.index == selectedPerk.index;
+			});
+			const bool replacesSelectedPerk = std::ranges::any_of(picks, [&selectedPerk](const auto &pick) {
+				return pick.level == selectedPerk.level && pick.index != selectedPerk.index;
+			});
+			if (!keepsSelectedPerk || replacesSelectedPerk) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+	const auto readPerkPicks = [&msg]() -> std::optional<std::vector<WeaponProficiencyPerkPick>> {
+		if (!msg.canRead(1)) {
+			return std::nullopt;
+		}
+
+		const auto count = msg.getByte();
+		if (!msg.canRead(static_cast<int32_t>(count) * 2)) {
+			return std::nullopt;
+		}
+
+		std::vector<WeaponProficiencyPerkPick> picks;
+		picks.reserve(count);
+		for (uint8_t i = 0; i < count; ++i) {
+			const auto pick = readWeaponProficiencyPerkPick(msg);
+			if (!pick) {
+				return std::nullopt;
+			}
+			picks.push_back(*pick);
+		}
+
+		return picks;
+	};
+
+	if (usesShapingPayload) {
+		std::optional<WeaponProficiencyPerkPick> targetPerk;
+		switch (command) {
+			case WeaponProficiencyCommand::GetProficiency:
+				break;
+			case WeaponProficiencyCommand::ResetProficiency:
+				if (canChangeSelectedPerks({})) {
+					resetSelectedPerks();
+				}
+				break;
+			case WeaponProficiencyCommand::PickPerks: {
+				const auto picks = readPerkPicks();
+				if (!picks) {
+					return;
+				}
+				if (canChangeSelectedPerks(*picks)) {
+					pickPerks(*picks);
+				}
+				break;
+			}
+			case WeaponProficiencyCommand::ShapePerk:
+			case WeaponProficiencyCommand::RefineShapedPerk:
+			case WeaponProficiencyCommand::MaximizeShapedPerk:
+			case WeaponProficiencyCommand::ReshapeShapedPerk:
+			case WeaponProficiencyCommand::ClearShapedPerk:
+				targetPerk = readWeaponProficiencyPerkPick(msg);
+				if (!targetPerk) {
+					return;
+				}
+				break;
+			case WeaponProficiencyCommand::SelectReshapeOption:
+				targetPerk = readWeaponProficiencyPerkPick(msg);
+				if (!targetPerk || !msg.canRead(1)) {
+					return;
+				}
+				msg.getByte(true); // Selected reshape offer
+				break;
+			default:
+				return;
+		}
+
+		if (command == WeaponProficiencyCommand::ClearShapedPerk && player->getZoneType() == ZONE_PROTECTION) {
+			player->weaponProficiency().clearShapedPerk(targetPerk->level, targetPerk->index, weaponId);
+		}
+
+		// No offer pool is emitted until the shaped perk ids and selection state are
+		// available server-side. The empty list still completes the proven 0xBB wire.
+		if (command == WeaponProficiencyCommand::ReshapeShapedPerk) {
+			sendWeaponProficiencyReshapeOffers(weaponId, targetPerk->level, targetPerk->index);
+		}
+		sendWeaponProficiencyWindow(weaponId);
+		sendWeaponProficiency(weaponId);
+		return;
+	}
+
 	const auto consumeOfficialPayloadBytes = [this, &msg](uint8_t count) {
 		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialWeaponProficiencyPayload)) {
 			return;
@@ -3170,43 +3274,28 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 		}
 	};
 
-	switch (action) {
-		case 0x00:
+	switch (command) {
+		case WeaponProficiencyCommand::GetProficiency:
 			break;
-		case 0x02:
-			if (isEquippedWeapon) {
-				player->weaponProficiency().clearAllStats();
-				player->sendSkills();
-			}
-			player->weaponProficiency().clearSelectedPerks(weaponId);
+		case WeaponProficiencyCommand::ResetProficiency:
+			resetSelectedPerks();
 			break;
-		case 0x03: {
-			if (isEquippedWeapon) {
-				player->weaponProficiency().clearAllStats();
+		case WeaponProficiencyCommand::PickPerks: {
+			const auto picks = readPerkPicks();
+			if (!picks) {
+				return;
 			}
-			player->weaponProficiency().clearSelectedPerks(weaponId);
-
-			const auto slots = msg.getByte();
-			for (uint8_t slot = 0; slot < slots; slot++) {
-				const auto level = msg.getByte();
-				const auto perkIndex = msg.getByte();
-
-				player->weaponProficiency().setSelectedPerk(level, perkIndex, weaponId);
-			}
-
-			if (isEquippedWeapon) {
-				player->weaponProficiency().applyPerks(weaponId);
-			}
+			pickPerks(*picks);
 			break;
 		}
-		case 0x04:
-		case 0x05:
-		case 0x06:
-		case 0x07:
-		case 0x09:
+		case WeaponProficiencyCommand::ShapePerk:
+		case WeaponProficiencyCommand::RefineShapedPerk:
+		case WeaponProficiencyCommand::MaximizeShapedPerk:
+		case WeaponProficiencyCommand::ReshapeShapedPerk:
+		case WeaponProficiencyCommand::ClearShapedPerk:
 			consumeOfficialPayloadBytes(2);
 			break;
-		case 0x08:
+		case WeaponProficiencyCommand::SelectReshapeOption:
 			consumeOfficialPayloadBytes(3);
 			break;
 		default:
@@ -12402,7 +12491,18 @@ void ProtocolGame::sendWeaponProficiencyWindow(uint16_t weaponId) {
 	}
 
 	if (shouldSendWeaponProficiencyDetailList(protocolProfile, clientVersionString)) {
-		msg.addByte(0x00);
+		const auto shapedPerks = hasProtocolFeature(protocolProfile, ProtocolFeature::WeaponProficiencyShapingPayload)
+			? player->weaponProficiency().getShapedPerks(weaponId)
+			: std::vector<ShapedProficiencyPerk> {};
+		const auto shapedPerkCount = static_cast<uint8_t>(std::min<size_t>(shapedPerks.size(), std::numeric_limits<uint8_t>::max()));
+		msg.addByte(shapedPerkCount);
+		for (size_t i = 0; i < shapedPerkCount; ++i) {
+			const auto &perk = shapedPerks[i];
+			msg.addByte(perk.level);
+			msg.addByte(perk.index);
+			msg.add<uint16_t>(perk.perkId);
+			msg.addByte(perk.rank);
+		}
 	}
 
 	writeToOutputBuffer(msg);

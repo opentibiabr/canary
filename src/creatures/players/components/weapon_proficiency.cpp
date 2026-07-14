@@ -11,6 +11,11 @@
 #include <cmath>
 #include <limits>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+	#include <variant>
+#endif
+
 // Player.hpp already includes the weapon
 #include "creatures/players/player.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -385,6 +390,9 @@ WeaponProficiencyData WeaponProficiency::deserialize(const ValueWrapper &val) {
 	if (auto perksIt = map.find("perks"); perksIt != map.end()) {
 		weaponData.perks = deserializePerks(perksIt->second->getVariant());
 	}
+	if (auto shapedPerksIt = map.find("shapedPerks"); shapedPerksIt != map.end()) {
+		weaponData.shapedPerks = deserializeShapedPerks(shapedPerksIt->second->getVariant());
+	}
 
 	return weaponData;
 }
@@ -402,6 +410,57 @@ std::vector<ProficiencyPerk> WeaponProficiency::deserializePerks(const ValueWrap
 	}
 
 	return perks;
+}
+
+std::vector<ShapedProficiencyPerk> WeaponProficiency::deserializeShapedPerks(const ValueWrapper &val) {
+	const auto array = val.get<ArrayType>();
+	if (array.empty()) {
+		return {};
+	}
+
+	std::vector<ShapedProficiencyPerk> shapedPerks;
+	shapedPerks.reserve(std::min(array.size(), MAX_SHAPED_PERK_SLOTS));
+	for (const auto &item : array) {
+		if (shapedPerks.size() >= MAX_SHAPED_PERK_SLOTS) {
+			break;
+		}
+
+		const auto map = item.get<MapType>();
+		if (map.empty()) {
+			continue;
+		}
+
+		const auto readUnsigned = [&map](const std::string &key, uint32_t maximum) -> std::optional<uint32_t> {
+			const auto it = map.find(key);
+			if (it == map.end()) {
+				return std::nullopt;
+			}
+
+			const auto* value = std::get_if<IntType>(&it->second->getVariant());
+			if (!value || *value < 0 || static_cast<uint32_t>(*value) > maximum) {
+				return std::nullopt;
+			}
+
+			return static_cast<uint32_t>(*value);
+		};
+
+		const auto level = readUnsigned("level", std::numeric_limits<uint8_t>::max());
+		const auto index = readUnsigned("index", std::numeric_limits<uint8_t>::max());
+		const auto perkId = readUnsigned("perkId", std::numeric_limits<uint16_t>::max());
+		const auto rank = readUnsigned("rank", std::numeric_limits<uint8_t>::max());
+		if (!level || !index || !perkId || !rank) {
+			continue;
+		}
+
+		shapedPerks.emplace_back(
+			static_cast<uint8_t>(*level),
+			static_cast<uint8_t>(*index),
+			static_cast<uint16_t>(*perkId),
+			static_cast<uint8_t>(*rank)
+		);
+	}
+
+	return shapedPerks;
 }
 
 ProficiencyPerk WeaponProficiency::deserializePerk(const ValueWrapper &val) {
@@ -450,6 +509,7 @@ ValueWrapper WeaponProficiency::serialize(const WeaponProficiencyData &weaponDat
 		std::pair<const std::string, ValueWrapper> { "experience", ValueWrapper(static_cast<IntType>(weaponData.experience)) },
 		std::pair<const std::string, ValueWrapper> { "mastered", ValueWrapper(weaponData.mastered) },
 		std::pair<const std::string, ValueWrapper> { "perks", serializePerks(weaponData.perks) },
+		std::pair<const std::string, ValueWrapper> { "shapedPerks", serializeShapedPerks(weaponData.shapedPerks) },
 	};
 }
 
@@ -476,6 +536,29 @@ std::vector<ValueWrapper> WeaponProficiency::serializePerks(const std::vector<Pr
 	std::vector<ValueWrapper> arrayWrapper;
 	for (const auto &perk : perks) {
 		(void)arrayWrapper.emplace_back(serializePerk(perk));
+	}
+
+	return arrayWrapper;
+}
+
+ValueWrapper WeaponProficiency::serializeShapedPerk(const ShapedProficiencyPerk &perk) const {
+	return {
+		{ "level", static_cast<IntType>(perk.level) },
+		{ "index", static_cast<IntType>(perk.index) },
+		{ "perkId", static_cast<IntType>(perk.perkId) },
+		{ "rank", static_cast<IntType>(perk.rank) },
+	};
+}
+
+std::vector<ValueWrapper> WeaponProficiency::serializeShapedPerks(const std::vector<ShapedProficiencyPerk> &perks) const {
+	std::vector<ValueWrapper> arrayWrapper;
+	arrayWrapper.reserve(std::min(perks.size(), MAX_SHAPED_PERK_SLOTS));
+	for (const auto &perk : perks) {
+		if (arrayWrapper.size() >= MAX_SHAPED_PERK_SLOTS) {
+			break;
+		}
+
+		arrayWrapper.emplace_back(serializeShapedPerk(perk));
 	}
 
 	return arrayWrapper;
@@ -623,6 +706,10 @@ std::vector<ProficiencyPerk> WeaponProficiency::getSelectedPerks(uint16_t weapon
 	return collectValidSelectedPerks(weaponId);
 }
 
+std::vector<ShapedProficiencyPerk> WeaponProficiency::getShapedPerks(uint16_t weaponId) const {
+	return collectValidShapedPerks(weaponId);
+}
+
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
 	if (weaponId == 0) {
 		return;
@@ -631,6 +718,27 @@ void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
 	if (auto it = proficiency.find(weaponId); it != proficiency.end()) {
 		it->second.perks.clear();
 	}
+}
+
+bool WeaponProficiency::clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return false;
+	}
+
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return false;
+	}
+
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	const auto removedCount = std::erase_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+	return removedCount > 0;
 }
 
 void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
@@ -1004,6 +1112,57 @@ std::vector<ProficiencyPerk> WeaponProficiency::collectValidSelectedPerks(uint16
 	return validPerks;
 }
 
+std::vector<ShapedProficiencyPerk> WeaponProficiency::collectValidShapedPerks(uint16_t weaponId) const {
+	if (!isValidWeaponId(weaponId)) {
+		return {};
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (playerProficiencyIt == proficiency.end()) {
+		return {};
+	}
+
+	const auto profIt = proficiencies.find(Item::items[weaponId].proficiencyId);
+	if (profIt == proficiencies.end()) {
+		return {};
+	}
+
+	const auto &storedPerks = playerProficiencyIt->second.shapedPerks;
+	const auto &proficiencyInfo = profIt->second;
+	std::vector<ShapedProficiencyPerk> validPerks;
+	validPerks.reserve(std::min(storedPerks.size(), MAX_SHAPED_PERK_SLOTS));
+	for (const auto &storedPerk : storedPerks) {
+		if (validPerks.size() >= MAX_SHAPED_PERK_SLOTS) {
+			break;
+		}
+
+		const auto level = static_cast<size_t>(storedPerk.level);
+		const auto index = static_cast<size_t>(storedPerk.index);
+		if (level >= proficiencyInfo.level.size() || index >= proficiencyInfo.level[level].perks.size()) {
+			continue;
+		}
+
+		const bool duplicateSlot = std::ranges::any_of(validPerks, [&storedPerk](const auto &perk) {
+			return perk.level == storedPerk.level && perk.index == storedPerk.index;
+		});
+		if (duplicateSlot) {
+			continue;
+		}
+
+		validPerks.push_back(storedPerk);
+	}
+
+	(void)std::ranges::sort(validPerks, [](const auto &lhs, const auto &rhs) {
+		if (lhs.level != rhs.level) {
+			return lhs.level < rhs.level;
+		}
+
+		return lhs.index < rhs.index;
+	});
+
+	return validPerks;
+}
+
 void WeaponProficiency::normalizeStoredState(uint16_t weaponId) {
 	if (!isValidWeaponId(weaponId)) {
 		return;
@@ -1024,6 +1183,7 @@ void WeaponProficiency::normalizeStoredState(uint16_t weaponId) {
 	}
 
 	playerProficiencyIt->second.perks = collectValidSelectedPerks(weaponId);
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
 }
 
 void WeaponProficiency::addStat(WeaponProficiencyBonus_t type, double_t value) {

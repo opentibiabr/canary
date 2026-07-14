@@ -38,13 +38,18 @@ public:
 	static WeaponProficiencyData deserialize(const ValueWrapper &val);
 	static ProficiencyPerk deserializePerk(const ValueWrapper &val);
 	static std::vector<ProficiencyPerk> deserializePerks(const ValueWrapper &val);
+	static std::vector<ShapedProficiencyPerk> deserializeShapedPerks(const ValueWrapper &val);
 	ValueWrapper serialize(const WeaponProficiencyData &weaponData) const;
 	ValueWrapper serializePerk(const ProficiencyPerk &perk) const;
 	std::vector<ValueWrapper> serializePerks(const std::vector<ProficiencyPerk> &perks) const;
+	ValueWrapper serializeShapedPerk(const ShapedProficiencyPerk &perk) const;
+	std::vector<ValueWrapper> serializeShapedPerks(const std::vector<ShapedProficiencyPerk> &perks) const;
 
 	void applyPerks(uint16_t weaponId, bool sendSkillUpdate = true);
 	std::vector<ProficiencyPerk> getSelectedPerks(uint16_t itemId) const;
+	std::vector<ShapedProficiencyPerk> getShapedPerks(uint16_t weaponId) const;
 	void clearSelectedPerks(uint16_t weaponId);
+	bool clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
 	void setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
 	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getActiveAugments(uint16_t weaponId = 0);
 	const std::vector<uint32_t> &getExperienceArray(uint16_t weaponId) const;
@@ -126,12 +131,14 @@ public:
 
 private:
 	static constexpr uint8_t TRACKED_SKILL_COUNT = static_cast<uint8_t>(SKILL_MAGLEVEL) + 1;
+	static constexpr size_t MAX_SHAPED_PERK_SLOTS = 2;
 	void applyCriticalBonus(const ProficiencyPerk &perk);
 	void applySkillPercentageBonus(const ProficiencyPerk &perk);
 
 	[[nodiscard]] bool isValidWeaponId(uint16_t weaponId) const;
 	[[nodiscard]] size_t getUnlockedLevelCount(uint16_t weaponId) const;
 	[[nodiscard]] std::vector<ProficiencyPerk> collectValidSelectedPerks(uint16_t weaponId) const;
+	[[nodiscard]] std::vector<ShapedProficiencyPerk> collectValidShapedPerks(uint16_t weaponId) const;
 	void normalizeStoredState(uint16_t weaponId);
 
 	Player &m_player;

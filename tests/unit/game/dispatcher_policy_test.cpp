@@ -103,6 +103,66 @@ TEST(DispatcherPolicyTest, InspectsOnlyPlayerVisibleLanesForSloControl) {
 	EXPECT_EQ(snapshot.oldestContext, "visible");
 }
 
+TEST(DispatcherBacklogWarningPolicyTest, RequiresSustainedOnlinePlayerBacklog) {
+	DispatcherBacklogWarningPolicy warningPolicy;
+	const auto base = Task::Clock::time_point(10s);
+	const DispatcherQueueSnapshot backlog {
+		.queued = 3,
+		.oldestReadyAge = 150ms,
+		.oldestContext = "player-action",
+	};
+
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + index * 250ms, 100ms));
+	}
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 750ms, 100ms));
+}
+
+TEST(DispatcherBacklogWarningPolicyTest, DoesNotAccumulateIdleWindowsAndResetsOnRecovery) {
+	DispatcherBacklogWarningPolicy warningPolicy;
+	const auto base = Task::Clock::time_point(10s);
+	const DispatcherQueueSnapshot backlog {
+		.queued = 1,
+		.oldestReadyAge = 250ms,
+		.oldestContext = "world-commit",
+	};
+
+	for (int index = 0; index < 6; ++index) {
+		EXPECT_FALSE(warningPolicy.update(false, backlog, base + index * 250ms, 100ms));
+	}
+	DispatcherQueueSnapshot emptyBacklog = backlog;
+	emptyBacklog.queued = 0;
+	EXPECT_FALSE(warningPolicy.update(true, emptyBacklog, base + 1750ms, 100ms));
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + 2s + index * 250ms, 100ms));
+	}
+
+	DispatcherQueueSnapshot recovered = backlog;
+	recovered.oldestReadyAge = 99ms;
+	EXPECT_FALSE(warningPolicy.update(true, recovered, base + 3s, 100ms));
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + 4s + index * 250ms, 100ms));
+	}
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 4750ms, 100ms));
+}
+
+TEST(DispatcherBacklogWarningPolicyTest, RateLimitsAContinuingBacklog) {
+	DispatcherBacklogWarningPolicy warningPolicy;
+	const auto base = Task::Clock::time_point(10s);
+	const DispatcherQueueSnapshot backlog {
+		.queued = 8,
+		.oldestReadyAge = 500ms,
+		.oldestContext = "player-walk",
+	};
+
+	for (int index = 0; index < 3; ++index) {
+		EXPECT_FALSE(warningPolicy.update(true, backlog, base + index * 250ms, 100ms));
+	}
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 750ms, 100ms));
+	EXPECT_FALSE(warningPolicy.update(true, backlog, base + 5s, 100ms));
+	EXPECT_TRUE(warningPolicy.update(true, backlog, base + 31s, 100ms));
+}
+
 TEST(DispatcherPolicyTest, ClampsNegativeDurationsAndAppliesDeterministicBudgets) {
 	const auto now = Task::Clock::time_point(10s);
 	DispatcherPolicy policy([now] { return now; });

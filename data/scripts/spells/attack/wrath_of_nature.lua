@@ -1,12 +1,13 @@
+local SPELL_BASE_POWER = 175
+
 local combat = Combat()
 combat:setParameter(COMBAT_PARAM_TYPE, COMBAT_EARTHDAMAGE)
 combat:setParameter(COMBAT_PARAM_EFFECT, CONST_ME_SMALLPLANTS)
 combat:setArea(createCombatArea(AREA_CIRCLE6X6))
 
-function onGetFormulaValues(player, level, maglevel)
-	local min = (level / 5) + (maglevel * 5)
-	local max = (level / 5) + (maglevel * 10)
-	return -min, -max
+function onGetFormulaValues(player, level, magicLevel)
+	local damage = player:calculateFlatDamageHealing() + (SPELL_BASE_POWER / 25 * magicLevel) + (SPELL_BASE_POWER / 4)
+	return -(damage * 0.9), -(damage * 1.1)
 end
 
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")

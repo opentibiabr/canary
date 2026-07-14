@@ -5488,8 +5488,14 @@ int PlayerFunctions::luaPlayerSetSpeed(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:addWeaponExperience
+ * @param experience number
+ * @param itemId? number
+ * @param applyMultiplier? boolean
+ * @return boolean
+ */
 int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
-	// player:addWeaponExperience(experience, itemId)
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
@@ -5499,11 +5505,7 @@ int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
 
 	const auto experience = Lua::getNumber<uint32_t>(L, 2);
 	const auto itemId = Lua::getNumber<uint16_t>(L, 3, 0);
-
-	if (experience == 0) {
-		Lua::pushBoolean(L, true);
-		return 1;
-	}
+	const bool applyMultiplier = Lua::getBoolean(L, 4, true);
 
 	// Validate that the item has a valid proficiency
 	if (itemId > 0 && (itemId >= Item::items.size() || Item::items[itemId].proficiencyId == 0)) {
@@ -5512,9 +5514,7 @@ int PlayerFunctions::luaPlayerAddWeaponExperience(lua_State* L) {
 		return 1;
 	}
 
-	player->weaponProficiency().addExperience(experience, itemId);
-
-	Lua::pushBoolean(L, true);
+	Lua::pushBoolean(L, player->weaponProficiency().addExperience(experience, itemId, applyMultiplier));
 	return 1;
 }
 

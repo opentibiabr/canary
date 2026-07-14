@@ -5915,7 +5915,8 @@
         "name": "addWeaponExperience",
         "params": [
           "experience: number",
-          "itemId: number"
+          "itemId?: number",
+          "applyMultiplier?: boolean"
         ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

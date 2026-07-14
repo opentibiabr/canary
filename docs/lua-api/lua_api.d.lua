@@ -3146,9 +3146,10 @@ function Player:addTitle(id) end
 function Player:addTransferableCoins(coins) end
 
 ---@param experience number
----@param itemId number
+---@param itemId? number
+---@param applyMultiplier? boolean
 ---@return boolean
-function Player:addWeaponExperience(experience, itemId) end
+function Player:addWeaponExperience(experience, itemId, applyMultiplier) end
 
 ---@param item Item
 ---@param scrollItem Item

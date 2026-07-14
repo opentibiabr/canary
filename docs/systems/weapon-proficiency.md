@@ -41,6 +41,7 @@ Related Lua API/scripts:
 - `src/lua/functions/items/item_type_functions.cpp` (`ItemType:isWeapon`)
 - `data/scripts/lib/proficiency_helper.lua`
 - `data/scripts/talkactions/god/weapon_proficiency.lua`
+- `data-otservbr-global/scripts/actions/object/lesser_proficiency_catalyst.lua`
 - `data-otservbr-global/scripts/actions/object/proficiency_catalyst.lua`
 - `data-otservbr-global/scripts/actions/object/greater_proficiency_catalyst.lua`
 
@@ -184,7 +185,8 @@ Behavior:
   - hard cap while loading perks in each level
   - extra perks are ignored
 - `weaponProficiencyGainMultiplier`:
-  - multiplier applied to gained proficiency XP
+  - applied by default to normal progression XP and Lua API calls
+  - fixed-value sources can pass `false` as the third `Player:addWeaponExperience` argument to bypass it
   - values `< 0` are clamped to `0`
   - final value is rounded (`llround`)
 
@@ -254,10 +256,12 @@ Shared helper:
 
 - `data/scripts/lib/proficiency_helper.lua`
 - validates target is a weapon (`ItemType:isWeapon()`)
-- applies XP via `Player:addWeaponExperience(experience, weaponId)`
+- applies exact, fixed XP via `Player:addWeaponExperience(experience, weaponId, false)`
+- the optional third argument controls whether `weaponProficiencyGainMultiplier` is applied
 
 Registered catalyst actions in `data-otservbr-global`:
 
+- `54266` -> `5000` XP
 - `51588` -> `25000` XP
 - `51589` -> `100000` XP
 

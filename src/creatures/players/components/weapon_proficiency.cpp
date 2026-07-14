@@ -895,54 +895,58 @@ uint32_t WeaponProficiency::getMaxExperience(uint16_t weaponId) const {
 	return 0;
 }
 
-void WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* = 0 */) {
+bool WeaponProficiency::addExperience(uint32_t experience, uint16_t weaponId /* = 0 */, bool applyMultiplier /* = true */) {
 	weaponId = weaponId > 0 ? weaponId : m_player.getWeaponId(true);
 
 	if (weaponId == 0) {
-		return;
+		return false;
 	}
 
-	experience = scaleWeaponProficiencyExperienceGain(experience);
+	if (applyMultiplier) {
+		experience = scaleWeaponProficiencyExperienceGain(experience);
+	}
 	if (experience == 0) {
-		return;
+		return false;
 	}
 
 	// Validate that the item has a valid proficiency
 	if (!isValidWeaponId(weaponId) || Item::items[weaponId].proficiencyId == 0) {
 		g_logger().debug("{} - Weapon ID '{}' has no proficiency assigned", __FUNCTION__, weaponId);
-		return;
+		return false;
 	}
 
 	if (nextLevelExperience(weaponId) <= 0) {
-		return;
+		return false;
 	}
 
-	uint32_t maxExperience = getMaxExperience(weaponId);
+	const uint32_t maxExperience = getMaxExperience(weaponId);
+	if (maxExperience == 0) {
+		return false;
+	}
 
 	if (!proficiency.contains(weaponId)) {
-		const auto [_, inserted] = proficiency.try_emplace(weaponId, std::min(experience, maxExperience));
+		const auto gainedExperience = std::min(experience, maxExperience);
+		const auto [it, inserted] = proficiency.try_emplace(weaponId, gainedExperience);
 		if (!inserted) {
 			g_logger().warn("{} - Failed to create proficiency state for weapon ID '{}'", __FUNCTION__, weaponId);
-			return;
+			return false;
 		}
+		it->second.mastered = gainedExperience >= maxExperience;
 		m_player.sendWeaponProficiency(weaponId);
 
-		return;
+		return true;
 	}
 
-	const uint64_t newExperience = static_cast<uint64_t>(proficiency[weaponId].experience) + experience;
-
-	if (newExperience >= maxExperience) {
-		proficiency[weaponId].mastered = true;
-		proficiency[weaponId].experience = maxExperience;
-		m_player.sendWeaponProficiency(weaponId);
-
-		return;
+	auto &weaponData = proficiency.at(weaponId);
+	const uint64_t newExperience = std::min<uint64_t>(static_cast<uint64_t>(weaponData.experience) + experience, maxExperience);
+	if (newExperience <= weaponData.experience) {
+		return false;
 	}
 
-	proficiency[weaponId].experience = static_cast<uint32_t>(newExperience);
-
+	weaponData.experience = static_cast<uint32_t>(newExperience);
+	weaponData.mastered = weaponData.experience >= maxExperience;
 	m_player.sendWeaponProficiency(weaponId);
+	return true;
 }
 
 uint32_t WeaponProficiency::getBosstiaryExperience(BosstiaryRarity_t rarity) const {

@@ -55,7 +55,7 @@ public:
 	const std::vector<uint32_t> &getExperienceArray(uint16_t weaponId) const;
 	uint32_t nextLevelExperience(uint16_t weaponId);
 	uint32_t getMaxExperience(uint16_t weaponId) const;
-	void addExperience(uint32_t experience, uint16_t weaponId = 0);
+	bool addExperience(uint32_t experience, uint16_t weaponId = 0, bool applyMultiplier = true);
 	[[nodiscard]] uint32_t getBosstiaryExperience(BosstiaryRarity_t rarity) const;
 	[[nodiscard]] uint32_t getBestiaryExperience(uint8_t monsterStar) const;
 	[[nodiscard]] uint32_t getExperience(uint16_t weaponId = 0) const;

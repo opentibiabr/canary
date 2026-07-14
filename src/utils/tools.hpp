@@ -208,7 +208,7 @@ std::string toKey(const std::string &str);
 uint8_t convertWheelGemAffinityToDomain(uint8_t affinity);
 
 template <typename EnumType, typename UnderlyingType = std::underlying_type_t<EnumType>>
-UnderlyingType enumToValue(EnumType value) {
+constexpr UnderlyingType enumToValue(EnumType value) {
 	return static_cast<UnderlyingType>(value);
 }
 

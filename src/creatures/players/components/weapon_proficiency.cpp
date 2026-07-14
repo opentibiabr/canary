@@ -1595,6 +1595,9 @@ void WeaponProficiency::applySkillSpellPercentage(CombatDamage &damage, bool hea
 	if (healing && damage.primary.type != COMBAT_HEALING) {
 		return;
 	}
+	if (!healing && damage.primary.type == COMBAT_HEALING) {
+		return;
+	}
 
 	const auto &weapon = m_player.getWeapon(true);
 	if (!weapon) {

@@ -311,6 +311,7 @@ public:
 	int32_t checkDivineGrenade(const std::shared_ptr<Creature> &target) const;
 	int32_t checkAvatarSkill(WheelAvatarSkill_t skill) const;
 	int32_t checkFocusMasteryDamage();
+	int32_t getFocusMasterySecondaryGroupCooldownReduction(std::string_view spellName, SpellGroup_t secondaryGroup) const;
 	int32_t checkElementSensitiveReduction(CombatType_t type) const;
 	// Wheel of destiny - General functions:
 	void reduceAllSpellsCooldownTimer(int32_t value) const;

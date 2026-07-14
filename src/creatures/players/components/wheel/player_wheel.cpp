@@ -3278,6 +3278,19 @@ int32_t PlayerWheel::checkFocusMasteryDamage() {
 	}
 	return 0;
 }
+
+int32_t PlayerWheel::getFocusMasterySecondaryGroupCooldownReduction(std::string_view spellName, SpellGroup_t secondaryGroup) const {
+	if (!getInstant(WheelInstant_t::FOCUS_MASTERY) || secondaryGroup != SPELLGROUP_FOCUS) {
+		return 0;
+	}
+
+	const auto &focusSpells = g_game().getIOWheel()->getFocusSpells();
+	const bool isFocusSpell = std::ranges::any_of(focusSpells, [&spellName](const std::string &focusSpell) {
+		return focusSpell == spellName;
+	});
+	return isFocusSpell ? 2 * 1000 : 0;
+}
+
 int32_t PlayerWheel::checkElementSensitiveReduction(CombatType_t type) const {
 	int32_t rt = 0;
 	if (type == COMBAT_PHYSICALDAMAGE) {

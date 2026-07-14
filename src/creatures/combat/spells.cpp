@@ -849,6 +849,8 @@ void Spell::applyCooldownConditions(const std::shared_ptr<Player> &player) const
 			spellSecondaryGroupCooldown -= getWheelOfDestinyBoost(WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN, spellGrade);
 		}
 		spellSecondaryGroupCooldown -= player->wheel().getSpellBonus(name, WheelSpellBoost_t::SECONDARY_GROUP_COOLDOWN);
+		const auto focusMasteryReduction = player->wheel().getFocusMasterySecondaryGroupCooldownReduction(name, secondaryGroup);
+		spellSecondaryGroupCooldown = std::max<int32_t>(0, spellSecondaryGroupCooldown - focusMasteryReduction);
 		if (spellSecondaryGroupCooldown > 0) {
 			player->wheel().handleBeamMasteryCooldown(player, name, spellSecondaryGroupCooldown, rateCooldown);
 			const auto &condition = Condition::createCondition(CONDITIONID_DEFAULT, CONDITION_SPELLGROUPCOOLDOWN, spellSecondaryGroupCooldown / rateCooldown, 0, false, secondaryGroup);

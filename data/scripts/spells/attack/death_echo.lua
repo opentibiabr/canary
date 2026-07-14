@@ -65,6 +65,7 @@ end
 spell:group("attack")
 spell:id(310)
 spell:name("Death Echo")
+spell:element(COMBAT_DEATHDAMAGE)
 spell:words("exevo mort ora")
 spell:level(120)
 spell:mana(150)

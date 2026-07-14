@@ -20,6 +20,7 @@ end
 spell:group("attack")
 spell:id(178)
 spell:name("Scorch")
+spell:element(COMBAT_FIREDAMAGE)
 spell:words("exevo infir flam hur")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SCORCH)
 spell:level(1)

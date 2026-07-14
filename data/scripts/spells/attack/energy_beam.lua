@@ -37,6 +37,7 @@ end
 spell:group("attack")
 spell:id(22)
 spell:name("Energy Beam")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exevo vis lux")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ENERGY_BEAM)
 spell:level(23)

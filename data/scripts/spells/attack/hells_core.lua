@@ -20,6 +20,7 @@ end
 spell:group("attack", "focus")
 spell:id(24)
 spell:name("Hell's Core")
+spell:element(COMBAT_FIREDAMAGE)
 spell:words("exevo gran mas flam")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_HELL_SCORE)
 spell:level(60)

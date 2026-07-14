@@ -17,6 +17,7 @@ end
 spell:group("attack")
 spell:id(140)
 spell:name("Electrify")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("utori vis")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_ELECTRIFY)

@@ -20,6 +20,7 @@ end
 spell:group("attack")
 spell:id(177)
 spell:name("Buzz")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exori infir vis")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_BUZZ)

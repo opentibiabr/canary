@@ -16,6 +16,7 @@ end
 spell:group("attack")
 spell:id(138)
 spell:name("Ignite")
+spell:element(COMBAT_FIREDAMAGE)
 spell:words("utori flam")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_IGNITE)

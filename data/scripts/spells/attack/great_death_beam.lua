@@ -22,6 +22,7 @@ end
 spell:group("attack", "greatbeams")
 spell:id(260)
 spell:name("Great Death Beam")
+spell:element(COMBAT_DEATHDAMAGE)
 spell:words("exevo max mort")
 spell:level(66)
 spell:mana(140)

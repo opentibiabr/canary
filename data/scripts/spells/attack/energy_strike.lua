@@ -20,6 +20,7 @@ end
 spell:group("attack")
 spell:id(88)
 spell:name("Energy Strike")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exori vis")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_ENERGY_STRIKE)

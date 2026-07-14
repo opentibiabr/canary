@@ -20,6 +20,7 @@ end
 spell:group("attack")
 spell:id(89)
 spell:name("Flame Strike")
+spell:element(COMBAT_FIREDAMAGE)
 spell:words("exori flam")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_FLAME_STRIKE)

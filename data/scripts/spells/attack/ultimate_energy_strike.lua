@@ -21,6 +21,7 @@ end
 spell:group("attack", "ultimatestrikes")
 spell:id(155)
 spell:name("Ultimate Energy Strike")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exori max vis")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_ULTIMATE_ENERGY_STRIKE)

@@ -21,6 +21,7 @@ end
 spell:group("attack", "ultimatestrikes")
 spell:id(154)
 spell:name("Ultimate Flame Strike")
+spell:element(COMBAT_FIREDAMAGE)
 spell:words("exori max flam")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_ULTIMATE_FLAME_STRIKE)

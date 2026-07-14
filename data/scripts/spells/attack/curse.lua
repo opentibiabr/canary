@@ -34,6 +34,7 @@ end
 spell:group("attack")
 spell:id(139)
 spell:name("Curse")
+spell:element(COMBAT_DEATHDAMAGE)
 spell:words("utori mort")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)
 spell:impactSound(SOUND_EFFECT_TYPE_SPELL_CURSE)

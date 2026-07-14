@@ -40,6 +40,7 @@ end
 spell:group("attack")
 spell:id(13)
 spell:name("Energy Wave")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exevo vis hur")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_ENERGY_WAVE)
 spell:level(38)

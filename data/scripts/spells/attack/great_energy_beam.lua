@@ -40,6 +40,7 @@ end
 spell:group("attack", "greatbeams")
 spell:id(23)
 spell:name("Great Energy Beam")
+spell:element(COMBAT_ENERGYDAMAGE)
 spell:words("exevo gran vis lux")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_GREAT_ENERGY_BEAM)
 spell:level(29)

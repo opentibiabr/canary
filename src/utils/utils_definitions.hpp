@@ -795,6 +795,8 @@ enum class AttrSubId_t {
 	Sanctuary,
 	VirtueOfJustice,
 	ShieldAttackDebuff,
+	SappedStrength,
+	ExposedWeakness,
 };
 
 enum Concoction_t : uint16_t {

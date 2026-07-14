@@ -167,6 +167,46 @@ namespace {
 		damage.stanceModifiersApplied = true;
 	}
 
+	void applySorcererCripplingStance(
+		const std::shared_ptr<Player> &attacker, const std::shared_ptr<Monster> &target,
+		const CombatDamage &damage, CombatOrigin sourceOrigin, int32_t realDamage
+	) {
+		if (!attacker || !target || target->getMaster() || realDamage <= 0 || attacker->getPlayerVocationEnum() != VOCATION_SORCERER_CIP) {
+			return;
+		}
+
+		const bool isAutoAttack = sourceOrigin == ORIGIN_MELEE || sourceOrigin == ORIGIN_RANGED || sourceOrigin == ORIGIN_FIST;
+		const bool isSpellOrRune = sourceOrigin == ORIGIN_SPELL && (!damage.instantSpellName.empty() || !damage.runeSpellName.empty());
+		if (!isAutoAttack && !isSpellOrRune) {
+			return;
+		}
+
+		uint32_t conditionSubId = 0;
+		if (attacker->isStanceActive(311)) {
+			conditionSubId = magic_enum::enum_integer(AttrSubId_t::SappedStrength);
+		} else if (attacker->isStanceActive(312)) {
+			conditionSubId = magic_enum::enum_integer(AttrSubId_t::ExposedWeakness);
+		} else {
+			return;
+		}
+
+		const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, CONDITION_ATTRIBUTES, 10 * 1000, 0, false, conditionSubId);
+		condition->setParam(CONDITION_PARAM_OWNER, attacker->getID());
+		target->addCondition(condition, true);
+	}
+
+	void applySappedStrengthDamageReduction(CombatDamage &damage, const std::shared_ptr<Monster> &attacker, CombatOrigin sourceOrigin) {
+		if (!attacker || sourceOrigin == ORIGIN_NONE || !attacker->hasCondition(CONDITION_ATTRIBUTES, magic_enum::enum_integer(AttrSubId_t::SappedStrength))) {
+			return;
+		}
+
+		const auto applyReduction = [](int32_t &value) {
+			value = static_cast<int32_t>(static_cast<int64_t>(value) * 90 / 100);
+		};
+		applyReduction(damage.primary.value);
+		applyReduction(damage.secondary.value);
+	}
+
 	void applyMonkVirtuePartyDamageReceivedBonus(CombatDamage &damage, const std::shared_ptr<Player> &targetPlayer) {
 		if (!targetPlayer || !targetPlayer->hasVirtuePartyBonus(VOCATION_KNIGHT_CIP)) {
 			return;
@@ -8017,7 +8057,8 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 			damage.primary.value = std::max<int32_t>(damage.primary.value, 0);
 		}
 
-		const bool applyElementalPierce = !damage.extension && damage.origin != ORIGIN_CONDITION;
+		const bool derivedExtension = damage.extension && damage.origin == ORIGIN_NONE;
+		const bool applyElementalPierce = !derivedExtension && damage.origin != ORIGIN_CONDITION;
 		primaryBlockType = target->blockHit(attacker, damage.primary.type, damage.primary.value, checkDefense, checkArmor, field, applyElementalPierce);
 
 		damage.primary.value = -damage.primary.value;
@@ -8093,7 +8134,8 @@ bool Game::combatBlockHit(CombatDamage &damage, const std::shared_ptr<Creature> 
 			damage.secondary.value = std::max<int32_t>(damage.secondary.value, 0);
 		}
 
-		const bool applyElementalPierce = !damage.extension && damage.origin != ORIGIN_CONDITION;
+		const bool derivedExtension = damage.extension && damage.origin == ORIGIN_NONE;
+		const bool applyElementalPierce = !derivedExtension && damage.origin != ORIGIN_CONDITION;
 		secondaryBlockType = target->blockHit(attacker, damage.secondary.type, damage.secondary.value, false, false, field, applyElementalPierce);
 
 		damage.secondary.value = -damage.secondary.value;
@@ -8460,8 +8502,11 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 	return targetHealth;
 }
 
-bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/) {
+bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/, CombatOrigin sourceOrigin /*= ORIGIN_NONE*/) {
 	using namespace std;
+	if (sourceOrigin == ORIGIN_NONE) {
+		sourceOrigin = damage.origin;
+	}
 	const Position &targetPos = target->getPosition();
 	if (damage.primary.value > 0) {
 		if (target->getHealth() <= 0) {
@@ -8487,7 +8532,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 					creatureEvent->executeHealthChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
-				return combatChangeHealth(attacker, target, damage);
+				return combatChangeHealth(attacker, target, damage, false, sourceOrigin);
 			}
 		}
 
@@ -8587,7 +8632,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 					creatureEvent->executeHealthChange(target, attacker, damage);
 				}
 				damage.origin = ORIGIN_NONE;
-				return combatChangeHealth(attacker, target, damage);
+				return combatChangeHealth(attacker, target, damage, false, sourceOrigin);
 			}
 		}
 
@@ -8651,6 +8696,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			g_callbacks().executeCallback(EventCallback_t::creatureOnDrainHealth, target, attacker, std::ref(damage.primary.type), std::ref(damage.primary.value), std::ref(damage.secondary.type), std::ref(damage.secondary.value), std::ref(message.primary.color), std::ref(message.secondary.color));
 		}
 		applyVocationStanceDamageModifiers(damage, attacker, target);
+		applySappedStrengthDamageReduction(damage, attackerMonster, sourceOrigin);
 		applyMonkVirtuePartyDamageReceivedBonus(damage, targetPlayer);
 		applySanctuaryAdjacentBonus(damage, attacker, target);
 		applyWayOfTheMonkMeleeReduction(damage, targetPlayer);
@@ -8952,6 +8998,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 			targetMonster->setLastHitSuppressCharms(damage.suppressCharms);
 		}
 		target->drainHealth(attacker, realDamage);
+		applySorcererCripplingStance(attackerPlayer, targetMonster, damage, sourceOrigin, realDamage);
 		if (realDamage > 0 && targetMonster) {
 			if (targetMonster->israndomStepping()) {
 				targetMonster->setIgnoreFieldDamage(true);

@@ -68,6 +68,20 @@ namespace {
 		const auto &master = creature->getMaster();
 		return master && master->getPlayerRaw();
 	}
+
+	bool isElementalPierceCombatType(CombatType_t combatType) {
+		switch (combatType) {
+			case COMBAT_ENERGYDAMAGE:
+			case COMBAT_EARTHDAMAGE:
+			case COMBAT_FIREDAMAGE:
+			case COMBAT_ICEDAMAGE:
+			case COMBAT_HOLYDAMAGE:
+			case COMBAT_DEATHDAMAGE:
+				return true;
+			default:
+				return false;
+		}
+	}
 }
 
 bool Monster::FollowPathComputeRequest::matches(const FollowPathComputeRequest &other) const {
@@ -1416,8 +1430,11 @@ BlockType_t Monster::blockHit(const std::shared_ptr<Creature> &attacker, const C
 		}
 
 		double sensitivity = 100.0 - elementMod;
-		if (applyElementalPierce && player && originalSensitivity > 0) {
-			double pierce = player->weaponProficiency().getElementalPierce(combatType) * 100.0;
+		if (applyElementalPierce && originalSensitivity > 0 && isElementalPierceCombatType(combatType)) {
+			double pierce = player ? player->weaponProficiency().getElementalPierce(combatType) * 100.0 : 0.0;
+			if (hasCondition(CONDITION_ATTRIBUTES, magic_enum::enum_integer(AttrSubId_t::ExposedWeakness))) {
+				pierce += 8.0;
+			}
 			const double maximumSensitivity = std::max(sensitivity, originalSensitivity * 2.0);
 			if (pierce > 0 && sensitivity < 100.0) {
 				const double fullEffect = std::min(pierce, 100.0 - sensitivity);

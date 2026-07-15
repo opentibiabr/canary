@@ -6162,8 +6162,8 @@ void Player::setChaseMode(bool mode) {
 	}
 }
 
-void Player::setFightMode(FightMode_t) {
-	fightMode = FIGHTMODE_ATTACK;
+void Player::setFightMode(FightMode_t mode) {
+	fightMode = mode;
 
 	sendStats();
 	sendSkills();

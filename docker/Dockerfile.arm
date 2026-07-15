@@ -45,6 +45,14 @@ RUN --mount=type=secret,id=github_token \
 			echo "Missing /run/secrets/github_token" >&2; \
 			exit 1; \
 		fi; \
+		if [ -z "${VCPKG_FEED_URL:-}" ]; then \
+			echo "Missing VCPKG_FEED_URL build arg" >&2; \
+			exit 1; \
+		fi; \
+		if [ -z "${VCPKG_FEED_USERNAME:-}" ]; then \
+			echo "Missing VCPKG_FEED_USERNAME build arg" >&2; \
+			exit 1; \
+		fi; \
 		NUGET_AUTH_TOKEN=$(cat /run/secrets/github_token); \
 		NUGET_CONFIG=/tmp/nuget.config; \
 		printf "%s\n" \
@@ -64,9 +72,14 @@ RUN --mount=type=secret,id=github_token \
 			"  </config>" \
 			"</configuration>" \
 			> "${NUGET_CONFIG}"; \
+		NUGET_EXE=$(/opt/vcpkg/vcpkg fetch nuget | tail -n 1 | tr -d "\r"); \
+		if [ ! -f "${NUGET_EXE}" ]; then \
+			echo "nuget.exe not found: ${NUGET_EXE}" >&2; \
+			exit 1; \
+		fi; \
+		mono "${NUGET_EXE}" setapikey "${NUGET_AUTH_TOKEN}" -Source "${VCPKG_FEED_URL}" -ConfigFile "${NUGET_CONFIG}"; \
 		export VCPKG_NUGET_API_KEY="${NUGET_AUTH_TOKEN}"; \
 		export VCPKG_BINARY_SOURCES="clear;nugetconfig,${NUGET_CONFIG},readwrite;nugettimeout,1200"; \
-		export VCPKG_FORCE_SYSTEM_BINARIES=1; \
 		/opt/vcpkg/vcpkg install --x-manifest-root=/opt/vcpkg_manifest --x-install-root=/opt/vcpkg_installed; \
 		rm -f "${NUGET_CONFIG}"; \
 		unset NUGET_AUTH_TOKEN'

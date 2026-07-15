@@ -466,7 +466,7 @@ temporaryConst= 2
 parallelism = 2
 
 -- Session Auth
-authType = "password" -- 'session' | 'password'
+authType = "session" -- 'session' | 'password'
 resetSessionsOnStartup = false
 
 -- Misc.

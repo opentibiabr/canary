@@ -256,6 +256,8 @@ echo ""
 echo "================================"
 echo ""
 
+mkdir -p /data/server
+
 if [ -d "/data/server/" ]; then
 	echo ""
 	echo "===== Copy Server Configuration And Data Pack To Shared Folder ====="

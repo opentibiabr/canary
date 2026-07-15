@@ -5744,12 +5744,13 @@ void ProtocolGame::sendCyclopediaCharacterDefenceStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_DEFENCESTATS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	const double dodgeTotal = getForgeSkillStat(CONST_SLOT_ARMOR) + player->wheel().getStat(WheelStat_t::DODGE);
+	const double wheelDodge = player->wheel().getStat(WheelStat_t::DODGE) / 10000.;
+	const double dodgeTotal = player->getDodgeChance() / 10000.;
 	msg.addDouble(dodgeTotal);
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_ARMOR, false));
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_ARMOR) - getForgeSkillStat(CONST_SLOT_ARMOR, false));
 	msg.addDouble(0.00);
-	msg.addDouble(player->wheel().getStat(WheelStat_t::DODGE));
+	msg.addDouble(wheelDodge);
 
 	msg.add<uint32_t>(player->getMagicShieldCapacityFlat() * (1 + player->getMagicShieldCapacityPercent()));
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getMagicShieldCapacityFlat())); // Direct bonus
@@ -5801,11 +5802,12 @@ void ProtocolGame::sendCyclopediaCharacterMiscStats() {
 	msg.addByte(CYCLOPEDIA_CHARACTERINFO_MISCSTATS);
 	msg.addByte(0x00); // 0x00 Here means 'no error'
 
-	const double momentumTotal = getForgeSkillStat(CONST_SLOT_HEAD) + player->wheel().getBonusData().momentum;
+	const double wheelMomentum = player->wheel().getBonusData().momentum / 100.;
+	const double momentumTotal = getForgeSkillStat(CONST_SLOT_HEAD) + wheelMomentum;
 	msg.addDouble(momentumTotal);
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_HEAD, false));
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_HEAD) - getForgeSkillStat(CONST_SLOT_HEAD, false));
-	msg.addDouble(player->wheel().getBonusData().momentum);
+	msg.addDouble(wheelMomentum);
 	msg.addDouble(0.00);
 
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEGS));
@@ -10128,7 +10130,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	msg.add<uint16_t>(player->getArmor());
 	msg.add<uint16_t>(player->getPartyMantra());
 	msg.addDouble(player->getMitigation() / 100.); // Mitigation
-	msg.addDouble(getForgeSkillStat(CONST_SLOT_ARMOR)); // Dodge (Ruse)
+	msg.addDouble(player->getDodgeChance() / 10000.); // Dodge (Ruse)
 	msg.add<uint16_t>(static_cast<uint16_t>(player->getReflectFlat(COMBAT_PHYSICALDAMAGE))); // Damage Reflection
 
 	// Store the "combats" to increase in absorb values function and send to client later
@@ -10146,7 +10148,7 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	msg.setBufferPosition(endCombats);
 
 	// Forge Bonus
-	msg.addDouble(getForgeSkillStat(CONST_SLOT_HEAD)); // Momentum
+	msg.addDouble(getForgeSkillStat(CONST_SLOT_HEAD) + player->wheel().getBonusData().momentum / 100.); // Momentum
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEGS)); // Transcedence
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_FEET, false)); // Amplification
 }

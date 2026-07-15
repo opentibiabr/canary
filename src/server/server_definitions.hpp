@@ -14,8 +14,8 @@
 // Enums
 // Connection and networkmessage.
 enum { FORCE_CLOSE = true };
-enum { HEADER_LENGTH = 2 };
-enum { CHECKSUM_LENGTH = 4 };
+static constexpr int32_t HEADER_LENGTH = 2;
+static constexpr int32_t CHECKSUM_LENGTH = 4;
 enum { XTEA_MULTIPLE = 8 };
 enum { MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE };
 enum { MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10 };

@@ -1,4 +1,4 @@
-local protocolProbe = TalkAction("/protocolprobe", "/probeopcode")
+local protocolProbe = TalkAction("/protocolprobe", "/probeopcode", "/protocol1530")
 
 local LOCAL_PROBE_FILE = "data/scripts/talkactions/god/protocol_probe.local.json"
 local EXAMPLE_PROBE_FILE = "data/scripts/talkactions/god/protocol_probe.example.json"
@@ -467,6 +467,74 @@ local function addTypedValue(msg, fieldType, value)
 	return true
 end
 
+local function getEquippedWeaponId(player)
+	for _, slot in ipairs({ CONST_SLOT_LEFT, CONST_SLOT_RIGHT }) do
+		local item = player:getSlotItem(slot)
+		if item then
+			local itemId = item:getId()
+			local itemType = ItemType(itemId)
+			if itemType and itemType:isWeapon() then
+				return itemId
+			end
+		end
+	end
+	return 0
+end
+
+local function resolveWeaponId(value, player)
+	if value ~= nil and string.lower(tostring(value)) ~= "confirm" then
+		local weaponId, error = requireInteger(value, 1, 0xFFFF)
+		if not weaponId then
+			return nil, error
+		end
+
+		local itemType = ItemType(weaponId)
+		if not itemType or not itemType:isWeapon() then
+			return nil, string.format("item id %d is not a weapon", weaponId)
+		end
+		return weaponId
+	end
+
+	local weaponId = getEquippedWeaponId(player)
+	if weaponId == 0 then
+		return nil, "equip a weapon or pass a valid weapon item id"
+	end
+	return weaponId
+end
+
+local function validateWeaponProbe(args, player)
+	local _, error = resolveWeaponId(args[2], player)
+	if error then
+		return false, error
+	end
+	return true
+end
+
+local function validateSpecialStatusIcon(args)
+	if args[2] == nil then
+		return true
+	end
+
+	local _, error = requireInteger(args[2], 0, 9)
+	if error then
+		return false, "special status icon must be one of the known ids from 0 to 9"
+	end
+	return true
+end
+
+local function addCreatureIconEntry(msg, icon, category, count)
+	msg:addByte(icon)
+	msg:addByte(category)
+	msg:addU16(count)
+	msg:addByte(0) -- 15.25/15.30 reserved flag
+end
+
+local function addTaskboardTalismanLine(msg, level, canUpgrade, cost)
+	msg:addU16(level)
+	msg:addByte(canUpgrade and 1 or 0)
+	msg:addU16(cost)
+end
+
 local probes = {
 	pingback = {
 		opcode = 0x1E,
@@ -551,7 +619,338 @@ local probes = {
 			msg:addString(readRemainingText(args, 4, ""))
 		end,
 	},
+	["1530-status-special"] = {
+		opcode = 0xA2,
+		usage = "/protocol1530 status-special [specialIcon]",
+		description = "Replaces the normal status mask with one known special status icon (0-9); use 0 to clear it.",
+		layout = "normalIcons:u64=0, specialIcon:u8",
+		evidence = "Canary ProtocolGame::sendIconBakragore and the 15.30 client decoder",
+		confidence = "repo/static",
+		validate = validateSpecialStatusIcon,
+		build = function(msg, args)
+			msg:addU64(0)
+			msg:addByte(readByte(args[2], 0))
+		end,
+	},
+	["1530-target-clear"] = {
+		opcode = 0xA3,
+		usage = "/protocol1530 target-clear confirm",
+		description = "Clears both target identifiers in the two-u32 15.30 candidate layout.",
+		layout = "primaryCreatureId:u32=0, secondaryCreatureId:u32=0",
+		evidence = "15.30 static decoder; the second u32 has no live wire capture yet",
+		confidence = "candidate",
+		requiresConfirmation = true,
+		build = function(msg)
+			msg:addU32(0)
+			msg:addU32(0)
+		end,
+	},
+	["1530-tactics"] = {
+		opcode = 0xA7,
+		usage = "/protocol1530 tactics [chase] [secure] [pvp]",
+		description = "Applies the compact three-byte tactics state used by the current client.",
+		layout = "chaseMode:u8, secureMode:u8, pvpMode:u8",
+		evidence = "15.25/15.30 static decoder and current Canary sender",
+		confidence = "static/repo",
+		build = function(msg, args)
+			msg:addByte(readByte(args[2], 0))
+			msg:addByte(readByte(args[3], 1))
+			msg:addByte(readByte(args[4], 0))
+		end,
+	},
+	["1530-stance-clear"] = {
+		opcode = 0xC1,
+		usage = "/protocol1530 stance-clear",
+		description = "Clears the client-side list of active vocation stance spells.",
+		layout = "type:u8=2, spellCount:u8=0",
+		evidence = "15.25/15.30 static decoder and ProtocolGame::sendVocationSpecificActiveSpells",
+		confidence = "static/repo",
+		build = function(msg)
+			msg:addByte(2)
+			msg:addByte(0)
+		end,
+	},
+	["1530-stance-spell"] = {
+		opcode = 0xC1,
+		usage = "/protocol1530 stance-spell [spellId]",
+		description = "Displays one active vocation stance spell; the default is Harmony (274).",
+		layout = "type:u8=2, spellCount:u8=1, spellId:u16",
+		evidence = "15.25/15.30 static decoder and ProtocolGame::sendVocationSpecificActiveSpells",
+		confidence = "static/repo",
+		build = function(msg, args)
+			msg:addByte(2)
+			msg:addByte(1)
+			msg:addU16(readU16(args[2], 274))
+		end,
+	},
+	["1530-icons-clear"] = {
+		opcode = 0x8B,
+		usage = "/protocol1530 icons-clear",
+		description = "Clears primary creature icons on the invoking player.",
+		layout = "creatureId:u32, updateType:u8=14, iconCount:u8=0",
+		evidence = "15.25/15.30 static decoder and ProtocolGame::sendCreatureIcon",
+		confidence = "static/repo",
+		build = function(msg, _, player)
+			msg:addU32(player:getId())
+			msg:addByte(0x0E)
+			msg:addByte(0)
+		end,
+	},
+	["1530-icons-tasks"] = {
+		opcode = 0x8B,
+		usage = "/protocol1530 icons-tasks",
+		description = "Displays the Weekly Task and Bounty Task creature icons on the invoking player.",
+		layout = "creatureId:u32, updateType:u8=14, count:u8=2, entries{icon:u8,category:u8,count:u16,reserved:u8}",
+		evidence = "15.25/15.30 static decoder; icon ids 8 and 9 in category 1",
+		confidence = "static",
+		build = function(msg, _, player)
+			msg:addU32(player:getId())
+			msg:addByte(0x0E)
+			msg:addByte(2)
+			addCreatureIconEntry(msg, 8, 1, 0) -- Weekly Task Monster
+			addCreatureIconEntry(msg, 9, 1, 0) -- Bounty Task Monster
+		end,
+	},
+	["1530-icons-secondary-clear"] = {
+		opcode = 0x8B,
+		usage = "/protocol1530 icons-secondary-clear confirm",
+		description = "Clears the second 0x8B icon list; its entries remain semantically unknown.",
+		layout = "creatureId:u32, updateType:u8=15, valueCount:u8=0",
+		evidence = "15.25/15.30 static decoder; empty list only",
+		confidence = "static/unknown-semantics",
+		requiresConfirmation = true,
+		build = function(msg, _, player)
+			msg:addU32(player:getId())
+			msg:addByte(0x0F)
+			msg:addByte(0)
+		end,
+	},
+	["1530-gameevent-level"] = {
+		opcode = 0x75,
+		usage = "/protocol1530 gameevent-level [level]",
+		description = "Emits a level-up GameEvent using the player's current level by default.",
+		layout = "eventType:u8=4, level:u16",
+		evidence = "15.25/15.30 static decoder and ProtocolGame::sendTakeScreenshot",
+		confidence = "static/repo",
+		build = function(msg, args, player)
+			msg:addByte(0x04)
+			msg:addU16(readU16(args[2], math.min(player:getLevel(), 0xFFFF)))
+		end,
+	},
+	["1530-gameevent-bounty"] = {
+		opcode = 0x75,
+		usage = "/protocol1530 gameevent-bounty [raceId]",
+		description = "Emits the Bounty Task finished GameEvent; Cyclops (22) is the default race.",
+		layout = "eventType:u8=11, raceId:u16",
+		evidence = "15.25/15.30 static client decoder",
+		confidence = "static",
+		build = function(msg, args)
+			msg:addByte(0x0B)
+			msg:addU16(readU16(args[2], 22))
+		end,
+	},
+	["1530-gameevent-weekly"] = {
+		opcode = 0x75,
+		usage = "/protocol1530 gameevent-weekly [raceId]",
+		description = "Emits the Weekly Task finished GameEvent; Cyclops (22) is the default race.",
+		layout = "eventType:u8=12, raceId:u16",
+		evidence = "15.25/15.30 static client decoder",
+		confidence = "static",
+		build = function(msg, args)
+			msg:addByte(0x0C)
+			msg:addU16(readU16(args[2], 22))
+		end,
+	},
+	["1530-gameevent-spell"] = {
+		opcode = 0x75,
+		usage = "/protocol1530 gameevent-spell [spellId]",
+		description = "Emits the new spell GameEvent; Harmony (274) is the default spell.",
+		layout = "eventType:u8=13, spellId:u32",
+		evidence = "15.25/15.30 static client decoder",
+		confidence = "static",
+		build = function(msg, args)
+			msg:addByte(0x0D)
+			msg:addU32(readU32(args[2], 274))
+		end,
+	},
+	["1530-proficiency-empty"] = {
+		opcode = 0xC4,
+		usage = "/protocol1530 proficiency-empty [weaponId] [experience]",
+		description = "Opens an empty proficiency state for the equipped or supplied weapon and includes the mandatory shaped-perk count.",
+		layout = "weaponId:u16, experience:u32, selectedCount:u8=0, shapedCount:u8=0",
+		evidence = "15.30 static decoder and ProtocolGame::sendWeaponProficiencyWindow",
+		confidence = "static/repo",
+		validate = validateWeaponProbe,
+		build = function(msg, args, player)
+			local weaponId = resolveWeaponId(args[2], player)
+			msg:addU16(weaponId)
+			msg:addU32(readU32(args[3], 0))
+			msg:addByte(0)
+			msg:addByte(0)
+		end,
+	},
+	["1530-reshape-empty"] = {
+		opcode = 0xBB,
+		usage = "/protocol1530 reshape-empty [weaponId] [level] [index] confirm",
+		description = "Sends an empty proficiency reshape offer list for a real equipped or supplied weapon.",
+		layout = "weaponId:u16, level:u8, index:u8, offerCount:u8=0",
+		evidence = "15.30 static decoder and ProtocolGame::sendWeaponProficiencyReshapeOffers",
+		confidence = "static/repo",
+		requiresConfirmation = true,
+		validate = validateWeaponProbe,
+		build = function(msg, args, player)
+			local weaponId = resolveWeaponId(args[2], player)
+			msg:addU16(weaponId)
+			msg:addByte(readByte(args[3], 0))
+			msg:addByte(readByte(args[4], 0))
+			msg:addByte(0)
+		end,
+	},
+	["1530-taskboard-bounty"] = {
+		opcode = 0x5B,
+		usage = "/protocol1530 taskboard-bounty [raceId] confirm",
+		description = "Opens a one-entry Bounty Task window using a known 15.23+ reference layout.",
+		layout = "view:u8=0, tasks:u8+records, rerolls:u8, rerollState:u8, difficulty:u8, talismans[4], preferenceSlots",
+		evidence = "private 15.23 Task Board writer plus the current 15.25/15.30 empty-window shim",
+		confidence = "reference-needs-15.30-wire",
+		requiresConfirmation = true,
+		build = function(msg, args)
+			local raceId = readU16(args[2], 22)
+			msg:addByte(0x00)
+			msg:addByte(1)
+			msg:addByte(0) -- task index
+			msg:addU16(raceId)
+			msg:addU16(100) -- required kills
+			msg:addU32(1000) -- experience reward
+			msg:addByte(3) -- bounty points
+			msg:addU16(25) -- current kills
+			msg:addByte(1) -- selected
+			msg:addByte(0) -- normal task
+			msg:addByte(1) -- daily rerolls
+			msg:addByte(0) -- reroll available
+			msg:addByte(0) -- beginner difficulty
+			for _ = 1, 4 do
+				addTaskboardTalismanLine(msg, 0, false, 100)
+			end
+			msg:addByte(1)
+			msg:addByte(1) -- preference slot unlocked
+			msg:addU16(raceId)
+			msg:addU16(0)
+		end,
+	},
+	["1530-taskboard-weekly"] = {
+		opcode = 0x5B,
+		usage = "/protocol1530 taskboard-weekly [raceId] [itemId] [nextReset] confirm",
+		description = "Opens a non-empty Weekly Task window including the post-15.21 Soulseals reward tail.",
+		layout = "view:u8=1, anyCreature:u16+u16, killRecords, itemRecords, rewards, reset:u32, thirdSlot:bool, taskPoints:u32, soulseals:u32",
+		evidence = "private 15.23 Task Board writer plus the current 15.25/15.30 empty-window shim",
+		confidence = "reference-needs-15.30-wire",
+		requiresConfirmation = true,
+		build = function(msg, args)
+			local raceId = readU16(args[2], 22)
+			local itemId = readU32(args[3], 5888)
+			local nextReset = readU32(args[4], os.time() + (7 * 24 * 60 * 60))
+			msg:addByte(0x01)
+			msg:addU16(100)
+			msg:addU16(25)
+			msg:addByte(1)
+			msg:addU16(raceId)
+			msg:addU16(10)
+			msg:addU16(2)
+			msg:addByte(1)
+			msg:addByte(0) -- item task index
+			msg:addU32(itemId)
+			msg:addU32(2)
+			msg:addU32(0)
+			msg:addByte(0)
+			msg:addByte(0) -- beginner difficulty
+			msg:addU32(1000)
+			msg:addU32(500)
+			msg:addByte(0)
+			msg:addByte(0)
+			msg:addByte(0) -- difficulty selection unavailable
+			msg:addByte(0) -- suggested difficulty
+			msg:addU32(nextReset)
+			msg:addByte(0) -- third slot locked
+			msg:addU32(10) -- task hunting points
+			msg:addU32(1) -- Soulseals reward tail
+		end,
+	},
+	["1530-boss-difficulty"] = {
+		opcode = 0x2F,
+		usage = "/protocol1530 boss-difficulty [bossRaceId] confirm",
+		description = "Opens a synthetic difficulty selection for Morshabaal (2118 by default).",
+		layout = "action:u8=0, bossRaceId:u32, enabled:bool, fourDifficultyFields:u16, badLuck:u32, bossName:string, labels[4], selected:u16, cons[], pros[]",
+		evidence = "15.25/15.30 static client decoder; no live 15.30 S2C capture",
+		confidence = "static-needs-wire",
+		requiresConfirmation = true,
+		build = function(msg, args)
+			msg:addByte(0)
+			msg:addU32(readU32(args[2], 2118))
+			msg:addByte(1)
+			msg:addU16(0) -- selected difficulty
+			msg:addU16(0) -- lowest difficulty
+			msg:addU16(0) -- group highest
+			msg:addU16(0) -- personal highest
+			msg:addU32(0) -- bad-luck bonus scaled by 1000
+			msg:addString("Morshabaal")
+			msg:addString("I")
+			msg:addString("II")
+			msg:addString("III")
+			msg:addString("IV")
+			msg:addU16(0) -- selected difficulty update
+			msg:addByte(0) -- cons
+			msg:addByte(0) -- pros
+		end,
+	},
+	["1530-boss-close"] = {
+		opcode = 0x2F,
+		usage = "/protocol1530 boss-close confirm",
+		description = "Sends the no-payload action 1 of the boss-difficulty packet family.",
+		layout = "action:u8=1",
+		evidence = "15.25/15.30 static client decoder; no live 15.30 S2C capture",
+		confidence = "static-needs-wire",
+		requiresConfirmation = true,
+		build = function(msg)
+			msg:addByte(1)
+		end,
+	},
+	["1530-bestiary-empty"] = {
+		opcode = 0xD6,
+		usage = "/protocol1530 bestiary-empty",
+		description = "Sends an empty bestiary search result followed by zero Animus points.",
+		layout = "search:string='', raceCount:u16=0, animusPoints:u16=0",
+		evidence = "15.25/15.30 static decoder and the current bestiary packet family",
+		confidence = "static",
+		build = function(msg)
+			msg:addString("")
+			msg:addU16(0)
+			msg:addU16(0)
+		end,
+	},
+	["1530-map-marker"] = {
+		opcode = 0xDD,
+		usage = "/protocol1530 map-marker [description]",
+		description = "Adds a minimap marker at the invoking player's current position.",
+		layout = "type:u8=0, position:u16+u16+u8, markerType:u8=0, description:string",
+		evidence = "ProtocolGame::sendAddMarker and the 15.25/15.30 static decoder",
+		confidence = "repo/static",
+		build = function(msg, args, player)
+			msg:addByte(0)
+			msg:addPosition(player:getPosition())
+			msg:addByte(0)
+			msg:addString(readRemainingText(args, 2, "Protocol QA 15.30"))
+		end,
+	},
 }
+
+for probeName, probe in pairs(probes) do
+	if probeName:sub(1, 5) == "1530-" then
+		probe.minClientVersion = 1530
+		probe.maxClientVersion = 1530
+		probe.boundaryMarker = true
+	end
+end
 
 local aliases = {
 	["0x1e"] = "pingback",
@@ -718,23 +1117,56 @@ local function buildLocalProbe(localProbe, values)
 	return msg
 end
 
-local function sortedKeys(tableValue)
+local function sortedKeys(tableValue, prefix)
 	local keys = {}
 	for key in pairs(tableValue) do
-		keys[#keys + 1] = key
+		if not prefix or key:sub(1, #prefix) == prefix then
+			keys[#keys + 1] = key
+		end
 	end
 	table.sort(keys)
 	return keys
 end
 
-local function sendUsage(player)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: /protocolprobe <name> [values] | /protocolprobe list")
+local function is1530Command(words)
+	return string.lower(words or "") == "/protocol1530"
+end
+
+local function resolveBuiltInProbeName(name, suite1530)
+	name = string.lower(name or "")
+	if suite1530 and name:sub(1, 5) ~= "1530-" then
+		return "1530-" .. name
+	end
+	return aliases[name] or name
+end
+
+local function hasExplicitConfirmation(args)
+	return #args > 1 and string.lower(args[#args]) == "confirm"
+end
+
+local function sendUsage(player, suite1530)
+	if suite1530 then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: /protocol1530 <case> [values] [confirm] | /protocol1530 list | /protocol1530 info <case>")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "A boundary message is queued after each packet. Candidate/reference probes require the literal final argument 'confirm'.")
+		return
+	end
+
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: /protocolprobe <name> [values] | /protocolprobe list | /protocolprobe info <name>")
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Local probes are read from " .. LOCAL_PROBE_FILE .. " on every command.")
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, 'JSON example: {"probes":{"test":{"opcode":"0xA7","fields":[{"type":"u8","value":0}]}}}')
 end
 
-local function sendProbeList(player)
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Built-in probes: " .. table.concat(sortedKeys(probes), ", "))
+local function sendProbeList(player, prefix)
+	local names = sortedKeys(probes, prefix)
+	if prefix then
+		for index, name in ipairs(names) do
+			names[index] = name:sub(#prefix + 1)
+		end
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "15.30 probes: " .. table.concat(names, ", "))
+		return
+	end
+
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Built-in probes: " .. table.concat(names, ", "))
 
 	local localProbes, error = loadLocalProbes()
 	if error then
@@ -751,17 +1183,63 @@ local function sendProbeList(player)
 	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Local probes: " .. table.concat(names, ", "))
 end
 
+local function sendProbeInfo(player, probeName)
+	local probe = probes[probeName]
+	if not probe then
+		return false
+	end
+
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Probe '%s': opcode=0x%02X, confidence=%s", probeName, probe.opcode, probe.confidence or "unspecified"))
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: " .. probe.usage)
+	if probe.description then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Purpose: " .. probe.description)
+	end
+	if probe.layout then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Payload: " .. probe.layout)
+	end
+	if probe.evidence then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Evidence: " .. probe.evidence)
+	end
+	return true
+end
+
 local function sendBuiltInProbe(player, probeName, args)
 	local probe = probes[probeName]
 	if not probe then
 		return false
 	end
 
+	if probe.minClientVersion then
+		local client = player:getClient()
+		local clientVersion = client and tonumber(client.version) or 0
+		if clientVersion < probe.minClientVersion or clientVersion > probe.maxClientVersion then
+			player:sendCancelMessage(string.format("Probe '%s' requires a 15.30 client; connected protocol is %d.", probeName, clientVersion))
+			return true
+		end
+	end
+
+	if probe.requiresConfirmation and not hasExplicitConfirmation(args) then
+		player:sendCancelMessage("This probe is not wire-confirmed for 15.30. Inspect it with 'info', then rerun with the final argument 'confirm'.")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Usage: " .. probe.usage)
+		return true
+	end
+
+	if probe.validate then
+		local valid, error = probe.validate(args, player)
+		if not valid then
+			player:sendCancelMessage(string.format("Protocol probe '%s' failed validation: %s", probeName, error or "unknown error"))
+			return true
+		end
+	end
+
 	local msg = NetworkMessage()
 	msg:addByte(probe.opcode)
 	probe.build(msg, args, player)
-	logger.info(string.format("[ProtocolProbe] player='%s' probe='%s' source='built-in' opcode=0x%02X usage='%s'", player:getName(), probeName, probe.opcode, probe.usage))
+	logger.info(string.format("[ProtocolProbe] player='%s' probe='%s' source='built-in' opcode=0x%02X confidence='%s' layout='%s' usage='%s'", player:getName(), probeName, probe.opcode, probe.confidence or "unspecified", probe.layout or "unspecified", probe.usage))
 	msg:sendToPlayer(player)
+	if probe.boundaryMarker then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[ProtocolProbe] boundary OK after '%s'. Move, say something, and open a container before the next probe.", probeName:sub(6)))
+	end
 	return true
 end
 
@@ -792,14 +1270,27 @@ end
 function protocolProbe.onSay(player, words, param)
 	logCommand(player, words, param)
 
+	local suite1530 = is1530Command(words)
 	local args = parseArgs(param)
 	if #args == 0 or args[1] == "help" then
-		sendUsage(player)
+		sendUsage(player, suite1530)
 		return true
 	end
 
 	if args[1] == "list" then
-		sendProbeList(player)
+		sendProbeList(player, suite1530 and "1530-" or nil)
+		return true
+	end
+
+	if args[1] == "info" then
+		if not args[2] then
+			player:sendCancelMessage(suite1530 and "Usage: /protocol1530 info <case>" or "Usage: /protocolprobe info <name>")
+			return true
+		end
+		local infoProbeName = resolveBuiltInProbeName(args[2], suite1530)
+		if not sendProbeInfo(player, infoProbeName) then
+			player:sendCancelMessage("Unknown built-in protocol probe.")
+		end
 		return true
 	end
 
@@ -814,7 +1305,7 @@ function protocolProbe.onSay(player, words, param)
 		probeName = string.lower(args[2])
 		localValues = sliceArgs(args, 3)
 	else
-		probeName = aliases[probeName] or probeName
+		probeName = resolveBuiltInProbeName(probeName, suite1530)
 		localValues = sliceArgs(args, 2)
 	end
 
@@ -827,7 +1318,7 @@ function protocolProbe.onSay(player, words, param)
 	end
 
 	player:sendCancelMessage("Unknown protocol probe.")
-	sendUsage(player)
+	sendUsage(player, suite1530)
 	return true
 end
 

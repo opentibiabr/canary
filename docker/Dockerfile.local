@@ -1,0 +1,71 @@
+# syntax=docker/dockerfile:1.7
+
+FROM ubuntu:24.04 AS dependencies
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} \
+    TZ=Etc/UTC \
+    VCPKG_BINARY_SOURCES=clear\;files,/opt/vcpkg-bincache,readwrite
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+      autoconf automake build-essential ca-certificates cmake curl git libtool \
+      ninja-build pkg-config python3 tar unzip zip \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+COPY vcpkg.json /opt/vcpkg-manifest/vcpkg.json
+RUN commit_id="$(grep 'builtin-baseline' /opt/vcpkg-manifest/vcpkg.json | cut -d '"' -f 4)" \
+    && git clone https://github.com/microsoft/vcpkg.git \
+    && cd /opt/vcpkg \
+    && git checkout "${commit_id}" \
+    && ./bootstrap-vcpkg.sh
+
+RUN --mount=type=cache,target=/opt/vcpkg/downloads \
+    --mount=type=cache,target=/opt/vcpkg/buildtrees \
+    --mount=type=cache,target=/opt/vcpkg/packages \
+    --mount=type=cache,target=/opt/vcpkg-bincache \
+    /opt/vcpkg/vcpkg install \
+      --x-manifest-root=/opt/vcpkg-manifest \
+      --x-install-root=/opt/vcpkg-installed
+
+FROM dependencies AS build
+WORKDIR /srv/canary
+COPY . .
+COPY --from=dependencies /opt/vcpkg-installed /srv/canary/vcpkg_installed
+
+RUN export VCPKG_ROOT=/opt/vcpkg \
+    && cmake --preset linux-release \
+      -DTOGGLE_BIN_FOLDER=ON \
+      -DVCPKG_MANIFEST_INSTALL=OFF \
+      -DVCPKG_INSTALLED_DIR=/srv/canary/vcpkg_installed \
+    && cmake --build --preset linux-release --parallel
+
+FROM ubuntu:24.04 AS runtime
+
+ARG DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND} TZ=Etc/UTC
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt-get update && apt-get install -y --no-install-recommends \
+      ca-certificates curl mariadb-client tzdata \
+    && ln -snf "/usr/share/zoneinfo/${TZ}" /etc/localtime \
+    && echo "${TZ}" >/etc/timezone \
+    && rm -rf /var/lib/apt/lists/*
+
+VOLUME ["/data"]
+WORKDIR /canary
+
+COPY --from=build /srv/canary/build/linux-release/bin/canary /bin/canary
+COPY LICENSE *.sql key.pem ./
+COPY data ./data
+COPY data-canary ./data-canary
+COPY data-otservbr-global ./data-otservbr-global
+COPY config.lua.dist ./config.lua
+COPY docker/data/01-test_account.sql ./01-test_account.sql
+COPY docker/data/02-test_account_players.sql ./02-test_account_players.sql
+COPY --chmod=755 docker/data/start.sh ./start.sh
+
+ENTRYPOINT ["/canary/start.sh"]

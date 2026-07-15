@@ -1,0 +1,89 @@
+{
+  "schemaVersion": 1,
+  "layers": [
+    { "name": "core", "root": "data" },
+    { "name": "canary", "root": "data-canary" },
+    { "name": "otservbr-global", "root": "data-otservbr-global" }
+  ],
+  "profiles": [
+    { "name": "canary", "layers": ["core", "canary"] },
+    { "name": "otservbr-global", "layers": ["core", "otservbr-global"] }
+  ],
+  "excludedDirectories": [
+    ".git",
+    ".cache",
+    ".idea",
+    ".vs",
+    ".vscode",
+    "artifacts",
+    "build",
+    "node_modules",
+    "vcpkg_installed"
+  ],
+  "maxTextFileBytes": 4194304,
+  "maxLuaTokens": 250000,
+  "maxXmlFileBytes": 33554432,
+  "maxFactsPerFile": 200000,
+  "maxDiagnosticsPerFile": 10000,
+  "maxTotalFacts": 1000000,
+  "maxTotalDiagnostics": 50000,
+  "maxFindings": 50000,
+  "artifactRoot": "artifacts",
+  "itemCatalogFiles": ["data/items/appearances.dat"],
+  "itemOverrideFiles": ["data/items/items.xml"],
+  "storageTables": [
+    {
+      "path": "data/libs/core/global_storage.lua",
+      "root": "Global.Storage",
+      "domain": "storage.global"
+    },
+    {
+      "path": "data-canary/lib/core/storages.lua",
+      "root": "Storage",
+      "domain": "storage.player"
+    },
+    {
+      "path": "data-canary/lib/core/storages.lua",
+      "root": "GlobalStorage",
+      "domain": "storage.global"
+    },
+    {
+      "path": "data-otservbr-global/lib/core/storages.lua",
+      "root": "Storage",
+      "domain": "storage.player"
+    },
+    {
+      "path": "data-otservbr-global/lib/core/storages.lua",
+      "root": "GlobalStorage",
+      "domain": "storage.global"
+    }
+  ],
+  "storageXmlFiles": ["data/XML/storages.xml"],
+  "severityByRule": {
+    "*": "warning",
+    "reference.missing-definition:item.server_id": "error",
+    "reference.missing-definition:monster.name": "warning",
+    "reference.missing-definition:npc.name": "warning",
+    "reference.missing-definition:storage.player": "info",
+    "reference.missing-definition:storage.global": "info",
+    "item.override-missing-definition:item.server_id": "warning",
+    "xml.invalid-item-range:*": "error",
+    "xml.invalid-storage-range:*": "error",
+    "xml.invalid-storage:*": "error",
+    "xml.overlapping-storage-range:*": "error",
+    "xml.storage-outside-range:*": "error",
+    "protobuf.item-missing-flags:*": "error",
+    "protobuf.item-missing-id:*": "error",
+    "protobuf.item-id-out-of-range:*": "error",
+    "protobuf.duplicate-item-id:*": "error",
+    "definition.duplicate-value:item.server_id": "error",
+    "definition.duplicate-value:monster.name": "warning",
+    "definition.duplicate-value:npc.name": "warning",
+    "definition.duplicate-value:storage.player": "warning",
+    "definition.duplicate-value:storage.global": "warning",
+    "definition.symbol-conflict:*": "error",
+    "action.duplicate-registration:*": "error"
+  },
+  "gateSeverity": "error",
+  "baselinePath": "tools/canary_audit/baseline.json"
+}

@@ -11,13 +11,13 @@ end
 
 combat:setCallback(CALLBACK_PARAM_LEVELMAGICVALUE, "onGetFormulaValues")
 
-function canFork(creature, target)
+function canForkedGlacier(creature, target)
 	return not target:isNpc() and creature ~= target and not target:getTile():hasFlag(TILESTATE_PROTECTIONZONE)
 end
 
-combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canFork")
+combat:setCallback(CALLBACK_PARAM_CHAINPICKER, "canForkedGlacier")
 
-function getForkValues(creature)
+function getForkedGlacierValues(creature)
 	local targets = 7
 	local player = creature:getPlayer()
 	if player then
@@ -26,7 +26,7 @@ function getForkValues(creature)
 	return targets, 4, false, true, 7
 end
 
-combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getForkValues")
+combat:setCallback(CALLBACK_PARAM_CHAINVALUE, "getForkedGlacierValues")
 
 local spell = Spell("instant")
 

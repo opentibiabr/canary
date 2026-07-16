@@ -1236,7 +1236,7 @@ local function sendBuiltInProbe(player, probeName, args)
 	local msg = NetworkMessage()
 	msg:addByte(probe.opcode)
 	probe.build(msg, args, player)
-	logger.info(string.format("[ProtocolProbe] player='%s' probe='%s' source='built-in' opcode=0x%02X confidence='%s' layout='%s' usage='%s'", player:getName(), probeName, probe.opcode, probe.confidence or "unspecified", probe.layout or "unspecified", probe.usage))
+	logger.info("[ProtocolProbe] player='{}' probe='{}' source='built-in' opcode={} confidence='{}' layout='{}' usage='{}'", player:getName(), probeName, string.format("0x%02X", probe.opcode), probe.confidence or "unspecified", probe.layout or "unspecified", probe.usage)
 	msg:sendToPlayer(player)
 	if probe.boundaryMarker then
 		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("[ProtocolProbe] boundary OK after '%s'. Move, say something, and open a container before the next probe.", probeName:sub(6)))

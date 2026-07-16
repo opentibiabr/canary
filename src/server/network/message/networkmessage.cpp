@@ -276,7 +276,6 @@ const uint8_t* NetworkMessage::getBuffer() const {
 uint8_t* NetworkMessage::getBodyBuffer() {
 	info.position = 2;
 	// Return the pointer to the body of the buffer starting after the header
-	// Convert HEADER_LENGTH to uintptr_t to ensure safe pointer arithmetic with enum type
 	return buffer.data() + static_cast<std::uintptr_t>(HEADER_LENGTH);
 }
 

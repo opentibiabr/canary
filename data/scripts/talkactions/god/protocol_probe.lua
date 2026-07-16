@@ -1129,7 +1129,8 @@ local function sortedKeys(tableValue, prefix)
 end
 
 local function is1530Command(words)
-	return string.lower(words or "") == "/protocol1530"
+	local command = tostring(words or ""):match("^%s*(%S+)")
+	return string.lower(command or "") == "/protocol1530"
 end
 
 local function resolveBuiltInProbeName(name, suite1530)

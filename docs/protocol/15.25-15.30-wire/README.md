@@ -101,4 +101,5 @@ An old-length packet in a concatenated server message can make the client interp
 - `15.25-foundation.md`: carried packet families needed by the new UI.
 - `identifiers.md`: icons, events, effects, missiles and resources.
 - `validation.md`: safe test order, expected results, known gaps and support boundary.
+- `task-board-reference.md`: provenance, integration requirements and limitations of the separately packaged Task Board reference module.
 - `wire-manifest.json`: structured representation for Python, AI-assisted mapping or code generation.

@@ -5720,9 +5720,9 @@ void ProtocolGame::sendCyclopediaCharacterOffenceStats() {
 		msg.addDouble(std::round(playerSkill * skillPercentage.spellHealing)); // Applied Spell Healing Value
 	}
 
-	msg.addDouble(0.0); // Full hit points extra damage
-	msg.addDouble(0.0); // Low hit points extra damage
-	msg.addDouble(0.0); // Armor penetration
+	msg.addDouble(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ALPHA_STRIKE_EXTRA_DAMAGE)); // Full hit points extra damage
+	msg.addDouble(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::OMEGA_STRIKE_EXTRA_DAMAGE)); // Low hit points extra damage
+	msg.addDouble(player->weaponProficiency().getStat(WeaponProficiencyBonus_t::ARMOR_PENETRATION)); // Armor penetration
 
 	const auto elementalPierces = player->weaponProficiency().getActiveElementalPierces();
 	msg.addByte(static_cast<uint8_t>(elementalPierces.size())); // Elemental pierces count

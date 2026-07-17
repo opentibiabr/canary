@@ -1,0 +1,673 @@
+{
+  "schema_version": "1.0.0",
+  "package": {
+    "name": "tibia-15.25-to-15.30-wire-migration",
+    "created": "2026-07-17",
+    "baseline_protocol": 1525,
+    "target_protocol": 1530,
+    "observed_target_build": "15.30.a30dad",
+    "scope": "application packet bytes only",
+    "excludes": [
+      "transport encryption implementation",
+      "vocation formulas and gameplay balance",
+      "maps, monsters, quests and NPC content",
+      "item and proficiency balance datasets",
+      "unchanged legacy packets"
+    ]
+  },
+  "transport": {
+    "changed_from_15_25": false,
+    "outer_length": "modern_block_count",
+    "inbound_checksum": "sequence",
+    "outbound_checksum": "sequence",
+    "encrypted_payload": "modern_padding_byte",
+    "has_crypto_header": true,
+    "length_includes_checksum": true,
+    "compression": "official",
+    "sequence_high_bit_signals_compression": true,
+    "manifest_payload_boundary": "plaintext application opcode; outer length, checksum, compression, XTEA and padding excluded"
+  },
+  "encoding": {
+    "byte_order": "little_endian",
+    "bool": "u8_0_or_1",
+    "string": {
+      "length_type": "u16",
+      "data": "length bytes"
+    },
+    "position": [
+      { "name": "x", "type": "u16" },
+      { "name": "y", "type": "u16" },
+      { "name": "z", "type": "u8" }
+    ]
+  },
+  "evidence_levels": {
+    "live": "accepted by the 15.30 client followed by a valid application packet boundary",
+    "static": "recovered from the 15.30 decoder or a matching TibiaAPI decoder",
+    "reference": "implemented by the reference server or an older official-style module",
+    "candidate": "width or boundary is supported but semantic or live evidence is incomplete",
+    "unknown": "must not be populated without further capture or decoder evidence"
+  },
+  "packet_deltas": [
+    {
+      "id": "c2s_set_tactics_1530",
+      "direction": "C2S",
+      "opcode": "0xA0",
+      "name": "Set Tactics",
+      "first_confirmed": 1530,
+      "delta": "fightMode removed; pvpMode occupies the third byte",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "chaseMode", "type": "u8" },
+        { "name": "secureMode", "type": "u8" },
+        { "name": "pvpMode", "type": "u8" }
+      ],
+      "fixture_hex": "A0 00 01 00"
+    },
+    {
+      "id": "c2s_weapon_proficiency_command_1530",
+      "direction": "C2S",
+      "opcode": "0xB3",
+      "name": "Weapon Proficiency Command",
+      "first_confirmed": 1530,
+      "delta": "commands 0x04 through 0x09 carry shaped-perk fields",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "command", "type": "u8" },
+        { "name": "weaponId", "type": "u16", "when": "command in [0,2,3,4,5,6,7,8,9]" }
+      ],
+      "variants": [
+        { "command": "0x00", "name": "get_proficiency", "fields": [] },
+        { "command": "0x01", "name": "get_all_proficiencies", "fields": [], "has_weapon_id": false },
+        { "command": "0x02", "name": "reset_proficiency", "fields": [] },
+        {
+          "command": "0x03",
+          "name": "pick_perks",
+          "fields": [
+            {
+              "name": "selectedPerks",
+              "type": "array",
+              "count_type": "u8",
+              "element": [
+                { "name": "level", "type": "u8" },
+                { "name": "index", "type": "u8" }
+              ]
+            }
+          ]
+        },
+        { "command": "0x04", "name": "shape_perk", "fields": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] },
+        { "command": "0x05", "name": "refine_shaped_perk", "fields": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] },
+        { "command": "0x06", "name": "maximize_shaped_perk", "fields": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] },
+        { "command": "0x07", "name": "reshape_shaped_perk", "fields": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] },
+        {
+          "command": "0x08",
+          "name": "select_reshape_option",
+          "fields": [
+            { "name": "level", "type": "u8" },
+            { "name": "index", "type": "u8" },
+            { "name": "selectedOffer", "type": "u8" }
+          ]
+        },
+        { "command": "0x09", "name": "clear_shaped_perk", "fields": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] }
+      ],
+      "fixtures": {
+        "get_all": "B3 01",
+        "get_weapon_0x1234": "B3 00 34 12",
+        "pick_two": "B3 03 34 12 02 01 00 02 01",
+        "select_offer_2": "B3 08 34 12 01 00 02"
+      }
+    },
+    {
+      "id": "s2c_game_event_1530_additions",
+      "direction": "S2C",
+      "opcode": "0x75",
+      "name": "Game Event additions",
+      "first_confirmed": 1530,
+      "delta": "new task, spell and area event selector values",
+      "evidence": ["live", "static"],
+      "fields": [{ "name": "eventType", "type": "u8" }],
+      "variants": [
+        { "event_type": "0x0B", "name": "bounty_task_finished", "fields": [{ "name": "raceId", "type": "u16" }], "evidence": ["live", "static"] },
+        { "event_type": "0x0C", "name": "weekly_task_specific_creature_finished", "fields": [{ "name": "raceId", "type": "u16" }], "evidence": ["live", "static"] },
+        { "event_type": "0x0D", "name": "spell_unlocked", "fields": [{ "name": "spellId", "type": "u32" }], "evidence": ["static"] },
+        { "event_type": "0x0E", "name": "leader_monster_killed", "fields": [{ "name": "raceId", "type": "u16" }, { "name": "value", "type": "u32" }], "evidence": ["static"] },
+        { "event_type": "0x0F", "name": "subarea_unlocked", "fields": [{ "name": "subareaId", "type": "u16" }], "evidence": ["static"] },
+        { "event_type": "0x10", "name": "area_unlocked", "fields": [{ "name": "areaId", "type": "u16" }], "evidence": ["static"] }
+      ],
+      "fixtures": {
+        "bounty_race_22": "75 0B 16 00",
+        "weekly_race_22": "75 0C 16 00",
+        "spell_274": "75 0D 12 01 00 00"
+      }
+    },
+    {
+      "id": "s2c_exaltation_base_data_1530",
+      "direction": "S2C",
+      "opcode": "0x86",
+      "name": "Exaltation Base Data",
+      "first_confirmed": 1530,
+      "delta": "legacy 13-field configuration tail replaced by one reserved u8",
+      "evidence": ["static", "reference"],
+      "fields": [
+        {
+          "name": "classifications",
+          "type": "array",
+          "count_type": "u8",
+          "element": [
+            { "name": "classificationId", "type": "u8" },
+            {
+              "name": "tiers",
+              "type": "array",
+              "count_type": "u8",
+              "element": [
+                { "name": "targetTier", "type": "u8" },
+                { "name": "regularPrice", "type": "u64" }
+              ]
+            }
+          ]
+        },
+        { "name": "exaltedCoreTiers", "type": "array", "count_type": "u8", "element": [{ "name": "tier", "type": "u8" }, { "name": "coreCount", "type": "u8" }] },
+        { "name": "convergenceFusionTiers", "type": "array", "count_type": "u8", "element": [{ "name": "tier", "type": "u8" }, { "name": "price", "type": "u64" }] },
+        { "name": "convergenceTransferTiers", "type": "array", "count_type": "u8", "element": [{ "name": "tier", "type": "u8" }, { "name": "price", "type": "u64" }] },
+        { "name": "reserved", "type": "u8", "observed": 0 }
+      ],
+      "fixture_hex": "86 00 00 00 00 00"
+    },
+    {
+      "id": "s2c_embedded_creature_icons_1530",
+      "direction": "S2C",
+      "opcode": null,
+      "location": "full creature instance after stepSpeed and before skull",
+      "name": "Embedded creature icon fragment",
+      "first_confirmed": 1530,
+      "delta": "primary records gain reserved u8 and a second icon-list count follows",
+      "evidence": ["static", "reference"],
+      "fields": [
+        {
+          "name": "primaryIcons",
+          "type": "array",
+          "count_type": "u8",
+          "maximum_count": 3,
+          "element": [
+            { "name": "iconId", "type": "u8" },
+            { "name": "category", "type": "u8" },
+            { "name": "count", "type": "u16" },
+            { "name": "reserved", "type": "u8", "observed": 0 }
+          ]
+        },
+        {
+          "name": "secondaryIcons",
+          "type": "array",
+          "count_type": "u8",
+          "element": "unknown",
+          "safe_value": []
+        }
+      ]
+    },
+    {
+      "id": "s2c_creature_icon_update_1530",
+      "direction": "S2C",
+      "opcode": "0x8B",
+      "name": "Creature Icon Update",
+      "first_confirmed": 1530,
+      "delta": "primary icon record gains reserved u8",
+      "evidence": ["live", "static", "reference"],
+      "fields": [
+        { "name": "creatureId", "type": "u32" },
+        { "name": "updateType", "type": "u8", "const": "0x0E" },
+        {
+          "name": "icons",
+          "type": "array",
+          "count_type": "u8",
+          "maximum_count": 3,
+          "element": [
+            { "name": "iconId", "type": "u8" },
+            { "name": "category", "type": "u8" },
+            { "name": "count", "type": "u16" },
+            { "name": "reserved", "type": "u8", "observed": 0 }
+          ]
+        }
+      ],
+      "fixtures": {
+        "clear_creature_0x01020304": "8B 04 03 02 01 0E 00",
+        "weekly_and_bounty": "8B 04 03 02 01 0E 02 08 01 00 00 00 09 01 00 00 00"
+      },
+      "related_unknown_variant": {
+        "update_type": "0x0F",
+        "known_prefix": [
+          { "name": "creatureId", "type": "u32" },
+          { "name": "updateType", "type": "u8", "const": "0x0F" },
+          { "name": "recordCount", "type": "u8", "safe_value": 0 }
+        ],
+        "record": "unknown"
+      }
+    },
+    {
+      "id": "s2c_player_state_special_icon",
+      "direction": "S2C",
+      "opcode": "0xA2",
+      "name": "Player State",
+      "first_confirmed": 1525,
+      "delta": "retained dependency; special icon byte follows normal icon mask",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "normalIcons", "type": "u64" },
+        { "name": "specialIcon", "type": "u8", "known_range": [0, 9] }
+      ],
+      "fixture_hex": "A2 00 00 00 00 00 00 00 00 00"
+    },
+    {
+      "id": "s2c_update_target_1530",
+      "direction": "S2C",
+      "opcode": "0xA3",
+      "name": "Update or Clear Target",
+      "first_confirmed": 1530,
+      "delta": "second u32 added",
+      "evidence": ["candidate", "static", "reference"],
+      "fields": [
+        { "name": "primaryCreatureId", "type": "u32" },
+        { "name": "secondaryCreatureId", "type": "u32", "semantics": "candidate" }
+      ],
+      "fixture_hex": "A3 00 00 00 00 00 00 00 00"
+    },
+    {
+      "id": "s2c_set_tactics_1530",
+      "direction": "S2C",
+      "opcode": "0xA7",
+      "name": "Set Tactics",
+      "first_confirmed": 1530,
+      "delta": "fightMode removed; pvpMode occupies the third byte",
+      "evidence": ["live", "static", "reference"],
+      "fields": [
+        { "name": "chaseMode", "type": "u8" },
+        { "name": "secureMode", "type": "u8" },
+        { "name": "pvpMode", "type": "u8" }
+      ],
+      "fixture_hex": "A7 00 01 00"
+    },
+    {
+      "id": "s2c_shaped_perk_reshape_offers_1530",
+      "direction": "S2C",
+      "opcode": "0xBB",
+      "name": "Shaped Perk Reshape Offers",
+      "first_confirmed": 1530,
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "weaponId", "type": "u16" },
+        { "name": "level", "type": "u8" },
+        { "name": "index", "type": "u8" },
+        {
+          "name": "offers",
+          "type": "array",
+          "count_type": "u8",
+          "element": [
+            { "name": "perkId", "type": "u16" },
+            { "name": "rank", "type": "u8" }
+          ]
+        }
+      ],
+      "fixtures": {
+        "empty": "BB 34 12 02 01 00",
+        "two_offers": "BB 34 12 02 01 02 42 00 01 43 00 02"
+      },
+      "live_status": "empty and non-empty natural UI flow not yet validated"
+    },
+    {
+      "id": "s2c_vocation_active_spells",
+      "direction": "S2C",
+      "opcode": "0xC1",
+      "name": "Vocation-specific Active Spells",
+      "first_confirmed": 1525,
+      "delta": "retained packet used by 15.30 vocation rebalance UI",
+      "evidence": ["live", "static", "reference"],
+      "fields": [
+        { "name": "dataType", "type": "u8", "const": "0x02" },
+        {
+          "name": "spellIds",
+          "type": "array",
+          "count_type": "u8",
+          "element": [{ "name": "spellId", "type": "u16" }]
+        }
+      ],
+      "fixtures": {
+        "clear": "C1 02 00",
+        "harmony": "C1 02 01 12 01"
+      }
+    },
+    {
+      "id": "s2c_weapon_proficiency_window_1530",
+      "direction": "S2C",
+      "opcode": "0xC4",
+      "name": "Weapon Proficiency Window",
+      "first_confirmed": 1530,
+      "delta": "mandatory shaped-perk list follows selected perks",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "weaponId", "type": "u16" },
+        { "name": "experience", "type": "u32" },
+        { "name": "selectedPerks", "type": "array", "count_type": "u8", "element": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }] },
+        { "name": "shapedPerks", "type": "array", "count_type": "u8", "count_is_mandatory": true, "element": [{ "name": "level", "type": "u8" }, { "name": "index", "type": "u8" }, { "name": "perkId", "type": "u16" }, { "name": "rank", "type": "u8" }] }
+      ],
+      "fixtures": {
+        "empty": "C4 34 12 00 00 00 00 00 00",
+        "one_selected_one_shaped": "C4 34 12 78 56 34 12 01 02 01 01 02 01 42 00 01"
+      }
+    },
+    {
+      "id": "s2c_monster_cyclopedia_monsters_1530",
+      "direction": "S2C",
+      "opcode": "0xD6",
+      "name": "Monster Cyclopedia Monsters",
+      "first_confirmed": 1530,
+      "delta": "isNew byte and second occurrence byte added to progressed records",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "search", "type": "string" },
+        {
+          "name": "races",
+          "type": "array",
+          "count_type": "u16",
+          "element": [
+            { "name": "raceId", "type": "u16" },
+            { "name": "isNew", "type": "u8" },
+            { "name": "progress", "type": "u8" },
+            { "name": "occurrence", "type": "u8", "when": "progress > 0" },
+            { "name": "occurrenceAgain", "type": "u8", "when": "progress > 0", "observed_relation": "same as occurrence" },
+            { "name": "animusBonus", "type": "u16" }
+          ]
+        },
+        { "name": "animusPoints", "type": "u16" }
+      ],
+      "fixtures": {
+        "empty": "D6 00 00 00 00 00 00",
+        "one_progressed_race_22": "D6 00 00 01 00 16 00 00 02 01 01 00 00 00 00"
+      }
+    },
+    {
+      "id": "s2c_monster_cyclopedia_race_1530",
+      "direction": "S2C",
+      "opcode": "0xD7",
+      "name": "Monster Cyclopedia Race",
+      "first_confirmed": 1530,
+      "delta": "header reordered, stage zero shortened, reserved combat byte changed and elements became signed",
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "raceId", "type": "u16" },
+        { "name": "raceClass", "type": "string" },
+        { "name": "currentStage", "type": "u8" },
+        { "name": "firstUnlock", "type": "u16" },
+        { "name": "secondUnlock", "type": "u16" },
+        { "name": "killCounter", "type": "u32" },
+        { "name": "thirdUnlock", "type": "u16" },
+        { "name": "animusBonus", "type": "u16" },
+        { "name": "animusPoints", "type": "u16" },
+        { "name": "reservedBool", "type": "u8", "observed": 0 },
+        { "name": "stars", "type": "u8", "when": "currentStage >= 1" },
+        { "name": "occurrence", "type": "u8", "when": "currentStage >= 1" },
+        {
+          "name": "loot",
+          "type": "array",
+          "count_type": "u8",
+          "when": "currentStage >= 1",
+          "element": [
+            { "name": "objectId", "type": "u16" },
+            { "name": "rarity", "type": "u8" },
+            { "name": "specialEvent", "type": "u8" },
+            { "name": "name", "type": "string", "when": "objectId > 0" },
+            { "name": "cumulative", "type": "u8", "when": "objectId > 0" }
+          ]
+        },
+        { "name": "charmPoints", "type": "u16", "when": "currentStage >= 2" },
+        { "name": "attackMode", "type": "u8", "when": "currentStage >= 2" },
+        { "name": "combatReserved", "type": "u8", "when": "currentStage >= 2", "observed": 0 },
+        { "name": "hitpoints", "type": "u32", "when": "currentStage >= 2" },
+        { "name": "experience", "type": "u32", "when": "currentStage >= 2" },
+        { "name": "speed", "type": "u16", "when": "currentStage >= 2" },
+        { "name": "armor", "type": "u16", "when": "currentStage >= 2" },
+        { "name": "mitigation", "type": "double", "when": "currentStage >= 2" },
+        { "name": "elements", "type": "array", "count_type": "u8", "when": "currentStage >= 3", "element": [{ "name": "elementId", "type": "u8" }, { "name": "modifier", "type": "i16" }] },
+        { "name": "locations", "type": "array", "count_type": "u16", "when": "currentStage >= 3", "element": [{ "name": "location", "type": "string" }] }
+      ]
+    }
+  ],
+  "carried_packets": [
+    {
+      "id": "c2s_task_board",
+      "direction": "C2S",
+      "opcode": "0x5F",
+      "first_confirmed": 1525,
+      "evidence": ["reference"],
+      "selector": "action:u8",
+      "variants": [
+        { "action": "0x00", "name": "open_bounty", "fields": [] },
+        { "action": "0x01", "name": "open_weekly", "fields": [] },
+        { "action": "0x02", "name": "bounty_difficulty", "fields": [{ "name": "difficulty", "type": "u8" }] },
+        { "action": "0x03", "name": "bounty_reroll", "fields": [] },
+        { "action": "0x04", "name": "claim_daily_reroll", "fields": [] },
+        { "action": "0x05", "name": "select_bounty", "fields": [{ "name": "taskIndex", "type": "u8" }] },
+        { "action": "0x06", "name": "claim_bounty_reward", "fields": [] },
+        { "action": "0x07", "name": "upgrade_talisman", "fields": [{ "name": "talismanIndex", "type": "u8" }] },
+        { "action": "0x08", "name": "weekly_delivery", "fields": [{ "name": "taskIndex", "type": "u8" }] },
+        { "action": "0x09", "name": "weekly_difficulty", "fields": [{ "name": "difficulty", "type": "u8" }] },
+        { "action": "0x0A", "name": "open_shop", "fields": [] },
+        { "action": "0x0B", "name": "buy_shop_offer", "fields": [{ "name": "offerId", "type": "u16" }] },
+        { "action": "0x0C", "name": "unlock_preference_slot", "fields": [{ "name": "slot", "type": "u16" }] },
+        { "action": "0x0D", "name": "clear_preferred", "fields": [{ "name": "slot", "type": "u16" }] },
+        { "action": "0x0E", "name": "clear_unwanted", "fields": [{ "name": "slot", "type": "u16" }] },
+        { "action": "0x0F", "name": "assign_preferred", "fields": [{ "name": "slot", "type": "u16" }, { "name": "raceId", "type": "u16" }] },
+        { "action": "0x10", "name": "assign_unwanted", "fields": [{ "name": "slot", "type": "u16" }, { "name": "raceId", "type": "u16" }] }
+      ]
+    },
+    {
+      "id": "s2c_task_board",
+      "direction": "S2C",
+      "opcode": "0x5B",
+      "first_confirmed": 1525,
+      "evidence": ["reference"],
+      "selector": "view:u8",
+      "variants": [
+        {
+          "view": "0x00",
+          "name": "bounty",
+          "fields": [
+            { "name": "tasks", "type": "array", "count_type": "u8", "element": [{ "name": "taskIndex", "type": "u8" }, { "name": "raceId", "type": "u16" }, { "name": "requiredKills", "type": "u16" }, { "name": "experienceReward", "type": "u32" }, { "name": "bountyPoints", "type": "u8" }, { "name": "currentKills", "type": "u16" }, { "name": "state", "type": "u8" }, { "name": "taskType", "type": "u8" }] },
+            { "name": "dailyRerolls", "type": "u8" },
+            { "name": "rerollState", "type": "u8" },
+            { "name": "difficulty", "type": "u8" },
+            { "name": "talismans", "type": "array", "fixed_count": 4, "element": [{ "name": "level", "type": "u16" }, { "name": "canUpgrade", "type": "u8" }, { "name": "upgradeCost", "type": "u16" }] },
+            { "name": "preferenceSlots", "type": "array", "count_type": "u8", "element": [{ "name": "unlocked", "type": "u8" }, { "name": "preferredRaceId", "type": "u16" }, { "name": "unwantedRaceId", "type": "u16" }] }
+          ]
+        },
+        {
+          "view": "0x01",
+          "name": "weekly",
+          "fields": [
+            { "name": "anyCreatureRequired", "type": "u16" },
+            { "name": "anyCreatureCurrent", "type": "u16" },
+            { "name": "killTasks", "type": "array", "count_type": "u8", "element": [{ "name": "raceId", "type": "u16" }, { "name": "requiredKills", "type": "u16" }, { "name": "currentKills", "type": "u16" }] },
+            { "name": "itemTasks", "type": "array", "count_type": "u8", "element": [{ "name": "taskIndex", "type": "u8" }, { "name": "itemId", "type": "u32" }, { "name": "requiredAmount", "type": "u32" }, { "name": "currentAmount", "type": "u32" }, { "name": "completed", "type": "u8" }] },
+            { "name": "difficulty", "type": "u8" },
+            { "name": "killExperienceReward", "type": "u32" },
+            { "name": "deliveryExperienceReward", "type": "u32" },
+            { "name": "killsCompleted", "type": "u8" },
+            { "name": "itemsCompleted", "type": "u8" },
+            { "name": "difficultySelectionAvailable", "type": "u8" },
+            { "name": "suggestedDifficulty", "type": "u8" },
+            { "name": "nextReset", "type": "u32" },
+            { "name": "thirdSlotUnlocked", "type": "u8" },
+            { "name": "taskHuntingPoints", "type": "u32" },
+            { "name": "soulseals", "type": "u32" }
+          ]
+        },
+        { "view": "0x02", "name": "shop", "known_empty_fields": [{ "name": "offerCount", "type": "u8", "const": 0 }], "non_empty_record": "reuse existing 15.25 implementation or capture" }
+      ]
+    },
+    {
+      "id": "c2s_boss_difficulty",
+      "direction": "C2S",
+      "opcode": "0xC2",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "bossRaceId", "type": "u32" },
+        { "name": "action", "type": "u8" },
+        { "name": "difficulty", "type": "u16", "when": "action in [0,2]" }
+      ]
+    },
+    {
+      "id": "s2c_boss_difficulty",
+      "direction": "S2C",
+      "opcode": "0x2F",
+      "first_confirmed": 1525,
+      "evidence": ["static"],
+      "selector": "action:u8",
+      "layout_document": "15.25-foundation.md",
+      "fixtures": { "close": "2F 01" }
+    },
+    {
+      "id": "c2s_soul_seals_monster",
+      "direction": "C2S",
+      "opcode": "0xBA",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "fields": [{ "name": "raceId", "type": "u16" }]
+    },
+    {
+      "id": "s2c_soul_seals_monsters",
+      "direction": "S2C",
+      "opcode": "0xBA",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "fields": [{ "name": "raceIds", "type": "array", "count_type": "u16", "element": [{ "name": "raceId", "type": "u16" }] }]
+    },
+    {
+      "id": "c2s_talk_optional_target",
+      "direction": "C2S",
+      "opcode": "0x96",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "base_payload": "speakType plus conditional receiver/channel plus text:string",
+      "appended_fields": [
+        { "name": "targetMode", "type": "u8", "valid_values": [0, 1, 2] },
+        { "name": "targetPosition", "type": "position", "when": "targetMode in [1,2]" }
+      ]
+    },
+    {
+      "id": "c2s_resource_balance_request",
+      "direction": "C2S",
+      "opcode": "0xED",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "fields": [{ "name": "resourceType", "type": "u8" }]
+    },
+    {
+      "id": "s2c_resource_balance",
+      "direction": "S2C",
+      "opcode": "0xEE",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "fields": [
+        { "name": "resourceType", "type": "u8" },
+        { "name": "value", "type": "u32", "when": "resourceType in [0x1E,0x1F,0x20,0x21,0x3C,0x50,0x56,0x57]" },
+        { "name": "value", "type": "u64", "when": "known non-u32 resource type" },
+        { "name": "value", "type": "unknown", "when": "resourceType == 0x49" }
+      ]
+    },
+    {
+      "id": "s2c_graphical_effects",
+      "direction": "S2C",
+      "opcode": "0x83",
+      "first_confirmed": 1525,
+      "evidence": ["static", "reference"],
+      "prefix": [{ "name": "position", "type": "position" }],
+      "selector": "command:u8",
+      "variants": [
+        {
+          "command": "0x03",
+          "name": "magic_effect",
+          "fields": [{ "name": "effectId", "type": "u16" }, { "name": "source", "type": "u8" }, { "name": "end", "type": "u8", "const": 0 }]
+        },
+        {
+          "command": "0x04",
+          "name": "distance_effect",
+          "fields": [{ "name": "effectId", "type": "u16" }, { "name": "deltaX", "type": "i8" }, { "name": "deltaY", "type": "i8" }, { "name": "source", "type": "u8" }, { "name": "end", "type": "u8", "const": 0 }]
+        }
+      ]
+    },
+    {
+      "id": "s2c_cyclopedia_map_marker_reference",
+      "direction": "S2C",
+      "opcode": "0xDD",
+      "first_confirmed": 1525,
+      "evidence": ["live", "static", "reference"],
+      "selector": "type:u8",
+      "variant": {
+        "type": "0x00",
+        "name": "minimap_marker",
+        "fields": [
+          { "name": "position", "type": "position" },
+          { "name": "markerType", "type": "u8" },
+          { "name": "description", "type": "string" }
+        ]
+      },
+      "note": "validation reference only; not a 15.30 structural delta"
+    }
+  ],
+  "identifiers": {
+    "creature_task_icons": [
+      { "id": 8, "category": 1, "name": "Weekly Task Monster", "record_reserved": 0 },
+      { "id": 9, "category": 1, "name": "Bounty Task Monster", "record_reserved": 0 }
+    ],
+    "vocation_stance_spells": [
+      { "id": 274, "name": "Harmony" },
+      { "id": 275, "name": "Justice" },
+      { "id": 276, "name": "Sustain" }
+    ],
+    "magic_effects": [
+      { "id": 318, "name": "Bash" },
+      { "id": 319, "name": "Divine Barrage" },
+      { "id": 320, "name": "Ethereal Barrage" },
+      { "id": 321, "name": "Death Echo" },
+      { "id": 324, "name": "Forked Glacier" },
+      { "id": 325, "name": "Forked Thorns" },
+      { "id": 326, "name": "Thousand Fist Blows" }
+    ],
+    "distance_effects": [
+      { "id": 64, "name": "Shatterstorm Arrow" },
+      { "id": 65, "name": "Firestorm Arrow" },
+      { "id": 66, "name": "Terrastorm Arrow" },
+      { "id": 67, "name": "Froststorm Arrow" },
+      { "id": 68, "name": "Thunderstorm Arrow" }
+    ],
+    "resources": [
+      { "id": "0x49", "name": "Lunar Ascension Orb", "response_width": "unknown", "status": "candidate" },
+      { "id": "0x50", "name": "Unspent Skill Points", "response_width": "u32" },
+      { "id": "0x56", "name": "Bounty Points", "response_width": "u32" },
+      { "id": "0x57", "name": "Soulseals", "response_width": "u32" }
+    ],
+    "effect_sources": [
+      { "id": 0, "name": "global" },
+      { "id": 1, "name": "own" },
+      { "id": 2, "name": "other_players" },
+      { "id": 3, "name": "creatures" }
+    ]
+  },
+  "live_boundary_validation": [
+    "s2c_set_tactics_1530",
+    "s2c_vocation_active_spells.clear",
+    "s2c_vocation_active_spells.harmony",
+    "s2c_creature_icon_update_1530.clear",
+    "s2c_creature_icon_update_1530.weekly_and_bounty",
+    "s2c_game_event_1530_additions.bounty_task_finished",
+    "s2c_game_event_1530_additions.weekly_task_specific_creature_finished",
+    "s2c_cyclopedia_map_marker_reference"
+  ],
+  "unresolved": [
+    { "id": "update_target_secondary_semantics", "status": "candidate", "do_not_assume": true },
+    { "id": "secondary_creature_icon_record", "status": "unknown", "safe_count": 0 },
+    { "id": "creature_update_type_0x0F_record", "status": "unknown", "safe_count": 0 },
+    { "id": "resource_0x49_width", "status": "unknown", "required_capture": "C2S ED 49 followed by S2C EE 49" },
+    { "id": "task_board_non_empty_1530", "status": "reference", "required_test": "natural bounty, weekly and shop responses" },
+    { "id": "boss_difficulty_1530_live", "status": "static", "required_test": "actions 0, 1 and 2" },
+    { "id": "monster_cyclopedia_non_empty_1530", "status": "static", "required_test": "D6 and D7 stages 0 through 3" }
+  ]
+}

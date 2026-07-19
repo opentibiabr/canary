@@ -6996,6 +6996,15 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 		return;
 	}
 
+	// Expedition idle hunt (Lua STORAGE_ACTIVE = 910001): AI owns the attack target.
+	// Deny client Attack (0xA1); ClearTarget lets the client restore the AI red square.
+	static constexpr int32_t STORAGE_EXPEDITION_ACTIVE = 910001;
+	if (creatureId != 0 && player->getStorageValue(STORAGE_EXPEDITION_ACTIVE) == 1) {
+		player->sendCancelMessage("You cannot change your target during an expedition.");
+		player->sendCancelTarget();
+		return;
+	}
+
 	const auto &attackCreature = getCreatureByID(creatureId);
 	if (!attackCreature) {
 		player->setAttackedCreature(nullptr);

@@ -1,0 +1,56 @@
+{
+  "region": "rotworm_fields",
+  "sourceFrom": {
+    "x": 32351,
+    "y": 32149,
+    "z": 7
+  },
+  "sourceTo": {
+    "x": 32383,
+    "y": 32181,
+    "z": 7
+  },
+  "chunkSize": 32,
+  "chunks": [
+    {
+      "id": "c0_0",
+      "file": "c0_0.otbm",
+      "localX": 0,
+      "localY": 0,
+      "size": 32,
+      "walkableEntries": [
+        {
+          "x": 16,
+          "y": 16,
+          "z": 0
+        },
+        {
+          "x": 1,
+          "y": 1,
+          "z": 0
+        },
+        {
+          "x": 30,
+          "y": 1,
+          "z": 0
+        },
+        {
+          "x": 1,
+          "y": 30,
+          "z": 0
+        },
+        {
+          "x": 30,
+          "y": 30,
+          "z": 0
+        }
+      ],
+      "edgeTags": {
+        "n": "a46c49ef",
+        "s": "014afc3c",
+        "w": "a37707c2",
+        "e": "d018ec1d"
+      }
+    }
+  ]
+}

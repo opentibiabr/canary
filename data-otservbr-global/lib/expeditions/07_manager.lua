@@ -254,8 +254,7 @@ function ExpeditionManager.onLogin(player)
 	end
 
 	-- Rescue after restart: stranded in reserved area.
-	if ExpeditionInstance.isInReservedArea(player:getPosition())
-		or player:getStorageValue(ExpeditionConfig.STORAGE_ACTIVE) == 1 then
+	if ExpeditionInstance.isInReservedArea(player:getPosition()) or player:getStorageValue(ExpeditionConfig.STORAGE_ACTIVE) == 1 then
 		local returnPos = loadReturn(player)
 		clearActive(player)
 		player:setTraining(false)

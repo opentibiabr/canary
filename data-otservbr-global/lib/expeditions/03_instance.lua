@@ -28,11 +28,7 @@ local function slotOrigin(slot)
 	local col = slot % cols
 	local row = math.floor(slot / cols)
 	local size = ExpeditionConfig.SLOT_SIZE
-	return Position(
-		ExpeditionConfig.INSTANCE_BASE_X + col * size,
-		ExpeditionConfig.INSTANCE_BASE_Y + row * size,
-		ExpeditionConfig.INSTANCE_Z
-	)
+	return Position(ExpeditionConfig.INSTANCE_BASE_X + col * size, ExpeditionConfig.INSTANCE_BASE_Y + row * size, ExpeditionConfig.INSTANCE_Z)
 end
 
 function ExpeditionInstance.allocate()
@@ -63,11 +59,7 @@ function ExpeditionInstance.isInReservedArea(pos)
 	local rows = math.ceil(ExpeditionConfig.MAX_SLOTS / cols)
 	local maxX = ExpeditionConfig.INSTANCE_BASE_X + cols * size
 	local maxY = ExpeditionConfig.INSTANCE_BASE_Y + rows * size
-	return pos.z == ExpeditionConfig.INSTANCE_Z
-		and pos.x >= ExpeditionConfig.INSTANCE_BASE_X
-		and pos.x < maxX
-		and pos.y >= ExpeditionConfig.INSTANCE_BASE_Y
-		and pos.y < maxY
+	return pos.z == ExpeditionConfig.INSTANCE_Z and pos.x >= ExpeditionConfig.INSTANCE_BASE_X and pos.x < maxX and pos.y >= ExpeditionConfig.INSTANCE_BASE_Y and pos.y < maxY
 end
 
 local function stampBorder(fromPos, width, height)
@@ -120,11 +112,7 @@ function ExpeditionInstance.build(slot, region, seed)
 			if chunk then
 				local path = dir .. "/" .. chunk.file
 				-- Chunk OTBMs are authored at z=0; offset z places them on the instance floor.
-				local stampAt = Position(
-					origin.x + 1 + lx * chunkSize,
-					origin.y + 1 + ly * chunkSize,
-					origin.z
-				)
+				local stampAt = Position(origin.x + 1 + lx * chunkSize, origin.y + 1 + ly * chunkSize, origin.z)
 				Game.loadMapChunk(path, stampAt, false)
 			end
 		end
@@ -143,11 +131,7 @@ function ExpeditionInstance.build(slot, region, seed)
 	local centerChunk = byLocal[math.floor(maxLX / 2) .. "," .. math.floor(maxLY / 2)]
 	if centerChunk and centerChunk.walkableEntries and centerChunk.walkableEntries[1] then
 		local we = centerChunk.walkableEntries[1]
-		entry = Position(
-			origin.x + 1 + centerChunk.localX * chunkSize + we.x,
-			origin.y + 1 + centerChunk.localY * chunkSize + we.y,
-			origin.z
-		)
+		entry = Position(origin.x + 1 + centerChunk.localX * chunkSize + we.x, origin.y + 1 + centerChunk.localY * chunkSize + we.y, origin.z)
 	end
 
 	return {

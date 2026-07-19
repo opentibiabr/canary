@@ -215,7 +215,7 @@ private:
 	inline void logRuntimeTelemetry();
 	inline void resetRuntimeTelemetry();
 	inline void refreshAdaptiveBudgets();
-	inline std::chrono::microseconds oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const;
+	inline DispatcherQueueSnapshot playerVisibleBacklogSnapshot(Task::Clock::time_point now) const;
 	inline std::chrono::milliseconds timeUntilNextScheduledTask() const;
 	inline void checkPendingTasks();
 	[[nodiscard]] size_t laneTaskBudget(DispatcherLane lane) const;
@@ -261,10 +261,10 @@ private:
 	ThreadPool &threadPool;
 	DispatcherPolicy policy;
 	DispatcherAdaptiveBudgetController adaptiveBudgetController;
+	DispatcherBacklogWarningPolicy backlogWarningPolicy;
 	DispatcherBudgetSet configuredBudgets;
 	DispatcherBudgetSet activeBudgets;
 	Task::Clock::time_point nextAdaptiveBudgetUpdateAt {};
-	uint8_t emergencyLatencyWindows = 0;
 	std::condition_variable signalSchedule;
 	std::atomic_bool hasPendingTasks = false;
 	std::atomic_bool hasUnmergedEvents = false;

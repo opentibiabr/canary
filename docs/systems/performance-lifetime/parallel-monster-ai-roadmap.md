@@ -27,7 +27,7 @@ on it.
 
 | Area | Implemented state |
 | --- | --- |
-| Measurement | `Task` uses a monotonic ready timestamp. Dispatcher telemetry separates queue wait, scheduled lateness, task runtime, lane runtime, barrier runtime, internal work, and worker completion age. The policy and clock-dependent logic are unit-testable. |
+| Measurement | `Task` uses a monotonic ready timestamp. Dispatcher telemetry separates queue wait, scheduled lateness, task runtime, lane runtime, barrier runtime, internal work, and worker completion age. Per-lane diagnostics remain debug-level; warning policy requires sustained online player-visible backlog and is clock-injected and unit-testable. |
 | Movement fairness | Player walk, visible/background creature walk, visible/background barrier monster AI, deferred gameplay, and world commits use distinct lanes. Player, bed, push, autowalk, protocol, and scheduled movement producers are classified explicitly. |
 | Bounded compatibility work | Visible/background creature walk, barrier tasks, deferred work, worker completions, and work inside creature buckets have per-pass or per-slice limits. `BarrierParallel` still waits before dispatcher commits continue. |
 | Cadence and coalescing | Monster movement refresh and post-think work keep at most one pending request per monster/work kind, preserve the oldest ready time, and never replay missed attack or movement ticks as a burst. Visible post-think runs in batches of eight on `WorldCommit`; background post-think runs in batches of 64 on `Deferred`. Queue ownership makes stale pre-promotion entries harmless. |
@@ -481,6 +481,10 @@ Mitigation:
 - Aggregate actor metrics and sample long contexts rather than exporting an
   unbounded label set.
 - Enable queue latency after the server is online and in normal game state.
+- Keep adaptation independent from alert severity: short spikes may reduce
+  background budgets, but warnings require sustained queued player-visible work.
+- Keep per-lane and background queue ages at debug level. Rate-limit the
+  consolidated actionable warning instead of emitting one warning per lane.
 - Use a monotonic clock for latency and wall-time measurement.
 
 ### Phase 1: bounded fairness in the current barrier model
@@ -907,7 +911,7 @@ Mitigation:
 ### Phase 8: adaptive budgets and aging
 
 Status: implemented with static bounds, SLO/emergency thresholds, hysteresis,
-lane minimums, sustained-emergency warning gating, and WDRR aging.
+lane minimums, sustained player-visible backlog warning gating, and WDRR aging.
 
 Priority: medium-low.
 
@@ -927,9 +931,12 @@ Work:
 - Increase monster budgets when player-visible lanes are healthy and monster
   queues age.
 - Add hysteresis and gradual changes so the controller does not oscillate.
-- Apply emergency budgets immediately, but require four consecutive emergency
-  windows and at least one online player before escalating the state transition
-  from debug telemetry to a warning.
+- Apply emergency budgets immediately, but do not promote a histogram spike or
+  state transition to warning severity by itself.
+- Require actual queued player-visible work above the emergency age for four
+  consecutive 250 ms windows with at least one online player before warning.
+  Reset the consecutive-window state while idle or recovered, and rate-limit a
+  continuing backlog warning to once every 30 seconds.
 - Apply per-player or per-actor admission control where one producer can flood a
   high-priority lane.
 - Keep hard minimum and maximum budgets. No lane may become unbounded because a

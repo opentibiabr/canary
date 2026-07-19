@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/canary-audit-baseline.schema.json",
+  "title": "Canary audit finding baseline",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "waivers"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "waivers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["fingerprint", "reason"],
+        "properties": {
+          "fingerprint": { "type": "string", "pattern": "^[0-9a-f]{64}$" },
+          "reason": { "type": "string", "minLength": 10, "maxLength": 500 },
+          "expiresOn": { "type": "string", "format": "date" }
+        }
+      }
+    }
+  }
+}

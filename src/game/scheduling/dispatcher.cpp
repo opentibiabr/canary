@@ -27,7 +27,6 @@ namespace {
 	constexpr auto DISPATCHER_TELEMETRY_LOG_INTERVAL = std::chrono::seconds(5);
 	constexpr auto DISPATCHER_ADAPTIVE_BUDGET_INTERVAL = std::chrono::milliseconds(250);
 	constexpr auto DISPATCHER_TELEMETRY_WARMUP = std::chrono::seconds(1);
-	constexpr uint8_t DISPATCHER_EMERGENCY_WARNING_WINDOWS = 4;
 
 	const DispatcherBudgetSet defaultDispatcherBudgets;
 	constexpr auto DEFAULT_DISPATCHER_SLO = std::chrono::milliseconds(50);
@@ -352,7 +351,7 @@ void Dispatcher::logQueueLatency(DispatcherLane lane) const {
 	}
 
 	nextLogAt[laneId] = now + DISPATCHER_TELEMETRY_LOG_INTERVAL;
-	g_logger().warn(
+	g_logger().debug(
 		"Dispatcher queue latency: lane={}, queued={}, oldest={} ms, oldestContext={}",
 		getDispatcherLaneName(lane),
 		snapshot.queued,
@@ -501,22 +500,46 @@ void Dispatcher::resetRuntimeTelemetry() {
 	}
 	scheduledLatenessTelemetry.reset();
 	playerVisibleReadyLatency.reset();
-	emergencyLatencyWindows = 0;
+	backlogWarningPolicy.reset();
 }
 
-std::chrono::microseconds Dispatcher::oldestPlayerVisibleReadyAge(Task::Clock::time_point now) const {
+DispatcherQueueSnapshot Dispatcher::playerVisibleBacklogSnapshot(Task::Clock::time_point now) const {
 	const auto loggingStartedAt = DispatcherPolicy::fromTimestamp(queueLatencyLoggingStartedAt.load(std::memory_order_relaxed));
-	std::chrono::microseconds oldest = std::chrono::microseconds::zero();
+	DispatcherQueueSnapshot backlog;
+	const auto mergeSnapshot = [&backlog](const DispatcherQueueSnapshot &snapshot) {
+		if (snapshot.queued == 0) {
+			return;
+		}
+
+		backlog.queued += std::min(snapshot.queued, std::numeric_limits<size_t>::max() - backlog.queued);
+		if (snapshot.oldestReadyAge > backlog.oldestReadyAge) {
+			backlog.oldestReadyAge = snapshot.oldestReadyAge;
+			backlog.oldestContext = snapshot.oldestContext;
+		}
+	};
+
 	for (const auto &tasks : m_tasks) {
-		oldest = std::max(oldest, DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, now, loggingStartedAt).oldestReadyAge);
+		mergeSnapshot(DispatcherPolicy::inspectPlayerVisibleQueueAt(tasks, now, loggingStartedAt));
 	}
 	for (const auto &task : scheduledTasks) {
-		if (task && task->getEnqueuedAt() >= loggingStartedAt && isPlayerVisible(task->getMeta().lane)) {
-			oldest = std::max(oldest, DispatcherPolicy::elapsed(task->getReadyAt(), now));
+		if (!task || task->isCanceled() || task->getEnqueuedAt() < loggingStartedAt || !isPlayerVisible(task->getMeta().lane) || task->getReadyAt() > now) {
+			continue;
 		}
+
+		mergeSnapshot({
+			.queued = 1,
+			.oldestReadyAge = DispatcherPolicy::elapsed(task->getReadyAt(), now),
+			.oldestContext = task->getContext(),
+		});
 	}
-	oldest = std::max(oldest, g_monsterComputeService().getStats().oldestVisibleCompletionReadyAge);
-	return oldest;
+
+	const auto computeStats = g_monsterComputeService().getStats();
+	mergeSnapshot({
+		.queued = computeStats.visibleCompletionsQueued,
+		.oldestReadyAge = computeStats.oldestVisibleCompletionReadyAge,
+		.oldestContext = computeStats.visibleCompletionsQueued > 0 ? std::string_view { "MonsterComputeCompletion" } : std::string_view {},
+	});
+	return backlog;
 }
 
 void Dispatcher::refreshAdaptiveBudgets() {
@@ -534,28 +557,18 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	const auto configured = getConfiguredDispatcherBudgets();
 	configuredBudgets = configured;
 	const auto visibleP99 = visibleWindow.percentile(0.99);
-	const auto oldestVisibleReadyAge = oldestPlayerVisibleReadyAge(now);
+	const auto visibleBacklog = playerVisibleBacklogSnapshot(now);
 	const auto emergencyThreshold = std::chrono::milliseconds(getPositiveConfig(DISPATCHER_EMERGENCY_MS, DEFAULT_DISPATCHER_EMERGENCY.count()));
 	const auto decision = adaptiveBudgetController.update(
 		configured,
 		visibleP99,
-		oldestVisibleReadyAge,
+		visibleBacklog.oldestReadyAge,
 		std::chrono::milliseconds(getPositiveConfig(DISPATCHER_SLO_MS, DEFAULT_DISPATCHER_SLO.count())),
 		emergencyThreshold
 	);
 	activeBudgets = decision.budgets;
-	bool shouldWarnEmergency = false;
-	if (decision.controlLatency >= emergencyThreshold) {
-		if (emergencyLatencyWindows < DISPATCHER_EMERGENCY_WARNING_WINDOWS) {
-			++emergencyLatencyWindows;
-		}
-		if (emergencyLatencyWindows == DISPATCHER_EMERGENCY_WARNING_WINDOWS && g_game().getPlayersOnline() > 0) {
-			shouldWarnEmergency = true;
-			++emergencyLatencyWindows;
-		}
-	} else {
-		emergencyLatencyWindows = 0;
-	}
+	const auto onlinePlayers = g_game().getPlayersOnline();
+	const bool shouldWarnBacklog = backlogWarningPolicy.update(onlinePlayers > 0, visibleBacklog, now, emergencyThreshold);
 
 	const auto packCreatureLimits = [](const DispatcherBudgetSet &budgets) {
 		const auto tasksPerBucket = std::min<size_t>(budgets.creatureAsyncTasksPerBucket, std::numeric_limits<uint32_t>::max());
@@ -565,17 +578,23 @@ void Dispatcher::refreshAdaptiveBudgets() {
 	visibleCreatureAsyncSliceLimits.store(packCreatureLimits(configuredBudgets), std::memory_order_relaxed);
 	backgroundCreatureAsyncSliceLimits.store(packCreatureLimits(activeBudgets), std::memory_order_relaxed);
 
-	if (!decision.stateChanged && !shouldWarnEmergency) {
+	if (!decision.stateChanged && !shouldWarnBacklog) {
 		return;
 	}
 	const auto stateName = getDispatcherLoadStateName(decision.state);
-	if (shouldWarnEmergency) {
+	const auto oldestVisibleContext = visibleBacklog.oldestContext.empty() ? std::string_view { "none" } : visibleBacklog.oldestContext;
+	if (shouldWarnBacklog) {
 		g_logger().warn(
-			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
+			"Dispatcher sustained player-visible backlog: state={}, onlinePlayers={}, queuedVisible={}, oldestVisible={} us, oldestContext={}, visibleSamples={}, visibleP99={} us, visibleMax={} us, controlLatency={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,
-			decision.controlLatency.count(),
+			onlinePlayers,
+			visibleBacklog.queued,
+			visibleBacklog.oldestReadyAge.count(),
+			oldestVisibleContext,
+			visibleWindow.samples,
 			visibleP99.count(),
-			oldestVisibleReadyAge.count(),
+			visibleWindow.maxUs,
+			decision.controlLatency.count(),
 			activeBudgets.creatureWalkTasks,
 			activeBudgets.walkParallelTasks,
 			activeBudgets.creatureAsyncTasksPerBucket,
@@ -585,11 +604,16 @@ void Dispatcher::refreshAdaptiveBudgets() {
 		);
 	} else {
 		g_logger().debug(
-			"Dispatcher adaptive budgets: state={}, controlLatency={} us, visibleP99={} us, oldestVisible={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
+			"Dispatcher adaptive budgets: state={}, onlinePlayers={}, queuedVisible={}, oldestVisible={} us, oldestContext={}, visibleSamples={}, visibleP99={} us, visibleMax={} us, controlLatency={} us, backgroundCreatureWalk={}, backgroundParallel={}, backgroundCreatureBucket={}, deferred={}, completions={}, slice={} us",
 			stateName,
-			decision.controlLatency.count(),
+			onlinePlayers,
+			visibleBacklog.queued,
+			visibleBacklog.oldestReadyAge.count(),
+			oldestVisibleContext,
+			visibleWindow.samples,
 			visibleP99.count(),
-			oldestVisibleReadyAge.count(),
+			visibleWindow.maxUs,
+			decision.controlLatency.count(),
 			activeBudgets.creatureWalkTasks,
 			activeBudgets.walkParallelTasks,
 			activeBudgets.creatureAsyncTasksPerBucket,

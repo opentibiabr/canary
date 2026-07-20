@@ -82,11 +82,22 @@ namespace {
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
 
 	[[nodiscard]] const ProtocolProfile* getPortPinnedProfile(uint16_t localPort) {
-		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy1100GamePort()) {
+		const auto modernGamePort = protocol_port_utils::getModernGamePort();
+		const auto webSocketGamePort = protocol_port_utils::getWebSocketGamePort();
+		if (webSocketGamePort != 0 && localPort == webSocketGamePort) {
+			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Current);
+		}
+
+		// TCP game disabled: do not pin against auto-selected legacy ports.
+		if (modernGamePort == 0) {
+			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Current);
+		}
+
+		if (localPort != modernGamePort && localPort == protocol_port_utils::getLegacy1100GamePort()) {
 			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
 		}
 
-		if (localPort != protocol_port_utils::getModernGamePort() && localPort == protocol_port_utils::getLegacy860GamePort()) {
+		if (localPort != modernGamePort && localPort == protocol_port_utils::getLegacy860GamePort()) {
 			return ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
 		}
 

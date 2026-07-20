@@ -63,11 +63,17 @@ ip = "127.0.0.1"
 allowOldProtocol = true
 bindOnlyGlobalAddress = false
 loginProtocolPort = 7171
+-- TCP game (OTClient). Set to 0 to disable the TCP game listener.
 gameProtocolPort = 7172
 -- Set legacy game ports to 0 to auto-select the next available ports after
--- gameProtocolPort while avoiding loginProtocolPort and statusProtocolPort.
+-- gameProtocolPort while avoiding loginProtocolPort, statusProtocolPort, and
+-- websocketProtocolPort. Legacy ports are not opened when gameProtocolPort is 0.
 legacy1100GameProtocolPort = 0
 legacy860GameProtocolPort = 0
+-- Binary WebSocket game transport (browser clients). Set to 0 to disable.
+-- Connect to ws://ip:websocketProtocolPort/ (path /). Must differ from
+-- gameProtocolPort when both are enabled.
+websocketProtocolPort = 7174
 statusProtocolPort = 7171
 maxPlayers = 0
 serverName = "OTServBR-Global"
@@ -678,7 +684,7 @@ metricsOstreamInterval = 1000
 -- NOTE: Features added in this list will be forced to be used on OTCR
 -- These features can be found in "modules/gamelib/const.lua"
 OTCRFeatures = {
-    enableFeature = { 
+    enableFeature = {
         101, -- g_game.enableFeature(GameItemShader)
         102, -- g_game.enableFeature(GameCreatureAttachedEffect)
         103, -- g_game.enableFeature(GameCreatureShader)

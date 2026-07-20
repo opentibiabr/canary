@@ -52,12 +52,38 @@ void ServiceManager::stop() {
 		}
 	}
 
+	for (auto &webSocketPortIt : webSocketAcceptors) {
+		try {
+			io_service.post([servicePort = webSocketPortIt.second] { servicePort->onStopServer(); });
+		} catch (const std::system_error &e) {
+			g_logger().warn("[ServiceManager::stop] - WebSocket network error: {}", e.what());
+		}
+	}
+
 	acceptors.clear();
+	webSocketAcceptors.clear();
 
 	death_timer.expires_from_now(std::chrono::seconds(3));
 	death_timer.async_wait([this](const std::error_code &err) {
 		die();
 	});
+}
+
+bool ServiceManager::addWebSocketGame(uint16_t port) {
+	if (port == 0) {
+		g_logger().error("[ServiceManager::addWebSocketGame] - No port provided for WebSocket game, service disabled");
+		return false;
+	}
+
+	if (acceptors.find(port) != acceptors.end() || webSocketAcceptors.find(port) != webSocketAcceptors.end()) {
+		g_logger().error("[ServiceManager::addWebSocketGame] - Port {} already in use", port);
+		return false;
+	}
+
+	auto servicePort = std::make_shared<WebSocketServicePort>(io_service);
+	servicePort->open(port);
+	webSocketAcceptors[port] = servicePort;
+	return true;
 }
 
 ServicePort::~ServicePort() {

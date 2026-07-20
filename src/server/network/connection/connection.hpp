@@ -12,6 +12,12 @@
 #include "declarations.hpp"
 // TODO: Remove circular includes (maybe shared_ptr?)
 #include "server/network/message/networkmessage.hpp"
+#include "server/network/websocket/websocket_utils.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <functional>
+	#include <vector>
+#endif
 
 static constexpr int32_t CONNECTION_WRITE_TIMEOUT = 30;
 static constexpr int32_t CONNECTION_READ_TIMEOUT = 30;
@@ -32,6 +38,7 @@ using ServicePort_ptr = std::shared_ptr<ServicePort>;
 using ConstServicePort_ptr = std::shared_ptr<const ServicePort>;
 class NetworkMessage;
 class TransportCodec;
+class WebSocketServicePort;
 
 enum class InitialTransportState : uint8_t {
 	Pending,
@@ -71,6 +78,8 @@ public:
 	void close(bool force = false);
 	// Used by protocols that require server to send first
 	void accept(Protocol_ptr protocolPtr);
+	/** After a successful WebSocket upgrade, enable framing and start ProtocolGame. */
+	void acceptWebSocket(Protocol_ptr protocolPtr);
 	void acceptInternal(bool toggleParseHeader = true);
 
 	void resumeWork();
@@ -89,7 +98,13 @@ public:
 	[[nodiscard]] const TransportCodec &getTransportCodec() const;
 	[[nodiscard]] InitialTransportState getInitialTransportState() const;
 
+	asio::ip::tcp::socket &getSocket() {
+		return socket;
+	}
+
 private:
+	using ReadHandler = std::function<void(const std::error_code &)>;
+
 	void parseProxyIdentification(const std::error_code &error);
 	void parseHeader(const std::error_code &error);
 	void parsePacket(const std::error_code &error);
@@ -102,9 +117,11 @@ private:
 	void internalWorker();
 	void internalSend(const OutputMessage_ptr &outputMessage);
 
-	asio::ip::tcp::socket &getSocket() {
-		return socket;
-	}
+	void asyncReadExact(uint8_t* destination, size_t length, ReadHandler handler);
+	void pumpWebSocketRead(uint8_t* destination, size_t length, ReadHandler handler);
+	void onWebSocketSocketRead(const std::error_code &error, size_t bytesTransferred, uint8_t* destination, size_t length, ReadHandler handler);
+	bool consumeDecodedBytes(uint8_t* destination, size_t length);
+	void handleWebSocketControl(websocket_utils::FrameResult result, std::vector<uint8_t> &&payload);
 
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
@@ -122,6 +139,12 @@ private:
 
 	NetworkMessage m_msg;
 
+	std::vector<uint8_t> wsRawBuffer;
+	std::vector<uint8_t> wsDecodedBuffer;
+	std::vector<uint8_t> wsWriteBuffer;
+	std::vector<uint8_t> wsSocketReadChunk;
+	bool useWebSocket = false;
+
 	std::time_t timeConnected = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	uint32_t packetsSent = 0;
 	uint32_t ip = 1;
@@ -131,4 +154,5 @@ private:
 
 	friend class ServicePort;
 	friend class ConnectionManager;
+	friend class WebSocketServicePort;
 };

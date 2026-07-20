@@ -847,18 +847,34 @@ void Game::loadBoostedCreature() {
 void Game::start(ServiceManager* manager) {
 	// Game client protocols
 	const auto modernGamePort = protocol_port_utils::getModernGamePort();
-	manager->add<ProtocolGame>(modernGamePort);
-	if (g_configManager().getBoolean(OLD_PROTOCOL)) {
-		const auto legacy1100GamePort = protocol_port_utils::getLegacy1100GamePort();
-		if (legacy1100GamePort != modernGamePort) {
-			manager->add<ProtocolGame>(legacy1100GamePort);
-		}
+	if (modernGamePort != 0) {
+		manager->add<ProtocolGame>(modernGamePort);
+		if (g_configManager().getBoolean(OLD_PROTOCOL)) {
+			const auto legacy1100GamePort = protocol_port_utils::getLegacy1100GamePort();
+			if (legacy1100GamePort != modernGamePort) {
+				manager->add<ProtocolGame>(legacy1100GamePort);
+			}
 
-		const auto legacy860GamePort = protocol_port_utils::getLegacy860GamePort();
-		if (legacy860GamePort != modernGamePort && legacy860GamePort != legacy1100GamePort) {
-			manager->add<ProtocolGame>(legacy860GamePort);
+			const auto legacy860GamePort = protocol_port_utils::getLegacy860GamePort();
+			if (legacy860GamePort != modernGamePort && legacy860GamePort != legacy1100GamePort) {
+				manager->add<ProtocolGame>(legacy860GamePort);
+			}
 		}
+	} else {
+		g_logger().info("TCP game protocol disabled (gameProtocolPort = 0)");
 	}
+
+	const auto webSocketGamePort = protocol_port_utils::getWebSocketGamePort();
+	if (webSocketGamePort != 0) {
+		if (webSocketGamePort == modernGamePort) {
+			g_logger().error("websocketProtocolPort ({}) must differ from gameProtocolPort; WebSocket game disabled", webSocketGamePort);
+		} else {
+			manager->addWebSocketGame(webSocketGamePort);
+		}
+	} else {
+		g_logger().info("WebSocket game protocol disabled (websocketProtocolPort = 0)");
+	}
+
 	manager->add<ProtocolLogin>(static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT)));
 	// OT protocols
 	manager->add<ProtocolStatus>(static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT)));

@@ -11,6 +11,8 @@ target_sources(
             network/protocol/protocolstatus.cpp
             network/protocol/transport_codec.cpp
             network/webhook/webhook.cpp
+            network/websocket/websocket_service.cpp
+            network/websocket/websocket_utils.cpp
             server.cpp
             signals.cpp
 )

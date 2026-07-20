@@ -46,18 +46,23 @@ namespace protocol_port_utils {
 		return static_cast<uint16_t>(g_configManager().getNumber(GAME_PORT));
 	}
 
+	[[nodiscard]] inline uint16_t getWebSocketGamePort() {
+		return static_cast<uint16_t>(g_configManager().getNumber(WEBSOCKET_PORT));
+	}
+
 	[[nodiscard]] inline uint16_t getNextAvailableLegacyGamePort(
 		uint32_t preferredPort,
 		uint16_t reservedLegacyPort = 0
 	) {
 		const auto modernGamePort = getModernGamePort();
+		const auto webSocketGamePort = getWebSocketGamePort();
 		const auto loginPort = static_cast<uint16_t>(g_configManager().getNumber(LOGIN_PORT));
 		const auto statusPort = static_cast<uint16_t>(g_configManager().getNumber(STATUS_PORT));
 
 		for (uint32_t port = preferredPort; port <= 65535; ++port) {
 			const auto candidate = static_cast<uint16_t>(port);
-			if (candidate != modernGamePort && candidate != loginPort && candidate != statusPort
-			    && candidate != reservedLegacyPort) {
+			if (candidate != modernGamePort && candidate != webSocketGamePort && candidate != loginPort
+			    && candidate != statusPort && candidate != reservedLegacyPort) {
 				return candidate;
 			}
 		}

@@ -6863,6 +6863,12 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "isIdleCombat",
+        "params": [],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "isLivestreamViewer",
         "params": [],
         "return": "boolean",
@@ -7566,6 +7572,14 @@
           "amount: number"
         ],
         "return": "boolean",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
+        "name": "setIdleCombat",
+        "params": [
+          "value: boolean"
+        ],
+        "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {

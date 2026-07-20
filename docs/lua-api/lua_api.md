@@ -4635,6 +4635,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
+#### `Player:isIdleCombat()`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
 #### `Player:isLivestreamViewer()`
 
 - Returns: `boolean`
@@ -5078,6 +5083,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 #### `Player:setHazardSystemPoints(amount: number)`
 
 - Returns: `boolean`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
+#### `Player:setIdleCombat(value: boolean)`
+
+- Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:setKills(kills: any)`

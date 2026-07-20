@@ -3631,6 +3631,9 @@ function Player:hasSecureMode() end
 function Player:instantSkillWOD(name, value) end
 
 ---@return boolean
+function Player:isIdleCombat() end
+
+---@return boolean
 function Player:isLivestreamViewer() end
 
 ---@param raceId number
@@ -3997,6 +4000,10 @@ function Player:setGuildNick(nick) end
 ---@param amount number
 ---@return boolean
 function Player:setHazardSystemPoints(amount) end
+
+---@param value boolean
+---@return boolean|nil
+function Player:setIdleCombat(value) end
 
 ---@param kills any
 ---@return boolean|nil

@@ -1377,6 +1377,12 @@ std::shared_ptr<KV> Player::kv() const {
 }
 
 bool Player::canSee(const Position &pos) {
+	// Idle combat / exercise training must keep fighting without a client. Use Creature
+	// viewport geometry so monster moves and setAttackedCreature behave like creature
+	// battle (ProtocolGame::canSee is false when client is gone).
+	if (keepsDisconnectedCombat()) {
+		return Creature::canSee(pos);
+	}
 	if (!client) {
 		return false;
 	}
@@ -2267,7 +2273,8 @@ void Player::sendPing() {
 
 	const int64_t noPongTime = timeNow - lastPong;
 	const auto &attackedCreature = getAttackedCreature();
-	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature) {
+	// Idle combat / exercise training keep the attack target while disconnected.
+	if ((hasLostConnection || noPongTime >= 10000) && attackedCreature && !keepsDisconnectedCombat()) {
 		setAttackedCreature(nullptr);
 	}
 
@@ -6032,11 +6039,14 @@ std::shared_ptr<Npc> Player::getShopOwner() const {
 bool Player::setFollowCreature(const std::shared_ptr<Creature> &creature) {
 	if (!Creature::setFollowCreature(creature)) {
 		setFollowCreature(nullptr);
-		setAttackedCreature(nullptr);
-
-		sendCancelMessage(RETURNVALUE_THEREISNOWAY);
-		sendCancelTarget();
-		stopWalk();
+		// Idle combat / exercise stay put; a failed follow must not cancel their attack
+		// the way open-world chase mode does (creatures keep swinging when pathing fails).
+		if (!keepsDisconnectedCombat()) {
+			setAttackedCreature(nullptr);
+			sendCancelMessage(RETURNVALUE_THEREISNOWAY);
+			sendCancelTarget();
+			stopWalk();
+		}
 		return false;
 	}
 	return true;
@@ -6049,7 +6059,9 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	const auto &followCreature = getFollowCreature();
-	if (chaseMode && creature) {
+	// Idle combat keeps the player stationary; never enter chase-follow (which can clear
+	// the attack target if follow pathing fails after disconnect).
+	if (chaseMode && creature && !keepsDisconnectedCombat()) {
 		if (followCreature != creature) {
 			setFollowCreature(creature);
 		}
@@ -8497,7 +8509,7 @@ void Player::onThink(uint32_t interval) {
 	const auto &playerTile = getTile();
 	const bool vipStaysOnline = isVip() && g_configManager().getBoolean(VIP_STAY_ONLINE);
 	idleTime += interval;
-	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !isExerciseTraining() && !vipStaysOnline) {
+	if (playerTile && !playerTile->hasFlag(TILESTATE_NOLOGOUT) && !isAccessPlayer() && !keepsDisconnectedCombat() && !vipStaysOnline) {
 		const int32_t kickAfterMinutes = g_configManager().getNumber(KICK_AFTER_MINUTES);
 		if (idleTime > (kickAfterMinutes * 60000) + 60000) {
 			removePlayer(true);

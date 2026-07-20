@@ -551,6 +551,17 @@ public:
 	void setExerciseTraining(bool isTraining) {
 		exerciseTraining = isTraining;
 	}
+	/** Idle expedition / boss fights: AI-driven combat that must survive disconnect. */
+	bool isIdleCombat() const {
+		return idleCombat;
+	}
+	void setIdleCombat(bool enabled) {
+		idleCombat = enabled;
+	}
+	/** Exercise dummy or idle combat — keep attacking without a live client. */
+	bool keepsDisconnectedCombat() const {
+		return idleCombat || exerciseTraining;
+	}
 	void setLastDepotId(int16_t newId) {
 		lastDepotId = newId;
 	}
@@ -1859,6 +1870,7 @@ private:
 	bool m_isStashMenuAvailable = false; // Menu option 'stow, stow container ...'
 	bool marketMenu = false; // Menu option 'show in market'
 	bool exerciseTraining = false;
+	bool idleCombat = false;
 	bool moved = false;
 	bool m_isDead = false;
 	bool imbuementTrackerWindowOpen = false;

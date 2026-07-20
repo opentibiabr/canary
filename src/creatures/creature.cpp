@@ -193,7 +193,9 @@ void Creature::onAttacking(uint32_t interval) {
 
 	if (attackedCreature->getType() == CreatureType_t::CREATURETYPE_PLAYER) {
 		const auto &player = attackedCreature->getPlayer();
-		if (player && player->isDisconnected() && !player->isProtected()) {
+		// Idle combat / exercise training must keep fighting while disconnected —
+		// do not grant login protection (that freezes combat for 30s).
+		if (player && player->isDisconnected() && !player->isProtected() && !player->keepsDisconnectedCombat()) {
 			player->setProtection(true);
 			player->setLoginProtection(30000);
 		}

@@ -158,6 +158,8 @@ void PlayerFunctions::init(lua_State* L) {
 
 	Lua::registerMethod(L, "Player", "isTraining", PlayerFunctions::luaPlayerGetIsTraining);
 	Lua::registerMethod(L, "Player", "setTraining", PlayerFunctions::luaPlayerSetTraining);
+	Lua::registerMethod(L, "Player", "isIdleCombat", PlayerFunctions::luaPlayerGetIsIdleCombat);
+	Lua::registerMethod(L, "Player", "setIdleCombat", PlayerFunctions::luaPlayerSetIdleCombat);
 
 	Lua::registerMethod(L, "Player", "getFreeCapacity", PlayerFunctions::luaPlayerGetFreeCapacity);
 
@@ -1151,6 +1153,31 @@ int PlayerFunctions::luaPlayerGetIsTraining(lua_State* L) {
 	}
 
 	lua_pushnumber(L, player->isExerciseTraining());
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerSetIdleCombat(lua_State* L) {
+	// player:setIdleCombat(value)
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (player) {
+		player->setIdleCombat(Lua::getBoolean(L, 2, false));
+		Lua::pushBoolean(L, true);
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int PlayerFunctions::luaPlayerGetIsIdleCombat(lua_State* L) {
+	// player:isIdleCombat()
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		Lua::pushBoolean(L, false);
+		Lua::reportErrorFunc(Lua::getErrorDesc(LUA_ERROR_PLAYER_NOT_FOUND));
+		return 1;
+	}
+
+	Lua::pushBoolean(L, player->isIdleCombat());
 	return 1;
 }
 

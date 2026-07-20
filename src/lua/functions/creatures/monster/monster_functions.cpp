@@ -42,6 +42,7 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Monster", "getTargetCount", MonsterFunctions::luaMonsterGetTargetCount);
 	Lua::registerMethod(L, "Monster", "changeTargetDistance", MonsterFunctions::luaMonsterChangeTargetDistance);
 	Lua::registerMethod(L, "Monster", "isChallenged", MonsterFunctions::luaMonsterIsChallenged);
+	Lua::registerMethod(L, "Monster", "runHealth", MonsterFunctions::luaMonsterRunHealth);
 	Lua::registerMethod(L, "Monster", "selectTarget", MonsterFunctions::luaMonsterSelectTarget);
 	Lua::registerMethod(L, "Monster", "searchTarget", MonsterFunctions::luaMonsterSearchTarget);
 	Lua::registerMethod(L, "Monster", "setSpawnPosition", MonsterFunctions::luaMonsterSetSpawnPosition);
@@ -400,6 +401,22 @@ int MonsterFunctions::luaMonsterIsChallenged(lua_State* L) {
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (monster) {
 		Lua::pushBoolean(L, monster->isChallenged());
+	} else {
+		lua_pushnil(L);
+	}
+	return 1;
+}
+
+int MonsterFunctions::luaMonsterRunHealth(lua_State* L) {
+	// get: monster:runHealth() set: monster:runHealth(health)
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
+	if (monster) {
+		if (lua_gettop(L) == 1) {
+			lua_pushnumber(L, monster->getRunAwayHealth());
+		} else {
+			monster->setRunAwayHealth(Lua::getNumber<int32_t>(L, 2));
+			Lua::pushBoolean(L, true);
+		}
 	} else {
 		lua_pushnil(L);
 	}

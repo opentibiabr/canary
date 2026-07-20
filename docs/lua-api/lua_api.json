@@ -3551,6 +3551,14 @@
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
+        "name": "runHealth",
+        "params": [
+          "arg2?: number"
+        ],
+        "return": "boolean|number|nil",
+        "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
+      },
+      {
         "name": "searchTarget",
         "params": [
           "searchType?: any"

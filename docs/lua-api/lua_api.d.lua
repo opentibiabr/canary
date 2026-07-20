@@ -1901,6 +1901,10 @@ function Monster:removeFriend(creature) end
 ---@return boolean|nil
 function Monster:removeTarget(creature) end
 
+---@param arg2? number
+---@return boolean|number|nil
+function Monster:runHealth(arg2) end
+
 ---@param searchType? any
 ---@return boolean|nil
 function Monster:searchTarget(searchType) end

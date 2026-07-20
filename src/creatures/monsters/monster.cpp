@@ -1456,6 +1456,14 @@ void Monster::setFatalHoldDuration(int32_t value) {
 	fatalHoldDuration = value;
 }
 
+int32_t Monster::getRunAwayHealth() const {
+	return runAwayHealth;
+}
+
+void Monster::setRunAwayHealth(int32_t value) {
+	runAwayHealth = value;
+}
+
 bool Monster::isFleeing() const {
 	return !isSummon() && getHealth() <= runAwayHealth && challengeFocusDuration <= 0 && challengeMeleeDuration <= 0 && fatalHoldDuration <= 0;
 }

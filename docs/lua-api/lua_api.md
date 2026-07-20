@@ -2437,6 +2437,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
+#### `Monster:runHealth(arg2?: number)`
+
+- Returns: `boolean|number|nil`
+- Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
+
 #### `Monster:searchTarget(searchType?: any)`
 
 - Returns: `boolean|nil`

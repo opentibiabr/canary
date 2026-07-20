@@ -248,6 +248,8 @@ public:
 	bool isFleeing() const;
 
 	void setFatalHoldDuration(int32_t value);
+	int32_t getRunAwayHealth() const;
+	void setRunAwayHealth(int32_t value);
 
 	bool getDistanceStep(const Position &targetPos, Direction &direction, bool flee = false);
 	bool isTargetNearby() const;

@@ -70,6 +70,10 @@ local function creatureSayCallback(npc, creature, type, message)
 	end
 
 	local questline = player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline)
+	local totalSips = player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.MeadTotalSips)
+	-- A honeycomb may only buy a new round when none is active: before the first
+	-- round (questline 1) or once the 20 sips of the current one are used up.
+	local canStartMeadRound = questline == 1 or (questline == 2 and totalSips >= 20)
 
 	if MsgContains(message, "barbarian") and questline < 1 then
 		npcHandler:say("A true barbarian is something special among our people. Everyone who wants to become a barbarian will have to pass the barbarian {test}.", npc, creature)
@@ -86,7 +90,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			"Are you willing to take the barbarian test?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif MsgContains(message, "mead") and (questline == 1 or questline == 2) then
+	elseif MsgContains(message, "mead") and canStartMeadRound then
 		npcHandler:say("Do you have some honey with you?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
 	elseif MsgContains(message, "mead") and questline == 3 then
@@ -152,7 +156,7 @@ local function creatureSayCallback(npc, creature, type, message)
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Mission01, 1) -- Questlog Barbarian Test Quest Barbarian Test 1: Barbarian Booze
 			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:removeItem(5902, 1) then
+			if canStartMeadRound and player:removeItem(5902, 1) then
 				npcHandler:say("Good, for this honeycomb I allow you 20 sips from the mead bucket over there. Talk to me again about barbarian mead if you have passed the test.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline, 2)

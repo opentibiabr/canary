@@ -13,6 +13,7 @@
 #include "creatures/combat/combat.hpp"
 #include "creatures/combat/condition.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "creatures/players/components/wheel/wheel_definitions.hpp"
 #include "enums/account_group_type.hpp"
 #include "enums/account_type.hpp"
@@ -55,6 +56,23 @@ namespace {
 		}
 
 		variant.pos = Spells::getCasterPosition(player, direction);
+	}
+
+	ReturnValue getExpertPvpRuneTargetReturnValue(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
+		const auto relation = ExpertPvp::classifyRelation(player, target);
+		const auto decision = ExpertPvp::evaluateCombatAction(ExpertPvpActionKind::RuneTarget, relation.facts);
+		if (!decision.handled || decision.allowed) {
+			return RETURNVALUE_NOERROR;
+		}
+		return target->getPlayer() ? RETURNVALUE_YOUMAYNOTATTACKTHISPLAYER : RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
+	}
+
+	bool shouldApplyLegacySpellPzLock(const std::shared_ptr<Player> &player, const std::shared_ptr<Creature> &target) {
+		if (!player || !ExpertPvp::isEnabled()) {
+			return true;
+		}
+
+		return !target || !Combat::isPlayerCombat(target);
 	}
 }
 
@@ -689,12 +707,21 @@ bool Spell::playerRuneSpellCheck(const std::shared_ptr<Player> &player, const Po
 		return false;
 	}
 
-	if (aggressive && needTarget && topVisibleCreature && player->hasSecureMode()) {
-		const auto &targetPlayer = topVisibleCreature->getPlayer();
-		if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
-			player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
-			g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
-			return false;
+	if (aggressive && needTarget && topVisibleCreature) {
+		if (ExpertPvp::isEnabled() && Combat::isPlayerCombat(topVisibleCreature)) {
+			const auto expertPvpRet = getExpertPvpRuneTargetReturnValue(player, topVisibleCreature);
+			if (expertPvpRet != RETURNVALUE_NOERROR) {
+				player->sendCancelMessage(expertPvpRet);
+				g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+				return false;
+			}
+		} else if (player->hasSecureMode()) {
+			const auto &targetPlayer = topVisibleCreature->getPlayer();
+			if (targetPlayer && targetPlayer != player && player->getSkullClient(targetPlayer) == SKULL_NONE && !Combat::isInPvpZone(player, targetPlayer)) {
+				player->sendCancelMessage(RETURNVALUE_TURNSECUREMODETOATTACKUNMARKEDPLAYERS);
+				g_game().addMagicEffect(player->getPosition(), CONST_ME_POFF);
+				return false;
+			}
 		}
 	}
 	return true;
@@ -1153,6 +1180,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	LuaVariant var;
 	var.instantName = getName();
 	std::shared_ptr<Player> playerTarget = nullptr;
+	std::shared_ptr<Creature> pzLockTarget = nullptr;
 
 	if (selfTarget) {
 		var.type = VARIANT_NUMBER;
@@ -1206,6 +1234,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 
 			var.type = VARIANT_NUMBER;
 			var.number = target->getID();
+			pzLockTarget = target;
 		} else {
 			var.type = VARIANT_POSITION;
 			var.pos = Spells::getCasterPosition(player, player->getDirection());
@@ -1254,7 +1283,7 @@ bool InstantSpell::playerCastInstant(const std::shared_ptr<Player> &player, std:
 	}
 
 	auto worldType = g_game().getWorldType();
-	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED) && shouldApplyLegacySpellPzLock(player, pzLockTarget)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();
 	}
@@ -1485,6 +1514,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 
 	LuaVariant var;
 	var.runeName = getName();
+	std::shared_ptr<Creature> pzLockTarget = nullptr;
 
 	if (needTarget) {
 		var.type = VARIANT_NUMBER;
@@ -1495,10 +1525,13 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 				const auto &visibleCreature = toTile->getBottomVisibleCreature(player);
 				if (visibleCreature) {
 					var.number = visibleCreature->getID();
+					pzLockTarget = visibleCreature;
 				}
 			}
 		} else {
-			var.number = target->getCreature()->getID();
+			const auto &targetCreature = target->getCreature();
+			var.number = targetCreature->getID();
+			pzLockTarget = targetCreature;
 		}
 	} else {
 		var.type = VARIANT_POSITION;
@@ -1517,7 +1550,7 @@ bool RuneSpell::executeUse(const std::shared_ptr<Player> &player, const std::sha
 	}
 
 	auto worldType = g_game().getWorldType();
-	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED)) {
+	if (pzLocked && (worldType == WORLD_TYPE_PVP || worldType == WORLD_TYPE_PVP_ENFORCED) && shouldApplyLegacySpellPzLock(player, pzLockTarget)) {
 		player->addInFightTicks(true);
 		player->updateLastAggressiveAction();
 	}

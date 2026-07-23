@@ -9,6 +9,7 @@
 
 #include "lua/functions/items/item_functions.hpp"
 
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/player.hpp"
 #include "game/game.hpp"
@@ -59,6 +60,7 @@ void ItemFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Item", "getCustomAttribute", ItemFunctions::luaItemGetCustomAttribute);
 	Lua::registerMethod(L, "Item", "setCustomAttribute", ItemFunctions::luaItemSetCustomAttribute);
 	Lua::registerMethod(L, "Item", "removeCustomAttribute", ItemFunctions::luaItemRemoveCustomAttribute);
+	Lua::registerMethod(L, "Item", "setExpertPvpFieldContext", ItemFunctions::luaItemSetExpertPvpFieldContext);
 	Lua::registerMethod(L, "Item", "canBeMoved", ItemFunctions::luaItemCanBeMoved);
 
 	Lua::registerMethod(L, "Item", "setOwner", ItemFunctions::luaItemSetOwner);
@@ -654,6 +656,18 @@ int ItemFunctions::luaItemRemoveCustomAttribute(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+/***
+ * @function Item:setExpertPvpFieldContext
+ * @param owner Creature
+ * @return boolean
+ */
+int ItemFunctions::luaItemSetExpertPvpFieldContext(lua_State* L) {
+	const auto &item = Lua::getUserdataShared<Item>(L, 1, "Item");
+	const auto &owner = Lua::getCreature(L, 2);
+	Lua::pushBoolean(L, item && owner && ExpertPvp::isEnabled() && static_cast<bool>(ExpertPvp::attachFieldContext(item, owner)));
 	return 1;
 }
 

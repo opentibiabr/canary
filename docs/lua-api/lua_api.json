@@ -2563,6 +2563,14 @@
         "source": "src/lua/functions/items/item_functions.cpp"
       },
       {
+        "name": "setExpertPvpFieldContext",
+        "params": [
+          "owner: Creature"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/items/item_functions.cpp"
+      },
+      {
         "name": "setOwner",
         "params": [
           "creatureOrCreatureId: number|Creature"
@@ -6560,6 +6568,12 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "getPvpMode",
+        "params": [],
+        "return": "number|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "getReward",
         "params": [
           "rewardId: number",
@@ -6780,6 +6794,14 @@
         "name": "hasAnimusMastery",
         "params": [
           "monsterType: string"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
+        "name": "hasAttacked",
+        "params": [
+          "targetPlayer: Player"
         ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

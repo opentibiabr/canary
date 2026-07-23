@@ -57,6 +57,7 @@ private:
 	static int luaItemGetCustomAttribute(lua_State* L);
 	static int luaItemSetCustomAttribute(lua_State* L);
 	static int luaItemRemoveCustomAttribute(lua_State* L);
+	static int luaItemSetExpertPvpFieldContext(lua_State* L);
 	static int luaItemCanBeMoved(lua_State* L);
 
 	static int luaItemMoveTo(lua_State* L);

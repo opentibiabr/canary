@@ -1385,6 +1385,10 @@ function Item:setCustomAttribute(key, value) end
 ---@return boolean
 function Item:setDuration(minDuration, maxDuration, decayTo, showDuration) end
 
+---@param owner Creature
+---@return boolean
+function Item:setExpertPvpFieldContext(owner) end
+
 ---@param creatureOrCreatureId number|Creature
 ---@return boolean
 function Item:setOwner(creatureOrCreatureId) end
@@ -3477,6 +3481,9 @@ function Player:getPreyLootPercentage(raceId) end
 ---@return number|nil
 function Player:getPronoun() end
 
+---@return number|nil
+function Player:getPvpMode() end
+
 ---@param rewardId number
 ---@param autoCreate? boolean
 ---@return boolean|nil|Item
@@ -3589,6 +3596,10 @@ function Player:hasAchievement(idOrName) end
 ---@param monsterType string
 ---@return boolean
 function Player:hasAnimusMastery(monsterType) end
+
+---@param targetPlayer Player
+---@return boolean
+function Player:hasAttacked(targetPlayer) end
 
 ---@param blessing number
 ---@return boolean|nil

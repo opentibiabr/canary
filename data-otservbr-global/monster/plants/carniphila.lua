@@ -75,14 +75,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 90000, maxCount = 40 },
-	{ name = "corncob", chance = 890 },
-	{ name = "dark mushroom", chance = 7692 },
-	{ name = "sling herb", chance = 446, maxCount = 2 },
-	{ name = "shadow herb", chance = 880 },
-	{ name = "seeds", chance = 490 },
-	{ name = "carniphila seeds", chance = 4166 },
-	{ name = "carrot on a stick", chance = 170 },
+	{ id = 3031, chance = 88000, maxCount = 40 }, -- Gold Coin
+	{ id = 3728, chance = 8000 }, -- Dark Mushroom
+	{ id = 10300, chance = 4000 }, -- Carniphila Seeds
+	{ id = 3740, chance = 1000 }, -- Shadow Herb
+	{ id = 3597, chance = 980 }, -- Corncob
+	{ id = 647, chance = 510 }, -- Seeds
+	{ id = 3738, chance = 500, maxCount = 2 }, -- Sling Herb
+	{ id = 12311, chance = 110 }, -- Carrot on a Stick
 }
 
 monster.attacks = {

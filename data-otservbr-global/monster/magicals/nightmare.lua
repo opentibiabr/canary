@@ -83,23 +83,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 55 },
-	{ name = "platinum coin", chance = 2564, maxCount = 3 },
-	{ name = "boots of haste", chance = 337 },
-	{ name = "war axe", chance = 95 },
-	{ name = "knight legs", chance = 961 },
-	{ name = "ancient shield", chance = 990 },
-	{ name = "power bolt", chance = 9090, maxCount = 4 },
-	{ name = "ham", chance = 29000, maxCount = 2 },
-	{ name = "mysterious voodoo skull", chance = 123 },
-	{ name = "soul orb", chance = 20000 },
-	{ id = 6299, chance = 1298 }, -- death ring
-	{ name = "demonic essence", chance = 10000 },
-	{ name = "skeleton decoration", chance = 337 },
-	{ name = "flask of demonic blood", chance = 19666, maxCount = 2 },
-	{ name = "essence of a bad dream", chance = 15240 },
-	{ name = "scythe leg", chance = 9090 },
+	{ id = 3031, chance = 97000, maxCount = 155 }, -- Gold Coin
+	{ id = 3582, chance = 29000 }, -- Ham
+	{ id = 5944, chance = 21000 }, -- Soul Orb
+	{ id = 6558, chance = 20000, maxCount = 2 }, -- Flask of Demonic Blood
+	{ id = 10306, chance = 15700 }, -- Essence of a Bad Dream
+	{ id = 6499, chance = 10400 }, -- Demonic Essence
+	{ id = 10312, chance = 10200 }, -- Scythe Leg
+	{ id = 3035, chance = 2600, maxCount = 3 }, -- Platinum Coin
+	{ id = 6299, chance = 1200 }, -- Death Ring
+	{ id = 3450, chance = 1100, maxCount = 4 }, -- Power Bolt
+	{ id = 3432, chance = 1000 }, -- Ancient Shield
+	{ id = 3371, chance = 990 }, -- Knight Legs
+	{ id = 6525, chance = 410 }, -- Skeleton Decoration
+	{ id = 3079, chance = 260 }, -- Boots of Haste
+	{ id = 5668, chance = 150 }, -- Mysterious Voodoo Skull
+	{ id = 3342, chance = 140 }, -- War Axe
 }
 
 monster.attacks = {

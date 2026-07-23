@@ -66,21 +66,7 @@ monster.voices = {
 	{ text = "Ahh, my old bones ...", yell = false },
 }
 
-monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ id = 3091, chance = 10000 }, -- sword ring
-	{ name = "broadsword", chance = 4000 },
-	{ name = "magic plate armor", chance = 2000 },
-	{ name = "spectral stone", chance = 800 },
-	{ name = "skull helmet", chance = 50000 },
-	{ name = "soul orb", chance = 10000 },
-	{ id = 6299, chance = 4000 }, -- death ring
-	{ name = "demonic essence", chance = 1538 },
-	{ id = 6570, chance = 5538, maxCount = 3 }, -- surprise bag
-	{ id = 6571, chance = 1538 }, -- surprise bag
-	{ name = "dragonbone staff", chance = 50000 },
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -845 },

@@ -84,19 +84,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 40000, maxCount = 1 }, -- platinum coin
-	{ id = 3049, chance = 1200 }, -- stealth ring
-	{ id = 3079, chance = 500 }, -- boots of haste
-	{ id = 7368, chance = 7600, maxCount = 10 }, -- assassin star
-	{ id = 7387, chance = 800 }, -- diamond sceptre
-	{ id = 7407, chance = 1600 }, -- haunted blade
-	{ id = 7451, chance = 1000 }, -- shadow sceptre
-	{ id = 7454, chance = 1000 }, -- glorious axe
-	{ id = 812, chance = 960 }, -- terra legs
-	{ id = 813, chance = 480 }, -- terra boots
-	{ id = 20200, chance = 4000 }, -- silencer claws
-	{ name = "fairy wings", chance = 12000 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 40000 }, -- Platinum Coin
+	{ id = 25694, chance = 12200 }, -- Fairy Wings
+	{ id = 7368, chance = 7300, maxCount = 10 }, -- Assassin Star
+	{ id = 20200, chance = 4000 }, -- Silencer Claws
+	{ id = 7407, chance = 1500 }, -- Haunted Blade
+	{ id = 3049, chance = 1300 }, -- Stealth Ring
+	{ id = 813, chance = 920 }, -- Terra Boots
+	{ id = 7454, chance = 870 }, -- Glorious Axe
+	{ id = 812, chance = 830 }, -- Terra Legs
+	{ id = 7451, chance = 830 }, -- Shadow Sceptre
+	{ id = 7387, chance = 760 }, -- Diamond Sceptre
+	{ id = 3079, chance = 500 }, -- Boots of Haste
 }
 
 monster.attacks = {

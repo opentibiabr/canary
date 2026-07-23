@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "Sulphur Powder", chance = 29600 },
-	{ name = "Sulphider Shell", chance = 24660 },
-	{ name = "Ultimate Mana Potion", chance = 14620 },
-	{ name = "Crystal Coin", chance = 14430, minCount = 1, maxCount = 3 },
-	{ name = "White Pearl", chance = 5010 },
-	{ name = "Fire Axe", chance = 2450 },
-	{ name = "Magma Boots", chance = 1600 },
-	{ name = "Crown Shield", chance = 1230 },
-	{ name = "Amber Staff", chance = 1150 },
-	{ name = "Amulet of Loss", chance = 850 },
+	{ id = 39376, chance = 30000 }, -- Sulphur Powder
+	{ id = 39375, chance = 25000 }, -- Sulphider Shell
+	{ id = 23373, chance = 14500 }, -- Ultimate Mana Potion
+	{ id = 3043, chance = 10600, maxCount = 3 }, -- Crystal Coin
+	{ id = 3026, chance = 5100 }, -- White Pearl
+	{ id = 3320, chance = 2500 }, -- Fire Axe
+	{ id = 818, chance = 1800 }, -- Magma Boots
+	{ id = 3419, chance = 1400 }, -- Crown Shield
+	{ id = 7426, chance = 1300 }, -- Amber Staff
+	{ id = 3057, chance = 670 }, -- Amulet of Loss
 }
 
 monster.attacks = {

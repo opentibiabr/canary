@@ -81,28 +81,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 7364, chance = 1210, maxCount = 4 }, -- sniper arrow
-	{ id = 3031, chance = 75410, maxCount = 30 }, -- gold coin
-	{ id = 3035, chance = 75410, maxCount = 2 }, -- platinum coin
-	{ id = 3592, chance = 1210 }, -- grapes
-	{ id = 3577, chance = 1210, maxCount = 2 }, -- meat
-	{ id = 239, chance = 1210 }, -- great health potion
-	{ id = 3269, chance = 1610 }, -- halberd
-	{ id = 3658, chance = 510 }, -- red rose
-	{ id = 3003, chance = 1510 }, -- rope
-	{ id = 11510, chance = 910 }, -- scroll of heroic deeds
-	{ id = 11450, chance = 910 }, -- small notebook
-	{ id = 3030, chance = 810, maxCount = 2 }, -- small ruby
-	{ id = 3029, chance = 810, maxCount = 2 }, -- small sapphire
-	{ id = 3004, chance = 510 }, -- wedding ring
-	{ id = 5911, chance = 210 }, -- red piece of cloth
-	{ id = 3279, chance = 210 }, -- war hammer
-	{ id = 3381, chance = 310 }, -- crown armor
-	{ id = 3280, chance = 210 }, -- fire sword
-	{ id = 3385, chance = 310 }, -- crown helmet
-	{ id = 3419, chance = 210 }, -- crown shield
-	{ id = 3382, chance = 110 }, -- crown legs
-	{ id = 3055, chance = 210 }, -- platinum amulet
+	{ id = 3031, chance = 100000, maxCount = 173 }, -- Gold Coin
+	{ id = 3035, chance = 74000, maxCount = 2 }, -- Platinum Coin
+	{ id = 3577, chance = 9600 }, -- Meat
+	{ id = 11510, chance = 7900 }, -- Scroll of Heroic Deeds
+	{ id = 239, chance = 7100 }, -- Great Health Potion
+	{ id = 3004, chance = 5100 }, -- Wedding Ring
+	{ id = 3030, chance = 3600 }, -- Small Ruby
+	{ id = 3029, chance = 3600 }, -- Small Sapphire
+	{ id = 11450, chance = 2400 }, -- Small Notebook
+	{ id = 5911, chance = 2100 }, -- Red Piece of Cloth
+	{ id = 3279, chance = 2100 }, -- War Hammer
+	{ id = 3381, chance = 1200 }, -- Crown Armor
+	{ id = 3280, chance = 850 }, -- Fire Sword
+	{ id = 3382, chance = 750 }, -- Crown Legs
+	{ id = 3385, chance = 650 }, -- Crown Helmet
+	{ id = 3055, chance = 420 }, -- Platinum Amulet
+	{ id = 3419, chance = 300 }, -- Crown Shield
+	{ id = 2995, chance = 160 }, -- Piggy Bank
 }
 
 monster.attacks = {

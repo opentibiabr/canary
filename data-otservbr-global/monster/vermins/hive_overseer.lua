@@ -86,22 +86,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 16000, maxCount = 2 },
-	{ name = "gold coin", chance = 40000, maxCount = 100 },
-	{ name = "gold coin", chance = 58000, maxCount = 98 },
-	{ name = "platinum coin", chance = 84000, maxCount = 6 },
-	{ name = "steel boots", chance = 550 },
-	{ name = "great mana potion", chance = 18000 },
-	{ id = 281, chance = 6000 }, -- giant shimmering pearl (green)
-	{ name = "ultimate health potion", chance = 12000 },
-	{ name = "gold ingot", chance = 29000 },
-	{ name = "kollos shell", chance = 28000 },
-	{ name = "compound eye", chance = 16000 },
-	{ name = "calopteryx cape", chance = 830 },
-	{ name = "carapace shield", chance = 920 },
-	{ name = "hive scythe", chance = 1650 },
-	{ name = "gooey mass", chance = 13000, maxCount = 2 },
-	{ name = "hive bow", chance = 830 },
+	{ id = 3031, chance = 98000, maxCount = 199 }, -- Gold Coin
+	{ id = 3035, chance = 85000, maxCount = 6 }, -- Platinum Coin
+	{ id = 14077, chance = 30000 }, -- Kollos Shell
+	{ id = 9058, chance = 29000 }, -- Gold Ingot
+	{ id = 14083, chance = 18400 }, -- Compound Eye
+	{ id = 238, chance = 18300 }, -- Great Mana Potion
+	{ id = 3030, chance = 15900, maxCount = 2 }, -- Small Ruby
+	{ id = 14172, chance = 12400, maxCount = 2 }, -- Gooey Mass
+	{ id = 7643, chance = 12100 }, -- Ultimate Health Potion
+	{ id = 282, chance = 6400 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 14089, chance = 1600 }, -- Hive Scythe
+	{ id = 14086, chance = 1500 }, -- Calopteryx Cape
+	{ id = 14088, chance = 940 }, -- Carapace Shield
+	{ id = 14246, chance = 610 }, -- Hive Bow
+	{ id = 3554, chance = 470 }, -- Steel Boots
 }
 
 monster.attacks = {

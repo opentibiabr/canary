@@ -63,7 +63,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 199 }, -- gold coin
+	{ id = 3031, chance = 40000, maxCount = 9 }, -- Gold Coin
+	{ id = 3115, chance = 40000 }, -- Bone
+	{ id = 2920, chance = 10000 }, -- Torch
+	{ id = 3367, chance = 10000 }, -- Viking Helmet
 }
 
 monster.defenses = {

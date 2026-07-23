@@ -64,15 +64,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 76225, maxCount = 100 }, -- gold coin
-	{ id = 5893, chance = 64800 }, -- perfect behemoth fang
-	{ id = 3577, chance = 36200 }, -- meat
-	{ id = 5930, chance = 50500 }, -- behemoth claw
-	{ id = 7368, chance = 11225, maxCount = 2 }, -- assassin star
-	{ id = 3383, chance = 7650 }, -- dark armor
-	{ id = 3304, chance = 14800 }, -- crowbar
-	{ id = 3033, chance = 7650, maxCount = 2 }, -- small amethyst
-	{ id = 3275, chance = 7650 }, -- double axe
+	{ id = 5930, chance = 100000 }, -- Behemoth Claw
+	{ id = 3031, chance = 100000, maxCount = 162 }, -- Gold Coin
+	{ id = 5893, chance = 100000 }, -- Perfect Behemoth Fang
+	{ id = 7396, chance = 98000 }, -- Behemoth Trophy
+	{ id = 3033, chance = 69000, maxCount = 5 }, -- Small Amethyst
+	{ id = 7368, chance = 62000, maxCount = 95 }, -- Assassin Star
+	{ id = 3265, chance = 51000 }, -- Two Handed Sword
+	{ id = 3577, chance = 24000 }, -- Meat
+	{ id = 3383, chance = 13300 }, -- Dark Armor
+	{ id = 3275, chance = 6700 }, -- Double Axe
+	{ id = 10310, chance = 6700 }, -- Shiny Stone
+	{ id = 3116, chance = 7140 }, -- Big Bone
+	{ id = 3304, chance = 14290 }, -- Crowbar
+	{ id = 3342, chance = 3570 }, -- War Axe
+	{ id = 3281, chance = 7140 }, -- Giant Sword
+	{ id = 239, chance = 7140 }, -- Great Health Potion
 }
 
 monster.attacks = {

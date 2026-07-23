@@ -94,3 +94,19 @@ monster.immunities = {
 }
 
 mType:register(monster)
+
+monster.loot = {
+	{ id = 3600, chance = 18700 }, -- Bread
+	{ id = 3031, chance = 13200, maxCount = 18 }, -- Gold Coin
+	{ id = 9646, chance = 5800 }, -- Book of Prayers
+	{ id = 3077, chance = 2500 }, -- Ankh
+	{ id = 11492, chance = 2500 }, -- Rope Belt
+	{ id = 2815, chance = 1400 }, -- Scroll
+	{ id = 2885, chance = 1400 }, -- Brown Flask
+	{ id = 11493, chance = 1100 }, -- Safety Pin
+	{ id = 3289, chance = 1100 }, -- Staff
+	{ id = 3061, chance = 830 }, -- Life Crystal
+	{ id = 2914, chance = 550 }, -- Lamp
+	{ id = 3551, chance = 550 }, -- Sandals
+	{ id = 3050, chance = 280 }, -- Power Ring
+}

@@ -77,20 +77,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 80 },
-	{ name = "platinum coin", chance = 100000, maxCount = 11 },
-	{ name = "werepanther claw", chance = 12780 },
-	{ name = "golden sickle", chance = 5120 },
-	{ name = "meat", chance = 5500, maxCount = 2 },
-	{ name = "small topaz", chance = 7120, maxCount = 4 },
-	{ name = "moonlight crystals", chance = 2550 },
-	{ id = 3037, chance = 5130 }, -- yellow gem
-	{ name = "lightning headband", chance = 7200 },
-	{ name = "ripper lance", chance = 850 },
-	{ name = "gemmed figurine", chance = 1770 },
-	{ id = 816, chance = 4710 }, -- lightning pendant
-	{ name = "fur armor", chance = 2620 },
-	{ id = 43917, chance = 600 }, -- werepanther trophy
+	{ id = 3031, chance = 100000, maxCount = 80 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 11 }, -- Platinum Coin
+	{ id = 43731, chance = 7900 }, -- Werepanther Claw
+	{ id = 3306, chance = 5800 }, -- Golden Sickle
+	{ id = 9057, chance = 5100, maxCount = 4 }, -- Small Topaz
+	{ id = 3577, chance = 4800, maxCount = 2 }, -- Meat
+	{ id = 3037, chance = 3100 }, -- Yellow Gem
+	{ id = 22083, chance = 2100 }, -- Moonlight Crystals
+	{ id = 816, chance = 1200 }, -- Lightning Pendant
+	{ id = 828, chance = 1000 }, -- Lightning Headband
+	{ id = 3346, chance = 880 }, -- Ripper Lance
+	{ id = 22085, chance = 850 }, -- Fur Armor
+	{ id = 24392, chance = 640 }, -- Gemmed Figurine
+	{ id = 43917, chance = 220 }, -- Werepanther Trophy
 }
 
 monster.attacks = {

@@ -76,16 +76,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2920, chance = 10000 }, -- torch
-	{ id = 2920, chance = 1420, maxCount = 2 }, -- torch
-	{ name = "small amethyst", chance = 300 },
-	{ name = "necrotic rod", chance = 460 },
-	{ name = "blank rune", chance = 10950 },
-	{ name = "double axe", chance = 1500 },
-	{ id = 3307, chance = 3000 }, -- scimitar
-	{ name = "guardian shield", chance = 210 },
-	{ name = "cleaver", chance = 1100 },
-	{ name = "small pitchfork", chance = 19770 },
+	{ id = 11513, chance = 19300 }, -- Small Pitchfork
+	{ id = 3147, chance = 10900 }, -- Blank Rune
+	{ id = 3307, chance = 2900 }, -- Scimitar
+	{ id = 2920, chance = 1400, maxCount = 2 }, -- Torch
+	{ id = 3275, chance = 1400 }, -- Double Axe
+	{ id = 3471, chance = 960 }, -- Cleaver
+	{ id = 3069, chance = 500 }, -- Necrotic Rod
+	{ id = 3033, chance = 260 }, -- Small Amethyst
+	{ id = 3415, chance = 220 }, -- Guardian Shield
 }
 
 monster.attacks = {

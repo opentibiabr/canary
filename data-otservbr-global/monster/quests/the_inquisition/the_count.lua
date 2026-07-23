@@ -70,9 +70,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 40000, maxCount = 98 }, -- gold coin
-	{ id = 7924, chance = 100000 }, -- ring of the count
-	{ id = 3279, chance = 2300 }, -- war hammer
+	{ id = 7924, chance = 100000 }, -- The Ring of the Count
+	{ id = 3031, chance = 74000, maxCount = 100 }, -- Gold Coin
+	{ id = 3114, chance = 25000 }, -- Skull (Item)
 }
 
 monster.attacks = {

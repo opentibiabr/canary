@@ -78,11 +78,7 @@ monster.voices = {
 	{ text = "Beware! My evil monolog is coming!", yell = false },
 }
 
-monster.loot = {
-	{ id = 9391, chance = 10000 }, -- fan club membership card
-	{ id = 3031, chance = 100000, maxCount = 95 }, -- gold coin
-	{ id = 3035, chance = 93000, maxCount = 3 }, -- platinum coin
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 1200, chance = 100, minDamage = 0, maxDamage = -77 },

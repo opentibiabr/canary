@@ -79,12 +79,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2817, chance = 910 }, -- blank parchment
-	{ name = "gold coin", chance = 48000, maxCount = 67 },
-	{ id = 3049, chance = 650 }, -- stealth ring
-	{ name = "spike sword", chance = 130 },
-	{ name = "red robe", chance = 130 },
-	{ name = "tattered piece of robe", chance = 4300 },
+	{ id = 3031, chance = 47000, maxCount = 65 }, -- Gold Coin
+	{ id = 9684, chance = 7200 }, -- Tattered Piece of Robe
+	{ id = 3081, chance = 2200 }, -- Stone Skin Amulet
+	{ id = 2814, chance = 1200 }, -- Parchment (Rewritable)
+	{ id = 3271, chance = 690 }, -- Spike Sword
+	{ id = 3049, chance = 340 }, -- Stealth Ring
+	{ id = 3566, chance = 170 }, -- Red Robe
 }
 
 monster.attacks = {

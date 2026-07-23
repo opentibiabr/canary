@@ -73,14 +73,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "great mana potion", chance = 44810 },
-	{ name = "wand of inferno", chance = 12500 },
-	{ id = 35588, chance = 19420 }, -- grappling hook
-	{ name = "pirate coin", chance = 17810, maxCount = 10 },
-	{ name = "pirat's tail", chance = 2120 },
-	{ name = "springsprout rod", chance = 9550 },
-	{ name = "wand of starstorm", chance = 1750 },
-	{ name = "wand of voodoo", chance = 1450 },
+	{ id = 238, chance = 10700 }, -- Great Mana Potion
+	{ id = 35588, chance = 7600 }, -- Grappling Hook
+	{ id = 3071, chance = 7400 }, -- Wand of Inferno
+	{ id = 35572, chance = 6700, maxCount = 10 }, -- Pirate Coin
+	{ id = 35573, chance = 5300 }, -- Pirat's Tail
+	{ id = 8092, chance = 4700 }, -- Wand of Starstorm
+	{ id = 8084, chance = 3900 }, -- Springsprout Rod
+	{ id = 8094, chance = 3000 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

@@ -79,25 +79,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30000, maxCount = 136 },
-	{ name = "goat grass", chance = 5155 },
-	{ name = "leaf star", chance = 10000, maxCount = 7 },
-	{ name = "grapes", chance = 30100, maxCount = 2 },
-	{ name = "small enchanted sapphire", chance = 492, maxCount = 2 },
-	{ name = "leaf legs", chance = 492 },
-	{ name = "dandelion seeds", chance = 5800 },
-	{ name = "shimmering beetles", chance = 492 },
-	{ name = "panpipes", chance = 172 },
-	{ name = "cookie", chance = 55000, maxCount = 5 },
-	{ name = "great health potion", chance = 6400, maxCount = 2 },
-	{ name = "wooden spellbook", chance = 92 },
-	{ name = "strong health potion", chance = 6800, maxCount = 2 },
-	{ name = "fresh fruit", chance = 3400, maxCount = 3 },
-	{ name = "rainbow quartz", chance = 1086, maxCount = 4 },
-	{ name = "small stone", chance = 492, maxCount = 3 },
-	{ name = "wood cape", chance = 492 },
-	{ id = 5792, chance = 80 }, -- die
-	{ name = "mandrake", chance = 50 },
+	{ id = 3031, chance = 100000, maxCount = 191 }, -- Gold Coin
+	{ id = 25695, chance = 15300 }, -- Dandelion Seeds
+	{ id = 236, chance = 12300, maxCount = 2 }, -- Strong Health Potion
+	{ id = 25693, chance = 9900 }, -- Shimmering Beetles
+	{ id = 25692, chance = 9800 }, -- Fresh Fruit
+	{ id = 25735, chance = 8100, maxCount = 7 }, -- Leaf Star
+	{ id = 3674, chance = 7900 }, -- Goat Grass
+	{ id = 3598, chance = 6100, maxCount = 5 }, -- Cookie
+	{ id = 25737, chance = 5500, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 2953, chance = 5300 }, -- Panpipes
+	{ id = 1781, chance = 5100, maxCount = 5 }, -- Small Stone
+	{ id = 3592, chance = 5100 }, -- Grapes
+	{ id = 239, chance = 3300, maxCount = 2 }, -- Great Health Potion
+	{ id = 675, chance = 2500, maxCount = 2 }, -- Small Enchanted Sapphire
+	{ id = 3575, chance = 2300 }, -- Wood Cape
+	{ id = 9014, chance = 540 }, -- Leaf Legs
+	{ id = 25699, chance = 380 }, -- Wooden Spellbook
+	{ id = 5792, chance = 88 }, -- Die
+	{ id = 5014, chance = 29 }, -- Mandrake
 }
 
 monster.attacks = {

@@ -63,18 +63,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 121 },
-	{ name = "strong health potion", chance = 18830, maxCount = 2 },
-	{ name = "onyx chip", chance = 9800 },
-	{ id = 3050, chance = 5070 }, -- power ring
-	{ name = "small ruby", chance = 7430, maxCount = 2 },
-	{ id = 3093, chance = 810 }, -- club ring
-	{ name = "small stone", chance = 13890, maxCount = 3 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "white pearl", chance = 530 },
-	{ name = "opal", chance = 5155 },
-	{ name = "bonebreaker", chance = 400 },
-	{ name = "bottle of champagne", chance = 600 },
+	{ id = 3031, chance = 100000, maxCount = 121 }, -- Gold Coin
+	{ id = 3577, chance = 31000 }, -- Meat
+	{ id = 236, chance = 29000 }, -- Strong Health Potion
+	{ id = 3598, chance = 12400, maxCount = 5 }, -- Cookie
+	{ id = 3030, chance = 9000, maxCount = 2 }, -- Small Ruby
+	{ id = 3026, chance = 7900 }, -- White Pearl
+	{ id = 1781, chance = 7900, maxCount = 5 }, -- Small Stone
+	{ id = 3050, chance = 5600 }, -- Power Ring
+	{ id = 22194, chance = 4500, maxCount = 2 }, -- Opal
+	{ id = 3093, chance = 4500 }, -- Club Ring
+	{ id = 22193, chance = 3400, maxCount = 2 }, -- Onyx Chip
+	{ id = 37468, chance = 720 }, -- Special Fx Box
+	{ id = 3465, chance = 1080 }, -- Pot
+	{ id = 37531, chance = 2170 }, -- Candy Floss (Large)
+	{ id = 37530, chance = 1080 }, -- Bottle of Champagne
+	{ id = 8907, chance = 360 }, -- Rusted Helmet
 }
 
 monster.attacks = {

@@ -83,48 +83,39 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "energy bar", chance = 100000 },
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "supreme health potion", chance = 57831, maxCount = 20 },
-	{ name = "ultimate mana potion", chance = 55723, maxCount = 20 },
-	{ name = "yellow gem", chance = 35843, maxCount = 2 },
-	{ id = 3039, chance = 35542, maxCount = 2 }, -- red gem
-	{ name = "ultimate spirit potion", chance = 31627, maxCount = 6 },
-	{ name = "royal star", chance = 31325, maxCount = 100 },
-	{ name = "bullseye potion", chance = 22590, maxCount = 10 },
-	{ name = "berserk potion", chance = 21988, maxCount = 10 },
-	{ id = 49271, chance = 21988, maxCount = 10 }, -- transcendence potion
-	{ name = "blue gem", chance = 21687, maxCount = 2 },
-	{ name = "mastermind potion", chance = 17771, maxCount = 10 },
-	{ name = "green gem", chance = 17470, maxCount = 2 },
-	{ id = 281, chance = 15060 }, -- giant shimmering pearl (green)
-	{ name = "gold ingot", chance = 13253 },
-	{ name = "terra rod", chance = 11145 },
-	{ name = "crystal coin", chance = 10241 },
-	{ name = "stone skin amulet", chance = 10241 },
-	{ name = "silver token", chance = 8735, maxCount = 3 },
-	{ name = "terra legs", chance = 8735 },
-	{ name = "terra mantle", chance = 7831 },
-	{ name = "raw watermelon tourmaline", chance = 7229 },
-	{ name = "wand of voodoo", chance = 6024 },
-	{ name = "violet gem", chance = 5723 },
-	{ name = "terra hood", chance = 4819 },
-	{ name = "terra amulet", chance = 4518 },
-	{ name = "giant sapphire", chance = 4217 },
-	{ name = "giant ruby", chance = 3012 },
-	{ name = "underworld rod", chance = 2410 },
-	{ name = "lion spangenhelm", chance = 300 },
-	{ name = "lion plate", chance = 300 },
-	{ name = "lion shield", chance = 300 },
-	{ name = "lion longsword", chance = 350 },
-	{ name = "lion hammer", chance = 300 },
-	{ name = "lion axe", chance = 300 },
-	{ name = "lion longbow", chance = 300 },
-	{ name = "lion spellbook", chance = 350 },
-	{ name = "lion wand", chance = 300 },
-	{ name = "lion amulet", chance = 300 },
-	{ name = "lion rod", chance = 300 },
-	{ name = "lion claws", chance = 300 },
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 23373, chance = 57000, maxCount = 36 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 53000, maxCount = 38 }, -- Supreme Health Potion
+	{ id = 23374, chance = 33000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 3039, chance = 31000, maxCount = 2 }, -- Red Gem
+	{ id = 3037, chance = 31000, maxCount = 2 }, -- Yellow Gem
+	{ id = 25759, chance = 24000, maxCount = 199 }, -- Royal Star
+	{ id = 3038, chance = 23000, maxCount = 2 }, -- Green Gem
+	{ id = 7440, chance = 17900, maxCount = 19 }, -- Mastermind Potion
+	{ id = 3041, chance = 16700, maxCount = 2 }, -- Blue Gem
+	{ id = 7443, chance = 16400, maxCount = 19 }, -- Bullseye Potion
+	{ id = 9058, chance = 14000 }, -- Gold Ingot
+	{ id = 22516, chance = 12800, maxCount = 5 }, -- Silver Token
+	{ id = 49271, chance = 11900, maxCount = 19 }, -- Transcendence Potion
+	{ id = 7439, chance = 11600, maxCount = 19 }, -- Berserk Potion
+	{ id = 3065, chance = 11600 }, -- Terra Rod
+	{ id = 3081, chance = 10700 }, -- Stone Skin Amulet
+	{ id = 281, chance = 10400 }, -- Giant Shimmering Pearl
+	{ id = 3043, chance = 9000 }, -- Crystal Coin
+	{ id = 30061, chance = 8700 }, -- Giant Sapphire
+	{ id = 811, chance = 8100 }, -- Terra Mantle
+	{ id = 3036, chance = 7200, maxCount = 2 }, -- Violet Gem
+	{ id = 812, chance = 6300 }, -- Terra Legs
+	{ id = 830, chance = 4800 }, -- Terra Hood
+	{ id = 33778, chance = 4500 }, -- Raw Watermelon Tourmaline
+	{ id = 814, chance = 4200 }, -- Terra Amulet
+	{ id = 30059, chance = 3600 }, -- Giant Ruby
+	{ id = 8094, chance = 2400 }, -- Wand of Voodoo
+	{ id = 8082, chance = 2400 }, -- Underworld Rod
+	{ id = 34253, chance = 600 }, -- Lion Axe
+	{ id = 34154, chance = 300 }, -- Lion Shield
+	{ id = 34153, chance = 300 }, -- Lion Spellbook
 }
 
 monster.attacks = {

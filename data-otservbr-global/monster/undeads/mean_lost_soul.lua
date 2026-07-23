@@ -73,18 +73,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 56040 },
-	{ name = "lost soul", chance = 36220 },
-	{ name = "death toll", chance = 4890 },
-	{ name = "skull staff", chance = 4540 },
-	{ name = "machete", chance = 3520 },
-	{ name = "ensouled essence", chance = 2760 },
-	{ name = "fire axe", chance = 1400 },
-	{ name = "ivory comb", chance = 1200 },
-	{ name = "mercenary sword", chance = 1050 },
-	{ name = "haunted blade", chance = 960 },
-	{ name = "warrior's axe", chance = 730 },
-	{ name = "twiceslicer", chance = 310 },
+	{ id = 3035, chance = 73000 }, -- Platinum Coin
+	{ id = 32227, chance = 34000 }, -- Lost Soul (Item)
+	{ id = 32703, chance = 5400 }, -- Death Toll
+	{ id = 3324, chance = 5100 }, -- Skull Staff
+	{ id = 3308, chance = 5000 }, -- Machete
+	{ id = 32698, chance = 3500 }, -- Ensouled Essence
+	{ id = 32773, chance = 1600 }, -- Ivory Comb
+	{ id = 3320, chance = 1500 }, -- Fire Axe
+	{ id = 7386, chance = 1400 }, -- Mercenary Sword
+	{ id = 14040, chance = 1300 }, -- Warrior's Axe
+	{ id = 7407, chance = 1100 }, -- Haunted Blade
+	{ id = 11657, chance = 700 }, -- Twiceslicer
+	{ id = 3081, chance = 70 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

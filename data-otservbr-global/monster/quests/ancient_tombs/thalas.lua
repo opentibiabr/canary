@@ -75,17 +75,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 80 },
-	{ name = "gold coin", chance = 50000, maxCount = 80 },
-	{ name = "small emerald", chance = 7000, maxCount = 3 },
-	{ name = "green gem", chance = 500 },
-	{ id = 3049, chance = 1500 }, -- stealth ring
-	{ id = 3053, chance = 7000 }, -- time ring
-	{ name = "cobrafang dagger", chance = 100000 },
-	{ name = "serpent sword", chance = 500 },
-	{ name = "poison dagger", chance = 7000 },
-	{ name = "djinn blade", chance = 200 },
-	{ name = "great health potion", chance = 1500 },
+	{ id = 3238, chance = 100000 }, -- Cobrafang Dagger
+	{ id = 3031, chance = 91000, maxCount = 238 }, -- Gold Coin
+	{ id = 3299, chance = 21000 }, -- Poison Dagger
+	{ id = 3032, chance = 9000, maxCount = 3 }, -- Small Emerald
+	{ id = 239, chance = 8000 }, -- Great Health Potion
+	{ id = 3053, chance = 5400 }, -- Time Ring
+	{ id = 3297, chance = 2600 }, -- Serpent Sword
+	{ id = 3339, chance = 1100 }, -- Djinn Blade
+	{ id = 3038, chance = 880 }, -- Green Gem
 }
 
 monster.attacks = {

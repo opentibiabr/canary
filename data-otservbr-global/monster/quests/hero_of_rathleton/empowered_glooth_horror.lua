@@ -68,7 +68,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21905, chance = 10000 }, -- glooth glider hinge
+	{ id = 21203, chance = 65000, maxCount = 3 }, -- Glooth Bag
+	{ id = 3035, chance = 20000, maxCount = 8 }, -- Platinum Coin
+	{ id = 3031, chance = 5000 }, -- Gold Coin
+	{ id = 21905, chance = 5000 }, -- Glooth Glider Hinge
+	{ id = 8895, chance = 5000 }, -- Rusted Armor
+	{ id = 8896, chance = 5000 }, -- Slightly Rusted Armor
 }
 
 monster.attacks = {

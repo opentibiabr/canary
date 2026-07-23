@@ -63,34 +63,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "primal bag", chance = 100000, unique = true },
-	{ name = "crystal coin", chance = 100000, maxCount = 60 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ name = "royal almandine", chance = 8322 },
-	{ name = "raw watermelon tourmaline", chance = 7322 },
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "amber with a bug", chance = 2450 },
-	{ name = "amber with a dragonfly", chance = 2150 },
-	{ name = "arboreal tome", chance = 100 },
-	{ name = "arboreal crown", chance = 100 },
-	{ name = "spiritthorn armor", id = 39147, chance = 100 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 100 },
-	{ name = "alicorn headguard", chance = 100 },
-	{ name = "alicorn quiver", chance = 100 },
-	{ name = "arcanomancer regalia", chance = 100 },
-	{ name = "arcanomancer folio", chance = 100 },
-	{ id = 39183, chance = 100 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 100 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 100 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 100 }, -- name = "charged spiritthorn ring"
+	{ id = 3043, chance = 100000, maxCount = 50 }, -- Crystal Coin
+	{ id = 39038, chance = 80000 }, -- Royal Almandine
+	{ id = 33778, chance = 80000, maxCount = 2 }, -- Raw Watermelon Tourmaline
+	{ id = 32624, chance = 30000 }, -- Amber with a Bug
+	{ id = 30061, chance = 30000 }, -- Giant Sapphire
+	{ id = 32625, chance = 20000 }, -- Amber with a Dragonfly
+	{ id = 39154, chance = 20000 }, -- Arboreal Tome
+	{ id = 32626, chance = 10000 }, -- amber
+	{ id = 39183, chance = 10000 }, -- Charged Arcanomancer Sigil
 }
 
 monster.attacks = {

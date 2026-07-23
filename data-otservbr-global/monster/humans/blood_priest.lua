@@ -75,25 +75,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 3510, maxCount = 2 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 71 },
-	{ name = "boots of haste", chance = 120 },
-	{ name = "skull staff", chance = 180 },
-	{ name = "mystic turban", chance = 2170 },
-	{ name = "white piece of cloth", chance = 3040 },
-	{ name = "red piece of cloth", chance = 640 },
-	{ name = "strong mana potion", chance = 6000 },
-	{ name = "spellbook of warding", chance = 290 },
-	{ name = "spellbook of mind control", chance = 180 },
-	{ name = "underworld rod", chance = 470 },
-	{ name = "book of necromantic rituals", chance = 13550 },
-	{ id = 3039, chance = 880 }, -- red gem
-	{ name = "lancet", chance = 14410 },
-	{ name = "horoscope", chance = 9270 },
-	{ name = "blood tincture in a vial", chance = 14460 },
-	{ name = "incantation notes", chance = 14660 },
-	{ name = "pieces of magic chalk", chance = 7770 },
+	{ id = 3031, chance = 100000, maxCount = 180 }, -- Gold Coin
+	{ id = 10320, chance = 15000 }, -- Book of Necromantic Rituals
+	{ id = 18929, chance = 14700 }, -- Incantation Notes
+	{ id = 18925, chance = 14700 }, -- Lancet
+	{ id = 18928, chance = 14200 }, -- Blood Tincture in a Vial
+	{ id = 18926, chance = 9600 }, -- Horoscope
+	{ id = 18930, chance = 7300 }, -- Pieces of Magic Chalk
+	{ id = 237, chance = 5900 }, -- Strong Mana Potion
+	{ id = 3030, chance = 3100, maxCount = 2 }, -- Small Ruby
+	{ id = 5909, chance = 2800 }, -- White Piece of Cloth
+	{ id = 3574, chance = 2700 }, -- Mystic Turban
+	{ id = 3039, chance = 790 }, -- Red Gem
+	{ id = 5911, chance = 660 }, -- Red Piece of Cloth
+	{ id = 8073, chance = 310 }, -- Spellbook of Warding
+	{ id = 8082, chance = 280 }, -- Underworld Rod
+	{ id = 8074, chance = 240 }, -- Spellbook of Mind Control
+	{ id = 3324, chance = 180 }, -- Skull Staff
+	{ id = 3079, chance = 180 }, -- Boots of Haste
+	{ id = 7456, chance = 75 }, -- Noble Axe
 }
 
 monster.attacks = {

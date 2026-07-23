@@ -75,44 +75,39 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 6558, chance = 10000 }, -- flask of demonic blood
-	{ id = 3019, chance = 1000 }, -- demonbone amulet
-	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
-	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire
-	{ id = 3031, chance = 98000, maxCount = 200 }, -- gold coin
-	{ id = 3033, chance = 10000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 3036, chance = 1000 }, -- violet gem
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ id = 3366, chance = 700 }, -- magic plate armor
-	{ id = 22193, chance = 46100, maxCount = 5 }, -- onyx chip
-	{ id = 22194, chance = 46100, maxCount = 5 }, -- opal
-	{ id = 22726, chance = 700 }, -- rift shield
-	{ id = 22727, chance = 700 }, -- rift lance
-	{ id = 22756, chance = 500, unique = true }, -- treader of torment
-	{ id = 22867, chance = 700 }, -- rift crossbow
-	{ id = 5021, chance = 46100, maxCount = 5 }, -- orichalcum pearl
-	{ id = 6299, chance = 1300 }, -- death ring
-	{ id = 6499, chance = 11000 }, -- demonic essence
-	{ id = 7416, chance = 1000 }, -- bloody edge
-	{ id = 7419, chance = 1300 }, -- dreaded cleaver
-	{ id = 7427, chance = 1000 }, -- chaos mace
-	{ id = 7451, chance = 1900 }, -- shadow sceptre
-	{ id = 238, chance = 23000, maxCount = 5 }, -- great mana potion
-	{ id = 281, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 816, chance = 1000 }, -- lightning pendant
-	{ id = 822, chance = 1000 }, -- lightning legs
-	{ id = 7642, chance = 46100, maxCount = 10 }, -- great spirit potion
-	{ id = 7643, chance = 23000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 10000, maxCount = 5 }, -- small topaz
+	{ id = 3031, chance = 100000, maxCount = 353 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 39 }, -- Platinum Coin
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 6499, chance = 83000 }, -- Demonic Essence
+	{ id = 22194, chance = 69000, maxCount = 9 }, -- Opal
+	{ id = 7642, chance = 66000, maxCount = 12 }, -- Great Spirit Potion
+	{ id = 22193, chance = 60000, maxCount = 9 }, -- Onyx Chip
+	{ id = 7643, chance = 57000, maxCount = 14 }, -- Ultimate Health Potion
+	{ id = 6558, chance = 51000, maxCount = 9 }, -- Flask of Demonic Blood
+	{ id = 238, chance = 49000, maxCount = 15 }, -- Great Mana Potion
+	{ id = 6299, chance = 37000 }, -- Death Ring
+	{ id = 281, chance = 29000 }, -- Giant Shimmering Pearl
+	{ id = 3030, chance = 26000, maxCount = 8 }, -- Small Ruby
+	{ id = 3032, chance = 23000, maxCount = 8 }, -- Small Emerald
+	{ id = 3038, chance = 23000 }, -- Green Gem
+	{ id = 3028, chance = 20000, maxCount = 8 }, -- Small Diamond
+	{ id = 17828, chance = 20000 }, -- Pair of Iron Fists
+	{ id = 3041, chance = 20000 }, -- Blue Gem
+	{ id = 22727, chance = 17100 }, -- Rift Lance
+	{ id = 3033, chance = 17100, maxCount = 9 }, -- Small Amethyst
+	{ id = 822, chance = 17100 }, -- Lightning Legs
+	{ id = 9057, chance = 14300, maxCount = 8 }, -- Small Topaz
+	{ id = 3037, chance = 11400 }, -- Yellow Gem
+	{ id = 22726, chance = 11400 }, -- Rift Shield
+	{ id = 8082, chance = 11400 }, -- Underworld Rod
+	{ id = 3039, chance = 11400 }, -- Red Gem
+	{ id = 8092, chance = 8600 }, -- Wand of Starstorm
+	{ id = 22867, chance = 8600 }, -- Rift Crossbow
+	{ id = 7451, chance = 8600 }, -- Shadow Sceptre
+	{ id = 816, chance = 8600 }, -- Lightning Pendant
+	{ id = 3420, chance = 5700 }, -- Demon Shield
+	{ id = 3366, chance = 2900 }, -- Magic Plate Armor
+	{ id = 22866, chance = 2900 }, -- Rift Bow
 }
 
 monster.attacks = {

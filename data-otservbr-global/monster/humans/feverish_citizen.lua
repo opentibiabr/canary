@@ -84,15 +84,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30300, maxCount = 35 },
-	{ id = 3115, chance = 4920 }, -- bone
-	{ name = "worm", chance = 25730, maxCount = 3 },
-	{ name = "ominous piece of cloth", chance = 1660 },
-	{ name = "dubious piece of cloth", chance = 1720 },
-	{ name = "voluminous piece of cloth", chance = 2290 },
-	{ name = "obvious piece of cloth", chance = 2006 },
-	{ name = "ludicrous piece of cloth", chance = 2060 },
-	{ name = "luminous piece of cloth", chance = 2290 },
+	{ id = 3031, chance = 30000, maxCount = 35 }, -- Gold Coin
+	{ id = 3492, chance = 25000, maxCount = 3 }, -- Worm
+	{ id = 3115, chance = 4800 }, -- Bone
+	{ id = 12555, chance = 2200 }, -- Ludicrous Piece of Cloth
+	{ id = 12553, chance = 2100 }, -- Voluminous Piece of Cloth
+	{ id = 12551, chance = 2000 }, -- Ominous Piece of Cloth
+	{ id = 12554, chance = 2000 }, -- Obvious Piece of Cloth
+	{ id = 12556, chance = 1900 }, -- Luminous Piece of Cloth
+	{ id = 12552, chance = 1700 }, -- Dubious Piece of Cloth
 }
 
 monster.attacks = {

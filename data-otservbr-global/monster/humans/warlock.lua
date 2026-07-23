@@ -84,31 +84,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "red tome", chance = 300 },
-	{ name = "candlestick", chance = 1500 },
-	{ name = "piggy bank", chance = 60 },
-	{ name = "ring of the sky", chance = 430 },
-	{ id = 3007, chance = 700 }, -- crystal ring
-	{ name = "small sapphire", chance = 1190 },
-	{ name = "gold coin", chance = 29340, maxCount = 80 },
-	{ name = "talon", chance = 1150 },
-	{ id = 3051, chance = 2200 }, -- energy ring
-	{ name = "mind stone", chance = 2000 },
-	{ name = "stone skin amulet", chance = 330 },
-	{ name = "poison dagger", chance = 7600 },
-	{ name = "skull staff", chance = 6370 },
-	{ name = "golden armor", chance = 240 },
-	{ id = 3509, chance = 1000 }, -- inkwell
-	{ name = "blue robe", chance = 1410 },
-	{ name = "cherry", chance = 19000, maxCount = 4 },
-	{ name = "bread", chance = 9000 },
-	{ name = "dark mushroom", chance = 3000 },
-	{ name = "assassin star", chance = 3500, maxCount = 4 },
-	{ name = "assassin star", chance = 3470, maxCount = 4 },
-	{ name = "great mana potion", chance = 4760 },
-	{ name = "great health potion", chance = 5190 },
-	{ name = "lightning robe", chance = 1000 },
-	{ name = "luminous orb", chance = 510 },
+	{ id = 3031, chance = 30000, maxCount = 80 }, -- Gold Coin
+	{ id = 3590, chance = 19700, maxCount = 4 }, -- Cherry
+	{ id = 3600, chance = 8900 }, -- Bread
+	{ id = 3299, chance = 7700 }, -- Poison Dagger
+	{ id = 3324, chance = 6100 }, -- Skull Staff
+	{ id = 239, chance = 5100 }, -- Great Health Potion
+	{ id = 238, chance = 5000 }, -- Great Mana Potion
+	{ id = 7368, chance = 3300, maxCount = 4 }, -- Assassin Star
+	{ id = 3728, chance = 2900 }, -- Dark Mushroom
+	{ id = 3062, chance = 2100 }, -- Mind Stone
+	{ id = 3051, chance = 2000 }, -- Energy Ring
+	{ id = 3567, chance = 1600 }, -- Blue Robe
+	{ id = 2917, chance = 1600 }, -- Candlestick
+	{ id = 3029, chance = 1300 }, -- Small Sapphire
+	{ id = 3034, chance = 1100 }, -- Talon
+	{ id = 825, chance = 1000 }, -- Lightning Robe
+	{ id = 3509, chance = 930 }, -- Inkwell
+	{ id = 3007, chance = 710 }, -- Crystal Ring
+	{ id = 11454, chance = 500 }, -- Luminous Orb
+	{ id = 3006, chance = 410 }, -- Ring of the Sky
+	{ id = 3081, chance = 340 }, -- Stone Skin Amulet
+	{ id = 2852, chance = 260 }, -- Red Tome
+	{ id = 3360, chance = 200 }, -- Golden Armor
+	{ id = 2995, chance = 73 }, -- Piggy Bank
 }
 
 monster.attacks = {

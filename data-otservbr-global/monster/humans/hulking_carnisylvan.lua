@@ -73,20 +73,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 30 },
-	{ id = 3115, chance = 27670, maxCount = 1 }, -- bone
-	{ name = "great health potion", chance = 14990, maxCount = 4 },
-	{ name = "carnisylvan bark", chance = 12100, maxCount = 1 },
-	{ name = "carnisylvan finger", chance = 10090, maxCount = 2 },
-	{ name = "terra hood", chance = 7200 },
-	{ name = "terra boots", chance = 4900 },
-	{ name = "knight axe", chance = 3460 },
-	{ name = "lightning headband", chance = 3460 },
-	{ name = "dragonbone staff", chance = 5190 },
-	{ name = "diamond sceptre", chance = 4320 },
-	{ name = "epee", chance = 2590 },
-	{ name = "war hammer", chance = 3750 },
-	{ name = "human teeth", chance = 580 },
+	{ id = 3035, chance = 100000, maxCount = 23 }, -- Platinum Coin
+	{ id = 3115, chance = 28000 }, -- Bone
+	{ id = 239, chance = 14500, maxCount = 2 }, -- Great Health Potion
+	{ id = 36806, chance = 13600 }, -- Carnisylvan Bark
+	{ id = 36805, chance = 11600 }, -- Carnisylvan Finger
+	{ id = 830, chance = 8200 }, -- Terra Hood
+	{ id = 813, chance = 5100 }, -- Terra Boots
+	{ id = 3318, chance = 4700 }, -- Knight Axe
+	{ id = 7387, chance = 4300 }, -- Diamond Sceptre
+	{ id = 7430, chance = 4300 }, -- Dragonbone Staff
+	{ id = 3326, chance = 4100 }, -- Epee
+	{ id = 828, chance = 4000 }, -- Lightning Headband
+	{ id = 3279, chance = 3100 }, -- War Hammer
+	{ id = 36807, chance = 710 }, -- Human Teeth
 }
 
 monster.attacks = {

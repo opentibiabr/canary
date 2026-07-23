@@ -76,15 +76,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 166 },
-	{ name = "strong health potion", chance = 19830 },
-	{ name = "small topaz", chance = 6002, maxCount = 3 },
-	{ name = "orcish axe", chance = 9005 },
-	{ name = "cultish robe", chance = 4960 },
-	{ name = "ham", chance = 7020, maxCount = 3 },
-	{ name = "orc tusk", chance = 8260, maxCount = 2 },
-	{ name = "green piece of cloth", chance = 4960 },
-	{ name = "brown crystal splinter", chance = 4960 },
+	{ id = 3031, chance = 100000, maxCount = 217 }, -- Gold Coin
+	{ id = 236, chance = 17300 }, -- Strong Health Potion
+	{ id = 3582, chance = 8500 }, -- Ham
+	{ id = 3316, chance = 8200 }, -- Orcish Axe
+	{ id = 5910, chance = 5600 }, -- Green Piece of Cloth
+	{ id = 9057, chance = 4100, maxCount = 2 }, -- Small Topaz
+	{ id = 9639, chance = 3300 }, -- Cultish Robe
+	{ id = 16123, chance = 2200, maxCount = 2 }, -- Brown Crystal Splinter
+	{ id = 7439, chance = 820 }, -- Berserk Potion
+	{ id = 7786, chance = 440 }, -- Orc Tusk
 }
 
 monster.attacks = {

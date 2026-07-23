@@ -63,11 +63,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 99700, maxCount = 87 }, -- gold coin
-	{ id = 7290, chance = 40000 }, -- shard
-	{ id = 236, chance = 100000 }, -- strong health potion
-	{ id = 9661, chance = 40000 }, -- frosty heart
-	{ id = 7441, chance = 80000 }, -- ice cube
+	{ id = 3031, chance = 89000, maxCount = 198 }, -- Gold Coin
+	{ id = 3035, chance = 74000, maxCount = 5 }, -- Platinum Coin
+	{ id = 236, chance = 73000 }, -- Strong Health Potion
+	{ id = 3029, chance = 66000, maxCount = 5 }, -- Small Sapphire
+	{ id = 3028, chance = 64000, maxCount = 4 }, -- Small Diamond
+	{ id = 9661, chance = 56000 }, -- Frosty Heart
+	{ id = 7441, chance = 50000, maxCount = 2 }, -- Ice Cube
+	{ id = 7290, chance = 33000 }, -- Shard
+	{ id = 3027, chance = 1800 }, -- Black Pearl
+	{ id = 829, chance = 910 }, -- Glacier Mask
 }
 
 monster.attacks = {

@@ -57,10 +57,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 33000, maxCount = 5 }, -- platinum coin
-	{ id = 239, chance = 10000 }, -- great health potion
-	{ id = 9064, chance = 1500 }, -- crystal pedestal
-	{ id = 21169, chance = 1000 }, -- metal spats
+	{ id = 3035, chance = 78000, maxCount = 5 }, -- Platinum Coin
+	{ id = 239, chance = 11600 }, -- Great Health Potion
+	{ id = 238, chance = 9600 }, -- Great Mana Potion
+	{ id = 9016, chance = 6600 }, -- Flask of Rust Remover
+	{ id = 21170, chance = 5100 }, -- Gearwheel Chain
+	{ id = 8775, chance = 4500 }, -- Gear Wheel
+	{ id = 5880, chance = 2500 }, -- Iron Ore
+	{ id = 21167, chance = 2000 }, -- Heat Core
+	{ id = 21169, chance = 2000 }, -- Metal Spats
+	{ id = 9654, chance = 2000 }, -- War Crystal
+	{ id = 3554, chance = 1000 }, -- Steel Boots
+	{ id = 21168, chance = 510 }, -- Alloy Legs
+	{ id = 9063, chance = 510 }, -- Crystal Pedestal (Red)
+	{ id = 7440, chance = 510 }, -- Mastermind Potion
 }
 
 monster.attacks = {

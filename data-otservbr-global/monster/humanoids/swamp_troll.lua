@@ -76,19 +76,7 @@ monster.voices = {
 	{ text = "Grrrr", yell = false },
 }
 
-monster.loot = {
-	{ id = 2920, chance = 15000 }, -- torch
-	{ name = "gold coin", chance = 50300, maxCount = 5 },
-	{ name = "mouldy cheese", chance = 10000 },
-	{ name = "spear", chance = 13000 },
-	{ name = "fishing rod", chance = 60 },
-	{ name = "leather boots", chance = 9500 },
-	{ id = 3578, chance = 60000 }, -- fish
-	{ name = "troll green", chance = 1200 },
-	{ id = 5901, chance = 2140 }, -- wood
-	{ name = "swamp grass", chance = 3100 },
-	{ name = "medicine pouch", chance = 2160 },
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -13, condition = { type = CONDITION_POISON, totalDamage = 1, interval = 4000 } },

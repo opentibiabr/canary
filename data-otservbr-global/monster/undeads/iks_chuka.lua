@@ -76,18 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 82 },
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ name = "violet crystal shard", chance = 15870 },
-	{ name = "green crystal splinter", chance = 12350 },
-	{ name = "small sapphire", chance = 9940 },
-	{ name = "royal spear", chance = 3960, maxCount = 1 },
-	{ id = 3007, chance = 1760 }, -- crystal ring
-	{ name = "rotten feather", chance = 1710 },
-	{ name = "ritual tooth", chance = 1340 },
-	{ name = "gold-brocaded cloth", chance = 960 },
-	{ name = "broken iks spear", chance = 110 },
-	{ name = "broken iks headpiece", chance = 50 },
+	{ id = 3031, chance = 86000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 40000, maxCount = 4 }, -- Platinum Coin
+	{ id = 16120, chance = 14900 }, -- Violet Crystal Shard
+	{ id = 16122, chance = 12100 }, -- Green Crystal Splinter
+	{ id = 3029, chance = 10600, maxCount = 2 }, -- Small Sapphire
+	{ id = 7378, chance = 3800 }, -- Royal Spear
+	{ id = 3007, chance = 2300 }, -- Crystal Ring
+	{ id = 40527, chance = 1800 }, -- Rotten Feather
+	{ id = 9058, chance = 1600 }, -- Gold Ingot
+	{ id = 40529, chance = 1500 }, -- Gold-Brocaded Cloth
+	{ id = 40528, chance = 1000 }, -- Ritual Tooth
+	{ id = 3081, chance = 500 }, -- Stone Skin Amulet
+	{ id = 40532, chance = 10 }, -- Broken Iks Headpiece
+	{ id = 40534, chance = 60 }, -- Broken Iks Sandals
+	{ id = 40535, chance = 60 }, -- Broken Iks Spear
 }
 
 monster.attacks = {

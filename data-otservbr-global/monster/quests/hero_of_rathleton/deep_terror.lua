@@ -72,8 +72,14 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 21899, chance = 10000, unique = true }, -- glooth glider tubes and wires
-	{ name = "traditional sai", chance = 20000 },
+	{ id = 21203, chance = 100000, maxCount = 4 }, -- Glooth Bag
+	{ id = 3035, chance = 34000, maxCount = 8 }, -- Platinum Coin
+	{ id = 21899, chance = 29000 }, -- Glooth Glider Tubes and Wires
+	{ id = 8898, chance = 13800 }, -- Rusted Legs
+	{ id = 8895, chance = 12300 }, -- Rusted Armor
+	{ id = 3031, chance = 10800 }, -- Gold Coin
+	{ id = 9058, chance = 9200 }, -- Gold Ingot
+	{ id = 8896, chance = 6200 }, -- Slightly Rusted Armor
 }
 
 monster.attacks = {

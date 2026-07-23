@@ -76,12 +76,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 89790, maxCount = 100 },
-	{ name = "gold coin", chance = 89790, maxCount = 19 },
-	{ name = "scarab coin", chance = 6710, maxCount = 4 },
-	{ name = "plate armor", chance = 5050 },
-	{ name = "spider fangs", chance = 25380 },
-	{ name = "gold ingot", chance = 60 },
+	{ id = 3031, chance = 90000, maxCount = 119 }, -- Gold Coin
+	{ id = 8031, chance = 25000 }, -- Spider Fangs
+	{ id = 3042, chance = 6800, maxCount = 4 }, -- Scarab Coin
+	{ id = 3357, chance = 4700 }, -- Plate Armor
+	{ id = 9058, chance = 57 }, -- Gold Ingot
 }
 
 monster.attacks = {

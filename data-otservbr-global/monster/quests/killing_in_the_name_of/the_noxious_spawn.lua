@@ -64,22 +64,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9694, chance = 100000 }, -- snake skin
-	{ id = 10313, chance = 100000 }, -- winged tail
-	{ id = 3035, chance = 80000, maxCount = 5 }, -- platinum coin
-	{ id = 238, chance = 72000, maxCount = 4 }, -- great mana potion
-	{ id = 3032, chance = 68000, maxCount = 5 }, -- small emerald
-	{ id = 7386, chance = 45000 }, -- mercenary sword
-	{ id = 3428, chance = 43000 }, -- tower shield
-	{ id = 7456, chance = 39000 }, -- noble axe
-	{ id = 2903, chance = 35000 }, -- golden mug
-	{ id = 3381, chance = 29000 }, -- crown armor
-	{ id = 7368, chance = 27000, maxCount = 78 }, -- assassin star
-	{ id = 3732, chance = 19000 }, -- green mushroom
-	{ id = 3052, chance = 13000 }, -- life ring
-	{ id = 8074, chance = 13000 }, -- spellbook of mind control
-	{ id = 3392, chance = 4000 }, -- royal helmet
-	{ id = 8052, chance = 2000 }, -- swamplair armor
+	{ id = 9694, chance = 100000 }, -- Snake Skin
+	{ id = 10313, chance = 100000 }, -- Winged Tail
+	{ id = 3035, chance = 78000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3032, chance = 72000, maxCount = 5 }, -- Small Emerald
+	{ id = 238, chance = 67000, maxCount = 4 }, -- Great Mana Potion
+	{ id = 7456, chance = 44000 }, -- Noble Axe
+	{ id = 9392, chance = 44000 }, -- Claw of 'The Noxious Spawn'
+	{ id = 3428, chance = 42000 }, -- Tower Shield
+	{ id = 7386, chance = 36000 }, -- Mercenary Sword
+	{ id = 2903, chance = 32000 }, -- Golden Mug
+	{ id = 3381, chance = 31000 }, -- Crown Armor
+	{ id = 7368, chance = 31000, maxCount = 98 }, -- Assassin Star
+	{ id = 8074, chance = 16700 }, -- Spellbook of Mind Control
+	{ id = 3732, chance = 16700 }, -- Green Mushroom
+	{ id = 3052, chance = 11500 }, -- Life Ring
+	{ id = 3392, chance = 5100 }, -- Royal Helmet
+	{ id = 8052, chance = 2600 }, -- Swamplair Armor
 }
 
 monster.attacks = {

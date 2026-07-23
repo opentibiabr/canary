@@ -79,16 +79,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 64000, maxCount = 12 },
-	{ name = "silver amulet", chance = 230 },
-	{ name = "spear", chance = 25000 },
-	{ name = "studded club", chance = 5450 },
-	{ id = 3412, chance = 6000 }, -- wooden shield
-	{ name = "arrow", chance = 5450, maxCount = 5 },
-	{ name = "leather boots", chance = 9000 },
-	{ name = "meat", chance = 9650 },
-	{ name = "bunch of troll hair", chance = 3000 },
-	{ name = "trollroot", chance = 750 },
+	{ id = 3031, chance = 65000, maxCount = 12 }, -- Gold Coin
+	{ id = 3277, chance = 25000 }, -- Spear
+	{ id = 3552, chance = 9900 }, -- Leather Boots
+	{ id = 3577, chance = 9900 }, -- Meat
+	{ id = 3412, chance = 5300 }, -- Wooden Shield
+	{ id = 3336, chance = 5100 }, -- Studded Club
+	{ id = 3447, chance = 5100, maxCount = 5 }, -- Arrow
+	{ id = 9689, chance = 3000 }, -- Bunch of Troll Hair
+	{ id = 11515, chance = 900 }, -- Trollroot
+	{ id = 3054, chance = 130 }, -- Silver Amulet
 }
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -35 },

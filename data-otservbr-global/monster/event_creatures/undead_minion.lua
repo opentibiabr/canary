@@ -62,15 +62,7 @@ monster.voices = {
 	chance = 10,
 }
 
-monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 40 },
-	{ name = "blank rune", chance = 10000 },
-	{ name = "battle hammer", chance = 5000 },
-	{ name = "battle shield", chance = 1000 },
-	{ name = "guardian shield", chance = 5000 },
-	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 }, -- surprise bag
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 1000, chance = 100, minDamage = 0, maxDamage = -248 },

@@ -72,17 +72,7 @@ monster.voices = {
 	{ text = "Me other char is highlevel!", yell = false },
 }
 
-monster.loot = {
-	{ id = 2914, chance = 6666 }, -- lamp
-	{ name = "gold coin", chance = 100000, maxCount = 12 },
-	{ name = "battle axe", chance = 5000 },
-	{ name = "halberd", chance = 10000 },
-	{ name = "axe", chance = 10000 },
-	{ name = "war hammer", chance = 5000 },
-	{ name = "ham", chance = 50000 },
-	{ id = 6570, chance = 5538 }, -- surprise bag
-	{ id = 6571, chance = 1538 }, -- surprise bag
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 1000, chance = 100, minDamage = 0, maxDamage = -83 },

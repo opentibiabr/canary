@@ -73,22 +73,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000 },
-	{ name = "great mana potion", chance = 20070 },
-	{ name = "werehyaena nose", chance = 15550 },
-	{ name = "small amethyst", chance = 10840 },
-	{ name = "green crystal splinter", chance = 9120 },
-	{ name = "hailstorm rod", chance = 6430 },
-	{ name = "doublet", chance = 5390 },
-	{ name = "brown crystal splinter", chance = 5030 },
-	{ name = "wand of starstorm", chance = 4920 },
-	{ name = "small enchanted emerald", chance = 4630 },
-	{ id = 3091, chance = 4490 }, -- sword ring
-	{ name = "wand of voodoo", chance = 3990 },
-	{ name = "protection amulet", chance = 2660 },
-	{ name = "werehyaena talisman", chance = 650 },
-	{ name = "moonlight crystals", chance = 610 },
-	{ name = "werehyaena trophy", chance = 140 },
+	{ id = 3035, chance = 100000, maxCount = 3 }, -- Platinum Coin
+	{ id = 238, chance = 20000 }, -- Great Mana Potion
+	{ id = 33943, chance = 14400 }, -- Werehyaena Nose
+	{ id = 3033, chance = 10600, maxCount = 2 }, -- Small Amethyst
+	{ id = 16122, chance = 10200 }, -- Green Crystal Splinter
+	{ id = 3067, chance = 7100 }, -- Hailstorm Rod
+	{ id = 8092, chance = 5300 }, -- Wand of Starstorm
+	{ id = 3379, chance = 5000 }, -- Doublet
+	{ id = 677, chance = 4600, maxCount = 5 }, -- Small Enchanted Emerald
+	{ id = 3091, chance = 4500 }, -- Sword Ring
+	{ id = 8094, chance = 4200 }, -- Wand of Voodoo
+	{ id = 16123, chance = 4100 }, -- Brown Crystal Splinter
+	{ id = 3084, chance = 3500 }, -- Protection Amulet
+	{ id = 3429, chance = 2500 }, -- Black Shield
+	{ id = 33944, chance = 520 }, -- Werehyaena Talisman
+	{ id = 22083, chance = 340 }, -- Moonlight Crystals
+	{ id = 34219, chance = 120 }, -- Werehyaena Trophy
 }
 
 monster.attacks = {

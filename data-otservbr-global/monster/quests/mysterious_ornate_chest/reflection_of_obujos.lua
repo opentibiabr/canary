@@ -63,9 +63,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 13998, chance = 100000 }, -- depth scutum
-	{ id = 13991, chance = 1285 }, -- deepling axe
-	{ id = 13999, chance = 1285, unique = true }, -- ornate legs
+	{ id = 281, chance = 57000 }, -- Giant Shimmering Pearl
+	{ id = 13991, chance = 29000 }, -- Deepling Axe
+	{ id = 14023, chance = 14300 }, -- Obujos' Shell
 }
 
 monster.attacks = {

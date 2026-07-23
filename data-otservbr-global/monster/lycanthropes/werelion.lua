@@ -69,28 +69,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 100000, maxCount = 2 },
-	{ name = "small enchanted ruby", chance = 5000, maxCount = 2 },
-	{ name = "meat", chance = 5000, maxCount = 2 },
-	{ name = "crystal sword", chance = 5000 },
-	{ name = "lion's mane", chance = 5000 },
-	{ name = "silver brooch", chance = 1500 },
-	{ name = "small diamond", chance = 1500, maxCount = 2 },
-	{ name = "war hammer", chance = 1500 },
-	{ name = "doublet", chance = 1500 },
-	{ name = "dark shield", chance = 1500 },
-	{ name = "titan axe", chance = 1500 },
-	{ name = "spiked squelcher", chance = 1500 },
-	{ name = "glorious axe", chance = 1500 },
-	{ name = "spirit cloak", chance = 1500 },
-	{ name = "onyx chip", chance = 1500 },
-	{ name = "coral brooch", chance = 1500 },
-	{ name = "ivory carving", chance = 1500 },
-	{ name = "rainbow quartz", chance = 1500 },
-	{ name = "noble axe", chance = 500 },
-	{ name = "white silk flower", chance = 500 },
-	{ name = "lion figurine", chance = 100 },
+	{ id = 3035, chance = 85000, maxCount = 4 }, -- Platinum Coin
+	{ id = 7642, chance = 55000, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 3383, chance = 23000 }, -- Dark Armor
+	{ id = 9691, chance = 14500 }, -- Lion's Mane
+	{ id = 3577, chance = 10100 }, -- Meat
+	{ id = 7449, chance = 6100 }, -- Crystal Sword
+	{ id = 676, chance = 5400, maxCount = 5 }, -- Small Enchanted Ruby
+	{ id = 3017, chance = 4300 }, -- Silver Brooch
+	{ id = 3028, chance = 3900 }, -- Small Diamond
+	{ id = 33945, chance = 3600 }, -- Ivory Carving
+	{ id = 3279, chance = 2500 }, -- War Hammer
+	{ id = 22193, chance = 2400 }, -- Onyx Chip
+	{ id = 25737, chance = 2200, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 3421, chance = 2200 }, -- Dark Shield
+	{ id = 8042, chance = 2100 }, -- Spirit Cloak
+	{ id = 3379, chance = 2000 }, -- Doublet
+	{ id = 7454, chance = 1900 }, -- Glorious Axe
+	{ id = 24391, chance = 1700 }, -- Coral Brooch
+	{ id = 22083, chance = 1400 }, -- Moonlight Crystals
+	{ id = 7413, chance = 1300 }, -- Titan Axe
+	{ id = 7452, chance = 1300 }, -- Spiked Squelcher
+	{ id = 7456, chance = 810 }, -- Noble Axe
+	{ id = 34008, chance = 480 }, -- White Silk Flower
+	{ id = 33781, chance = 400 }, -- Lion Figurine
 }
 
 monster.attacks = {

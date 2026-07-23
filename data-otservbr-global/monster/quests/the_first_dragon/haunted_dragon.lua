@@ -77,24 +77,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "black pearl", chance = 22780, maxCount = 2 },
-	{ name = "small sapphire", chance = 28370, maxCount = 2 },
-	{ name = "gold coin", chance = 35500, maxCount = 100 },
-	{ name = "gold coin", chance = 55500, maxCount = 98 },
-	{ name = "platinum coin", chance = 52000, maxCount = 5 },
-	{ name = "life crystal", chance = 2500 },
-	{ name = "hardened bone", chance = 14180 },
-	{ id = 6299, chance = 1150 }, -- death ring
-	{ name = "demonic essence", chance = 12460 },
-	{ name = "assassin star", chance = 26650, maxCount = 5 },
-	{ name = "dragon slayer", chance = 860 },
-	{ name = "dragonbone staff", chance = 4000 },
-	{ name = "great mana potion", chance = 21490 },
-	{ name = "great health potion", chance = 21200 },
-	{ name = "skullcracker armor", chance = 290 },
-	{ name = "gold ingot", chance = 570 },
-	{ name = "unholy bone", chance = 33380 },
-	{ name = "spellweaver's robe", chance = 860 },
+	{ id = 3031, chance = 100000, maxCount = 189 }, -- Gold Coin
+	{ id = 10316, chance = 34000 }, -- Unholy Bone
+	{ id = 3035, chance = 34000, maxCount = 2 }, -- Platinum Coin
+	{ id = 24390, chance = 30000, maxCount = 2 }, -- Ancient Coin
+	{ id = 3029, chance = 26000, maxCount = 2 }, -- Small Sapphire
+	{ id = 7368, chance = 25000, maxCount = 5 }, -- Assassin Star
+	{ id = 239, chance = 24000, maxCount = 2 }, -- Great Health Potion
+	{ id = 3027, chance = 24000, maxCount = 2 }, -- Black Pearl
+	{ id = 238, chance = 20000, maxCount = 2 }, -- Great Mana Potion
+	{ id = 6499, chance = 14700 }, -- Demonic Essence
+	{ id = 5925, chance = 14300 }, -- Hardened Bone
+	{ id = 3062, chance = 8100 }, -- Mind Stone
+	{ id = 3085, chance = 6900 }, -- Dragon Necklace
+	{ id = 3039, chance = 5000 }, -- Red Gem
+	{ id = 3421, chance = 4500 }, -- Dark Shield
+	{ id = 3383, chance = 4300 }, -- Dark Armor
+	{ id = 7430, chance = 4100 }, -- Dragonbone Staff
+	{ id = 9058, chance = 3500 }, -- Gold Ingot
+	{ id = 6299, chance = 2100 }, -- Death Ring
+	{ id = 3061, chance = 1300 }, -- Life Crystal
+	{ id = 7402, chance = 750 }, -- Dragon Slayer
+	{ id = 10438, chance = 620 }, -- Spellweaver's Robe
+	{ id = 8061, chance = 210 }, -- Skullcracker Armor
 }
 
 monster.attacks = {

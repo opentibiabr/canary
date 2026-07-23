@@ -74,14 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 249 },
-	{ name = "brown crystal splinter", chance = 7080 },
-	{ name = "small enchanted sapphire", chance = 6990 },
-	{ name = "green crystal splinter", chance = 6220 },
-	{ name = "small emerald", chance = 4230 },
-	{ name = "onyx chip", chance = 3890 },
-	{ name = "small ruby", chance = 3540 },
-	{ name = "opal", chance = 3370 },
+	{ id = 3031, chance = 100000, maxCount = 253 }, -- Gold Coin
+	{ id = 675, chance = 9200 }, -- Small Enchanted Sapphire
+	{ id = 16122, chance = 7400 }, -- Green Crystal Splinter
+	{ id = 16123, chance = 6400 }, -- Brown Crystal Splinter
+	{ id = 22193, chance = 4900 }, -- Onyx Chip
+	{ id = 3032, chance = 4700 }, -- Small Emerald
+	{ id = 22194, chance = 2700 }, -- Opal
+	{ id = 3030, chance = 2300 }, -- Small Ruby
+	{ id = 3081, chance = 2300 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

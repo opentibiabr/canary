@@ -80,10 +80,8 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9379, chance = 1000 }, -- heavy metal t-shirt
-	{ id = 9385, chance = 1000 }, -- club of the fury
-	{ id = 9384, chance = 1000 }, -- scythe of the reaper
-	{ id = 9378, chance = 1000 }, -- musician's bow
+	{ id = 9379, chance = 60000 }, -- Heavy Metal T-Shirt
+	{ id = 9385, chance = 40000 }, -- Club of the Fury
 }
 
 monster.attacks = {

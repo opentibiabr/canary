@@ -79,19 +79,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 7000, maxCount = 3 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ name = "gold coin", chance = 50000, maxCount = 70 },
-	{ name = "yellow gem", chance = 5000 },
-	{ id = 3049, chance = 5000 }, -- stealth ring
-	{ name = "boots of haste", chance = 1500 },
-	{ name = "crystal arrow", chance = 100000 },
-	{ name = "arrow", chance = 10000, maxCount = 21 },
-	{ name = "poison arrow", chance = 10000, maxCount = 20 },
-	{ id = 3449, chance = 10000, maxCount = 15 }, -- burst arrow
-	{ name = "power bolt", chance = 10000, maxCount = 3 },
-	{ name = "onyx arrow", chance = 10000, maxCount = 2 },
-	{ name = "great health potion", chance = 7000 },
+	{ id = 3239, chance = 100000 }, -- Crystal Arrow
+	{ id = 3031, chance = 87000, maxCount = 211 }, -- Gold Coin
+	{ id = 3585, chance = 82000, maxCount = 2 }, -- Red Apple
+	{ id = 3448, chance = 62000, maxCount = 20 }, -- Poison Arrow
+	{ id = 3449, chance = 44000, maxCount = 15 }, -- Burst Arrow
+	{ id = 7365, chance = 33000, maxCount = 6 }, -- Onyx Arrow
+	{ id = 3447, chance = 19300, maxCount = 25 }, -- Arrow
+	{ id = 3450, chance = 13500, maxCount = 5 }, -- Power Bolt
+	{ id = 3028, chance = 11100, maxCount = 3 }, -- Small Diamond
+	{ id = 239, chance = 8800 }, -- Great Health Potion
+	{ id = 3049, chance = 4100 }, -- Stealth Ring
+	{ id = 10290, chance = 1200 }, -- Mini Mummy
+	{ id = 3079, chance = 580 }, -- Boots of Haste
 }
 
 monster.attacks = {

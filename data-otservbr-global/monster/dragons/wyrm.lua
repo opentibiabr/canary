@@ -79,22 +79,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 95730, maxCount = 192 },
-	{ name = "dragon ham", chance = 43130 },
-	{ name = "strong health potion", chance = 19910 },
-	{ name = "wyrm scale", chance = 17540 },
-	{ name = "strong mana potion", chance = 15170 },
-	{ id = 3449, chance = 5690, maxCount = 10 }, -- burst arrow
-	{ name = "crossbow", chance = 5690 },
-	{ name = "focus cape", chance = 2370 },
-	{ name = "small diamond", chance = 1420, maxCount = 3 },
-	{ name = "wand of starstorm", chance = 1420 },
-	{ name = "wand of draconia", chance = 1420 },
-	{ name = "composite hornbow", chance = 950 },
-	{ name = "dragonbone staff", chance = 470 },
-	{ name = "lightning pendant", chance = 470 },
-	{ name = "shockwave amulet", chance = 470 },
-	{ name = "hibiscus dress", chance = 470 },
+	{ id = 3031, chance = 97000, maxCount = 232 }, -- Gold Coin
+	{ id = 3583, chance = 35000, maxCount = 3 }, -- Dragon Ham
+	{ id = 236, chance = 20000 }, -- Strong Health Potion
+	{ id = 237, chance = 15200 }, -- Strong Mana Potion
+	{ id = 9665, chance = 14900 }, -- Wyrm Scale
+	{ id = 3449, chance = 8000, maxCount = 10 }, -- Burst Arrow
+	{ id = 3349, chance = 6000 }, -- Crossbow
+	{ id = 8043, chance = 1200 }, -- Focus Cape
+	{ id = 8093, chance = 1000 }, -- Wand of Draconia
+	{ id = 3028, chance = 910, maxCount = 3 }, -- Small Diamond
+	{ id = 816, chance = 730 }, -- Lightning Pendant
+	{ id = 8092, chance = 450 }, -- Wand of Starstorm
+	{ id = 8045, chance = 310 }, -- Hibiscus Dress
+	{ id = 8027, chance = 100 }, -- Composite Hornbow
+	{ id = 7430, chance = 97 }, -- Dragonbone Staff
+	{ id = 9304, chance = 86 }, -- Shockwave Amulet
 }
 
 monster.attacks = {

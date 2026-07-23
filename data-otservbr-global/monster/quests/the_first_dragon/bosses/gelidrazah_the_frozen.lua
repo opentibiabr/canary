@@ -68,22 +68,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 97000, maxCount = 56 }, -- gold coin
-	{ id = 3035, chance = 97000, maxCount = 2 }, -- platinum coin
-	{ id = 24938, chance = 100000 }, -- dragon tongue
-	{ id = 7290, chance = 25000 }, -- shard
-	{ id = 815, chance = 25000 }, -- glacier amulet
-	{ id = 829, chance = 25000 }, -- glacier mask
-	{ id = 7441, chance = 25000 }, -- ice cube
-	{ id = 3583, chance = 25000, maxCount = 5 }, -- dragon ham
-	{ id = 3029, chance = 25000 }, -- small sapphire
-	{ id = 2903, chance = 25000 }, -- golden mug
-	{ id = 24937, chance = 80000, maxCount = 2 }, -- dragon blood
-	{ id = 19362, chance = 500 }, -- icicle bow
-	{ id = 19363, chance = 500 }, -- runic ice shield
-	{ id = 7409, chance = 1500 }, -- northern star
-	{ id = 16118, chance = 1500 }, -- glacial rod
-	{ id = 24939, chance = 100000 }, -- scale of gelidrazah
+	{ id = 24937, chance = 100000 }, -- Dragon Blood
+	{ id = 24939, chance = 100000 }, -- Scale of Gelidrazah
+	{ id = 24938, chance = 100000 }, -- Dragon Tongue
+	{ id = 3031, chance = 89000, maxCount = 149 }, -- Gold Coin
+	{ id = 3583, chance = 81000 }, -- Dragon Ham
+	{ id = 3035, chance = 69000, maxCount = 3 }, -- Platinum Coin
+	{ id = 7290, chance = 29000 }, -- Shard
+	{ id = 815, chance = 25000 }, -- Glacier Amulet
+	{ id = 3029, chance = 11000 }, -- Small Sapphire
+	{ id = 19362, chance = 10200 }, -- Icicle Bow
+	{ id = 829, chance = 8600 }, -- Glacier Mask
+	{ id = 19363, chance = 6500 }, -- Runic Ice Shield
+	{ id = 3051, chance = 5400 }, -- Energy Ring
+	{ id = 7441, chance = 4500 }, -- Ice Cube
+	{ id = 2903, chance = 3700 }, -- Golden Mug
+	{ id = 16118, chance = 2800 }, -- Glacial Rod
+	{ id = 8059, chance = 1100 }, -- Frozen Plate
+	{ id = 7409, chance = 860 }, -- Northern Star
+	{ id = 3061, chance = 650 }, -- Life Crystal
 }
 
 monster.attacks = {

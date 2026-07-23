@@ -76,40 +76,54 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 50320, maxCount = 165 }, -- gold coin
-	{ id = 3035, chance = 50320, maxCount = 30 }, -- platinum coin
-	{ id = 16119, chance = 9660, maxCount = 5 }, -- blue crystal shard
-	{ id = 16120, chance = 9660, maxCount = 5 }, -- violet crystal shard
-	{ id = 16121, chance = 9660, maxCount = 5 }, -- green crystal shard
-	{ id = 3032, chance = 9660, maxCount = 5 }, -- small emerald
-	{ id = 3030, chance = 7360, maxCount = 5 }, -- small ruby
-	{ id = 9057, chance = 7350, maxCount = 5 }, -- small topaz
-	{ id = 3033, chance = 7150, maxCount = 5 }, -- small amethyst
-	{ id = 5887, chance = 5909, maxCount = 2 }, -- piece of royal steel
-	{ id = 238, chance = 22120, maxCount = 3 }, -- great mana potion
-	{ id = 7643, chance = 19500, maxCount = 3 }, -- ultimate health potion
-	{ id = 7642, chance = 18250, maxCount = 3 }, -- great spirit potion
-	{ id = 3041, chance = 5000 }, -- blue gem
-	{ id = 3039, chance = 2200 }, -- red gem
-	{ id = 3038, chance = 5000 }, -- green gem
-	{ id = 3037, chance = 5000 }, -- yellow gem
-	{ id = 6499, chance = 14460 }, -- demonic essence
-	{ id = 7439, chance = 14460 }, -- berserk potion
-	{ id = 7443, chance = 14460 }, -- bullseye potion
-	{ id = 281, chance = 7000 }, -- giant shimmering pearl (green)
-	{ id = 3295, chance = 20000 }, -- bright sword
-	{ id = 7453, chance = 100 }, -- executioner
-	{ id = 24966, chance = 100 }, -- forbidden fruit
-	{ id = 5014, chance = 500 }, -- mandrake
-	{ id = 3436, chance = 1000 }, -- medusa shield
-	{ id = 9302, chance = 500 }, -- sacred tree amulet
-	{ id = 5875, chance = 1000 }, -- sniper gloves
-	{ id = 5884, chance = 1000 }, -- spirit container
-	{ id = 8052, chance = 500 }, -- swamplair armor
-	{ id = 20203, chance = 1000 }, -- trapped bad dream monster
-	{ id = 24954, chance = 500, unique = true }, -- part of a rune
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
+	{ id = 3318, chance = 100000 }, -- Knight Axe
+	{ id = 3035, chance = 98000, maxCount = 39 }, -- Platinum Coin
+	{ id = 3031, chance = 98000, maxCount = 198 }, -- Gold Coin
+	{ id = 3098, chance = 96000 }, -- Ring of Healing
+	{ id = 16119, chance = 71000, maxCount = 5 }, -- Blue Crystal Shard
+	{ id = 16121, chance = 67000, maxCount = 5 }, -- Green Crystal Shard
+	{ id = 7439, chance = 62000 }, -- Berserk Potion
+	{ id = 16120, chance = 60000, maxCount = 5 }, -- Violet Crystal Shard
+	{ id = 7643, chance = 60000, maxCount = 11 }, -- Ultimate Health Potion
+	{ id = 238, chance = 56000, maxCount = 16 }, -- Great Mana Potion
+	{ id = 7642, chance = 56000, maxCount = 13 }, -- Great Spirit Potion
+	{ id = 9302, chance = 40000 }, -- Sacred Tree Amulet
+	{ id = 7443, chance = 38000 }, -- Bullseye Potion
+	{ id = 22721, chance = 31000 }, -- Gold Token
+	{ id = 8895, chance = 29000 }, -- Rusted Armor
+	{ id = 22516, chance = 29000 }, -- Silver Token
+	{ id = 20203, chance = 27000 }, -- Trapped Bad Dream Monster
+	{ id = 3038, chance = 24000 }, -- Green Gem
+	{ id = 3030, chance = 24000, maxCount = 19 }, -- Small Ruby
+	{ id = 3033, chance = 22000, maxCount = 14 }, -- Small Amethyst
+	{ id = 6499, chance = 20000 }, -- Demonic Essence
+	{ id = 3037, chance = 17800 }, -- Yellow Gem
+	{ id = 3028, chance = 17800, maxCount = 19 }, -- Small Diamond
+	{ id = 3041, chance = 15600 }, -- Blue Gem
+	{ id = 5910, chance = 15600, maxCount = 5 }, -- Green Piece of Cloth
+	{ id = 9057, chance = 13300, maxCount = 15 }, -- Small Topaz
+	{ id = 3039, chance = 13300 }, -- Red Gem
+	{ id = 7452, chance = 11100 }, -- Spiked Squelcher
+	{ id = 3032, chance = 11100, maxCount = 17 }, -- Small Emerald
+	{ id = 281, chance = 11100 }, -- Giant Shimmering Pearl
+	{ id = 5875, chance = 8900 }, -- Sniper Gloves
+	{ id = 8052, chance = 8900 }, -- Swamplair Armor
+	{ id = 3036, chance = 6700 }, -- Violet Gem
+	{ id = 7407, chance = 4400 }, -- Haunted Blade
+	{ id = 5884, chance = 4400 }, -- Spirit Container
+	{ id = 24954, chance = 3700 }, -- Part of a Rune (One)
+	{ id = 24965, chance = 4400 }, -- Thorn Seed
+	{ id = 3436, chance = 4400 }, -- Medusa Shield
+	{ id = 3098, chance = 2200 }, -- Ring of Healing
+	{ id = 3392, chance = 2200 }, -- Royal Helmet
+	{ id = 5014, chance = 2200 }, -- Mandrake
+	{ id = 7453, chance = 2200 }, -- Executioner
+	{ id = 6553, chance = 2200 }, -- Ruthless Axe
+	{ id = 24955, chance = 3700 }, -- Part of a Rune (Two)
+	{ id = 24956, chance = 3700 }, -- Part of a Rune (Three)
+	{ id = 24957, chance = 3700 }, -- Part of a Rune (Four)
+	{ id = 24958, chance = 3700 }, -- Part of a Rune (Five)
+	{ id = 24959, chance = 3700 }, -- Part of a Rune (Six)
 }
 
 monster.attacks = {

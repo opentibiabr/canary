@@ -78,29 +78,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 100 }, -- gold coin
-	{ id = 3035, chance = 20000, maxCount = 3 }, -- platinum coin
-	{ id = 23502, chance = 15000 }, -- sparkion claw
-	{ id = 23545, chance = 15000 }, -- energy drink
-	{ id = 23535, chance = 14600 }, -- energy bar
-	{ id = 23505, chance = 14100 }, -- sparkion stings
-	{ id = 23504, chance = 11100 }, -- sparkion legs
-	{ id = 238, chance = 10100, maxCount = 2 }, -- great mana potion
-	{ id = 7642, chance = 9700, maxCount = 2 }, -- great spirit potion
-	{ id = 239, chance = 9500, maxCount = 2 }, -- great health potion
-	{ id = 23503, chance = 9100 }, -- sparkion tail
-	{ id = 16124, chance = 8600 }, -- blue crystal splinter
-	{ id = 16125, chance = 6000 }, -- cyan crystal fragment
-	{ id = 3029, chance = 4900, maxCount = 2 }, -- small sapphire
-	{ id = 16119, chance = 4200 }, -- blue crystal shard
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3073, chance = 920 }, -- wand of cosmic energy
-	{ id = 23531, chance = 370 }, -- ring of green plasma
-	{ id = 23533, chance = 370 }, -- ring of red plasma
-	{ id = 23529, chance = 240 }, -- ring of blue plasma
-	{ id = 23543, chance = 240 }, -- collar of green plasma
-	{ id = 23542, chance = 240 }, -- collar of blue plasma
-	{ id = 23544, chance = 200 }, -- collar of red plasma
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 90000, maxCount = 3 }, -- Platinum Coin
+	{ id = 23535, chance = 15000 }, -- Energy Bar
+	{ id = 23545, chance = 14600 }, -- Energy Drink
+	{ id = 23502, chance = 14100 }, -- Sparkion Claw
+	{ id = 23505, chance = 13600 }, -- Sparkion Stings
+	{ id = 23504, chance = 11200 }, -- Sparkion Legs
+	{ id = 239, chance = 10700, maxCount = 2 }, -- Great Health Potion
+	{ id = 23503, chance = 10500 }, -- Sparkion Tail
+	{ id = 7642, chance = 10500, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 238, chance = 9600, maxCount = 2 }, -- Great Mana Potion
+	{ id = 16124, chance = 8100 }, -- Blue Crystal Splinter
+	{ id = 16125, chance = 6200 }, -- Cyan Crystal Fragment
+	{ id = 3029, chance = 5000, maxCount = 2 }, -- Small Sapphire
+	{ id = 16119, chance = 4300 }, -- Blue Crystal Shard
+	{ id = 3073, chance = 750 }, -- Wand of Cosmic Energy
+	{ id = 3041, chance = 700 }, -- Blue Gem
+	{ id = 23544, chance = 260 }, -- Collar of Red Plasma
+	{ id = 50150, chance = 260 }, -- Ring of Orange Plasma
+	{ id = 50152, chance = 210 }, -- Collar of Orange Plasma
+	{ id = 23533, chance = 180 }, -- Ring of Red Plasma
+	{ id = 23531, chance = 180 }, -- Ring of Green Plasma
+	{ id = 23543, chance = 180 }, -- Collar of Green Plasma
+	{ id = 23526, chance = 130 }, -- Collar of Blue Plasma
+	{ id = 23529, chance = 100 }, -- Ring of Blue Plasma
 }
 
 monster.attacks = {

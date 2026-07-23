@@ -73,38 +73,44 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
-	{ name = "magic sulphur", chance = 18920 },
-	{ name = "mino shield", chance = 17620 },
-	{ name = "silver token", chance = 1732 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 30 },
-	{ name = "piece of hell steel", chance = 12370, maxCount = 9 },
-	{ name = "red piece of cloth", chance = 16370, maxCount = 6 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "underworld rod", chance = 117270 },
-	{ name = "war axe", chance = 127270 },
-	{ name = "pair of iron fists", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "small diamond", chance = 12760, maxCount = 10 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "small sapphire", chance = 13790, maxCount = 10 },
-	{ name = "small emerald", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "great mana potion", chance = 33721, maxCount = 10 },
-	{ name = "great spirit potion", chance = 25690, maxCount = 5 },
-	{ name = "piece of royal steel", chance = 15890 },
-	{ name = "execowtioner axe", chance = 7890 },
-	{ name = "maimer", chance = 1890 },
-	{ name = "ornate mace", chance = 7890 },
-	{ name = "velvet mantle", chance = 1890 },
-	{ name = "iron ore", chance = 14542 },
-	{ name = "giant sword", chance = 16892 },
+	{ id = 23535, chance = 100000, maxCount = 9 }, -- Energy Bar
+	{ id = 3035, chance = 100000, maxCount = 45 }, -- Platinum Coin
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 21196, chance = 100000 }, -- Necromantic Rust
+	{ id = 5880, chance = 100000 }, -- Iron Ore
+	{ id = 3031, chance = 100000, maxCount = 378 }, -- Gold Coin
+	{ id = 5888, chance = 60000, maxCount = 17 }, -- Piece of Hell Steel
+	{ id = 7642, chance = 60000, maxCount = 15 }, -- Great Spirit Potion
+	{ id = 7643, chance = 57000, maxCount = 18 }, -- Ultimate Health Potion
+	{ id = 238, chance = 52000, maxCount = 18 }, -- Great Mana Potion
+	{ id = 5887, chance = 35000 }, -- Piece of Royal Steel
+	{ id = 5904, chance = 32000 }, -- Magic Sulphur
+	{ id = 22721, chance = 28000 }, -- Gold Token
+	{ id = 22516, chance = 27000 }, -- Silver Token
+	{ id = 3032, chance = 27000, maxCount = 17 }, -- Small Emerald
+	{ id = 5911, chance = 25000, maxCount = 11 }, -- Red Piece of Cloth
+	{ id = 3038, chance = 23000 }, -- Green Gem
+	{ id = 3029, chance = 23000, maxCount = 18 }, -- Small Sapphire
+	{ id = 3028, chance = 22000, maxCount = 16 }, -- Small Diamond
+	{ id = 3039, chance = 22000 }, -- Red Gem
+	{ id = 17828, chance = 22000 }, -- Pair of Iron Fists
+	{ id = 3041, chance = 20000 }, -- Blue Gem
+	{ id = 3037, chance = 20000 }, -- Yellow Gem
+	{ id = 9057, chance = 18300, maxCount = 18 }, -- Small Topaz
+	{ id = 5889, chance = 16700, maxCount = 3 }, -- Piece of Draconian Steel
+	{ id = 3033, chance = 10000, maxCount = 19 }, -- Small Amethyst
+	{ id = 5892, chance = 10000 }, -- Huge Chunk of Crude Iron
+	{ id = 3036, chance = 8300 }, -- Violet Gem
+	{ id = 281, chance = 6700 }, -- Giant Shimmering Pearl
+	{ id = 8082, chance = 5000 }, -- Underworld Rod
+	{ id = 21175, chance = 5000 }, -- Mino Shield
+	{ id = 3281, chance = 5000 }, -- Giant Sword
+	{ id = 22762, chance = 5000 }, -- Maimer
+	{ id = 14001, chance = 3300 }, -- Ornate Mace
+	{ id = 8040, chance = 1700 }, -- Velvet Mantle
+	{ id = 21176, chance = 1700 }, -- Execowtioner Axe
+	{ id = 25361, chance = 1700 }, -- Blood of the Mountain (Item)
+	{ id = 3342, chance = 1700 }, -- War Axe
 }
 
 monster.attacks = {

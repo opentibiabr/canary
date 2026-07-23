@@ -78,28 +78,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100320, maxCount = 165 }, -- gold coin
-	{ id = 3035, chance = 70320, maxCount = 2 }, -- platinum coin
-	{ id = 24383, chance = 20000, maxCount = 2 }, -- cave turnip
-	{ id = 24384, chance = 17000 }, -- ancient belt buckle
-	{ id = 24385, chance = 20000 }, -- cracked alabaster vase
-	{ id = 24386, chance = 13000 }, -- rhino horn carving
-	{ id = 24390, chance = 4000 }, -- ancient coin
-	{ id = 3147, chance = 15000 }, -- blank rune
-	{ id = 3577, chance = 50320, maxCount = 2 }, -- meat
-	{ id = 5021, chance = 5000, maxCount = 2 }, -- orichalcum pearl
-	{ id = 5912, chance = 1000, maxCount = 2 }, -- blue piece of cloth
-	{ id = 5913, chance = 5000, maxCount = 2 }, -- brown piece of cloth
-	{ id = 5914, chance = 2000, maxCount = 2 }, -- yellow piece of cloth
-	{ id = 3079, chance = 230 }, -- boots of haste
-	{ id = 239, chance = 7000 }, -- great health potion
-	{ id = 3284, chance = 1000 }, -- ice rapier
-	{ id = 3046, chance = 1000 }, -- magic light wand
-	{ id = 22193, chance = 4200 }, -- onyx chip
-	{ id = 3098, chance = 2000 }, -- ring of healing
-	{ id = 3030, chance = 3000 }, -- small ruby
-	{ id = 3029, chance = 5000 }, -- small sapphire
-	{ id = 3725, chance = 6500, maxCount = 5 }, -- brown mushroom
+	{ id = 3031, chance = 100000, maxCount = 174 }, -- Gold Coin
+	{ id = 3035, chance = 75000, maxCount = 2 }, -- Platinum Coin
+	{ id = 24385, chance = 20000 }, -- Cracked Alabaster Vase
+	{ id = 24383, chance = 20000, maxCount = 2 }, -- Cave Turnip
+	{ id = 24384, chance = 17900 }, -- Ancient Belt Buckle
+	{ id = 24386, chance = 13900 }, -- Rhino Horn Carving
+	{ id = 3577, chance = 9600 }, -- Meat
+	{ id = 3147, chance = 8100 }, -- Blank Rune
+	{ id = 239, chance = 7100 }, -- Great Health Potion
+	{ id = 3725, chance = 6100, maxCount = 2 }, -- Brown Mushroom
+	{ id = 5021, chance = 5000, maxCount = 3 }, -- Orichalcum Pearl
+	{ id = 3029, chance = 4900 }, -- Small Sapphire
+	{ id = 5913, chance = 4800 }, -- Brown Piece of Cloth
+	{ id = 24390, chance = 4500 }, -- Ancient Coin
+	{ id = 22193, chance = 4400 }, -- Onyx Chip
+	{ id = 3030, chance = 4000 }, -- Small Ruby
+	{ id = 8895, chance = 2900 }, -- Rusted Armor
+	{ id = 3098, chance = 2600 }, -- Ring of Healing
+	{ id = 5914, chance = 2100 }, -- Yellow Piece of Cloth
+	{ id = 24391, chance = 1600 }, -- Coral Brooch
+	{ id = 3284, chance = 1100 }, -- Ice Rapier
+	{ id = 3046, chance = 1100 }, -- Magic Light Wand
+	{ id = 5912, chance = 1000 }, -- Blue Piece of Cloth
+	{ id = 5909, chance = 950 }, -- White Piece of Cloth
+	{ id = 5910, chance = 630 }, -- Green Piece of Cloth
+	{ id = 5911, chance = 490 }, -- Red Piece of Cloth
+	{ id = 3079, chance = 210 }, -- Boots of Haste
 }
 
 monster.attacks = {

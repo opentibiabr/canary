@@ -68,27 +68,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "bowl of glooth soup", chance = 55000, maxCount = 5 },
-	{ name = "glooth sandwich", chance = 34500, maxCount = 5 },
-	{ name = "great health potion", chance = 33000, maxCount = 5 },
-	{ name = "great mana potion", chance = 33000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 33000, maxCount = 5 },
-	{ name = "glooth steak", chance = 28000, maxCount = 5 },
-	{ name = "slimy leaf tentacle", chance = 22000, maxCount = 3 },
-	{ name = "small amethyst", chance = 21000, maxCount = 5 },
-	{ name = "small diamond", chance = 18000, maxCount = 5 },
-	{ name = "small ruby", chance = 16000, maxCount = 5 },
-	{ name = "small topaz", chance = 14800, maxCount = 5 },
-	{ name = "glooth club", chance = 10500 },
-	{ name = "glooth spear", chance = 9900 },
-	{ name = "glooth whip", chance = 9500 },
-	{ name = "glooth amulet", chance = 9000 },
-	{ name = "glooth axe", chance = 8000 },
-	{ name = "glooth blade", chance = 7000 },
-	{ name = "glooth cape", chance = 6000 },
-	{ id = 3039, chance = 2600 }, -- red gem
-	{ name = "yellow gem", chance = 2500 },
-	{ name = "lisa's doll", chance = 300 },
+	{ id = 21197, chance = 100000, maxCount = 5 }, -- Slimy Leaf Tentacle
+	{ id = 238, chance = 38000, maxCount = 9 }, -- Great Mana Potion
+	{ id = 239, chance = 34000, maxCount = 9 }, -- Great Health Potion
+	{ id = 21143, chance = 30000, maxCount = 9 }, -- Glooth Sandwich
+	{ id = 21146, chance = 30000, maxCount = 9 }, -- Glooth Steak
+	{ id = 7642, chance = 28000, maxCount = 9 }, -- Great Spirit Potion
+	{ id = 21180, chance = 28000 }, -- Glooth Axe
+	{ id = 21144, chance = 23000, maxCount = 9 }, -- Bowl of Glooth Soup
+	{ id = 3032, chance = 21000, maxCount = 9 }, -- Small Emerald
+	{ id = 9057, chance = 18900, maxCount = 8 }, -- Small Topaz
+	{ id = 21158, chance = 18900, maxCount = 8 }, -- Glooth Spear
+	{ id = 3029, chance = 18900, maxCount = 9 }, -- Small Sapphire
+	{ id = 21179, chance = 18900 }, -- Glooth Blade
+	{ id = 21178, chance = 17000 }, -- Glooth Club
+	{ id = 3033, chance = 11300, maxCount = 9 }, -- Small Amethyst
+	{ id = 21172, chance = 11300 }, -- Glooth Whip
+	{ id = 3028, chance = 11300, maxCount = 9 }, -- Small Diamond
+	{ id = 21183, chance = 9400 }, -- Glooth Amulet
+	{ id = 21164, chance = 7500 }, -- Glooth Cape
+	{ id = 3037, chance = 5700 }, -- Yellow Gem
+	{ id = 3030, chance = 5700, maxCount = 8 }, -- Small Ruby
+	{ id = 3039, chance = 5700 }, -- Red Gem
+	{ id = 3041, chance = 1900 }, -- Blue Gem
 }
 
 monster.attacks = {

@@ -63,9 +63,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 33000, maxCount = 5 }, -- platinum coin
-	{ id = 239, chance = 10000 }, -- great health potion
-	{ id = 238, chance = 10000 }, -- great mana potion
+	{ id = 239, chance = 100000, maxCount = 17 }, -- Great Health Potion
+	{ id = 3035, chance = 100000, maxCount = 37 }, -- Platinum Coin
+	{ id = 238, chance = 100000, maxCount = 23 }, -- Great Mana Potion
+	{ id = 7643, chance = 100000, maxCount = 16 }, -- Ultimate Health Potion
+	{ id = 21203, chance = 86000, maxCount = 3 }, -- Glooth Bag
+	{ id = 3031, chance = 71000, maxCount = 153 }, -- Gold Coin
+	{ id = 16125, chance = 57000 }, -- Cyan Crystal Fragment
+	{ id = 16127, chance = 43000 }, -- Green Crystal Fragment
+	{ id = 3037, chance = 29000 }, -- Yellow Gem
+	{ id = 3028, chance = 29000, maxCount = 8 }, -- Small Diamond
+	{ id = 3098, chance = 29000 }, -- Ring of Healing
+	{ id = 16126, chance = 29000 }, -- Red Crystal Fragment
+	{ id = 3030, chance = 14300 }, -- Small Ruby
+	{ id = 3081, chance = 14300 }, -- Stone Skin Amulet
+	{ id = 3053, chance = 14300 }, -- Time Ring
+	{ id = 3039, chance = 14300 }, -- Red Gem
+	{ id = 21164, chance = 14300 }, -- Glooth Cape
+	{ id = 21902, chance = 14300 }, -- Glooth Glider Crank
+	{ id = 16120, chance = 14300, maxCount = 3 }, -- Violet Crystal Shard
 }
 
 monster.attacks = {

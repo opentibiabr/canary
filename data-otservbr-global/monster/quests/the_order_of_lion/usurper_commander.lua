@@ -76,7 +76,26 @@ monster.voices = {
 	{ text = "FORMATION!", yell = true },
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 34164, chance = 16200 }, -- Fur Shred
+	{ id = 3274, chance = 15500 }, -- Axe
+	{ id = 34162, chance = 10500 }, -- Lion Cloak Patch
+	{ id = 34160, chance = 8800 }, -- Lion Crest
+	{ id = 282, chance = 8200 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 3350, chance = 8100 }, -- Bow
+	{ id = 9058, chance = 8100 }, -- Gold Ingot
+	{ id = 8073, chance = 5400 }, -- Spellbook of Warding
+	{ id = 8084, chance = 4400 }, -- Springsprout Rod
+	{ id = 8094, chance = 3700 }, -- Wand of Voodoo
+	{ id = 3038, chance = 3000 }, -- Green Gem
+	{ id = 3036, chance = 2800 }, -- Violet Gem
+	{ id = 23529, chance = 2300 }, -- Ring of Blue Plasma
+	{ id = 23533, chance = 1800 }, -- Ring of Red Plasma
+	{ id = 16119, chance = 1400 }, -- Blue Crystal Shard
+	{ id = 7443, chance = 340 }, -- Bullseye Potion
+	{ id = 281, chance = 75 }, -- Giant Shimmering Pearl
+}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -500, effect = CONST_ME_DRAWBLOOD },

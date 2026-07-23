@@ -79,29 +79,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 18000, maxCount = 45 },
-	{ id = 3049, chance = 90 }, -- stealth ring
-	{ name = "gold ring", chance = 30 },
-	{ name = "protection amulet", chance = 2190 },
-	{ name = "two handed sword", chance = 1680 },
-	{ name = "throwing star", chance = 13920, maxCount = 18 },
-	{ id = 3307, chance = 3450 }, -- scimitar
-	{ name = "orcish axe", chance = 5400 },
-	{ name = "dragon hammer", chance = 320 },
-	{ name = "plate armor", chance = 5210 },
-	{ name = "brass armor", chance = 740 },
-	{ name = "dark helmet", chance = 1260 },
-	{ name = "crusader helmet", chance = 280 },
-	{ name = "plate legs", chance = 4280 },
-	{ id = 3578, chance = 10800, maxCount = 2 }, -- fish
-	{ name = "hunting spear", chance = 5260 },
-	{ id = 7395, chance = 50 }, -- orc trophy
-	{ name = "health potion", chance = 470 },
-	{ name = "magma boots", chance = 280 },
-	{ name = "orc tooth", chance = 9640 },
-	{ name = "broken helmet", chance = 24350 },
-	{ name = "orc leather", chance = 20620 },
-	{ name = "skull belt", chance = 4610 },
+	{ id = 11453, chance = 25000 }, -- Broken Helmet
+	{ id = 11479, chance = 20000 }, -- Orc Leather
+	{ id = 3031, chance = 19000, maxCount = 45 }, -- Gold Coin
+	{ id = 3287, chance = 15000, maxCount = 18 }, -- Throwing Star
+	{ id = 3578, chance = 10400, maxCount = 2 }, -- Fish
+	{ id = 10196, chance = 9900 }, -- Orc Tooth
+	{ id = 3357, chance = 5700 }, -- Plate Armor
+	{ id = 3316, chance = 5200 }, -- Orcish Axe
+	{ id = 11480, chance = 5100 }, -- Skull Belt
+	{ id = 3347, chance = 5000 }, -- Hunting Spear
+	{ id = 3557, chance = 3900 }, -- Plate Legs
+	{ id = 3307, chance = 3000 }, -- Scimitar
+	{ id = 3084, chance = 1900 }, -- Protection Amulet
+	{ id = 3265, chance = 1800 }, -- Two Handed Sword
+	{ id = 3384, chance = 1300 }, -- Dark Helmet
+	{ id = 3359, chance = 890 }, -- Brass Armor
+	{ id = 266, chance = 310 }, -- Health Potion
+	{ id = 3391, chance = 280 }, -- Crusader Helmet
+	{ id = 3322, chance = 240 }, -- Dragon Hammer
+	{ id = 818, chance = 200 }, -- Magma Boots
+	{ id = 7395, chance = 140 }, -- Orc Trophy
+	{ id = 3049, chance = 110 }, -- Stealth Ring
 }
 
 monster.attacks = {

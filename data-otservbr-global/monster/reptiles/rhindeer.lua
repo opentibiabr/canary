@@ -76,19 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 72260, maxCount = 30 },
-	{ name = "brown crystal splinter", chance = 11550, maxCount = 4 },
-	{ name = "rhindeer antlers", chance = 6020 },
-	{ name = "rainbow quartz", chance = 4940, maxCount = 2 },
-	{ name = "great mana potion", chance = 2670, maxCount = 4 },
-	{ name = "titan axe", chance = 2470 },
-	{ name = "yellow gem", chance = 1880 },
-	{ name = "knight armor", chance = 1380 },
-	{ name = "violet gem", chance = 1200 },
-	{ id = 23543, chance = 890 }, -- collar of green plasma
-	{ name = "heavy mace", chance = 300 },
-	{ name = "mastermind shield", chance = 400 },
-	{ id = 3053, chance = 690 }, -- time ring
+	{ id = 3035, chance = 72000, maxCount = 20 }, -- Platinum Coin
+	{ id = 16123, chance = 8800, maxCount = 7 }, -- Brown Crystal Splinter
+	{ id = 40587, chance = 7400 }, -- Rhindeer Antlers
+	{ id = 3036, chance = 4500 }, -- Violet Gem
+	{ id = 25737, chance = 3700, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 238, chance = 2900, maxCount = 4 }, -- Great Mana Potion
+	{ id = 3037, chance = 2100 }, -- Yellow Gem
+	{ id = 7413, chance = 1100 }, -- Titan Axe
+	{ id = 3053, chance = 800 }, -- Time Ring
+	{ id = 3370, chance = 800 }, -- Knight Armor
+	{ id = 3414, chance = 530 }, -- Mastermind Shield
+	{ id = 23543, chance = 270 }, -- Collar of Green Plasma
+	{ id = 3340, chance = 610 }, -- Heavy Mace
 }
 
 monster.attacks = {

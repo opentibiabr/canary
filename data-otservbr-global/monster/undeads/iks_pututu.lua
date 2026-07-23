@@ -74,17 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 89 },
-	{ name = "platinum coin", chance = 100000, maxCount = 3 },
-	{ id = 281, chance = 7100 }, -- giant shimmering pearl (green)
-	{ name = "tiger eye", chance = 6910 },
-	{ name = "strong mana potion", chance = 6360, maxCount = 2 },
-	{ name = "small sapphire", chance = 5810, maxCount = 3 },
-	{ name = "spellbook of enlightenment", chance = 1920 },
-	{ name = "opal", chance = 1850 },
-	{ name = "gold-brocaded cloth", chance = 1780 },
-	{ name = "gold ingot", chance = 960 },
-	{ name = "broken iks headpiece", chance = 70 },
+	{ id = 3031, chance = 78000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 39000, maxCount = 4 }, -- Platinum Coin
+	{ id = 281, chance = 7600 }, -- Giant Shimmering Pearl (Green)
+	{ id = 24961, chance = 7000 }, -- Tiger Eye
+	{ id = 3029, chance = 6200, maxCount = 3 }, -- Small Sapphire
+	{ id = 237, chance = 4800, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 8072, chance = 1800 }, -- Spellbook of Enlightenment
+	{ id = 22194, chance = 1800 }, -- Opal
+	{ id = 9058, chance = 1600 }, -- Gold Ingot
+	{ id = 40527, chance = 1500 }, -- Rotten Feather
+	{ id = 40529, chance = 1400 }, -- Gold-Brocaded Cloth
+	{ id = 40528, chance = 1200 }, -- Ritual Tooth
+	{ id = 50150, chance = 910 }, -- Ring of Orange Plasma
+	{ id = 3081, chance = 710 }, -- Stone Skin Amulet
+	{ id = 40534, chance = 40 }, -- Broken Iks Sandals
+	{ id = 40531, chance = 40 }, -- Broken Iks Faulds
+	{ id = 40532, chance = 20 }, -- Broken Iks Headpiece
 }
 
 monster.attacks = {

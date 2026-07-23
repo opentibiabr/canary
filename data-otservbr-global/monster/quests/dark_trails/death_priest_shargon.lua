@@ -81,14 +81,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 99 }, -- gold coin
-	{ id = 239, chance = 100000, maxCount = 3 }, -- great health potion
-	{ id = 3069, chance = 100000 }, -- necrotic rod
-	{ id = 3035, chance = 100000, maxCount = 13 }, -- platinum coin
-	{ id = 238, chance = 10000, maxCount = 4 }, -- great mana potion
-	{ id = 9058, chance = 25000 }, -- gold ingot
-	{ id = 9056, chance = 9090 }, -- black skull
-	{ id = 8531, chance = 9090 }, -- blood goblet
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3069, chance = 100000 }, -- Necrotic Rod
+	{ id = 3035, chance = 100000, maxCount = 15 }, -- Platinum Coin
+	{ id = 239, chance = 51000, maxCount = 5 }, -- Great Health Potion
+	{ id = 238, chance = 46000, maxCount = 5 }, -- Great Mana Potion
+	{ id = 37335, chance = 25000 }, -- black skull
+	{ id = 9058, chance = 23000 }, -- Gold Ingot
+	{ id = 8531, chance = 5100 }, -- Blood Goblet
+	{ id = 3002, chance = 1100 }, -- Voodoo Doll
+	{ id = 8899, chance = 1100 }, -- Slightly Rusted Legs
+	{ id = 8896, chance = 890 }, -- Slightly Rusted Armor
+	{ id = 9056, chance = 24620 }, -- Black Skull (Item)
 }
 
 monster.attacks = {

@@ -76,34 +76,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 25 },
-	{ name = "ultimate health potion", chance = 15360, maxCount = 4 },
-	{ name = "gold ingot", chance = 14130, maxCount = 2 },
-	{ name = "green crystal shard", chance = 6420, maxCount = 3 },
-	{ name = "red crystal fragment", chance = 5830, maxCount = 3 },
-	{ name = "girtablilu warrior carapace", chance = 4650, maxCount = 1 },
-	{ name = "cyan crystal fragment", chance = 4530, maxCount = 3 },
-	{ name = "scorpion charm", chance = 4240 },
-	{ name = "green gem", chance = 4060 },
-	{ name = "violet gem", chance = 3410 },
-	{ name = "blue crystal shard", chance = 2880, maxCount = 3 },
-	{ name = "crowbar", chance = 2830 },
-	{ name = "diamond sceptre", chance = 2590 },
-	{ name = "violet crystal shard", chance = 2470 },
-	{ name = "yellow gem", chance = 2350 },
-	{ name = "ice rapier", chance = 2240 },
-	{ name = "magma coat", chance = 2180 },
-	{ name = "epee", chance = 2120 },
-	{ name = "dragonbone staff", chance = 2000 },
-	{ name = "knight axe", chance = 2000 },
-	{ name = "beastslayer axe", chance = 1940 },
-	{ name = "green crystal fragment", chance = 1710 },
-	{ name = "blue gem", chance = 1530 },
-	{ id = 3039, chance = 1530 }, -- red gem
-	{ name = "blue robe", chance = 1060 },
-	{ name = "focus cape", chance = 1060 },
-	{ name = "fur armor", chance = 820 },
-	{ name = "glacier robe", chance = 650 },
+	{ id = 3035, chance = 74000, maxCount = 16 }, -- Platinum Coin
+	{ id = 7643, chance = 15700, maxCount = 4 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 14000 }, -- Gold Ingot
+	{ id = 16121, chance = 6200 }, -- Green Crystal Shard
+	{ id = 16125, chance = 5500 }, -- Cyan Crystal Fragment
+	{ id = 36822, chance = 4500 }, -- Scorpion Charm
+	{ id = 3036, chance = 4200 }, -- Violet Gem
+	{ id = 3304, chance = 3400 }, -- Crowbar
+	{ id = 3038, chance = 3200 }, -- Green Gem
+	{ id = 16126, chance = 3200 }, -- Red Crystal Fragment
+	{ id = 3037, chance = 2800 }, -- Yellow Gem
+	{ id = 36971, chance = 2600 }, -- Girtablilu Warrior Carapace
+	{ id = 3039, chance = 2500 }, -- Red Gem
+	{ id = 826, chance = 2300 }, -- Magma Coat
+	{ id = 3326, chance = 2300 }, -- Epee
+	{ id = 16119, chance = 2300 }, -- Blue Crystal Shard
+	{ id = 3041, chance = 2100 }, -- Blue Gem
+	{ id = 16120, chance = 2100 }, -- Violet Crystal Shard
+	{ id = 3284, chance = 1900 }, -- Ice Rapier
+	{ id = 7387, chance = 1900 }, -- Diamond Sceptre
+	{ id = 3344, chance = 1700 }, -- Beastslayer Axe
+	{ id = 16127, chance = 1700 }, -- Green Crystal Fragment
+	{ id = 3318, chance = 1500 }, -- Knight Axe
+	{ id = 3567, chance = 1300 }, -- Blue Robe
+	{ id = 8043, chance = 1300 }, -- Focus Cape
+	{ id = 7430, chance = 1100 }, -- Dragonbone Staff
+	{ id = 22085, chance = 750 }, -- Fur Armor
+	{ id = 824, chance = 750 }, -- Glacier Robe
 }
 
 monster.attacks = {

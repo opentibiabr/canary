@@ -72,27 +72,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "the skull of a beast", chance = 400 },
-	{ name = "figurine of spite", chance = 400 },
-	{ name = "spite's spirit", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 3043, chance = 100000, maxCount = 100 }, -- Crystal Coin
+	{ id = 23374, chance = 67000, maxCount = 173 }, -- Ultimate Spirit Potion
+	{ id = 32623, chance = 67000 }, -- Giant Topaz
+	{ id = 3036, chance = 56000 }, -- Violet Gem
+	{ id = 23373, chance = 56000, maxCount = 165 }, -- Ultimate Mana Potion
+	{ id = 3039, chance = 44000 }, -- Red Gem
+	{ id = 23375, chance = 44000, maxCount = 137 }, -- Supreme Health Potion
+	{ id = 49271, chance = 44000, maxCount = 48 }, -- Transcendence Potion
+	{ id = 7443, chance = 33000, maxCount = 31 }, -- Bullseye Potion
+	{ id = 3041, chance = 22000 }, -- Blue Gem
+	{ id = 3037, chance = 22000 }, -- Yellow Gem
+	{ id = 3038, chance = 22000 }, -- Green Gem
+	{ id = 7440, chance = 22000, maxCount = 37 }, -- Mastermind Potion
+	{ id = 281, chance = 22000 }, -- Giant Shimmering Pearl
+	{ id = 30059, chance = 22000 }, -- Giant Ruby
+	{ id = 9058, chance = 11100 }, -- Gold Ingot
+	{ id = 32622, chance = 11100 }, -- Giant Amethyst
+	{ id = 33926, chance = 11100 }, -- Spite's Spirit
 }
 
 monster.attacks = {

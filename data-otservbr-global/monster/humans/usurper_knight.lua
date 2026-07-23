@@ -79,18 +79,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 89725, maxCount = 5 },
-	{ name = "leather legs", chance = 27060 },
-	{ name = "meat", chance = 16582 },
-	{ name = "lion cloak patch", chance = 11190 },
-	{ name = "violet gem", chance = 6002 },
-	{ name = "gold ingot", chance = 5799 },
-	{ name = "lion crest", chance = 5697 },
-	{ name = "knight legs", chance = 5290 },
-	{ name = "great mana potion", chance = 4680 },
-	{ name = "blue gem", chance = 4171 },
-	{ name = "green gem", chance = 2238 },
-	{ name = "magma legs", chance = 610 },
+	{ id = 3035, chance = 89000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3559, chance = 27000 }, -- Leather Legs
+	{ id = 3577, chance = 15000 }, -- Meat
+	{ id = 34162, chance = 10400 }, -- Lion Cloak Patch
+	{ id = 34160, chance = 5800 }, -- Lion Crest
+	{ id = 3036, chance = 5600 }, -- Violet Gem
+	{ id = 3371, chance = 5300 }, -- Knight Legs
+	{ id = 9058, chance = 5000 }, -- Gold Ingot
+	{ id = 3041, chance = 3900 }, -- Blue Gem
+	{ id = 238, chance = 3800 }, -- Great Mana Potion
+	{ id = 3038, chance = 1900 }, -- Green Gem
+	{ id = 821, chance = 980 }, -- Magma Legs
+	{ id = 50152, chance = 900 }, -- Collar of Orange Plasma
 }
 
 monster.attacks = {

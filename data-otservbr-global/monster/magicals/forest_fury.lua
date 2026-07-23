@@ -79,15 +79,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 87250, maxCount = 53 },
-	{ name = "crossbow", chance = 2750 },
-	{ name = "bolt", chance = 48270, maxCount = 15 },
-	{ name = "meat", chance = 24930 },
-	{ name = "piercing bolt", chance = 14900, maxCount = 5 },
-	{ name = "elvish bow", chance = 90 },
-	{ name = "small topaz", chance = 470 },
-	{ name = "elven hoof", chance = 7030 },
-	{ name = "venison", chance = 13210 },
+	{ id = 3031, chance = 88000, maxCount = 55 }, -- Gold Coin
+	{ id = 3446, chance = 51000, maxCount = 15 }, -- Bolt
+	{ id = 3577, chance = 25000 }, -- Meat
+	{ id = 7363, chance = 14900, maxCount = 5 }, -- Piercing Bolt
+	{ id = 18995, chance = 12100 }, -- Venison
+	{ id = 18994, chance = 7400 }, -- Elven Hoof
+	{ id = 3349, chance = 2600 }, -- Crossbow
+	{ id = 9057, chance = 490 }, -- Small Topaz
+	{ id = 7438, chance = 86 }, -- Elvish Bow
 }
 
 monster.attacks = {

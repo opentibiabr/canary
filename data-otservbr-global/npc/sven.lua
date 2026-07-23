@@ -69,19 +69,31 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "barbarian") and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) < 1 then
+	local questline = player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline)
+	local totalSips = player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.MeadTotalSips)
+	-- A honeycomb may only buy a new round when none is active: before the first
+	-- round (questline 1) or once the 20 sips of the current one are used up.
+	local canStartMeadRound = questline == 1 or (questline == 2 and totalSips >= 20)
+
+	if MsgContains(message, "barbarian") and questline < 1 then
 		npcHandler:say("A true barbarian is something special among our people. Everyone who wants to become a barbarian will have to pass the barbarian {test}.", npc, creature)
 		npcHandler:setTopic(playerId, 1)
-	elseif MsgContains(message, "test") then
+	elseif (MsgContains(message, "test") or MsgContains(message, "mission") or MsgContains(message, "mammoth")) and questline >= 8 then
+		npcHandler:say("You have braved all three tests and are now an honorary barbarian.", npc, creature)
+		npcHandler:setTopic(playerId, 0)
+	elseif MsgContains(message, "join") then
+		npcHandler:say("You might become an honorary barbarian if you manage to pass the barbarian test.", npc, creature)
+		npcHandler:setTopic(playerId, 0)
+	elseif MsgContains(message, "test") and questline < 1 then
 		npcHandler:say({
 			"All of our juveniles have to take the barbarian test to become a true member of our community. Foreigners who manage to master the test are granted the title of an honorary barbarian and the respect of our people ...",
 			"Are you willing to take the barbarian test?",
 		}, npc, creature)
 		npcHandler:setTopic(playerId, 2)
-	elseif MsgContains(message, "mead") and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 1 then
+	elseif MsgContains(message, "mead") and canStartMeadRound then
 		npcHandler:say("Do you have some honey with you?", npc, creature)
 		npcHandler:setTopic(playerId, 4)
-	elseif MsgContains(message, "barbarian mead") and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 3 then
+	elseif MsgContains(message, "mead") and questline == 3 then
 		npcHandler:say({
 			"An impressive start. Here, take your own mead horn to fill it at the mead bucket as often as you like ...",
 			"But there is much left to be done. Your next test will be to hug a bear ...",
@@ -93,7 +105,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:addItem(7140, 1)
 		npcHandler:setTopic(playerId, 0)
 	elseif MsgContains(message, "hug") then
-		if player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 5 then
+		if questline == 5 then
 			npcHandler:say({
 				"Amazing. That was as clever and brave as a barbarian is supposed to be. But a barbarian also has to be strong and fearless. To prove that you will have to knock over a mammoth ...",
 				"Did your face just turn into the color of fresh snow? However, you will find a lonely mammoth north west of the town in the wilderness. Knock it over to prove to be a true barbarian ...",
@@ -104,7 +116,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "mammoth") then
-		if player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 7 then
+		if questline == 7 then
 			npcHandler:say({
 				"As you have passed all three tests, I welcome you in our town as an honorary barbarian. You can now become a citizen. Don't forget to talk to the people here. Some of them might need some help ...",
 				"We usually solve our problems on our own but some of the people might have a mission for you. Old Iskan, on the ice in the northern part of the town had some trouble with his dogs lately.",
@@ -114,7 +126,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") then
-		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKillStatus) == 1 and player:getStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline) == 8 then
+		if player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKillStatus) == 1 and questline == 8 then
 			if player:removeMoneyBank(player:getStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKill) * 1500) then
 				npcHandler:say("Alright, we are even!", npc, creature)
 				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.HuskyKillStatus, 0)
@@ -137,16 +149,20 @@ local function creatureSayCallback(npc, creature, type, message)
 				"Therefore, you have to get your own honey. You'll probably need more than one try so better get some extra honeycombs. Then talk to me again about barbarian {mead}.",
 			}, npc, creature)
 			npcHandler:setTopic(playerId, 0)
-			player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline, 1)
-			player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 1)
-			player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Mission01, 1) -- Questlog Barbarian Test Quest Barbarian Test 1: Barbarian Booze
+			-- Guard: the intro may only start the quest, never reset a player who already has progress.
+			if questline < 1 then
+				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline, 1)
+				player:setStorageValue(Storage.Quest.U8_0.TheIceIslands.Questline, 1)
+				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Mission01, 1) -- Questlog Barbarian Test Quest Barbarian Test 1: Barbarian Booze
+			end
 		elseif npcHandler:getTopic(playerId) == 4 then
-			if player:removeItem(5902, 1) then
+			if canStartMeadRound and player:removeItem(5902, 1) then
 				npcHandler:say("Good, for this honeycomb I allow you 20 sips from the mead bucket over there. Talk to me again about barbarian mead if you have passed the test.", npc, creature)
 				npcHandler:setTopic(playerId, 0)
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Questline, 2)
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.Mission01, 2) -- Questlog Barbarian Test Quest Barbarian Test 1: Barbarian Booze
 				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.MeadTotalSips, 0)
+				player:setStorageValue(Storage.Quest.U8_0.BarbarianTest.MeadSuccessSips, 0)
 			end
 		end
 	elseif MsgContains(message, "no") then

@@ -6058,6 +6058,9 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
+		if (!chaseMode) {
+			resetMovementState();
+		}
 		checkCreatureAttack();
 	}
 	return true;

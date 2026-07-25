@@ -159,7 +159,6 @@ bool ConfigManager::load() {
 	loadBoolConfig(L, TOGGLE_SAVE_ASYNC, "toggleSaveAsync", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL_CLEAN_MAP, "toggleSaveIntervalCleanMap", false);
 	loadBoolConfig(L, TOGGLE_SAVE_INTERVAL, "toggleSaveInterval", false);
-	loadBoolConfig(L, TOGGLE_SERVER_IS_RETRO, "toggleServerIsRetroPVP", false);
 	loadBoolConfig(L, TOGGLE_TRAVELS_FREE, "toggleTravelsFree", false);
 	loadBoolConfig(L, TOGGLE_WHEELSYSTEM, "wheelSystemEnabled", true);
 	loadBoolConfig(L, USE_ANY_DATAPACK_FOLDER, "useAnyDatapackFolder", false);
@@ -411,7 +410,7 @@ bool ConfigManager::load() {
 	loadStringConfig(L, STORE_IMAGES_URL, "coinImagesURL", "");
 	loadStringConfig(L, TIBIADROME_CONCOCTION_TICK_TYPE, "tibiadromeConcoctionTickType", "online");
 	loadStringConfig(L, URL, "url", "");
-	loadStringConfig(L, WORLD_TYPE, "worldType", "pvp");
+	loadStringConfig(L, WORLD_TYPE, "worldType", "retro-pvp");
 	loadStringConfig(L, LOGLEVEL, "logLevel", "info");
 	loadStringConfig(L, LUA_API_DOCS_OUTPUT_DIRECTORY, "luaApiDocsOutputDirectory", "docs/lua-api");
 

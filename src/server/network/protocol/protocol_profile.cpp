@@ -212,7 +212,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = tibia1100InitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::ExpertPvpModeByte),
 		.name = "tibia1100",
 		.supportLabel = "10x",
 	};

@@ -45,6 +45,10 @@
 #endif
 
 namespace {
+	constexpr auto expertPvpWorldType = "expert-pvp";
+	constexpr auto legacyRetroPvpWorldType = "pvp";
+	constexpr auto retroPvpWorldType = "retro-pvp";
+
 	[[nodiscard]] constexpr std::string_view getLuaRuntimeDisplayVersion() {
 #if defined(LUAJIT_VERSION)
 		constexpr std::string_view version = LUAJIT_VERSION;
@@ -313,7 +317,7 @@ int CanaryServer::run() {
 
 void CanaryServer::setWorldType() {
 	const std::string worldType = asLowerCaseString(g_configManager().getString(WORLD_TYPE));
-	if (worldType == "pvp") {
+	if (worldType == expertPvpWorldType || worldType == legacyRetroPvpWorldType || worldType == retroPvpWorldType) {
 		g_game().setWorldType(WORLD_TYPE_PVP);
 	} else if (worldType == "no-pvp") {
 		g_game().setWorldType(WORLD_TYPE_NO_PVP);
@@ -322,13 +326,14 @@ void CanaryServer::setWorldType() {
 	} else {
 		throw FailedToInitializeCanary(
 			fmt::format(
-				"Unknown world type: {}, valid world types are: pvp, no-pvp and pvp-enforced",
+				"Unknown world type: {}, valid world types are: expert-pvp, retro-pvp, pvp, no-pvp and pvp-enforced",
 				g_configManager().getString(WORLD_TYPE)
 			)
 		);
 	}
 
-	logger.info("World type set as {}", asUpperCaseString(worldType));
+	const auto displayWorldType = worldType == legacyRetroPvpWorldType ? std::string(retroPvpWorldType) : worldType;
+	logger.info("World type set as {}", asUpperCaseString(displayWorldType));
 }
 
 void CanaryServer::loadMaps() const {

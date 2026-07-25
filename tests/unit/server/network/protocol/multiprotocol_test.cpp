@@ -76,14 +76,18 @@ TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {
 	EXPECT_EQ(860, otcv8->clientVersion);
 	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(vanilla->hasFeature(ProtocolFeature::RequiresItemMapper));
+	EXPECT_FALSE(vanilla->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(shippedExtendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_TRUE(shippedExtendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_FALSE(shippedExtendedAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
+	EXPECT_FALSE(shippedExtendedAssets->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
 	EXPECT_TRUE(extendedAssets->hasFeature(ProtocolFeature::ExtendedSpriteFiles));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::MagicEffectU16));
 	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::RequiresItemMapper));
+	EXPECT_FALSE(extendedAssets->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(otcv8->hasFeature(ProtocolFeature::InlineLoginBugReportFlag));
+	EXPECT_FALSE(otcv8->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(vanilla->id));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(shippedExtendedAssets->id));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(extendedAssets->id));
@@ -137,7 +141,9 @@ TEST(ProtocolProfileRegistryTest, CurrentAnd1100UseDifferentInitialWireBehavior)
 	ASSERT_NE(nullptr, tibia1100);
 	EXPECT_NE(current.id, tibia1100->id);
 	EXPECT_FALSE(current.initialBehavior.hasSameWireBehavior(tibia1100->initialBehavior));
+	EXPECT_FALSE(current.hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::OldProtocolCompat));
+	EXPECT_TRUE(tibia1100->hasFeature(ProtocolFeature::ExpertPvpModeByte));
 	EXPECT_TRUE(ProtocolProfileRegistry::isProfileAllowed(tibia1100->id));
 }
 

@@ -6118,7 +6118,10 @@ void Player::setChaseMode(bool mode) {
 			}
 		} else if (attackedCreature) {
 			setFollowCreature(nullptr);
-			cancelNextWalk = true;
+			listWalkDir.clear();
+			stopEventWalk();
+			cancelNextWalk = false;
+			onWalkAborted();
 		}
 	}
 }

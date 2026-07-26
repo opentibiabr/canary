@@ -6058,12 +6058,6 @@ bool Player::setAttackedCreature(const std::shared_ptr<Creature> &creature) {
 	}
 
 	if (creature) {
-		if (!chaseMode) {
-			listWalkDir.clear();
-			stopEventWalk();
-			cancelNextWalk = false;
-			onWalkAborted();
-		}
 		checkCreatureAttack();
 	}
 	return true;

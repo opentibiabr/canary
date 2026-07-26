@@ -1,0 +1,47 @@
+min_version = "2026.5.15"
+
+[tools]
+cmake = "4.3.4"
+ninja = "1.13.2"
+sccache = "0.14.0"
+python = "3.14.6"
+
+[env]
+VCPKG_ROOT = "{{config_root}}/.tools/vcpkg"
+CMAKE_GENERATOR = "Ninja"
+
+[tasks.bootstrap]
+description = "Install the pinned vcpkg toolchain"
+run = "python .github/scripts/bootstrap_vcpkg.py"
+
+[tasks.configure]
+description = "Configure a CMake preset"
+depends = ["bootstrap"]
+usage = 'arg "<preset>" default="macos-release"'
+run = "cmake --preset ${usage_preset}"
+
+[tasks.build]
+description = "Build a CMake preset"
+depends = ["bootstrap"]
+usage = 'arg "<preset>" default="macos-release"'
+run = "cmake --build --preset ${usage_preset}"
+
+[tasks.test]
+description = "Run a CTest preset"
+depends = ["bootstrap"]
+usage = 'arg "<preset>" default="macos-debug"'
+run = "ctest --preset ${usage_preset}"
+
+[tasks.install]
+description = "Install a configured native build tree"
+depends = ["bootstrap"]
+usage = 'arg "<preset>" default="macos-release"'
+run = "cmake --install build/${usage_preset} --prefix build/${usage_preset}/install"
+
+[tasks.check]
+description = "Validate the build-system contract"
+run = "python .github/scripts/test_validate_build_system.py"
+
+[tasks.cache-stats]
+description = "Show shared compiler-cache statistics"
+run = "sccache --show-stats"

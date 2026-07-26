@@ -133,26 +133,12 @@ Recommended for engine contributors.
 
 ## Required Software
 
-### Linux
+Install Git, a supported C++ compiler, and [mise](https://mise.jdx.dev/).
+The repository's `.mise.toml` installs the pinned CMake, Ninja, Python, and
+sccache versions used by CI.
 
-```bash
-git
-gcc/g++
-cmake
-ninja
-vcpkg
-```
-
-### Windows
-
-```text
-Visual Studio
-Desktop Development with C++
-Git
-vcpkg
-```
-
-Canary uses **vcpkg** as its dependency manager and **CMake** as the build system.
+Linux requires GCC or Clang. Windows requires Visual Studio with Desktop
+Development with C++.
 
 ---
 
@@ -163,9 +149,13 @@ git clone https://github.com/opentibiabr/canary.git
 cd canary
 ```
 
-Canary does not require Git submodules for the normal development workflow.
-Configure vcpkg separately and make sure `VCPKG_ROOT` points to that vcpkg
-installation before using CMake presets.
+Canary does not require Git submodules. Install the pinned tools and vcpkg
+checkout from the repository root:
+
+```bash
+mise install
+mise run bootstrap
+```
 
 ---
 
@@ -193,34 +183,25 @@ Never commit personal configuration changes.
 
 # Build System
 
-## CMake Presets
-
-Canary provides predefined presets.
-
-Examples:
+Use the tasks in `.mise.toml` so local builds use the same tool versions as CI:
 
 ```bash
-cmake --preset linux-debug
-cmake --preset linux-release
-cmake --preset windows-debug
-cmake --preset windows-release
+mise run configure linux-debug
+mise run build linux-debug
+mise run test linux-debug
 ```
 
-Advantages:
-
-* Consistent builds
-* Standard compiler flags
-* Shared developer experience
+Replace `linux-debug` with another preset from `CMakePresets.json` as needed.
+The underlying CMake commands remain available for IDE integration and
+advanced use.
 
 ---
 
 # Building Canary
 
-## Linux
-
 ```bash
-cmake --preset linux-release -DTOGGLE_BIN_FOLDER=ON
-cmake --build --preset linux-release -j4
+mise run configure linux-release
+mise run build linux-release
 ```
 
 ## Windows

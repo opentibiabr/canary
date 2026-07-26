@@ -92,18 +92,16 @@ Development builds can be downloaded from GitHub Actions artifacts. They are use
 
 ## Running Tests
 
-Tests can be run directly from the repository root using CMake test presets:
+Tests can be run from the repository root using the tool versions and tasks
+pinned in `.mise.toml`:
 
 ```bash
-# Configure and build tests for your platform
-cmake --preset linux-debug && cmake --build --preset linux-debug
+mise install
+mise run configure linux-debug
+mise run build linux-debug
+mise run test linux-debug
 
-# Run all tests
-ctest --preset linux-debug
-
-# For other platforms use:
-# ctest --preset macos-debug
-# ctest --preset windows-debug
+# Replace linux-debug with macos-debug or windows-debug as needed.
 ```
 
 For detailed testing information including adding tests and framework usage, see [tests/README.md](tests/README.md).

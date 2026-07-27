@@ -9,6 +9,10 @@
 
 #pragma once
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
+
 #include "enums/weapon_proficiency.hpp"
 #include "creatures/creatures_definitions.hpp"
 #include "utils/hash.hpp"
@@ -49,7 +53,12 @@ public:
 	std::vector<ProficiencyPerk> getSelectedPerks(uint16_t itemId) const;
 	std::vector<ShapedProficiencyPerk> getShapedPerks(uint16_t weaponId) const;
 	void clearSelectedPerks(uint16_t weaponId);
-	bool clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult shapePerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult refineShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult maximizeShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult reshapeShapedPerk(uint8_t level, uint8_t perkIndex, std::vector<ShapedProficiencyPerk> &offers, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult selectReshapeOption(uint8_t level, uint8_t perkIndex, const std::optional<ShapedProficiencyPerk> &offer, uint16_t weaponId = 0);
+	WeaponProficiencyShapingResult clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
 	void setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId = 0);
 	std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> getActiveAugments(uint16_t weaponId = 0);
 	const std::vector<uint32_t> &getExperienceArray(uint16_t weaponId) const;
@@ -127,6 +136,11 @@ public:
 	[[nodiscard]] std::optional<std::pair<uint8_t, double>> getActiveElementalCriticalType(WeaponProficiencyBonus_t criticalType) const;
 	[[nodiscard]] std::vector<std::pair<CombatType_t, double_t>> getActiveElementalPierces() const;
 
+	[[nodiscard]] static std::vector<uint16_t> getShapingPerkPool(uint16_t vocationId);
+	[[nodiscard]] static std::optional<ProficiencyPerk> getShapedPerkDefinition(uint16_t perkId, uint8_t rank, skills_t highestCombatSkill);
+	[[nodiscard]] static uint16_t getShapingSlotCost(size_t currentShapedPerks);
+	[[nodiscard]] static uint16_t getShapingRefineCost(uint8_t currentRank);
+
 	void clearAllStats();
 
 private:
@@ -139,6 +153,10 @@ private:
 	[[nodiscard]] size_t getUnlockedLevelCount(uint16_t weaponId) const;
 	[[nodiscard]] std::vector<ProficiencyPerk> collectValidSelectedPerks(uint16_t weaponId) const;
 	[[nodiscard]] std::vector<ShapedProficiencyPerk> collectValidShapedPerks(uint16_t weaponId) const;
+	[[nodiscard]] std::vector<ProficiencyPerk> getEffectivePerks(uint16_t weaponId) const;
+	[[nodiscard]] skills_t getHighestCombatSkill() const;
+	[[nodiscard]] bool isSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId) const;
+	void refreshEquippedWeapon(uint16_t weaponId);
 	void normalizeStoredState(uint16_t weaponId);
 
 	Player &m_player;

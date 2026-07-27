@@ -12,7 +12,9 @@
 #include <limits>
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
 	#include <optional>
+	#include <string_view>
 	#include <variant>
 #endif
 
@@ -52,6 +54,62 @@ namespace {
 	constexpr int32_t MIN_TRACKED_SKILL = static_cast<int32_t>(SKILL_FIRST);
 	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
 	constexpr size_t MASTERY_EXPERIENCE_OFFSET = 2;
+	constexpr uint8_t MAX_SHAPED_PERK_RANK = 10;
+	constexpr uint16_t LUNAR_ASCENSION_ORB_ID = 53695;
+	constexpr uint16_t RESHAPE_DUST_COST = 250;
+	constexpr uint8_t RESHAPE_OFFER_COUNT = 3;
+	// CipSoft only documents this as a "small chance"; keep the server policy explicit until exact odds are published.
+	constexpr uint8_t HIGHER_INITIAL_RANK_CHANCE_PERCENT = 5;
+
+	constexpr std::array<uint16_t, 34> COMMON_SHAPING_PERK_IDS = {
+		251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261,
+		262, 263, 264, 265, 266, 267, 268, 269, 270, 271,
+		281, 282, 283, 284, 285, 286, 287,
+		291, 292, 293,
+		321, 322, 323,
+	};
+
+	constexpr std::array<std::string_view, 21> BESTIARY_SHAPING_NAMES = {
+		"Amphibic", "Aquatic", "Bird", "Construct", "Demon", "Dragon", "Elemental",
+		"Fey", "Giant", "Human", "Humanoid", "Lycanthrope", "Magical", "Mammal",
+		"Plant", "Reptile", "Slime", "Undead", "Vermin", "Extra Dimensional", "Inkborn",
+	};
+
+	constexpr std::array<std::array<uint16_t, 6>, 5> VOCATION_SHAPING_SPELL_IDS = { {
+		{ 80, 105, 106, 59, 316, 261 },
+		{ 124, 302, 303, 258, 57, 122 },
+		{ 13, 24, 240, 260, 310, 23 },
+		{ 43, 120, 263, 262, 317, 318 },
+		{ 289, 288, 294, 287, 301, 290 },
+	} };
+
+	[[nodiscard]] double_t interpolateShapedPerkValue(double_t minimum, double_t maximum, uint8_t rank) {
+		return minimum + (maximum - minimum) * static_cast<double_t>(rank) / MAX_SHAPED_PERK_RANK;
+	}
+
+	[[nodiscard]] std::optional<std::pair<size_t, uint8_t>> getVocationAugmentCoordinates(uint16_t perkId) {
+		for (size_t vocationIndex = 0; vocationIndex < VOCATION_SHAPING_SPELL_IDS.size(); ++vocationIndex) {
+			const auto baseId = static_cast<uint16_t>(1 + vocationIndex * 50);
+			if (perkId < baseId || perkId > baseId + 45) {
+				continue;
+			}
+
+			const auto localId = static_cast<uint16_t>(perkId - baseId);
+			const auto spellIndex = static_cast<uint8_t>(localId % 10);
+			const auto augmentGroup = static_cast<uint8_t>(localId / 10);
+			if (spellIndex >= VOCATION_SHAPING_SPELL_IDS[vocationIndex].size() || augmentGroup > 4) {
+				return std::nullopt;
+			}
+
+			return std::make_pair(vocationIndex, static_cast<uint8_t>(augmentGroup * 10 + spellIndex));
+		}
+
+		return std::nullopt;
+	}
+
+	[[nodiscard]] uint8_t rollReshapeInitialRank() {
+		return uniform_random(1, 100) <= HIGHER_INITIAL_RANK_CHANCE_PERCENT ? 1 : 0;
+	}
 
 	// The 15.30 client asset still carries the pre-adjustment values for these server-side vocation changes.
 	[[nodiscard]] double_t getServerAdjustedSpellAugmentValue(const ProficiencyPerk &perk, WeaponProficiencyAugmentType augmentType) {
@@ -150,6 +208,146 @@ WeaponProficiency::WeaponProficiency(Player &player) :
 
 bool WeaponProficiency::isValidWeaponId(uint16_t weaponId) const {
 	return weaponId > 0 && weaponId < Item::items.size();
+}
+
+std::vector<uint16_t> WeaponProficiency::getShapingPerkPool(uint16_t vocationId) {
+	if (vocationId < VOCATION_KNIGHT_CIP || vocationId > VOCATION_MONK_CIP) {
+		return {};
+	}
+
+	std::vector<uint16_t> perkIds;
+	perkIds.reserve(64);
+	const auto vocationBaseId = static_cast<uint16_t>(1 + (vocationId - VOCATION_KNIGHT_CIP) * 50);
+	for (uint16_t augmentGroup = 0; augmentGroup < 5; ++augmentGroup) {
+		for (uint16_t spellIndex = 0; spellIndex < 6; ++spellIndex) {
+			perkIds.push_back(static_cast<uint16_t>(vocationBaseId + augmentGroup * 10 + spellIndex));
+		}
+	}
+	perkIds.insert(perkIds.end(), COMMON_SHAPING_PERK_IDS.begin(), COMMON_SHAPING_PERK_IDS.end());
+	return perkIds;
+}
+
+std::optional<ProficiencyPerk> WeaponProficiency::getShapedPerkDefinition(uint16_t perkId, uint8_t rank, skills_t highestCombatSkill) {
+	using enum WeaponProficiencyBonus_t;
+
+	if (rank > MAX_SHAPED_PERK_RANK) {
+		return std::nullopt;
+	}
+
+	ProficiencyPerk perk;
+	const auto setValue = [&perk, rank](WeaponProficiencyBonus_t type, double_t minimum, double_t maximum) {
+		perk.type = type;
+		perk.value = interpolateShapedPerkValue(minimum, maximum, rank);
+	};
+
+	if (perkId >= 251 && perkId <= 271) {
+		const auto bestiaryIndex = static_cast<size_t>(perkId - 251);
+		setValue(WEAPON_PROFICIENCY_BESTIARY, 0.005, 0.025);
+		perk.bestiaryId = static_cast<uint16_t>(bestiaryIndex + 1);
+		perk.bestiaryName = BESTIARY_SHAPING_NAMES[bestiaryIndex];
+		return perk;
+	}
+
+	switch (perkId) {
+		case 281:
+			setValue(RUNE_CRITICAL_HIT_CHANCE, 0.005, 0.015);
+			return perk;
+		case 282:
+			setValue(AUTO_ATTACK_CRITICAL_HIT_CHANCE, 0.005, 0.025);
+			return perk;
+		case 283:
+			setValue(RUNE_CRITICAL_EXTRA_DAMAGE, 0.02, 0.15);
+			return perk;
+		case 284:
+			setValue(AUTO_ATTACK_CRITICAL_EXTRA_DAMAGE, 0.03, 0.20);
+			return perk;
+		case 285:
+			setValue(LIFE_GAIN_ON_HIT, 2.0, 12.0);
+			return perk;
+		case 286:
+			setValue(MANA_GAIN_ON_KILL, 4.0, 24.0);
+			return perk;
+		case 287:
+			setValue(LIFE_GAIN_ON_KILL, 10.0, 50.0);
+			return perk;
+		case 291:
+			setValue(SKILL_PERCENTAGE_AUTO_ATTACK, 0.02, 0.10);
+			perk.skillId = highestCombatSkill;
+			return perk;
+		case 292:
+			setValue(SKILL_PERCENTAGE_SPELL_DAMAGE, 0.01, 0.08);
+			perk.skillId = highestCombatSkill;
+			return perk;
+		case 293:
+			setValue(SKILL_PERCENTAGE_SPELL_HEALING, 0.02, 0.10);
+			perk.skillId = highestCombatSkill;
+			return perk;
+		case 321:
+			setValue(ALPHA_STRIKE_EXTRA_DAMAGE, 0.02, 0.10);
+			return perk;
+		case 322:
+			setValue(OMEGA_STRIKE_EXTRA_DAMAGE, 0.005, 0.025);
+			return perk;
+		case 323:
+			setValue(ARMOR_PENETRATION, 0.04, 0.10);
+			return perk;
+		default:
+			break;
+	}
+
+	const auto augmentCoordinates = getVocationAugmentCoordinates(perkId);
+	if (!augmentCoordinates) {
+		return std::nullopt;
+	}
+
+	const auto [vocationIndex, encodedAugment] = *augmentCoordinates;
+	const auto augmentGroup = static_cast<uint8_t>(encodedAugment / 10);
+	const auto spellIndex = static_cast<uint8_t>(encodedAugment % 10);
+	perk.type = SPELL_AUGMENT;
+	perk.spellId = VOCATION_SHAPING_SPELL_IDS[vocationIndex][spellIndex];
+	switch (augmentGroup) {
+		case 0:
+			perk.augmentType = static_cast<uint8_t>(WeaponProficiencyAugmentType::CRITICAL_CHANCE);
+			perk.value = interpolateShapedPerkValue(0.01, 0.03, rank);
+			break;
+		case 1:
+			perk.augmentType = static_cast<uint8_t>(WeaponProficiencyAugmentType::CRITICAL_DAMAGE);
+			perk.value = interpolateShapedPerkValue(0.05, 0.20, rank);
+			break;
+		case 2:
+			perk.augmentType = static_cast<uint8_t>(WeaponProficiencyAugmentType::DAMAGE);
+			perk.value = interpolateShapedPerkValue(0.01, 0.03, rank);
+			break;
+		case 3:
+			perk.augmentType = static_cast<uint8_t>(WeaponProficiencyAugmentType::MANA_LEECH);
+			perk.value = interpolateShapedPerkValue(0.01, 0.06, rank);
+			break;
+		case 4:
+			perk.augmentType = static_cast<uint8_t>(WeaponProficiencyAugmentType::LIFE_LEECH);
+			perk.value = interpolateShapedPerkValue(0.01, 0.12, rank);
+			break;
+		default:
+			return std::nullopt;
+	}
+
+	return perk;
+}
+
+uint16_t WeaponProficiency::getShapingSlotCost(size_t currentShapedPerks) {
+	if (currentShapedPerks == 0) {
+		return 250;
+	}
+	if (currentShapedPerks == 1) {
+		return 1000;
+	}
+	return 0;
+}
+
+uint16_t WeaponProficiency::getShapingRefineCost(uint8_t currentRank) {
+	if (currentRank >= MAX_SHAPED_PERK_RANK) {
+		return 0;
+	}
+	return static_cast<uint16_t>(125 + 75 * currentRank);
 }
 
 static void registerPerks(const nlohmann::json &perksJson, ProficiencyLevel &proficiencyLevel) {
@@ -567,7 +765,7 @@ std::vector<ValueWrapper> WeaponProficiency::serializeShapedPerks(const std::vec
 void WeaponProficiency::applyPerks(uint16_t weaponId, bool sendSkillUpdate /* = true */) {
 	using enum WeaponProficiencyBonus_t;
 
-	const auto &perks = getSelectedPerks(weaponId);
+	const auto &perks = getEffectivePerks(weaponId);
 	for (const auto &selectedPerk : perks) {
 		switch (selectedPerk.type) {
 			case SPELL_AUGMENT: {
@@ -710,6 +908,62 @@ std::vector<ShapedProficiencyPerk> WeaponProficiency::getShapedPerks(uint16_t we
 	return collectValidShapedPerks(weaponId);
 }
 
+std::vector<ProficiencyPerk> WeaponProficiency::getEffectivePerks(uint16_t weaponId) const {
+	auto selectedPerks = collectValidSelectedPerks(weaponId);
+	const auto shapedPerks = collectValidShapedPerks(weaponId);
+	const auto highestCombatSkill = getHighestCombatSkill();
+	for (auto &selectedPerk : selectedPerks) {
+		const auto shapedIt = std::ranges::find_if(shapedPerks, [&selectedPerk](const auto &shapedPerk) {
+			return shapedPerk.level == selectedPerk.level && shapedPerk.index == selectedPerk.index;
+		});
+		if (shapedIt == shapedPerks.end()) {
+			continue;
+		}
+
+		auto shapedDefinition = getShapedPerkDefinition(shapedIt->perkId, shapedIt->rank, highestCombatSkill);
+		if (!shapedDefinition) {
+			continue;
+		}
+
+		shapedDefinition->level = selectedPerk.level;
+		shapedDefinition->index = selectedPerk.index;
+		selectedPerk = std::move(*shapedDefinition);
+	}
+
+	return selectedPerks;
+}
+
+skills_t WeaponProficiency::getHighestCombatSkill() const {
+	constexpr std::array<skills_t, 6> combatSkills = {
+		SKILL_FIST,
+		SKILL_CLUB,
+		SKILL_SWORD,
+		SKILL_AXE,
+		SKILL_DISTANCE,
+		SKILL_MAGLEVEL,
+	};
+
+	return *std::ranges::max_element(combatSkills, [this](skills_t lhs, skills_t rhs) {
+		return m_player.getSkillLevel(lhs) < m_player.getSkillLevel(rhs);
+	});
+}
+
+bool WeaponProficiency::isSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId) const {
+	const auto selectedPerks = collectValidSelectedPerks(weaponId);
+	return std::ranges::any_of(selectedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+}
+
+void WeaponProficiency::refreshEquippedWeapon(uint16_t weaponId) {
+	if (m_player.getWeaponId(true) != weaponId) {
+		return;
+	}
+
+	clearAllStats();
+	applyPerks(weaponId);
+}
+
 void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
 	if (weaponId == 0) {
 		return;
@@ -720,9 +974,11 @@ void WeaponProficiency::clearSelectedPerks(uint16_t weaponId) {
 	}
 }
 
-bool WeaponProficiency::clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+WeaponProficiencyShapingResult WeaponProficiency::shapePerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
 	if (m_player.getZoneType() != ZONE_PROTECTION) {
-		return false;
+		return NotInProtectionZone;
 	}
 
 	if (weaponId == 0) {
@@ -731,14 +987,227 @@ bool WeaponProficiency::clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16
 
 	const auto playerProficiencyIt = proficiency.find(weaponId);
 	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
-		return false;
+		return InvalidTarget;
+	}
+
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	if (!isSelectedPerk(level, perkIndex, weaponId)) {
+		return InvalidTarget;
+	}
+
+	if (std::ranges::any_of(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	})) {
+		return AlreadyShaped;
+	}
+
+	const auto shapedPerkCount = playerProficiencyIt->second.shapedPerks.size();
+	if (shapedPerkCount >= MAX_SHAPED_PERK_SLOTS) {
+		return MaximumSlotsReached;
+	}
+	if (shapedPerkCount == 0 && getUnlockedLevelCount(weaponId) < 3) {
+		return RequirementNotMet;
+	}
+	if (shapedPerkCount == 1 && !playerProficiencyIt->second.mastered) {
+		return RequirementNotMet;
+	}
+
+	const auto dustCost = getShapingSlotCost(shapedPerkCount);
+	if (dustCost == 0 || m_player.getForgeDusts() < dustCost) {
+		return NotEnoughDust;
+	}
+
+	const auto perkPool = getShapingPerkPool(m_player.getPlayerVocationEnum());
+	if (perkPool.empty()) {
+		return InvalidTarget;
+	}
+
+	const auto perkId = perkPool[uniform_random(0, static_cast<int32_t>(perkPool.size() - 1))];
+	m_player.removeForgeDusts(dustCost);
+	playerProficiencyIt->second.shapedPerks.emplace_back(level, perkIndex, perkId, 0);
+	save(weaponId);
+	refreshEquippedWeapon(weaponId);
+	return Success;
+}
+
+WeaponProficiencyShapingResult WeaponProficiency::refineShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return NotInProtectionZone;
+	}
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return InvalidTarget;
+	}
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	auto shapedIt = std::ranges::find_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+	if (shapedIt == playerProficiencyIt->second.shapedPerks.end()) {
+		return NotShaped;
+	}
+
+	const auto dustCost = getShapingRefineCost(shapedIt->rank);
+	if (dustCost == 0) {
+		return MaximumRankReached;
+	}
+	if (m_player.getForgeDusts() < dustCost) {
+		return NotEnoughDust;
+	}
+
+	m_player.removeForgeDusts(dustCost);
+	++shapedIt->rank;
+	save(weaponId);
+	refreshEquippedWeapon(weaponId);
+	return Success;
+}
+
+WeaponProficiencyShapingResult WeaponProficiency::maximizeShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return NotInProtectionZone;
+	}
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return InvalidTarget;
+	}
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	auto shapedIt = std::ranges::find_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+	if (shapedIt == playerProficiencyIt->second.shapedPerks.end()) {
+		return NotShaped;
+	}
+	if (shapedIt->rank >= MAX_SHAPED_PERK_RANK) {
+		return MaximumRankReached;
+	}
+	if (!m_player.removeItemCountById(LUNAR_ASCENSION_ORB_ID, 1, true)) {
+		return MissingLunarAscensionOrb;
+	}
+
+	shapedIt->rank = MAX_SHAPED_PERK_RANK;
+	save(weaponId);
+	refreshEquippedWeapon(weaponId);
+	return Success;
+}
+
+WeaponProficiencyShapingResult WeaponProficiency::reshapeShapedPerk(uint8_t level, uint8_t perkIndex, std::vector<ShapedProficiencyPerk> &offers, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
+	offers.clear();
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return NotInProtectionZone;
+	}
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return InvalidTarget;
+	}
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	const auto shapedIt = std::ranges::find_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+	if (shapedIt == playerProficiencyIt->second.shapedPerks.end()) {
+		return NotShaped;
+	}
+	if (m_player.getForgeDusts() < RESHAPE_DUST_COST) {
+		return NotEnoughDust;
+	}
+
+	auto perkPool = getShapingPerkPool(m_player.getPlayerVocationEnum());
+	std::erase(perkPool, shapedIt->perkId);
+	if (perkPool.size() < RESHAPE_OFFER_COUNT) {
+		return InvalidTarget;
+	}
+
+	offers.reserve(RESHAPE_OFFER_COUNT);
+	for (uint8_t i = 0; i < RESHAPE_OFFER_COUNT; ++i) {
+		const auto randomIndex = static_cast<size_t>(uniform_random(0, static_cast<int32_t>(perkPool.size() - 1)));
+		offers.emplace_back(level, perkIndex, perkPool[randomIndex], rollReshapeInitialRank());
+		perkPool.erase(perkPool.begin() + static_cast<std::ptrdiff_t>(randomIndex));
+	}
+
+	m_player.removeForgeDusts(RESHAPE_DUST_COST);
+	return Success;
+}
+
+WeaponProficiencyShapingResult WeaponProficiency::selectReshapeOption(uint8_t level, uint8_t perkIndex, const std::optional<ShapedProficiencyPerk> &offer, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return NotInProtectionZone;
+	}
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return InvalidTarget;
+	}
+	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
+	auto shapedIt = std::ranges::find_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
+		return perk.level == level && perk.index == perkIndex;
+	});
+	if (shapedIt == playerProficiencyIt->second.shapedPerks.end()) {
+		return NotShaped;
+	}
+	if (!offer) {
+		return Success;
+	}
+
+	const auto perkPool = getShapingPerkPool(m_player.getPlayerVocationEnum());
+	if (offer->level != level || offer->index != perkIndex || offer->rank > MAX_SHAPED_PERK_RANK
+	    || std::ranges::find(perkPool, offer->perkId) == perkPool.end()) {
+		return InvalidReshapeOption;
+	}
+
+	shapedIt->perkId = offer->perkId;
+	shapedIt->rank = offer->rank;
+	save(weaponId);
+	refreshEquippedWeapon(weaponId);
+	return Success;
+}
+
+WeaponProficiencyShapingResult WeaponProficiency::clearShapedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
+	using enum WeaponProficiencyShapingResult;
+
+	if (m_player.getZoneType() != ZONE_PROTECTION) {
+		return NotInProtectionZone;
+	}
+	if (weaponId == 0) {
+		weaponId = m_player.getWeaponId(true);
+	}
+
+	const auto playerProficiencyIt = proficiency.find(weaponId);
+	if (!isValidWeaponId(weaponId) || playerProficiencyIt == proficiency.end()) {
+		return InvalidTarget;
 	}
 
 	playerProficiencyIt->second.shapedPerks = collectValidShapedPerks(weaponId);
 	const auto removedCount = std::erase_if(playerProficiencyIt->second.shapedPerks, [level, perkIndex](const auto &perk) {
 		return perk.level == level && perk.index == perkIndex;
 	});
-	return removedCount > 0;
+	if (removedCount == 0) {
+		return NotShaped;
+	}
+
+	save(weaponId);
+	refreshEquippedWeapon(weaponId);
+	return Success;
 }
 
 void WeaponProficiency::setSelectedPerk(uint8_t level, uint8_t perkIndex, uint16_t weaponId /* = 0 */) {
@@ -807,7 +1276,7 @@ std::unordered_map<std::pair<uint16_t, uint8_t>, double, PairHash, PairEqual> We
 		return augments;
 	}
 
-	const auto &perks = getSelectedPerks(weaponId);
+	const auto &perks = getEffectivePerks(weaponId);
 
 	for (const auto &perk : perks) {
 		if (perk.spellId && perk.augmentType) {
@@ -1132,6 +1601,10 @@ std::vector<ShapedProficiencyPerk> WeaponProficiency::collectValidShapedPerks(ui
 
 	const auto &storedPerks = playerProficiencyIt->second.shapedPerks;
 	const auto &proficiencyInfo = profIt->second;
+	const auto perkPool = getShapingPerkPool(m_player.getPlayerVocationEnum());
+	if (perkPool.empty()) {
+		return {};
+	}
 	std::vector<ShapedProficiencyPerk> validPerks;
 	validPerks.reserve(std::min(storedPerks.size(), MAX_SHAPED_PERK_SLOTS));
 	for (const auto &storedPerk : storedPerks) {
@@ -1141,7 +1614,9 @@ std::vector<ShapedProficiencyPerk> WeaponProficiency::collectValidShapedPerks(ui
 
 		const auto level = static_cast<size_t>(storedPerk.level);
 		const auto index = static_cast<size_t>(storedPerk.index);
-		if (level >= proficiencyInfo.level.size() || index >= proficiencyInfo.level[level].perks.size()) {
+		if (level >= proficiencyInfo.level.size() || index >= proficiencyInfo.level[level].perks.size()
+		    || storedPerk.rank > MAX_SHAPED_PERK_RANK
+		    || std::ranges::find(perkPool, storedPerk.perkId) == perkPool.end()) {
 			continue;
 		}
 
@@ -1666,7 +2141,7 @@ std::vector<std::pair<std::string, double>> WeaponProficiency::getActiveBestiari
 
 	const auto weaponId = m_player.getWeaponId(true);
 
-	const auto &perks = getSelectedPerks(weaponId);
+	const auto &perks = getEffectivePerks(weaponId);
 	for (const auto &perk : perks) {
 		if (perk.type == WEAPON_PROFICIENCY_BESTIARY && !perk.bestiaryName.empty()) {
 			aggregatedBestiaries[perk.bestiaryName] += perk.value;
@@ -1695,7 +2170,7 @@ std::optional<std::pair<uint8_t, double>> WeaponProficiency::getActiveElementalC
 
 	const auto weaponId = m_player.getWeaponId(true);
 
-	const auto &perks = getSelectedPerks(weaponId);
+	const auto &perks = getEffectivePerks(weaponId);
 	std::unordered_map<uint8_t, double> aggregatedByElement;
 	std::vector<uint8_t> displayOrder;
 	for (const auto &perk : perks) {

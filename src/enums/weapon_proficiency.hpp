@@ -91,6 +91,20 @@ enum class WeaponProficiencyExperience_t : uint8_t {
 	Hard = 3,
 };
 
+enum class WeaponProficiencyShapingResult : uint8_t {
+	Success,
+	NotInProtectionZone,
+	InvalidTarget,
+	RequirementNotMet,
+	AlreadyShaped,
+	NotShaped,
+	MaximumSlotsReached,
+	MaximumRankReached,
+	NotEnoughDust,
+	MissingLunarAscensionOrb,
+	InvalidReshapeOption,
+};
+
 struct ProficiencyPerk {
 	ProficiencyPerk() = default;
 

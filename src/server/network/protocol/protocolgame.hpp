@@ -15,6 +15,7 @@
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/stash_definitions.hpp"
+#include "enums/weapon_proficiency.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <optional>
@@ -98,6 +99,13 @@ struct TextMessage {
 		int32_t value {};
 		TextColor_t color = TEXTCOLOR_NONE;
 	} primary, secondary;
+};
+
+struct PendingWeaponProficiencyReshape {
+	uint16_t weaponId = 0;
+	uint8_t level = 0;
+	uint8_t perkIndex = 0;
+	std::vector<ShapedProficiencyPerk> offers;
 };
 
 class ProtocolGame final : public Protocol {
@@ -578,7 +586,7 @@ private:
 
 	void sendWeaponProficiency(uint16_t weaponId);
 	void sendWeaponProficiencyWindow(uint16_t weaponId);
-	void sendWeaponProficiencyReshapeOffers(uint16_t weaponId, uint8_t proficiencyLevel, uint8_t perkIndex);
+	void sendWeaponProficiencyReshapeOffers(uint16_t weaponId, uint8_t proficiencyLevel, uint8_t perkIndex, const std::vector<ShapedProficiencyPerk> &offers);
 
 	void sendClientLoginPreamble(OperatingSystem_t operatingSystem);
 	void castViewerLogin(const std::string &name, const std::string &password, OperatingSystem_t operatingSystem);
@@ -628,6 +636,7 @@ private:
 	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
 	InitialConnectionBehavior initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
 	std::optional<ProtocolSessionHintLease> sessionHintLease;
+	std::optional<PendingWeaponProficiencyReshape> pendingWeaponProficiencyReshape;
 
 	uint8_t challengeRandom = 0;
 

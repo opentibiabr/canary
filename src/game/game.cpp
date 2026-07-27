@@ -7012,9 +7012,7 @@ void Game::playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId) {
 	}
 
 	player->setAttackedCreature(attackCreature);
-	if (player->getFollowCreature() == attackCreature) {
-		player->updateCreatureWalk();
-	}
+	player->updateCreatureWalk();
 }
 
 void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {

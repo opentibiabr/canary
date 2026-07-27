@@ -81,6 +81,24 @@ namespace {
 	constexpr uint8_t CLIENT_PACKET_TASKBOARD = 0x5F;
 	constexpr uint8_t CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER = 0xBA;
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
+	constexpr uint64_t FORGE_BASE_DUST_LIMIT = 100;
+	constexpr uint64_t FORGE_DUST_LIMIT_INCREASE = 20;
+	constexpr uint64_t FORGE_MAX_DUST_LIMIT = 4600;
+
+	[[nodiscard]] uint8_t getForgeDustLimitUpgradeCount(const std::shared_ptr<Player> &player) {
+		const auto dustLimit = player->getForgeDustLevel();
+		if (dustLimit < FORGE_BASE_DUST_LIMIT
+		    || dustLimit > FORGE_MAX_DUST_LIMIT
+		    || (dustLimit - FORGE_BASE_DUST_LIMIT) % FORGE_DUST_LIMIT_INCREASE != 0) {
+			g_logger().warn(
+				"[ProtocolGame] Invalid modern forge dust capacity {}; expected 100 + upgrades * 20, up to 4600.",
+				dustLimit
+			);
+			return 0;
+		}
+
+		return static_cast<uint8_t>((dustLimit - FORGE_BASE_DUST_LIMIT) / FORGE_DUST_LIMIT_INCREASE);
+	}
 
 	enum class WeaponProficiencyCommand : uint8_t {
 		GetProficiency = 0x00,
@@ -7327,8 +7345,9 @@ void ProtocolGame::sendForgingData() {
 	}
 
 	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CompactExaltationBaseData)) {
-		// 15.30 keeps only this currently unknown byte after the tier tables.
-		msg.addByte(0x00);
+		// 15.25+ uses the same completed dust-limit upgrade count carried by
+		// ExaltationDialogRefresh. Both packets update the same client state.
+		msg.addByte(getForgeDustLimitUpgradeCount(player));
 	} else {
 		// (conversion) (left column top) Cost to make 1 bottom item - 20
 		msg.addByte(static_cast<uint8_t>(g_configManager().getNumber(FORGE_COST_ONE_SLIVER)));
@@ -7596,7 +7615,13 @@ void ProtocolGame::sendOpenForge() {
 	msg.addByte(convergenceTransferCount);
 	msg.setBufferPosition(dustLevelPosition);
 
-	msg.add<uint16_t>(player->getForgeDustLevel()); // Player dust limit
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExaltationDialogRefreshDustLimitUpgradeCount)) {
+		// 15.25+ changed the legacy capacity:u16 to the number of completed
+		// dust-limit upgrades:u8. The client derives capacity as 100 + upgrades * 20.
+		msg.addByte(getForgeDustLimitUpgradeCount(player));
+	} else {
+		msg.add<uint16_t>(player->getForgeDustLevel()); // Legacy player dust limit
+	}
 	writeToOutputBuffer(msg);
 	// Update forging informations
 	sendForgingData();

@@ -81,7 +81,7 @@ enum class ProtocolFeature : uint64_t {
 	OfficialSkillWheelPayload = 1ULL << 21, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
 	// 15.30 confirmed: 0xB3 actions 4-9 and the required improved-perk list in 0xC4.
 	WeaponProficiencyShapingPayload = 1ULL << 22,
-	// 15.30 confirmed: 0x86 replaces the legacy 13-field configuration tail with one byte.
+	// 15.25+ confirmed: 0x86 replaces the legacy 13-field configuration tail with one byte.
 	CompactExaltationBaseData = 1ULL << 23,
 	// 15.30 confirmed: creature icons carry a trailing byte and full instances carry a second icon list.
 	ExtendedCreatureIconPayload = 1ULL << 24,
@@ -93,6 +93,8 @@ enum class ProtocolFeature : uint64_t {
 	CombatModesRemoved = 1ULL << 27,
 	// 15.25 confirmed: 0x96 appends an optional spell-target mode and, for modes 1/2, a position.
 	SpellCastOptionalTarget = 1ULL << 28,
+	// 15.25+ confirmed: 0x87 replaces the legacy u16 dust limit with a u8 upgrade count.
+	ExaltationDialogRefreshDustLimitUpgradeCount = 1ULL << 29,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

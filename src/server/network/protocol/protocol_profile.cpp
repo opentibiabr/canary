@@ -223,6 +223,7 @@ namespace {
 			| ProtocolFeature::ReworkedMonsterCyclopediaPayload
 			| ProtocolFeature::CombatModesRemoved
 			| ProtocolFeature::SpellCastOptionalTarget
+			| ProtocolFeature::ExaltationDialogRefreshDustLimitUpgradeCount
 		),
 		.name = "current",
 		.supportLabel = "",

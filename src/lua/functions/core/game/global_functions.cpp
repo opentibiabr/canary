@@ -712,6 +712,14 @@ int GlobalFunctions::luaAddEvent(lua_State* L) {
 		[lastTimerEventId] { g_luaEnvironment().executeTimerEvent(lastTimerEventId); },
 		"LuaEnvironment::executeTimerEvent"
 	);
+	if (eventDesc.eventId == 0) {
+		luaL_unref(globalState, LUA_REGISTRYINDEX, eventDesc.function);
+		for (const auto parameter : eventDesc.parameters) {
+			luaL_unref(globalState, LUA_REGISTRYINDEX, parameter);
+		}
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
 
 	g_luaEnvironment().timerEvents.try_emplace(lastTimerEventId, std::move(eventDesc));
 	lua_pushnumber(L, lastTimerEventId++);

@@ -499,14 +499,32 @@ skulledDeathLoseStoreItem = false
 experienceDisplayRates = true
 disableLegacyRaids = false
 disableMonsterArmor = false
--- Benchmark-only monster stress flags. Keep disabled in production.
--- monsterPerfTestForceActive keeps monsters out of idle state even without players or targets nearby.
--- monsterPerfTestFriendlyFire lets non-summon monsters target other non-summon monsters and prefer random target selection.
-monsterPerfTestForceActive = false
-monsterPerfTestFriendlyFire = false
+
+-- Dispatcher fairness budgets. Changes apply after config reload.
+creatureWalkTasksPerPass = 128
+walkParallelTasksPerPass = 8
+creatureAsyncTasksPerBucket = 16
+deferredGameplayTasksPerPass = 16
+dispatcherSliceDurationMs = 2
+workerCompletionsPerPass = 64
+-- Adaptive budgets enter constrained mode at the SLO and emergency mode at the higher threshold.
+dispatcherSloMs = 50
+dispatcherEmergencyMs = 100
+-- Worker count and queue capacity are fixed at startup and require a restart.
+-- Zero worker threads selects the hardware-aware default; hosts with up to two CPUs run inline.
+-- Capacity may be lowered but is hard-capped at 2048 outstanding request/completion tokens.
+monsterComputeThreads = 0
+monsterComputeQueueCapacity = 2048
 minElementalResistance = -200
 maxElementalResistance = 200
 maxDamageReflection = 200
+
+-- Benchmark-only monster stress flags. Keep disabled in production.
+-- monsterPerfTestForceActive prevents logical idle even without players or targets nearby.
+-- Under bounded scheduler overload, distant background monsters may still receive reduced cadence until a player sees them.
+-- monsterPerfTestFriendlyFire lets hostile non-summon monsters target each other and prefer random target selection.
+monsterPerfTestForceActive = false
+monsterPerfTestFriendlyFire = false
 
 -- Chain system
 -- NOTE: combatChainDelay: set to minimum 50 miliseconds

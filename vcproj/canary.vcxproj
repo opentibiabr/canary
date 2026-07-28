@@ -28,6 +28,10 @@
     <ClInclude Include="..\src\creatures\creatures_definitions.hpp" />
     <ClInclude Include="..\src\creatures\interactions\chat.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monster.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_combat_intention.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_pathfinding.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_relevance.hpp" />
+    <ClInclude Include="..\src\creatures\monsters\monster_targeting.hpp" />
     <ClInclude Include="..\src\creatures\monsters\monsters.hpp" />
     <ClInclude Include="..\src\creatures\monsters\spawns\spawn_monster.hpp" />
     <ClInclude Include="..\src\creatures\npcs\npc.hpp" />
@@ -73,6 +77,12 @@
     <ClInclude Include="..\src\game\movement\teleport.hpp" />
     <ClInclude Include="..\src\game\scheduling\events_scheduler.hpp" />
     <ClInclude Include="..\src\game\scheduling\dispatcher.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_budget.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_policy.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_telemetry.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_wdrr.hpp" />
+    <ClInclude Include="..\src\game\scheduling\dispatcher_types.hpp" />
+    <ClInclude Include="..\src\game\scheduling\monster_compute_service.hpp" />
     <ClInclude Include="..\src\game\scheduling\task.hpp" />
     <ClInclude Include="..\src\game\scheduling\save_manager.hpp" />
     <ClInclude Include="..\src\io\fileloader.hpp" />
@@ -213,6 +223,7 @@
     <ClInclude Include="..\src\map\mapcache.hpp" />
     <ClInclude Include="..\src\map\map_const.hpp" />
     <ClInclude Include="..\src\map\map_definitions.hpp" />
+    <ClInclude Include="..\src\map\navigation_snapshot.hpp" />
     <ClInclude Include="..\src\map\spectators.hpp" />
     <ClInclude Include="..\src\map\town.hpp" />
     <ClInclude Include="..\src\map\utils\astarnodes.hpp" />
@@ -260,6 +271,10 @@
     <ClCompile Include="..\src\creatures\creature.cpp" />
     <ClCompile Include="..\src\creatures\interactions\chat.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monster.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_combat_intention.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_pathfinding.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_relevance.cpp" />
+    <ClCompile Include="..\src\creatures\monsters\monster_targeting.cpp" />
     <ClCompile Include="..\src\creatures\monsters\monsters.cpp" />
     <ClCompile Include="..\src\creatures\monsters\spawns\spawn_monster.cpp" />
     <ClCompile Include="..\src\creatures\npcs\npc.cpp" />
@@ -302,6 +317,9 @@
     <ClCompile Include="..\src\game\movement\teleport.cpp" />
     <ClCompile Include="..\src\game\scheduling\events_scheduler.cpp" />
     <ClCompile Include="..\src\game\scheduling\dispatcher.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher_budget.cpp" />
+    <ClCompile Include="..\src\game\scheduling\dispatcher_wdrr.cpp" />
+    <ClCompile Include="..\src\game\scheduling\monster_compute_service.cpp" />
     <ClCompile Include="..\src\io\fileloader.cpp" />
     <ClCompile Include="..\src\io\filestream.cpp" />
     <ClCompile Include="..\src\io\functions\iologindata_load_player.cpp" />
@@ -420,6 +438,7 @@
     <ClCompile Include="..\src\map\utils\astarnodes.cpp" />
     <ClCompile Include="..\src\map\utils\mapsector.cpp" />
     <ClCompile Include="..\src\map\map.cpp" />
+    <ClCompile Include="..\src\map\navigation_snapshot.cpp" />
     <ClCompile Include="..\src\map\map_download.cpp" />
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />

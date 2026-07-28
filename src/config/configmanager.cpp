@@ -39,7 +39,7 @@ bool ConfigManager::load() {
 
 	// Parse config
 	// Info that must be loaded one time (unless we reset the modules involved)
-	if (!loaded) {
+	if (!loaded.load(std::memory_order_relaxed)) {
 		loadBoolConfig(L, BIND_ONLY_GLOBAL_ADDRESS, "bindOnlyGlobalAddress", false);
 		loadBoolConfig(L, DISABLE_LEGACY_RAIDS, "disableLegacyRaids", false);
 		loadBoolConfig(L, OLD_PROTOCOL, "allowOldProtocol", true);
@@ -239,6 +239,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, COMBAT_CHAIN_DELAY, "combatChainDelay", 50);
 	loadIntConfig(L, COMBAT_CHAIN_TARGETS, "combatChainTargets", 5);
 	loadIntConfig(L, COMPRESSION_LEVEL, "packetCompressionLevel", 6);
+	loadIntConfig(L, CREATURE_ASYNC_TASKS_PER_BUCKET, "creatureAsyncTasksPerBucket", 16);
+	loadIntConfig(L, CREATURE_WALK_TASKS_PER_PASS, "creatureWalkTasksPerPass", 128);
 	loadIntConfig(L, CRITICALCHANCE, "criticalChance", 10);
 	loadIntConfig(L, DAY_KILLS_TO_RED, "dayKillsToRedSkull", 3);
 	loadIntConfig(L, DEATH_LOSE_PERCENT, "deathLosePercent", -1);
@@ -246,6 +248,10 @@ bool ConfigManager::load() {
 	loadIntConfig(L, DEFAULT_DESPAWNRADIUS, "deSpawnRadius", 50);
 	loadIntConfig(L, DEFAULT_DESPAWNRANGE, "deSpawnRange", 2);
 	loadIntConfig(L, DEPOTCHEST, "depotChest", 4);
+	loadIntConfig(L, DEFERRED_GAMEPLAY_TASKS_PER_PASS, "deferredGameplayTasksPerPass", 16);
+	loadIntConfig(L, DISPATCHER_EMERGENCY_MS, "dispatcherEmergencyMs", 100);
+	loadIntConfig(L, DISPATCHER_SLICE_DURATION_MS, "dispatcherSliceDurationMs", 2);
+	loadIntConfig(L, DISPATCHER_SLO_MS, "dispatcherSloMs", 50);
 	loadIntConfig(L, DISCORD_WEBHOOK_DELAY_MS, "discordWebhookDelayMs", Webhook::DEFAULT_DELAY_MS);
 	loadIntConfig(L, EX_ACTIONS_DELAY_INTERVAL, "timeBetweenExActions", 1000);
 	loadIntConfig(L, EXP_FROM_PLAYERS_LEVEL_RANGE, "expFromPlayersLevelRange", 75);
@@ -316,6 +322,8 @@ bool ConfigManager::load() {
 	loadIntConfig(L, MIN_DELAY_BETWEEN_CONDITIONS, "minDelayBetweenConditions", 0);
 	loadIntConfig(L, MIN_ELEMENTAL_RESISTANCE, "minElementalResistance", -200);
 	loadIntConfig(L, MIN_TOWN_ID_TO_BANK_TRANSFER_FROM_MAIN, "minTownIdToBankTransferFromMain", 4);
+	loadIntConfig(L, MONSTER_COMPUTE_QUEUE_CAPACITY, "monsterComputeQueueCapacity", 2048);
+	loadIntConfig(L, MONSTER_COMPUTE_THREADS, "monsterComputeThreads", 0);
 	loadIntConfig(L, MONTH_KILLS_TO_RED, "monthKillsToRedSkull", 10);
 	loadIntConfig(L, ORANGE_SKULL_DURATION, "orangeSkullDuration", 7);
 	loadIntConfig(L, LOGIN_PROTECTION_TIME, "loginProtectionTime", 10000);
@@ -364,7 +372,9 @@ bool ConfigManager::load() {
 	loadIntConfig(L, VIP_BONUS_LOOT, "vipBonusLoot", 0);
 	loadIntConfig(L, VIP_BONUS_SKILL, "vipBonusSkill", 0);
 	loadIntConfig(L, VIP_FAMILIAR_TIME_COOLDOWN_REDUCTION, "vipFamiliarTimeCooldownReduction", 0);
+	loadIntConfig(L, WALK_PARALLEL_TASKS_PER_PASS, "walkParallelTasksPerPass", 8);
 	loadIntConfig(L, WEEK_KILLS_TO_RED, "weekKillsToRedSkull", 5);
+	loadIntConfig(L, WORKER_COMPLETIONS_PER_PASS, "workerCompletionsPerPass", 64);
 	loadIntConfig(L, MONK_QUEST_TOTAL_SHRINES, "monkQuestTotalShrines", 11);
 	loadIntConfig(L, WHEEL_MONK_QUEST_BONUS, "wheelMonkQuestBonus", 10);
 	loadIntConfig(L, WHEEL_ATELIER_REVEAL_GREATER_COST, "wheelAtelierRevealGreaterCost", 6000000);
@@ -407,7 +417,15 @@ bool ConfigManager::load() {
 
 	loadLuaOTCFeatures(L);
 
-	loaded = true;
+	std::vector<std::function<void()>> callbacks;
+	{
+		std::scoped_lock lock(deferredCallbacksMutex);
+		loaded.store(true, std::memory_order_release);
+		callbacks = std::move(deferredCallbacks);
+	}
+	for (auto &callback : callbacks) {
+		callback();
+	}
 	lua_close(L);
 	return true;
 }
@@ -422,6 +440,22 @@ bool ConfigManager::reload() {
 		g_game().incrementMotdNum();
 	}
 	return result;
+}
+
+void ConfigManager::deferUntilLoaded(std::function<void()> callback) {
+	if (!callback) {
+		return;
+	}
+
+	{
+		std::scoped_lock lock(deferredCallbacksMutex);
+		if (!loaded.load(std::memory_order_acquire)) {
+			deferredCallbacks.emplace_back(std::move(callback));
+			return;
+		}
+	}
+
+	callback();
 }
 
 void ConfigManager::missingConfigWarning(const char* identifier) {

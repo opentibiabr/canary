@@ -23,7 +23,7 @@ OutputMessagePool &OutputMessagePool::getInstance() {
 
 void OutputMessagePool::scheduleSendAll() {
 	g_dispatcher().scheduleEvent(
-		OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [this] { sendAll(); }, "OutputMessagePool::sendAll"
+		OUTPUTMESSAGE_AUTOSEND_DELAY.count(), [this] { sendAll(); }, "OutputMessagePool::sendAll", DispatcherLane::ProtocolInput
 	);
 }
 

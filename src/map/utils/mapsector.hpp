@@ -13,6 +13,8 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <array>
+	#include <atomic>
+	#include <cstdint>
 #endif
 
 class Creature;
@@ -85,7 +87,7 @@ private:
 
 class MapSector {
 public:
-	MapSector() = default;
+	MapSector();
 
 	MapSector(const MapSector &) = delete;
 	MapSector &operator=(const MapSector &) = delete;
@@ -117,6 +119,17 @@ public:
 
 	void removeCreature(const std::shared_ptr<Creature> &c);
 
+	uint64_t markTopologyChanged(uint8_t z);
+	uint64_t markOccupancyChanged(uint8_t z);
+
+	[[nodiscard]] uint64_t getTopologyRevision(uint8_t z) const {
+		return z < MAP_MAX_LAYERS ? topologyRevisions[z].load(std::memory_order_relaxed) : 0;
+	}
+
+	[[nodiscard]] uint64_t getOccupancyRevision(uint8_t z) const {
+		return z < MAP_MAX_LAYERS ? occupancyRevisions[z].load(std::memory_order_relaxed) : 0;
+	}
+
 private:
 	static bool newSector;
 
@@ -131,6 +144,8 @@ private:
 	mutable std::mutex floors_mutex;
 
 	std::array<std::shared_ptr<Floor>, MAP_MAX_LAYERS> floors {};
+	std::array<std::atomic_uint64_t, MAP_MAX_LAYERS> topologyRevisions {};
+	std::array<std::atomic_uint64_t, MAP_MAX_LAYERS> occupancyRevisions {};
 
 	uint32_t floorBits = 0;
 

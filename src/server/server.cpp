@@ -115,7 +115,7 @@ void ServicePort::onAccept(const Connection_ptr &connection, const std::error_co
 			close();
 			pendingStart = true;
 			g_dispatcher().scheduleEvent(
-				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor"
+				15000, [self = shared_from_this(), serverPort = serverPort] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), serverPort); }, "ServicePort::openAcceptor", DispatcherLane::Maintenance
 			);
 		}
 	}
@@ -167,7 +167,7 @@ void ServicePort::open(uint16_t port) {
 		pendingStart = true;
 		g_dispatcher().scheduleEvent(
 			15000,
-			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor"
+			[self = shared_from_this(), port] { ServicePort::openAcceptor(std::weak_ptr<ServicePort>(self), port); }, "ServicePort::openAcceptor", DispatcherLane::Maintenance
 		);
 	}
 }

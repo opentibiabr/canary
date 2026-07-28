@@ -26,6 +26,8 @@ public:
 
 	bool load();
 	bool reload();
+	// Deferred callbacks run on the thread that completes the first successful load.
+	void deferUntilLoaded(std::function<void()> callback);
 
 	void missingConfigWarning(const char* identifier);
 
@@ -36,6 +38,9 @@ public:
 	[[nodiscard]] const std::string &getConfigFileLua() const {
 		return configFileLua;
 	};
+	[[nodiscard]] bool isLoaded() const {
+		return loaded.load(std::memory_order_acquire);
+	}
 
 	[[nodiscard]] const std::string &getString(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
 	[[nodiscard]] int32_t getNumber(const ConfigKey_t &key, const std::source_location &location = std::source_location::current()) const;
@@ -57,7 +62,9 @@ private:
 	float loadFloatConfig(lua_State* L, const ConfigKey_t &key, const char* identifier, const float &defaultValue);
 
 	std::string configFileLua = { "config.lua" };
-	bool loaded = false;
+	std::atomic_bool loaded = false;
+	std::mutex deferredCallbacksMutex;
+	std::vector<std::function<void()>> deferredCallbacks;
 	OTCFeatures enabledFeaturesOTC = {};
 	OTCFeatures disabledFeaturesOTC = {};
 	void loadLuaOTCFeatures(lua_State* L);

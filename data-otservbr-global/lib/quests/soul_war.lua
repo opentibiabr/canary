@@ -1099,6 +1099,10 @@ function Monster:createSoulWarWhiteTiles(centerRoomPosition, zonePositions, exec
 end
 
 function MonsterType:calculateBagYouDesireChance(player, itemChance)
+	if not player then
+		return itemChance
+	end
+
 	local playerTaintLevel = player:getTaintLevel()
 	if not playerTaintLevel or playerTaintLevel == 0 then
 		return itemChance

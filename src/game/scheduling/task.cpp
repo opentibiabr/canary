@@ -25,9 +25,10 @@
 
 std::atomic_uint_fast64_t Task::LAST_EVENT_ID = 0;
 
-Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context) :
-	func(std::move(f)), context(internContext(context)), utime(OTSYS_TIME()),
+Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_view context, Clock::time_point enqueuedAt) :
+	func(std::move(f)), context(internContext(context)), enqueuedAt(enqueuedAt), utime(OTSYS_TIME()),
 	expiration(expiresAfterMs > 0 ? OTSYS_TIME() + expiresAfterMs : 0) {
+	meta.readyAt = enqueuedAt;
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
@@ -36,9 +37,10 @@ Task::Task(uint32_t expiresAfterMs, std::function<void(void)> &&f, std::string_v
 	assert(!this->context.empty() && "Context cannot be empty!");
 }
 
-Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/) :
-	func(std::move(f)), context(internContext(context)), utime(OTSYS_TIME() + delay), delay(delay),
+Task::Task(std::function<void(void)> &&f, std::string_view context, uint32_t delay, bool cycle /* = false*/, bool log /*= true*/, Clock::time_point enqueuedAt) :
+	func(std::move(f)), context(internContext(context)), enqueuedAt(enqueuedAt), utime(OTSYS_TIME() + delay), delay(delay),
 	cycle(cycle), log(log) {
+	meta.readyAt = enqueuedAt + std::chrono::milliseconds(delay);
 	if (this->context.empty()) {
 		g_logger().error("[{}]: task context cannot be empty!", __FUNCTION__);
 		return;
@@ -98,6 +100,8 @@ bool Task::execute() const {
 	return true;
 }
 
-void Task::updateTime() {
+void Task::updateTime(Clock::time_point rescheduledAt) {
+	enqueuedAt = rescheduledAt;
+	meta.readyAt = rescheduledAt + std::chrono::milliseconds(delay);
 	utime = OTSYS_TIME() + delay;
 }

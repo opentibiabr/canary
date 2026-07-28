@@ -256,15 +256,7 @@ public:
 	std::shared_ptr<Item> getGround() const {
 		return ground;
 	}
-	void setGround(const std::shared_ptr<Item> &item) {
-		if (ground) {
-			resetTileFlags(ground);
-		}
-
-		if ((ground = item)) {
-			setTileFlags(item);
-		}
-	}
+	void setGround(const std::shared_ptr<Item> &item);
 
 	/**
 	 * Runs an action immediately or defers it back to the dispatcher.
@@ -273,8 +265,11 @@ public:
 	 * must not capture borrowed raw pointers from the caller's stack; use strong
 	 * ownership, weak ownership, or an audited stable identity for anything that
 	 * must survive the async boundary.
+	 *
+	 * @return true when the action ran immediately or was admitted for deferred
+	 * execution; false when dispatcher admission fails.
 	 */
-	void safeCall(std::function<void(void)> &&action) const;
+	bool safeCall(std::function<void(void)> &&action) const;
 
 private:
 	void onAddTileItem(const std::shared_ptr<Item> &item);

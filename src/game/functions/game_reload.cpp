@@ -203,6 +203,7 @@ bool GameReload::reloadScripts() {
 
 bool GameReload::reloadItems() {
 	const bool result = Item::items.reload();
+	g_game().map.invalidateNavigationEpoch();
 	logReloadStatus("Items", result);
 	return result;
 }

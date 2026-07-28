@@ -31,6 +31,13 @@ jobs:
       fail-fast: false
       matrix:
         type: [CMake, Solution]
+    # Both matrix entries write overlapping host packages to the same NuGet
+    # feed on pushes to main. vcpkg treats a duplicate NuGet publish as an
+    # error, so serialize writers while keeping PR builds parallel.
+    concurrency:
+      group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'vcpkg-windows-binary-cache-main' || format('vcpkg-windows-{0}-{1}', github.run_id, matrix.type) }}
+      cancel-in-progress: false
+      queue: max
     runs-on: windows-2025
     env:
       # Use GitHub Packages as a read-only vcpkg cache for PRs.

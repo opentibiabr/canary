@@ -10,6 +10,7 @@
 #pragma once
 
 #include "mapcache.hpp"
+#include "map/navigation_snapshot.hpp"
 #include "map/town.hpp"
 #include "map/house/house.hpp"
 #include "creatures/monsters/spawns/spawn_monster.hpp"
@@ -141,6 +142,16 @@ public:
 
 	std::shared_ptr<Tile> canWalkTo(const std::shared_ptr<Creature> &creature, const Position &pos);
 
+	std::shared_ptr<const NavRegionSnapshot> getNavigationSnapshot(const Position &center, uint8_t radius);
+	[[nodiscard]] bool isNavigationTopologyCurrent(const NavRegionSnapshot &snapshot) const;
+	[[nodiscard]] bool isNavigationOccupancyCurrent(const NavRegionSnapshot &snapshot) const;
+	void markNavigationTopologyChanged(const Position &position);
+	void markNavigationOccupancyChanged(const Position &position);
+	void invalidateNavigationEpoch();
+	[[nodiscard]] uint64_t getNavigationEpoch() const {
+		return navigationEpoch;
+	}
+
 	bool getPathMatching(const std::shared_ptr<Creature> &creature, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 	bool getPathMatching(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
 	bool getPathMatchingCond(const std::shared_ptr<Creature> &creature, const Position &targetPos, std::vector<Direction> &dirList, const FrozenPathingConditionCall &pathCondition, const FindPathParams &fpp);
@@ -171,6 +182,7 @@ private:
 		setTile(pos.x, pos.y, pos.z, newTile);
 	}
 	std::shared_ptr<Tile> getLoadedTile(uint16_t x, uint16_t y, uint8_t z);
+	std::shared_ptr<const NavSectorSnapshot> getOrBuildNavigationSector(uint32_t sectorIndex, uint8_t z);
 
 	std::filesystem::path path;
 	std::string monsterfile;
@@ -180,6 +192,9 @@ private:
 
 	uint32_t width = 0;
 	uint32_t height = 0;
+
+	std::unordered_map<uint64_t, std::shared_ptr<const NavSectorSnapshot>> navigationSnapshots;
+	uint64_t navigationEpoch = 1;
 
 	friend class Game;
 	friend class IOMap;

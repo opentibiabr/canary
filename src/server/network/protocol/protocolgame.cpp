@@ -3341,16 +3341,13 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 					break;
 				}
 
-				std::optional<ShapedProficiencyPerk> selectedOffer;
-				if (*selectedReshapeOption > 0) {
-					const auto offerIndex = static_cast<size_t>(*selectedReshapeOption - 1);
-					if (offerIndex >= pendingWeaponProficiencyReshape->offers.size()) {
-						shapingResult = InvalidReshapeOption;
-						pendingWeaponProficiencyReshape.reset();
-						break;
-					}
-					selectedOffer = pendingWeaponProficiencyReshape->offers[offerIndex];
+				const auto offerIndex = static_cast<size_t>(*selectedReshapeOption);
+				if (offerIndex >= pendingWeaponProficiencyReshape->offers.size()) {
+					shapingResult = InvalidReshapeOption;
+					pendingWeaponProficiencyReshape.reset();
+					break;
 				}
+				const std::optional<ShapedProficiencyPerk> selectedOffer = pendingWeaponProficiencyReshape->offers[offerIndex];
 
 				pendingWeaponProficiencyReshape.reset();
 				shapingResult = player->weaponProficiency().selectReshapeOption(targetPerk->level, targetPerk->index, selectedOffer, weaponId);

@@ -3375,6 +3375,9 @@ void ProtocolGame::parseWeaponProficiency(NetworkMessage &msg) {
 				player->sendCancelMessage(std::string(error));
 			}
 		}
+		if (command == WeaponProficiencyCommand::MaximizeShapedPerk) {
+			sendLunarAscensionOrbBalance();
+		}
 		sendWeaponProficiencyWindow(weaponId);
 		sendWeaponProficiency(weaponId);
 		return;
@@ -6833,6 +6836,18 @@ void ProtocolGame::sendResourcesBalance(uint64_t money /*= 0*/, uint64_t bank /*
 	sendResourceBalance(RESOURCE_FORGE_DUST, forgeDust);
 	sendResourceBalance(RESOURCE_FORGE_SLIVER, forgeSliver);
 	sendResourceBalance(RESOURCE_FORGE_CORES, forgeCores);
+	sendLunarAscensionOrbBalance();
+}
+
+void ProtocolGame::sendLunarAscensionOrbBalance() {
+	if (!player || m_isLivestreamViewer || oldProtocol || version < 1530
+	    || !hasProtocolFeature(protocolProfile, ProtocolFeature::WeaponProficiencyShapingPayload)) {
+		return;
+	}
+
+	const uint64_t orbCount = static_cast<uint64_t>(player->getItemTypeCount(ITEM_LUNAR_ASCENSION_ORB))
+		+ player->getStashItemCount(ITEM_LUNAR_ASCENSION_ORB);
+	sendResourceBalance(RESOURCE_LUNAR_ASCENSION_ORB, orbCount);
 }
 
 void ProtocolGame::sendResourceBalance(Resource_t resourceType, uint64_t value) {

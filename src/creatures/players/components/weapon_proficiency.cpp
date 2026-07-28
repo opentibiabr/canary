@@ -55,7 +55,6 @@ namespace {
 	constexpr int32_t MAX_TRACKED_SKILL = static_cast<int32_t>(SKILL_MAGLEVEL);
 	constexpr size_t MASTERY_EXPERIENCE_OFFSET = 2;
 	constexpr uint8_t MAX_SHAPED_PERK_RANK = 10;
-	constexpr uint16_t LUNAR_ASCENSION_ORB_ID = 53695;
 	constexpr uint16_t RESHAPE_DUST_COST = 250;
 	constexpr uint8_t RESHAPE_OFFER_COUNT = 3;
 	// CipSoft only documents this as a "small chance"; keep the server policy explicit until exact odds are published.
@@ -1091,7 +1090,7 @@ WeaponProficiencyShapingResult WeaponProficiency::maximizeShapedPerk(uint8_t lev
 	if (shapedIt->rank >= MAX_SHAPED_PERK_RANK) {
 		return MaximumRankReached;
 	}
-	if (!m_player.removeItemCountById(LUNAR_ASCENSION_ORB_ID, 1, true)) {
+	if (!m_player.removeItemCountById(ITEM_LUNAR_ASCENSION_ORB, 1, true)) {
 		return MissingLunarAscensionOrb;
 	}
 

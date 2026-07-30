@@ -11,7 +11,7 @@ npcConfig.walkInterval = 2000
 npcConfig.walkRadius = 2
 
 npcConfig.outfit = {
-	lookType = 69,
+	lookType = 160,
 	lookHead = 57,
 	lookBody = 59,
 	lookLegs = 118,
@@ -65,9 +65,8 @@ local function creatureSayCallback(npc, creature, type, message)
 				npcHandler:say("So they've sent another one? I just hope ye' better than the last one. Are ye' ready for a mission?", npc, creature)
 				npcHandler:setTopic(playerId, 9)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, 0)
-			end
-			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) < 20 then
-				npcHandler:say("So far ye've brought me " .. player:getItemCount(5905) .. " of 20 {vampire dusts}. Do ye' have any more with ye'? ", npc, creature)
+			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) < 20 then
+				npcHandler:say("So far ye've brought me " .. math.max(player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust), 0) .. " of 20 {vampire dusts}. Do ye' have any more with ye'? ", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) == 20 then
 				npcHandler:say("Fine, you're done! Ye' should talk to me about your {mission} again now.", npc, creature)
@@ -131,7 +130,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust) + count)
 			player:removeItem(5905, count)
 
-			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. (20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)) == 0 and "Ask me for a {mission} to continue your quest." or ("Ye' need to bring " .. (20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)) .. " more."), npc, creature)
+			local remaining = 20 - player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust)
+			npcHandler:say("Ye've brought me " .. count .. " vampire dusts. " .. (remaining == 0 and "Ask me for a {mission} to continue your quest." or ("Ye' need to bring " .. remaining .. " more.")), npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 3 then
 			if player:removeItem(8192, 1) then
@@ -191,12 +191,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 0)
 		elseif npcHandler:getTopic(playerId) == 9 then
 			npcHandler:say("As they might have told ye', I'm a vampire hunter. If ye' want to be of any help, ye' can assist me with some of my tasks and bring me 20 ounces of vampire dust. This gives me some time to concentrate on a bigger project.", npc, creature)
-			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.StorkusVampiredust, 1)
 			npcHandler:setTopic(playerId, 0)
 		end
 	end
 	return true
 end
+
+npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|! Good you're showing up.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)

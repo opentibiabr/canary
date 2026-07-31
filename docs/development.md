@@ -135,7 +135,7 @@ Recommended for engine contributors.
 
 Install Git, a supported C++ compiler, and [mise](https://mise.jdx.dev/).
 The repository's `.mise.toml` installs the pinned CMake, Ninja, Python, and
-sccache versions used by CI.
+sccache versions used by the native development workflow and relevant CI jobs.
 
 Linux requires GCC or Clang. Windows requires Visual Studio with Desktop
 Development with C++.

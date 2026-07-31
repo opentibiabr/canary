@@ -38,10 +38,6 @@ depends = ["bootstrap"]
 usage = 'arg "<preset>" default="macos-release"'
 run = "cmake --install build/${usage_preset} --prefix build/${usage_preset}/install"
 
-[tasks.check]
-description = "Validate the build-system contract"
-run = "python .github/scripts/test_validate_build_system.py"
-
 [tasks.cache-stats]
 description = "Show shared compiler-cache statistics"
 run = "sccache --show-stats"

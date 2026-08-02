@@ -8647,10 +8647,12 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
 		sendMonkData(MonkData_t::Harmony, player->getHarmony());
-		auto virtue = player->getVirtue();
-		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
-		sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
-		sendMonkData(MonkData_t::Serenity, 1);
+		const bool officialVocationData = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData);
+		const auto virtue = player->getVirtue();
+		if (virtue != Virtue_t::None || !officialVocationData) {
+			sendMonkData(MonkData_t::Virtue, enumToValue(virtue != Virtue_t::None ? virtue : Virtue_t::Harmony));
+		}
+		sendMonkData(MonkData_t::Serenity, officialVocationData ? player->hasCondition(CONDITION_SERENE) : true);
 	}
 
 	if (version >= 1100) {
@@ -12071,10 +12073,25 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 				msg.addByte(value != 0 ? 0x01 : 0x00);
 				break;
 			case MonkData_t::Virtue: {
-				const uint8_t virtueCount = value != 0 ? 1 : 0;
+				uint16_t spellId = 0;
+				switch (static_cast<Virtue_t>(value)) {
+					case Virtue_t::Harmony:
+						spellId = 274;
+						break;
+					case Virtue_t::Justice:
+						spellId = 275;
+						break;
+					case Virtue_t::Sustain:
+						spellId = 276;
+						break;
+					case Virtue_t::None:
+						break;
+				}
+
+				const uint8_t virtueCount = spellId != 0 ? 1 : 0;
 				msg.addByte(virtueCount);
 				if (virtueCount != 0) {
-					msg.add<uint16_t>(value);
+					msg.add<uint16_t>(spellId);
 				}
 				break;
 			}

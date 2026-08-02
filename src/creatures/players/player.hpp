@@ -206,8 +206,9 @@ public:
 	/**
 	 * @brief Sets the player's virtue.
 	 * @param virtue The virtue to set.
+	 * @param notifyClient Whether to send the updated state to the client.
 	 */
-	void setVirtue(Virtue_t virtue);
+	void setVirtue(Virtue_t virtue, bool notifyClient = true);
 
 	/**
 	 * @brief Sets the player's serene state.

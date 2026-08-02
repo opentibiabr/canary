@@ -13031,15 +13031,17 @@ Virtue_t Player::getVirtue() const {
 	return virtue;
 }
 
-void Player::setVirtue(Virtue_t newVirtue) {
+void Player::setVirtue(Virtue_t newVirtue, bool notifyClient /* = true */) {
 	if (virtue == newVirtue) {
 		return;
 	}
 
 	virtue = newVirtue;
 
-	sendSkills();
-	sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+	if (notifyClient) {
+		sendSkills();
+		sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
+	}
 }
 
 void Player::setSerene(bool b, int32_t ticks /* = -1 */) {

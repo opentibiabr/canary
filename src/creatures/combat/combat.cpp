@@ -1036,7 +1036,7 @@ void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Pos
 
 	// If not a Monk player, use the original effect
 	if (!casterPlayer || casterPlayer->getPlayerVocationEnum() != VOCATION_MONK_CIP) {
-		g_game().addMagicEffect(position, effect);
+		g_game().addMagicEffect(position, effect, caster);
 		return;
 	}
 
@@ -1046,7 +1046,7 @@ void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Pos
 		effect = monkEffectByElementalBond(it.elementalBond, effect);
 	}
 
-	g_game().addMagicEffect(position, effect);
+	g_game().addMagicEffect(position, effect, caster);
 }
 
 void Combat::combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params) {
@@ -1189,7 +1189,7 @@ void Combat::addDistanceEffect(const std::shared_ptr<Creature> &caster, const Po
 	}
 
 	if (effect != CONST_ANI_NONE) {
-		g_game().addDistanceEffect(fromPos, toPos, effect);
+		g_game().addDistanceEffect(fromPos, toPos, effect, caster);
 	}
 }
 

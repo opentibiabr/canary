@@ -8095,7 +8095,7 @@ void ProtocolGame::sendPingBack() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (oldProtocol && !useLegacyU16Effect && type > 0xFF) {
 		return;
@@ -8118,11 +8118,15 @@ void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, u
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.x) - static_cast<int32_t>(from.x))));
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.y) - static_cast<int32_t>(from.y))));
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+	sendDistanceShoot(from, to, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::sendRestingStatus(uint8_t protection) {
@@ -8170,7 +8174,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (!canSee(pos) || (oldProtocol && !useLegacyU16Effect && type > 0xFF)) {
 		return;
@@ -8191,11 +8195,15 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 		msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
 		msg.add<uint16_t>(type);
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+	sendMagicEffect(pos, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {

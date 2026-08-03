@@ -147,7 +147,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:setStorageValue(Storage.Dawnport.Mainland, 1)
 			player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.Missions.TreeFoldPath, 2)
-			player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.Missions.ShrinesCount, 1)
+			player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount, 1)
 			npcHandler:setTopic(playerId, 0)
 			npcHandler:say("You are now a pilgrim on the Three-Fold Path. Welcome to the Blue Valley, seeker. ...", npc, creature)
 		end

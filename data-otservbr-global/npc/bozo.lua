@@ -678,7 +678,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 2)
 		elseif npcHandler:getTopic(playerId) == 2 then
 			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline, 1)
-			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questlog, 1)
+			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Questline, 1)
 			player:setStorageValue(Storage.Quest.U8_1.WhatAFoolishQuest.Mission1, 1)
 			npcHandler:say({
 				"What a foolish decision! You are indeed a worthy candidate! But let's talk about business ...",

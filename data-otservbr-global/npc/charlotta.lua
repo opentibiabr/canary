@@ -199,7 +199,7 @@ local node38 = keywordHandler:addKeyword({ "destroy field" }, StdModule.say, { n
 node38:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "destroy field rune", vocation = { 1, 2, 3, 5, 6, 7, 9, 10 }, price = 700, level = 17 })
 
 local node39 = keywordHandler:addKeyword({ "paralyse" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {Paralyse} Rune spell for 1900 gold?" })
-node39:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "paralyse rune", vocation = { 2, 6 }, price = 1900, level = 54 })
+node39:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "Paralyze Rune", vocation = { 2, 6 }, price = 1900, level = 54 })
 
 local node40 = keywordHandler:addKeyword({ "animate dead" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {animate dead} magic spell for 1200 gold?" })
 node40:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "animate dead rune", vocation = { 1, 2, 5, 6 }, price = 1200, level = 27 })
@@ -208,7 +208,7 @@ local node41 = keywordHandler:addKeyword({ "chameleon" }, StdModule.say, { npcHa
 node41:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "chameleon rune", vocation = { 2, 6 }, price = 1300, level = 27 })
 
 local node42 = keywordHandler:addKeyword({ "convince creature" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {convince creature} magic spell for 800 gold?" })
-node42:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "convince creature", vocation = { 2, 6 }, price = 800, level = 16 })
+node42:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "Convince Creature Rune", vocation = { 2, 6 }, price = 800, level = 16 })
 
 local node43 = keywordHandler:addKeyword({ "creature illusion" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {creature illusion} magic spell for 1000 gold?" })
 node43:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "creature illusion", vocation = { 1, 2, 5, 6 }, price = 1000, level = 23 })
@@ -232,7 +232,7 @@ local node49 = keywordHandler:addKeyword({ "ice wave" }, StdModule.say, { npcHan
 node49:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = false, spellName = "ice wave", vocation = { 2, 6 }, price = 850, level = 18 })
 
 local node50 = keywordHandler:addKeyword({ "invisible" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {invisible} magic spell for 2000 gold?" })
-node50:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "invisible", vocation = { 1, 2, 5, 6 }, price = 2000, level = 35 })
+node50:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "Invisibility", vocation = { 1, 2, 5, 6 }, price = 2000, level = 35 })
 
 local node51 = keywordHandler:addKeyword({ "mass healing" }, StdModule.say, { npcHandler = npcHandler, onlyFocus = true, text = "Would you like to learn {mass healing} magic spell for 2200 gold?" })
 node51:addChildKeyword({ "yes" }, StdModule.learnSpell, { npcHandler = npcHandler, premium = true, spellName = "mass healing", vocation = { 2, 6 }, price = 2200, level = 36 })

@@ -147,7 +147,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 			player:setStorageValue(Storage.Dawnport.Mainland, 1)
 			player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.Missions.TreeFoldPath, 2)
-			player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount, 1)
+			-- Only initialize the counter: this acceptance branch can be reached again and
+			-- shrines.lua uses it as the sole progress state -- resetting it would allow
+			-- redoing the shrines and collecting their rewards again.
+			if player:getStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount) < 1 then
+				player:setStorageValue(Storage.Quest.U14_15.TheWayOfTheMonk.ShrinesCount, 1)
+			end
 			npcHandler:setTopic(playerId, 0)
 			npcHandler:say("You are now a pilgrim on the Three-Fold Path. Welcome to the Blue Valley, seeker. ...", npc, creature)
 		end

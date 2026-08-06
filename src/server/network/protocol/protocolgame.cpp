@@ -3036,7 +3036,12 @@ void ProtocolGame::parseImbuementAction(NetworkMessage &msg) {
 			}
 
 			if (item->getImbuementSlot() <= 0) {
-				player->sendImbuementResult("This item is not imbuable.");
+				if (item->getTopParent() != player) {
+					player->setImbuingItem(nullptr);
+					openImbuementWindow(ImbuementAction::Open);
+				} else {
+					player->sendImbuementResult("This item is not imbuable.");
+				}
 				return;
 			}
 		}
@@ -10065,6 +10070,16 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 		return;
 	}
 
+	if (action == ImbuementAction::PickItem && (!item || item->getTopParent() != player)) {
+		player->setImbuingItem(nullptr);
+		if (isTibia1100Profile(protocolProfile)) {
+			player->sendCancelMessage("Select an imbuable item to open the imbuement window.");
+		} else {
+			openImbuementWindow(ImbuementAction::Open, nullptr);
+		}
+		return;
+	}
+
 	if (isTibia1100Profile(protocolProfile)) {
 		if (action != ImbuementAction::PickItem || !item) {
 			player->sendCancelMessage("Select an imbuable item to open the imbuement window.");
@@ -10072,10 +10087,6 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 		}
 
 		openTibia1100ImbuementWindow(item);
-		return;
-	}
-
-	if (!item && action == ImbuementAction::PickItem) {
 		return;
 	}
 

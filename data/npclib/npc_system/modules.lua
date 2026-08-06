@@ -74,13 +74,13 @@ if Modules == nil then
 		end
 
 		if parameters.ungreet then
-			npcHandler:resetNpc(player)
+			npcHandler:resetNpc(npc, player)
 			npcHandler:removeInteraction(npc, player)
 		elseif parameters.reset then
 			parseInfo = { [TAG_PLAYERNAME] = Player(player):getName() }
 			npcHandler:say(npcHandler:parseMessage(parameters.text or parameters.message, parseInfo), npc, player)
 			if parameters.reset then
-				npcHandler:resetNpc(player)
+				npcHandler:resetNpc(npc, player)
 			elseif parameters.moveup then
 				npcHandler.keywordHandler:moveUp(player, parameters.moveup)
 			end
@@ -121,7 +121,7 @@ if Modules == nil then
 		else
 			npcHandler:say("You need a premium account in order to get promoted.", npc, player)
 		end
-		npcHandler:resetNpc(player)
+		npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -150,7 +150,7 @@ if Modules == nil then
 			npcHandler:say(string.format("You need a premium account in order to buy '%s'.", parameters.spellName), npc, player)
 		end
 
-		npcHandler:resetNpc(player)
+		npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -191,7 +191,7 @@ if Modules == nil then
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 		end
 
-		npcHandler:resetNpc(player)
+		npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -258,7 +258,7 @@ if Modules == nil then
 			end
 		end
 
-		npcHandler:resetNpc(player)
+		npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -560,7 +560,7 @@ if Modules == nil then
 			npcHandler:say("I can only allow premium players to travel there.", npc, player)
 		end
 
-		npcHandler:resetNpc(player)
+		npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -575,7 +575,7 @@ if Modules == nil then
 		}
 		local msg = module.npcHandler:parseMessage(module.npcHandler:getMessage(MESSAGE_DECLINE), parseInfo)
 		module.npcHandler:say(msg, npc, player)
-		module.npcHandler:resetNpc(player)
+		module.npcHandler:resetNpc(npc, player)
 		return true
 	end
 
@@ -621,7 +621,7 @@ if Modules == nil then
 		end
 
 		module.npcHandler:say(msg, npc, player)
-		module.npcHandler:resetNpc(player)
+		module.npcHandler:resetNpc(npc, player)
 		return true
 	end
 end

@@ -25,6 +25,7 @@ House::House(uint32_t houseId) :
 
 void House::addTile(const std::shared_ptr<HouseTile> &tile) {
 	tile->setFlag(TILESTATE_PROTECTIONZONE);
+	g_game().map.markNavigationTopologyChanged(tile->getPosition());
 	houseTiles.push_back(tile);
 	updateDoorDescription();
 }

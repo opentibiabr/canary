@@ -1,0 +1,101 @@
+---
+name: Repository Audit
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - ".github/workflows/repository-audit.yml"
+      - "tools/canary_audit/**"
+      - "data/**"
+      - "data-canary/**"
+      - "data-otservbr-global/**"
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/repository-audit.yml"
+      - "tools/canary_audit/**"
+      - "data/**"
+      - "data-canary/**"
+      - "data-otservbr-global/**"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-audit-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: Validate content references
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1  # v6
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: tools/canary_audit/requirements.txt
+
+      - name: Install audit requirements
+        run: python -m pip install --disable-pip-version-check -r tools/canary_audit/requirements.txt
+
+      - name: Validate audit schemas
+        run: python -m tools.canary_audit validate-schemas
+
+      - name: Run audit unit tests
+        run: python -m unittest discover -s tools/canary_audit/tests -t . -p "test_*.py" -v
+
+      - name: Scan repository
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before || '' }}
+          HEAD_SHA: ${{ github.sha }}
+        shell: bash
+        run: |
+          scan_args=(
+            --profile all
+            --output-dir artifacts/canary-audit
+            --github-annotations
+          )
+          if [[ "${BASE_SHA}" =~ ^[0-9a-f]{40}$ && ! "${BASE_SHA}" =~ ^0{40}$ ]]; then
+            scan_args+=(--base-sha "${BASE_SHA}")
+          fi
+          if [[ "${HEAD_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+            scan_args+=(--head-sha "${HEAD_SHA}")
+          fi
+          python -m tools.canary_audit scan "${scan_args[@]}"
+
+      - name: Validate generated artifacts
+        if: ${{ always() && hashFiles('artifacts/canary-audit/*.json') != '' }}
+        run: python -m tools.canary_audit validate --input-dir artifacts/canary-audit
+
+      - name: Publish audit summary
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          if [[ -f artifacts/canary-audit/summary.md ]]; then
+            cat artifacts/canary-audit/summary.md >> "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "# Canary repository audit" >> "${GITHUB_STEP_SUMMARY}"
+            echo >> "${GITHUB_STEP_SUMMARY}"
+            echo "The audit did not produce a summary artifact." >> "${GITHUB_STEP_SUMMARY}"
+          fi
+
+      - name: Upload audit artifacts
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a  # v7
+        with:
+          name: canary-repository-audit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: artifacts/canary-audit/
+          if-no-files-found: warn
+          retention-days: 14

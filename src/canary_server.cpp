@@ -20,6 +20,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "game/scheduling/events_scheduler.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "game/zones/zone.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iomarket.hpp"
@@ -31,11 +32,83 @@
 #include "lua/scripts/lua_environment.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "server/network/protocol/protocollogin.hpp"
+#include "server/network/protocol/protocol_port_utils.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
 #include "server/network/webhook/webhook.hpp"
 #include "creatures/players/components/weapon_proficiency.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "utils/benchmark.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <string_view>
+#endif
+
+namespace {
+	[[nodiscard]] constexpr std::string_view getLuaRuntimeDisplayVersion() {
+#if defined(LUAJIT_VERSION)
+		constexpr std::string_view version = LUAJIT_VERSION;
+		constexpr std::string_view prefix = "LuaJIT ";
+		constexpr auto majorSeparator = version.find('.', prefix.size());
+		if constexpr (majorSeparator != std::string_view::npos) {
+			constexpr auto minorSeparator = version.find('.', majorSeparator + 1);
+			if constexpr (minorSeparator != std::string_view::npos) {
+				return version.substr(0, minorSeparator);
+			}
+		}
+		return version;
+#elif defined(LUA_VERSION)
+		return LUA_VERSION;
+#else
+		return "Lua";
+#endif
+	}
+
+	[[nodiscard]] std::string formatClientVersion(uint16_t version) {
+		return fmt::format("{}.{:02d}", version / 100, version % 100);
+	}
+
+	[[nodiscard]] std::string getClientProtocolPortSummary(bool includeOldProtocolProfiles) {
+		std::vector<std::string> entries;
+		entries.emplace_back(fmt::format("{} -> {}", formatClientVersion(ProtocolProfileRegistry::getCurrentProfile().clientVersion), protocol_port_utils::getModernGamePort()));
+
+		if (includeOldProtocolProfiles) {
+			if (const auto* tibia1100 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Tibia1100);
+			    tibia1100 && ProtocolProfileRegistry::isProfileAllowed(tibia1100->id)) {
+				entries.emplace_back(fmt::format("11.00 -> {}", protocol_port_utils::getLegacy1100GamePort()));
+			}
+
+			if (const auto* cipsoft860 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+			    cipsoft860 && ProtocolProfileRegistry::isProfileAllowed(cipsoft860->id)) {
+				entries.emplace_back(fmt::format("8.60 -> {}", protocol_port_utils::getLegacy860GamePort()));
+			}
+		}
+
+		return fmt::format("login {} | world {}", g_configManager().getNumber(LOGIN_PORT), fmt::join(entries, ", "));
+	}
+
+	void warnLegacy860WorldIpConfiguration(Logger &logger, bool allowOldProtocol) {
+		if (!allowOldProtocol) {
+			return;
+		}
+
+		const auto* cipsoft860 = ProtocolProfileRegistry::getProfile(ProtocolProfileId::Cipsoft860Vanilla);
+		if (!cipsoft860 || !ProtocolProfileRegistry::isProfileAllowed(cipsoft860->id)) {
+			return;
+		}
+
+		const auto configuredWorldIp = g_configManager().getString(IP);
+		if (protocol_port_utils::legacyIpStringToNumber(configuredWorldIp) != 0) {
+			return;
+		}
+
+		logger.warn(
+			"Legacy 8.60 clients require a numeric IPv4 server IP, but configured ip is '{}'. "
+			"8.60 clients will be rejected before the character list is sent.",
+			configuredWorldIp
+		);
+	}
+}
 
 CanaryServer::CanaryServer(
 	Logger &logger,
@@ -74,6 +147,7 @@ bool CanaryServer::generateLuaApiDocs(const bool force) const {
 
 int CanaryServer::generateLuaApiDocsOnly() {
 	const auto shutdownDocgenRuntime = [] {
+		g_monsterComputeService().shutdown();
 		g_dispatcher().shutdown();
 		g_threadPool().shutdown();
 	};
@@ -104,7 +178,13 @@ int CanaryServer::run() {
 				}
 				validateDatapack();
 
-				logger.info("Server protocol: {}.{:02d}{}", CLIENT_VERSION_UPPER, CLIENT_VERSION_LOWER, g_configManager().getBoolean(OLD_PROTOCOL) ? " and 10x allowed!" : "");
+				const auto allowOldProtocol = g_configManager().getBoolean(OLD_PROTOCOL);
+				logger.info(
+					"Allowed client protocols: {} ({})",
+					ProtocolProfileRegistry::getAllowedClientProtocolDescription(allowOldProtocol),
+					getClientProtocolPortSummary(allowOldProtocol)
+				);
+				warnLegacy860WorldIpConfiguration(logger, allowOldProtocol);
 
 #ifdef FEATURE_METRICS
 				metrics::Options metricsOptions;
@@ -123,6 +203,18 @@ int CanaryServer::run() {
 				loadModules();
 				setWorldType();
 				loadMaps();
+
+				MonsterComputeConfig monsterComputeConfig;
+				monsterComputeConfig.configuredThreads = static_cast<uint32_t>(std::max<int32_t>(0, g_configManager().getNumber(MONSTER_COMPUTE_THREADS)));
+				monsterComputeConfig.capacity = static_cast<size_t>(std::max<int32_t>(1, g_configManager().getNumber(MONSTER_COMPUTE_QUEUE_CAPACITY)));
+				g_monsterComputeService().start(monsterComputeConfig);
+				const auto monsterComputeStats = g_monsterComputeService().getStats();
+				logger.info(
+					"Monster compute service initialized: mode={}, workers={}, capacity={}",
+					monsterComputeStats.inlineMode ? "inline" : "workers",
+					monsterComputeStats.workerCount,
+					monsterComputeStats.capacity
+				);
 
 				logger.info("Initializing gamestate...");
 				g_game().setGameState(GAME_STATE_INIT);
@@ -211,6 +303,7 @@ int CanaryServer::run() {
 
 	logger.info("{} {}", g_configManager().getString(SERVER_NAME), "server online!");
 	g_logger().setLevel(g_configManager().getString(LOGLEVEL));
+	g_dispatcher().setQueueLatencyLoggingEnabled(true);
 
 	serviceManager.run();
 
@@ -283,9 +376,7 @@ void CanaryServer::logInfos() {
 
 	logger.info("Compiled with {}, on {} {}, for platform {}", getCompiler(), __DATE__, __TIME__, getPlatform());
 
-#if defined(LUAJIT_VERSION)
-	logger.info("Linked with {} for Lua support", LUAJIT_VERSION);
-#endif
+	logger.info("Linked with {} for Lua support", getLuaRuntimeDisplayVersion());
 
 	logger.info("A server developed by: {}", ProtocolStatus::SERVER_DEVELOPERS);
 	logger.info("Visit our website for updates, support, and resources: "
@@ -528,6 +619,7 @@ void CanaryServer::modulesLoadHelper(bool loaded, std::string_view identifier) {
 }
 
 void CanaryServer::shutdown() {
+	g_monsterComputeService().shutdown();
 	g_database().createDatabaseBackup(true);
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();

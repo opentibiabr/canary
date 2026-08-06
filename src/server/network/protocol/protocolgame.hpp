@@ -10,9 +10,16 @@
 #pragma once
 
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocol_profile.hpp"
+#include "server/network/protocol/protocol_session_hint.hpp"
 #include "game/movement/position.hpp"
 #include "utils/utils_definitions.hpp"
 #include "creatures/players/stash_definitions.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+	#include <string>
+#endif
 
 enum class PlayerIcon : uint8_t;
 enum class IconBakragore : uint8_t;
@@ -117,6 +124,10 @@ public:
 		return version;
 	}
 
+	[[nodiscard]] const ProtocolProfile* getProtocolProfile() const {
+		return protocolProfile;
+	}
+
 private:
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
@@ -124,6 +135,9 @@ private:
 	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(NetworkMessage &msg);
+	[[nodiscard]] bool shouldSuppressPreLoginPacket() const;
+	[[nodiscard]] bool isSessionEnding() const;
+	void clearReusableSessionHints();
 
 	void release() override;
 
@@ -137,6 +151,7 @@ private:
 	void parsePacket(NetworkMessage &msg) override;
 	void parsePacketFromDispatcher(NetworkMessage &msg, uint8_t recvbyte);
 	void onRecvFirstMessage(NetworkMessage &msg) override;
+	void onConnectionAccepted() override;
 	void sendLoginChallenge() override;
 
 	// Parse methods
@@ -179,6 +194,20 @@ private:
 	void parseImbuementAction(NetworkMessage &msg);
 	void parseWeaponProficiency(NetworkMessage &msg);
 	void parseTaskHuntingAction(NetworkMessage &msg);
+	void parseSetClientOptions(NetworkMessage &msg);
+	void parseClientCheck(NetworkMessage &msg);
+	void parseSetVocation(NetworkMessage &msg);
+	void parseStartOfflineTraining(NetworkMessage &msg);
+	void parseContainerAction(NetworkMessage &msg);
+	void parseCharacterTradeConfigurationAction(NetworkMessage &msg);
+	void parseJoinAggression(NetworkMessage &msg);
+	void parseEditGuildMessage(NetworkMessage &msg);
+	void parseGetTextForReport(NetworkMessage &msg);
+	void parseClientDetails(NetworkMessage &msg);
+	void parseBossDifficultySelection(NetworkMessage &msg);
+	void parseInspectPlayer(NetworkMessage &msg);
+	void parseCyclopediaMapAction(NetworkMessage &msg);
+	void parseSetHirelingName(NetworkMessage &msg);
 	void sendHighscoresNoData();
 	void sendHighscores(const std::vector<HighscoreCharacter> &characters, uint8_t categoryId, uint32_t vocationId, uint16_t page, uint16_t pages, uint32_t updateTimer);
 
@@ -187,6 +216,9 @@ private:
 	void parseOfferDescription(NetworkMessage &msg);
 	void parsePreyAction(NetworkMessage &msg);
 	void parseSendResourceBalance();
+	void parseSendResourceBalance(NetworkMessage &msg);
+	void parseGetTransactionDetails(NetworkMessage &msg);
+	void parseGetObjectInfo(NetworkMessage &msg);
 	void parseRuleViolationReport(NetworkMessage &msg);
 
 	void parseBestiarySendRaces();
@@ -270,6 +302,7 @@ private:
 
 	// Imbuement info
 	void addImbuementInfo(NetworkMessage &msg, uint16_t imbuementID, bool isScrollAction = false) const;
+	void addTibia1100ImbuementInfo(NetworkMessage &msg, uint16_t imbuementID) const;
 	void addAvailableImbuementsInfo(NetworkMessage &msg, const std::shared_ptr<Item> &item, phmap::flat_hash_map<uint16_t, uint16_t> &neededItems, bool isScrollAction = false) const;
 
 	// Send functions
@@ -288,6 +321,7 @@ private:
 	void sendFYIBox(const std::string &message);
 
 	void openImbuementWindow(ImbuementAction action, const std::shared_ptr<Item> &item = nullptr);
+	void openTibia1100ImbuementWindow(const std::shared_ptr<Item> &item);
 	void sendImbuementResult(const std::string &message);
 	void closeImbuementWindow();
 
@@ -317,7 +351,9 @@ private:
 	void sendBosstiaryEntryChanged(uint32_t bossid);
 
 	void sendAllowBugReport();
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source);
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);
+	void sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source);
 	void sendMagicEffect(const Position &pos, uint16_t type);
 	void removeMagicEffect(const Position &pos, uint16_t type);
 	void sendRestingStatus(uint8_t protection);
@@ -347,6 +383,7 @@ private:
 	void sendStats();
 	void sendBasicData();
 	void sendTextMessage(const TextMessage &message);
+	bool sendCipsoft860SpecialTextMessage(const TextMessage &message, MessageClasses internalType);
 	void sendReLoginWindow(uint8_t unfairFightReduction);
 
 	void sendTutorial(uint8_t tutorialId);
@@ -477,6 +514,7 @@ private:
 	// Help functions
 	// translate a tile to clientreadable format
 	void GetTileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
+	void GetCipsoft860TileDescription(const std::shared_ptr<Tile> &tile, NetworkMessage &msg);
 
 	// translate a floor to clientreadable format
 	void GetFloorDescription(NetworkMessage &msg, int32_t x, int32_t y, int32_t z, int32_t width, int32_t height, int32_t offset, int32_t &skip);
@@ -536,6 +574,7 @@ private:
 	// Wheel
 	void parseOpenWheel(NetworkMessage &msg);
 	void sendOpenWheelWindow(uint32_t ownerId);
+	void sendGemAtelierGemRevealed(uint16_t gemIndex);
 	void parseSaveWheel(NetworkMessage &msg);
 	void parseWheelGemAction(NetworkMessage &msg);
 
@@ -580,6 +619,10 @@ private:
 	uint32_t challengeTimestamp = 0;
 	uint16_t version = 0;
 	int32_t clientVersion = 0;
+	std::string clientVersionString;
+	const ProtocolProfile* protocolProfile = &ProtocolProfileRegistry::getCurrentProfile();
+	InitialConnectionBehavior initialConnectionBehavior = ProtocolProfileRegistry::defaultModernInitialBehavior();
+	std::optional<ProtocolSessionHintLease> sessionHintLease;
 
 	uint8_t challengeRandom = 0;
 
@@ -587,6 +630,7 @@ private:
 	bool acceptPackets = false;
 
 	bool loggedIn = false;
+	bool suppressPreLoginPackets = false;
 
 	bool oldProtocol = false;
 	bool isOTC = false;
@@ -614,7 +658,7 @@ private:
 	void sendAmbientSoundEffect(const SoundAmbientEffect_t id);
 	void sendMusicSoundEffect(const SoundMusicEffect_t id);
 
-	void sendTakeScreenshot(Screenshot_t screenshotType);
+	void sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId = 0, uint16_t skillLevel = 0, const std::string &achievementName = "", uint16_t raceId = 0, uint8_t bestiaryStep = 0);
 	void sendDisableLoginMusic();
 
 	uint8_t m_playerDeathTime = 0;

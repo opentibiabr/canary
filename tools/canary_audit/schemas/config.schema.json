@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/canary-audit-config.schema.json",
+  "title": "Canary audit configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "layers",
+    "profiles",
+    "excludedDirectories",
+    "maxTextFileBytes",
+    "maxLuaTokens",
+    "maxXmlFileBytes",
+    "maxFactsPerFile",
+    "maxDiagnosticsPerFile",
+    "maxTotalFacts",
+    "maxTotalDiagnostics",
+    "maxFindings",
+    "artifactRoot",
+    "itemCatalogFiles",
+    "itemOverrideFiles",
+    "storageTables",
+    "storageXmlFiles",
+    "severityByRule",
+    "gateSeverity",
+    "baselinePath"
+  ],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "layers": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/layer" }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/profile" }
+    },
+    "excludedDirectories": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "pattern": "^[^/\\\\]+$" }
+    },
+    "maxTextFileBytes": { "type": "integer", "minimum": 1, "maximum": 67108864 },
+    "maxLuaTokens": { "type": "integer", "minimum": 1, "maximum": 2000000 },
+    "maxXmlFileBytes": { "type": "integer", "minimum": 1, "maximum": 268435456 },
+    "maxFactsPerFile": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "maxDiagnosticsPerFile": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "maxTotalFacts": { "type": "integer", "minimum": 1, "maximum": 5000000 },
+    "maxTotalDiagnostics": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "maxFindings": { "type": "integer", "minimum": 1, "maximum": 1000000 },
+    "artifactRoot": { "$ref": "#/$defs/path" },
+    "itemCatalogFiles": { "$ref": "#/$defs/paths" },
+    "itemOverrideFiles": { "$ref": "#/$defs/paths" },
+    "storageTables": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/storageTable" }
+    },
+    "storageXmlFiles": { "$ref": "#/$defs/paths" },
+    "severityByRule": {
+      "type": "object",
+      "propertyNames": { "type": "string", "minLength": 1 },
+      "additionalProperties": { "$ref": "#/$defs/severity" }
+    },
+    "gateSeverity": { "$ref": "#/$defs/severity" },
+    "baselinePath": { "$ref": "#/$defs/path" }
+  },
+  "$defs": {
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^/]+(?:/[^/]+)*$"
+    },
+    "paths": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/path" }
+    },
+    "severity": { "enum": ["info", "warning", "error"] },
+    "layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "root"],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "root": { "$ref": "#/$defs/path" }
+      }
+    },
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "layers"],
+      "properties": {
+        "name": { "$ref": "#/$defs/name" },
+        "layers": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/name" }
+        }
+      }
+    },
+    "storageTable": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "root", "domain"],
+      "properties": {
+        "path": { "$ref": "#/$defs/path" },
+        "root": { "type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_]*(?:\\.[A-Za-z_][A-Za-z0-9_]*)*$" },
+        "domain": { "enum": ["storage.player", "storage.global"] }
+      }
+    }
+  }
+}

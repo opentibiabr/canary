@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "normal",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -174,7 +176,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			local answer = quiz1[player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.QuestionId)].r
 			if playerLastResp[playerId] ~= (tonumber(answer(player))) then
 				npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
-				npcHandler:resetNpc(creature)
+				npcHandler:resetNpc(npc, creature)
 				npcHandler:removeInteraction(npc, creature)
 				return false
 			else
@@ -183,7 +185,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say("SHUT DOWN.", npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			return false
 		end
@@ -205,7 +207,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 7)
 		else
 			npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			return false
 		end
@@ -227,7 +229,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			npcHandler:setTopic(playerId, 9)
 		else
 			npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			return false
 		end
@@ -243,7 +245,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			local correct = string.format("%d%d%d", player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone1), player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone2), player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.MotA.Stone3))
 			if tonumber(playerLastResp[playerId]) ~= (tonumber(correct)) then
 				npcHandler:say("Wrong. SHUT DOWN.", npc, creature)
-				npcHandler:resetNpc(creature)
+				npcHandler:resetNpc(npc, creature)
 				npcHandler:removeInteraction(npc, creature)
 				return false
 			else
@@ -253,7 +255,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		elseif MsgContains(message, "no") then
 			npcHandler:say("SHUT DOWN.", npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 			npcHandler:removeInteraction(npc, creature)
 			return false
 		end

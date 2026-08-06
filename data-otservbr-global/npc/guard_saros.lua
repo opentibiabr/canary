@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "banker",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_BANKER
 
 npcConfig.voices = {
 	interval = 15000,
@@ -89,7 +91,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		else
 			npcHandler:say("Oh, I just remember I have some work to do, sorry. Bye!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 		npcHandler:setTopic(playerId, nil)
 		price[playerId] = nil
@@ -202,7 +204,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, nil)
 		price[playerId] = nil
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 	elseif MsgContains(message, "tibia") then
 		npcHandler:say("I would like to visit the beach more often, but I guess it's too dangerous.", npc, creature)
 		npcHandler:setTopic(playerId, 2)
@@ -248,7 +250,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		npcHandler:setTopic(playerId, nil)
 		price[playerId] = nil
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 	end
 	return true
 end

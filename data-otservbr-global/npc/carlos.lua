@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 npcConfig.voices = {
 	interval = 15000,
@@ -109,18 +111,18 @@ local function greetCallback(npc, creature)
 		else
 			npcHandler:setMessage(MESSAGE_GREET, "Welcome back, |PLAYERNAME|! Where did you put that delicious piece of food? Did you eat it yourself? Well, if you find another one, please come back.")
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 7 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hey there, |PLAYERNAME|! Well, that's how trading with NPCs like me works. I think you are ready now to cross the bridge to Rookgaard! Take care!")
 		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
 		player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 	elseif player:getStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage) == 8 then
 		npcHandler:setMessage(MESSAGE_GREET, "Hello again, |PLAYERNAME|! What are you still doing here? You should head over the bridge to Rookgaard village now!")
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 	end
 	return true
 end
@@ -131,7 +133,7 @@ local function releasePlayer(npc, creature)
 	end
 
 	npcHandler:removeInteraction(npc, creature)
-	npcHandler:resetNpc(creature)
+	npcHandler:resetNpc(npc, creature)
 end
 
 local function creatureSayCallback(npc, creature, type, message)
@@ -149,7 +151,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 2)
 			player:sendTutorial(12)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif storeTalkCid[playerId] == 2 then
 			npcHandler:say("You see, I'm quite hungry from standing here all day. Could you get me some {food}?", npc, creature)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 3)
@@ -165,7 +167,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 5)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 5)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif storeTalkCid[playerId] == 5 then
 			if player:getItemCount(3577) > 0 or player:getItemCount(3582) > 0 then
 				npcHandler:say("What's that delicious smell? That must be a piece of meat! Please hurry, simply ask me for a {trade} and I'll give you two gold pieces for it!", npc, creature)
@@ -176,7 +178,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			else
 				npcHandler:say("Hmm. No, I don't think you have something with you that I'd like to eat. Please come back once you looted a piece of meat or a piece of ham from a rabbit or deer.", npc, creature)
 				npcHandler:removeInteraction(npc, creature)
-				npcHandler:resetNpc(creature)
+				npcHandler:resetNpc(npc, creature)
 			end
 		elseif storeTalkCid[playerId] == 7 then
 			npcHandler:say({
@@ -187,7 +189,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosQuestLog, 7)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.CarlosNpcGreetStorage, 8)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	elseif MsgContains(message, "outfit") then
 		if storeTalkCid[playerId] == 1 then

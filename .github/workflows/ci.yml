@@ -1,3 +1,4 @@
+---
 name: CI
 
 on:
@@ -17,6 +18,10 @@ on:
       - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
+      - ".mise.toml"
+      - ".github/requirements-cmake-format.txt"
+      - "vcpkg-configuration.json"
+      - "vcpkg-registry/**"
       - "CMakeLists.txt"
       - "CMakePresets.json"
       - ".github/scripts/**"
@@ -37,6 +42,10 @@ on:
       - "tools/**"
       - "vcproj/**"
       - "vcpkg.json"
+      - ".mise.toml"
+      - ".github/requirements-cmake-format.txt"
+      - "vcpkg-configuration.json"
+      - "vcpkg-registry/**"
       - "CMakeLists.txt"
       - "CMakePresets.json"
       - ".github/scripts/**"
@@ -78,6 +87,10 @@ jobs:
               - "cmake/**"
               - "vcproj/**"
               - "vcpkg.json"
+              - ".mise.toml"
+              - ".github/requirements-cmake-format.txt"
+              - "vcpkg-configuration.json"
+              - "vcpkg-registry/**"
               - "CMakeLists.txt"
               - "CMakePresets.json"
               - ".github/workflows/ci.yml"
@@ -96,6 +109,9 @@ jobs:
               - "src/**"
               - "cmake/**"
               - "vcpkg.json"
+              - ".mise.toml"
+              - "vcpkg-configuration.json"
+              - "vcpkg-registry/**"
               - "CMakeLists.txt"
               - "CMakePresets.json"
               - ".github/workflows/ci.yml"

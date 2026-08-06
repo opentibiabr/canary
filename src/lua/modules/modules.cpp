@@ -72,7 +72,7 @@ bool Modules::registerEvent(const Event_ptr &event, const pugi::xml_node &) {
 	return true;
 }
 
-Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
+Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) const {
 	const auto it = recvbyteList.find(recvbyte);
 	if (it != recvbyteList.end() && (!force || it->second->isLoaded())) {
 		return it->second;
@@ -80,23 +80,32 @@ Module_ptr Modules::getEventByRecvbyte(uint8_t recvbyte, bool force) {
 	return nullptr;
 }
 
-void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
-	const auto &player = g_game().getPlayerByID(playerId);
+bool Modules::executeOnRecvbyte(const std::shared_ptr<Player> &player, NetworkMessage &msg, uint8_t byte) const {
 	if (!player) {
-		return;
+		return false;
 	}
 
-	for (const auto &[moduleId, modulePtr] : recvbyteList) {
-		if (moduleId == 0) {
-			g_logger().error("Invalid module id 0.");
-			continue;
-		}
-		if (modulePtr->getEventType() == MODULE_TYPE_RECVBYTE && modulePtr->getRecvbyte() == byte && player->canRunModule(modulePtr->getRecvbyte())) {
-			player->setModuleDelay(modulePtr->getRecvbyte(), modulePtr->getDelay());
-			modulePtr->executeOnRecvbyte(player, msg);
-			return;
-		}
+	const auto modulePtr = getEventByRecvbyte(byte, false);
+	if (modulePtr && modulePtr->getRecvbyte() == 0) {
+		g_logger().error("Invalid module id 0.");
+		return false;
 	}
+
+	if (!modulePtr || modulePtr->getEventType() != MODULE_TYPE_RECVBYTE) {
+		return false;
+	}
+	if (!player->canRunModule(modulePtr->getRecvbyte())) {
+		return false;
+	}
+
+	player->setModuleDelay(modulePtr->getRecvbyte(), modulePtr->getDelay());
+	modulePtr->executeOnRecvbyte(player, msg);
+	return true;
+}
+
+void Modules::executeOnRecvbyte(uint32_t playerId, NetworkMessage &msg, uint8_t byte) const {
+	const auto &player = g_game().getPlayerByID(playerId);
+	(void)executeOnRecvbyte(player, msg, byte);
 }
 
 Module::Module(LuaScriptInterface* interface) :

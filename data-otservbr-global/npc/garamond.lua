@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -58,7 +60,7 @@ local lightMagicMissileNode = keywordHandler:addKeyword({ "light magic missile" 
 lightMagicMissileNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
 	premium = false,
-	spellName = "Light Magic Missile",
+	spellName = "Light Magic Missile Rune",
 	vocation = { 1, 2, 5, 6 },
 	price = 500,
 	level = 15,
@@ -170,7 +172,7 @@ local poisonFieldNode = keywordHandler:addKeyword({ "poison field" }, StdModule.
 poisonFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
 	premium = false,
-	spellName = "Poison Field",
+	spellName = "Poison Field Rune",
 	vocation = { 1, 2, 5, 6 },
 	price = 300,
 	level = 14,
@@ -184,7 +186,7 @@ local fireFieldNode = keywordHandler:addKeyword({ "fire field" }, StdModule.say,
 fireFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
 	premium = false,
-	spellName = "Fire Field",
+	spellName = "Fire Field Rune",
 	vocation = { 1, 2, 5, 6 },
 	price = 500,
 	level = 15,
@@ -198,7 +200,7 @@ local energyFieldNode = keywordHandler:addKeyword({ "energy field" }, StdModule.
 energyFieldNode:addChildKeyword({ "yes" }, StdModule.learnSpell, {
 	npcHandler = npcHandler,
 	premium = false,
-	spellName = "Energy Field",
+	spellName = "Energy Field Rune",
 	vocation = { 1, 2, 5, 6 },
 	price = 700,
 	level = 18,

@@ -14,6 +14,7 @@
 #include "creatures/interactions/chat.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/monster_compute_service.hpp"
 #include "game/scheduling/save_manager.hpp"
 #include "lib/thread/thread_pool.hpp"
 #include "lua/creature/events.hpp"
@@ -81,6 +82,7 @@ void Signals::dispatchSignalHandler(int signal) {
 		case SIGBREAK: // Shuts the server down
 			g_dispatcher().addEvent(sigbreakHandler, __FUNCTION__);
 			// hold the thread until other threads end
+			g_monsterComputeService().shutdown();
 			g_threadPool().shutdown();
 			break;
 #endif
@@ -120,6 +122,7 @@ void Signals::sighupHandler() {
 	g_logger().info("Reloaded raids");
 
 	Item::items.reload();
+	g_game().map.invalidateNavigationEpoch();
 	g_logger().info("Reloaded items");
 
 	g_game().mounts->reload();

@@ -18,7 +18,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 npcConfig.shop = {
 	{ itemName = "ancient shield", clientId = 3432, buy = 5000, sell = 900 },
@@ -97,7 +99,7 @@ local function greetCallback(npc, creature, message)
 
 	--Checks if the player has completed the quest
 	if player:getStorageValue(Storage.Quest.U7_4.DjinnWar.EfreetFaction.Mission03) ~= 3 then
-		if not MsgContains(message, "djanni'hah") then
+		if not MsgContains(message, "djanni'hah") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting) < 0 then
 			npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
 			endConversationWithDelay(npcHandler, npc, creature)
 			return false

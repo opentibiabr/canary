@@ -74,15 +74,12 @@ jobs:
               git config user.name "GitHub Actions"
               git add "${tracked_paths[@]}"
               git commit -m "chore: materialize release metadata for ${RELEASE_TAG}"
-              tag_object_sha="$(gh api "repos/${GITHUB_REPOSITORY}/git/tags" \
-                -f "tag=${RELEASE_TAG}" \
-                -f "message=${RELEASE_TAG}" \
-                -f "object=$(git rev-parse HEAD)" \
-                -f "type=commit" \
-                --jq .sha)"
-              gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/tags/${RELEASE_TAG}" \
-                -f "sha=${tag_object_sha}" \
-                -F force=true >/dev/null
+              current_tag_ref="$(git rev-parse "refs/tags/${RELEASE_TAG}")"
+              # Publish the materialized commit and updated annotated tag together.
+              git tag -fa "${RELEASE_TAG}" -m "${RELEASE_TAG}"
+              git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+                "refs/tags/${RELEASE_TAG}:refs/tags/${RELEASE_TAG}" \
+                --force-with-lease="refs/tags/${RELEASE_TAG}:${current_tag_ref}"
               tag_updated=true
             else
               echo "::warning::Release metadata differs for ${RELEASE_TAG}, but dry_run=true prevents updating the tag."
@@ -205,9 +202,72 @@ jobs:
       release_tag: ${{ needs.validate.outputs.tag }}
       checkout_ref: ${{ needs.prepare-tag.outputs.commit_sha }}
 
+  validate-client-release:
+    name: Validate Client Release
+    needs: [prepare-tag, validate]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      client_tag: ${{ steps.client.outputs.tag }}
+    env:
+      GH_TOKEN: ${{ github.token }}
+      CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+    steps:
+      - name: Resolve and validate Tibia client release
+        id: client
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          prefix="${CLIENT_DISPLAY}."
+          releases="$(gh api "repos/dudantas/tibia-client/releases?per_page=100")"
+          client_tag="$(jq -r --arg prefix "${prefix}" '
+            [
+              .[]
+              | select(.draft | not)
+              | select(.prerelease | not)
+              | select(.tag_name | startswith($prefix))
+            ]
+            | sort_by(.published_at)
+            | last
+            | .tag_name // empty
+          ' <<<"${releases}")"
+
+          if [[ -z "${client_tag}" ]]; then
+            echo "No published dudantas/tibia-client release was found for client ${CLIENT_DISPLAY}." >&2
+            exit 1
+          fi
+
+          required_assets=(
+            "tibia-client-${client_tag}.zip"
+            "client-11.zip"
+            "tibia-8.6-extended.zip"
+          )
+          release_assets="$(gh release view "${client_tag}" \
+            --repo dudantas/tibia-client \
+            --json assets \
+            --jq '.assets[].name')"
+
+          for asset in "${required_assets[@]}"; do
+            if ! grep -Fxq "${asset}" <<<"${release_assets}"; then
+              echo "Client release ${client_tag} is missing required asset: ${asset}" >&2
+              exit 1
+            fi
+          done
+
+          echo "tag=${client_tag}" >> "$GITHUB_OUTPUT"
+
+          {
+            echo "Resolved Tibia client release ${client_tag} for client ${CLIENT_DISPLAY}."
+            echo ""
+            echo "Validated required assets:"
+            printf -- "- %s\n" "${required_assets[@]}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
   publish:
     name: Publish Release
-    needs: [prepare-tag, validate, build-linux, build-windows, build-macos, build-docker]
+    needs: [prepare-tag, validate, validate-client-release, build-linux, build-windows, build-macos, build-docker]
     runs-on: ubuntu-latest
     permissions:
       actions: read
@@ -217,6 +277,7 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
       CLIENT_DISPLAY: ${{ needs.validate.outputs.client_display }}
+      CLIENT_RELEASE_TAG: ${{ needs.validate-client-release.outputs.client_tag }}
       PREVIOUS_TAG: ${{ needs.validate.outputs.previous_tag }}
       RELEASE_COMMIT_SHA: ${{ needs.prepare-tag.outputs.commit_sha }}
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -256,7 +317,8 @@ jobs:
           - #### For tutorials and additional resources, visit our [documentation](https://docs.opentibiabr.com/home/welcome).
 
           ------------------------------------
-          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/latest)
+          ### [Download Tibia Client ${CLIENT_DISPLAY}](https://github.com/dudantas/tibia-client/releases/tag/${CLIENT_RELEASE_TAG})
+          ### Full client packages are published in the linked Tibia client release.
           ### [Download OTClient Redemption](https://github.com/opentibiabr/otclient), thanks for @mehah
 
           ------------------------------------
@@ -402,12 +464,12 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       RELEASE_VERSION: ${{ needs.validate.outputs.version }}
     steps:
-      - name: Checkout materialized release commit
+      - name: Checkout main for metadata PR
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10  # v6
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ needs.prepare-tag.outputs.commit_sha }}
+          ref: main
 
       - name: Push metadata branch
         id: branch
@@ -423,6 +485,69 @@ jobs:
 
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git config user.name "GitHub Actions"
+
+          git fetch --force origin main
+          git switch -C "${branch}" origin/main
+
+          tracked_paths=(
+            src/core.hpp
+            config.lua.dist
+            docker/data/start.sh
+            docker/.env.dist
+            docker/docker-compose.yml
+            docker/DOCKER.md
+            docker/quickstart/myaac/bootstrap.php
+          )
+
+          current_client_version="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          core = Path("src/core.hpp").read_text(encoding="utf-8")
+          match = re.search(r"CLIENT_VERSION\s*=\s*(\d+)", core)
+          if not match:
+              raise SystemExit("CLIENT_VERSION was not found in src/core.hpp")
+          print(match.group(1))
+          PY
+          )"
+
+          python3 .github/scripts/release_metadata.py materialize --tag "${RELEASE_TAG}"
+
+          materialized_client_version="$(python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          core = Path("src/core.hpp").read_text(encoding="utf-8")
+          match = re.search(r"CLIENT_VERSION\s*=\s*(\d+)", core)
+          if not match:
+              raise SystemExit("CLIENT_VERSION was not found in src/core.hpp")
+          print(match.group(1))
+          PY
+          )"
+
+          if [[ "${materialized_client_version}" != "${current_client_version}" ]]; then
+            echo "::error::Release metadata PR must preserve main CLIENT_VERSION (${current_client_version}); materialized ${materialized_client_version}."
+            exit 1
+          fi
+
+          unexpected_paths="$(comm -23 \
+            <(git diff --name-only | sort) \
+            <(printf '%s\n' "${tracked_paths[@]}" | sort))"
+          if [[ -n "${unexpected_paths}" ]]; then
+            echo "::error::Release metadata materialization changed unexpected paths:"
+            printf '%s\n' "${unexpected_paths}"
+            exit 1
+          fi
+
+          if git diff --quiet -- "${tracked_paths[@]}"; then
+            echo "Release metadata is already current on main."
+            echo "branch=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git add "${tracked_paths[@]}"
+          git commit -m "chore: update release metadata to ${RELEASE_VERSION}"
+
           branch_sha="$(git rev-parse HEAD)"
           if gh api "repos/${GITHUB_REPOSITORY}/git/ref/heads/${branch}" >/dev/null 2>&1; then
             gh api -X PATCH "repos/${GITHUB_REPOSITORY}/git/refs/heads/${branch}" \
@@ -437,6 +562,7 @@ jobs:
           echo "branch=${branch}" >> "$GITHUB_OUTPUT"
 
       - name: Open or update pull request
+        if: steps.branch.outputs.branch != ''
         shell: bash
         env:
           BRANCH: ${{ steps.branch.outputs.branch }}
@@ -461,7 +587,7 @@ jobs:
 
           Release: https://github.com/${GITHUB_REPOSITORY}/releases/tag/${RELEASE_TAG}
 
-          This PR is based on the same materialized commit used by the release tag. Merging it keeps the default map URL, Docker quickstart defaults, MyAAC client version, and server release version aligned with the latest published release.
+          This PR is based on the current main branch and only materializes tracked release metadata. It preserves the current main client protocol while aligning the default map URL, Docker quickstart defaults, MyAAC client version, and server release version with the latest published release.
           EOF_PR
           )"
 

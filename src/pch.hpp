@@ -26,14 +26,20 @@
 // --------------------
 
 #include <atomic>
+#include <array>
 #include <bitset>
 #include <charconv>
+#include <cassert>
+#include <condition_variable>
 #include <cstdint>
 #include <cstddef>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
 #include <functional>
+#include <iterator>
+#include <limits>
 #include <list>
 #include <map>
 #include <memory>
@@ -51,8 +57,12 @@
 #include <variant>
 #include <numeric>
 #include <cmath>
+#include <chrono>
 #include <mutex>
+#include <optional>
 #include <stack>
+#include <stdexcept>
+#include <stop_token>
 #include <source_location>
 #include <span>
 #include <compare>

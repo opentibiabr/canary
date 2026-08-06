@@ -84,6 +84,12 @@ while IFS='=' read -r key value; do
       CANARY_GAME_PORT)
         substitute_lua_variable "gameProtocolPort" "$value"
         ;;
+      CANARY_LEGACY_1100_GAME_PORT)
+        substitute_lua_variable "legacy1100GameProtocolPort" "$value"
+        ;;
+      CANARY_LEGACY_860_GAME_PORT)
+        substitute_lua_variable "legacy860GameProtocolPort" "$value"
+        ;;
       CANARY_STATUS_PORT)
         substitute_lua_variable "statusProtocolPort" "$value"
         ;;

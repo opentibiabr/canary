@@ -351,3 +351,131 @@ TEST_F(ForgeIntegrationTest, ForgeFuseItemsFromGameFlowFailsWhenBackpackIsFull) 
 	EXPECT_TRUE(hasItem(*player, fixture.firstForgeItemId, 1));
 	EXPECT_TRUE(hasItem(*player, fixture.secondForgeItemId, 1));
 }
+
+// Regression (forge fusion same-item double-removal):
+// Real fusion combines two copies of the SAME item id + tier. getForgeItemFromId
+// returns the first inventory match, so resolving BOTH forging items before removing
+// either must still yield two DISTINCT instances. Otherwise the second internalRemoveItem
+// operates on the already-removed instance and fails with
+// "[Log 2] Failed to remove forge item ... from player". The pre-existing success test
+// uses two DIFFERENT ids, so it never exercised this path.
+TEST_F(ForgeIntegrationTest, ForgeFuseItemsWithIdenticalItemIdConsumesTwoDistinctCopies) {
+	ensureBackpack();
+	const auto &fixture = testState();
+
+	seedGameRng(1337);
+	const uint64_t dustCost = g_configManager().getNumber(FORGE_FUSION_DUST_COST);
+	const uint64_t goldCost = fixture.fusionCostForTier(2);
+	setPlayerResources(dustCost + 5, goldCost + 7);
+
+	// Two copies of the SAME item id at the same tier - the real fusion scenario.
+	addPlayerItemBackpack(fixture.firstForgeItemId, 1, 2);
+
+	const auto startDust = player->getForgeDusts();
+	const auto startBalance = player->getBankBalance();
+	const auto startChest = countItem(*player, ITEM_EXALTATION_CHEST, 0);
+	ASSERT_EQ(2u, countItem(*player, fixture.firstForgeItemId, 1));
+
+	player->forgeFuseItems(ForgeAction_t::FUSION, fixture.firstForgeItemId, 1, fixture.firstForgeItemId, true, false, false, 0, 0);
+
+	// Both inputs consumed (the bug removed only the first copy then aborted).
+	EXPECT_EQ(0u, countItem(*player, fixture.firstForgeItemId, 1));
+	EXPECT_GT(countItem(*player, ITEM_EXALTATION_CHEST, 0), startChest);
+	EXPECT_EQ(player->getForgeDusts(), startDust - dustCost);
+	EXPECT_EQ(player->getBankBalance(), startBalance - goldCost);
+}
+
+// Regression guard: with only ONE matching item, fusion must abort BEFORE mutating
+// anything. The buggy ordering returned the same (non-null) instance twice, so it
+// added the exaltation chest and removed the single copy before failing on the second
+// removal, leaving partial state. The fix makes the second lookup return nullptr, so
+// the null-check aborts before any inventory/resource mutation.
+TEST_F(ForgeIntegrationTest, ForgeFuseItemsWithSingleCopyAbortsBeforeMutating) {
+	ensureBackpack();
+	const auto &fixture = testState();
+
+	const uint64_t dustCost = g_configManager().getNumber(FORGE_FUSION_DUST_COST);
+	const uint64_t goldCost = fixture.fusionCostForTier(2);
+	setPlayerResources(dustCost + 5, goldCost + 7);
+
+	addPlayerItemBackpack(fixture.firstForgeItemId, 1, 1); // only one copy
+
+	const auto startDust = player->getForgeDusts();
+	const auto startBalance = player->getBankBalance();
+
+	player->forgeFuseItems(ForgeAction_t::FUSION, fixture.firstForgeItemId, 1, fixture.firstForgeItemId, true, false, false, 0, 0);
+
+	EXPECT_FALSE(hasItem(*player, ITEM_EXALTATION_CHEST));
+	EXPECT_TRUE(hasItem(*player, fixture.firstForgeItemId, 1));
+	EXPECT_EQ(player->getForgeDusts(), startDust);
+	EXPECT_EQ(player->getBankBalance(), startBalance);
+}
+
+// Regression guard for forgeTransferItemTier (same reordering as 519ab0c):
+// donor and receive are resolved before either is removed. When the donor and receive
+// share the SAME item id (donor at a higher tier, receive at tier 0), the receive lookup
+// must resolve to the DISTINCT tier-0 instance and not alias the donor. The transfer must
+// succeed, consuming the donor (tier 2) and the receive (tier 0) and producing a tier-1
+// copy of the receive id inside the exaltation chest.
+TEST_F(ForgeIntegrationTest, ForgeTransferItemTierWithIdenticalItemIdUsesDistinctCopies) {
+	ensureBackpack();
+	const auto &fixture = testState();
+
+	const uint8_t transferToTier = 1;
+	const uint8_t transferFromTier = 2;
+	const auto* classification = fixture.getClassification();
+	ASSERT_NE(nullptr, classification);
+	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
+	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);
+	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
+
+	setPlayerResources(dustCost, transferGoldCost + 7);
+	const auto startDust = player->getForgeDusts();
+	const auto startBalance = player->getBankBalance();
+	const auto startChest = countItem(*player, ITEM_EXALTATION_CHEST, 0);
+
+	// Donor (tier 2) and receive (tier 0) share the same item id.
+	addPlayerItemBackpack(fixture.donorItemId, transferFromTier);
+	addPlayerItemBackpack(fixture.donorItemId, 0);
+
+	const auto &forgeCore = Item::CreateItem(ITEM_FORGE_CORE, transferCoreCost);
+	ASSERT_NE(nullptr, forgeCore);
+	ASSERT_EQ(RETURNVALUE_NOERROR, g_game().internalPlayerAddItem(player, forgeCore, false, CONST_SLOT_BACKPACK));
+
+	player->forgeTransferItemTier(ForgeAction_t::TRANSFER, fixture.donorItemId, transferFromTier, fixture.donorItemId, false);
+
+	EXPECT_EQ(player->getForgeDusts(), startDust - dustCost);
+	EXPECT_EQ(player->getBankBalance(), startBalance - transferGoldCost);
+	EXPECT_FALSE(hasItem(*player, fixture.donorItemId, transferFromTier));
+	EXPECT_FALSE(hasItem(*player, fixture.donorItemId, 0));
+	EXPECT_TRUE(hasItem(*player, fixture.donorItemId, transferToTier));
+	EXPECT_GT(countItem(*player, ITEM_EXALTATION_CHEST, 0), startChest);
+}
+
+// Regression guard: with only ONE matching item, a transfer that reuses that id for both
+// donor and receive must abort without mutating inventory or resources. Without the
+// exclude guard the receive lookup could alias the single donor instance and lead to a
+// double removal. The fix makes the receive lookup return nullptr, aborting cleanly.
+TEST_F(ForgeIntegrationTest, ForgeTransferItemTierWithSingleCopyAbortsBeforeMutating) {
+	ensureBackpack();
+	const auto &fixture = testState();
+
+	const uint8_t transferFromTier = 2;
+	const auto* classification = fixture.getClassification();
+	ASSERT_NE(nullptr, classification);
+	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
+
+	setPlayerResources(dustCost + 5, 1000);
+	const auto startDust = player->getForgeDusts();
+	const auto startBalance = player->getBankBalance();
+
+	// Only a single tier-2 copy exists; no tier-0 receive candidate.
+	addPlayerItemBackpack(fixture.donorItemId, transferFromTier, 1);
+
+	player->forgeTransferItemTier(ForgeAction_t::TRANSFER, fixture.donorItemId, transferFromTier, fixture.donorItemId, false);
+
+	EXPECT_FALSE(hasItem(*player, ITEM_EXALTATION_CHEST));
+	EXPECT_TRUE(hasItem(*player, fixture.donorItemId, transferFromTier));
+	EXPECT_EQ(player->getForgeDusts(), startDust);
+	EXPECT_EQ(player->getBankBalance(), startBalance);
+}

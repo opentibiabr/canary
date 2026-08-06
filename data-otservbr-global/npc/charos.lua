@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "normal",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -71,7 +73,7 @@ local function greetCallback(npc, creature)
 
 	if player:getStorageValue(Storage.Quest.U9_80.AdventurersGuild.CharosTrav) > 6 then
 		npcHandler:say("Sorry, you have traveled a lot.", npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 		return false
 	else
 		npcHandler:setMessage(

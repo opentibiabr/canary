@@ -9,6 +9,10 @@
 
 #include <gtest/gtest.h>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <memory>
+#endif
+
 #include "creatures/npcs/npc.hpp"
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/player.hpp"
@@ -66,12 +70,14 @@ namespace {
 	public:
 		static void SetUpTestSuite() {
 			previousTestContainer = DI::getTestContainer();
-			InMemoryLogger::install(injector);
-			DI::setTestContainer(&injector);
+			injector = std::make_unique<di::extension::injector<>>();
+			InMemoryLogger::install(*injector);
+			DI::setTestContainer(injector.get());
 		}
 
 		static void TearDownTestSuite() {
 			DI::setTestContainer(previousTestContainer);
+			injector.reset();
 		}
 
 		void openOutOfRangeShop() const {
@@ -110,7 +116,7 @@ namespace {
 		uint64_t startBankBalance = 0;
 		bool startHasShopItem = false;
 
-		inline static di::extension::injector<> injector {};
+		inline static std::unique_ptr<di::extension::injector<>> injector;
 		inline static di::extension::injector<>* previousTestContainer = nullptr;
 	};
 }

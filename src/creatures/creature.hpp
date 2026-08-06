@@ -95,6 +95,19 @@ public:
 	virtual std::shared_ptr<const Player> getPlayer() const {
 		return nullptr;
 	}
+	/**
+	 * @brief Returns a borrowed type view for immediate, non-owning use.
+	 *
+	 * Raw type accessors are intended for hotpath type checks and immediate
+	 * dispatch while the caller already has a valid creature owner for the
+	 * current synchronous scope. The returned pointer must not be stored,
+	 * cached, captured by a lambda, exposed to Lua, or carried across
+	 * dispatcher, scheduler, async, database, or network boundaries.
+	 *
+	 * Use the owning `getPlayer()`, `getNpc()`, `getMonster()`, or an audited
+	 * stable identity re-resolve when the reference must outlive the current
+	 * stack.
+	 */
 	virtual Player* getPlayerRaw() noexcept {
 		return nullptr;
 	}
@@ -107,6 +120,7 @@ public:
 	virtual std::shared_ptr<const Npc> getNpc() const {
 		return nullptr;
 	}
+	/// @copydoc getPlayerRaw()
 	virtual Npc* getNpcRaw() noexcept {
 		return nullptr;
 	}
@@ -119,6 +133,7 @@ public:
 	virtual std::shared_ptr<const Monster> getMonster() const {
 		return nullptr;
 	}
+	/// @copydoc getPlayerRaw()
 	virtual Monster* getMonsterRaw() noexcept {
 		return nullptr;
 	}
@@ -807,11 +822,17 @@ protected:
 		UpdateIdleStatus = 1 << 2,
 		Pathfinder = 1 << 3,
 		OnThink = 1 << 4,
+		TargetRanking = 1 << 5,
+		CombatIntention = 1 << 6,
 	};
 
 	virtual bool isDead() const {
 		return false;
 	}
+	virtual bool isPlayerVisibleForScheduling() {
+		return true;
+	}
+	void promoteWalkEventToPlayerVisibleLane();
 
 	Position position;
 
@@ -820,6 +841,36 @@ protected:
 	std::vector<std::shared_ptr<Creature>> m_summons;
 	CreatureEventList eventsList;
 	ConditionList conditions;
+	/**
+	 * Derived cache for quick "no condition of this type exists" checks.
+	 *
+	 * The conditions list remains the source of truth. Any direct mutation of
+	 * that list must update this cache in the same scope.
+	 */
+	std::array<uint16_t, ConditionType_t::CONDITION_COUNT> conditionTypeCounts {};
+
+	static constexpr size_t getConditionTypeIndex(ConditionType_t type) noexcept {
+		return static_cast<size_t>(type);
+	}
+
+	bool hasTrackedConditionType(ConditionType_t type) const noexcept {
+		const auto index = getConditionTypeIndex(type);
+		return index < conditionTypeCounts.size() && conditionTypeCounts[index] > 0;
+	}
+
+	void trackAddedCondition(ConditionType_t type) noexcept {
+		const auto index = getConditionTypeIndex(type);
+		if (index < conditionTypeCounts.size()) {
+			++conditionTypeCounts[index];
+		}
+	}
+
+	void trackRemovedCondition(ConditionType_t type) noexcept {
+		const auto index = getConditionTypeIndex(type);
+		if (index < conditionTypeCounts.size() && conditionTypeCounts[index] > 0) {
+			--conditionTypeCounts[index];
+		}
+	}
 
 	std::vector<Direction> listWalkDir;
 
@@ -922,9 +973,19 @@ protected:
 	friend class Map;
 	friend class CreatureFunctions;
 
-	void addAsyncTask(std::function<void()> &&fnc) {
-		asyncTasks.emplace_back(std::move(fnc));
-		sendAsyncTasks();
+	/**
+	 * Queues creature work for asynchronous execution.
+	 *
+	 * The callable may run after the current stack has returned. It must not
+	 * capture borrowed raw pointers or references to gameplay objects unless
+	 * another captured owner or stable handle explicitly covers that lifetime.
+	 */
+	template <typename AsyncTask>
+	void addAsyncTask(AsyncTask &&fnc) {
+		asyncTasks.emplace_back(std::forward<AsyncTask>(fnc));
+		if (!m_isExecutingAsyncTasks && !hasAsyncTaskFlag(AsyncTaskRunning)) {
+			sendAsyncTasks();
+		}
 	}
 
 	bool hasAsyncTaskFlag(FlagAsyncClass_t prop) const {
@@ -933,21 +994,52 @@ protected:
 
 	void setAsyncTaskFlag(FlagAsyncClass_t taskFlag, bool v) {
 		if (v) {
+			const bool isAsyncTaskAlreadyScheduled = hasAsyncTaskFlag(AsyncTaskRunning);
 			m_flagAsyncTask |= taskFlag;
-			sendAsyncTasks();
+			if (m_isExecutingAsyncTasks && taskFlag != AsyncTaskRunning) {
+				m_deferredAsyncTaskFlags |= taskFlag;
+				return;
+			}
+			if (!isAsyncTaskAlreadyScheduled) {
+				sendAsyncTasks();
+			}
 		} else {
 			m_flagAsyncTask &= ~taskFlag;
+			if (m_isExecutingAsyncTasks) {
+				m_deferredAsyncTaskFlags &= ~taskFlag;
+			}
 		}
 	}
 
 	virtual void onExecuteAsyncTasks() {};
 
-	// This method maintains safety in asynchronous calls, avoiding competition between threads.
-	void safeCall(std::function<void(void)> &&action) const;
+	/**
+	 * Runs an action immediately or defers it back to the dispatcher.
+	 *
+	 * Deferred execution is guarded by a weak self reference. The action must
+	 * not capture borrowed raw pointers from the caller's stack; use strong
+	 * ownership, weak ownership, or an audited stable identity for anything that
+	 * must survive the async boundary.
+	 *
+	 * @return true when the action ran immediately or was admitted for deferred
+	 * execution; false when the creature is removed or dispatcher admission fails.
+	 */
+	bool safeCall(std::function<void(void)> &&action) const;
 
 private:
 	bool canFollowMaster() const;
 	bool isLostSummon();
+	/**
+	 * Queues this creature in a bounded set of shared async buckets.
+	 *
+	 * The queue stores only weak references. `AsyncTaskRunning` remains the
+	 * per-creature guard that prevents duplicate entries while a batch is
+	 * pending or executing.
+	 */
+	static void enqueueAsyncTask(std::weak_ptr<Creature> self, uint32_t creatureId, bool playerVisible);
+	static void processAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
+	static void rollbackAsyncTaskBucket(size_t bucketIndex, bool playerVisible);
+	void executeAsyncTasks();
 	void sendAsyncTasks();
 	void handleLostSummon(bool teleportSummons);
 
@@ -978,6 +1070,10 @@ private:
 	}
 
 	uint8_t m_flagAsyncTask = 0;
+	// Flags set while executeAsyncTasks is processing a local task snapshot.
+	uint8_t m_deferredAsyncTaskFlags = 0;
+	// True only while new async work must be deferred to a follow-up batch.
+	bool m_isExecutingAsyncTasks = false;
 	CombatDamage m_combatDamage;
 	std::vector<uint16_t> attachedEffectList;
 	std::string shader;

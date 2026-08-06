@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -86,10 +88,10 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor) == 11 then
 			npcHandler:say({ "Search for the NPCs Yonan, Narsai, Shimun and Tefrit." }, npc, creature) -- It needs to be revised, it's not the same as the global
 			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Set.Ritual, 1)
-			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Set.Yonan, 1)
-			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Set.Narsai, 1)
-			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Set.Shimun, 1)
-			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Set.Tefrit, 1)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Yonan, 1)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Narsai, 1)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Shimun, 1)
+			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Eighth.Tefrit, 1)
 			player:setStorageValue(Storage.Quest.U12_20.KilmareshQuest.Sixth.Favor, 12)
 			npcHandler:setTopic(playerId, 2)
 			npcHandler:setTopic(playerId, 2)

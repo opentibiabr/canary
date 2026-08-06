@@ -924,7 +924,9 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 				uint64_t totalPrice = 0;
 				onPlayerSellAllLoot(scheduledPlayer, ignore, totalPrice);
 			},
-			__FUNCTION__
+			__FUNCTION__,
+			DispatcherLane::PlayerAction,
+			player->getID()
 		);
 		return;
 	}

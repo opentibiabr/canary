@@ -121,7 +121,7 @@ struct OpenContainer {
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
-static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 1500;
+static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 65535;
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
@@ -206,8 +206,9 @@ public:
 	/**
 	 * @brief Sets the player's virtue.
 	 * @param virtue The virtue to set.
+	 * @param notifyClient Whether to send the updated state to the client.
 	 */
-	void setVirtue(Virtue_t virtue);
+	void setVirtue(Virtue_t virtue, bool notifyClient = true);
 
 	/**
 	 * @brief Sets the player's serene state.
@@ -255,6 +256,14 @@ public:
 
 	static std::shared_ptr<Task> createPlayerTask(uint32_t delay, std::function<void(void)> f, const std::string &context);
 
+	/**
+	 * Assigns the player's runtime creature ID from the database GUID range.
+	 *
+	 * Player runtime IDs are stable for a character identity, not for a single
+	 * online object generation. Delayed or async work must not treat a player
+	 * ID as a generation-safe handle because the same character can reconnect
+	 * and produce a different `Player` object with the same runtime ID.
+	 */
 	void setID() override;
 
 	void setOnline(bool value) override {
@@ -1057,6 +1066,7 @@ public:
 	void sendPartyPlayerVocation(const std::shared_ptr<Player> &player) const;
 	void sendPlayerVocation(const std::shared_ptr<Player> &player) const;
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type) const;
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source) const;
 	void sendHouseWindow(const std::shared_ptr<House> &house, uint32_t listId) const;
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) const;
 	void sendClosePrivate(uint16_t channelId);
@@ -1067,6 +1077,7 @@ public:
 	void sendClientCheck() const;
 	void sendGameNews() const;
 	void sendMagicEffect(const Position &pos, uint16_t type) const;
+	void sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source) const;
 	void removeMagicEffect(const Position &pos, uint16_t type) const;
 	void sendPing();
 	void sendPingBack() const;
@@ -1149,7 +1160,7 @@ public:
 
 	void sendOpenStash(bool isNpc = false) const;
 
-	void sendTakeScreenshot(Screenshot_t screenshotType) const;
+	void sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId = 0, uint16_t skillLevel = 0, const std::string &achievementName = "", uint16_t raceId = 0, uint8_t bestiaryStep = 0) const;
 
 	void onThink(uint32_t interval) override;
 
@@ -1619,7 +1630,7 @@ private:
 	// Function from player class with correct type sizes (uint16_t)
 	std::map<uint16_t, uint16_t> &getAllSaleItemIdAndCount(std::map<uint16_t, uint16_t> &countMap) const;
 	void getAllItemTypeCountAndSubtype(std::map<uint32_t, uint32_t> &countMap) const;
-	std::shared_ptr<Item> getForgeItemFromId(uint16_t itemId, uint8_t tier) const;
+	std::shared_ptr<Item> getForgeItemFromId(uint16_t itemId, uint8_t tier, const std::shared_ptr<Item> &exclude = nullptr) const;
 	std::shared_ptr<Thing> getThing(size_t index) const override;
 
 	void internalAddThing(const std::shared_ptr<Thing> &thing) override;

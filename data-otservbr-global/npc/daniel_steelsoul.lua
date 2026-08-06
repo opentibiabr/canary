@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "sailor",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_SAILOR
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -62,7 +64,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		player:getPosition():sendMagicEffect(CONST_ME_EXPLOSIONAREA)
 		player:addCondition(condition)
 		npcHandler:removeInteraction(npc, creature)
-		npcHandler:resetNpc(creature)
+		npcHandler:resetNpc(npc, creature)
 	elseif MsgContains(message, "mission") then
 		if player:getStorageValue(Storage.Quest.U8_1.TibiaTales.AgainstTheSpiderCult) < 1 then
 			npcHandler:setTopic(playerId, 1)

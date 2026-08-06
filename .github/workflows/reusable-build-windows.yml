@@ -31,6 +31,13 @@ jobs:
       fail-fast: false
       matrix:
         type: [CMake, Solution]
+    # Both matrix entries write overlapping host packages to the same NuGet
+    # feed on pushes to main. vcpkg treats a duplicate NuGet publish as an
+    # error, so serialize writers while keeping PR builds parallel.
+    concurrency:
+      group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'vcpkg-windows-binary-cache-main' || format('vcpkg-windows-{0}-{1}', github.run_id, matrix.type) }}
+      cancel-in-progress: false
+      queue: max
     runs-on: windows-2025
     env:
       # Use GitHub Packages as a read-only vcpkg cache for PRs.
@@ -67,6 +74,14 @@ jobs:
           persist-credentials: false
           ref: ${{ inputs.checkout_ref }}
 
+      - name: Set up pinned build tools
+        if: matrix.type == 'CMake'
+        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14  # v4.2.3
+        with:
+          version: 2026.5.15
+          cache: true
+          env: false
+
       - name: Materialize release metadata
         if: inputs.release_tag != ''
         shell: pwsh
@@ -93,6 +108,7 @@ jobs:
 
       - name: CCache
         if: matrix.type == 'CMake'
+        continue-on-error: true
         uses: hendrikmuhs/ccache-action@v1.2.23
         with:
           max-size: "1G"
@@ -129,7 +145,7 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           # For Solution builds, keep vcpkg inside repo to match your msbuild /p:VcpkgRoot
-          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || '' }}
+          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || format('{0}/.tools/vcpkg', github.workspace) }}
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 

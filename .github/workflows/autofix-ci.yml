@@ -1,3 +1,4 @@
+---
 name: autofix.ci
 
 on:
@@ -34,6 +35,14 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up pinned Python
+        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14  # v4.2.3
+        with:
+          version: 2026.5.15
+          install_args: python
+          cache: true
+          env: false
+
       - name: Run clang format lint
         uses: DoozyX/clang-format-lint-action@v0.17
         with:
@@ -52,8 +61,8 @@ jobs:
 
       - name: Run cmake-format
         run: |
-          pip install cmakelang PyYAML
-          find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs cmake-format -i
+          python -m pip install --require-hashes -r .github/requirements-cmake-format.txt
+          find . -name "CMakeLists.txt" -o -name "*.cmake" | grep -v build/ | grep -v vcpkg_installed/ | xargs python -m cmakelang.format -i
 
       - name: Apply formatting with autofix.ci
         uses: autofix-ci/action@c5b2d67aa2274e7b5a18224e8171550871fc7e4a

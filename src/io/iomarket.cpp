@@ -243,7 +243,7 @@ void IOMarket::checkExpiredOffers() {
 		return;
 	}
 
-	g_dispatcher().scheduleEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers, __FUNCTION__);
+	g_dispatcher().scheduleEvent(checkExpiredMarketOffersEachMinutes * 60 * 1000, IOMarket::checkExpiredOffers, __FUNCTION__, DispatcherLane::Maintenance);
 }
 
 uint32_t IOMarket::getPlayerOfferCount(uint32_t playerId) {

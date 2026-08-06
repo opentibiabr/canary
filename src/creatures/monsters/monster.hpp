@@ -9,10 +9,23 @@
 
 #pragma once
 #include "creatures/creature.hpp"
+#include "creatures/monsters/monster_relevance.hpp"
+#include "game/scheduling/dispatcher_policy.hpp"
 #include "lua/lua_definitions.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <deque>
+	#include <optional>
+#endif
+
 struct spellBlock_t;
+struct MapCacheFloorCursor;
+struct MonsterPathResult;
+struct MonsterPathTraits;
+struct MonsterCombatIntentionResult;
+struct MonsterTargetRankingResult;
 class MonsterType;
+class NavRegionSnapshot;
 class Tile;
 class Creature;
 class Game;
@@ -21,6 +34,60 @@ class SpawnMonster;
 using CreatureVector = std::vector<std::shared_ptr<Creature>>;
 
 class Monster final : public Creature {
+private:
+	/**
+	 * Target identity is stored beside the weak owner so hot membership checks
+	 * can compare ids before paying for weak_ptr::lock().
+	 */
+	struct TargetReference {
+		uint32_t creatureId = 0;
+		std::weak_ptr<Creature> creature;
+		bool countsAsPlayerOnScreen = false;
+	};
+
+	/**
+	 * Movement fanout can notify the same monster many times before its async AI
+	 * batch runs. Keep only a re-resolvable snapshot here; no raw creature or
+	 * tile borrow may cross the async boundary.
+	 */
+	struct PendingMovementAiRefresh {
+		std::weak_ptr<Creature> creature;
+		Position oldPos;
+		Position newPos;
+		CoalescedTaskState state;
+		bool needsFullRefresh = false;
+	};
+
+	struct FollowPathComputeRequest {
+		Position start;
+		Position target;
+		FindPathParams params;
+		uint32_t targetId = 0;
+		bool executeOnFollow = true;
+
+		[[nodiscard]] bool matches(const FollowPathComputeRequest &other) const;
+	};
+
+	struct TargetSearchComputeRequest {
+		TargetSearchType_t searchType = TARGETSEARCH_DEFAULT;
+		uint64_t stateEpoch = 0;
+		uint64_t decisionEpoch = 0;
+	};
+
+	struct CombatIntentionComputeRequest {
+		uint64_t generation = 0;
+		uint64_t targetDecisionEpoch = 0;
+		uint64_t monsterReloadEpoch = 0;
+		uint32_t interval = 0;
+		uint32_t targetId = 0;
+		uint32_t attackTicksSnapshot = 0;
+		Position origin;
+		Position target;
+		bool fleeing = false;
+	};
+
+	bool canWalkTo(Position pos, Direction direction, MapCacheFloorCursor &floorCursor);
+
 public:
 	static std::shared_ptr<Monster> createMonster(const std::string &name);
 	static int32_t despawnRange;
@@ -41,6 +108,14 @@ public:
 		return this;
 	}
 
+	/**
+	 * Assigns a process-local monotonic monster runtime ID.
+	 *
+	 * Monster IDs are not reused during normal runtime, so short delayed
+	 * dispatcher follow-up work may carry the ID and re-resolve through `Game`
+	 * instead of keeping an extra strong reference alive. Long-lived storage
+	 * still needs an explicit ownership or handle contract.
+	 */
 	void setID() override;
 
 	void addList() override;
@@ -105,9 +180,16 @@ public:
 	void drainHealth(const std::shared_ptr<Creature> &attacker, int32_t damage) override;
 	void changeHealth(int32_t healthChange, bool sendHealthChange = true) override;
 	bool getNextStep(Direction &direction, uint32_t &flags) override;
+	bool setAttackedCreature(const std::shared_ptr<Creature> &creature) override;
+	bool setFollowCreature(const std::shared_ptr<Creature> &creature) override;
 	void onFollowCreatureComplete(const std::shared_ptr<Creature> &creature) override;
 
 	void onThink(uint32_t interval) override;
+	bool trySchedulePostThink();
+	void cancelScheduledPostThink(bool playerVisible);
+	void executePostThink(uint32_t interval, bool playerVisible);
+	bool requestFollowPathCompute(const std::shared_ptr<Creature> &followCreature, const FindPathParams &params, bool executeOnFollow);
+	void supersedeFollowPathCompute();
 
 	bool challengeCreature(const std::shared_ptr<Creature> &creature, int targetChangeCooldown) override;
 
@@ -129,14 +211,19 @@ public:
 		CreatureVector list;
 		list.reserve(targetList.size());
 
-		std::erase_if(targetList, [&list](const std::weak_ptr<Creature> &ref) {
-			if (const auto &creature = ref.lock()) {
+		const auto previousSize = targetList.size();
+		std::erase_if(targetList, [this, &list](const TargetReference &ref) {
+			if (const auto &creature = ref.creature.lock()) {
 				list.emplace_back(creature);
 				return false;
 			}
 
+			forgetTargetReference(ref);
 			return true;
 		});
+		if (targetList.size() != previousSize) {
+			markTargetStateChanged();
+		}
 
 		return list;
 	}
@@ -249,17 +336,73 @@ protected:
 	void onExecuteAsyncTasks() override;
 
 private:
-	void onThink_async();
+	bool onThink_async();
+	void queuePostThinkAfterAsync();
+	void promotePostThinkToPlayerVisibleQueue();
+	void prepareFollowPathCompute(uint64_t generation);
+	void completeFollowPathCompute(uint64_t generation, std::shared_ptr<const NavRegionSnapshot> navigation, MonsterPathResult result);
+	void rejectFollowPathCompute(uint64_t generation);
+	void discardFollowPathCompute(bool requestRefresh);
+	[[nodiscard]] MonsterPathTraits capturePathTraits(const NavRegionSnapshot &navigation) const;
+	[[nodiscard]] uint64_t nextFollowPathComputeGeneration();
+	bool searchTargetImmediate(TargetSearchType_t searchType);
+	bool requestTargetSearchCompute(TargetSearchType_t searchType);
+	void prepareTargetSearchCompute(uint64_t generation);
+	void completeTargetSearchCompute(uint64_t generation, uint64_t stateEpoch, uint64_t decisionEpoch, Position origin, TargetSearchType_t searchType, std::vector<uint32_t> fallbackIds, MonsterTargetRankingResult result);
+	void retryTargetSearchCompute(TargetSearchType_t searchType);
+	void clearTargetSearchCompute(bool releasePostThink = true);
+	void markTargetStateChanged();
+	void markTargetDecisionChanged();
+	[[nodiscard]] uint64_t nextTargetSearchComputeGeneration();
+	void updateSummonTarget();
+	void deferTargetSelection(uint32_t creatureId);
+	void requestCombatIntention(uint32_t interval, const std::shared_ptr<Creature> &target);
+	void startPendingCombatIntention();
+	void prepareCombatIntention(uint64_t generation);
+	void completeCombatIntention(uint64_t generation, MonsterCombatIntentionResult result);
+	void deferPendingCombatIntention();
+	void clearCombatIntention();
+	void commitCombatIntention(const CombatIntentionComputeRequest &request, const std::shared_ptr<Creature> &target, const std::vector<uint32_t> &geometricallyEligibleSpellIndices, bool requireGeometryHint);
+	[[nodiscard]] uint64_t nextCombatIntentionGeneration();
+	[[nodiscard]] MonsterRelevanceSnapshot captureComputeRelevance() const;
+	bool isComputeRelevant();
+	bool isPlayerVisibleForScheduling() override;
+	void observeVisiblePlayerForScheduling(const std::shared_ptr<Creature> &creature);
+	bool addVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature);
+	void removeVisiblePlayerSpectator(const std::shared_ptr<Creature> &creature);
 
 	auto getTargetIterator(const std::shared_ptr<Creature> &creature) {
-		return std::ranges::find_if(targetList.begin(), targetList.end(), [id = creature->getID()](const std::weak_ptr<Creature> &ref) {
-			const auto &target = ref.lock();
-			return target && target->getID() == id;
+		return std::ranges::find_if(targetList, [creatureId = creature->getID()](const TargetReference &ref) {
+			return ref.creatureId == creatureId;
 		});
 	}
 
+	bool countsAsPlayerOnScreenTarget(const std::shared_ptr<Creature> &creature) const;
+	void forgetTargetReference(const TargetReference &ref);
+
 	std::unordered_map<uint32_t, std::weak_ptr<Creature>> friendList;
-	std::deque<std::weak_ptr<Creature>> targetList;
+	std::deque<TargetReference> targetList;
+	PendingMovementAiRefresh pendingMovementAiRefresh;
+	CoalescedTaskState pendingPostThink;
+	bool postThinkQueued = false;
+	bool postThinkPlayerVisible = false;
+	bool postThinkWaitingForTargetDecision = false;
+	std::optional<FollowPathComputeRequest> pendingFollowPathCompute;
+	uint64_t followPathComputeGeneration = 0;
+	uint64_t activeFollowPathComputeGeneration = 0;
+	bool followPathComputeOutstanding = false;
+	bool followPathComputeSuperseded = false;
+	std::optional<TargetSearchComputeRequest> pendingTargetSearchCompute;
+	uint64_t targetStateEpoch = 1;
+	uint64_t targetDecisionEpoch = 1;
+	uint64_t targetSearchComputeGeneration = 0;
+	uint64_t activeTargetSearchComputeGeneration = 0;
+	bool targetSearchComputeOutstanding = false;
+	std::optional<CombatIntentionComputeRequest> pendingCombatIntention;
+	uint64_t combatIntentionGeneration = 0;
+	uint64_t activeCombatIntentionGeneration = 0;
+	bool combatIntentionOutstanding = false;
+	MonsterRelevanceState computeRelevance;
 
 	time_t timeToChangeFiendish = 0;
 
@@ -277,6 +420,8 @@ private:
 	int64_t lastMeleeAttack = 0;
 
 	uint16_t totalPlayersOnScreen = 0;
+	std::vector<uint32_t> visiblePlayerSpectatorIds;
+	MonsterRelevancePolicy::Clock::time_point playerVisibleUntil {};
 
 	uint16_t criticalChance = 0;
 	uint16_t criticalDamage = 0;
@@ -326,18 +471,38 @@ private:
 	void onCreatureEnter(const std::shared_ptr<Creature> &creature);
 	void onCreatureLeave(const std::shared_ptr<Creature> &creature);
 	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront = false);
+	void onCreatureFound(const std::shared_ptr<Creature> &creature, bool pushFront, bool monsterPerfTestFriendlyFire);
+	void queueMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos);
+	void executeMovementAiRefresh();
+	void processMovementAiRefresh(const std::shared_ptr<Creature> &creature, const Position &oldPos, const Position &newPos);
 
 	void updateLookDirection();
 
-	void addFriend(const std::shared_ptr<Creature> &creature);
-	void removeFriend(const std::shared_ptr<Creature> &creature);
+	bool addFriend(const std::shared_ptr<Creature> &creature);
+	bool removeFriend(const std::shared_ptr<Creature> &creature);
 	bool addTarget(const std::shared_ptr<Creature> &creature, bool pushFront = false);
 	bool removeTarget(const std::shared_ptr<Creature> &creature);
 
 	void death(const std::shared_ptr<Creature> &lastHitCreature) override;
 	std::shared_ptr<Item> getCorpse(const std::shared_ptr<Creature> &lastHitCreature, const std::shared_ptr<Creature> &mostDamageCreature) override;
 
+	/**
+	 * @brief Toggles whether the monster is registered for periodic AI checks.
+	 *
+	 * Idle monsters clear their target/friend observer lists and are removed from
+	 * the creature check list. Non-idle monsters are reinserted into the game
+	 * creature check list through a shared owner, not a borrowed pointer. Calling
+	 * this with `false` is intentionally idempotent: it revalidates the periodic
+	 * check registration even if the local idle state is already active.
+	 */
 	void setIdle(bool idle);
+	/**
+	 * @brief Recomputes the idle state from the current AI context.
+	 *
+	 * The monsterPerfTestForceActive config is a benchmark-only override that
+	 * keeps monsters active even when normal gameplay would idle them because no
+	 * player or target is nearby.
+	 */
 	void updateIdleStatus();
 	bool getIdleStatus() const;
 
@@ -377,8 +542,20 @@ private:
 	void onThinkDefense(uint32_t interval);
 	void onThinkSound(uint32_t interval);
 
+	/**
+	 * @brief Classifies visible creatures for local friend and target observer lists.
+	 *
+	 * The monsterPerfTestFriendlyFire config only changes hostile non-summon
+	 * monster classification for benchmark scenarios. Passive monsters retain
+	 * their normal follow behavior. This must not be used as a persistent ownership
+	 * or lifetime shortcut.
+	 */
 	bool isFriend(const std::shared_ptr<Creature> &creature) const;
+	bool isFriend(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const;
 	bool isOpponent(const std::shared_ptr<Creature> &creature) const;
+	bool isOpponent(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire) const;
+	bool isTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire);
+	bool selectTarget(const std::shared_ptr<Creature> &creature, bool monsterPerfTestFriendlyFire);
 
 	uint64_t getLostExperience() const override;
 	uint16_t getLookCorpse() const override;

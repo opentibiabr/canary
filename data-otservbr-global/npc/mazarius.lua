@@ -22,7 +22,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "sailor",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_SAILOR
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)

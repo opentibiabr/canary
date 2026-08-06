@@ -413,7 +413,10 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				}
 			}
 		} else if (targetMonster) {
-			if (attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
+			const bool allowMonsterPerfTestFriendlyFire = attackerMonster && attacker != target
+				&& !attacker->isSummon() && !target->isSummon()
+				&& g_configManager().getBoolean(MONSTER_PERF_TEST_FRIENDLY_FIRE);
+			if (!allowMonsterPerfTestFriendlyFire && attacker->getFaction() != FACTION_DEFAULT && attacker->getFaction() != FACTION_PLAYER && attackerMonster && !attackerMonster->isEnemyFaction(target->getFaction())) {
 				return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
 			}
 
@@ -425,7 +428,7 @@ ReturnValue Combat::canDoCombat(const std::shared_ptr<Creature> &attacker, const
 				if (target->isSummon() && targetMasterPlayer && target->getZoneType() == ZONE_NOPVP) {
 					return RETURNVALUE_ACTIONNOTPERMITTEDINANOPVPZONE;
 				}
-			} else if (attackerMonster) {
+			} else if (attackerMonster && !allowMonsterPerfTestFriendlyFire) {
 				if ((!targetMaster || !targetMasterPlayer) && attacker->getFaction() == FACTION_DEFAULT) {
 					if (!attackerMaster || !masterAttackerPlayer) {
 						return RETURNVALUE_YOUMAYNOTATTACKTHISCREATURE;
@@ -1033,7 +1036,7 @@ void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Pos
 
 	// If not a Monk player, use the original effect
 	if (!casterPlayer || casterPlayer->getPlayerVocationEnum() != VOCATION_MONK_CIP) {
-		g_game().addMagicEffect(position, effect);
+		g_game().addMagicEffect(position, effect, caster);
 		return;
 	}
 
@@ -1043,7 +1046,7 @@ void Combat::sendCombatEffect(const std::shared_ptr<Creature> &caster, const Pos
 		effect = monkEffectByElementalBond(it.elementalBond, effect);
 	}
 
-	g_game().addMagicEffect(position, effect);
+	g_game().addMagicEffect(position, effect, caster);
 }
 
 void Combat::combatTileEffects(const CreatureVector &spectators, const std::shared_ptr<Creature> &caster, const std::shared_ptr<Tile> &tile, const CombatParams &params) {
@@ -1186,7 +1189,7 @@ void Combat::addDistanceEffect(const std::shared_ptr<Creature> &caster, const Po
 	}
 
 	if (effect != CONST_ANI_NONE) {
-		g_game().addDistanceEffect(fromPos, toPos, effect);
+		g_game().addDistanceEffect(fromPos, toPos, effect, caster);
 	}
 }
 

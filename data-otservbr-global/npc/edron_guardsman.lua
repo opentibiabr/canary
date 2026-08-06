@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "normal",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -54,7 +56,7 @@ local function greetCallback(npc, creature)
 	local playerId = creature:getId()
 	npcHandler:say("Move on!", npc, creature)
 	npcHandler:removeInteraction(npc, creature)
-	npcHandler:resetNpc(creature)
+	npcHandler:resetNpc(npc, creature)
 	return false
 end
 

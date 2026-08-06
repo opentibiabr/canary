@@ -166,22 +166,27 @@ std::vector<Position> Zone::getPositions() const {
 }
 
 std::vector<std::shared_ptr<Creature>> Zone::getCreatures() {
+	std::scoped_lock lock(cacheMutex);
 	return weak::lock(creaturesCache);
 }
 
 std::vector<std::shared_ptr<Player>> Zone::getPlayers() {
+	std::scoped_lock lock(cacheMutex);
 	return weak::lock(playersCache);
 }
 
 std::vector<std::shared_ptr<Monster>> Zone::getMonsters() {
+	std::scoped_lock lock(cacheMutex);
 	return weak::lock(monstersCache);
 }
 
 std::vector<std::shared_ptr<Npc>> Zone::getNpcs() {
+	std::scoped_lock lock(cacheMutex);
 	return weak::lock(npcsCache);
 }
 
 std::vector<std::shared_ptr<Item>> Zone::getItems() {
+	std::scoped_lock lock(cacheMutex);
 	return weak::lock(itemsCache);
 }
 
@@ -251,11 +256,15 @@ void Zone::creatureAdded(const std::shared_ptr<Creature> &creature) {
 		return;
 	}
 
-	if (const auto &player = creature->getPlayer()) {
+	const auto player = creature->getPlayer();
+	const auto monster = creature->getMonster();
+	const auto npc = creature->getNpc();
+	std::scoped_lock lock(cacheMutex);
+	if (player) {
 		playersCache.insert(player);
-	} else if (const auto &monster = creature->getMonster()) {
+	} else if (monster) {
 		monstersCache.insert(monster);
-	} else if (const auto &npc = creature->getNpc()) {
+	} else if (npc) {
 		npcsCache.insert(npc);
 	}
 
@@ -266,10 +275,21 @@ void Zone::creatureRemoved(const std::shared_ptr<Creature> &creature) {
 	if (!creature) {
 		return;
 	}
-	creaturesCache.erase(creature);
-	playersCache.erase(creature->getPlayer());
-	monstersCache.erase(creature->getMonster());
-	npcsCache.erase(creature->getNpc());
+
+	const auto player = creature->getPlayer();
+	const auto monster = creature->getMonster();
+	const auto npc = creature->getNpc();
+	std::scoped_lock lock(cacheMutex);
+	creaturesCache.erase(std::weak_ptr<Creature>(creature));
+	if (player) {
+		playersCache.erase(std::weak_ptr<Player>(player));
+	}
+	if (monster) {
+		monstersCache.erase(std::weak_ptr<Monster>(monster));
+	}
+	if (npc) {
+		npcsCache.erase(std::weak_ptr<Npc>(npc));
+	}
 }
 
 void Zone::thingAdded(const std::shared_ptr<Thing> &thing) {
@@ -288,6 +308,7 @@ void Zone::itemAdded(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
+	std::scoped_lock lock(cacheMutex);
 	itemsCache.insert(item);
 }
 
@@ -295,16 +316,20 @@ void Zone::itemRemoved(const std::shared_ptr<Item> &item) {
 	if (!item) {
 		return;
 	}
-	itemsCache.erase(item);
+	std::scoped_lock lock(cacheMutex);
+	itemsCache.erase(std::weak_ptr<Item>(item));
 }
 
 void Zone::refresh() {
 	Benchmark bm_refresh;
-	creaturesCache.clear();
-	monstersCache.clear();
-	npcsCache.clear();
-	playersCache.clear();
-	itemsCache.clear();
+	{
+		std::scoped_lock lock(cacheMutex);
+		creaturesCache.clear();
+		monstersCache.clear();
+		npcsCache.clear();
+		playersCache.clear();
+		itemsCache.clear();
+	}
 
 	for (const auto &position : getPositions()) {
 		g_game().map.refreshZones(position);

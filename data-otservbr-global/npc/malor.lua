@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "trader",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_TRADE
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -51,7 +53,7 @@ local function releasePlayer(npc, creature)
 	end
 
 	npcHandler:removeInteraction(npc, creature)
-	npcHandler:resetNpc(creature)
+	npcHandler:resetNpc(npc, creature)
 end
 
 local function endConversationWithDelay(npcHandler, npc, creature)
@@ -64,7 +66,7 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") then
+	if not MsgContains(message, "djanni'hah") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting) < 0 then
 		npcHandler:say("Shove off, little one! Humans are not welcome here, |PLAYERNAME|!", npc, creature)
 		endConversationWithDelay(npcHandler, npc, creature)
 		return false

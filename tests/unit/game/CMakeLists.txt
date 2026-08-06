@@ -1,9 +1,19 @@
 target_sources(
     canary_ut
-    PRIVATE events_scheduler_test.cpp
+    PRIVATE dispatcher_budget_test.cpp
+            dispatcher_policy_test.cpp
+            dispatcher_wdrr_test.cpp
+            events_scheduler_test.cpp
             highscores_test.cpp
+            monster_combat_intention_test.cpp
+            monster_compute_service_test.cpp
+            monster_pathfinding_test.cpp
+            monster_relevance_test.cpp
+            monster_targeting_test.cpp
+            navigation_snapshot_test.cpp
             npc_shop_range_test.cpp
             random_mount_test.cpp
             player_stats_test.cpp
             spawn_monster_test.cpp
+            zone_weak_cache_test.cpp
 )

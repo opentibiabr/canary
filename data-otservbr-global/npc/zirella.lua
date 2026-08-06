@@ -21,7 +21,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "normal",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_NORMAL
 
 npcConfig.voices = {
 	interval = 15000,
@@ -141,7 +143,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.ZirellaNpcGreetStorage, 6)
 			Position(32064, 32273, 7):sendMagicEffect(CONST_ME_TUTORIALARROW)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		elseif storeTalkCid[playerId] == 7 then
 			npcHandler:say({
 				"Well, you know that old women like me like to talk a lot. If you see three dots at the end of a sentence, I have still something to say and you should not interrupt, like now ...",
@@ -157,13 +159,13 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.ZirellaQuestLog, 8)
 			player:setStorageValue(Storage.Quest.U8_2.TheBeginningQuest.ZirellaNpcGreetStorage, 8)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	elseif MsgContains(message, "no") then
 		if storeTalkCid[playerId] == 7 then
 			npcHandler:say("Well then, I hope you find nice and dry branches for me! Good {bye}!", npc, creature)
 			npcHandler:removeInteraction(npc, creature)
-			npcHandler:resetNpc(creature)
+			npcHandler:resetNpc(npc, creature)
 		end
 	end
 	return true

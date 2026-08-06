@@ -16,7 +16,9 @@ npcConfig.outfit = {
 
 npcConfig.flags = {
 	floorchange = false,
+	profession = "sailor",
 }
+npcConfig.speechBubble = SPEECHBUBBLE_SAILOR
 
 local keywordHandler = KeywordHandler:new()
 local npcHandler = NpcHandler:new(keywordHandler)
@@ -55,7 +57,7 @@ local function greetCallback(npc, creature, message)
 	local player = Player(creature)
 	local playerId = player:getId()
 
-	if not MsgContains(message, "djanni'hah") then
+	if not MsgContains(message, "djanni'hah") and player:getStorageValue(Storage.Quest.U7_4.DjinnWar.Faction.Greeting) < 0 then
 		npcHandler:say("Whoa! A human! This is no place for you, |PLAYERNAME|. Go and play somewhere else.", npc, creature)
 		endConversationWithDelay(npcHandler, npc, creature)
 		return false

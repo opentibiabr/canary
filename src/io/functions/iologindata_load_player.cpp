@@ -1019,7 +1019,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	// Load and apply the player's Virtue from the saved spell data, if available
 	auto kv = player->kv()->scoped("spells");
 	if (auto kvOpt = kv->get("virtue")) {
-		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()));
+		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()), false);
 	}
 
 	if (auto kvOpt = kv->get("harmony")) {

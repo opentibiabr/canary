@@ -617,7 +617,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif npcHandler:getTopic(playerId) == 34 then
 			if player:removeItem(12510, 1) then
 				npcHandler:say("Marvellous! You brought a giant smith hammer for the explorer society!", npc, creature)
-				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hamer, 2)
+				player:setStorageValue(Storage.Quest.U7_6.ExplorerSociety.GiantSmithHammer.Hammer, 2)
 				npcHandler:setTopic(playerId, 0)
 			else
 				npcHandler:say("No you don't.", npc, creature)

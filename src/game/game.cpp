@@ -92,6 +92,20 @@ namespace {
 	MonsterPostThinkQueue backgroundMonsterPostThinkQueue;
 	std::array<std::atomic_uint64_t, 2> rejectedMonsterPostThinkTasks {};
 
+	SourceEffect_t classifyGraphicalEffectSource(const std::shared_ptr<Creature> &source, const std::shared_ptr<Creature> &spectator) {
+		using enum SourceEffect_t;
+		if (!source || source->getNpc()) {
+			return GLOBAL;
+		}
+		if (source == spectator) {
+			return OWN;
+		}
+		if (source->getPlayer()) {
+			return OTHERS;
+		}
+		return CREATURES;
+	}
+
 	MonsterPostThinkQueue &getMonsterPostThinkQueue(bool playerVisible) {
 		return playerVisible ? visibleMonsterPostThinkQueue : backgroundMonsterPostThinkQueue;
 	}
@@ -397,11 +411,11 @@ namespace InternalGame {
 
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
+			g_game().addMagicEffect(targetPos, CONST_ME_POFF, source);
 		} else if (blockType == BLOCK_ARMOR) {
-			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT, source);
 		} else if (blockType == BLOCK_DODGE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+			g_game().addMagicEffect(targetPos, CONST_ME_DODGE, source);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -429,7 +443,7 @@ namespace InternalGame {
 					break;
 				}
 			}
-			g_game().addMagicEffect(targetPos, hitEffect);
+			g_game().addMagicEffect(targetPos, hitEffect, source);
 		}
 
 		if (blockType != BLOCK_NONE) {
@@ -8775,7 +8789,7 @@ void Game::sendDamageMessageAndEffects(
 	message.primary.value = damage.primary.value;
 	message.secondary.value = damage.secondary.value;
 
-	sendEffects(target, damage, targetPos, message, spectators);
+	sendEffects(attacker, target, damage, targetPos, message, spectators);
 
 	if (shouldSendMessage(message)) {
 		sendMessages(attacker, target, damage, targetPos, attackerPlayer, targetPlayer, message, spectators, realDamage);
@@ -8933,21 +8947,21 @@ void Game::buildMessageAsAttacker(
 }
 
 void Game::sendEffects(
-	const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
-	const CreatureVector &spectators
+	const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage,
+	const Position &targetPos, TextMessage &message, const CreatureVector &spectators
 ) {
 	uint16_t hitEffect;
 	if (message.primary.value) {
 		combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
+			addMagicEffect(spectators, targetPos, hitEffect, attacker);
 		}
 	}
 
 	if (message.secondary.value) {
 		combatGetTypeInfo(damage.secondary.type, target, message.secondary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
+			addMagicEffect(spectators, targetPos, hitEffect, attacker);
 		}
 	}
 }
@@ -9322,13 +9336,22 @@ void Game::addPlayerVocation(const std::shared_ptr<Player> &target) {
 
 void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 	auto spectators = Spectators().find<Player>(pos, true);
-	addMagicEffect(spectators.data(), pos, effect);
+	addMagicEffect(spectators.data(), pos, effect, nullptr);
 }
 
 void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect) {
+	addMagicEffect(spectators, pos, effect, nullptr);
+}
+
+void Game::addMagicEffect(const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source) {
+	auto spectators = Spectators().find<Player>(pos, true);
+	addMagicEffect(spectators.data(), pos, effect, source);
+}
+
+void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source) {
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendMagicEffect(pos, effect);
+			tmpPlayer->sendMagicEffect(pos, effect, classifyGraphicalEffectSource(source, spectator));
 		}
 	}
 }
@@ -9348,13 +9371,24 @@ void Game::removeMagicEffect(const CreatureVector &spectators, const Position &p
 
 void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect) {
 	auto spectators = Spectators().find<Player>(fromPos).find<Player>(toPos);
-	addDistanceEffect(spectators.data(), fromPos, toPos, effect);
+	addDistanceEffect(spectators.data(), fromPos, toPos, effect, nullptr);
 }
 
 void Game::addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
+	addDistanceEffect(spectators, fromPos, toPos, effect, nullptr);
+}
+
+void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source) {
+	auto spectators = Spectators().find<Player>(fromPos).find<Player>(toPos);
+	addDistanceEffect(spectators.data(), fromPos, toPos, effect, source);
+}
+
+void Game::addDistanceEffect(
+	const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source
+) {
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
+			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect, classifyGraphicalEffectSource(source, spectator));
 		}
 	}
 }

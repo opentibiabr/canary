@@ -10092,7 +10092,7 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 	} else if (action == ImbuementAction::PickItem) {
 		player->setImbuingItem(item);
 		msg.add<uint16_t>(item->getID());
-		if (item->getClassification() > 0) {
+		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload) && item->getClassification() > 0) {
 			msg.addByte(item->getTier());
 		}
 
@@ -10117,7 +10117,9 @@ void ProtocolGame::openImbuementWindow(ImbuementAction action, const std::shared
 	} else if (action == ImbuementAction::Scroll) {
 		const auto freeSlots = player->getFreeBackpackSlots();
 		msg.addByte(freeSlots > 0 ? 0x01 : 0x00);
-		msg.addByte(0); // Unknown Byte
+		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+			msg.addByte(0); // Reserved in the 15.11 payload.
+		}
 
 		addAvailableImbuementsInfo(msg, nullptr, neededItems, true);
 	}

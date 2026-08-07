@@ -64,16 +64,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6101, chance = 100000 }, -- ron the ripper's sabre
-	{ id = 3031, chance = 100000, maxCount = 128 }, -- gold coin
-	{ id = 3114, chance = 81000, maxCount = 2 }, -- skull
-	{ id = 3357, chance = 63000 }, -- plate armor
-	{ id = 3267, chance = 45000 }, -- dagger
-	{ id = 239, chance = 18000 }, -- great health potion
-	{ id = 3370, chance = 18000 }, -- knight armor
-	{ id = 3577, chance = 18000 }, -- meat
-	{ id = 5926, chance = 18000 }, -- pirate backpack
-	{ id = 3028, chance = 9000 }, -- small diamond
+	{ id = 3031, chance = 100000, maxCount = 128 }, -- Gold Coin
+	{ id = 6101, chance = 100000 }, -- Ron the Ripper's Sabre
+	{ id = 3114, chance = 86000, maxCount = 2 }, -- Skull (Item)
+	{ id = 3357, chance = 52000 }, -- Plate Armor
+	{ id = 3267, chance = 43000 }, -- Dagger
+	{ id = 9185, chance = 24000 }, -- Very Old Piece of Paper
+	{ id = 3577, chance = 19000 }, -- Meat
+	{ id = 239, chance = 14300 }, -- Great Health Potion
+	{ id = 5926, chance = 9500 }, -- Pirate Backpack
+	{ id = 3370, chance = 9500 }, -- Knight Armor
+	{ id = 3028, chance = 9500 }, -- Small Diamond
+	{ id = 3275, chance = 4800 }, -- Double Axe
 }
 
 monster.attacks = {

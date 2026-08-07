@@ -75,35 +75,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 98 },
-	{ name = "platinum coin", chance = 100000, maxCount = 10 },
-	{ name = "yellow gem", chance = 1030 },
-	{ id = 3097, chance = 4660 }, -- dwarven ring
-	{ name = "knight legs", chance = 1910 },
-	{ name = "crown armor", chance = 370 },
-	{ name = "crown helmet", chance = 890 },
-	{ name = "iron ore", chance = 15000 },
-	{ name = "magic sulphur", chance = 3000 },
-	{ name = "titan axe", chance = 2600 },
-	{ name = "glorious axe", chance = 1870 },
-	{ name = "strong health potion", chance = 15600, maxCount = 2 },
-	{ name = "strong mana potion", chance = 14000, maxCount = 2 },
-	{ name = "great mana potion", chance = 14000, maxCount = 2 },
-	{ name = "mana potion", chance = 14000, maxCount = 4 },
-	{ name = "ultimate health potion", chance = 9500, maxCount = 2 },
-	{ name = "crystalline armor", chance = 560 },
-	{ name = "small topaz", chance = 16500, maxCount = 3 },
-	{ name = "shiny stone", chance = 13700 },
-	{ name = "sulphurous stone", chance = 20700 },
-	{ name = "wand of defiance", chance = 1300 },
-	{ name = "green crystal shard", chance = 8000 },
-	{ name = "blue crystal splinter", chance = 16000, maxCount = 2 },
-	{ name = "cyan crystal fragment", chance = 13000 },
-	{ name = "pulverized ore", chance = 20500 },
-	{ name = "vein of ore", chance = 15000 },
-	{ name = "prismatic bolt", chance = 15500, maxCount = 5 },
-	{ name = "crystal crossbow", chance = 300 },
+	{ id = 3031, chance = 100000, maxCount = 198 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 10315, chance = 20000 }, -- Sulphurous Stone
+	{ id = 16133, chance = 20000 }, -- Pulverized Ore
+	{ id = 5880, chance = 15600 }, -- Iron Ore
+	{ id = 9057, chance = 15500, maxCount = 3 }, -- Small Topaz
+	{ id = 236, chance = 15500, maxCount = 2 }, -- Strong Health Potion
+	{ id = 16135, chance = 15200 }, -- Vein of Ore
+	{ id = 237, chance = 15100, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 16141, chance = 14800, maxCount = 5 }, -- Prismatic Bolt
+	{ id = 268, chance = 14700, maxCount = 4 }, -- Mana Potion
+	{ id = 16124, chance = 14700, maxCount = 2 }, -- Blue Crystal Splinter
+	{ id = 238, chance = 14500, maxCount = 2 }, -- Great Mana Potion
+	{ id = 16125, chance = 13100 }, -- Cyan Crystal Fragment
+	{ id = 10310, chance = 11900 }, -- Shiny Stone
+	{ id = 7643, chance = 9400, maxCount = 2 }, -- Ultimate Health Potion
+	{ id = 16121, chance = 7800 }, -- Green Crystal Shard
+	{ id = 3097, chance = 4400 }, -- Dwarven Ring
+	{ id = 7454, chance = 2900 }, -- Glorious Axe
+	{ id = 7413, chance = 2800 }, -- Titan Axe
+	{ id = 5904, chance = 2200 }, -- Magic Sulphur
+	{ id = 3371, chance = 1800 }, -- Knight Legs
+	{ id = 16096, chance = 1500 }, -- Wand of Defiance
+	{ id = 3385, chance = 980 }, -- Crown Helmet
+	{ id = 3037, chance = 980 }, -- Yellow Gem
+	{ id = 3381, chance = 330 }, -- Crown Armor
+	{ id = 8050, chance = 330 }, -- Crystalline Armor
+	{ id = 16163, chance = 200 }, -- Crystal Crossbow
 }
 
 monster.attacks = {

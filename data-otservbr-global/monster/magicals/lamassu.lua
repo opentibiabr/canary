@@ -79,18 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000 },
-	{ name = "lamassu horn", chance = 13400, maxCount = 5 },
-	{ name = "red crystal fragment", chance = 10500 },
-	{ name = "terra amulet", chance = 10000 },
-	{ name = "lamassu hoof", chance = 7700 },
-	{ name = "violet crystal shard", chance = 6800 },
-	{ name = "blue crystal shard", chance = 6500 },
-	{ id = 3039, chance = 6200 }, -- red gem
-	{ name = "terra hood", chance = 5900 },
-	{ name = "sacred tree amulet", chance = 2300 },
-	{ name = "elven amulet", chance = 2000 },
-	{ name = "violet gem", chance = 1700 },
+	{ id = 3035, chance = 100000 }, -- Platinum Coin
+	{ id = 3039, chance = 17200, maxCount = 2 }, -- Red Gem
+	{ id = 31442, chance = 13400 }, -- Lamassu Horn
+	{ id = 16120, chance = 10800, maxCount = 2 }, -- Violet Crystal Shard
+	{ id = 16126, chance = 10700 }, -- Red Crystal Fragment
+	{ id = 16119, chance = 10600, maxCount = 2 }, -- Blue Crystal Shard
+	{ id = 31441, chance = 8200 }, -- Lamassu Hoof
+	{ id = 814, chance = 8100 }, -- Terra Amulet
+	{ id = 22194, chance = 6700 }, -- Opal
+	{ id = 830, chance = 6500 }, -- Terra Hood
+	{ id = 3032, chance = 5400 }, -- Small Emerald
+	{ id = 22193, chance = 4200 }, -- Onyx Chip
+	{ id = 16127, chance = 3600 }, -- Green Crystal Fragment
+	{ id = 16122, chance = 3300 }, -- Green Crystal Splinter
+	{ id = 25737, chance = 3300, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 3036, chance = 2100 }, -- Violet Gem
+	{ id = 9302, chance = 2000 }, -- Sacred Tree Amulet
+	{ id = 3082, chance = 1900 }, -- Elven Amulet
+	{ id = 3041, chance = 1600 }, -- Blue Gem
+	{ id = 16121, chance = 1100 }, -- Green Crystal Shard
 }
 
 monster.attacks = {

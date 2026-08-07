@@ -76,19 +76,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 15540 },
-	{ name = "ultimate health potion", chance = 43253, maxCount = 5 },
-	{ name = "serpent sword", chance = 32253 },
-	{ name = "glacier mask", chance = 21920 },
-	{ name = "small sapphire", chance = 34560, maxCount = 3 },
-	{ name = "organic acid", chance = 11678, maxCount = 1 },
-	{ name = "rotten roots", chance = 25920, maxCount = 1 },
-	{ name = "scarab coin", chance = 22920, maxCount = 3 },
-	{ name = "buckle", chance = 22920, maxCount = 1 },
-	{ name = "rotten vermin ichor", chance = 22920, maxCount = 1 },
-	{ name = "violet gem", chance = 18920 },
-	{ name = "blue gem", chance = 15920 },
-	{ name = "small ruby", chance = 24560, maxCount = 3 },
+	{ id = 3043, chance = 58000 }, -- Crystal Coin
+	{ id = 7643, chance = 24000, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 43778, chance = 9900 }, -- Organic Acid
+	{ id = 3297, chance = 7900 }, -- Serpent Sword
+	{ id = 829, chance = 6700 }, -- Glacier Mask
+	{ id = 3029, chance = 6000 }, -- Small Sapphire
+	{ id = 43849, chance = 4500 }, -- Rotten Roots
+	{ id = 3042, chance = 2400 }, -- Scarab Coin
+	{ id = 43847, chance = 1600 }, -- Rotten Vermin Ichor
+	{ id = 17829, chance = 1500 }, -- Buckle
+	{ id = 3041, chance = 1000 }, -- Blue Gem
+	{ id = 16164, chance = 410 }, -- Mycological Bow
+	{ id = 3030, chance = 380, maxCount = 2 }, -- Small Ruby
+	{ id = 3036, chance = 250 }, -- Violet Gem
 }
 
 monster.attacks = {

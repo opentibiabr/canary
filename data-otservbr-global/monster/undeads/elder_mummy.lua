@@ -76,18 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3007, chance = 1650 }, -- crystal ring
-	{ name = "silver brooch", chance = 4000 },
-	{ name = "black pearl", chance = 1340 },
-	{ name = "gold coin", chance = 87000, maxCount = 160 },
-	{ name = "scarab coin", chance = 10000, maxCount = 3 },
-	{ name = "strange talisman", chance = 4500 },
-	{ id = 3046, chance = 6000 }, -- magic light wand
-	{ name = "poison dagger", chance = 380 },
-	{ name = "worm", chance = 20000, maxCount = 3 },
-	{ name = "gauze bandage", chance = 10000 },
-	{ name = "flask of embalming fluid", chance = 12600 },
-	{ id = 12483, chance = 2400 }, -- pharaoh banner
+	{ id = 3031, chance = 89000, maxCount = 152 }, -- Gold Coin
+	{ id = 3492, chance = 23000, maxCount = 3 }, -- Worm
+	{ id = 3042, chance = 11900, maxCount = 3 }, -- Scarab Coin
+	{ id = 11466, chance = 11400 }, -- Flask of Embalming Fluid
+	{ id = 3046, chance = 8700 }, -- Magic Light Wand
+	{ id = 9649, chance = 8700 }, -- Gauze Bandage
+	{ id = 3045, chance = 5900 }, -- Strange Talisman
+	{ id = 12483, chance = 4100 }, -- Pharaoh Banner
+	{ id = 3007, chance = 1800 }, -- Crystal Ring
+	{ id = 3017, chance = 1800 }, -- Silver Brooch
+	{ id = 3081, chance = 1400 }, -- Stone Skin Amulet
+	{ id = 3027, chance = 910 }, -- Black Pearl
+	{ id = 3299, chance = 460 }, -- Poison Dagger
 }
 
 monster.attacks = {

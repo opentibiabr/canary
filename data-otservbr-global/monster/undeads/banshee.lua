@@ -85,28 +85,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "candlestick", chance = 70000 },
-	{ name = "wedding ring", chance = 460 },
-	{ id = 3007, chance = 60 }, -- crystal ring
-	{ name = "silver brooch", chance = 1250 },
-	{ name = "white pearl", chance = 1010 },
-	{ name = "black pearl", chance = 2030 },
-	{ name = "gold coin", chance = 30000, maxCount = 80 },
-	{ name = "silver amulet", chance = 8700 },
-	{ id = 3059, chance = 520 }, -- spellbook
-	{ name = "life crystal", chance = 70 },
-	{ name = "stone skin amulet", chance = 820 },
-	{ id = 3098, chance = 730 }, -- ring of healing
-	{ id = 2949, chance = 910 }, -- lyre
-	{ name = "poison dagger", chance = 1350 },
-	{ name = "red robe", chance = 150 },
-	{ name = "blue robe", chance = 700 },
-	{ name = "simple dress", chance = 6050 },
-	{ name = "strong mana potion", chance = 680 },
-	{ name = "terra mantle", chance = 340 },
-	{ name = "petrified scream", chance = 4150 },
-	{ name = "hair of a banshee", chance = 4810 },
-	{ name = "sweet smelling bait", chance = 40 },
+	{ id = 2917, chance = 68000 }, -- Candlestick
+	{ id = 3031, chance = 27000, maxCount = 80 }, -- Gold Coin
+	{ id = 3054, chance = 7800 }, -- Silver Amulet
+	{ id = 3568, chance = 5900 }, -- Simple Dress
+	{ id = 11446, chance = 4300 }, -- Hair of a Banshee
+	{ id = 10420, chance = 4100 }, -- Petrified Scream
+	{ id = 3027, chance = 2500 }, -- Black Pearl
+	{ id = 3017, chance = 2100 }, -- Silver Brooch
+	{ id = 3299, chance = 1400 }, -- Poison Dagger
+	{ id = 3098, chance = 1300 }, -- Ring of Healing
+	{ id = 3007, chance = 1200 }, -- Crystal Ring
+	{ id = 3567, chance = 950 }, -- Blue Robe
+	{ id = 3081, chance = 860 }, -- Stone Skin Amulet
+	{ id = 237, chance = 780 }, -- Strong Mana Potion
+	{ id = 3026, chance = 780 }, -- White Pearl
+	{ id = 3004, chance = 690 }, -- Wedding Ring
+	{ id = 2949, chance = 430 }, -- Lyre
+	{ id = 3059, chance = 430 }, -- Spellbook
+	{ id = 811, chance = 340 }, -- Terra Mantle
+	{ id = 3061, chance = 86 }, -- Life Crystal
+	{ id = 3566, chance = 70 }, -- Red Robe
+	{ id = 12320, chance = 30 }, -- Sweet Smelling Bait
 }
 
 monster.attacks = {

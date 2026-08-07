@@ -77,43 +77,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3039, chance = 16670 }, -- red gem
-	{ name = "blue gem", chance = 2630 },
-	{ name = "book backpack", chance = 880 },
-	{ name = "crowbar", chance = 16670 },
-	{ name = "cyan crystal fragment", chance = 13160 },
-	{ name = "dagger", chance = 48250 },
-	{ name = "dream blossom staff", chance = 1750 },
-	{ name = "ectoplasmic shield", chance = 1750 },
-	{ id = 30344, chance = 1750 }, -- enchanted pendulet
-	{ id = 282, chance = 880 }, -- giant shimmering pearl
-	{ name = "gold ingot", chance = 8330 },
-	{ name = "green crystal shard", chance = 4390 },
-	{ name = "green gem", chance = 8330 },
-	{ name = "hailstorm rod", chance = 9650 },
-	{ name = "hexagonal ruby", chance = 880 },
-	{ name = "ice rapier", chance = 18420 },
-	{ name = "knife", chance = 12280 },
-	{ name = "life crystal", chance = 10530 },
-	{ name = "lightning pendant", chance = 2630 },
-	{ name = "moonlight rod", chance = 5260 },
-	{ name = "necrotic rod", chance = 2630 },
-	{ name = "orb", chance = 2630 },
-	{ name = "platinum coin", chance = 83330, maxCount = 19 },
-	{ name = "red crystal fragment", chance = 16670 },
-	{ name = "small sapphire", chance = 33330, maxCount = 4 },
-	{ name = "snakebite rod", chance = 7020 },
-	{ name = "spear", chance = 16670, maxCount = 3 },
-	{ name = "spirit guide", chance = 1750 },
-	{ name = "springsprout rod", chance = 880 },
-	{ name = "strange talisman", chance = 2630 },
-	{ name = "terra rod", chance = 22810 },
-	{ name = "twin hooks", chance = 13160 },
-	{ name = "underworld rod", chance = 3510 },
-	{ name = "violet crystal shard", chance = 2630 },
-	{ name = "violet gem", chance = 1750 },
-	{ name = "wand of everblazing", chance = 880 },
-	{ name = "yellow gem", chance = 16670 },
+	{ id = 3035, chance = 100000, maxCount = 19 }, -- Platinum Coin
+	{ id = 3267, chance = 56000 }, -- Dagger
+	{ id = 3029, chance = 45000, maxCount = 5 }, -- Small Sapphire
+	{ id = 3065, chance = 24000 }, -- Terra Rod
+	{ id = 3039, chance = 22000 }, -- Red Gem
+	{ id = 3277, chance = 21000, maxCount = 5 }, -- Spear
+	{ id = 3284, chance = 17800 }, -- Ice Rapier
+	{ id = 16126, chance = 13900 }, -- Red Crystal Fragment
+	{ id = 16125, chance = 13900 }, -- Cyan Crystal Fragment
+	{ id = 3304, chance = 13900 }, -- Crowbar
+	{ id = 3291, chance = 11900 }, -- Knife
+	{ id = 3066, chance = 9900 }, -- Snakebite Rod
+	{ id = 10392, chance = 7900 }, -- Twin Hooks
+	{ id = 3061, chance = 6900 }, -- Life Crystal
+	{ id = 9058, chance = 5900 }, -- Gold Ingot
+	{ id = 16121, chance = 5900 }, -- Green Crystal Shard
+	{ id = 3070, chance = 5000 }, -- Moonlight Rod
+	{ id = 3067, chance = 5000 }, -- Hailstorm Rod
+	{ id = 281, chance = 5000 }, -- Giant Shimmering Pearl
+	{ id = 3041, chance = 5000 }, -- Blue Gem
+	{ id = 16120, chance = 4000 }, -- Violet Crystal Shard
+	{ id = 3069, chance = 4000 }, -- Necrotic Rod
+	{ id = 3060, chance = 4000 }, -- Orb
+	{ id = 30180, chance = 4000 }, -- Hexagonal Ruby
+	{ id = 3038, chance = 4000 }, -- Green Gem
+	{ id = 3037, chance = 3000 }, -- Yellow Gem
+	{ id = 16096, chance = 2000 }, -- Wand of Defiance
+	{ id = 8082, chance = 2000 }, -- Underworld Rod
+	{ id = 761, chance = 2000, maxCount = 6 }, -- Flash Arrow
+	{ id = 8084, chance = 2000 }, -- Springsprout Rod
+	{ id = 816, chance = 990 }, -- Lightning Pendant
+	{ id = 16117, chance = 990 }, -- Muck Rod
+	{ id = 29430, chance = 990 }, -- Ectoplasmic Shield
+	{ id = 28571, chance = 990 }, -- Book Backpack
+	{ id = 16115, chance = 990 }, -- Wand of Everblazing
 }
 
 monster.attacks = {

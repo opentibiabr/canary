@@ -76,16 +76,25 @@ monster.summon = {
 monster.voices = {}
 
 monster.loot = {
-	{ name = "crystal coin", chance = 12317, maxCount = 91 },
-	{ id = 3039, chance = 10896, maxCount = 2 }, -- red gem
-	{ name = "amber with a bug", chance = 14590, maxCount = 1 },
-	{ name = "amber with a dragonfly", chance = 5405, maxCount = 1 },
-	{ name = "bullseye potion", chance = 10821, maxCount = 44 },
-	{ name = "green gem", chance = 7763, maxCount = 4 },
-	{ name = "mastermind potion", chance = 9534, maxCount = 15 },
-	{ name = "supreme health potion", chance = 6212, maxCount = 102 },
-	{ name = "ultimate mana potion", chance = 8785, maxCount = 29 },
-	{ name = "ultimate spirit potion", chance = 8783, maxCount = 161 },
+	{ id = 3043, chance = 100000, maxCount = 97 }, -- Crystal Coin
+	{ id = 23373, chance = 59000, maxCount = 194 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 59000, maxCount = 168 }, -- Ultimate Spirit Potion
+	{ id = 7443, chance = 53000, maxCount = 46 }, -- Bullseye Potion
+	{ id = 23375, chance = 35000, maxCount = 168 }, -- Supreme Health Potion
+	{ id = 3039, chance = 35000, maxCount = 4 }, -- Red Gem
+	{ id = 32624, chance = 35000, maxCount = 3 }, -- Amber with a Bug
+	{ id = 30060, chance = 35000 }, -- Giant Emerald
+	{ id = 3038, chance = 29000, maxCount = 2 }, -- Green Gem
+	{ id = 9058, chance = 29000 }, -- Gold Ingot
+	{ id = 3041, chance = 29000, maxCount = 4 }, -- Blue Gem
+	{ id = 32625, chance = 29000 }, -- Amber with a Dragonfly
+	{ id = 3037, chance = 24000, maxCount = 5 }, -- Yellow Gem
+	{ id = 32769, chance = 17600, maxCount = 2 }, -- White Gem
+	{ id = 49271, chance = 17600, maxCount = 37 }, -- Transcendence Potion
+	{ id = 7440, chance = 17600, maxCount = 25 }, -- Mastermind Potion
+	{ id = 3036, chance = 11800, maxCount = 4 }, -- Violet Gem
+	{ id = 7439, chance = 11800, maxCount = 45 }, -- Berserk Potion
+	{ id = 44048, chance = 5900 }, -- Spiritual Horseshoe
 }
 
 monster.attacks = {

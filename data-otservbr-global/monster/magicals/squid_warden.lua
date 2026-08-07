@@ -73,21 +73,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 11000, maxCount = 57 },
-	{ name = "glowing rune", chance = 800, maxCount = 4 },
-	{ name = "small sapphire", chance = 900, maxCount = 4 },
-	{ name = "frosty heart", chance = 11000, maxCount = 4 },
-	{ id = 7441, chance = 20000 }, -- ice cube
-	{ id = 28568, chance = 20000 }, -- inkwell
-	{ name = "ultimate health potion", chance = 10003, maxCount = 4 },
-	{ name = "ultimate mana potion", chance = 10003, maxCount = 4 },
-	{ name = "ice rapier", chance = 500 },
-	{ name = "glacier mask", chance = 400 },
-	{ name = "piece of dead brain", chance = 10001, maxCount = 4 },
-	{ name = "crystal sword", chance = 300 },
-	{ name = "glacier robe", chance = 150 },
-	{ name = "glacier kilt", chance = 150 },
-	{ name = "slime heart", chance = 10002, maxCount = 4 },
+	{ id = 3029, chance = 68000, maxCount = 3 }, -- Small Sapphire
+	{ id = 3035, chance = 50000, maxCount = 50 }, -- Platinum Coin
+	{ id = 28570, chance = 36000, maxCount = 6 }, -- Glowing Rune
+	{ id = 9661, chance = 22000 }, -- Frosty Heart
+	{ id = 23373, chance = 17600 }, -- Ultimate Mana Potion
+	{ id = 7643, chance = 15700 }, -- Ultimate Health Potion
+	{ id = 28568, chance = 15600 }, -- Inkwell (Black)
+	{ id = 7441, chance = 13800 }, -- Ice Cube
+	{ id = 829, chance = 8100 }, -- Glacier Mask
+	{ id = 3284, chance = 5300 }, -- Ice Rapier
+	{ id = 3333, chance = 5000 }, -- Crystal Mace
+	{ id = 7449, chance = 4600 }, -- Crystal Sword
+	{ id = 7387, chance = 4200 }, -- Diamond Sceptre
+	{ id = 21194, chance = 4200 }, -- Slime Heart
+	{ id = 9663, chance = 4000 }, -- Piece of Dead Brain
+	{ id = 823, chance = 2700 }, -- Glacier Kilt
+	{ id = 824, chance = 2300 }, -- Glacier Robe
+	{ id = 7437, chance = 930 }, -- Sapphire Hammer
+	{ id = 16118, chance = 750 }, -- Glacial Rod
+	{ id = 8050, chance = 660 }, -- Crystalline Armor
+	{ id = 9303, chance = 280 }, -- Leviathan's Amulet
 }
 
 monster.attacks = {

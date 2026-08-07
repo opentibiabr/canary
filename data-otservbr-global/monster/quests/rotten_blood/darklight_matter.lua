@@ -78,16 +78,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 11755, maxCount = 1 },
-	{ name = "unstable darklight matter", chance = 9060, maxCount = 1 },
-	{ name = "darklight core", chance = 12887, maxCount = 1 },
-	{ name = "ultimate health potion", chance = 6553, maxCount = 6 },
-	{ id = 3039, chance = 1430 }, -- red gem
-	{ name = "darklight matter", chance = 8849, maxCount = 1 },
-	{ name = "rubber cap", chance = 7180, maxCount = 1 },
-	{ id = 23544, chance = 3500, maxCount = 1 }, -- collar of red plasma
-	{ name = "green gem", chance = 3500, maxCount = 1 },
-	{ name = "shadow sceptre", chance = 3500, maxCount = 1 },
+	{ id = 3043, chance = 50000 }, -- Crystal Coin
+	{ id = 43779, chance = 10000 }, -- Unstable Darklight Matter
+	{ id = 43853, chance = 8000 }, -- Darklight Core (Object)
+	{ id = 7643, chance = 6000, maxCount = 6 }, -- Ultimate Health Potion
+	{ id = 43851, chance = 4100 }, -- Darklight Matter (Object)
+	{ id = 3039, chance = 2700 }, -- Red Gem
+	{ id = 23544, chance = 1100 }, -- Collar of Red Plasma
+	{ id = 7451, chance = 630 }, -- Shadow Sceptre
+	{ id = 21165, chance = 530 }, -- Rubber Cap
+	{ id = 3038, chance = 350 }, -- Green Gem
 }
 
 monster.attacks = {

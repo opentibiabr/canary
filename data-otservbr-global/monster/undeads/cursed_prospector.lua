@@ -73,18 +73,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "flash arrow", chance = 17700, maxCount = 10 },
-	{ name = "great spirit potion", chance = 15190, maxCount = 2 },
-	{ name = "spectral silver nugget", chance = 11520 },
-	{ name = "spectral gold nugget", chance = 5680 },
-	{ name = "emerald bangle", chance = 1340 },
-	{ name = "lightning boots", chance = 1340 },
-	{ name = "diamond", chance = 1000 },
-	{ name = "lightning robe", chance = 1000 },
-	{ name = "elven amulet", chance = 1000 },
-	{ name = "lightning legs", chance = 830 },
-	{ name = "shockwave amulet", chance = 500 },
+	{ id = 3035, chance = 100000, maxCount = 10 }, -- Platinum Coin
+	{ id = 761, chance = 17500, maxCount = 20 }, -- Flash Arrow
+	{ id = 7642, chance = 16300, maxCount = 2 }, -- Great Spirit Potion
+	{ id = 32725, chance = 10200 }, -- Spectral Silver Nugget
+	{ id = 32724, chance = 4400 }, -- Spectral Gold Nugget
+	{ id = 3081, chance = 2900 }, -- Stone Skin Amulet
+	{ id = 822, chance = 1100 }, -- Lightning Legs
+	{ id = 3010, chance = 1100 }, -- Emerald Bangle
+	{ id = 820, chance = 1100 }, -- Lightning Boots
+	{ id = 3082, chance = 730 }, -- Elven Amulet
+	{ id = 32770, chance = 680 }, -- Diamond
+	{ id = 9304, chance = 600 }, -- Shockwave Amulet
+	{ id = 825, chance = 380 }, -- Lightning Robe
 }
 
 monster.attacks = {

@@ -62,35 +62,29 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3043, chance = 100000, maxCount = 3 }, -- crystal coin
-	{ id = 3035, chance = 100000, maxCount = 100 }, -- platinum coin
-	{ id = 32626, chance = 44444 }, -- amber
-	{ id = 7643, chance = 42593, maxCount = 20 }, -- ultimate health potion
-	{ id = 7642, chance = 42593, maxCount = 14 }, -- great spirit potion
-	{ id = 238, chance = 31481, maxCount = 14 }, -- great mana potion
-	{ id = 23375, chance = 31481, maxCount = 8 }, -- supreme health potion
-	{ id = 23374, chance = 25926, maxCount = 15 }, -- ultimate spirit potion
-	{ id = 237, chance = 25926, maxCount = 20 }, -- strong mana potion
-	{ id = 3037, chance = 24074, maxCount = 2 }, -- yellow gem
-	{ id = 32769, chance = 20370, maxCount = 2 }, -- white gem
-	{ id = 47368, chance = 20000 }, -- amber slayer
-	{ id = 47369, chance = 20000 }, -- amber greataxe
-	{ id = 47370, chance = 20000 }, -- amber bludgeon
-	{ id = 47374, chance = 20000 }, -- amber sabre
-	{ id = 47375, chance = 20000 }, -- amber axe
-	{ id = 47376, chance = 20000 }, -- amber cudgel
-	{ id = 47377, chance = 20000 }, -- amber crossbow
-	{ id = 50239, chance = 20000 }, -- amber kusarigama
-	{ id = 32624, chance = 18519 }, -- amber with a bug
-	{ id = 32625, chance = 18519 }, -- amber with a dragonfly
-	{ id = 3041, chance = 18519, maxCount = 2 }, -- blue gem
-	{ id = 32623, chance = 7407 }, -- giant topa
-	{ id = 48516, chance = 5556 }, -- root tentacle
-	{ id = 32622, chance = 5556 }, -- giant amethyst
-	{ id = 30061, chance = 3704 }, -- giant sapphire
-	{ id = 48517, chance = 1852 }, -- fish eye
-	{ id = 30060, chance = 1852 }, -- giant emerald
-	{ id = 48514, chance = 1852 }, -- strange inedible fruit
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- Crystal Coin
+	{ id = 3035, chance = 100000, maxCount = 100 }, -- Platinum Coin
+	{ id = 7643, chance = 46000, maxCount = 20 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 44000, maxCount = 14 }, -- Great Spirit Potion
+	{ id = 32626, chance = 41000 }, -- Amber (Item)
+	{ id = 238, chance = 32000, maxCount = 14 }, -- Great Mana Potion
+	{ id = 23375, chance = 31000, maxCount = 8 }, -- Supreme Health Potion
+	{ id = 237, chance = 24000, maxCount = 20 }, -- Strong Mana Potion
+	{ id = 3041, chance = 24000, maxCount = 2 }, -- Blue Gem
+	{ id = 32624, chance = 24000 }, -- Amber with a Bug
+	{ id = 23374, chance = 24000, maxCount = 15 }, -- Ultimate Spirit Potion
+	{ id = 3037, chance = 22000, maxCount = 2 }, -- Yellow Gem
+	{ id = 32769, chance = 20000, maxCount = 2 }, -- White Gem
+	{ id = 32625, chance = 18600 }, -- Amber with a Dragonfly
+	{ id = 32623, chance = 6800 }, -- Giant Topaz
+	{ id = 50152, chance = 6800 }, -- Collar of Orange Plasma
+	{ id = 48516, chance = 6800 }, -- Root Tentacle
+	{ id = 32622, chance = 5100 }, -- Giant Amethyst
+	{ id = 30061, chance = 3400 }, -- Giant Sapphire
+	{ id = 30060, chance = 1700 }, -- Giant Emerald
+	{ id = 48517, chance = 1700 }, -- Fish Eye
+	{ id = 46628, chance = 1700 }, -- Amber Crusher
+	{ id = 48514, chance = 1700 }, -- Strange Inedible Fruit
 }
 
 monster.attacks = {

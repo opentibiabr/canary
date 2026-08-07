@@ -74,16 +74,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 6100, maxCount = 2 },
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 25000, maxCount = 100 },
-	{ name = "gold coin", chance = 25000, maxCount = 12 },
-	{ name = "wand of inferno", chance = 2240 },
-	{ name = "fire sword", chance = 530 },
-	{ name = "magma amulet", chance = 1300 },
-	{ name = "magma boots", chance = 560 },
-	{ name = "magma legs", chance = 210 },
-	{ id = 8895, chance = 1330 }, -- rusted armor
+	{ id = 3031, chance = 100000, maxCount = 200 }, -- Gold Coin
+	{ id = 3035, chance = 14500 }, -- Platinum Coin
+	{ id = 3030, chance = 8300, maxCount = 2 }, -- Small Ruby
+	{ id = 8895, chance = 7900 }, -- Rusted Armor
+	{ id = 3048, chance = 3300 }, -- Might Ring
+	{ id = 3071, chance = 2700 }, -- Wand of Inferno
+	{ id = 817, chance = 1500 }, -- Magma Amulet
+	{ id = 818, chance = 870 }, -- Magma Boots
+	{ id = 3280, chance = 410 }, -- Fire Sword
+	{ id = 821, chance = 230 }, -- Magma Legs
 }
 
 monster.attacks = {

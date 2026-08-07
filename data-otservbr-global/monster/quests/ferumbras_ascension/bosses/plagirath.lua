@@ -76,29 +76,42 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 10389, chance = 3000 }, -- sai
-	{ id = 16117, chance = 1820 }, -- muck rod
-	{ id = 16125, chance = 23000, maxCount = 6 }, -- cyan crystal fragment
-	{ id = 16126, chance = 23000, maxCount = 6 }, -- red crystal fragment
-	{ id = 16127, chance = 23000, maxCount = 6 }, -- green crystal fragment
-	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
-	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire
-	{ id = 3031, chance = 98000, maxCount = 200 }, -- gold coin
-	{ id = 3033, chance = 10000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 22727, chance = 800 }, -- rift lance
-	{ id = 22759, chance = 500, unique = true }, -- plague bite
-	{ id = 22866, chance = 800 }, -- rift bow
-	{ id = 22867, chance = 800 }, -- rift crossbow
-	{ id = 6499, chance = 11000 }, -- demonic essence
-	{ id = 7386, chance = 5000 }, -- mercenary sword
-	{ id = 281, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 814, chance = 5000 }, -- terra amulet
-	{ id = 7643, chance = 23000, maxCount = 15 }, -- ultimate health potion
-	{ id = 8073, chance = 4000 }, -- spellbook of warding
-	{ id = 9057, chance = 10000, maxCount = 8 }, -- small topaz
+	{ id = 3031, chance = 100000, maxCount = 390 }, -- Gold Coin
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 3035, chance = 100000, maxCount = 36 }, -- Platinum Coin
+	{ id = 16125, chance = 77000, maxCount = 11 }, -- Cyan Crystal Fragment
+	{ id = 16126, chance = 77000, maxCount = 11 }, -- Red Crystal Fragment
+	{ id = 6499, chance = 70000 }, -- Demonic Essence
+	{ id = 16127, chance = 67000, maxCount = 11 }, -- Green Crystal Fragment
+	{ id = 7643, chance = 58000, maxCount = 18 }, -- Ultimate Health Potion
+	{ id = 6558, chance = 56000, maxCount = 9 }, -- Flask of Demonic Blood
+	{ id = 7642, chance = 51000, maxCount = 11 }, -- Great Spirit Potion
+	{ id = 238, chance = 49000, maxCount = 13 }, -- Great Mana Potion
+	{ id = 9057, chance = 33000, maxCount = 9 }, -- Small Topaz
+	{ id = 3038, chance = 33000 }, -- Green Gem
+	{ id = 3033, chance = 28000, maxCount = 9 }, -- Small Amethyst
+	{ id = 3098, chance = 26000 }, -- Ring of Healing
+	{ id = 3037, chance = 23000 }, -- Yellow Gem
+	{ id = 3039, chance = 16300 }, -- Red Gem
+	{ id = 811, chance = 14000 }, -- Terra Mantle
+	{ id = 812, chance = 14000 }, -- Terra Legs
+	{ id = 3041, chance = 14000 }, -- Blue Gem
+	{ id = 3028, chance = 14000, maxCount = 8 }, -- Small Diamond
+	{ id = 3032, chance = 11600, maxCount = 9 }, -- Small Emerald
+	{ id = 3030, chance = 11600, maxCount = 9 }, -- Small Ruby
+	{ id = 7388, chance = 9300 }, -- Vile Axe
+	{ id = 22726, chance = 9300 }, -- Rift Shield
+	{ id = 281, chance = 9300 }, -- Giant Shimmering Pearl
+	{ id = 10389, chance = 7000 }, -- Traditional Sai
+	{ id = 814, chance = 7000 }, -- Terra Amulet
+	{ id = 22727, chance = 7000 }, -- Rift Lance
+	{ id = 16117, chance = 4700 }, -- Muck Rod
+	{ id = 11657, chance = 4700 }, -- Twiceslicer
+	{ id = 8073, chance = 4700 }, -- Spellbook of Warding
+	{ id = 22866, chance = 2300 }, -- Rift Bow
+	{ id = 22867, chance = 2300 }, -- Rift Crossbow
+	{ id = 7386, chance = 2300 }, -- Mercenary Sword
+	{ id = 3036, chance = 2300 }, -- Violet Gem
 }
 
 monster.attacks = {

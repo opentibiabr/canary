@@ -78,21 +78,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 51528, maxCount = 30 },
-	{ id = 44736, chance = 15234 },
-	{ id = 44739, chance = 9169 },
-	{ id = 44740, chance = 6256 },
-	{ id = 239, chance = 5540 },
-	{ id = 9058, chance = 3534 },
-	{ id = 7643, chance = 2722 },
-	{ id = 238, chance = 2006 },
-	{ id = 3036, chance = 1862 },
-	{ id = 23373, chance = 1385 },
-	{ id = 3041, chance = 1003 },
-	{ id = 3063, chance = 1003 },
-	{ id = 21168, chance = 1003 },
-	{ id = 32769, chance = 669 },
-	{ id = 10438, chance = 621 },
+	{ id = 3035, chance = 52000, maxCount = 30 }, -- Platinum Coin
+	{ id = 44736, chance = 15000 }, -- Bulltaur Horn
+	{ id = 44739, chance = 8700 }, -- Encrypted Notes
+	{ id = 44740, chance = 6000 }, -- Strange Substance
+	{ id = 239, chance = 5900 }, -- Great Health Potion
+	{ id = 9058, chance = 3500 }, -- Gold Ingot
+	{ id = 7643, chance = 2700 }, -- Ultimate Health Potion
+	{ id = 3036, chance = 1800 }, -- Violet Gem
+	{ id = 238, chance = 1800 }, -- Great Mana Potion
+	{ id = 23373, chance = 1200 }, -- Ultimate Mana Potion
+	{ id = 3041, chance = 1100 }, -- Blue Gem
+	{ id = 3063, chance = 920 }, -- Gold Ring
+	{ id = 21168, chance = 860 }, -- Alloy Legs
+	{ id = 10438, chance = 800 }, -- Spellweaver's Robe
+	{ id = 32769, chance = 620 }, -- White Gem
+	{ id = 49372, chance = 30 }, -- Spiritualist Gem
 }
 
 monster.attacks = {

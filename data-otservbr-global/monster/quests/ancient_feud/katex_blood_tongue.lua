@@ -72,33 +72,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, minCount = 1, maxCount = 17 }, -- platinum coin
-	{ id = 7643, chance = 100000, minCount = 1, maxCount = 5 }, -- ultimate health potion
-	{ id = 9058, chance = 25000 }, -- gold ingot
-	{ id = 33943, chance = 21110 }, -- werehyaena nose
-	{ id = 3036, chance = 5000 }, -- violet gem
-	{ id = 34100, chance = 4440 }, -- katex' blood
-	{ id = 33944, chance = 4440 }, -- werehyaena talisman
-	{ id = 34219, chance = 3890 }, -- werehyaena trophy
-	{ id = 5741, chance = 3330 }, -- skull helmet
-	{ id = 3041, chance = 3330 }, -- blue gem
-	{ id = 3420, chance = 1670 }, -- demon shield
-	{ id = 3281, chance = 1670 }, -- giant sword
-	{ id = 14247, chance = 1670 }, -- ornate crossbow
-	{ id = 3063, chance = 1670 }, -- gold ring
-	{ id = 3366, chance = 1110 }, -- magic plate armor
-	{ id = 7404, chance = 1110 }, -- assassin dagger
-	{ id = 7440, chance = 1110 }, -- mastermind potion
-	{ id = 22083, chance = 1110 }, -- moonlight crystals
-	{ id = 23531, chance = 1110 }, -- ring of green plasma
-	{ id = 7422, chance = 1110 }, -- jade hammer
-	{ id = 3342, chance = 1000 }, -- war axe
-	{ id = 21168, chance = 1000 }, -- alloy legs
-	{ id = 34258, chance = 560 }, -- red silk flower
-	{ id = 7382, chance = 560 }, -- demonrage sword
-	{ id = 3360, chance = 560 }, -- golden armor
-	{ id = 33778, chance = 360 }, -- raw watermelon tourmaline
-	{ id = 282, chance = 140 }, -- giant shimmering pearl (brown)
+	{ id = 7643, chance = 100000, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 3035, chance = 99000, maxCount = 17 }, -- Platinum Coin
+	{ id = 9058, chance = 24000 }, -- Gold Ingot
+	{ id = 48248, chance = 22000 }, -- Rainbow Waffles
+	{ id = 33943, chance = 22000 }, -- Werehyaena Nose
+	{ id = 3036, chance = 6500 }, -- Violet Gem
+	{ id = 34219, chance = 6500 }, -- Werehyaena Trophy
+	{ id = 22083, chance = 4400, maxCount = 5 }, -- Moonlight Crystals
+	{ id = 33944, chance = 4400 }, -- Werehyaena Talisman
+	{ id = 34100, chance = 3800 }, -- Katex' Blood
+	{ id = 3041, chance = 2700 }, -- Blue Gem
+	{ id = 3281, chance = 2700 }, -- Giant Sword
+	{ id = 3366, chance = 2700 }, -- Magic Plate Armor
+	{ id = 5741, chance = 2200 }, -- Skull Helmet
+	{ id = 7404, chance = 1900 }, -- Assassin Dagger
+	{ id = 14247, chance = 1900 }, -- Ornate Crossbow
+	{ id = 3360, chance = 1900 }, -- Golden Armor
+	{ id = 3063, chance = 1900 }, -- Gold Ring
+	{ id = 3420, chance = 1400 }, -- Demon Shield
+	{ id = 7382, chance = 1100 }, -- Demonrage Sword
+	{ id = 7440, chance = 1100 }, -- Mastermind Potion
+	{ id = 21168, chance = 820 }, -- Alloy Legs
+	{ id = 23531, chance = 820 }, -- Ring of Green Plasma
+	{ id = 3342, chance = 820 }, -- War Axe
+	{ id = 7422, chance = 540 }, -- Jade Hammer
+	{ id = 33778, chance = 540 }, -- Raw Watermelon Tourmaline
+	{ id = 49373, chance = 270 }, -- Greater Spiritualist Gem
 }
 
 monster.attacks = {

@@ -60,13 +60,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 76000, maxCount = 92 },
-	{ id = 3130, chance = 8300 }, -- twigs
-	{ name = "green crystal fragment", chance = 7000 },
-	{ name = "great spirit potion", chance = 26400 },
-	{ name = "ultimate health potion", chance = 15390 },
-	{ name = "bottle of champagne", chance = 8300 },
-	{ name = "green crystal shard", chance = 7200 },
+	{ id = 3031, chance = 100000, maxCount = 99 }, -- Gold Coin
+	{ id = 7642, chance = 13600 }, -- Great Spirit Potion
+	{ id = 3114, chance = 9900 }, -- Skull (Item)
+	{ id = 3111, chance = 8900 }, -- Fishbone
+	{ id = 3130, chance = 8900 }, -- Twigs
+	{ id = 7643, chance = 8400 }, -- Ultimate Health Potion
+	{ id = 16119, chance = 6800 }, -- Blue Crystal Shard
+	{ id = 16127, chance = 6300 }, -- Green Crystal Fragment
+	{ id = 16121, chance = 3100 }, -- Green Crystal Shard
+	{ id = 37530, chance = 520 }, -- Bottle of Champagne
+	{ id = 37468, chance = 520 }, -- Special Fx Box
 }
 
 monster.attacks = {

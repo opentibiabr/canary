@@ -78,26 +78,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3583, chance = 13040 }, -- dragon ham
-	{ id = 21801, chance = 12040 }, -- seacrest hair
-	{ id = 762, chance = 7020, maxCount = 17 }, -- shiver arrow
-	{ id = 829, chance = 2680 }, -- glacier mask
-	{ id = 21892, chance = 400 }, -- crest of the deep seas
-	{ id = 3035, chance = 100000, maxCount = 5 }, -- platinum coin
-	{ id = 236, chance = 7020, maxCount = 2 }, -- strong health potion
-	{ id = 237, chance = 10370, maxCount = 2 }, -- strong mana potion
-	{ id = 21747, chance = 10030 }, -- seacrest pearl
-	{ id = 3026, chance = 3680, maxCount = 2 }, -- white pearl
-	{ id = 3027, chance = 2340, maxCount = 3 }, -- black pearl
-	{ id = 281, chance = 1000 }, -- giant shimmering pearl (green)
-	{ id = 5944, chance = 3340 }, -- soul orb
-	{ id = 3028, chance = 5020, maxCount = 3 }, -- small diamond
-	{ id = 21800, chance = 17390 }, -- seacrest scale
-	{ id = 815, chance = 670 }, -- glacier amulet
-	{ id = 823, chance = 3680 }, -- glacier kilt
-	{ id = 819, chance = 3010 }, -- glacier shoes
-	{ id = 16096, chance = 670 }, -- wand of defiance
-	{ id = 8093, chance = 670 }, -- wand of draconia
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 21800, chance = 16700 }, -- Seacrest Scale
+	{ id = 3583, chance = 14100 }, -- Dragon Ham
+	{ id = 21801, chance = 11500 }, -- Seacrest Hair
+	{ id = 762, chance = 8200, maxCount = 19 }, -- Shiver Arrow
+	{ id = 237, chance = 7900, maxCount = 2 }, -- Strong Mana Potion
+	{ id = 236, chance = 7600, maxCount = 2 }, -- Strong Health Potion
+	{ id = 21747, chance = 7000 }, -- Seacrest Pearl
+	{ id = 3028, chance = 4200, maxCount = 3 }, -- Small Diamond
+	{ id = 5944, chance = 3200 }, -- Soul Orb
+	{ id = 823, chance = 2100 }, -- Glacier Kilt
+	{ id = 819, chance = 2000 }, -- Glacier Shoes
+	{ id = 829, chance = 2000 }, -- Glacier Mask
+	{ id = 3027, chance = 2000, maxCount = 3 }, -- Black Pearl
+	{ id = 3026, chance = 1900, maxCount = 2 }, -- White Pearl
+	{ id = 281, chance = 1500 }, -- Giant Shimmering Pearl (Green)
+	{ id = 21892, chance = 1100 }, -- Crest of the Deep Seas
+	{ id = 815, chance = 1000 }, -- Glacier Amulet
+	{ id = 8093, chance = 930 }, -- Wand of Draconia
+	{ id = 16096, chance = 230 }, -- Wand of Defiance
 }
 
 monster.attacks = {

@@ -78,35 +78,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 14 },
-	{ name = "great spirit potion", chance = 100000, maxCount = 3 },
-	{ name = "essence of a bad dream", chance = 15000 },
-	{ id = 3051, chance = 12050 }, -- energy ring
-	{ name = "silver amulet", chance = 15000 },
-	{ id = 3091, chance = 11050 }, -- sword ring
-	{ name = "spider fangs", chance = 11800 },
-	{ name = "mind stone", chance = 17800 },
-	{ name = "wand of cosmic energy", chance = 17800 },
-	{ name = "magma amulet", chance = 8900 },
-	{ name = "elven amulet", chance = 8100, maxCount = 2 },
-	{ id = 23544, chance = 10590 }, -- collar of red plasma
-	{ name = "sacred tree amulet", chance = 7500 },
-	{ name = "spider silk", chance = 6500 },
-	{ id = 3052, chance = 5560 }, -- life ring
-	{ name = "orb", chance = 7800 },
-	{ name = "underworld rod", chance = 7120 },
-	{ id = 23529, chance = 1000 }, -- ring of blue plasma
-	{ id = 3098, chance = 9120 }, -- ring of healing
-	{ name = "strange talisman", chance = 8110 },
-	{ id = 3092, chance = 7220 }, -- axe ring
-	{ id = 3050, chance = 6080 }, -- power ring
-	{ id = 6299, chance = 7502 }, -- death ring
-	{ name = "garlic necklace", chance = 7550 },
-	{ name = "platinum amulet", chance = 7650 },
-	{ id = 23543, chance = 10590 }, -- collar of green plasma
-	{ name = "strange symbol", chance = 2640 },
-	{ name = "stone skin amulet", chance = 2600 },
-	{ name = "necklace of the deep", chance = 1800 },
+	{ id = 3035, chance = 81000, maxCount = 13 }, -- Platinum Coin
+	{ id = 7642, chance = 29000, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 8031, chance = 9800 }, -- Spider Fangs
+	{ id = 10306, chance = 7500 }, -- Essence of a Bad Dream
+	{ id = 3054, chance = 6800 }, -- Silver Amulet
+	{ id = 3091, chance = 5200 }, -- Sword Ring
+	{ id = 3062, chance = 4400 }, -- Mind Stone
+	{ id = 3073, chance = 4300 }, -- Wand of Cosmic Energy
+	{ id = 3051, chance = 3900 }, -- Energy Ring
+	{ id = 3082, chance = 2800, maxCount = 2 }, -- Elven Amulet
+	{ id = 3052, chance = 2600 }, -- Life Ring
+	{ id = 3092, chance = 2600 }, -- Axe Ring
+	{ id = 8082, chance = 2500 }, -- Underworld Rod
+	{ id = 3050, chance = 2400 }, -- Power Ring
+	{ id = 817, chance = 2000 }, -- Magma Amulet
+	{ id = 3060, chance = 2000 }, -- Orb
+	{ id = 9302, chance = 1900 }, -- Sacred Tree Amulet
+	{ id = 6299, chance = 1900 }, -- Death Ring
+	{ id = 3055, chance = 1500 }, -- Platinum Amulet
+	{ id = 23544, chance = 1400 }, -- Collar of Red Plasma
+	{ id = 5879, chance = 1300 }, -- Spider Silk
+	{ id = 23529, chance = 1200 }, -- Ring of Blue Plasma
+	{ id = 13990, chance = 990 }, -- Necklace of the Deep
+	{ id = 3098, chance = 970 }, -- Ring of Healing
+	{ id = 3083, chance = 920 }, -- Garlic Necklace
+	{ id = 3058, chance = 610 }, -- Strange Symbol
+	{ id = 3045, chance = 580 }, -- Strange Talisman
+	{ id = 23543, chance = 410 }, -- Collar of Green Plasma
+	{ id = 3081, chance = 230 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

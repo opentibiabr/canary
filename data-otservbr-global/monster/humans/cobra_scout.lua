@@ -76,21 +76,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 74000, maxCount = 9 },
-	{ name = "earth arrow", chance = 19490, maxCount = 28 },
-	{ name = "stone skin amulet", chance = 6800 },
-	{ name = "gold ingot", chance = 5750, maxCount = 1 },
-	{ name = "cheesy figurine", chance = 13800 },
-	{ name = "opal", chance = 23800, maxCount = 5 },
-	{ name = "cobra crest", chance = 15450 },
-	{ name = "small emerald", chance = 3000, maxCount = 2 },
-	{ name = "violet gem", chance = 1300 },
-	{ name = "yellow gem", chance = 3060 },
-	{ name = "green gem", chance = 1210 },
-	{ id = 3039, chance = 4800 }, -- red gem
-	{ name = "sacred tree amulet", chance = 5100 },
-	{ name = "green crystal shard", chance = 2130 },
-	{ id = 23533, chance = 740 }, -- ring of red plasma
+	{ id = 3035, chance = 72000, maxCount = 9 }, -- Platinum Coin
+	{ id = 22194, chance = 24000, maxCount = 5 }, -- Opal
+	{ id = 774, chance = 19200, maxCount = 28 }, -- Earth Arrow
+	{ id = 31678, chance = 15200 }, -- Cobra Crest
+	{ id = 17818, chance = 11600 }, -- Cheesy Figurine
+	{ id = 9058, chance = 5600 }, -- Gold Ingot
+	{ id = 9302, chance = 4400 }, -- Sacred Tree Amulet
+	{ id = 3039, chance = 4300 }, -- Red Gem
+	{ id = 3037, chance = 2800 }, -- Yellow Gem
+	{ id = 3032, chance = 2500, maxCount = 2 }, -- Small Emerald
+	{ id = 16121, chance = 2200 }, -- Green Crystal Shard
+	{ id = 3038, chance = 1500 }, -- Green Gem
+	{ id = 3036, chance = 1500 }, -- Violet Gem
+	{ id = 23533, chance = 680 }, -- Ring of Red Plasma
+	{ id = 3081, chance = 680 }, -- Stone Skin Amulet
 }
 
 monster.attacks = {

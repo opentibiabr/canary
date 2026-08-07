@@ -74,15 +74,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 64090, maxCount = 23 },
-	{ name = "meat", chance = 19950, maxCount = 2 },
-	{ id = 3578, chance = 20320, maxCount = 2 }, -- fish
-	{ name = "worm", chance = 14730, maxCount = 2 },
-	{ name = "marsh stalker feather", chance = 8650 },
-	{ name = "longsword", chance = 7560 },
-	{ name = "marsh stalker beak", chance = 6080 },
-	{ id = 3003, chance = 4830 }, -- rope
-	{ name = "seeds", chance = 110 },
+	{ id = 3031, chance = 64000, maxCount = 25 }, -- Gold Coin
+	{ id = 3578, chance = 20000, maxCount = 2 }, -- Fish
+	{ id = 3577, chance = 19900 }, -- Meat
+	{ id = 3492, chance = 14800, maxCount = 2 }, -- Worm
+	{ id = 17462, chance = 8800 }, -- Marsh Stalker Feather
+	{ id = 3285, chance = 7500 }, -- Longsword
+	{ id = 17461, chance = 6000 }, -- Marsh Stalker Beak
+	{ id = 3003, chance = 4800 }, -- Rope
+	{ id = 647, chance = 89 }, -- Seeds
 }
 
 monster.attacks = {

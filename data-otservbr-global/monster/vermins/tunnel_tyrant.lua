@@ -76,18 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small enchanted sapphire", chance = 11910 },
-	{ name = "small enchanted ruby", chance = 9040 },
-	{ name = "violet gem", chance = 7750 },
-	{ name = "lump of dirt", chance = 10190 },
-	{ name = "tunnel tyrant head", chance = 24100 },
-	{ name = "tunnel tyrant shell", chance = 12480 },
-	{ name = "green gem", chance = 2300 },
-	{ name = "blue gem", chance = 3010 },
-	{ name = "crystal mace", chance = 1580 },
-	{ id = 23508, chance = 3010 }, -- energy vein
-	{ name = "crystalline armor", chance = 860 },
-	{ name = "suspicious device", chance = 1850 },
+	{ id = 27596, chance = 15900 }, -- Tunnel Tyrant Shell
+	{ id = 27595, chance = 10800 }, -- Tunnel Tyrant Head
+	{ id = 9692, chance = 8300 }, -- Lump of Dirt
+	{ id = 676, chance = 6400 }, -- Small Enchanted Ruby
+	{ id = 675, chance = 6400 }, -- Small Enchanted Sapphire
+	{ id = 3036, chance = 4700 }, -- Violet Gem
+	{ id = 23508, chance = 2700 }, -- Energy Vein
+	{ id = 3041, chance = 2000 }, -- Blue Gem
+	{ id = 3038, chance = 1900 }, -- Green Gem
+	{ id = 27653, chance = 1300 }, -- Suspicious Device
+	{ id = 3333, chance = 950 }, -- Crystal Mace
+	{ id = 8050, chance = 430 }, -- Crystalline Armor
 }
 
 monster.attacks = {

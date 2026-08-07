@@ -83,15 +83,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 80 }, -- gold coin
-	{ id = 237, chance = 9660 }, -- strong mana potion
-	{ id = 3039, chance = 5680 }, -- red gem
-	{ id = 3582, chance = 58520 }, -- ham
-	{ id = 236, chance = 5680 }, -- strong health potion
-	{ id = 3577, chance = 47160 }, -- meat
-	{ id = 3037, chance = 6250 }, -- yellow gem
-	{ id = 25296, chance = 6250 }, -- rubbish amulet
-	{ id = 16124, chance = 570 }, -- blue crystal splinter
+	{ id = 3031, chance = 74000, maxCount = 80 }, -- Gold Coin
+	{ id = 3582, chance = 55000 }, -- Ham
+	{ id = 3577, chance = 44000 }, -- Meat
+	{ id = 25296, chance = 9000 }, -- Rubbish Amulet
+	{ id = 3037, chance = 6300 }, -- Yellow Gem
+	{ id = 3039, chance = 6200 }, -- Red Gem
+	{ id = 237, chance = 6100 }, -- Strong Mana Potion
+	{ id = 236, chance = 6000 }, -- Strong Health Potion
+	{ id = 16124, chance = 890 }, -- Blue Crystal Splinter
+	{ id = 3081, chance = 870 }, -- Stone Skin Amulet
+	{ id = 3063, chance = 420 }, -- Gold Ring
 }
 
 monster.attacks = {

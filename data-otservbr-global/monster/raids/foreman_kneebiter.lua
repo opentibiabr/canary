@@ -69,9 +69,11 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 5880, chance = 2500, maxCount = 2 }, -- iron ore
-	{ id = 3031, chance = 90000, maxCount = 100 }, -- gold coin
-	{ id = 3413, chance = 6666 }, -- battle shield
+	{ id = 3031, chance = 84000, maxCount = 44 }, -- Gold Coin
+	{ id = 3413, chance = 16000 }, -- Battle Shield
+	{ id = 5880, chance = 12000 }, -- Iron Ore
+	{ id = 3351, chance = 12000 }, -- Steel Helmet
+	{ id = 3377, chance = 12000 }, -- Scale Armor
 }
 
 monster.attacks = {

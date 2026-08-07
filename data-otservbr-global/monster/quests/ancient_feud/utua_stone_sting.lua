@@ -66,35 +66,34 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, minCount = 1, maxCount = 17 }, -- platinum coin
-	{ id = 7643, chance = 100000, minCount = 1, maxCount = 5 }, -- ultimate health potion
-	{ id = 9651, chance = 54050, minCount = 1, maxCount = 5 }, -- scorpion tail
-	{ id = 3010, chance = 10810 }, -- emerald bangle
-	{ id = 24391, chance = 8650 }, -- coral brooch
-	{ id = 822, chance = 7570 }, -- lightning legs
-	{ id = 34101, chance = 4320 }, -- utua's poison
-	{ id = 24392, chance = 3240 }, -- gemmed figurine
-	{ id = 5741, chance = 3240 }, -- skull helmet
-	{ id = 3036, chance = 3240 }, -- violet gem
-	{ id = 7427, chance = 2700 }, -- chaos mace
-	{ id = 9058, chance = 2700 }, -- gold ingot
-	{ id = 3038, chance = 2700 }, -- green gem
-	{ id = 3333, chance = 2160 }, -- crystal mace
-	{ id = 821, chance = 2160 }, -- magma legs
-	{ id = 7386, chance = 2160 }, -- mercenary sword
-	{ id = 14040, chance = 2160 }, -- warrior's axe
-	{ id = 823, chance = 1620 }, -- glacier kilt
-	{ id = 7456, chance = 1620 }, -- noble axe
-	{ id = 7440, chance = 1080 }, -- mastermind potion
-	{ id = 23531, chance = 1080 }, -- ring of green plasma
-	{ id = 12546, chance = 540 }, -- fist on a stick
-	{ id = 14043, chance = 540 }, -- guardian axe
-	{ id = 3366, chance = 540 }, -- magic plate armor
-	{ id = 34258, chance = 540 }, -- red silk flower
-	{ id = 10438, chance = 540 }, -- spellweaver's robe
-	{ id = 3420, chance = 360 }, -- demon shield
-	{ id = 824, chance = 360 }, -- glacier robe
-	{ id = 33778, chance = 360 }, -- raw watermelon tourmaline
+	{ id = 3035, chance = 100000, maxCount = 17 }, -- Platinum Coin
+	{ id = 7643, chance = 100000, maxCount = 5 }, -- Ultimate Health Potion
+	{ id = 9651, chance = 53000, maxCount = 5 }, -- Scorpion Tail
+	{ id = 3010, chance = 7800 }, -- Emerald Bangle
+	{ id = 34101, chance = 7100 }, -- Utua's Poison
+	{ id = 822, chance = 6800 }, -- Lightning Legs
+	{ id = 3036, chance = 5100 }, -- Violet Gem
+	{ id = 823, chance = 4800 }, -- Glacier Kilt
+	{ id = 3333, chance = 4100 }, -- Crystal Mace
+	{ id = 3038, chance = 4100 }, -- Green Gem
+	{ id = 24391, chance = 3100 }, -- Coral Brooch
+	{ id = 5741, chance = 2700 }, -- Skull Helmet
+	{ id = 14043, chance = 2000 }, -- Guardian Axe
+	{ id = 821, chance = 1700 }, -- Magma Legs
+	{ id = 3366, chance = 1700 }, -- Magic Plate Armor
+	{ id = 3420, chance = 1700 }, -- Demon Shield
+	{ id = 824, chance = 1700 }, -- Glacier Robe
+	{ id = 14040, chance = 1400 }, -- Warrior's Axe
+	{ id = 23531, chance = 1400 }, -- Ring of Green Plasma
+	{ id = 7440, chance = 1400 }, -- Mastermind Potion
+	{ id = 9058, chance = 1400 }, -- Gold Ingot
+	{ id = 24392, chance = 1400 }, -- Gemmed Figurine
+	{ id = 7456, chance = 1000 }, -- Noble Axe
+	{ id = 7386, chance = 1000 }, -- Mercenary Sword
+	{ id = 10438, chance = 1000 }, -- Spellweaver's Robe
+	{ id = 7427, chance = 1000 }, -- Chaos Mace
+	{ id = 12546, chance = 1000 }, -- Fist on a Stick
+	{ id = 33778, chance = 340 }, -- Raw Watermelon Tourmaline
 }
 
 monster.attacks = {

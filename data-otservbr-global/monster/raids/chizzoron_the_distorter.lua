@@ -78,15 +78,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9058, chance = 71550, maxCount = 2 }, -- gold ingot
-	{ id = 3031, chance = 69825, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 69825, maxCount = 10 }, -- gold coin
-	{ id = 3032, chance = 5750 }, -- small emerald
-	{ id = 5881, chance = 100000 }, -- lizard scale
-	{ id = 3038, chance = 16300 }, -- green gem
-	{ id = 3053, chance = 11025 }, -- time ring
-	{ id = 239, chance = 5750 }, -- great health potion
-	{ id = 3386, chance = 5750 }, -- dragon scale mail
+	{ id = 3031, chance = 100000, maxCount = 333 }, -- Gold Coin
+	{ id = 3035, chance = 40000, maxCount = 8 }, -- Platinum Coin
+	{ id = 238, chance = 33000, maxCount = 3 }, -- Great Mana Potion
+	{ id = 3032, chance = 28000, maxCount = 5 }, -- Small Emerald
+	{ id = 9058, chance = 26000 }, -- Gold Ingot
+	{ id = 3038, chance = 23000 }, -- Green Gem
+	{ id = 5881, chance = 18600 }, -- Lizard Scale
+	{ id = 3053, chance = 14000 }, -- Time Ring
+	{ id = 3028, chance = 11600, maxCount = 9 }, -- Small Diamond
+	{ id = 3041, chance = 11600 }, -- Blue Gem
+	{ id = 9057, chance = 9300, maxCount = 5 }, -- Small Topaz
+	{ id = 239, chance = 9300, maxCount = 2 }, -- Great Health Potion
+	{ id = 3386, chance = 2300 }, -- Dragon Scale Mail
+	{ id = 8052, chance = 2300 }, -- Swamplair Armor
+	{ id = 10200, chance = 6250 }, -- Crystal Boots
 }
 
 monster.attacks = {

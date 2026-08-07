@@ -78,27 +78,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 161 },
-	{ name = "platinum coin", chance = 52380, maxCount = 3 },
-	{ name = "wyrm scale", chance = 33330 },
-	{ name = "dragon ham", chance = 23810, maxCount = 2 },
-	{ name = "strong health potion", chance = 23810 },
-	{ name = "strong mana potion", chance = 19050 },
-	{ name = "crossbow", chance = 14290 },
-	{ name = "small diamond", chance = 4760 },
-	{ name = "soul orb", chance = 4760 },
-	{ name = "wand of draconia", chance = 1510 },
-	{ name = "power bolt", chance = 1030, maxCount = 10 },
-	{ name = "wand of starstorm", chance = 830 },
-	{ name = "lightning pendant", chance = 750 },
-	{ name = "lightning legs", chance = 600 },
-	{ name = "legs of wisdom", chance = 600 },
-	{ name = "lightning robe", chance = 290 },
-	{ name = "dragonbone staff", chance = 240 },
-	{ name = "composite hornbow", chance = 220 },
-	{ name = "shadow sceptre", chance = 170 },
-	{ name = "lightning boots", chance = 150 },
-	{ name = "shockwave amulet", chance = 120 },
+	{ id = 3031, chance = 100000, maxCount = 178 }, -- Gold Coin
+	{ id = 3583, chance = 34000, maxCount = 2 }, -- Dragon Ham
+	{ id = 3035, chance = 25000, maxCount = 3 }, -- Platinum Coin
+	{ id = 237, chance = 19500 }, -- Strong Mana Potion
+	{ id = 236, chance = 19500 }, -- Strong Health Potion
+	{ id = 9665, chance = 17400 }, -- Wyrm Scale
+	{ id = 3349, chance = 8500 }, -- Crossbow
+	{ id = 5944, chance = 5600 }, -- Soul Orb
+	{ id = 3028, chance = 4900, maxCount = 5 }, -- Small Diamond
+	{ id = 8093, chance = 1300 }, -- Wand of Draconia
+	{ id = 3450, chance = 1100, maxCount = 10 }, -- Power Bolt
+	{ id = 8092, chance = 910 }, -- Wand of Starstorm
+	{ id = 822, chance = 800 }, -- Lightning Legs
+	{ id = 816, chance = 740 }, -- Lightning Pendant
+	{ id = 50187, chance = 660 }, -- Legs of Wisdom
+	{ id = 8027, chance = 310 }, -- Composite Hornbow
+	{ id = 825, chance = 250 }, -- Lightning Robe
+	{ id = 7430, chance = 200 }, -- Dragonbone Staff
+	{ id = 820, chance = 190 }, -- Lightning Boots
+	{ id = 7451, chance = 140 }, -- Shadow Sceptre
+	{ id = 9304, chance = 110 }, -- Shockwave Amulet
 }
 
 monster.attacks = {

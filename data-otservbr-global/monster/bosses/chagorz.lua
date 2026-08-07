@@ -78,21 +78,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 5441, maxCount = 108 },
-	{ name = "mastermind potion", chance = 5530, maxCount = 28 },
-	{ name = "supreme health potion", chance = 5044, maxCount = 154 },
-	{ name = "giant sapphire", chance = 10546, maxCount = 1 },
-	{ name = "ultimate mana potion", chance = 5752, maxCount = 107 },
-	{ name = "violet gem", chance = 13217, maxCount = 4 },
-	{ id = 3039, chance = 13465, maxCount = 1 }, -- red gem
-	{ name = "yellow gem", chance = 14071, maxCount = 1 },
-	{ name = "blue gem", chance = 11156, maxCount = 3 },
-	{ name = "bullseye potion", chance = 6792, maxCount = 21 },
-	{ name = "giant amethyst", chance = 11603, maxCount = 1 },
-	{ name = "giant topaz", chance = 12280, maxCount = 1 },
-	{ name = "green gem", chance = 8348, maxCount = 1 },
-	{ name = "ultimate spirit potion", chance = 10934, maxCount = 18 },
-	{ name = "white gem", chance = 9600, maxCount = 3 },
+	{ id = 3043, chance = 100000, maxCount = 94 }, -- Crystal Coin
+	{ id = 23375, chance = 74000, maxCount = 161 }, -- Supreme Health Potion
+	{ id = 23374, chance = 53000, maxCount = 198 }, -- Ultimate Spirit Potion
+	{ id = 3037, chance = 42000, maxCount = 3 }, -- Yellow Gem
+	{ id = 23373, chance = 42000, maxCount = 165 }, -- Ultimate Mana Potion
+	{ id = 32623, chance = 42000 }, -- Giant Topaz
+	{ id = 30061, chance = 42000 }, -- Giant Sapphire
+	{ id = 3041, chance = 37000, maxCount = 4 }, -- Blue Gem
+	{ id = 3039, chance = 32000, maxCount = 4 }, -- Red Gem
+	{ id = 49271, chance = 32000, maxCount = 43 }, -- Transcendence Potion
+	{ id = 7439, chance = 32000, maxCount = 41 }, -- Berserk Potion
+	{ id = 3036, chance = 26000, maxCount = 4 }, -- Violet Gem
+	{ id = 7440, chance = 21000, maxCount = 45 }, -- Mastermind Potion
+	{ id = 3038, chance = 15800, maxCount = 2 }, -- Green Gem
+	{ id = 9058, chance = 15800 }, -- Gold Ingot
+	{ id = 32622, chance = 15800, maxCount = 2 }, -- Giant Amethyst
+	{ id = 30053, chance = 15800 }, -- Dragon Figurine
+	{ id = 7443, chance = 15800, maxCount = 35 }, -- Bullseye Potion
+	{ id = 32769, chance = 10500 }, -- White Gem
+	{ id = 43966, chance = 5300 }, -- Chagorz Igneous Obsidian
+	{ id = 43961, chance = 5300 }, -- Darklight Figurine
+	{ id = 43504, chance = 5300 }, -- The Essence of Chagorz
 }
 
 monster.attacks = {

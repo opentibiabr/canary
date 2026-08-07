@@ -67,32 +67,32 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 100000, minCount = 1, maxCount = 9 }, -- platinum coin
-	{ id = 8010, chance = 100000, minCount = 1, maxCount = 5 }, -- potato
-	{ id = 23375, chance = 57140, minCount = 1, maxCount = 33 }, -- supreme health potion
-	{ id = 23373, chance = 57140, minCount = 1, maxCount = 31 }, -- ultimate mana potion
-	{ id = 23374, chance = 30000, minCount = 1, maxCount = 11 }, -- ultimate spirit potion
-	{ id = 7443, chance = 22860, minCount = 4, maxCount = 19 }, -- bullseye potion
-	{ id = 7439, chance = 21430, minCount = 1, maxCount = 16 }, -- berserk potion
-	{ id = 3041, chance = 18570, count = 1 }, -- blue gem
-	{ id = 7440, chance = 17140, minCount = 4, maxCount = 19 }, -- mastermind potion
-	{ id = 51302, chance = 17140, minCount = 1, maxCount = 15 }, -- transcendence potion
-	{ id = 3038, chance = 17140, minCount = 1, maxCount = 2 }, -- green gem
-	{ id = 3036, chance = 15710, minCount = 1, maxCount = 2 }, -- violet gem
-	{ id = 3039, chance = 14290, minCount = 1, maxCount = 2 }, -- red gem
-	{ id = 30060, chance = 11430, count = 1 }, -- giant emerald
-	{ id = 3037, chance = 10000, count = 1 }, -- yellow gem
-	{ id = 3043, chance = 8570, count = 1 }, -- crystal coin
-	{ id = 36809, chance = 4290 }, -- curl of hair
-	{ id = 14112, chance = 4290 }, -- bar of gold
-	{ id = 814, chance = 2860 }, -- terra amulet
-	{ id = 3065, chance = 2860 }, -- terra rod
-	{ id = 830, chance = 2860 }, -- terra hood
-	{ id = 36811, chance = 1430 }, -- megasylvan sapling
-	{ id = 36808, chance = 1430 }, -- old royal diary
-	{ id = 812, chance = 1430 }, -- terra legs
-	{ id = 811, chance = 1430 }, -- terra mantle
-	{ id = 32623, chance = 1200, count = 1 }, -- giant topaz
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 8010, chance = 100000, maxCount = 5 }, -- Potato
+	{ id = 23375, chance = 58000, maxCount = 36 }, -- Supreme Health Potion
+	{ id = 23373, chance = 55000, maxCount = 35 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 31000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 7440, chance = 23000, maxCount = 20 }, -- Mastermind Potion
+	{ id = 7443, chance = 19500, maxCount = 18 }, -- Bullseye Potion
+	{ id = 3036, chance = 15700, maxCount = 2 }, -- Violet Gem
+	{ id = 7439, chance = 14300, maxCount = 17 }, -- Berserk Potion
+	{ id = 3043, chance = 13800, maxCount = 5 }, -- Crystal Coin
+	{ id = 3037, chance = 12900, maxCount = 2 }, -- Yellow Gem
+	{ id = 3038, chance = 11900, maxCount = 2 }, -- Green Gem
+	{ id = 3041, chance = 11000, maxCount = 2 }, -- Blue Gem
+	{ id = 14112, chance = 10000 }, -- Bar of Gold
+	{ id = 3039, chance = 9000 }, -- Red Gem
+	{ id = 49271, chance = 5700, maxCount = 18 }, -- Transcendence Potion
+	{ id = 30060, chance = 4300 }, -- Giant Emerald
+	{ id = 36808, chance = 3300 }, -- Old Royal Diary
+	{ id = 811, chance = 2400 }, -- Terra Mantle
+	{ id = 3065, chance = 1900 }, -- Terra Rod
+	{ id = 830, chance = 1900 }, -- Terra Hood
+	{ id = 36809, chance = 1400 }, -- Curl of Hair
+	{ id = 814, chance = 1400 }, -- Terra Amulet
+	{ id = 36811, chance = 950 }, -- megasylvan sapling
+	{ id = 32623, chance = 480 }, -- Giant Topaz
+	{ id = 812, chance = 480 }, -- Terra Legs
 }
 
 monster.attacks = {

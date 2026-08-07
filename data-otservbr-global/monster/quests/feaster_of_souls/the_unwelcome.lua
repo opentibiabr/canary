@@ -79,31 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 96080, maxCount = 2 },
-	{ name = "white gem", chance = 52940, maxCount = 2 },
-	{ name = "moonstone", chance = 52940, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 43140, maxCount = 6 },
-	{ name = "supreme health potion", chance = 29410, maxCount = 6 },
-	{ name = "silver hand mirror", chance = 27450 },
-	{ name = "berserk potion", chance = 23530, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 23530, maxCount = 6 },
-	{ name = "bullseye potion", chance = 19610, maxCount = 10 },
-	{ name = "mastermind potion", chance = 19610, maxCount = 10 },
-	{ name = "death toll", chance = 13730, maxCount = 2 },
-	{ name = "ivory comb", chance = 13730 },
-	{ name = "angel figurine", chance = 11760 },
-	{ name = "diamond", chance = 11760 },
-	{ name = "cursed bone", chance = 7840 },
-	{ name = "soulforged lantern", chance = 7840 },
-	{ name = "grimace", chance = 5880 },
-	{ name = "amber", chance = 5880 },
-	{ name = "amber with a dragonfly", chance = 3920 },
-	{ name = "ghost claw", chance = 1960 },
-	{ name = "bloody tears", chance = 1500 },
-	{ name = "ghost chestplate", chance = 150 },
-	{ name = "spooky hood", chance = 150 },
-	{ name = "fabulous legs", chance = 150 },
-	{ name = "soulful legs", chance = 150 },
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- Crystal Coin
+	{ id = 32770, chance = 62000, maxCount = 2 }, -- Diamond
+	{ id = 32771, chance = 51000, maxCount = 2 }, -- Moonstone
+	{ id = 23375, chance = 40000, maxCount = 11 }, -- Supreme Health Potion
+	{ id = 23373, chance = 36000, maxCount = 10 }, -- Ultimate Mana Potion
+	{ id = 7440, chance = 24000, maxCount = 19 }, -- Mastermind Potion
+	{ id = 23374, chance = 24000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 32772, chance = 18200 }, -- Silver Hand Mirror
+	{ id = 7439, chance = 16400, maxCount = 16 }, -- Berserk Potion
+	{ id = 32774, chance = 10900 }, -- Cursed Bone
+	{ id = 32703, chance = 9100, maxCount = 2 }, -- Death Toll
+	{ id = 32591, chance = 7300 }, -- Soulforged Lantern
+	{ id = 32773, chance = 7300 }, -- Ivory Comb
+	{ id = 32769, chance = 7300 }, -- White Gem
+	{ id = 7443, chance = 7300, maxCount = 19 }, -- Bullseye Potion
+	{ id = 32622, chance = 3600 }, -- Giant Amethyst
+	{ id = 32589, chance = 3600 }, -- Angel Figurine
+	{ id = 49271, chance = 3600, maxCount = 18 }, -- Transcendence Potion
+	{ id = 32625, chance = 1800 }, -- Amber with a Dragonfly
+	{ id = 32623, chance = 1800 }, -- Giant Topaz
 }
 
 monster.attacks = {

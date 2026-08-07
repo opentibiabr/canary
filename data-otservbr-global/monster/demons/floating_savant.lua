@@ -82,14 +82,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small enchanted ruby", chance = 10000, maxCount = 5 },
-	{ name = "red crystal fragment", chance = 10000, maxCount = 2 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "red piece of cloth", chance = 10000, maxCount = 3 },
-	{ name = "flask of demonic blood", chance = 12000, maxCount = 5 },
-	{ name = "demonic essence", chance = 10000, maxCount = 5 },
-	{ id = 3456, chance = 10000 }, -- pick
-	{ name = "sample of monster blood", chance = 10000, maxCount = 5 },
+	{ id = 3039, chance = 71000, maxCount = 4 }, -- Red Gem
+	{ id = 5911, chance = 30000, maxCount = 3 }, -- Red Piece of Cloth
+	{ id = 6499, chance = 24000 }, -- Demonic Essence
+	{ id = 676, chance = 20000, maxCount = 14 }, -- Small Enchanted Ruby
+	{ id = 10320, chance = 19900 }, -- Book of Necromantic Rituals
+	{ id = 16126, chance = 19500, maxCount = 8 }, -- Red Crystal Fragment
+	{ id = 6558, chance = 15500 }, -- Flask of Demonic Blood
+	{ id = 3456, chance = 5200 }, -- Pick
+	{ id = 37335, chance = 260 }, -- black skull
+	{ id = 27874, chance = 120 }, -- Sample of Monster Blood
+	{ id = 9056, chance = 260 }, -- Black Skull (Item)
 }
 
 monster.attacks = {

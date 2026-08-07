@@ -71,35 +71,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 20062, chance = 100000 }, -- cluster of solace
-	{ id = 3031, chance = 100000, maxCount = 197 }, -- gold coin
-	{ id = 3035, chance = 100000, maxCount = 50 }, -- platinum coin
-	{ id = 5954, chance = 100000 }, -- demon horn
-	{ id = 20264, chance = 60000 }, -- unrealized dream
-	{ id = 6499, chance = 60000 }, -- demonic essence
-	{ id = 281, chance = 40000 }, -- giant shimmering pearl (green)
-	{ id = 16120, chance = 40000, maxCount = 8 }, -- violet crystal shard
-	{ id = 238, chance = 34440, maxCount = 10 }, -- great mana potion
-	{ id = 7643, chance = 34440, maxCount = 10 }, -- ultimate health potion
-	{ id = 7642, chance = 34440, maxCount = 5 }, -- great spirit potion
-	{ id = 16119, chance = 30000, maxCount = 8 }, -- blue crystal shard
-	{ id = 16121, chance = 30000, maxCount = 8 }, -- green crystal shard
-	{ id = 3038, chance = 20000 }, -- green gem
-	{ id = 3415, chance = 15030 }, -- guardian shield
-	{ id = 3315, chance = 15030 }, -- guardian halberd
-	{ id = 3041, chance = 15030 }, -- blue gem
-	{ id = 9058, chance = 15030 }, -- gold ingot
-	{ id = 7428, chance = 15030 }, -- bonebreaker
-	{ id = 3340, chance = 12940 }, -- heavy mace
-	{ id = 3419, chance = 11540 }, -- crown shield
-	{ id = 20276, chance = 10000 }, -- dream warden mask
-	{ id = 8063, chance = 9620 }, -- paladin armor
-	{ id = 7387, chance = 8390 }, -- diamond sceptre
-	{ id = 3420, chance = 6290 }, -- demon shield
-	{ id = 3414, chance = 1400 }, -- mastermind shield
-	{ id = 7431, chance = 700 }, -- demonbone
-	{ id = 8049, chance = 350 }, -- lavos armor
-	{ id = 8100, chance = 170 }, -- obsidian truncheon
+	{ id = 20062, chance = 100000 }, -- Cluster of Solace
+	{ id = 3031, chance = 100000, maxCount = 197 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 50 }, -- Platinum Coin
+	{ id = 5954, chance = 100000 }, -- Demon Horn
+	{ id = 20264, chance = 59000 }, -- Unrealized Dream
+	{ id = 6499, chance = 59000 }, -- Demonic Essence
+	{ id = 281, chance = 43000 }, -- Giant Shimmering Pearl
+	{ id = 16120, chance = 38000, maxCount = 8 }, -- Violet Crystal Shard
+	{ id = 238, chance = 35000, maxCount = 10 }, -- Great Mana Potion
+	{ id = 7642, chance = 33000, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 7643, chance = 32000, maxCount = 10 }, -- Ultimate Health Potion
+	{ id = 16119, chance = 32000, maxCount = 8 }, -- Blue Crystal Shard
+	{ id = 16121, chance = 30000, maxCount = 8 }, -- Green Crystal Shard
+	{ id = 3038, chance = 20000 }, -- Green Gem
+	{ id = 3315, chance = 16000 }, -- Guardian Halberd
+	{ id = 3415, chance = 15900 }, -- Guardian Shield
+	{ id = 3041, chance = 15500 }, -- Blue Gem
+	{ id = 9058, chance = 15300 }, -- Gold Ingot
+	{ id = 7428, chance = 15000 }, -- Bonebreaker
+	{ id = 3340, chance = 13100 }, -- Heavy Mace
+	{ id = 3419, chance = 11500 }, -- Crown Shield
+	{ id = 20276, chance = 10600 }, -- Dream Warden Mask
+	{ id = 8063, chance = 9600 }, -- Paladin Armor
+	{ id = 7387, chance = 8400 }, -- Diamond Sceptre
+	{ id = 3420, chance = 6300 }, -- Demon Shield
+	{ id = 7421, chance = 4000 }, -- Onyx Flail
+	{ id = 3414, chance = 1400 }, -- Mastermind Shield
+	{ id = 7431, chance = 700 }, -- Demonbone
+	{ id = 8061, chance = 520 }, -- Skullcracker Armor
+	{ id = 8049, chance = 350 }, -- Lavos Armor
+	{ id = 8100, chance = 170 }, -- Obsidian Truncheon
 }
 
 monster.attacks = {

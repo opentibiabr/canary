@@ -79,17 +79,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2950, chance = 7000 }, -- lute
-	{ id = 2953, chance = 1500 }, -- panpipes
-	{ id = 3007, chance = 1500 }, -- crystal ring
-	{ name = "ancient tiara", chance = 300 },
-	{ name = "white pearl", chance = 7000 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ name = "gold coin", chance = 50000, maxCount = 80 },
-	{ name = "gold coin", chance = 50000, maxCount = 65 },
-	{ name = "blue note", chance = 100000 },
-	{ name = "crystal mace", chance = 500 },
-	{ name = "blue robe", chance = 2500 },
+	{ id = 3236, chance = 100000 }, -- Blue Note
+	{ id = 3031, chance = 91000 }, -- Gold Coin
+	{ id = 3026, chance = 9900 }, -- White Pearl
+	{ id = 2950, chance = 9200 }, -- Lute
+	{ id = 238, chance = 8200 }, -- Great Mana Potion
+	{ id = 3567, chance = 1200 }, -- Blue Robe
+	{ id = 3007, chance = 1000 }, -- Crystal Ring
+	{ id = 3333, chance = 870 }, -- Crystal Mace
+	{ id = 2953, chance = 360 }, -- Panpipes
+	{ id = 3022, chance = 150 }, -- Ancient Tiara
+	{ id = 10290, chance = 150 }, -- Mini Mummy
 }
 
 monster.attacks = {

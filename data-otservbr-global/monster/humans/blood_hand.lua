@@ -76,23 +76,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 130 },
-	{ name = "necrotic rod", chance = 3000 },
-	{ name = "boots of haste", chance = 210 },
-	{ name = "skull staff", chance = 130 },
-	{ name = "mystic turban", chance = 790 },
-	{ name = "white piece of cloth", chance = 840 },
-	{ name = "red piece of cloth", chance = 500 },
-	{ name = "noble axe", chance = 10 },
-	{ name = "strong mana potion", chance = 5590 },
-	{ name = "spellbook of enlightenment", chance = 790 },
-	{ name = "book of necromantic rituals", chance = 9340 },
-	{ id = 3039, chance = 710 }, -- red gem
-	{ name = "lancet", chance = 10680 },
-	{ name = "horoscope", chance = 7950 },
-	{ name = "blood tincture in a vial", chance = 15460 },
-	{ name = "incantation notes", chance = 8820 },
-	{ name = "pieces of magic chalk", chance = 6120 },
+	{ id = 3031, chance = 100000, maxCount = 135 }, -- Gold Coin
+	{ id = 18928, chance = 15400 }, -- Blood Tincture in a Vial
+	{ id = 10320, chance = 10200 }, -- Book of Necromantic Rituals
+	{ id = 18925, chance = 10100 }, -- Lancet
+	{ id = 18929, chance = 9800 }, -- Incantation Notes
+	{ id = 18926, chance = 7900 }, -- Horoscope
+	{ id = 18930, chance = 6200 }, -- Pieces of Magic Chalk
+	{ id = 237, chance = 5900 }, -- Strong Mana Potion
+	{ id = 3069, chance = 3200 }, -- Necrotic Rod
+	{ id = 3574, chance = 1100 }, -- Mystic Turban
+	{ id = 8072, chance = 980 }, -- Spellbook of Enlightenment
+	{ id = 5909, chance = 980 }, -- White Piece of Cloth
+	{ id = 5911, chance = 610 }, -- Red Piece of Cloth
+	{ id = 3039, chance = 500 }, -- Red Gem
+	{ id = 3079, chance = 110 }, -- Boots of Haste
+	{ id = 3324, chance = 43 }, -- Skull Staff
+	{ id = 7456, chance = 29 }, -- Noble Axe
 }
 
 monster.attacks = {

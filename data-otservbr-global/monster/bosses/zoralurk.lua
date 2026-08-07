@@ -71,18 +71,7 @@ monster.voices = {
 	{ text = "BRING IT, COCKROACHES!", yell = true },
 }
 
-monster.loot = {
-	{ name = "white pearl", chance = 10000, maxCount = 5 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 90 },
-	{ name = "boots of haste", chance = 16033 },
-	{ name = "giant sword", chance = 60000 },
-	{ name = "bright sword", chance = 20000 },
-	{ name = "bright sword", chance = 20000 },
-	{ name = "warlord sword", chance = 6000 },
-	{ name = "patched boots", chance = 7000 },
-	{ id = 3123, chance = 16000 }, -- worn leather boots
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1013 },

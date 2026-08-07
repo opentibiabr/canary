@@ -80,23 +80,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 105 },
-	{ name = "dandelion seeds", chance = 14870 },
-	{ name = "strong health potion", chance = 11760 },
-	{ name = "fresh fruit", chance = 10290 },
-	{ name = "shimmering beetles", chance = 9330 },
-	{ name = "leaf star", chance = 8720, maxCount = 3 },
-	{ name = "goat grass", chance = 7280 },
-	{ name = "cookie", chance = 6150, maxCount = 5 },
-	{ name = "grapes", chance = 5400 },
-	{ name = "rainbow quartz", chance = 5260, maxCount = 2 },
-	{ name = "small stone", chance = 5260, maxCount = 2 },
-	{ name = "panpipes", chance = 4510 },
-	{ name = "great health potion", chance = 3590 },
-	{ name = "wood cape", chance = 820 },
-	{ name = "leaf legs", chance = 340 },
-	{ name = "wooden spellbook", chance = 210 },
-	{ id = 5792, chance = 140 }, -- die
+	{ id = 3031, chance = 100000, maxCount = 105 }, -- Gold Coin
+	{ id = 25695, chance = 15100 }, -- Dandelion Seeds
+	{ id = 236, chance = 11200 }, -- Strong Health Potion
+	{ id = 25692, chance = 10000 }, -- Fresh Fruit
+	{ id = 25693, chance = 9700 }, -- Shimmering Beetles
+	{ id = 25735, chance = 8300, maxCount = 3 }, -- Leaf Star
+	{ id = 3674, chance = 8100 }, -- Goat Grass
+	{ id = 3598, chance = 6000, maxCount = 5 }, -- Cookie
+	{ id = 3592, chance = 5200 }, -- Grapes
+	{ id = 1781, chance = 5000, maxCount = 2 }, -- Small Stone
+	{ id = 2953, chance = 5000 }, -- Panpipes
+	{ id = 25737, chance = 4900, maxCount = 2 }, -- Rainbow Quartz
+	{ id = 239, chance = 3600 }, -- Great Health Potion
+	{ id = 3575, chance = 1000 }, -- Wood Cape
+	{ id = 9014, chance = 320 }, -- Leaf Legs
+	{ id = 5792, chance = 200 }, -- Die
+	{ id = 25699, chance = 200 }, -- Wooden Spellbook
 }
 
 monster.attacks = {

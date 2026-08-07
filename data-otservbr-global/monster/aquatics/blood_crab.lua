@@ -74,12 +74,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 85750, maxCount = 20 },
-	{ id = 3578, chance = 14300 }, -- fish
-	{ name = "bloody pincers", chance = 6190 },
-	{ name = "chain armor", chance = 5240 },
-	{ name = "brass legs", chance = 2120 },
-	{ name = "white pearl", chance = 530 },
+	{ id = 3031, chance = 86000, maxCount = 20 }, -- Gold Coin
+	{ id = 3578, chance = 16000 }, -- Fish
+	{ id = 9633, chance = 5800 }, -- Bloody Pincers
+	{ id = 3358, chance = 5100 }, -- Chain Armor
+	{ id = 3372, chance = 2100 }, -- Brass Legs
+	{ id = 3026, chance = 560 }, -- White Pearl
 }
 
 monster.attacks = {

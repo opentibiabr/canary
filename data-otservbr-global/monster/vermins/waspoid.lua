@@ -75,18 +75,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 2040 },
-	{ name = "black pearl", chance = 4230 },
-	{ name = "gold coin", chance = 40000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 35 },
-	{ name = "platinum coin", chance = 40430 },
-	{ name = "yellow gem", chance = 1040 },
-	{ name = "waspoid claw", chance = 9096 },
-	{ name = "waspoid wing", chance = 13890 },
-	{ name = "compound eye", chance = 6060 },
-	{ name = "grasshopper legs", chance = 230 },
-	{ name = "carapace shield", chance = 120 },
-	{ name = "hive scythe", chance = 330 },
+	{ id = 3031, chance = 100000, maxCount = 135 }, -- Gold Coin
+	{ id = 3035, chance = 60000 }, -- Platinum Coin
+	{ id = 14081, chance = 13900 }, -- Waspoid Wing
+	{ id = 14083, chance = 13800 }, -- Compound Eye
+	{ id = 14080, chance = 9800 }, -- Waspoid Claw
+	{ id = 3027, chance = 4600 }, -- Black Pearl
+	{ id = 3010, chance = 2100 }, -- Emerald Bangle
+	{ id = 3037, chance = 1000 }, -- Yellow Gem
+	{ id = 14089, chance = 370 }, -- Hive Scythe
+	{ id = 14087, chance = 180 }, -- Grasshopper Legs
+	{ id = 14088, chance = 140 }, -- Carapace Shield
 }
 
 monster.attacks = {

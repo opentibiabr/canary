@@ -82,25 +82,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 98000, maxCount = 230 }, -- gold coin
-	{ id = 3053, chance = 800 }, -- time ring
-	{ name = "platinum amulet", chance = 870 },
-	{ name = "stone skin amulet", chance = 1000 },
-	{ name = "halberd", chance = 3000 },
-	{ name = "epee", chance = 560 },
-	{ name = "plate shield", chance = 10340 },
-	{ name = "brown mushroom", chance = 6940 },
-	{ name = "troll green", chance = 1900 },
-	{ name = "wolf paw", chance = 5200 },
-	{ name = "relic sword", chance = 480 },
-	{ name = "dreaded cleaver", chance = 160 },
-	{ name = "bonebreaker", chance = 400 },
-	{ name = "berserk potion", chance = 1200 },
-	{ name = "strong health potion", chance = 5000 },
-	{ name = "ultimate health potion", chance = 2400 },
-	{ id = 8895, chance = 210 }, -- rusted armor
-	{ id = 22052, chance = 15000 }, -- werewolf fangs
-	{ name = "werewolf fur", chance = 10650 },
+	{ id = 3031, chance = 99000, maxCount = 220 }, -- Gold Coin
+	{ id = 22052, chance = 15900 }, -- Werewolf Fangs
+	{ id = 10317, chance = 10300 }, -- Werewolf Fur
+	{ id = 3410, chance = 9800 }, -- Plate Shield
+	{ id = 8895, chance = 8300 }, -- Rusted Armor
+	{ id = 3725, chance = 6600 }, -- Brown Mushroom
+	{ id = 5897, chance = 5400 }, -- Wolf Paw
+	{ id = 3741, chance = 4900 }, -- Troll Green
+	{ id = 236, chance = 4800 }, -- Strong Health Potion
+	{ id = 3269, chance = 3500 }, -- Halberd
+	{ id = 7643, chance = 2000 }, -- Ultimate Health Potion
+	{ id = 22083, chance = 1400 }, -- Moonlight Crystals
+	{ id = 7439, chance = 930 }, -- Berserk Potion
+	{ id = 3081, chance = 870 }, -- Stone Skin Amulet
+	{ id = 3055, chance = 730 }, -- Platinum Amulet
+	{ id = 3053, chance = 590 }, -- Time Ring
+	{ id = 7383, chance = 530 }, -- Relic Sword
+	{ id = 3326, chance = 430 }, -- Epee
+	{ id = 7428, chance = 260 }, -- Bonebreaker
+	{ id = 7419, chance = 160 }, -- Dreaded Cleaver
 }
 
 monster.attacks = {

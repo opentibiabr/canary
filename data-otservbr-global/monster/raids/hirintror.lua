@@ -72,22 +72,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 19363, chance = 200 }, -- runic ice shield
-	{ id = 3031, chance = 70000, maxCount = 100 }, -- gold coin
-	{ id = 19083, chance = 200 }, -- silver raid token
-	{ id = 19362, chance = 200 }, -- icicle bow
-	{ id = 3373, chance = 1200 }, -- strange helmet
-	{ id = 3284, chance = 2200 }, -- ice rapier
-	{ id = 7290, chance = 4200 }, -- shard
-	{ id = 7441, chance = 2200 }, -- ice cube
-	{ id = 819, chance = 3200 }, -- glacier shoes
-	{ id = 829, chance = 1200 }, -- glacier mask
-	{ id = 7449, chance = 900 }, -- crystal sword
-	{ id = 5912, chance = 900 }, -- blue piece of cloth
-	{ id = 237, chance = 20000, maxCount = 5 }, -- strong mana potion
-	{ id = 236, chance = 2000, maxCount = 5 }, -- strong health potion
-	{ id = 3028, chance = 2000, maxCount = 5 }, -- small diamond
-	{ id = 3035, chance = 20000 }, -- platinum coin
+	{ id = 3031, chance = 86000, maxCount = 60 }, -- Gold Coin
+	{ id = 237, chance = 71000, maxCount = 3 }, -- Strong Mana Potion
+	{ id = 3035, chance = 57000, maxCount = 2 }, -- Platinum Coin
+	{ id = 9661, chance = 43000 }, -- Frosty Heart
+	{ id = 7449, chance = 29000 }, -- Crystal Sword
+	{ id = 5912, chance = 29000 }, -- Blue Piece of Cloth
+	{ id = 3028, chance = 29000, maxCount = 5 }, -- Small Diamond
+	{ id = 3373, chance = 29000 }, -- Strange Helmet
+	{ id = 236, chance = 29000, maxCount = 3 }, -- Strong Health Potion
+	{ id = 3029, chance = 29000 }, -- Small Sapphire
+	{ id = 829, chance = 29000 }, -- Glacier Mask
+	{ id = 819, chance = 29000 }, -- Glacier Shoes
+	{ id = 7290, chance = 14300 }, -- Shard
+	{ id = 7441, chance = 14300 }, -- Ice Cube
+	{ id = 3284, chance = 14300 }, -- Ice Rapier
+	{ id = 3027, chance = 14300 }, -- Black Pearl
 }
 
 monster.attacks = {

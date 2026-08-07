@@ -84,21 +84,33 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 8938, maxCount = 165 },
-	{ name = "ultimate mana potion", chance = 11433, maxCount = 198 },
-	{ name = "giant amethyst", chance = 10570, maxCount = 4 },
-	{ name = "giant topaz", chance = 10570, maxCount = 6 },
-	{ name = "ultimate spirit potion", chance = 11433, maxCount = 45 },
-	{ name = "giant ruby", chance = 10570, maxCount = 1 },
-	{ name = "giant sapphire", chance = 10570, maxCount = 1 },
-	{ name = "mastermind potion", chance = 10938, maxCount = 23 },
-	{ id = 3039, chance = 10570, maxCount = 3 }, -- red gem
-	{ name = "violet gem", chance = 10970, maxCount = 8 },
-	{ name = "yellow gem", chance = 10970, maxCount = 9 },
-	-- { name = "figurine of bakragore", chance = 10970 },
-	-- { name = "bakragore's amalgamation", chance = 570 },
-	{ name = "spiritual horseshoe", chance = 470 },
-	{ id = 43895, chance = 360 }, -- Bag you covet
+	{ id = 3043, chance = 100000, maxCount = 209 }, -- Crystal Coin
+	{ id = 23373, chance = 55000, maxCount = 320 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 53000, maxCount = 242 }, -- Supreme Health Potion
+	{ id = 23374, chance = 52000, maxCount = 229 }, -- Ultimate Spirit Potion
+	{ id = 30059, chance = 34000, maxCount = 7 }, -- Giant Ruby
+	{ id = 30060, chance = 31000, maxCount = 7 }, -- Giant Emerald
+	{ id = 32622, chance = 30000, maxCount = 6 }, -- Giant Amethyst
+	{ id = 30061, chance = 28000, maxCount = 6 }, -- Giant Sapphire
+	{ id = 32623, chance = 28000, maxCount = 6 }, -- Giant Topaz
+	{ id = 3039, chance = 25000, maxCount = 9 }, -- Red Gem
+	{ id = 3038, chance = 22000, maxCount = 9 }, -- Green Gem
+	{ id = 3037, chance = 20000, maxCount = 9 }, -- Yellow Gem
+	{ id = 3036, chance = 17200, maxCount = 8 }, -- Violet Gem
+	{ id = 7440, chance = 17200, maxCount = 96 }, -- Mastermind Potion
+	{ id = 7439, chance = 17200, maxCount = 99 }, -- Berserk Potion
+	{ id = 49271, chance = 15600, maxCount = 66 }, -- Transcendence Potion
+	{ id = 9058, chance = 15600 }, -- Gold Ingot
+	{ id = 3041, chance = 15600, maxCount = 8 }, -- Blue Gem
+	{ id = 7443, chance = 10900, maxCount = 98 }, -- Bullseye Potion
+	{ id = 30053, chance = 7800 }, -- Dragon Figurine
+	{ id = 43968, chance = 6200 }, -- Bakragore's Amalgamation
+	{ id = 43860, chance = 3100 }, -- Bag You Covet
+	{ id = 39038, chance = 3100 }, -- Royal Almandine
+	{ id = 44048, chance = 3100 }, -- Spiritual Horseshoe
+	{ id = 39040, chance = 3100 }, -- Fiery Tear
+	{ id = 43947, chance = 3100 }, -- Basic Promotion Scroll
+	{ id = 43946, chance = 1600 }, -- Abridged Promotion Scroll
 }
 
 monster.attacks = {

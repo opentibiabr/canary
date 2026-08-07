@@ -70,16 +70,17 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small diamond", chance = 12500 },
-	{ name = "meat", chance = 18750, maxCount = 3 },
-	{ name = "gold coin", chance = 50000, maxCount = 60 },
-	{ name = "gold coin", chance = 50000, maxCount = 61 },
-	{ id = 3114, chance = 81250, maxCount = 2 }, -- skull
-	{ name = "pirate backpack", chance = 6250 },
-	{ name = "plate armor", chance = 56250 },
-	{ name = "knight armor", chance = 12500 },
-	{ name = "very old piece of paper", chance = 25000 },
-	{ id = 6100, chance = 100000 }, -- lethal lissy's shirt
+	{ id = 3031, chance = 100000, maxCount = 139 }, -- Gold Coin
+	{ id = 6100, chance = 100000 }, -- The Lethal Lissy's Shirt
+	{ id = 3114, chance = 82000, maxCount = 2 }, -- Skull (Item)
+	{ id = 3357, chance = 55000 }, -- Plate Armor
+	{ id = 3577, chance = 27000 }, -- Meat
+	{ id = 9185, chance = 18200 }, -- Very Old Piece of Paper
+	{ id = 3370, chance = 13600 }, -- Knight Armor
+	{ id = 3028, chance = 9100 }, -- Small Diamond
+	{ id = 239, chance = 9100 }, -- Great Health Potion
+	{ id = 5926, chance = 4500 }, -- Pirate Backpack
+	{ id = 3275, chance = 100000 }, -- Double Axe
 }
 
 monster.attacks = {

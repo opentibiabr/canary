@@ -60,9 +60,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 70000, maxCount = 75 },
-	{ name = "emerald bangle", chance = 4970 },
-	{ name = "small topaz", chance = 6810, maxCount = 2 },
+	{ id = 3031, chance = 99000, maxCount = 100 }, -- Gold Coin
+	{ id = 7642, chance = 12000 }, -- Great Spirit Potion
+	{ id = 3731, chance = 8300, maxCount = 3 }, -- Fire Mushroom
+	{ id = 9057, chance = 6000 }, -- Small Topaz
+	{ id = 3135, chance = 4900 }, -- Wooden Trash
+	{ id = 281, chance = 3000 }, -- Giant Shimmering Pearl
+	{ id = 16103, chance = 3000 }, -- Mushroom Pie
+	{ id = 3010, chance = 2600 }, -- Emerald Bangle
+	{ id = 24392, chance = 750 }, -- Gemmed Figurine
+	{ id = 37531, chance = 3140 }, -- Candy Floss (Large)
+	{ id = 37530, chance = 1260 }, -- Bottle of Champagne
+	{ id = 37468, chance = 630 }, -- Special Fx Box
 }
 
 monster.attacks = {

@@ -63,14 +63,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 30000, maxCount = 171 },
-	{ name = "vortex bolt", chance = 15000, maxCount = 3 },
-	{ name = "gemmed figurine", chance = 7000 },
-	{ name = "great health potion", chance = 7000 },
-	{ name = "brown mushroom", chance = 7000 },
-	{ name = "meat", chance = 12000 },
-	{ name = "platinum coin", chance = 22000, maxCount = 2 },
-	{ name = "small ruby", chance = 7000, maxCount = 2 },
+	{ id = 3031, chance = 100000, maxCount = 137 }, -- Gold Coin
+	{ id = 3035, chance = 71000, maxCount = 2 }, -- Platinum Coin
+	{ id = 24383, chance = 21000, maxCount = 2 }, -- Cave Turnip
+	{ id = 3577, chance = 9500 }, -- Meat
+	{ id = 3030, chance = 7900 }, -- Small Ruby
+	{ id = 22193, chance = 4800 }, -- Onyx Chip
+	{ id = 239, chance = 4800 }, -- Great Health Potion
+	{ id = 3725, chance = 4800, maxCount = 3 }, -- Brown Mushroom
+	{ id = 5021, chance = 3200, maxCount = 4 }, -- Orichalcum Pearl
+	{ id = 14252, chance = 1600, maxCount = 4 }, -- Vortex Bolt
+	{ id = 3055, chance = 1600 }, -- Platinum Amulet
+	{ id = 3073, chance = 1600 }, -- Wand of Cosmic Energy
+	{ id = 24392, chance = 1740 }, -- Gemmed Figurine
+	{ id = 37468, chance = 1160 }, -- Special Fx Box
 }
 
 monster.attacks = {

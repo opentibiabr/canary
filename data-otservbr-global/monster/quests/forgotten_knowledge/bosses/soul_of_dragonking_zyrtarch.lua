@@ -73,40 +73,53 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
-	{ id = 3031, chance = 97000, maxCount = 100 }, -- gold coin
-	{ id = 3031, chance = 97000, maxCount = 100 }, -- gold coin
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 5882, chance = 5000 }, -- red dragon scale
-	{ id = 5889, chance = 500 }, -- piece of draconian steel
-	{ id = 9067, chance = 500 }, -- crystal of power
-	{ id = 11688, chance = 300 }, -- shield of corruption
-	{ id = 9057, chance = 3000, maxCount = 5 }, -- small topaz
-	{ id = 3032, chance = 3000, maxCount = 5 }, -- small emerald
-	{ id = 9058, chance = 500 }, -- gold ingot
-	{ id = 10391, chance = 100 }, -- drachaku
-	{ id = 3033, chance = 3000, maxCount = 5 }, -- small amethyst
-	{ id = 8021, chance = 500 }, -- modified crossbow
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 7642, chance = 3000, maxCount = 3 }, -- great spirit potion
-	{ id = 3400, chance = 15, unique = true }, -- dragon scale helmet
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ id = 16120, chance = 3000, maxCount = 5 }, -- violet crystal shard
-	{ id = 16121, chance = 3000, maxCount = 5 }, -- green crystal shard
-	{ id = 5887, chance = 500 }, -- piece of royal steel
-	{ id = 238, chance = 3000, maxCount = 3 }, -- great mana potion
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 5948, chance = 5000 }, -- red dragon leather
-	{ id = 5904, chance = 500 }, -- magic sulphur
-	{ id = 24955, chance = 500, unique = true }, -- part of a rune
-	{ id = 16119, chance = 3000, maxCount = 5 }, -- blue crystal shard
-	{ id = 281, chance = 500 }, -- giant shimmering pearl (green)
-	{ id = 7643, chance = 3000, maxCount = 3 }, -- ultimate health potion
-	{ id = 8074, chance = 500 }, -- spellbook of mind control
-	{ id = 11692, chance = 300, unique = true }, -- snake god's sceptre
-	{ id = 3035, chance = 90000, maxCount = 6 }, -- platinum coin
-	{ id = 3030, chance = 3000, maxCount = 5 }, -- small ruby
+	{ id = 3031, chance = 100000, maxCount = 389 }, -- Gold Coin
+	{ id = 5948, chance = 100000 }, -- Red Dragon Leather
+	{ id = 3035, chance = 100000, maxCount = 42 }, -- Platinum Coin
+	{ id = 5882, chance = 100000 }, -- Red Dragon Scale
+	{ id = 5889, chance = 84000 }, -- Piece of Draconian Steel
+	{ id = 5904, chance = 71000 }, -- Magic Sulphur
+	{ id = 16120, chance = 60000, maxCount = 5 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 58000, maxCount = 5 }, -- Green Crystal Shard
+	{ id = 16119, chance = 57000, maxCount = 5 }, -- Blue Crystal Shard
+	{ id = 7642, chance = 57000, maxCount = 15 }, -- Great Spirit Potion
+	{ id = 7643, chance = 56000, maxCount = 17 }, -- Ultimate Health Potion
+	{ id = 238, chance = 51000, maxCount = 13 }, -- Great Mana Potion
+	{ id = 22721, chance = 26000 }, -- Gold Token
+	{ id = 22516, chance = 25000 }, -- Silver Token
+	{ id = 3028, chance = 25000, maxCount = 19 }, -- Small Diamond
+	{ id = 3039, chance = 25000 }, -- Red Gem
+	{ id = 9057, chance = 23000, maxCount = 17 }, -- Small Topaz
+	{ id = 3030, chance = 23000, maxCount = 19 }, -- Small Ruby
+	{ id = 3041, chance = 22000 }, -- Blue Gem
+	{ id = 9058, chance = 19500 }, -- Gold Ingot
+	{ id = 3037, chance = 18200 }, -- Yellow Gem
+	{ id = 9067, chance = 18200 }, -- Crystal of Power
+	{ id = 11652, chance = 14300 }, -- Broken Key Ring
+	{ id = 3032, chance = 14300, maxCount = 18 }, -- Small Emerald
+	{ id = 8895, chance = 14300 }, -- Rusted Armor
+	{ id = 281, chance = 14300 }, -- Giant Shimmering Pearl
+	{ id = 8074, chance = 11700 }, -- Spellbook of Mind Control
+	{ id = 3033, chance = 11700, maxCount = 19 }, -- Small Amethyst
+	{ id = 7430, chance = 11700 }, -- Dragonbone Staff
+	{ id = 3038, chance = 11700 }, -- Green Gem
+	{ id = 8896, chance = 9100 }, -- Slightly Rusted Armor
+	{ id = 50259, chance = 7800 }, -- Zaoan Monk Robe
+	{ id = 10388, chance = 7800 }, -- Drakinata
+	{ id = 8021, chance = 6500 }, -- Modified Crossbow
+	{ id = 3036, chance = 6500 }, -- Violet Gem
+	{ id = 5887, chance = 6500 }, -- Piece of Royal Steel
+	{ id = 24968, chance = 5200 }, -- Golden Talon
+	{ id = 10391, chance = 3900 }, -- Drachaku
+	{ id = 4033, chance = 2600 }, -- Draken Boots
+	{ id = 24955, chance = 3700 }, -- Part of a Rune (Two)
+	{ id = 24967, chance = 1300 }, -- Dragon Crown
+	{ id = 3400, chance = 1300 }, -- Dragon Scale Helmet
+	{ id = 24954, chance = 3700 }, -- Part of a Rune (One)
+	{ id = 24956, chance = 3700 }, -- Part of a Rune (Three)
+	{ id = 24957, chance = 3700 }, -- Part of a Rune (Four)
+	{ id = 24958, chance = 3700 }, -- Part of a Rune (Five)
+	{ id = 24959, chance = 3700 }, -- Part of a Rune (Six)
 }
 
 monster.attacks = {

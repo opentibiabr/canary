@@ -70,28 +70,37 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 38 },
-	{ name = "crystal coin", chance = 70000, maxCount = 5 },
-	{ name = "ultimate mana potion", chance = 70000, maxCount = 8 },
-	{ name = "ultimate spirit potion", chance = 70000, maxCount = 4 },
-	{ name = "supreme health potion", chance = 70000, maxCount = 4 },
-	{ name = "berserk potion", chance = 70000, maxCount = 2 },
-	{ name = "mastermind potion", chance = 70000, maxCount = 2 },
-	{ name = "onyx chip", chance = 70000, maxCount = 12 },
-	{ name = "small emerald", chance = 70000, maxCount = 12 },
-	{ name = "demon horn", chance = 70000 },
-	{ name = "lightning boots", chance = 70000 },
-	{ id = 3039, chance = 70000 }, -- red gem
-	{ name = "violet gem", chance = 70000 },
-	{ name = "stone skin amulet", chance = 70000 },
-	{ name = "wand of starstorm", chance = 70000 },
-	{ name = "gold token", chance = 30000, maxCount = 4 },
-	{ name = "assassin dagger", chance = 30000 },
-	{ name = "crystalline armor", chance = 30000 },
-	{ name = "dreaded cleaver", chance = 30000 },
-	{ name = "frozen lightning", chance = 30000 },
-	{ name = "sinister book", chance = 1000 },
-	{ name = "wand of dimensions", chance = 10 },
+	{ id = 3035, chance = 100000, maxCount = 51 }, -- Platinum Coin
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 22516, chance = 88000, maxCount = 11 }, -- Silver Token
+	{ id = 23374, chance = 88000, maxCount = 12 }, -- Ultimate Spirit Potion
+	{ id = 3043, chance = 75000, maxCount = 9 }, -- Crystal Coin
+	{ id = 8092, chance = 75000 }, -- Wand of Starstorm
+	{ id = 23373, chance = 63000, maxCount = 18 }, -- Ultimate Mana Potion
+	{ id = 22193, chance = 63000, maxCount = 20 }, -- Onyx Chip
+	{ id = 7439, chance = 50000 }, -- Berserk Potion
+	{ id = 7443, chance = 50000 }, -- Bullseye Potion
+	{ id = 3033, chance = 50000, maxCount = 10 }, -- Small Amethyst
+	{ id = 23375, chance = 38000, maxCount = 13 }, -- Supreme Health Potion
+	{ id = 8908, chance = 38000 }, -- Slightly Rusted Helmet
+	{ id = 23519, chance = 38000 }, -- Frozen Lightning
+	{ id = 3038, chance = 38000 }, -- Green Gem
+	{ id = 6499, chance = 38000, maxCount = 8 }, -- Demonic Essence
+	{ id = 3041, chance = 38000 }, -- Blue Gem
+	{ id = 5954, chance = 38000 }, -- Demon Horn
+	{ id = 3028, chance = 25000, maxCount = 19 }, -- Small Diamond
+	{ id = 3032, chance = 25000, maxCount = 12 }, -- Small Emerald
+	{ id = 3039, chance = 25000 }, -- Red Gem
+	{ id = 7440, chance = 25000, maxCount = 2 }, -- Mastermind Potion
+	{ id = 5904, chance = 25000 }, -- Magic Sulphur
+	{ id = 820, chance = 25000 }, -- Lightning Boots
+	{ id = 22721, chance = 25000, maxCount = 5 }, -- Gold Token
+	{ id = 7419, chance = 25000 }, -- Dreaded Cleaver
+	{ id = 27932, chance = 12500 }, -- Sinister Book
+	{ id = 16163, chance = 12500 }, -- Crystal Crossbow
+	{ id = 8902, chance = 12500 }, -- Slightly Rusted Shield
+	{ id = 7404, chance = 12500 }, -- Assassin Dagger
+	{ id = 49271, chance = 12500 }, -- Transcendence Potion
 }
 
 monster.attacks = {

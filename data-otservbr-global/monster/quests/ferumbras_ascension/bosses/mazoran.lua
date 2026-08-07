@@ -72,35 +72,40 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 22516, chance = 1000000 }, -- silver token
-	{ id = 16125, chance = 23000, maxCount = 5 }, -- cyan crystal fragment
-	{ id = 16126, chance = 23000, maxCount = 5 }, -- red crystal fragment
-	{ id = 16127, chance = 23000, maxCount = 5 }, -- green crystal fragment
-	{ id = 3026, chance = 12000, maxCount = 8 }, -- white pearl
-	{ id = 3029, chance = 12000, maxCount = 9 }, -- small sapphire
-	{ id = 3031, chance = 98000, maxCount = 200 }, -- gold coin
-	{ id = 3033, chance = 10000, maxCount = 5 }, -- small amethyst
-	{ id = 3035, chance = 8000, maxCount = 58 }, -- platinum coin
-	{ id = 3038, chance = 1000 }, -- green gem
-	{ id = 3041, chance = 1000 }, -- blue gem
-	{ id = 3051, chance = 4000 }, -- energy ring
-	{ id = 3320, chance = 3000 }, -- fire axe
-	{ id = 22760, chance = 500 }, -- impaler of the igniter
-	{ id = 3442, chance = 500, unique = true }, -- tempest shield
-	{ id = 22866, chance = 500 }, -- rift bow
-	{ id = 22867, chance = 500 }, -- rift crossbow
-	{ id = 6499, chance = 11000 }, -- demonic essence
-	{ id = 7382, chance = 1000 }, -- demonrage sword
-	{ id = 238, chance = 23000, maxCount = 5 }, -- great mana potion
-	{ id = 281, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (green)
-	{ id = 282, chance = 14000, maxCount = 5 }, -- giant shimmering pearl (brown)
-	{ id = 817, chance = 1000 }, -- magma amulet
-	{ id = 821, chance = 1000 }, -- magma legs
-	{ id = 826, chance = 1000 }, -- magma coat
-	{ id = 7642, chance = 46100, maxCount = 5 }, -- great spirit potion
-	{ id = 7643, chance = 23000, maxCount = 5 }, -- ultimate health potion
-	{ id = 9057, chance = 10000, maxCount = 8 }, -- small topaz
-	{ id = 9058, chance = 3000 }, -- gold ingot
+	{ id = 3031, chance = 100000, maxCount = 357 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 40 }, -- Platinum Coin
+	{ id = 22516, chance = 100000 }, -- Silver Token
+	{ id = 16126, chance = 80000, maxCount = 7 }, -- Red Crystal Fragment
+	{ id = 6499, chance = 74000 }, -- Demonic Essence
+	{ id = 16127, chance = 71000, maxCount = 7 }, -- Green Crystal Fragment
+	{ id = 16125, chance = 69000, maxCount = 7 }, -- Cyan Crystal Fragment
+	{ id = 238, chance = 63000, maxCount = 15 }, -- Great Mana Potion
+	{ id = 7643, chance = 60000, maxCount = 15 }, -- Ultimate Health Potion
+	{ id = 6558, chance = 46000, maxCount = 8 }, -- Flask of Demonic Blood
+	{ id = 7642, chance = 46000, maxCount = 10 }, -- Great Spirit Potion
+	{ id = 3033, chance = 29000, maxCount = 9 }, -- Small Amethyst
+	{ id = 3051, chance = 26000 }, -- Energy Ring
+	{ id = 817, chance = 23000 }, -- Magma Amulet
+	{ id = 3038, chance = 23000 }, -- Green Gem
+	{ id = 3032, chance = 23000, maxCount = 9 }, -- Small Emerald
+	{ id = 9057, chance = 20000, maxCount = 9 }, -- Small Topaz
+	{ id = 3041, chance = 17100 }, -- Blue Gem
+	{ id = 3037, chance = 17100 }, -- Yellow Gem
+	{ id = 3039, chance = 17100 }, -- Red Gem
+	{ id = 281, chance = 17100 }, -- Giant Shimmering Pearl
+	{ id = 3030, chance = 14300, maxCount = 7 }, -- Small Ruby
+	{ id = 3315, chance = 14300 }, -- Guardian Halberd
+	{ id = 3029, chance = 11400, maxCount = 9 }, -- Small Sapphire
+	{ id = 22727, chance = 8600 }, -- Rift Lance
+	{ id = 22866, chance = 8600 }, -- Rift Bow
+	{ id = 821, chance = 8600 }, -- Magma Legs
+	{ id = 3320, chance = 8600 }, -- Fire Axe
+	{ id = 16115, chance = 5700 }, -- Wand of Everblazing
+	{ id = 22726, chance = 5700 }, -- Rift Shield
+	{ id = 3036, chance = 5700 }, -- Violet Gem
+	{ id = 826, chance = 5700 }, -- Magma Coat
+	{ id = 3019, chance = 2900 }, -- Demonbone Amulet
+	{ id = 22867, chance = 2900 }, -- Rift Crossbow
 }
 
 monster.attacks = {

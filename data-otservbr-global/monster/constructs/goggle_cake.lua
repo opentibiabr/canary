@@ -79,26 +79,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 80540, maxCount = 10 },
-	{ name = "small enchanted sapphire", chance = 6730, maxCount = 5 },
-	{ name = "combat knife", chance = 5710 },
-	{ name = "great mana potion", chance = 5690 },
-	{ name = "rainbow quartz", chance = 3810, maxCount = 3 },
-	{ name = "small sapphire", chance = 3590, maxCount = 2 },
-	{ id = 3039, chance = 2660 }, -- red gem
-	{ name = "spirit cloak", chance = 1740 },
-	{ name = "gummy rotworm", chance = 1690 },
-	{ name = "churro heart", chance = 1520 },
-	{ name = "glacier amulet", chance = 1020 },
-	{ id = 3606, chance = 1000 }, -- egg
-	{ name = "milk chocolate coin", chance = 780, maxCount = 15 },
-	{ name = "flour", chance = 690 },
-	{ name = "cookie", chance = 520, maxCount = 2 },
-	{ name = "glacier robe", chance = 500 },
-	{ name = "epee", chance = 400 },
-	{ name = "ice rapier", chance = 210 },
-	{ name = "cream cake", chance = 140 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 3035, chance = 80000, maxCount = 17 }, -- Platinum Coin
+	{ id = 675, chance = 7000, maxCount = 5 }, -- Small Enchanted Sapphire
+	{ id = 3292, chance = 5800 }, -- Combat Knife
+	{ id = 238, chance = 5700 }, -- Great Mana Potion
+	{ id = 25737, chance = 3800, maxCount = 3 }, -- Rainbow Quartz
+	{ id = 3029, chance = 3700, maxCount = 2 }, -- Small Sapphire
+	{ id = 3039, chance = 2600 }, -- Red Gem
+	{ id = 8042, chance = 1800 }, -- Spirit Cloak
+	{ id = 48116, chance = 1500 }, -- Gummy Rotworm
+	{ id = 48254, chance = 1500 }, -- Churro Heart
+	{ id = 3606, chance = 1100 }, -- Egg
+	{ id = 815, chance = 920 }, -- Glacier Amulet
+	{ id = 3603, chance = 720 }, -- Flour
+	{ id = 48249, chance = 690, maxCount = 19 }, -- Milk Chocolate Coin
+	{ id = 3598, chance = 590, maxCount = 2 }, -- Cookie
+	{ id = 824, chance = 570 }, -- Glacier Robe
+	{ id = 3326, chance = 440 }, -- Epee
+	{ id = 3284, chance = 220 }, -- Ice Rapier
+	{ id = 6393, chance = 170 }, -- Cream Cake
 }
 
 monster.attacks = {

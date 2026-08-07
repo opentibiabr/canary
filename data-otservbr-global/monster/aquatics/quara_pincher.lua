@@ -76,19 +76,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 50000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 50 },
-	{ name = "platinum coin", chance = 40000 },
-	{ name = "quara pincers", chance = 14285 },
-	{ name = "great health potion", chance = 10630 },
-	{ name = "small ruby", chance = 7761, maxCount = 2 },
-	{ name = "halberd", chance = 6861 },
-	{ name = "shrimp", chance = 5245, maxCount = 5 },
-	{ name = "fish fin", chance = 1600 },
-	{ name = "warrior helmet", chance = 1460 },
-	{ name = "crown armor", chance = 280 },
-	{ name = "glacier robe", chance = 120 },
-	{ name = "giant shrimp", chance = 40 },
+	{ id = 3031, chance = 100000, maxCount = 150 }, -- Gold Coin
+	{ id = 3035, chance = 40000 }, -- Platinum Coin
+	{ id = 11490, chance = 14600 }, -- Quara Pincers
+	{ id = 239, chance = 10100 }, -- Great Health Potion
+	{ id = 3030, chance = 7700, maxCount = 2 }, -- Small Ruby
+	{ id = 3269, chance = 6900 }, -- Halberd
+	{ id = 3581, chance = 4800 }, -- Shrimp
+	{ id = 5895, chance = 1600 }, -- Fish Fin
+	{ id = 3369, chance = 1500 }, -- Warrior Helmet
+	{ id = 3381, chance = 260 }, -- Crown Armor
+	{ id = 824, chance = 110 }, -- Glacier Robe
+	{ id = 12318, chance = 39 }, -- Giant Shrimp
 }
 
 monster.attacks = {

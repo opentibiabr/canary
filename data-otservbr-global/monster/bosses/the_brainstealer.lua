@@ -56,41 +56,28 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", mincount = 10, maxcount = 50, chance = 100000 },
-	{ name = "crystal coin", mincount = 1, maxcount = 5, chance = 100000 },
-	{ name = "violet gem", chance = 50000 },
-	{ name = "mastermind potion", chance = 50000 },
-	{ id = 49271, chance = 50000 }, -- transcendence potion
-	{ name = "moonstone", chance = 50000 },
-	{ name = "ultimate spirit potion", chance = 50000 },
-	{ name = "white gem", chance = 50000 },
-	{ name = "brainstealer's tissue", chance = 6000 },
-	{ name = "brainstealer's brain", chance = 5000 },
-	{ name = "brainstealer's brainwave", chance = 2500 },
-	{ name = "eldritch breeches", chance = 180 },
-	{ name = "eldritch monk boots", chance = 180 },
-	{ name = "eldritch cowl", chance = 240 },
-	{ name = "eldritch hood", chance = 225 },
-	{ name = "eldritch bow", chance = 210 },
-	{ name = "eldritch quiver", chance = 250 },
-	{ name = "eldritch claymore", chance = 130 },
-	{ name = "eldritch greataxe", chance = 110 },
-	{ name = "eldritch warmace", chance = 320 },
-	{ name = "eldritch crescent moon spade", chance = 150 },
-	{ name = "eldritch shield", chance = 180 },
-	{ name = "eldritch cuirass", chance = 160 },
-	{ name = "eldritch folio", chance = 170 },
-	{ name = "eldritch tome", chance = 190 },
-	{ name = "eldritch rod", chance = 200 },
-	{ name = "eldritch wand", chance = 180 },
-	{ name = "gilded eldritch claymore", chance = 140 },
-	{ name = "gilded eldritch greataxe", chance = 120 },
-	{ name = "gilded eldritch warmace", chance = 100 },
-	{ name = "gilded eldritch wand", chance = 80 },
-	{ name = "gilded eldritch rod", chance = 60 },
-	{ name = "gilded eldritch bow", chance = 50 },
-	{ name = "gilded eldritch crescent moon spade", chance = 60 },
-	{ name = "eldritch crystal", chance = 30 },
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- Crystal Coin
+	{ id = 3035, chance = 58000, maxCount = 28 }, -- Platinum Coin
+	{ id = 32769, chance = 50000 }, -- White Gem
+	{ id = 23373, chance = 44000, maxCount = 11 }, -- Ultimate Mana Potion
+	{ id = 7643, chance = 38000, maxCount = 9 }, -- Ultimate Health Potion
+	{ id = 239, chance = 31000, maxCount = 18 }, -- Great Health Potion
+	{ id = 238, chance = 31000, maxCount = 16 }, -- Great Mana Potion
+	{ id = 23374, chance = 29000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 32771, chance = 29000 }, -- Moonstone
+	{ id = 23375, chance = 27000, maxCount = 11 }, -- Supreme Health Potion
+	{ id = 7439, chance = 21000, maxCount = 19 }, -- Berserk Potion
+	{ id = 7440, chance = 12500, maxCount = 19 }, -- Mastermind Potion
+	{ id = 7443, chance = 10400, maxCount = 15 }, -- Bullseye Potion
+	{ id = 34025, chance = 8300 }, -- Diabolic Skull
+	{ id = 36794, chance = 8300 }, -- Brainstealer's Tissue
+	{ id = 3036, chance = 8300 }, -- Violet Gem
+	{ id = 36835, chance = 6200 }, -- Eldritch Crystal
+	{ id = 36795, chance = 6200 }, -- Brainstealer's Brain
+	{ id = 36668, chance = 2100 }, -- Eldritch Wand
+	{ id = 30061, chance = 2100 }, -- Giant Sapphire
+	{ id = 30059, chance = 2100 }, -- Giant Ruby
+	{ id = 49271, chance = 2100, maxCount = 2 }, -- Transcendence Potion
 }
 
 monster.attacks = {

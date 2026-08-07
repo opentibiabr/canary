@@ -74,26 +74,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "the living idol of tukh", chance = 100000 },
-	{ name = "rotten feather", chance = 50000 },
-	{ name = "great health potion", chance = 40000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 25530, maxCount = 1 },
-	{ name = "great mana potion", chance = 34040, maxCount = 5 },
-	{ name = "ritual tooth", chance = 32980 },
-	{ name = "diamond", chance = 5320, maxCount = 8 },
-	{ name = "amber with a bug", chance = 3190 },
-	{ name = "amber", chance = 5320 },
-	{ id = 23533, chance = 3500 }, --ring of red plasma
-	{ id = 23531, chance = 3500 }, --ring of green plasma
-	{ id = 23529, chance = 3500 }, --ring of blue plasma
-	{ id = 23544, chance = 3500 }, --collar of red plasma
-	{ id = 23542, chance = 3500 }, --collar of blue plasma
-	{ id = 23543, chance = 3500 }, --collar of green plasma
-	{ name = "broken iks headpiece", chance = 1000 },
-	{ name = "broken macuahuitl", chance = 1000 },
-	{ name = "broken iks faulds", chance = 1000 },
-	{ name = "broken iks cuirass", chance = 1000 },
+	{ id = 3031, chance = 100000, maxCount = 250 }, -- Gold Coin
+	{ id = 40527, chance = 49000, maxCount = 3 }, -- Rotten Feather
+	{ id = 238, chance = 39000, maxCount = 6 }, -- Great Mana Potion
+	{ id = 40528, chance = 36000, maxCount = 2 }, -- Ritual Tooth
+	{ id = 239, chance = 35000, maxCount = 5 }, -- Great Health Potion
+	{ id = 7642, chance = 26000, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 14112, chance = 19000, maxCount = 2 }, -- Bar of Gold
+	{ id = 40529, chance = 14400 }, -- Gold-Brocaded Cloth
+	{ id = 32626, chance = 7800 }, -- Amber (Item)
+	{ id = 32770, chance = 4300, maxCount = 8 }, -- Diamond
+	{ id = 32624, chance = 4300 }, -- Amber with a Bug
+	{ id = 23544, chance = 4000 }, -- Collar of Red Plasma
+	{ id = 23533, chance = 4000 }, -- Ring of Red Plasma
+	{ id = 23543, chance = 3200 }, -- Collar of Green Plasma
+	{ id = 23531, chance = 3200 }, -- Ring of Green Plasma
+	{ id = 23526, chance = 3200 }, -- Collar of Blue Plasma
+	{ id = 23529, chance = 2900 }, -- Ring of Blue Plasma
+	{ id = 40578, chance = 570 }, -- The Living Idol of Tukh
+	{ id = 40532, chance = 290 }, -- Broken Iks Headpiece
+	{ id = 40534, chance = 290 }, -- Broken Iks Sandals
 }
 
 monster.attacks = {

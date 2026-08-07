@@ -81,25 +81,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 93000, maxCount = 236 },
-	{ name = "morning star", chance = 10000 },
-	{ name = "warrior helmet", chance = 1886 },
-	{ name = "knight legs", chance = 3030 },
-	{ name = "red mushroom", chance = 7692, maxCount = 2 },
-	{ name = "demonic essence", chance = 9090 },
-	{ name = "battle shield", chance = 7500 },
-	{ name = "assassin star", chance = 9090, maxCount = 2 },
-	{ name = "onyx flail", chance = 103 },
-	{ name = "berserk potion", chance = 934 },
-	{ name = "spiked squelcher", chance = 970 },
-	{ name = "great health potion", chance = 40333 },
-	{ name = "ultimate health potion", chance = 9090 },
-	{ id = 8895, chance = 3125 }, -- rusted armor
-	{ id = 8896, chance = 3125 }, -- slightly rusted armor
-	{ id = 9034, chance = 140 }, -- dracoyle statue
-	{ id = 9056, chance = 151 }, -- black skull
-	{ name = "small topaz", chance = 5882, maxCount = 3 },
-	{ name = "hellspawn tail", chance = 20000 },
+	{ id = 3031, chance = 93000, maxCount = 236 }, -- Gold Coin
+	{ id = 239, chance = 30000 }, -- Great Health Potion
+	{ id = 10304, chance = 14800 }, -- Hellspawn Tail
+	{ id = 6499, chance = 7900 }, -- Demonic Essence
+	{ id = 3413, chance = 7900 }, -- Battle Shield
+	{ id = 7368, chance = 7600, maxCount = 2 }, -- Assassin Star
+	{ id = 7643, chance = 7500 }, -- Ultimate Health Potion
+	{ id = 3282, chance = 7200 }, -- Morning Star
+	{ id = 3724, chance = 5500, maxCount = 2 }, -- Red Mushroom
+	{ id = 9057, chance = 4500, maxCount = 3 }, -- Small Topaz
+	{ id = 3371, chance = 2300 }, -- Knight Legs
+	{ id = 8895, chance = 2200 }, -- Rusted Armor
+	{ id = 3369, chance = 1400 }, -- Warrior Helmet
+	{ id = 7439, chance = 690 }, -- Berserk Potion
+	{ id = 7452, chance = 590 }, -- Spiked Squelcher
+	{ id = 37335, chance = 190 }, -- black skull
+	{ id = 8896, chance = 160 }, -- Slightly Rusted Armor
+	{ id = 9035, chance = 55 }, -- Dracoyle Statue
+	{ id = 7421, chance = 41 }, -- Onyx Flail
+	{ id = 9056, chance = 190 }, -- Black Skull (Item)
 }
 
 monster.attacks = {

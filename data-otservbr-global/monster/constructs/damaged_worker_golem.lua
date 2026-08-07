@@ -82,12 +82,12 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 68810, maxCount = 88 },
-	{ id = 3091, chance = 570 }, -- sword ring
-	{ name = "iron ore", chance = 400 },
-	{ name = "nail", chance = 1460 },
-	{ name = "heavily rusted armor", chance = 790 },
-	{ name = "gear crystal", chance = 200 },
+	{ id = 3031, chance = 69000, maxCount = 89 }, -- Gold Coin
+	{ id = 8894, chance = 10000 }, -- Heavily Rusted Armor
+	{ id = 953, chance = 1200 }, -- Nail
+	{ id = 3091, chance = 470 }, -- Sword Ring
+	{ id = 5880, chance = 410 }, -- Iron Ore
+	{ id = 9655, chance = 240 }, -- Gear Crystal
 }
 
 monster.attacks = {

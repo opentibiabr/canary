@@ -60,15 +60,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 67740, maxCount = 98 },
-	{ name = "worn leather boots", chance = 9900 },
-	{ name = "sabre", chance = 10100 },
-	{ name = "throwing knife", chance = 9000, maxCount = 5 },
-	{ name = "plate armor", chance = 1130 },
-	{ name = "battle shield", chance = 3850 },
-	{ name = "pirate shirt", chance = 1200 },
-	{ id = 37531, chance = 5155 }, -- candy floss
-	{ name = "strong health potion", chance = 670 },
+	{ id = 3031, chance = 47000, maxCount = 98 }, -- Gold Coin
+	{ id = 3298, chance = 13900, maxCount = 5 }, -- Throwing Knife
+	{ id = 3030, chance = 11900 }, -- Small Ruby
+	{ id = 3273, chance = 8900 }, -- Sabre
+	{ id = 3123, chance = 8900 }, -- Worn Leather Boots
+	{ id = 236, chance = 7900 }, -- Strong Health Potion
+	{ id = 3413, chance = 7900 }, -- Battle Shield
+	{ id = 3032, chance = 6900 }, -- Small Emerald
+	{ id = 2920, chance = 5000 }, -- Torch
+	{ id = 3357, chance = 3000 }, -- Plate Armor
+	{ id = 5926, chance = 990 }, -- Pirate Backpack
+	{ id = 5552, chance = 990 }, -- Rum Flask
+	{ id = 5792, chance = 1150 }, -- Die
+	{ id = 6095, chance = 2310 }, -- Pirate Shirt
+	{ id = 37530, chance = 1350 }, -- Bottle of Champagne
+	{ id = 37468, chance = 380 }, -- Special Fx Box
+	{ id = 5090, chance = 580 }, -- Treasure Map
+	{ id = 37531, chance = 3850 }, -- Candy Floss (Large)
 }
 
 monster.attacks = {

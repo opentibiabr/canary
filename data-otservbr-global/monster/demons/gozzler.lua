@@ -81,16 +81,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "brown flask", chance = 8750 },
-	{ name = "small sapphire", chance = 360 },
-	{ name = "gold coin", chance = 52500, maxCount = 70 },
-	{ id = 3097, chance = 190 }, -- dwarven ring
-	{ name = "battle axe", chance = 3100 },
-	{ name = "sabre", chance = 8250 },
-	{ name = "morning star", chance = 5000 },
-	{ name = "serpent sword", chance = 250 },
-	{ name = "clerical mace", chance = 900 },
-	{ name = "plate shield", chance = 10000 },
+	{ id = 3031, chance = 82000, maxCount = 70 }, -- Gold Coin
+	{ id = 3410, chance = 10000 }, -- Plate Shield
+	{ id = 2885, chance = 9100 }, -- Brown Flask
+	{ id = 3273, chance = 8100 }, -- Sabre
+	{ id = 3282, chance = 5100 }, -- Morning Star
+	{ id = 3266, chance = 3100 }, -- Battle Axe
+	{ id = 3311, chance = 780 }, -- Clerical Mace
+	{ id = 3029, chance = 390 }, -- Small Sapphire
+	{ id = 3297, chance = 300 }, -- Serpent Sword
+	{ id = 3097, chance = 200 }, -- Dwarven Ring
 }
 
 monster.attacks = {

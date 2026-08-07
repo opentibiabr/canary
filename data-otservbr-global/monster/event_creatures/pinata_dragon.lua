@@ -69,7 +69,26 @@ monster.voices = {
 	{ text = "Bring it on!", yell = false },
 }
 
-monster.loot = {}
+monster.loot = {
+	{ id = 6569, chance = 100000, maxCount = 5 }, -- Candy
+	{ id = 3598, chance = 51000, maxCount = 9 }, -- Cookie
+	{ id = 30202, chance = 13800 }, -- Winterberry Liquor
+	{ id = 30198, chance = 9500 }, -- Meringue Cake
+	{ id = 6574, chance = 8400 }, -- Bar of Chocolate
+	{ id = 30315, chance = 6800 }, -- Pinata
+	{ id = 24949, chance = 5300 }, -- Costume Bag (Retro)
+	{ id = 30197, chance = 4800 }, -- Festive Backpack
+	{ id = 6279, chance = 3900 }, -- Party Cake
+	{ id = 24402, chance = 3600 }, -- Chocolatey Dragon Scale Legs
+	{ id = 24397, chance = 2200 }, -- Ferumbras' Candy Hat
+	{ id = 2991, chance = 1300 }, -- Doll
+	{ id = 123, chance = 480 }, -- Toy Mouse
+	{ id = 5791, chance = 360 }, -- Stuffed Dragon
+	{ id = 30317, chance = 120 }, -- Ferumbras Puppet
+	{ id = 6570, chance = 54000 }, -- Surprise Bag (Blue)
+	{ id = 6571, chance = 54000 }, -- Surprise Bag (Red)
+	{ id = 8853, chance = 54000 }, -- Suspicious Surprise Bag
+}
 
 monster.attacks = {}
 

@@ -43,26 +43,28 @@ monster.flags = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 96300, maxCount = 3 },
-	{ name = "diamond", chance = 55560, maxCount = 2 },
-	{ name = "ultimate mana potion", chance = 51850, maxCount = 6 },
-	{ name = "white gem", chance = 51850, maxCount = 2 },
-	{ name = "supreme health potion", chance = 29630 },
-	{ name = "mastermind potion", chance = 22220 },
-	{ name = "cursed bone", chance = 22220 },
-	{ name = "berserk potion", chance = 18520 },
-	{ name = "death toll", chance = 18520, maxCount = 2 },
-	{ name = "ivory comb", chance = 18520 },
-	{ name = "bullseye potion", chance = 14810, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 14810, maxCount = 6 },
-	{ name = "moonstone", chance = 14810 },
-	{ name = "spooky hood", chance = 8520 },
-	{ name = "silver hand mirror", chance = 7410 },
-	{ name = "amber with a dragonfly", chance = 7410 },
-	{ name = "phantasmal axe", chance = 3700 },
-	{ name = "ghost claw", chance = 3700 },
-	{ name = "giant amethyst", chance = 3700 },
-	{ id = 32621, chance = 3200 }, -- ring of souls
+	{ id = 3043, chance = 100000, maxCount = 3 }, -- Crystal Coin
+	{ id = 32770, chance = 58000, maxCount = 2 }, -- Diamond
+	{ id = 32769, chance = 51000, maxCount = 2 }, -- White Gem
+	{ id = 23373, chance = 36000, maxCount = 10 }, -- Ultimate Mana Potion
+	{ id = 23374, chance = 32000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 32000, maxCount = 10 }, -- Supreme Health Potion
+	{ id = 32774, chance = 31000 }, -- Cursed Bone
+	{ id = 7439, chance = 20000, maxCount = 18 }, -- Berserk Potion
+	{ id = 7443, chance = 18600, maxCount = 18 }, -- Bullseye Potion
+	{ id = 32772, chance = 16900 }, -- Silver Hand Mirror
+	{ id = 32703, chance = 10200, maxCount = 2 }, -- Death Toll
+	{ id = 32773, chance = 6800 }, -- Ivory Comb
+	{ id = 7440, chance = 6800, maxCount = 14 }, -- Mastermind Potion
+	{ id = 32771, chance = 5100 }, -- Moonstone
+	{ id = 32622, chance = 5100 }, -- Giant Amethyst
+	{ id = 49271, chance = 5100, maxCount = 18 }, -- Transcendence Potion
+	{ id = 32589, chance = 5100 }, -- Angel Figurine
+	{ id = 32580, chance = 1700 }, -- Brain Head's Right Hemisphere
+	{ id = 32623, chance = 1700 }, -- Giant Topaz
+	{ id = 32625, chance = 1700 }, -- Amber with a Dragonfly
+	{ id = 32626, chance = 1700 }, -- Amber (Item)
+	{ id = 32630, chance = 1700 }, -- Spooky Hood
 }
 
 monster.attacks = {

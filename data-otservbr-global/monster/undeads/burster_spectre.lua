@@ -77,27 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 7 },
-	{ name = "great spirit potion", chance = 100000, maxCount = 3 },
-	{ name = "protection amulet", chance = 15000 },
-	{ name = "life crystal", chance = 12050 },
-	{ name = "silver amulet", chance = 15000 },
-	{ name = "wand of voodoo", chance = 11050 },
-	{ name = "wand of cosmic energy", chance = 11800 },
-	{ name = "dragon necklace", chance = 16600 },
-	{ name = "stone skin amulet", chance = 8860 },
-	{ id = 30082, chance = 15600 }, -- blue ectoplasm
-	{ name = "glacier amulet", chance = 16890 },
-	{ name = "orb", chance = 18980 },
-	{ name = "hailstorm rod", chance = 17550 },
-	{ name = "elven amulet", chance = 1800 },
-	{ name = "garlic necklace", chance = 2640 },
-	{ name = "platinum amulet", chance = 2600 },
-	{ name = "mind stone", chance = 1800 },
-	{ name = "glacial rod", chance = 520 },
-	{ name = "shockwave amulet", chance = 620 },
-	{ name = "strange symbol", chance = 720 },
-	{ name = "hexagonal ruby", chance = 480 },
+	{ id = 3035, chance = 75000, maxCount = 7 }, -- Platinum Coin
+	{ id = 7642, chance = 23000, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 3084, chance = 7600 }, -- Protection Amulet
+	{ id = 3061, chance = 7400 }, -- Life Crystal
+	{ id = 8094, chance = 3500 }, -- Wand of Voodoo
+	{ id = 3073, chance = 3000 }, -- Wand of Cosmic Energy
+	{ id = 30203, chance = 2100 }, -- Blue Ectoplasm
+	{ id = 815, chance = 2000 }, -- Glacier Amulet
+	{ id = 3085, chance = 2000 }, -- Dragon Necklace
+	{ id = 3055, chance = 1700 }, -- Platinum Amulet
+	{ id = 3060, chance = 1300 }, -- Orb
+	{ id = 3067, chance = 890 }, -- Hailstorm Rod
+	{ id = 30180, chance = 720 }, -- Hexagonal Ruby
+	{ id = 16118, chance = 640 }, -- Glacial Rod
+	{ id = 3082, chance = 470 }, -- Elven Amulet
+	{ id = 3083, chance = 460 }, -- Garlic Necklace
+	{ id = 9304, chance = 320 }, -- Shockwave Amulet
+	{ id = 3081, chance = 240 }, -- Stone Skin Amulet
+	{ id = 3062, chance = 160 }, -- Mind Stone
+	{ id = 3058, chance = 160 }, -- Strange Symbol
 }
 
 monster.attacks = {

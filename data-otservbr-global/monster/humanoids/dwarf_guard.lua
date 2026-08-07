@@ -77,19 +77,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 40000, maxCount = 30 },
-	{ name = "small amethyst", chance = 140 },
-	{ id = 3092, chance = 190 }, -- axe ring
-	{ name = "double axe", chance = 600 },
-	{ name = "battle hammer", chance = 4000 },
-	{ name = "steel helmet", chance = 1600 },
-	{ name = "scale armor", chance = 9200 },
-	{ name = "battle shield", chance = 6000 },
-	{ name = "leather boots", chance = 40000 },
-	{ name = "white mushroom", chance = 55000, maxCount = 2 },
-	{ name = "iron ore", chance = 510 },
-	{ name = "health potion", chance = 380 },
-	{ id = 12600, chance = 280 }, -- coal
+	{ id = 3723, chance = 55000, maxCount = 2 }, -- White Mushroom
+	{ id = 3031, chance = 40000, maxCount = 30 }, -- Gold Coin
+	{ id = 3552, chance = 40000 }, -- Leather Boots
+	{ id = 3377, chance = 9000 }, -- Scale Armor
+	{ id = 3413, chance = 6000 }, -- Battle Shield
+	{ id = 3305, chance = 3800 }, -- Battle Hammer
+	{ id = 3351, chance = 1500 }, -- Steel Helmet
+	{ id = 3275, chance = 610 }, -- Double Axe
+	{ id = 5880, chance = 460 }, -- Iron Ore
+	{ id = 266, chance = 390 }, -- Health Potion
+	{ id = 3092, chance = 200 }, -- Axe Ring
+	{ id = 12600, chance = 180 }, -- Coal
+	{ id = 3033, chance = 110 }, -- Small Amethyst
 }
 
 monster.attacks = {

@@ -61,9 +61,7 @@ monster.voices = {
 	{ text = "You can run but you can not hide!", yell = false },
 }
 
-monster.loot = {
-	{ name = "midnight shard", chance = 25000 },
-}
+monster.loot = {}
 
 monster.attacks = {
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -5000 },

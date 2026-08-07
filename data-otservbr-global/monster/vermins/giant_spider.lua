@@ -88,19 +88,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 99990, maxCount = 195 },
-	{ id = 3053, chance = 710 }, -- time ring
-	{ name = "platinum amulet", chance = 280 },
-	{ name = "two handed sword", chance = 5100 },
-	{ name = "steel helmet", chance = 4980 },
-	{ name = "plate armor", chance = 9980 },
-	{ name = "knight armor", chance = 500 },
-	{ name = "knight legs", chance = 840 },
-	{ name = "poison arrow", chance = 11950, maxCount = 12 },
-	{ name = "plate legs", chance = 8333 },
-	{ name = "spider silk", chance = 1990 },
-	{ name = "strong health potion", chance = 3550 },
-	{ name = "lightning headband", chance = 270 },
+	{ id = 3031, chance = 100000, maxCount = 198 }, -- Gold Coin
+	{ id = 3448, chance = 11900, maxCount = 12 }, -- Poison Arrow
+	{ id = 3357, chance = 10000 }, -- Plate Armor
+	{ id = 3557, chance = 7900 }, -- Plate Legs
+	{ id = 3265, chance = 5100 }, -- Two Handed Sword
+	{ id = 3351, chance = 4900 }, -- Steel Helmet
+	{ id = 236, chance = 3500 }, -- Strong Health Potion
+	{ id = 5879, chance = 2000 }, -- Spider Silk
+	{ id = 3371, chance = 820 }, -- Knight Legs
+	{ id = 3053, chance = 720 }, -- Time Ring
+	{ id = 3370, chance = 490 }, -- Knight Armor
+	{ id = 828, chance = 270 }, -- Lightning Headband
+	{ id = 3055, chance = 270 }, -- Platinum Amulet
 }
 
 monster.attacks = {

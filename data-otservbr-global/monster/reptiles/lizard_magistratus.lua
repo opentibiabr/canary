@@ -80,13 +80,13 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "small ruby", chance = 8970, maxCount = 5 },
-	{ name = "gold coin", chance = 77230, maxCount = 50 },
-	{ name = "platinum coin", chance = 13400, maxCount = 19 },
-	{ name = "lizard leather", chance = 220 },
-	{ name = "lizard scale", chance = 450 },
-	{ name = "strong mana potion", chance = 6280 },
-	{ name = "great mana potion", chance = 4480 },
+	{ id = 3031, chance = 79000, maxCount = 50 }, -- Gold Coin
+	{ id = 3035, chance = 15300, maxCount = 20 }, -- Platinum Coin
+	{ id = 3030, chance = 9600, maxCount = 5 }, -- Small Ruby
+	{ id = 237, chance = 7600 }, -- Strong Mana Potion
+	{ id = 238, chance = 5200 }, -- Great Mana Potion
+	{ id = 5876, chance = 1200 }, -- Lizard Leather
+	{ id = 5881, chance = 620 }, -- Lizard Scale
 }
 
 monster.attacks = {

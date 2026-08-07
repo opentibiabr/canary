@@ -76,19 +76,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 78000, maxCount = 50 },
-	{ name = "scale armor", chance = 3000 },
-	{ name = "steel shield", chance = 2800 },
-	{ id = 5090, chance = 1000 }, -- treasure map
-	{ name = "rum flask", chance = 90 },
-	{ name = "light shovel", chance = 2000 },
-	{ id = 5792, chance = 110 }, -- die
-	{ name = "pirate knee breeches", chance = 980 },
-	{ name = "pirate bag", chance = 1000 },
-	{ name = "hook", chance = 550 },
-	{ name = "eye patch", chance = 450 },
-	{ name = "peg leg", chance = 500 },
-	{ name = "compass", chance = 10120 },
+	{ id = 3031, chance = 78000, maxCount = 50 }, -- Gold Coin
+	{ id = 10302, chance = 10000 }, -- Compass
+	{ id = 3377, chance = 3000 }, -- Scale Armor
+	{ id = 3409, chance = 2900 }, -- Steel Shield
+	{ id = 5710, chance = 1900 }, -- Light Shovel
+	{ id = 5706, chance = 1100 }, -- Treasure Map (Pirate)
+	{ id = 5918, chance = 1000 }, -- Pirate Knee Breeches
+	{ id = 5927, chance = 980 }, -- Pirate Bag
+	{ id = 6097, chance = 530 }, -- Hook
+	{ id = 6126, chance = 520 }, -- Peg Leg
+	{ id = 6098, chance = 460 }, -- Eye Patch
+	{ id = 5792, chance = 97 }, -- Die
+	{ id = 5552, chance = 91 }, -- Rum Flask
 }
 
 monster.attacks = {

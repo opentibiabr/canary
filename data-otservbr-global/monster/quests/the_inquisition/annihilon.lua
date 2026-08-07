@@ -75,45 +75,46 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "emerald bangle", chance = 20000 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "platinum coin", chance = 16666, maxCount = 30 },
-	{ name = "violet gem", chance = 16666 },
-	{ name = "yellow gem", chance = 20000 },
-	{ name = "green gem", chance = 12500 },
-	{ id = 3039, chance = 20000 }, -- red gem
-	{ name = "blue gem", chance = 20000 },
-	{ name = "halberd", chance = 20000 },
-	{ name = "guardian halberd", chance = 20000 },
-	{ name = "heavy mace", chance = 25000 },
-	{ name = "mastermind shield", chance = 4166 },
-	{ name = "guardian shield", chance = 7692 },
-	{ name = "crown shield", chance = 11111 },
-	{ name = "demon shield", chance = 4166 },
-	{ name = "tower shield", chance = 9090 },
-	{ name = "power bolt", chance = 16666, maxCount = 94 },
-	{ name = "soul orb", chance = 20000, maxCount = 5 },
-	{ name = "demon horn", chance = 12500, maxCount = 2 },
-	{ name = "infernal bolt", chance = 20000, maxCount = 46 },
-	{ name = "viper star", chance = 16666, maxCount = 70 },
-	{ name = "assassin star", chance = 16666, maxCount = 50 },
-	{ name = "diamond sceptre", chance = 7142 },
-	{ name = "onyx flail", chance = 14285 },
-	{ name = "demonbone", chance = 1234 },
-	{ name = "berserk potion", chance = 16666 },
-	{ name = "mastermind potion", chance = 14285 },
-	{ name = "great mana potion", chance = 11111 },
-	{ name = "great health potion", chance = 14285 },
-	{ id = 281, chance = 33333, maxCount = 2 }, -- giant shimmering pearl (green)
-	{ name = "flaming arrow", chance = 20000, maxCount = 46 },
-	{ name = "great spirit potion", chance = 14285 },
-	{ name = "ultimate health potion", chance = 14285 },
-	{ name = "lavos armor", chance = 1851 },
-	{ name = "paladin armor", chance = 10000 },
-	{ name = "obsidian truncheon", chance = 1234 },
-	{ id = 8894, chance = 1234 }, -- heavily rusted armor
-	{ id = 8896, chance = 50000 }, -- slightly rusted armor
-	{ name = "gold ingot", chance = 20000 },
+	{ id = 3031, chance = 100000, maxCount = 100 }, -- Gold Coin
+	{ id = 8896, chance = 62000 }, -- Slightly Rusted Armor
+	{ id = 281, chance = 37000, maxCount = 2 }, -- Giant Shimmering Pearl
+	{ id = 3340, chance = 28000 }, -- Heavy Mace
+	{ id = 3041, chance = 22000 }, -- Blue Gem
+	{ id = 3010, chance = 22000 }, -- Emerald Bangle
+	{ id = 5944, chance = 22000, maxCount = 5 }, -- Soul Orb
+	{ id = 3315, chance = 22000 }, -- Guardian Halberd
+	{ id = 6528, chance = 21000, maxCount = 50 }, -- Infernal Bolt
+	{ id = 3037, chance = 21000 }, -- Yellow Gem
+	{ id = 7368, chance = 21000, maxCount = 50 }, -- Assassin Star
+	{ id = 3450, chance = 20000, maxCount = 99 }, -- Power Bolt
+	{ id = 3269, chance = 20000 }, -- Halberd
+	{ id = 763, chance = 19700, maxCount = 100 }, -- Flaming Arrow
+	{ id = 9058, chance = 19500 }, -- Gold Ingot
+	{ id = 3039, chance = 19200 }, -- Red Gem
+	{ id = 3038, chance = 18900 }, -- Green Gem
+	{ id = 3035, chance = 18400, maxCount = 30 }, -- Platinum Coin
+	{ id = 3036, chance = 18400 }, -- Violet Gem
+	{ id = 7366, chance = 17900, maxCount = 70 }, -- Viper Star
+	{ id = 7439, chance = 17100 }, -- Berserk Potion
+	{ id = 239, chance = 16000 }, -- Great Health Potion
+	{ id = 7643, chance = 14700 }, -- Ultimate Health Potion
+	{ id = 238, chance = 14400 }, -- Great Mana Potion
+	{ id = 7440, chance = 14400 }, -- Mastermind Potion
+	{ id = 7642, chance = 13100 }, -- Great Spirit Potion
+	{ id = 7421, chance = 12800 }, -- Onyx Flail
+	{ id = 5954, chance = 11700, maxCount = 2 }, -- Demon Horn
+	{ id = 3419, chance = 10700 }, -- Crown Shield
+	{ id = 3428, chance = 9900 }, -- Tower Shield
+	{ id = 8063, chance = 9900 }, -- Paladin Armor
+	{ id = 7387, chance = 8300 }, -- Diamond Sceptre
+	{ id = 3415, chance = 8000 }, -- Guardian Shield
+	{ id = 3420, chance = 4500 }, -- Demon Shield
+	{ id = 3414, chance = 4000 }, -- Mastermind Shield
+	{ id = 8049, chance = 1900 }, -- Lavos Armor
+	{ id = 7431, chance = 1100 }, -- Demonbone
+	{ id = 8100, chance = 1100 }, -- Obsidian Truncheon
+	{ id = 8101, chance = 530 }, -- The Stomper
+	{ id = 8061, chance = 270 }, -- Skullcracker Armor
 }
 
 monster.attacks = {

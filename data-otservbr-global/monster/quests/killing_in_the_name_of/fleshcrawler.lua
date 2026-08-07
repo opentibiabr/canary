@@ -70,19 +70,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3035, chance = 98890, maxCount = 15 }, -- platinum coin
-	{ id = 3042, chance = 98890, maxCount = 2 }, -- scarab coin
-	{ id = 3032, chance = 88890, maxCount = 3 }, -- small emerald
-	{ id = 3033, chance = 87220, maxCount = 4 }, -- small amethyst
-	{ id = 9631, chance = 100000 }, -- scarab pincers
-	{ id = 3025, chance = 45560 }, -- ancient amulet
-	{ id = 3018, chance = 52220 }, -- scarab amulet
-	{ id = 811, chance = 11110 }, -- terra mantle
-	{ id = 236, chance = 43330 }, -- strong health potion
-	{ id = 8084, chance = 75560 }, -- springsprout rod
-	{ id = 3440, chance = 43890 }, -- scarab shield
-	{ id = 7426, chance = 30560 }, -- amber staff
-	{ id = 11468, chance = 14440 }, -- ornamented brooch
+	{ id = 9631, chance = 100000 }, -- Scarab Pincers
+	{ id = 3035, chance = 99000, maxCount = 15 }, -- Platinum Coin
+	{ id = 3042, chance = 99000, maxCount = 2 }, -- Scarab Coin
+	{ id = 3032, chance = 89000, maxCount = 3 }, -- Small Emerald
+	{ id = 3033, chance = 88000, maxCount = 4 }, -- Small Amethyst
+	{ id = 8084, chance = 76000 }, -- Springsprout Rod
+	{ id = 3018, chance = 50000 }, -- Scarab Amulet
+	{ id = 3025, chance = 49000 }, -- Ancient Amulet
+	{ id = 3440, chance = 46000 }, -- Scarab Shield
+	{ id = 236, chance = 44000 }, -- Strong Health Potion
+	{ id = 3370, chance = 41000 }, -- Knight Armor
+	{ id = 7426, chance = 29000 }, -- Amber Staff
+	{ id = 11468, chance = 12500 }, -- Ornamented Brooch
+	{ id = 811, chance = 10100 }, -- Terra Mantle
 }
 
 monster.attacks = {

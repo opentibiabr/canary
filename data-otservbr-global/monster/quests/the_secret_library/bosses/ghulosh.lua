@@ -69,38 +69,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 90000, maxCount = 53 },
-	{ name = "crystal coin", chance = 90000, maxCount = 12 },
-	{ name = "great spirit potion", chance = 90000, maxCount = 8 },
-	{ name = "supreme health potion", chance = 90000, maxCount = 8 },
-	{ name = "ultimate mana potion", chance = 90000, maxCount = 10 },
-	{ name = "ultimate spirit potion", chance = 90000, maxCount = 8 },
-	{ name = "silver token", chance = 90000, maxCount = 6 },
-	{ name = "bullseye potion", chance = 90000 },
-	{ name = "demon horn", chance = 90000 },
-	{ name = "magic sulphur", chance = 90000 },
-	{ id = 3039, chance = 90000 }, -- red gem
-	{ name = "stone skin amulet", chance = 90000 },
-	{ name = "yellow gem", chance = 90000 },
-	{ name = "wand of voodoo", chance = 90000 },
-	{ name = "mastermind potion", chance = 30000, maxCount = 2 },
-	{ id = 49271, chance = 30000, maxCount = 2 }, -- transcendence potion
-	{ name = "onyx chip", chance = 30000, maxCount = 12 },
-	{ name = "small diamond", chance = 30000, maxCount = 12 },
-	{ name = "small emerald", chance = 30000, maxCount = 12 },
-	{ name = "small ruby", chance = 30000, maxCount = 12 },
-	{ name = "small topaz", chance = 30000, maxCount = 12 },
-	{ name = "blue gem", chance = 30000 },
-	{ name = "solid rage", chance = 30000 },
-	{ name = "gold token", chance = 1000 },
-	{ name = "butcher's axe", chance = 1000 },
-	{ name = "dreaded cleaver", chance = 1000 },
-	{ name = "mercenary sword", chance = 1000 },
-	{ name = "slightly rusted shield", chance = 5880 },
-	{ name = "slightly rusted helmet", chance = 35290 },
-	{ name = "epaulette", chance = 500 },
-	{ name = "giant emerald", chance = 500 },
-	{ name = "unliving demonbone", chance = 500 },
+	{ id = 3043, chance = 100000, maxCount = 11 }, -- Crystal Coin
+	{ id = 3035, chance = 100000, maxCount = 61 }, -- Platinum Coin
+	{ id = 3081, chance = 100000 }, -- Stone Skin Amulet
+	{ id = 22516, chance = 83000, maxCount = 10 }, -- Silver Token
+	{ id = 23374, chance = 83000, maxCount = 16 }, -- Ultimate Spirit Potion
+	{ id = 3028, chance = 67000, maxCount = 14 }, -- Small Diamond
+	{ id = 23375, chance = 67000, maxCount = 13 }, -- Supreme Health Potion
+	{ id = 7440, chance = 67000, maxCount = 2 }, -- Mastermind Potion
+	{ id = 22193, chance = 50000, maxCount = 11 }, -- Onyx Chip
+	{ id = 8908, chance = 50000 }, -- Slightly Rusted Helmet
+	{ id = 5904, chance = 50000, maxCount = 2 }, -- Magic Sulphur
+	{ id = 7412, chance = 50000 }, -- Butcher's Axe
+	{ id = 6499, chance = 50000, maxCount = 7 }, -- Demonic Essence
+	{ id = 3037, chance = 33000 }, -- Yellow Gem
+	{ id = 23517, chance = 33000 }, -- Solid Rage
+	{ id = 3039, chance = 33000 }, -- Red Gem
+	{ id = 7443, chance = 33000 }, -- Bullseye Potion
+	{ id = 7419, chance = 33000 }, -- Dreaded Cleaver
+	{ id = 7439, chance = 33000 }, -- Berserk Potion
+	{ id = 8902, chance = 16700 }, -- Slightly Rusted Shield
+	{ id = 7421, chance = 16700 }, -- Onyx Flail
+	{ id = 3032, chance = 16700, maxCount = 23 }, -- Small Emerald
+	{ id = 9057, chance = 16700, maxCount = 11 }, -- Small Topaz
+	{ id = 23373, chance = 16700 }, -- Ultimate Mana Potion
+	{ id = 16117, chance = 16700 }, -- Muck Rod
+	{ id = 3038, chance = 16700 }, -- Green Gem
+	{ id = 7386, chance = 16700 }, -- Mercenary Sword
+	{ id = 3041, chance = 16700 }, -- Blue Gem
+	{ id = 22721, chance = 16700, maxCount = 6 }, -- Gold Token
+	{ id = 8094, chance = 16700 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

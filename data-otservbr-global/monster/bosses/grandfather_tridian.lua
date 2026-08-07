@@ -80,14 +80,15 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 80 },
-	{ name = "jewelled backpack", chance = 100000 },
-	{ name = "strong mana potion", chance = 5000 },
-	{ name = "brown mushroom", chance = 5000, maxCount = 3 },
-	{ id = 6087, chance = 3000 }, -- music sheet (first verse)
-	{ id = 6088, chance = 3000 }, -- music sheet (second verse)
-	{ id = 6089, chance = 3000 }, -- music sheet (third verse)
-	{ id = 6090, chance = 3000 }, -- music sheet (fourth verse)
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 3031, chance = 58000, maxCount = 76 }, -- Gold Coin
+	{ id = 3324, chance = 25000 }, -- Skull Staff
+	{ id = 3071, chance = 16700 }, -- Wand of Inferno
+	{ id = 3029, chance = 16700 }, -- Small Sapphire
+	{ id = 3084, chance = 16700 }, -- Protection Amulet
+	{ id = 5801, chance = 8300 }, -- Jewelled Backpack
+	{ id = 5810, chance = 8300 }, -- Pirate Voodoo Doll
+	{ id = 237, chance = 8300 }, -- Strong Mana Potion
 }
 
 monster.attacks = {

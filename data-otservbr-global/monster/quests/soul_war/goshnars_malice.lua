@@ -73,31 +73,30 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ id = 49271, chance = 15000, minCount = 10, maxCount = 25 }, -- transcendence potion
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "malice's spine", chance = 2000, maxCount = 1 },
-	{ name = "malice's horn", chance = 2000, maxCount = 1 },
-	{ name = "bracelet of strengthening", chance = 400 },
-	{ name = "spectral horseshoe", chance = 400 },
-	{ name = "the skull of a beast", chance = 400 },
-	{ name = "figurine of malice", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 3043, chance = 100000, maxCount = 94 }, -- Crystal Coin
+	{ id = 23373, chance = 81000, maxCount = 177 }, -- Ultimate Mana Potion
+	{ id = 3037, chance = 50000 }, -- Yellow Gem
+	{ id = 23374, chance = 44000, maxCount = 149 }, -- Ultimate Spirit Potion
+	{ id = 7440, chance = 44000, maxCount = 48 }, -- Mastermind Potion
+	{ id = 32622, chance = 44000 }, -- Giant Amethyst
+	{ id = 30061, chance = 38000 }, -- Giant Sapphire
+	{ id = 23375, chance = 38000, maxCount = 108 }, -- Supreme Health Potion
+	{ id = 3036, chance = 25000 }, -- Violet Gem
+	{ id = 3038, chance = 25000 }, -- Green Gem
+	{ id = 3039, chance = 25000 }, -- Red Gem
+	{ id = 281, chance = 25000 }, -- Giant Shimmering Pearl
+	{ id = 7443, chance = 25000, maxCount = 30 }, -- Bullseye Potion
+	{ id = 49271, chance = 18800, maxCount = 22 }, -- Transcendence Potion
+	{ id = 32623, chance = 18800 }, -- Giant Topaz
+	{ id = 32769, chance = 12500 }, -- White Gem
+	{ id = 9058, chance = 12500 }, -- Gold Ingot
+	{ id = 7439, chance = 12500, maxCount = 48 }, -- Berserk Potion
+	{ id = 3041, chance = 12500, maxCount = 2 }, -- Blue Gem
+	{ id = 33920, chance = 6200 }, -- Malice's Horn
+	{ id = 30053, chance = 6200 }, -- Dragon Figurine
+	{ id = 33921, chance = 6200 }, -- Malice's Spine
+	{ id = 34076, chance = 6200 }, -- Bracelet of Strengthening
+	{ id = 44612, chance = 6200 }, -- Mystic Gem
 }
 
 monster.attacks = {

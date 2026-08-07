@@ -75,15 +75,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2828, chance = 1310 }, -- book
-	{ id = 3049, chance = 180 }, -- stealth ring
-	{ name = "morning star", chance = 10610 },
-	{ name = "combat knife", chance = 7002 },
-	{ name = "ancient shield", chance = 860 },
-	{ name = "cape", chance = 8800 },
-	{ name = "shadow herb", chance = 14400 },
-	{ name = "white piece of cloth", chance = 1940 },
-	{ name = "ghostly tissue", chance = 1870 },
+	{ id = 3740, chance = 12700 }, -- Shadow Herb
+	{ id = 3282, chance = 11800 }, -- Morning Star
+	{ id = 3292, chance = 7800 }, -- Combat Knife
+	{ id = 3565, chance = 7400 }, -- Cape
+	{ id = 3081, chance = 4400 }, -- Stone Skin Amulet
+	{ id = 9690, chance = 2100 }, -- Ghostly Tissue
+	{ id = 5909, chance = 1700 }, -- White Piece of Cloth
+	{ id = 2828, chance = 1200 }, -- Book (Orange)
+	{ id = 3432, chance = 770 }, -- Ancient Shield
+	{ id = 3049, chance = 150 }, -- Stealth Ring
 }
 
 monster.attacks = {

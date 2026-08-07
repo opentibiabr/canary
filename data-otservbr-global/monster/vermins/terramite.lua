@@ -75,10 +75,10 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 97520, maxCount = 45 },
-	{ name = "terramite shell", chance = 7730 },
-	{ name = "terramite eggs", chance = 4680, maxCount = 3 },
-	{ name = "terramite legs", chance = 14880 },
+	{ id = 3031, chance = 97000, maxCount = 45 }, -- Gold Coin
+	{ id = 10454, chance = 15000 }, -- Terramite Legs
+	{ id = 10452, chance = 7500 }, -- Terramite Shell
+	{ id = 10453, chance = 5000 }, -- Terramite Eggs
 }
 
 monster.attacks = {

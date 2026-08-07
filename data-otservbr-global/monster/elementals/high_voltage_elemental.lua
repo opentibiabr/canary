@@ -77,14 +77,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 100000, maxCount = 185 }, -- gold coin
-	{ id = 761, chance = 100000, maxCount = 20 }, -- flash arrow
-	{ id = 237, chance = 7142 }, -- strong mana potion
-	{ id = 3033, chance = 7142, maxCount = 2 }, -- small amethyst
-	{ id = 3007, chance = 7142 }, -- crystal ring
-	{ id = 3313, chance = 4761 }, -- obsidian lance
-	{ id = 268, chance = 4761 }, -- mana potion
-	{ id = 7449, chance = 4761 }, -- crystal sword
+	{ id = 3031, chance = 100000, maxCount = 199 }, -- Gold Coin
+	{ id = 761, chance = 17000, maxCount = 20 }, -- Flash Arrow
+	{ id = 7449, chance = 8600 }, -- Crystal Sword
+	{ id = 268, chance = 5300 }, -- Mana Potion
+	{ id = 3033, chance = 5300, maxCount = 3 }, -- Small Amethyst
+	{ id = 3313, chance = 4700 }, -- Obsidian Lance
+	{ id = 3007, chance = 3900 }, -- Crystal Ring
+	{ id = 237, chance = 3600 }, -- Strong Mana Potion
+	{ id = 3051, chance = 2400 }, -- Energy Ring
+	{ id = 3048, chance = 930 }, -- Might Ring
+	{ id = 3073, chance = 520 }, -- Wand of Cosmic Energy
+	{ id = 816, chance = 360 }, -- Lightning Pendant
+	{ id = 8073, chance = 360 }, -- Spellbook of Warding
+	{ id = 825, chance = 210 }, -- Lightning Robe
+	{ id = 822, chance = 100 }, -- Lightning Legs
+	{ id = 828, chance = 100 }, -- Lightning Headband
+	{ id = 9304, chance = 100 }, -- Shockwave Amulet
 }
 
 monster.attacks = {

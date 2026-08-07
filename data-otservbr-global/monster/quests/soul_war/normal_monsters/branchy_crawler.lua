@@ -83,22 +83,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55480 },
-	{ name = "gold ingot", chance = 9090 },
-	{ name = "ultimate health potion", chance = 8810, maxCount = 8 },
-	{ name = "roots", chance = 6000 },
-	{ name = "blue gem", chance = 1900 },
-	{ name = "crawler's essence", chance = 1450 },
-	{ name = "terra legs", chance = 970 },
-	{ name = "green gem", chance = 800 },
-	{ name = "hammer of wrath", chance = 760 },
-	{ name = "violet gem", chance = 650 },
-	{ name = "crystal crossbow", chance = 630 },
-	{ name = "nightmare blade", chance = 540 },
-	{ name = "twiceslicer", chance = 420 },
-	{ name = "crystalline sword", chance = 390 },
-	{ name = "ruthless axe", chance = 330 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 51000 }, -- Crystal Coin
+	{ id = 7643, chance = 7800, maxCount = 8 }, -- Ultimate Health Potion
+	{ id = 9058, chance = 7600 }, -- Gold Ingot
+	{ id = 33938, chance = 5600 }, -- Roots
+	{ id = 3041, chance = 1700 }, -- Blue Gem
+	{ id = 812, chance = 1200 }, -- Terra Legs
+	{ id = 33982, chance = 1100 }, -- Crawler's Essence
+	{ id = 3332, chance = 760 }, -- Hammer of Wrath
+	{ id = 16163, chance = 620 }, -- Crystal Crossbow
+	{ id = 3038, chance = 620 }, -- Green Gem
+	{ id = 3036, chance = 600 }, -- Violet Gem
+	{ id = 7418, chance = 510 }, -- Nightmare Blade
+	{ id = 11657, chance = 330 }, -- Twiceslicer
+	{ id = 6553, chance = 330 }, -- Ruthless Axe
+	{ id = 16160, chance = 220 }, -- Crystalline Sword
 }
 
 monster.attacks = {

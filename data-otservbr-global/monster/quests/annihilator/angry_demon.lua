@@ -72,39 +72,24 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "purple tome", chance = 1180 },
-	{ name = "gold coin", chance = 60000, maxCount = 100 },
-	{ name = "platinum coin", chance = 60000, maxCount = 6 },
-	{ name = "small emerald", chance = 9690, maxCount = 5 },
-	{ name = "small amethyst", chance = 7250, maxCount = 5 },
-	{ name = "small ruby", chance = 7430, maxCount = 5 },
-	{ name = "small topaz", chance = 7470, maxCount = 5 },
-	{ id = 3039, chance = 2220 }, -- red gem
-	{ name = "demonic essence", chance = 14630 },
-	{ name = "talon", chance = 3430 },
-	{ name = "might ring", chance = 1890 },
-	{ id = 3049, chance = 2170 }, -- stealth ring
-	{ name = "platinum amulet", chance = 680 },
-	{ name = "orb", chance = 2854 },
-	{ name = "gold ring", chance = 1050 },
-	{ id = 3098, chance = 1990 }, -- ring of healing
-	{ name = "giant sword", chance = 1980 },
-	{ name = "ice rapier", chance = 1550 },
-	{ name = "golden sickle", chance = 1440 },
-	{ name = "fire axe", chance = 4030 },
-	{ name = "devil helmet", chance = 1180 },
-	{ name = "golden legs", chance = 440 },
-	{ name = "magic plate armor", chance = 130 },
-	{ name = "mastermind shield", chance = 480 },
-	{ name = "demon shield", chance = 740 },
-	{ name = "fire mushroom", chance = 19660, maxCount = 6 },
-	{ name = "demon horn", chance = 14920 },
-	{ name = "assassin star", chance = 12550, maxCount = 10 },
-	{ name = "demonrage sword", chance = 70 },
-	{ id = 7393, chance = 90 }, -- demon trophy
-	{ name = "great mana potion", chance = 22220, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 19540, maxCount = 3 },
-	{ name = "great spirit potion", chance = 18510, maxCount = 3 },
+	{ id = 3031, chance = 100000, maxCount = 97 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3033, chance = 36000, maxCount = 3 }, -- Small Amethyst
+	{ id = 3731, chance = 27000, maxCount = 6 }, -- Fire Mushroom
+	{ id = 7368, chance = 27000, maxCount = 7 }, -- Assassin Star
+	{ id = 3034, chance = 18200 }, -- Talon
+	{ id = 3048, chance = 18200 }, -- Might Ring
+	{ id = 7643, chance = 18200, maxCount = 3 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 18200, maxCount = 3 }, -- Great Spirit Potion
+	{ id = 3414, chance = 9100 }, -- Mastermind Shield
+	{ id = 3060, chance = 9100 }, -- Orb
+	{ id = 3098, chance = 9100 }, -- Ring of Healing
+	{ id = 3032, chance = 9100, maxCount = 5 }, -- Small Emerald
+	{ id = 238, chance = 9100, maxCount = 3 }, -- Great Mana Potion
+	{ id = 6499, chance = 9100 }, -- Demonic Essence
+	{ id = 3356, chance = 9100 }, -- Devil Helmet
+	{ id = 5954, chance = 9100 }, -- Demon Horn
+	{ id = 3030, chance = 9100 }, -- Small Ruby
 }
 
 monster.attacks = {

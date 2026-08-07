@@ -76,26 +76,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 86000, maxCount = 5 },
-	{ name = "red crystal fragment", chance = 2000 },
-	{ id = 3039, chance = 330 }, -- red gem
-	{ name = "ice rapier", chance = 17200 },
-	{ name = "ultimate health potion", chance = 16850 },
-	{ name = "great spirit potion", chance = 15780 },
-	{ id = 30058, chance = 9000, maxCount = 2 }, -- ice flower
-	{ name = "life crystal", chance = 7900 },
-	{ name = "dream essence egg", chance = 8750 },
-	{ name = "elven astral observer", chance = 7600 },
-	{ name = "glacier mask", chance = 6000 },
-	{ name = "moonlight rod", chance = 5400 },
-	{ name = "small enchanted sapphire", chance = 4700, maxCount = 7 },
-	{ name = "northwind rod", chance = 2360 },
-	{ name = "glacier amulet", chance = 2930 },
-	{ name = "hailstorm rod", chance = 2660 },
-	{ name = "glacier robe", chance = 1930 },
-	{ name = "cyan crystal fragment", chance = 2100 },
-	{ name = "elven amulet", chance = 1260 },
-	{ name = "blue gem", chance = 330 },
+	{ id = 3035, chance = 86000, maxCount = 5 }, -- Platinum Coin
+	{ id = 3284, chance = 17100 }, -- Ice Rapier
+	{ id = 7643, chance = 17000 }, -- Ultimate Health Potion
+	{ id = 7642, chance = 15900 }, -- Great Spirit Potion
+	{ id = 30058, chance = 8700, maxCount = 2 }, -- Ice Flower (Item)
+	{ id = 30005, chance = 8600 }, -- Dream Essence Egg
+	{ id = 3061, chance = 7900 }, -- Life Crystal
+	{ id = 11465, chance = 7600 }, -- Elven Astral Observer
+	{ id = 829, chance = 5800 }, -- Glacier Mask
+	{ id = 3070, chance = 5500 }, -- Moonlight Rod
+	{ id = 675, chance = 4700, maxCount = 7 }, -- Small Enchanted Sapphire
+	{ id = 815, chance = 2900 }, -- Glacier Amulet
+	{ id = 3067, chance = 2700 }, -- Hailstorm Rod
+	{ id = 8083, chance = 2300 }, -- Northwind Rod
+	{ id = 16125, chance = 2100 }, -- Cyan Crystal Fragment
+	{ id = 824, chance = 2000 }, -- Glacier Robe
+	{ id = 3082, chance = 1200 }, -- Elven Amulet
+	{ id = 3041, chance = 340 }, -- Blue Gem
+	{ id = 49371, chance = 6 }, -- Lesser Spiritualist Gem
 }
 
 monster.attacks = {

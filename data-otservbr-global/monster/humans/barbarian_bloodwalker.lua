@@ -80,18 +80,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 2914, chance = 8280 }, -- lamp
-	{ name = "gold coin", chance = 55310, maxCount = 12 },
-	{ name = "battle axe", chance = 5910 },
-	{ name = "halberd", chance = 6740 },
-	{ name = "chain helmet", chance = 10520 },
-	{ name = "chain armor", chance = 10420 },
-	{ name = "ham", chance = 4900 },
-	{ name = "beastslayer axe", chance = 380 },
-	{ name = "red piece of cloth", chance = 540 },
-	{ name = "shard", chance = 300 },
-	{ name = "fur boots", chance = 100 },
-	{ name = "health potion", chance = 980 },
+	{ id = 3031, chance = 55000, maxCount = 12 }, -- Gold Coin
+	{ id = 3352, chance = 10700 }, -- Chain Helmet
+	{ id = 3358, chance = 10100 }, -- Chain Armor
+	{ id = 2914, chance = 8100 }, -- Lamp
+	{ id = 3269, chance = 7000 }, -- Halberd
+	{ id = 3266, chance = 5900 }, -- Battle Axe
+	{ id = 3582, chance = 4900 }, -- Ham
+	{ id = 266, chance = 930 }, -- Health Potion
+	{ id = 5911, chance = 480 }, -- Red Piece of Cloth
+	{ id = 3344, chance = 340 }, -- Beastslayer Axe
+	{ id = 7290, chance = 320 }, -- Shard
+	{ id = 7457, chance = 94 }, -- Fur Boots
 }
 
 monster.attacks = {

@@ -78,23 +78,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "power bolt", chance = 1000000 },
-	{ name = "small enchanted sapphire", chance = 790, maxCount = 2 },
-	{ name = "platinum coin", chance = 85000, maxCount = 11 },
-	{ id = 5921, chance = 10500 }, -- heaven blossom
-	{ name = "dream essence egg", chance = 8500 },
-	{ name = "elvish talisman", chance = 7200 },
-	{ name = "violet crystal shard", chance = 4500 },
-	{ name = "small enchanted ruby", chance = 6000 },
-	{ name = "red crystal fragment", chance = 4500 },
-	{ name = "leaf star", chance = 4000, maxCount = 8 },
-	{ id = 23529, chance = 2500 }, -- ring of blue plasma
-	{ name = "sun fruit", chance = 890 },
-	{ id = 23542, chance = 900 }, -- collar of blue plasma
-	{ name = "wood cape", chance = 1300 },
-	{ name = "small diamond", chance = 600 },
-	{ name = "yellow gem", chance = 1000 },
-	{ name = "crystal crossbow", chance = 500 },
+	{ id = 3035, chance = 85000, maxCount = 11 }, -- Platinum Coin
+	{ id = 5921, chance = 10200 }, -- Heaven Blossom
+	{ id = 30005, chance = 8400 }, -- Dream Essence Egg
+	{ id = 9635, chance = 7100 }, -- Elvish Talisman
+	{ id = 676, chance = 6100 }, -- Small Enchanted Ruby
+	{ id = 16126, chance = 4700 }, -- Red Crystal Fragment
+	{ id = 16120, chance = 4500 }, -- Violet Crystal Shard
+	{ id = 25735, chance = 4200, maxCount = 8 }, -- Leaf Star
+	{ id = 23529, chance = 2300 }, -- Ring of Blue Plasma
+	{ id = 3575, chance = 1300 }, -- Wood Cape
+	{ id = 3037, chance = 1000 }, -- Yellow Gem
+	{ id = 23526, chance = 920 }, -- Collar of Blue Plasma
+	{ id = 29995, chance = 850 }, -- Sun Fruit
+	{ id = 675, chance = 770, maxCount = 2 }, -- Small Enchanted Sapphire
+	{ id = 3028, chance = 570 }, -- Small Diamond
+	{ id = 16163, chance = 460 }, -- Crystal Crossbow
 }
 
 monster.attacks = {

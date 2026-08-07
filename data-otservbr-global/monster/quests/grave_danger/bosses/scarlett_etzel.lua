@@ -78,42 +78,36 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "energy bar", chance = 100000 },
-	{ name = "platinum coin", chance = 87000, maxCount = 9 },
-	{ name = "green gem", chance = 85000 },
-	{ name = "supreme health potion", chance = 53700, maxCount = 14 },
-	{ name = "ultimate mana potion", chance = 48150, maxCount = 20 },
-	{ id = 3039, chance = 42500 }, -- red gem
-	{ name = "ultimate spirit potion", chance = 34000, maxCount = 6 },
-	{ name = "yellow gem", chance = 29600, maxCount = 2 },
-	{ name = "royal star", chance = 26600, maxCount = 100 },
-	{ id = 281, chance = 24000 }, -- giant shimmering pearl (green)
-	{ name = "berserk potion", chance = 20300, maxCount = 10 },
-	{ name = "blue gem", chance = 18500, maxCount = 2 },
-	{ name = "bullseye potion", chance = 18500, maxCount = 10 },
-	{ id = 49271, chance = 18500, maxCount = 10 }, -- transcendence potion
-	{ name = "magma coat", chance = 16600 },
-	{ name = "terra rod", chance = 1100 },
-	{ name = "crystal coin", chance = 9200 },
-	{ name = "violet gem", chance = 9000 },
-	{ name = "terra legs", chance = 8500 },
-	{ name = "terra hood", chance = 7400 },
-	{ name = "terra mantle", chance = 7250 },
-	{ name = "magma amulet", chance = 5500 },
-	{ name = "silver token", chance = 6000, maxCount = 4 },
-	{ name = "gold ingot", chance = 5000 },
-	{ name = "terra amulet", chance = 4800 },
-	{ name = "giant sapphire", chance = 4800 },
-	{ name = "magma monocle", chance = 3700 },
-	{ name = "cobra club", chance = 700 },
-	{ name = "cobra axe", chance = 600 },
-	{ name = "cobra crossbow", chance = 600 },
-	{ name = "cobra hood", chance = 400 },
-	{ name = "cobra rod", chance = 650 },
-	{ name = "cobra sword", chance = 650 },
-	{ name = "cobra wand", chance = 650 },
-	{ name = "cobra amulet", chance = 350 },
-	{ name = "cobra bo", chance = 600 },
+	{ id = 3038, chance = 100000, maxCount = 3 }, -- Green Gem
+	{ id = 23535, chance = 99000 }, -- Energy Bar
+	{ id = 3035, chance = 99000, maxCount = 9 }, -- Platinum Coin
+	{ id = 23373, chance = 58000, maxCount = 32 }, -- Ultimate Mana Potion
+	{ id = 23375, chance = 49000, maxCount = 35 }, -- Supreme Health Potion
+	{ id = 3039, chance = 38000, maxCount = 2 }, -- Red Gem
+	{ id = 3037, chance = 34000, maxCount = 2 }, -- Yellow Gem
+	{ id = 23374, chance = 32000, maxCount = 11 }, -- Ultimate Spirit Potion
+	{ id = 25759, chance = 25000, maxCount = 199 }, -- Royal Star
+	{ id = 7439, chance = 20000, maxCount = 19 }, -- Berserk Potion
+	{ id = 3041, chance = 17400, maxCount = 2 }, -- Blue Gem
+	{ id = 7440, chance = 15800, maxCount = 19 }, -- Mastermind Potion
+	{ id = 281, chance = 15400 }, -- Giant Shimmering Pearl
+	{ id = 826, chance = 14600 }, -- Magma Coat
+	{ id = 3065, chance = 13000 }, -- Terra Rod
+	{ id = 7443, chance = 12600, maxCount = 19 }, -- Bullseye Potion
+	{ id = 827, chance = 12600 }, -- Magma Monocle
+	{ id = 49271, chance = 12300, maxCount = 19 }, -- Transcendence Potion
+	{ id = 9058, chance = 11100 }, -- Gold Ingot
+	{ id = 3043, chance = 10700 }, -- Crystal Coin
+	{ id = 3036, chance = 9500, maxCount = 2 }, -- Violet Gem
+	{ id = 817, chance = 8700 }, -- Magma Amulet
+	{ id = 22516, chance = 8700, maxCount = 5 }, -- Silver Token
+	{ id = 811, chance = 7900 }, -- Terra Mantle
+	{ id = 812, chance = 7500 }, -- Terra Legs
+	{ id = 30059, chance = 6300 }, -- Giant Ruby
+	{ id = 30061, chance = 5500 }, -- Giant Sapphire
+	{ id = 830, chance = 3600 }, -- Terra Hood
+	{ id = 814, chance = 2000 }, -- Terra Amulet
+	{ id = 30396, chance = 400 }, -- Cobra Axe
 }
 
 monster.attacks = {

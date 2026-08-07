@@ -77,16 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 5 },
-	{ name = "ogre ear stud", chance = 17270 },
-	{ name = "ogre nose ring", chance = 15830 },
-	{ name = "pair of iron fists", chance = 2160 },
-	{ name = "meat", chance = 8630, maxCount = 5 },
-	{ name = "diamond sceptre", chance = 5760 },
-	{ name = "war hammer", chance = 2160 },
-	{ name = "metal spats", chance = 1440 },
-	{ name = "skull fetish", chance = 1440 },
-	{ name = "stone skin amulet", chance = 4320 },
+	{ id = 3035, chance = 75000, maxCount = 4 }, -- Platinum Coin
+	{ id = 3029, chance = 18400, maxCount = 2 }, -- Small Sapphire
+	{ id = 22188, chance = 17900 }, -- Ogre Ear Stud
+	{ id = 3577, chance = 15700, maxCount = 2 }, -- Meat
+	{ id = 22189, chance = 14600 }, -- Ogre Nose Ring
+	{ id = 16125, chance = 6900 }, -- Cyan Crystal Fragment
+	{ id = 3032, chance = 5700 }, -- Small Emerald
+	{ id = 7387, chance = 4800 }, -- Diamond Sceptre
+	{ id = 22191, chance = 3300 }, -- Skull Fetish
+	{ id = 3279, chance = 3200 }, -- War Hammer
+	{ id = 22193, chance = 2700 }, -- Onyx Chip
+	{ id = 3037, chance = 2700 }, -- Yellow Gem
+	{ id = 3039, chance = 2300 }, -- Red Gem
+	{ id = 21169, chance = 2000 }, -- Metal Spats
+	{ id = 17828, chance = 1700 }, -- Pair of Iron Fists
+	{ id = 16122, chance = 1200 }, -- Green Crystal Splinter
+	{ id = 22171, chance = 1100 }, -- Ogre Klubba
+	{ id = 3081, chance = 870 }, -- Stone Skin Amulet
+	{ id = 677, chance = 870, maxCount = 2 }, -- Small Enchanted Emerald
+	{ id = 3041, chance = 740 }, -- Blue Gem
 }
 
 monster.attacks = {

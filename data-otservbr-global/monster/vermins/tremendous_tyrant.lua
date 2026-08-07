@@ -76,26 +76,27 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 24 },
-	{ name = "gold ingot", chance = 11820, maxCount = 2 },
-	{ id = 3039, chance = 14550, maxCount = 1 }, -- red gem
-	{ name = "violet crystal shard", chance = 6360, maxCount = 3 },
-	{ name = "green crystal shard", chance = 5450 },
-	{ name = "blue crystal shard", chance = 5450 },
-	{ name = "tremendous tyrant shell", chance = 4550 },
-	{ name = "yellow gem", chance = 9090, maxCount = 1 },
-	{ name = "spellbook of warding", chance = 8180 },
-	{ name = "wand of starstorm", chance = 910 },
-	{ name = "ice rapier", chance = 1820 },
-	{ name = "hailstorm rod", chance = 2730 },
-	{ name = "knight axe", chance = 4550 },
-	{ name = "dragonbone staff", chance = 3640 },
-	{ name = "tremendous tyrant head", chance = 8180 },
-	{ name = "wand of cosmic energy", chance = 2730 },
-	{ name = "warrior's shield", chance = 1820 },
-	{ name = "elven amulet", chance = 2730 },
-	{ name = "focus cape", chance = 1820 },
-	{ name = "glacier robe", chance = 4555 },
+	{ id = 3035, chance = 100000, maxCount = 28 }, -- Platinum Coin
+	{ id = 9058, chance = 13000 }, -- Gold Ingot
+	{ id = 3039, chance = 9500 }, -- Red Gem
+	{ id = 16120, chance = 8100 }, -- Violet Crystal Shard
+	{ id = 16121, chance = 6600 }, -- Green Crystal Shard
+	{ id = 16119, chance = 6500 }, -- Blue Crystal Shard
+	{ id = 36784, chance = 5200 }, -- Tremendous Tyrant Shell
+	{ id = 3037, chance = 5000 }, -- Yellow Gem
+	{ id = 8073, chance = 5000 }, -- Spellbook of Warding
+	{ id = 3284, chance = 3900 }, -- Ice Rapier
+	{ id = 822, chance = 3800 }, -- Lightning Legs
+	{ id = 3318, chance = 3700 }, -- Knight Axe
+	{ id = 7430, chance = 3700 }, -- Dragonbone Staff
+	{ id = 36783, chance = 3400 }, -- Tremendous Tyrant Head
+	{ id = 8092, chance = 3300 }, -- Wand of Starstorm
+	{ id = 3073, chance = 3100 }, -- Wand of Cosmic Energy
+	{ id = 3067, chance = 3000 }, -- Hailstorm Rod
+	{ id = 824, chance = 2500 }, -- Glacier Robe
+	{ id = 14042, chance = 2500 }, -- Warrior's Shield
+	{ id = 8043, chance = 2400 }, -- Focus Cape
+	{ id = 3082, chance = 2000 }, -- Elven Amulet
 }
 
 monster.attacks = {

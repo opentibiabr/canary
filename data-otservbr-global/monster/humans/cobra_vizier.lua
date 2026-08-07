@@ -76,23 +76,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 85480, maxCount = 4 },
-	{ name = "terra rod", chance = 43000 },
-	{ name = "snakebite rod", chance = 20970 },
-	{ name = "cobra crest", chance = 16130 },
-	{ name = "terra hood", chance = 13710 },
-	{ name = "cyan crystal fragment", chance = 10805 },
-	{ name = "terra boots", chance = 9680 },
-	{ id = 281, chance = 8870 }, -- giant shimmering pearl (green)
-	{ id = 3039, chance = 6450 }, -- red gem
-	{ name = "emerald bangle", chance = 5650 },
-	{ name = "gemmed figurine", chance = 4840 },
-	{ name = "green crystal fragment", chance = 3230 },
-	{ name = "red crystal fragment", chance = 3230 },
-	{ name = "serpent sword", chance = 2420 },
-	{ name = "violet crystal shard", chance = 2420 },
-	{ name = "green gem", chance = 1610 },
-	{ name = "onyx chip", chance = 1610, maxCount = 3 },
+	{ id = 3035, chance = 71000, maxCount = 4 }, -- Platinum Coin
+	{ id = 3065, chance = 32000 }, -- Terra Rod
+	{ id = 31678, chance = 14600 }, -- Cobra Crest
+	{ id = 813, chance = 14000 }, -- Terra Boots
+	{ id = 830, chance = 13200 }, -- Terra Hood
+	{ id = 3066, chance = 12400 }, -- Snakebite Rod
+	{ id = 16125, chance = 10800 }, -- Cyan Crystal Fragment
+	{ id = 3039, chance = 7100 }, -- Red Gem
+	{ id = 282, chance = 6900 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 16127, chance = 5100 }, -- Green Crystal Fragment
+	{ id = 24392, chance = 4300 }, -- Gemmed Figurine
+	{ id = 16120, chance = 4100 }, -- Violet Crystal Shard
+	{ id = 3010, chance = 3400 }, -- Emerald Bangle
+	{ id = 3038, chance = 3000 }, -- Green Gem
+	{ id = 16126, chance = 2800 }, -- Red Crystal Fragment
+	{ id = 3297, chance = 2300 }, -- Serpent Sword
+	{ id = 22193, chance = 930, maxCount = 3 }, -- Onyx Chip
 }
 
 monster.attacks = {

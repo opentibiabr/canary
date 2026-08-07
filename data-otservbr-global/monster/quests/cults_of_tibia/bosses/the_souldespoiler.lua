@@ -82,43 +82,41 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "curious matter", chance = 8920, maxCount = 10 },
-	{ id = 23516, chance = 20000 }, -- instable proto matter
-	{ id = 282, chance = 26900 }, -- giant shimmering pearl (brown)
-	{ name = "wand of defiance", chance = 8920 },
-	{ name = "rift lance", chance = 13200 },
-	{ name = "rift crossbow", chance = 7620 },
-	{ name = "haunted blade", chance = 9700 },
-	{ name = "silver token", chance = 2320 },
-	{ name = "gold token", chance = 1532 },
-	{ name = "sapphire hammer", chance = 14000 },
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 29840, maxCount = 35 },
-	{ name = "wand of defiance", chance = 8723 },
-	{ name = "yellow gem", chance = 29460 },
-	{ name = "blue gem", chance = 21892 },
-	{ name = "medusa shield", chance = 7270 },
-	{ name = "underworld rod", chance = 9510 },
-	{ name = "mysterious remains", chance = 100000 },
-	{ name = "prismatic quartz", chance = 13390, maxCount = 10 },
-	{ name = "small diamond", chance = 12760, maxCount = 10 },
-	{ name = "small amethyst", chance = 14700, maxCount = 10 },
-	{ name = "small topaz", chance = 11520, maxCount = 10 },
-	{ name = "small sapphire", chance = 13790, maxCount = 10 },
-	{ name = "small emerald", chance = 14700, maxCount = 10 },
-	{ name = "small amethyst", chance = 12259, maxCount = 10 },
-	{ name = "odd organ", chance = 100000 },
-	{ name = "energy bar", chance = 16872, maxCount = 3 },
-	{ name = "ultimate health potion", chance = 27652, maxCount = 10 },
-	{ name = "great mana potion", chance = 33721, maxCount = 10 },
-	{ name = "great spirit potion", chance = 25690, maxCount = 10 },
-	{ name = "blade of corruption", chance = 3775 },
-	{ name = "magma boots", chance = 15890 },
-	{ name = "spark sphere", chance = 80000 },
-	{ name = "spellbook of lost souls", chance = 7890 },
-	{ name = "shield of corruption", chance = 150 },
-	{ name = "plasma pearls", chance = 100000 },
-	{ name = "spiked squelcher", chance = 16892, maxCount = 2 },
+	{ id = 23535, chance = 100000, maxCount = 9 }, -- Energy Bar
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 3035, chance = 100000, maxCount = 39 }, -- Platinum Coin
+	{ id = 3031, chance = 100000, maxCount = 362 }, -- Gold Coin
+	{ id = 23510, chance = 98000 }, -- Odd Organ
+	{ id = 23506, chance = 98000 }, -- Plasma Pearls
+	{ id = 23518, chance = 66000, maxCount = 18 }, -- Spark Sphere
+	{ id = 23511, chance = 63000, maxCount = 19 }, -- Curious Matter
+	{ id = 24962, chance = 63000, maxCount = 19 }, -- Prismatic Quartz
+	{ id = 7642, chance = 56000, maxCount = 18 }, -- Great Spirit Potion
+	{ id = 7643, chance = 55000, maxCount = 18 }, -- Ultimate Health Potion
+	{ id = 238, chance = 48000, maxCount = 12 }, -- Great Mana Potion
+	{ id = 22721, chance = 27000 }, -- Gold Token
+	{ id = 7452, chance = 26000, maxCount = 2 }, -- Spiked Squelcher
+	{ id = 3029, chance = 26000, maxCount = 18 }, -- Small Sapphire
+	{ id = 22516, chance = 26000 }, -- Silver Token
+	{ id = 3032, chance = 23000, maxCount = 17 }, -- Small Emerald
+	{ id = 7407, chance = 21000 }, -- Haunted Blade
+	{ id = 281, chance = 21000 }, -- Giant Shimmering Pearl
+	{ id = 16096, chance = 19400 }, -- Wand of Defiance
+	{ id = 3037, chance = 19400 }, -- Yellow Gem
+	{ id = 9057, chance = 17700, maxCount = 16 }, -- Small Topaz
+	{ id = 3039, chance = 16100 }, -- Red Gem
+	{ id = 3041, chance = 16100 }, -- Blue Gem
+	{ id = 3038, chance = 14500 }, -- Green Gem
+	{ id = 3028, chance = 14500, maxCount = 17 }, -- Small Diamond
+	{ id = 8082, chance = 11300 }, -- Underworld Rod
+	{ id = 3033, chance = 11300, maxCount = 18 }, -- Small Amethyst
+	{ id = 818, chance = 9700 }, -- Magma Boots
+	{ id = 7437, chance = 9700 }, -- Sapphire Hammer
+	{ id = 7419, chance = 8100 }, -- Dreaded Cleaver
+	{ id = 3036, chance = 4800 }, -- Violet Gem
+	{ id = 3436, chance = 4800 }, -- Medusa Shield
+	{ id = 8072, chance = 3200 }, -- Spellbook of Enlightenment
+	{ id = 7435, chance = 1600 }, -- Impaler
 }
 
 monster.attacks = {

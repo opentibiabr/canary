@@ -81,37 +81,35 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3019, chance = 550 }, -- demonbone amulet
-	{ name = "small ruby", chance = 20000, maxCount = 4 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "gold coin", chance = 100000, maxCount = 100 },
-	{ name = "small emerald", chance = 20000, maxCount = 5 },
-	{ name = "platinum coin", chance = 100000, maxCount = 15 },
-	{ name = "violet gem", chance = 830 },
-	{ name = "green gem", chance = 869 },
-	{ id = 3039, chance = 13850 }, -- red gem
-	{ name = "dragon hammer", chance = 9000 },
-	{ name = "heavy mace", chance = 400 },
-	{ name = "war axe", chance = 400 },
-	{ name = "golden armor", chance = 550 },
-	{ name = "golden legs", chance = 500 },
-	{ name = "knight armor", chance = 4990 },
-	{ name = "mastermind shield", chance = 800 },
-	{ id = 3481, chance = 280 }, -- closed trap
-	{ name = "ham", chance = 60000, maxCount = 8 },
-	{ name = "soul orb", chance = 33333 },
-	{ name = "demonic essence", chance = 45333 },
-	{ name = "flask of demonic blood", chance = 25000, maxCount = 4 },
-	{ name = "onyx arrow", chance = 11111, maxCount = 15 },
-	{ name = "assassin star", chance = 25000, maxCount = 10 },
-	{ name = "titan axe", chance = 4430 },
-	{ name = "spiked squelcher", chance = 7761 },
-	{ name = "great mana potion", chance = 35000 },
-	{ name = "great health potion", chance = 32000 },
-	{ name = "skullcracker armor", chance = 400 },
-	{ name = "gold ingot", chance = 7692, maxCount = 2 },
+	{ id = 3031, chance = 88000, maxCount = 198 }, -- Gold Coin
+	{ id = 3035, chance = 86000, maxCount = 15 }, -- Platinum Coin
+	{ id = 3582, chance = 45000 }, -- Ham
+	{ id = 6499, chance = 30000 }, -- Demonic Essence
+	{ id = 5944, chance = 23000 }, -- Soul Orb
+	{ id = 238, chance = 21000, maxCount = 3 }, -- Great Mana Potion
+	{ id = 239, chance = 21000, maxCount = 3 }, -- Great Health Potion
+	{ id = 6558, chance = 20000 }, -- Flask of Demonic Blood
+	{ id = 7368, chance = 16000, maxCount = 10 }, -- Assassin Star
+	{ id = 3032, chance = 13700, maxCount = 5 }, -- Small Emerald
+	{ id = 9057, chance = 13100, maxCount = 5 }, -- Small Topaz
+	{ id = 3030, chance = 13000, maxCount = 5 }, -- Small Ruby
+	{ id = 3028, chance = 12800, maxCount = 5 }, -- Small Diamond
+	{ id = 3033, chance = 12600, maxCount = 5 }, -- Small Amethyst
+	{ id = 7365, chance = 10000, maxCount = 15 }, -- Onyx Arrow
+	{ id = 3039, chance = 9700 }, -- Red Gem
+	{ id = 281, chance = 6600 }, -- Giant Shimmering Pearl (Green)
+	{ id = 9058, chance = 5400, maxCount = 2 }, -- Gold Ingot
+	{ id = 7413, chance = 4800 }, -- Titan Axe
+	{ id = 3370, chance = 4300 }, -- Knight Armor
+	{ id = 7452, chance = 3900 }, -- Spiked Squelcher
+	{ id = 3038, chance = 2500 }, -- Green Gem
+	{ id = 3342, chance = 1400 }, -- War Axe
+	{ id = 3036, chance = 1000 }, -- Violet Gem
+	{ id = 3019, chance = 380 }, -- Demonbone Amulet
+	{ id = 3360, chance = 360 }, -- Golden Armor
+	{ id = 3414, chance = 330 }, -- Mastermind Shield
+	{ id = 3340, chance = 290 }, -- Heavy Mace
+	{ id = 3481, chance = 190 }, -- Closed Trap
 }
 
 monster.attacks = {

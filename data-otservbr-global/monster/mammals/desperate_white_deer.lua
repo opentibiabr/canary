@@ -64,9 +64,9 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "ham", chance = 20000, maxCount = 3 },
-	{ name = "white deer antlers", chance = 20000 },
-	{ name = "white deer skin", chance = 20000 },
+	{ id = 12544, chance = 22000 }, -- White Deer Antlers
+	{ id = 12545, chance = 20000 }, -- White Deer Skin
+	{ id = 3582, chance = 19400 }, -- Ham
 }
 
 monster.attacks = {}

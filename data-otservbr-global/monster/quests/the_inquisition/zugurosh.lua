@@ -77,31 +77,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6499, chance = 100000 }, -- demonic essence
-	{ id = 3031, chance = 100000, maxCount = 194 }, -- gold coin
-	{ id = 8899, chance = 54000 }, -- slightly rusted legs
-	{ id = 8896, chance = 45000 }, -- slightly rusted armor
-	{ id = 238, chance = 27000 }, -- great mana potion
-	{ id = 7642, chance = 26000 }, -- great spirit potion
-	{ id = 239, chance = 23000 }, -- great health potion
-	{ id = 7643, chance = 22000 }, -- ultimate health potion
-	{ id = 9058, chance = 21000 }, -- gold ingot
-	{ id = 3035, chance = 21000, maxCount = 30 }, -- platinum coin
-	{ id = 6104, chance = 21000 }, -- jewel case
-	{ id = 5944, chance = 21000, maxCount = 10 }, -- soul orb
-	{ id = 3034, chance = 18000, maxCount = 30 }, -- talon
-	{ id = 5911, chance = 17000, maxCount = 10 }, -- red piece of cloth
-	{ id = 3017, chance = 17000 }, -- silver brooch
-	{ id = 5912, chance = 15000, maxCount = 10 }, -- blue piece of cloth
-	{ id = 5909, chance = 15000, maxCount = 10 }, -- white piece of cloth
-	{ id = 5910, chance = 14000, maxCount = 10 }, -- green piece of cloth
-	{ id = 5914, chance = 14000, maxCount = 10 }, -- yellow piece of cloth
-	{ id = 5913, chance = 12000, maxCount = 10 }, -- brown piece of cloth
-	{ id = 5954, chance = 9700, maxCount = 2 }, -- demon horn
-	{ id = 3079, chance = 8700 }, -- boots of haste
-	{ id = 3057, chance = 6000 }, -- amulet of loss
-	{ id = 3554, chance = 4500 }, -- steel boots
-	{ id = 3555, chance = 1500 }, -- golden boots
+	{ id = 6499, chance = 100000 }, -- Demonic Essence
+	{ id = 3031, chance = 100000, maxCount = 195 }, -- Gold Coin
+	{ id = 8899, chance = 52000 }, -- Slightly Rusted Legs
+	{ id = 8896, chance = 48000 }, -- Slightly Rusted Armor
+	{ id = 7642, chance = 26000 }, -- Great Spirit Potion
+	{ id = 238, chance = 26000 }, -- Great Mana Potion
+	{ id = 239, chance = 25000 }, -- Great Health Potion
+	{ id = 7643, chance = 24000 }, -- Ultimate Health Potion
+	{ id = 3035, chance = 21000, maxCount = 30 }, -- Platinum Coin
+	{ id = 5944, chance = 21000, maxCount = 10 }, -- Soul Orb
+	{ id = 9058, chance = 21000 }, -- Gold Ingot
+	{ id = 6104, chance = 21000 }, -- Jewel Case
+	{ id = 3017, chance = 19700 }, -- Silver Brooch
+	{ id = 3034, chance = 18600, maxCount = 30 }, -- Talon
+	{ id = 5911, chance = 17100, maxCount = 10 }, -- Red Piece of Cloth
+	{ id = 5912, chance = 15800, maxCount = 10 }, -- Blue Piece of Cloth
+	{ id = 5909, chance = 14700, maxCount = 10 }, -- White Piece of Cloth
+	{ id = 5913, chance = 14300, maxCount = 10 }, -- Brown Piece of Cloth
+	{ id = 5910, chance = 14000, maxCount = 10 }, -- Green Piece of Cloth
+	{ id = 5914, chance = 13900, maxCount = 10 }, -- Yellow Piece of Cloth
+	{ id = 5954, chance = 9300, maxCount = 2 }, -- Demon Horn
+	{ id = 3079, chance = 8900 }, -- Boots of Haste
+	{ id = 3057, chance = 5000 }, -- Amulet of Loss
+	{ id = 3554, chance = 4800 }, -- Steel Boots
+	{ id = 3555, chance = 1200 }, -- Golden Boots
 }
 
 monster.attacks = {

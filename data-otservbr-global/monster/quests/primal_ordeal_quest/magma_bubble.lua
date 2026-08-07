@@ -70,35 +70,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 100000, maxCount = 60 },
-	{ name = "ultimate mana potion", chance = 32653, maxCount = 14 },
-	{ name = "ultimate health potion", chance = 30612, maxCount = 14 },
-	{ name = "bullseye potion", chance = 24490, maxCount = 5 },
-	{ name = "berserk potion", chance = 22449, maxCount = 5 },
-	{ name = "mastermind potion", chance = 18367, maxCount = 5 },
-	{ id = 49271, chance = 18367, maxCount = 5 }, -- transcendence potion
-	{ name = "giant amethyst", chance = 6122 },
-	{ name = "giant ruby", chance = 4082 },
-	{ name = "giant emerald", chance = 4082 },
-	{ name = "giant sapphire", chance = 2041 },
-	{ name = "giant topaz", chance = 2041 },
-	{ name = "fiery tear", chance = 1000 },
-	{ name = "arboreal tome", chance = 250 },
-	{ name = "arboreal crown", chance = 250 },
-	{ name = "spiritthorn armor", id = 39147, chance = 250 },
-	{ name = "spiritthorn helmet", id = 39148, chance = 250 },
-	{ name = "ethereal coned hat", id = 50188, chance = 250 },
-	{ name = "alicorn headguard", chance = 250 },
-	{ name = "alicorn quiver", chance = 250 },
-	{ name = "arcanomancer regalia", chance = 250 },
-	{ name = "arcanomancer folio", chance = 250 },
-	{ id = 39183, chance = 250 }, -- name = "charged arcanomancer sigil"
-	{ id = 39186, chance = 250 }, -- name = "charged arboreal ring"
-	{ id = 39180, chance = 250 }, -- name = "charged alicorn ring"
-	{ id = 39177, chance = 250 }, -- name = "charged spiritthorn ring"
-	{ id = 50147, chance = 250 }, -- name = "charged ethereal ring"
-	{ name = "portable flame", chance = 250 },
-	{ name = "firefighting axe", chance = 250 },
+	{ id = 3043, chance = 100000, maxCount = 5 }, -- Crystal Coin
+	{ id = 23373, chance = 45000, maxCount = 17 }, -- Ultimate Mana Potion
+	{ id = 7439, chance = 37000, maxCount = 6 }, -- Berserk Potion
+	{ id = 7643, chance = 37000, maxCount = 16 }, -- Ultimate Health Potion
+	{ id = 32622, chance = 32000, maxCount = 3 }, -- Giant Amethyst
+	{ id = 7440, chance = 32000, maxCount = 6 }, -- Mastermind Potion
+	{ id = 30061, chance = 30000, maxCount = 2 }, -- Giant Sapphire
+	{ id = 39543, chance = 24000 }, -- Smoldering Eye
+	{ id = 7443, chance = 23000, maxCount = 7 }, -- Bullseye Potion
+	{ id = 30060, chance = 21000, maxCount = 2 }, -- Giant Emerald
+	{ id = 23374, chance = 18300, maxCount = 14 }, -- Ultimate Spirit Potion
+	{ id = 32623, chance = 15500, maxCount = 3 }, -- Giant Topaz
+	{ id = 49271, chance = 8500, maxCount = 6 }, -- Transcendence Potion
+	{ id = 50188, chance = 1400 }, -- Ethereal Coned Hat
+	{ id = 39040, chance = 1400 }, -- Fiery Tear
 }
 
 monster.attacks = {

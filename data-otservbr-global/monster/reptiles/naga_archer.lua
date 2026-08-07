@@ -74,21 +74,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 100000, maxCount = 17 },
-	{ name = "naga archer scales", chance = 15050, maxCount = 3 },
-	{ name = "naga earring", chance = 12850, maxCount = 3 },
-	{ name = "naga armring", chance = 5960, maxCount = 3 },
-	{ id = 3007, chance = 5330 }, -- crystal ring
-	{ name = "hunting spear", chance = 3760 },
-	{ name = "crossbow", chance = 3130 },
-	{ name = "blue crystal shard", chance = 1880 },
-	{ name = "bow", chance = 1570 },
-	{ name = "elvish bow", chance = 750 },
-	{ name = "ornate crossbow", chance = 630 },
-	{ name = "crystal crossbow", chance = 420 },
-	{ id = 7441, chance = 630 }, -- ice cube
-	{ name = "emerald bangle", chance = 930 },
-	{ name = "silver brooch", chance = 310 },
+	{ id = 3035, chance = 100000, maxCount = 12 }, -- Platinum Coin
+	{ id = 39413, chance = 15800, maxCount = 3 }, -- Naga Archer Scales
+	{ id = 39412, chance = 14000 }, -- Naga Earring
+	{ id = 39411, chance = 6900 }, -- Naga Armring
+	{ id = 3007, chance = 6100 }, -- Crystal Ring
+	{ id = 3347, chance = 3300 }, -- Hunting Spear
+	{ id = 3349, chance = 3200 }, -- Crossbow
+	{ id = 16119, chance = 1900 }, -- Blue Crystal Shard
+	{ id = 3350, chance = 1800 }, -- Bow
+	{ id = 7441, chance = 990 }, -- Ice Cube
+	{ id = 3017, chance = 960 }, -- Silver Brooch
+	{ id = 14247, chance = 510 }, -- Ornate Crossbow
+	{ id = 3010, chance = 480 }, -- Emerald Bangle
+	{ id = 7438, chance = 450 }, -- Elvish Bow
+	{ id = 24392, chance = 270 }, -- Gemmed Figurine
+	{ id = 16163, chance = 270 }, -- Crystal Crossbow
+	{ id = 7443, chance = 240 }, -- Bullseye Potion
 }
 
 monster.attacks = {

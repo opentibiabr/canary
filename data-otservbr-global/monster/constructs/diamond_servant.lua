@@ -79,24 +79,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 44000, maxCount = 100 },
-	{ name = "gold coin", chance = 50000, maxCount = 79 },
-	{ name = "yellow gem", chance = 550 },
-	{ name = "might ring", chance = 940 },
-	{ name = "life crystal", chance = 9150 },
-	{ name = "wand of cosmic energy", chance = 530 },
-	{ name = "soul orb", chance = 45000 },
-	{ name = "bonebreaker", chance = 10 },
-	{ name = "mastermind potion", chance = 400 },
-	{ name = "strong health potion", chance = 5790 },
-	{ name = "strong mana potion", chance = 5980 },
-	{ name = "lightning pendant", chance = 710 },
-	{ name = "crystalline armor", chance = 20 },
-	{ name = "gear wheel", chance = 5000 },
-	{ id = 9063, chance = 5320 }, -- crystal pedestal
-	{ name = "shockwave amulet", chance = 110 },
-	{ name = "gear crystal", chance = 5000 },
-	{ name = "slime mould", chance = 480 },
+	{ id = 3031, chance = 94000, maxCount = 180 }, -- Gold Coin
+	{ id = 5944, chance = 45000 }, -- Soul Orb
+	{ id = 3061, chance = 9400 }, -- Life Crystal
+	{ id = 237, chance = 6000 }, -- Strong Mana Potion
+	{ id = 236, chance = 5900 }, -- Strong Health Potion
+	{ id = 8775, chance = 5100 }, -- Gear Wheel
+	{ id = 9065, chance = 5100 }, -- Crystal Pedestal (Cyan)
+	{ id = 9655, chance = 5000 }, -- Gear Crystal
+	{ id = 3048, chance = 920 }, -- Might Ring
+	{ id = 816, chance = 750 }, -- Lightning Pendant
+	{ id = 3037, chance = 540 }, -- Yellow Gem
+	{ id = 3073, chance = 530 }, -- Wand of Cosmic Energy
+	{ id = 12601, chance = 530 }, -- Slime Mould
+	{ id = 7440, chance = 410 }, -- Mastermind Potion
+	{ id = 9304, chance = 110 }, -- Shockwave Amulet
+	{ id = 8050, chance = 19 }, -- Crystalline Armor
+	{ id = 7428, chance = 11 }, -- Bonebreaker
 }
 
 monster.attacks = {

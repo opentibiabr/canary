@@ -77,25 +77,25 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 80000, maxCount = 5 },
-	{ name = "quara pincers", chance = 18800, maxCount = 1 },
-	{ name = "great mana potion", chance = 9720, maxCount = 2 },
-	{ name = "great health potion", chance = 9010, maxCount = 2 },
-	{ name = "small ruby", chance = 9010, maxCount = 2 },
-	{ name = "small diamond", chance = 7060, maxCount = 2 },
-	{ name = "mind stone", chance = 6140 },
-	{ id = 3039, chance = 5120 }, -- red gem
-	{ name = "shrimp", chance = 4810, maxCount = 5 },
-	{ name = "vortex bolt", chance = 3790, maxCount = 5 },
-	{ id = 281, chance = 1430 }, -- giant shimmering pearl (green)
-	{ name = "warrior helmet", chance = 1430 },
-	{ name = "fish fin", chance = 920 },
-	{ name = "crown armor", chance = 611 },
-	{ id = 3053, chance = 410 }, -- time ring
-	{ name = "talon", chance = 310 },
-	{ name = "glacier robe", chance = 200 },
-	{ name = "giant shrimp", chance = 100 },
-	{ name = "twiceslicer", chance = 100 },
+	{ id = 3035, chance = 81000, maxCount = 5 }, -- Platinum Coin
+	{ id = 11490, chance = 18600 }, -- Quara Pincers
+	{ id = 238, chance = 10300, maxCount = 2 }, -- Great Mana Potion
+	{ id = 239, chance = 9300, maxCount = 2 }, -- Great Health Potion
+	{ id = 3030, chance = 7900, maxCount = 2 }, -- Small Ruby
+	{ id = 3028, chance = 7600, maxCount = 2 }, -- Small Diamond
+	{ id = 3062, chance = 6700 }, -- Mind Stone
+	{ id = 3581, chance = 5100 }, -- Shrimp
+	{ id = 3039, chance = 4900 }, -- Red Gem
+	{ id = 14252, chance = 3900, maxCount = 5 }, -- Vortex Bolt
+	{ id = 282, chance = 1800 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 3369, chance = 1600 }, -- Warrior Helmet
+	{ id = 5895, chance = 1500 }, -- Fish Fin
+	{ id = 3053, chance = 510 }, -- Time Ring
+	{ id = 3381, chance = 420 }, -- Crown Armor
+	{ id = 3034, chance = 290 }, -- Talon
+	{ id = 824, chance = 230 }, -- Glacier Robe
+	{ id = 12318, chance = 96 }, -- Giant Shrimp
+	{ id = 11657, chance = 32 }, -- Twiceslicer
 }
 
 monster.attacks = {

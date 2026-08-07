@@ -81,22 +81,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 79040 },
-	{ name = "great mana potion", chance = 62450, maxCount = 3 },
-	-- {name = "giant shimmering pearl", chance = 10040}, -- unknown item: giant shimmering pearl
-	{ name = "blue gem", chance = 5240 },
-	{ id = 23533, chance = 4370 }, -- ring of red plasma
-	{ name = "wand of voodoo", chance = 4370 },
-	{ id = 23531, chance = 3490 }, -- ring of green plasma
-	{ id = 23529, chance = 3060 }, -- ring of blue plasma
-	{ name = "violet gem", chance = 2620 },
-	{ name = "glacier amulet", chance = 2620 },
-	{ name = "wand of everblazing", chance = 2180 },
-	{ name = "wand of defiance", chance = 1750 },
-	{ name = "wand of starstorm", chance = 1310 },
-	{ name = "stone skin amulet", chance = 1310 },
-	{ name = "alloy legs", chance = 440 },
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 56000 }, -- Crystal Coin
+	{ id = 238, chance = 50000, maxCount = 3 }, -- Great Mana Potion
+	{ id = 282, chance = 5700 }, -- Giant Shimmering Pearl (Brown)
+	{ id = 3041, chance = 4400 }, -- Blue Gem
+	{ id = 23533, chance = 2400 }, -- Ring of Red Plasma
+	{ id = 50150, chance = 2300 }, -- Ring of Orange Plasma
+	{ id = 8094, chance = 2300 }, -- Wand of Voodoo
+	{ id = 16115, chance = 2200 }, -- Wand of Everblazing
+	{ id = 23529, chance = 2100 }, -- Ring of Blue Plasma
+	{ id = 23531, chance = 1700 }, -- Ring of Green Plasma
+	{ id = 16096, chance = 1600 }, -- Wand of Defiance
+	{ id = 3036, chance = 1500 }, -- Violet Gem
+	{ id = 815, chance = 1100 }, -- Glacier Amulet
+	{ id = 3081, chance = 690 }, -- Stone Skin Amulet
+	{ id = 8092, chance = 500 }, -- Wand of Starstorm
+	{ id = 21168, chance = 440 }, -- Alloy Legs
 }
 
 monster.attacks = {

@@ -68,24 +68,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 80000, maxCount = 5 },
-	{ name = "great health potion", chance = 40000, maxCount = 5 },
-	{ name = "great mana potion", chance = 40000, maxCount = 5 },
-	{ name = "great spirit potion", chance = 40000, maxCount = 5 },
-	{ name = "ham", chance = 35250, maxCount = 5 },
-	{ name = "meat", chance = 35250, maxCount = 5 },
-	{ name = "minotaur leather", chance = 26500, maxCount = 2 },
-	{ name = "moohtant horn", chance = 21000, maxCount = 2 },
-	{ name = "small diamond", chance = 17900, maxCount = 5 },
-	{ name = "small emerald", chance = 16350, maxCount = 5 },
-	{ name = "small ruby", chance = 15500, maxCount = 5 },
-	{ name = "small sapphire", chance = 14200, maxCount = 5 },
-	{ name = "giant pacifier", chance = 1920 },
-	{ name = "moohtant cudgel", chance = 1800 },
-	{ name = "red piece of cloth", chance = 1500 },
-	{ name = "yellow gem", chance = 1200 },
-	{ name = "one hit wonder", chance = 350 },
+	{ id = 21199, chance = 100000 }, -- Giant Pacifier
+	{ id = 21200, chance = 100000, maxCount = 3 }, -- Moohtant Horn
+	{ id = 5878, chance = 100000 }, -- Minotaur Leather
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 3031, chance = 100000, maxCount = 374 }, -- Gold Coin
+	{ id = 3582, chance = 54000, maxCount = 9 }, -- Ham
+	{ id = 3577, chance = 46000, maxCount = 9 }, -- Meat
+	{ id = 7642, chance = 40000, maxCount = 9 }, -- Great Spirit Potion
+	{ id = 238, chance = 34000, maxCount = 9 }, -- Great Mana Potion
+	{ id = 239, chance = 26000, maxCount = 9 }, -- Great Health Potion
+	{ id = 3033, chance = 16900, maxCount = 9 }, -- Small Amethyst
+	{ id = 3030, chance = 16300, maxCount = 9 }, -- Small Ruby
+	{ id = 3032, chance = 14500, maxCount = 9 }, -- Small Emerald
+	{ id = 3029, chance = 13900, maxCount = 9 }, -- Small Sapphire
+	{ id = 3028, chance = 13900, maxCount = 9 }, -- Small Diamond
+	{ id = 9057, chance = 12700, maxCount = 9 }, -- Small Topaz
+	{ id = 21166, chance = 7200 }, -- Mooh'tah Plate
+	{ id = 5911, chance = 5400 }, -- Red Piece of Cloth
+	{ id = 3041, chance = 4200 }, -- Blue Gem
+	{ id = 3039, chance = 4200 }, -- Red Gem
+	{ id = 3037, chance = 3600 }, -- Yellow Gem
+	{ id = 21219, chance = 1800 }, -- One Hit Wonder
 }
 
 monster.attacks = {

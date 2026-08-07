@@ -79,21 +79,23 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 92000, maxCount = 130 }, -- gold coin
-	{ id = 22193, chance = 3200, maxCount = 2 }, -- onyx chip
-	{ id = 22194, chance = 3200, maxCount = 3 }, -- opal
-	{ id = 3598, chance = 2200, maxCount = 7 }, -- cookie
-	{ id = 8016, chance = 1200, maxCount = 2 }, -- jalapeno pepper
-	{ id = 9057, chance = 1200, maxCount = 2 }, -- small topaz
-	{ id = 3030, chance = 1200, maxCount = 2 }, -- small ruby
-	{ id = 7439, chance = 1200 }, -- berserk potion
-	{ id = 3078, chance = 2200 }, -- mysterious fetish
-	{ id = 22188, chance = 1200 }, -- ogre ear stud
-	{ id = 22189, chance = 1200 }, -- ogre nose ring
-	{ id = 22191, chance = 1200 }, -- skull fetish
-	{ id = 236, chance = 2200, maxCount = 3 }, -- strong health potion
-	{ id = 3279, chance = 600 }, -- war hammer
-	{ id = 22192, chance = 300 }, -- shamanic mask
+	{ id = 3031, chance = 100000, maxCount = 154 }, -- Gold Coin
+	{ id = 22188, chance = 19500 }, -- Ogre Ear Stud
+	{ id = 22189, chance = 18000 }, -- Ogre Nose Ring
+	{ id = 236, chance = 15000 }, -- Strong Health Potion
+	{ id = 22191, chance = 9600 }, -- Skull Fetish
+	{ id = 3598, chance = 8300, maxCount = 5 }, -- Cookie
+	{ id = 3078, chance = 6400 }, -- Mysterious Fetish
+	{ id = 8016, chance = 3500, maxCount = 2 }, -- Jalapeno Pepper
+	{ id = 9057, chance = 3200, maxCount = 2 }, -- Small Topaz
+	{ id = 3030, chance = 2900, maxCount = 3 }, -- Small Ruby
+	{ id = 22193, chance = 2900, maxCount = 2 }, -- Onyx Chip
+	{ id = 22194, chance = 2100, maxCount = 2 }, -- Opal
+	{ id = 3279, chance = 1300 }, -- War Hammer
+	{ id = 22172, chance = 1000 }, -- Ogre Choppa
+	{ id = 7439, chance = 500 }, -- Berserk Potion
+	{ id = 22192, chance = 430 }, -- Shamanic Mask
+	{ id = 7419, chance = 17 }, -- Dreaded Cleaver
 }
 
 monster.attacks = {

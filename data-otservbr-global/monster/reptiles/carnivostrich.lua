@@ -77,16 +77,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 80450, maxCount = 28 },
-	{ name = "small ruby", chance = 16390, maxCount = 8 },
-	{ name = "small emerald", chance = 8330, maxCount = 8 },
-	{ name = "strong mana potion", chance = 4910, maxCount = 4 },
-	{ name = "carnivostrich feather", chance = 3470, maxCount = 4 },
-	{ name = "underworld rod", chance = 2420 },
-	{ name = "wand of voodoo", chance = 2110 },
-	{ name = "blue gem", chance = 2090 },
-	{ name = "spellbook of mind control", chance = 810 },
-	{ name = "boots of haste", chance = 620 },
+	{ id = 3035, chance = 81000, maxCount = 22 }, -- Platinum Coin
+	{ id = 3030, chance = 16400, maxCount = 8 }, -- Small Ruby
+	{ id = 3032, chance = 8200, maxCount = 8 }, -- Small Emerald
+	{ id = 237, chance = 5000, maxCount = 4 }, -- Strong Mana Potion
+	{ id = 40586, chance = 3600, maxCount = 4 }, -- Carnivostrich Feather
+	{ id = 8082, chance = 2400 }, -- Underworld Rod
+	{ id = 3041, chance = 2200 }, -- Blue Gem
+	{ id = 8094, chance = 2100 }, -- Wand of Voodoo
+	{ id = 8074, chance = 800 }, -- Spellbook of Mind Control
+	{ id = 3079, chance = 580 }, -- Boots of Haste
 }
 
 monster.attacks = {

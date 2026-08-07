@@ -67,19 +67,19 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 6558, chance = 100000 }, -- flask of demonic blood
-	{ id = 6299, chance = 100000 }, -- death ring
-	{ id = 6499, chance = 100000 }, -- demonic essence
-	{ id = 10306, chance = 100000 }, -- essence of a bad dream
-	{ id = 3582, chance = 100000, maxCount = 2 }, -- ham
-	{ id = 3035, chance = 90000, maxCount = 10 }, -- platinum coin
-	{ id = 10312, chance = 81000 }, -- scythe leg
-	{ id = 3371, chance = 70000 }, -- knight legs
-	{ id = 5668, chance = 40000 }, -- mysterious voodoo skull
-	{ id = 6525, chance = 28000 }, -- skeleton decoration
-	{ id = 3342, chance = 14000 }, -- war axe
-	{ id = 7418, chance = 10000 }, -- nightmare blade
-	{ id = 3079, chance = 8000 }, -- boots of haste
+	{ id = 6299, chance = 100000 }, -- Death Ring
+	{ id = 6558, chance = 100000 }, -- Flask of Demonic Blood
+	{ id = 3582, chance = 100000 }, -- Ham
+	{ id = 10306, chance = 100000 }, -- Essence of a Bad Dream
+	{ id = 6499, chance = 100000 }, -- Demonic Essence
+	{ id = 3035, chance = 93000, maxCount = 10 }, -- Platinum Coin
+	{ id = 10312, chance = 88000 }, -- Scythe Leg
+	{ id = 3371, chance = 72000 }, -- Knight Legs
+	{ id = 5668, chance = 43000 }, -- Mysterious Voodoo Skull
+	{ id = 6525, chance = 35000 }, -- Skeleton Decoration
+	{ id = 3342, chance = 15300 }, -- War Axe
+	{ id = 3079, chance = 12500 }, -- Boots of Haste
+	{ id = 7418, chance = 9700 }, -- Nightmare Blade
 }
 
 monster.attacks = {

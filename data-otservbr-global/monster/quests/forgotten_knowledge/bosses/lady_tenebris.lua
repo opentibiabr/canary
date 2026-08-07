@@ -76,41 +76,48 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3031, chance = 10000, maxCount = 50 }, -- gold coin
-	{ id = 3035, chance = 10000, maxCount = 50 }, -- platinum coin
-	{ id = 3033, chance = 10000, maxCount = 10 }, -- small amethyst
-	{ id = 3028, chance = 10000, maxCount = 10 }, -- small diamond
-	{ id = 3030, chance = 10000, maxCount = 10 }, -- small ruby
-	{ id = 9057, chance = 10000, maxCount = 10 }, -- small topaz
-	{ id = 238, chance = 10000, maxCount = 100 }, -- great mana potion
-	{ id = 7642, chance = 10000, maxCount = 100 }, -- great spirit potion
-	{ id = 20062, chance = 12000, maxCount = 2 }, -- cluster of solace
-	{ id = 16119, chance = 2000, maxCount = 3 }, -- blue crystal shard
-	{ id = 16121, chance = 5000, maxCount = 5 }, -- green crystal shard
-	{ id = 20062, chance = 2000, maxCount = 2 }, -- cluster of solace
-	{ id = 16120, chance = 5000, maxCount = 3 }, -- violet crystal shard
-	{ id = 281, chance = 6000 }, -- giant shimmering pearl (green)
-	{ id = 3038, chance = 2000 }, -- green gem
-	{ id = 7440, chance = 2000 }, -- mastermind potion
-	{ id = 22195, chance = 2000 }, -- onyx pendant
-	{ id = 3039, chance = 1000 }, -- red gem
-	{ id = 3006, chance = 2000 }, -- ring of the sky
-	{ id = 7451, chance = 2000 }, -- shadow sceptre
-	{ id = 8075, chance = 1000 }, -- spellbook of lost souls
-	{ id = 8073, chance = 1000 }, -- spellbook of warding
-	{ id = 3324, chance = 1000 }, -- skull staff
-	{ id = 3037, chance = 1000 }, -- yellow gem
-	{ id = 16096, chance = 1000 }, -- wand of defiance
-	{ id = 22721, chance = 100000 }, -- gold token
-	{ id = 22516, chance = 100000 }, -- silver token
-	{ id = 3341, chance = 200 }, -- arcane staff
-	{ id = 24973, chance = 200 }, -- shadow mask
-	{ id = 24974, chance = 200 }, -- shadow paint
-	{ id = 22755, chance = 200 }, -- book of lies
-	{ id = 20088, chance = 200 }, -- crude umbral spellbook
-	{ id = 24957, chance = 500, unique = true }, -- part of a rune
-	{ id = 3021, chance = 200 }, -- sapphire amulet
-	{ id = 20089, chance = 200 }, -- umbral spellbook
+	{ id = 3031, chance = 100000, maxCount = 386 }, -- Gold Coin
+	{ id = 3035, chance = 100000, maxCount = 47 }, -- Platinum Coin
+	{ id = 7440, chance = 100000 }, -- Mastermind Potion
+	{ id = 3098, chance = 100000 }, -- Ring of Healing
+	{ id = 3324, chance = 98000 }, -- Skull Staff
+	{ id = 16121, chance = 70000, maxCount = 5 }, -- Green Crystal Shard
+	{ id = 7643, chance = 63000, maxCount = 16 }, -- Ultimate Health Potion
+	{ id = 16119, chance = 59000, maxCount = 5 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 57000, maxCount = 5 }, -- Violet Crystal Shard
+	{ id = 238, chance = 56000, maxCount = 13 }, -- Great Mana Potion
+	{ id = 7642, chance = 52000, maxCount = 14 }, -- Great Spirit Potion
+	{ id = 22195, chance = 48000 }, -- Onyx Pendant
+	{ id = 22721, chance = 30000 }, -- Gold Token
+	{ id = 22516, chance = 26000 }, -- Silver Token
+	{ id = 3032, chance = 26000, maxCount = 18 }, -- Small Emerald
+	{ id = 3039, chance = 22000 }, -- Red Gem
+	{ id = 3030, chance = 22000, maxCount = 19 }, -- Small Ruby
+	{ id = 16096, chance = 20000 }, -- Wand of Defiance
+	{ id = 3037, chance = 18500 }, -- Yellow Gem
+	{ id = 3028, chance = 18500, maxCount = 19 }, -- Small Diamond
+	{ id = 9057, chance = 16700, maxCount = 15 }, -- Small Topaz
+	{ id = 8073, chance = 16700 }, -- Spellbook of Warding
+	{ id = 3006, chance = 14800 }, -- Ring of the Sky
+	{ id = 3038, chance = 14800 }, -- Green Gem
+	{ id = 281, chance = 14800 }, -- Giant Shimmering Pearl
+	{ id = 3033, chance = 13000, maxCount = 19 }, -- Small Amethyst
+	{ id = 3041, chance = 13000 }, -- Blue Gem
+	{ id = 3036, chance = 13000 }, -- Violet Gem
+	{ id = 7414, chance = 7400 }, -- Abyss Hammer
+	{ id = 20062, chance = 5600, maxCount = 3 }, -- Cluster of Solace
+	{ id = 8075, chance = 5600 }, -- Spellbook of Lost Souls
+	{ id = 3021, chance = 3700 }, -- Sapphire Amulet
+	{ id = 24974, chance = 1900 }, -- Shadow Paint
+	{ id = 24957, chance = 3700 }, -- Part of a Rune (Four)
+	{ id = 3341, chance = 1900 }, -- Arcane Staff
+	{ id = 7451, chance = 1900 }, -- Shadow Sceptre
+	{ id = 10438, chance = 1900 }, -- Spellweaver's Robe
+	{ id = 24954, chance = 3700 }, -- Part of a Rune (One)
+	{ id = 24955, chance = 3700 }, -- Part of a Rune (Two)
+	{ id = 24956, chance = 3700 }, -- Part of a Rune (Three)
+	{ id = 24958, chance = 3700 }, -- Part of a Rune (Five)
+	{ id = 24959, chance = 3700 }, -- Part of a Rune (Six)
 }
 
 monster.attacks = {

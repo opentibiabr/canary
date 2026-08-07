@@ -69,23 +69,22 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 3115, chance = 30000, maxCount = 1 }, -- bone
-	{ name = "brass shield", chance = 30000, maxCount = 1 },
-	{ name = "spatial warp almanac", chance = 25000, maxCount = 1 },
-	{ name = "viking helmet", chance = 23000, maxCount = 1 },
-	{ name = "falcon battleaxe", chance = 500, maxCount = 1 },
-	{ name = "falcon longsword", chance = 500, maxCount = 1 },
-	{ name = "falcon mace", chance = 500, maxCount = 1 },
-	{ name = "grant of arms", chance = 500, maxCount = 1 },
-	{ name = "falcon bow", chance = 350, maxCount = 1 },
-	{ id = 28714, chance = 350, maxCount = 1 }, -- falcon circlet
-	{ name = "falcon coif", chance = 350, maxCount = 1 },
-	{ name = "falcon rod", chance = 350, maxCount = 1 },
-	{ name = "falcon wand", chance = 350, maxCount = 1 },
-	{ name = "falcon sai", chance = 300, maxCount = 1 },
-	{ name = "falcon shield", chance = 200, maxCount = 1 },
-	{ name = "falcon greaves", chance = 200, maxCount = 1 },
-	{ name = "falcon plate", chance = 200, maxCount = 1 },
+	{ id = 28853, chance = 100000 }, -- The Spatial Warp Almanac
+	{ id = 28724, chance = 970 }, -- Falcon Battleaxe
+	{ id = 28718, chance = 650 }, -- Falcon Bow
+	{ id = 28715, chance = 320 }, -- Falcon Coif
+	{ id = 28721, chance = 320 }, -- Falcon Shield
+	{ id = 28853, chance = 320 }, -- The Spatial Warp Almanac
+	{ id = 3411, chance = 850 }, -- Brass Shield
+	{ id = 2920, chance = 8650 }, -- Torch
+	{ id = 11481, chance = 11350 }, -- Pelvis Bone
+	{ id = 3286, chance = 3120 }, -- Mace
+	{ id = 3031, chance = 43400 }, -- Gold Coin
+	{ id = 3264, chance = 2550 }, -- Sword
+	{ id = 3276, chance = 4960 }, -- Hatchet
+	{ id = 23986, chance = 1560 }, -- Heavy Old Tome
+	{ id = 3115, chance = 51210 }, -- Bone
+	{ id = 3367, chance = 7520 }, -- Viking Helmet
 }
 
 monster.attacks = {

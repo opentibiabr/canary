@@ -65,16 +65,16 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 9303, chance = 100000 }, -- leviathan's amulet
-	{ id = 9613, chance = 100000 }, -- sea serpent trophy
-	{ id = 8895, chance = 83000 }, -- rusted armor
-	{ id = 3035, chance = 82000, maxCount = 7 }, -- platinum coin
-	{ id = 8898, chance = 77000 }, -- rusted legs
-	{ id = 7428, chance = 58000 }, -- bonebreaker
-	{ id = 3029, chance = 50000, maxCount = 5 }, -- small sapphire
-	{ id = 237, chance = 50000 }, -- strong mana potion
-	{ id = 9604, chance = 14000 }, -- moon backpack
-	{ id = 8059, chance = 1500 }, -- frozen plate
+	{ id = 9303, chance = 100000 }, -- Leviathan's Amulet
+	{ id = 9613, chance = 100000 }, -- Sea Serpent Trophy
+	{ id = 8895, chance = 85000 }, -- Rusted Armor
+	{ id = 3035, chance = 83000, maxCount = 7 }, -- Platinum Coin
+	{ id = 8898, chance = 82000 }, -- Rusted Legs
+	{ id = 7428, chance = 55000 }, -- Bonebreaker
+	{ id = 3029, chance = 50000, maxCount = 5 }, -- Small Sapphire
+	{ id = 237, chance = 50000 }, -- Strong Mana Potion
+	{ id = 9604, chance = 15100 }, -- Moon Backpack
+	{ id = 8059, chance = 720 }, -- Frozen Plate
 }
 
 monster.attacks = {

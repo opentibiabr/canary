@@ -82,20 +82,20 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 81310 },
-	{ name = "warrior helmet", chance = 6850 },
-	{ name = "blue gem", chance = 6230 },
-	{ name = "great spirit potion", chance = 4980 },
-	{ name = "violet gem", chance = 4670 },
-	{ name = "glacier mask", chance = 4670 },
-	{ name = "glacier amulet", chance = 4670 },
-	{ name = "green gem", chance = 4670 },
-	{ name = "wood cape", chance = 3120 },
-	{ name = "skull helmet", chance = 1870 },
-	{ name = "stone skin amulet", chance = 1560 },
-	{ id = 23542, chance = 1250 }, -- collar of blue plasma
-	{ id = 23529, chance = 1250 }, -- ring of blue plasma
-	{ name = "bag you desire", chance = 15 },
+	{ id = 3043, chance = 60000 }, -- Crystal Coin
+	{ id = 3369, chance = 6300 }, -- Warrior Helmet
+	{ id = 7642, chance = 5300 }, -- Great Spirit Potion
+	{ id = 3038, chance = 4500 }, -- Green Gem
+	{ id = 3041, chance = 3700 }, -- Blue Gem
+	{ id = 829, chance = 3200 }, -- Glacier Mask
+	{ id = 3036, chance = 3000 }, -- Violet Gem
+	{ id = 3575, chance = 2100 }, -- Wood Cape
+	{ id = 5741, chance = 1900 }, -- Skull Helmet
+	{ id = 815, chance = 1800 }, -- Glacier Amulet
+	{ id = 23529, chance = 1600 }, -- Ring of Blue Plasma
+	{ id = 23526, chance = 1200 }, -- Collar of Blue Plasma
+	{ id = 3081, chance = 490 }, -- Stone Skin Amulet
+	{ id = 8027, chance = 98 }, -- Composite Hornbow
 }
 
 monster.attacks = {

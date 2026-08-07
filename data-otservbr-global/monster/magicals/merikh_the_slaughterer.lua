@@ -68,21 +68,21 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 97250, maxCount = 120 },
-	{ name = "green piece of cloth", chance = 100000, maxCount = 4 },
-	{ name = "noble turban", chance = 63900 },
-	{ name = "heavy machete", chance = 41650 },
-	{ name = "magma monocle", chance = 8400 },
-	{ name = "seeds", chance = 100 },
-	{ name = "jewelled belt", chance = 100000 },
-	{ name = "shiny stone", chance = 58300 },
-	{ name = "strong mana potion", chance = 41650, maxCount = 3 },
-	{ name = "small emerald", chance = 2800, maxCount = 2 },
-	{ name = "small oil lamp", chance = 100 },
-	{ name = "royal spear", chance = 55550, maxCount = 3 },
-	{ name = "mystic turban", chance = 36100 },
-	{ name = "green gem", chance = 2800 },
-	{ name = "pear", chance = 100, maxCount = 8 },
+	{ id = 5910, chance = 100000, maxCount = 4 }, -- Green Piece of Cloth
+	{ id = 11470, chance = 100000 }, -- Jewelled Belt
+	{ id = 3031, chance = 97000, maxCount = 121 }, -- Gold Coin
+	{ id = 11486, chance = 64000 }, -- Noble Turban
+	{ id = 10310, chance = 58000 }, -- Shiny Stone
+	{ id = 7378, chance = 56000, maxCount = 3 }, -- Royal Spear
+	{ id = 3330, chance = 42000 }, -- Heavy Machete
+	{ id = 237, chance = 42000, maxCount = 3 }, -- Strong Mana Potion
+	{ id = 3574, chance = 36000 }, -- Mystic Turban
+	{ id = 827, chance = 8300 }, -- Magma Monocle
+	{ id = 3038, chance = 2800 }, -- Green Gem
+	{ id = 3032, chance = 2800, maxCount = 2 }, -- Small Emerald
+	{ id = 647, chance = 16670 }, -- Seeds
+	{ id = 2933, chance = 16670 }, -- Small Oil Lamp
+	{ id = 3584, chance = 100000, maxCount = 8 }, -- Pear
 }
 
 monster.attacks = {

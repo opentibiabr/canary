@@ -73,31 +73,31 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "platinum coin", chance = 70000, maxCount = 19 },
-	{ name = "gold ingot", chance = 15920, maxCount = 2 },
-	{ name = "small diamond", chance = 5360, maxCount = 6 },
-	{ name = "cyan crystal fragment", chance = 5210, maxCount = 3 },
-	{ name = "scorpion charm", chance = 5210, maxCount = 1 },
-	{ id = 3039, chance = 4910, maxCount = 1 }, -- red gem
-	{ name = "old girtablilu carapace", chance = 4760, maxCount = 1 },
-	{ name = "violet gem", chance = 4170, maxCount = 1 },
-	{ name = "northwind rod", chance = 3570 },
-	{ name = "wand of cosmic energy", chance = 2680 },
-	{ name = "blue crystal shard", chance = 2530 },
-	{ name = "red crystal fragment", chance = 2530 },
-	{ name = "violet crystal shard", chance = 2530 },
-	{ name = "yellow gem", chance = 2530 },
-	{ name = "underworld rod", chance = 2080 },
-	{ name = "wand of voodoo", chance = 2080 },
-	{ name = "blue gem", chance = 1930 },
-	{ id = 23529, chance = 1930 }, -- ring of blue plasma
-	{ name = "green crystal fragment", chance = 1640 },
-	{ name = "green crystal shard", chance = 1640 },
-	{ name = "wand of defiance", chance = 1340 },
-	{ name = "wood cape", chance = 1340 },
-	{ name = "necrotic rod", chance = 1040 },
-	{ name = "springsprout rod", chance = 1040 },
-	{ name = "wand of decay", chance = 1040 },
+	{ id = 3035, chance = 79000, maxCount = 19 }, -- Platinum Coin
+	{ id = 9058, chance = 15800 }, -- Gold Ingot
+	{ id = 3028, chance = 6800 }, -- Small Diamond
+	{ id = 16125, chance = 5100 }, -- Cyan Crystal Fragment
+	{ id = 8083, chance = 4700 }, -- Northwind Rod
+	{ id = 36972, chance = 4300 }, -- Old Girtablilu Carapace
+	{ id = 3039, chance = 4300 }, -- Red Gem
+	{ id = 3036, chance = 3800 }, -- Violet Gem
+	{ id = 16126, chance = 3400 }, -- Red Crystal Fragment
+	{ id = 36822, chance = 3000 }, -- Scorpion Charm
+	{ id = 8082, chance = 3000 }, -- Underworld Rod
+	{ id = 16121, chance = 3000 }, -- Green Crystal Shard
+	{ id = 3073, chance = 2600 }, -- Wand of Cosmic Energy
+	{ id = 3041, chance = 2100 }, -- Blue Gem
+	{ id = 16119, chance = 2100 }, -- Blue Crystal Shard
+	{ id = 16120, chance = 1700 }, -- Violet Crystal Shard
+	{ id = 3037, chance = 1300 }, -- Yellow Gem
+	{ id = 3575, chance = 1300 }, -- Wood Cape
+	{ id = 3069, chance = 850 }, -- Necrotic Rod
+	{ id = 3072, chance = 850 }, -- Wand of Decay
+	{ id = 8084, chance = 850 }, -- Springsprout Rod
+	{ id = 23529, chance = 850 }, -- Ring of Blue Plasma
+	{ id = 16127, chance = 430 }, -- Green Crystal Fragment
+	{ id = 16096, chance = 430 }, -- Wand of Defiance
+	{ id = 8094, chance = 430 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

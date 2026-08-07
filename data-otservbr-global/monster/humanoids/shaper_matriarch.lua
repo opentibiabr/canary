@@ -77,26 +77,26 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 24390, chance = 6000 }, -- ancient coin
-	{ id = 3027, chance = 2500 }, -- black pearl
-	{ id = 24383, chance = 18000, maxCount = 2 }, -- cave turnip
-	{ id = 24385, chance = 15000 }, -- cracked alabaster vase
-	{ id = 3728, chance = 6800 }, -- dark mushroom
-	{ id = 24392, chance = 4300 }, -- gemmed figurine
-	{ id = 3031, chance = 50320, maxCount = 150 }, -- gold coin
-	{ id = 3035, chance = 80000, maxCount = 2 }, -- platinum coin
-	{ id = 24962, chance = 2800 }, -- prismatic quartz
-	{ id = 24386, chance = 20000 }, -- rhino horn carving
-	{ id = 3098, chance = 1300 }, -- ring of healing
-	{ id = 8908, chance = 4500 }, -- slightly rusted helmet
-	{ id = 3114, chance = 10000 }, -- skull
-	{ id = 3030, chance = 4000 }, -- small ruby
-	{ id = 3081, chance = 1500 }, -- stone skin amulet
-	{ id = 237, chance = 15000 }, -- strong mana potion
-	{ id = 24387, chance = 15000 }, -- tarnished rhino figurine
-	{ id = 3072, chance = 2000 }, -- wand of decay
-	{ id = 8094, chance = 800 }, -- wand of voodoo
-	{ id = 2901, chance = 2000 }, -- waterskin
+	{ id = 3031, chance = 100000, maxCount = 138 }, -- Gold Coin
+	{ id = 3035, chance = 80000, maxCount = 2 }, -- Platinum Coin
+	{ id = 24386, chance = 19900 }, -- Rhino Horn Carving
+	{ id = 24383, chance = 17800, maxCount = 2 }, -- Cave Turnip
+	{ id = 24385, chance = 15100 }, -- Cracked Alabaster Vase
+	{ id = 24387, chance = 14900 }, -- Tarnished Rhino Figurine
+	{ id = 237, chance = 14400 }, -- Strong Mana Potion
+	{ id = 3114, chance = 9700 }, -- Skull (Item)
+	{ id = 3728, chance = 6800 }, -- Dark Mushroom
+	{ id = 24390, chance = 5800 }, -- Ancient Coin
+	{ id = 8907, chance = 4500 }, -- Rusted Helmet
+	{ id = 24392, chance = 4300 }, -- Gemmed Figurine
+	{ id = 3030, chance = 3500 }, -- Small Ruby
+	{ id = 24962, chance = 3200 }, -- Prismatic Quartz
+	{ id = 3027, chance = 2500 }, -- Black Pearl
+	{ id = 2901, chance = 2100 }, -- Waterskin
+	{ id = 3072, chance = 1700 }, -- Wand of Decay
+	{ id = 3081, chance = 1400 }, -- Stone Skin Amulet
+	{ id = 3098, chance = 1200 }, -- Ring of Healing
+	{ id = 8094, chance = 760 }, -- Wand of Voodoo
 }
 
 monster.attacks = {

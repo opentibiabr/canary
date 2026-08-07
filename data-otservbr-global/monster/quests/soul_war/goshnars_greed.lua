@@ -76,27 +76,28 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "crystal coin", chance = 55000, minCount = 70, maxCount = 75 },
-	{ id = 281, chance = 1150 }, -- giant shimmering pearl (green)
-	{ name = "giant sapphire", chance = 10000, maxCount = 1 },
-	{ name = "giant topaz", chance = 10000, maxCount = 1 },
-	{ name = "violet gem", chance = 6000, maxCount = 1 },
-	{ name = "blue gem", chance = 10000, maxCount = 3 },
-	{ id = 3039, chance = 10000, maxCount = 3 }, -- red gem
-	{ name = "green gem", chance = 10000, maxCount = 3 },
-	{ name = "yellow gem", chance = 10000, maxCount = 3 },
-	{ name = "white gem", chance = 6000, maxCount = 3 },
-	{ name = "dragon figurine", chance = 10000, maxCount = 1 },
-	{ name = "bullseye potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "mastermind potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "berserk potion", chance = 15000, minCount = 10, maxCount = 25 },
-	{ name = "ultimate mana potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "supreme health potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "ultimate spirit potion", chance = 18000, minCount = 50, maxCount = 100 },
-	{ name = "greed's arm", chance = 25000, maxCount = 1 },
-	{ name = "figurine of greed", chance = 400 },
-	{ name = "the skull of a beast", chance = 400 },
-	{ name = "bag you desire", chance = 100 },
+	{ id = 3043, chance = 100000, maxCount = 113 }, -- Crystal Coin
+	{ id = 23374, chance = 57000, maxCount = 175 }, -- Ultimate Spirit Potion
+	{ id = 23375, chance = 55000, maxCount = 153 }, -- Supreme Health Potion
+	{ id = 23373, chance = 49000, maxCount = 168 }, -- Ultimate Mana Potion
+	{ id = 3039, chance = 45000, maxCount = 2 }, -- Red Gem
+	{ id = 3037, chance = 43000, maxCount = 2 }, -- Yellow Gem
+	{ id = 32623, chance = 39000 }, -- Giant Topaz
+	{ id = 7439, chance = 37000, maxCount = 46 }, -- Berserk Potion
+	{ id = 30061, chance = 35000 }, -- Giant Sapphire
+	{ id = 30059, chance = 27000 }, -- Giant Ruby
+	{ id = 7440, chance = 24000, maxCount = 49 }, -- Mastermind Potion
+	{ id = 9058, chance = 24000 }, -- Gold Ingot
+	{ id = 7443, chance = 22000, maxCount = 49 }, -- Bullseye Potion
+	{ id = 3038, chance = 20000 }, -- Green Gem
+	{ id = 3041, chance = 18400, maxCount = 2 }, -- Blue Gem
+	{ id = 3036, chance = 18400 }, -- Violet Gem
+	{ id = 49271, chance = 8200, maxCount = 35 }, -- Transcendence Potion
+	{ id = 281, chance = 6100 }, -- Giant Shimmering Pearl
+	{ id = 32769, chance = 6100 }, -- White Gem
+	{ id = 33924, chance = 4100 }, -- Greed's Arm
+	{ id = 34109, chance = 2000 }, -- Bag You Desire
+	{ id = 34075, chance = 2000 }, -- The Skull of a Beast
 }
 
 monster.attacks = {

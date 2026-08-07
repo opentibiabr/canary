@@ -72,49 +72,44 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ id = 23529, chance = 14290 }, -- ring of blue plasma
-	{ id = 23529, chance = 3570 }, -- ring of blue plasma
-	{ id = 23531, chance = 10710 }, -- ring of green plasma
-	{ id = 23533, chance = 14290 }, -- ring of red plasma
-	{ id = 23533, chance = 7140 }, -- ring of red plasma
-	{ id = 23542, chance = 14290 }, -- collar of blue plasma
-	{ id = 23542, chance = 3570 }, -- collar of blue plasma
-	{ id = 23543, chance = 10710 }, -- collar of green plasma
-	{ id = 23544, chance = 17860 }, -- collar of red plasma
-	{ id = 3039, chance = 28570 }, -- red gem
-	{ name = "abyss hammer", chance = 3570 },
-	{ name = "berserk potion", chance = 28570, maxCount = 19 },
-	{ name = "blue gem", chance = 10710 },
-	{ name = "bullseye potion", chance = 10710 },
-	{ name = "chaos mace", chance = 7140 },
-	{ name = "crystal coin", chance = 14290, maxCount = 3 },
-	{ name = "energized limb", chance = 3570 },
-	{ name = "energy bar", chance = 82140 },
-	{ name = "giant ruby", chance = 17860 },
-	{ id = 282, chance = 21430 }, -- giant shimmering pearl
-	{ name = "gold ingot", chance = 14290 },
-	{ name = "gold token", chance = 60710 },
-	{ name = "green gem", chance = 28570 },
-	{ name = "huge chunk of crude iron", chance = 42860 },
-	{ name = "magic sulphur", chance = 3570 },
-	{ name = "mastermind potion", chance = 42860, maxCount = 6 },
-	{ id = 49271, chance = 42860, maxCount = 6 }, -- transcendence potion
-	{ name = "maxxenius head", chance = 7140 },
-	{ name = "mysterious remains", chance = 85710 },
-	{ name = "ornate locket", chance = 14290 },
-	{ name = "piggy bank", chance = 89290 },
-	{ name = "platinum coin", chance = 100000, maxCount = 6 },
-	{ name = "pomegranate", chance = 21430 },
-	{ name = "ring of the sky", chance = 7140 },
-	{ name = "royal star", chance = 57140, maxCount = 194 },
-	{ name = "silver token", chance = 96430, maxCount = 3 },
-	{ name = "skull staff", chance = 21430 },
-	{ name = "soul stone", chance = 14290 },
-	{ name = "supreme health potion", chance = 85710, maxCount = 32 },
-	{ name = "ultimate mana potion", chance = 42860, maxCount = 14 },
-	{ name = "ultimate spirit potion", chance = 64290, maxCount = 20 },
-	{ name = "violet gem", chance = 3570 },
-	{ name = "yellow gem", chance = 50000, maxCount = 2 },
+	{ id = 23535, chance = 100000 }, -- Energy Bar
+	{ id = 22516, chance = 100000, maxCount = 4 }, -- Silver Token
+	{ id = 2995, chance = 100000 }, -- Piggy Bank
+	{ id = 3035, chance = 100000, maxCount = 9 }, -- Platinum Coin
+	{ id = 23509, chance = 100000 }, -- Mysterious Remains
+	{ id = 22721, chance = 77000, maxCount = 3 }, -- Gold Token
+	{ id = 23375, chance = 65000, maxCount = 37 }, -- Supreme Health Potion
+	{ id = 23374, chance = 56000, maxCount = 36 }, -- Ultimate Spirit Potion
+	{ id = 25759, chance = 45000, maxCount = 199 }, -- Royal Star
+	{ id = 23373, chance = 42000, maxCount = 31 }, -- Ultimate Mana Potion
+	{ id = 3037, chance = 37000 }, -- Yellow Gem
+	{ id = 3039, chance = 37000, maxCount = 2 }, -- Red Gem
+	{ id = 5892, chance = 35000 }, -- Huge Chunk of Crude Iron
+	{ id = 3043, chance = 26000, maxCount = 4 }, -- Crystal Coin
+	{ id = 3041, chance = 24000, maxCount = 2 }, -- Blue Gem
+	{ id = 7443, chance = 21000, maxCount = 19 }, -- Bullseye Potion
+	{ id = 7439, chance = 21000, maxCount = 19 }, -- Berserk Potion
+	{ id = 7440, chance = 16100, maxCount = 18 }, -- Mastermind Potion
+	{ id = 5904, chance = 16100 }, -- Magic Sulphur
+	{ id = 3038, chance = 16100 }, -- Green Gem
+	{ id = 3324, chance = 14500 }, -- Skull Staff
+	{ id = 30169, chance = 14500 }, -- Pomegranate
+	{ id = 23526, chance = 14500 }, -- Collar of Blue Plasma
+	{ id = 281, chance = 12900 }, -- Giant Shimmering Pearl
+	{ id = 23544, chance = 12900 }, -- Collar of Red Plasma
+	{ id = 23543, chance = 12900 }, -- Collar of Green Plasma
+	{ id = 9058, chance = 12900 }, -- Gold Ingot
+	{ id = 3036, chance = 9700 }, -- Violet Gem
+	{ id = 3006, chance = 9700 }, -- Ring of the Sky
+	{ id = 7427, chance = 9700 }, -- Chaos Mace
+	{ id = 30056, chance = 8100 }, -- Ornate Locket
+	{ id = 5809, chance = 6500 }, -- Soul Stone
+	{ id = 23531, chance = 4800 }, -- Ring of Green Plasma
+	{ id = 23533, chance = 3200 }, -- Ring of Red Plasma
+	{ id = 29426, chance = 3200 }, -- Brain in a Jar
+	{ id = 7414, chance = 1600 }, -- Abyss Hammer
+	{ id = 29942, chance = 1600 }, -- Maxxenius Head
+	{ id = 49271, chance = 1600, maxCount = 12 }, -- Transcendence Potion
 }
 
 monster.attacks = {

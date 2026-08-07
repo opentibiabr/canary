@@ -79,23 +79,18 @@ monster.voices = {
 }
 
 monster.loot = {
-	{ name = "gold coin", chance = 100000, maxCount = 200 },
-	{ name = "platinum coin", chance = 88010, maxCount = 37 },
-	{ name = "demon root", chance = 6840 },
-	{ name = "amber sickle", chance = 5980 },
-	{ name = "resin parasite", chance = 5980 },
-	{ name = "crystal coin", chance = 2560 },
-	{ name = "wooden spellbook", chance = 2560 },
-	{ name = "amber", chance = 1710 },
-	{ name = "amber staff", chance = 850 },
-	{ name = "jade hammer", chance = 850 },
-	{ name = "skull helmet", chance = 1310 },
-	{ name = "amber with a bug", chance = 1110 },
-	{ name = "amber with a dragonfly", chance = 1110 },
-	{ name = "Preserved Pink Seed", chance = 110 },
-	{ name = "Preserved Red Seed", chance = 110 },
-	{ name = "Preserved Yellow Seed", chance = 110 },
-	{ name = "Preserved Dark Seed", chance = 110 },
+	{ id = 3035, chance = 100000, maxCount = 29 }, -- Platinum Coin
+	{ id = 48413, chance = 10400 }, -- Amber Sickle
+	{ id = 48510, chance = 6360 }, -- Demon Root
+	{ id = 48511, chance = 10400 }, -- Resin Parasite
+	{ id = 3043, chance = 1330 }, -- Crystal Coin
+	{ id = 7426, chance = 2890 }, -- Amber Staff
+	{ id = 25699, chance = 2890 }, -- Wooden Spellbook
+	{ id = 5741, chance = 270 }, -- Skull Helmet
+	{ id = 7422, chance = 530 }, -- Jade Hammer
+	{ id = 32624, chance = 580 }, -- Amber with a Bug
+	{ id = 32626, chance = 800 }, -- Amber (Item)
+	{ id = 45653, chance = 270 }, -- Preserved Red Seed
 }
 
 monster.attacks = {

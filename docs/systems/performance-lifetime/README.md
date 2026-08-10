@@ -169,6 +169,10 @@ Borrowed raw pointers must not cross these boundaries.
   documentation, and call sites make the borrowed lifetime obvious.
 - Do not introduce raw accessors that can be called from delayed or async code
   unless the accessor is only a local helper and all callers are audited.
+- Network-close cleanup that mutates protocol or player ownership must remain on
+  the dispatcher, must not expire, and must handle bounded-queue rejection
+  explicitly. Retain an owning handle until a dispatcher lane accepts the
+  cleanup instead of running it on an I/O thread or silently dropping it.
 
 ## Benchmark-only monster stress mode
 

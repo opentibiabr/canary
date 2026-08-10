@@ -98,6 +98,7 @@ private:
 
 	static void handleTimeout(ConnectionWeak_ptr connectionWeak, const std::error_code &error);
 
+	void dispatchProtocolRelease();
 	void closeSocket();
 	void internalWorker();
 	void internalSend(const OutputMessage_ptr &outputMessage);
@@ -108,6 +109,7 @@ private:
 
 	asio::high_resolution_timer readTimer;
 	asio::high_resolution_timer writeTimer;
+	asio::high_resolution_timer protocolReleaseRetryTimer;
 
 	std::recursive_mutex connectionLock;
 
@@ -127,6 +129,7 @@ private:
 	uint32_t ip = 1;
 
 	std::underlying_type_t<ConnectionState_t> connectionState = CONNECTION_STATE_OPEN;
+	uint64_t protocolReleaseRetryAttempts = 0;
 	bool receivedFirst = false;
 
 	friend class ServicePort;

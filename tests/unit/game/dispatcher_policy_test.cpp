@@ -214,6 +214,21 @@ TEST(DispatcherPolicyTest, RetriesRejectedScheduleOnceOnFallbackLane) {
 	EXPECT_EQ(attempts, (std::vector { DispatcherLane::Maintenance, DispatcherLane::WorldCommit }));
 }
 
+TEST(DispatcherPolicyTest, ReturnsAcceptedBooleanFromFallbackLane) {
+	std::vector<DispatcherLane> attempts;
+	const bool accepted = DispatcherPolicy::scheduleWithFallbackLane(
+		[&attempts](DispatcherLane lane) {
+			attempts.emplace_back(lane);
+			return lane == DispatcherLane::WorldCommit;
+		},
+		DispatcherLane::ProtocolInput,
+		DispatcherLane::WorldCommit
+	);
+
+	EXPECT_TRUE(accepted);
+	EXPECT_EQ(attempts, (std::vector { DispatcherLane::ProtocolInput, DispatcherLane::WorldCommit }));
+}
+
 TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {
 	std::deque<int> queue { 4, 5 };
 	std::vector<int> slice { 1, 2, 3 };

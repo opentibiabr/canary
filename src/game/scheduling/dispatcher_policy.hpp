@@ -240,3 +240,44 @@ public:
 private:
 	NowFunction nowFunction;
 };
+
+class DispatcherBacklogWarningPolicy final {
+public:
+	using Clock = Task::Clock;
+	using TimePoint = Clock::time_point;
+
+	[[nodiscard]] bool update(
+		bool hasOnlinePlayers,
+		const DispatcherQueueSnapshot &backlog,
+		TimePoint now,
+		std::chrono::microseconds warningThreshold,
+		std::chrono::milliseconds repeatInterval = std::chrono::seconds(30)
+	) {
+		warningThreshold = std::max(std::chrono::microseconds(1), warningThreshold);
+		if (!hasOnlinePlayers || backlog.queued == 0 || backlog.oldestReadyAge < warningThreshold) {
+			reset();
+			return false;
+		}
+
+		if (consecutiveBacklogWindows < BACKLOG_WINDOWS_TO_WARN) {
+			++consecutiveBacklogWindows;
+		}
+		if (consecutiveBacklogWindows < BACKLOG_WINDOWS_TO_WARN || now < nextWarningAt) {
+			return false;
+		}
+
+		nextWarningAt = now + std::max(std::chrono::milliseconds(1), repeatInterval);
+		return true;
+	}
+
+	void reset() {
+		consecutiveBacklogWindows = 0;
+		nextWarningAt = {};
+	}
+
+private:
+	static constexpr uint8_t BACKLOG_WINDOWS_TO_WARN = 4;
+
+	TimePoint nextWarningAt {};
+	uint8_t consecutiveBacklogWindows = 0;
+};

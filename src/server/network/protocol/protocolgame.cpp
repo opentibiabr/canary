@@ -2733,6 +2733,15 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseFightModes(NetworkMessage &msg) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::TacticsWithoutFightMode)) {
+		const bool chaseMode = msg.getByte() != 0;
+		const bool secureMode = msg.getByte() != 0;
+		msg.getByte(); // PvP mode
+
+		g_game().playerSetFightModes(player->getID(), FIGHTMODE_ATTACK, chaseMode, secureMode);
+		return;
+	}
+
 	uint8_t rawFightMode = msg.getByte(); // 1 - offensive, 2 - balanced, 3 - defensive
 	uint8_t rawChaseMode = msg.getByte(); // 0 - stand while fightning, 1 - chase opponent
 	uint8_t rawSecureMode = msg.getByte(); // 0 - can't attack unmarked, 1 - can attack unmarked
@@ -8131,7 +8140,7 @@ void ProtocolGame::sendPingBack() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (oldProtocol && !useLegacyU16Effect && type > 0xFF) {
 		return;
@@ -8154,11 +8163,15 @@ void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, u
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.x) - static_cast<int32_t>(from.x))));
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.y) - static_cast<int32_t>(from.y))));
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+	sendDistanceShoot(from, to, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::sendRestingStatus(uint8_t protection) {
@@ -8206,7 +8219,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (!canSee(pos) || (oldProtocol && !useLegacyU16Effect && type > 0xFF)) {
 		return;
@@ -8227,11 +8240,15 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 		msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
 		msg.add<uint16_t>(type);
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+	sendMagicEffect(pos, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
@@ -8518,11 +8535,17 @@ void ProtocolGame::sendEnterWorld() {
 void ProtocolGame::sendFightModes() {
 	NetworkMessage msg;
 	msg.addByte(0xA7);
-	msg.addByte(player->fightMode);
-	msg.addByte(player->chaseMode);
-	msg.addByte(player->secureMode);
-	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
-		msg.addByte(ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte) ? player->getPvpMode() : PVP_MODE_DOVE);
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::TacticsWithoutFightMode)) {
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
+		msg.addByte(PVP_MODE_DOVE);
+	} else {
+		msg.addByte(player->fightMode);
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
+		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+			msg.addByte(ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte) ? player->getPvpMode() : PVP_MODE_DOVE);
+		}
 	}
 	writeToOutputBuffer(msg);
 }
@@ -8670,10 +8693,12 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
 		sendMonkData(MonkData_t::Harmony, player->getHarmony());
-		auto virtue = player->getVirtue();
-		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
-		sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
-		sendMonkData(MonkData_t::Serenity, 1);
+		const bool officialVocationData = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData);
+		const auto virtue = player->getVirtue();
+		if (virtue != Virtue_t::None || !officialVocationData) {
+			sendMonkData(MonkData_t::Virtue, enumToValue(virtue != Virtue_t::None ? virtue : Virtue_t::Harmony));
+		}
+		sendMonkData(MonkData_t::Serenity, officialVocationData ? player->hasCondition(CONDITION_SERENE) : true);
 	}
 
 	if (version >= 1100) {
@@ -12094,10 +12119,25 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 				msg.addByte(value != 0 ? 0x01 : 0x00);
 				break;
 			case MonkData_t::Virtue: {
-				const uint8_t virtueCount = value != 0 ? 1 : 0;
+				uint16_t spellId = 0;
+				switch (static_cast<Virtue_t>(value)) {
+					case Virtue_t::Harmony:
+						spellId = 274;
+						break;
+					case Virtue_t::Justice:
+						spellId = 275;
+						break;
+					case Virtue_t::Sustain:
+						spellId = 276;
+						break;
+					case Virtue_t::None:
+						break;
+				}
+
+				const uint8_t virtueCount = spellId != 0 ? 1 : 0;
 				msg.addByte(virtueCount);
 				if (virtueCount != 0) {
-					msg.add<uint16_t>(value);
+					msg.add<uint16_t>(spellId);
 				}
 				break;
 			}

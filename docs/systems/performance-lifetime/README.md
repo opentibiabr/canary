@@ -401,7 +401,9 @@ The implemented scheduler applies the conservative part of that plan:
 
 - Dispatcher lanes record throttled queue latency, scheduled lateness, task
   runtime, lane runtime, barrier runtime, and internal work after the
-  server-online log while the game state is `GAME_STATE_NORMAL`.
+  server-online log while the game state is `GAME_STATE_NORMAL`. Per-lane queue
+  ages and adaptive state transitions are debug diagnostics. A warning is
+  reserved for sustained player-visible backlog while a player is online.
 - Creature async work keeps 32 visible and 32 background hashed buckets. Each
   barrier task processes at most `creatureAsyncTasksPerBucket` creatures, 16 by
   default, and yields at the applicable 2 ms slice deadline before requeueing.
@@ -682,10 +684,17 @@ Current Phase 2 implementation:
 - `VisibleMonster` and `VisibleMonsterAI` use the configured 128 movement/eight
   barrier-task limits. `BackgroundMonster`, `MonsterAI`, and `GenericParallel`
   use adaptive limits so overload reduces distant cadence first.
-- Adaptive reductions apply on the first SLO or emergency breach. State changes
-  remain debug telemetry until emergency latency persists for four consecutive
-  250 ms windows with at least one player online, at which point the dispatcher
-  emits one warning.
+- Adaptive reductions apply on the first SLO or emergency breach. A completed
+  latency sample or histogram p99 can reduce background budgets immediately but
+  cannot emit a warning by itself.
+- Per-lane queue-age and adaptive state transitions remain debug telemetry. A
+  warning requires queued player-visible work whose exact oldest-ready age stays
+  at or above the emergency threshold for four consecutive 250 ms windows while
+  at least one player is online. A continuing backlog repeats at most once every
+  30 seconds and reports queue depth, oldest context, sample count, p99, and the
+  exact observed maximum.
+- `dispatcherSloMs` and `dispatcherEmergencyMs` control scheduling behavior, not
+  log verbosity. Do not raise them merely to hide diagnostics.
 - Visible post-think processes eight IDs per `WorldCommit` task. Background
   post-think processes 64 IDs per `Deferred` task, whose lane drains 16 tasks per
   pass by default. Both queues are bounded and keep one coalesced tick per

@@ -398,6 +398,7 @@ canary
 canary.old
 
 # VCPKG
+.tools/
 vcpkg_installed
 
 # Cppcheck Cache

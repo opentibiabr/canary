@@ -7,7 +7,7 @@ end
 
 spell:group("support")
 spell:id(spellId)
-spell:name("Knight familiar")
+spell:name("Summon Knight Familiar")
 spell:words("utevo gran res eq")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_SUMMON_KNIGHT_FAMILIAR)
 spell:level(200)

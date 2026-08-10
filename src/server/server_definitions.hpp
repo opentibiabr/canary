@@ -11,22 +11,21 @@
 
 #include "utils/const.hpp"
 
-// Enums
 // Connection and networkmessage.
-enum { FORCE_CLOSE = true };
-enum { HEADER_LENGTH = 2 };
-enum { CHECKSUM_LENGTH = 4 };
-enum { XTEA_MULTIPLE = 8 };
-enum { MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE };
-enum { MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10 };
+static constexpr bool FORCE_CLOSE = true;
+static constexpr int32_t HEADER_LENGTH = 2;
+static constexpr int32_t CHECKSUM_LENGTH = 4;
+static constexpr int32_t XTEA_MULTIPLE = 8;
+static constexpr int32_t MAX_BODY_LENGTH = NETWORKMESSAGE_MAXSIZE - HEADER_LENGTH - CHECKSUM_LENGTH - XTEA_MULTIPLE;
+static constexpr int32_t MAX_PROTOCOL_BODY_LENGTH = MAX_BODY_LENGTH - 10;
 
+// Enums
 enum ConnectionState_t : uint8_t {
 	CONNECTION_STATE_OPEN,
 	CONNECTION_STATE_IDENTIFYING,
 	CONNECTION_STATE_READINGS,
 	CONNECTION_STATE_CLOSED
 };
-// Connection and networkmessage.
 
 // Protocol.
 enum RequestedInfo_t : uint16_t {

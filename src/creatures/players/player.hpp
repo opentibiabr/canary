@@ -123,7 +123,7 @@ struct OpenContainer {
 using MuteCountMap = std::map<uint32_t, uint32_t>;
 
 static constexpr uint16_t PLAYER_MAX_SPEED = std::numeric_limits<uint16_t>::max();
-static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 1500;
+static constexpr uint16_t PLAYER_MAX_STAFF_SPEED = 65535;
 static constexpr uint16_t PLAYER_MIN_SPEED = 10;
 static constexpr uint8_t PLAYER_SOUND_HEALTH_CHANGE = 10;
 
@@ -208,8 +208,9 @@ public:
 	/**
 	 * @brief Sets the player's virtue.
 	 * @param virtue The virtue to set.
+	 * @param notifyClient Whether to send the updated state to the client.
 	 */
-	void setVirtue(Virtue_t virtue);
+	void setVirtue(Virtue_t virtue, bool notifyClient = true);
 
 	/**
 	 * @brief Sets the player's serene state.
@@ -1073,6 +1074,7 @@ public:
 	void sendPartyPlayerVocation(const std::shared_ptr<Player> &player) const;
 	void sendPlayerVocation(const std::shared_ptr<Player> &player) const;
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type) const;
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source) const;
 	void sendHouseWindow(const std::shared_ptr<House> &house, uint32_t listId) const;
 	void sendCreatePrivateChannel(uint16_t channelId, const std::string &channelName) const;
 	void sendClosePrivate(uint16_t channelId);
@@ -1083,6 +1085,7 @@ public:
 	void sendClientCheck() const;
 	void sendGameNews() const;
 	void sendMagicEffect(const Position &pos, uint16_t type) const;
+	void sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source) const;
 	void removeMagicEffect(const Position &pos, uint16_t type) const;
 	void sendPing();
 	void sendPingBack() const;

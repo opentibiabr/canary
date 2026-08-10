@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://canary.local/schemas/canary-project-index.schema.json",
+  "title": "Canary deterministic project index",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "toolVersion", "revision", "summary", "files"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "toolVersion": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "revision": { "$ref": "#/$defs/revision" },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fileCount", "totalBytes", "extensionCounts", "topLevelCounts", "layerCounts"],
+      "properties": {
+        "fileCount": { "type": "integer", "minimum": 0 },
+        "totalBytes": { "type": "integer", "minimum": 0 },
+        "extensionCounts": { "$ref": "#/$defs/counts" },
+        "topLevelCounts": { "$ref": "#/$defs/counts" },
+        "layerCounts": { "$ref": "#/$defs/counts" }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sizeBytes", "extension"],
+        "properties": {
+          "path": { "$ref": "#/$defs/path" },
+          "sizeBytes": { "type": "integer", "minimum": 0 },
+          "extension": { "type": "string" },
+          "layer": { "type": "string", "minLength": 1 },
+          "profiles": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "dependentRequired": { "layer": ["profiles"], "profiles": ["layer"] }
+      }
+    }
+  },
+  "$defs": {
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$))[^/]+(?:/[^/]+)*$"
+    },
+    "sha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{40}$" },
+    "revision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["headSha", "baseSha", "workingTreeDirty"],
+      "properties": {
+        "headSha": { "$ref": "#/$defs/sha" },
+        "baseSha": { "$ref": "#/$defs/sha" },
+        "workingTreeDirty": { "type": ["boolean", "null"] }
+      }
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": { "type": "integer", "minimum": 0 }
+    }
+  }
+}

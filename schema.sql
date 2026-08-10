@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '58'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '59'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS `players` (
     `save` tinyint(1) NOT NULL DEFAULT '1',
     `skull` tinyint(1) NOT NULL DEFAULT '0',
     `skulltime` bigint(20) NOT NULL DEFAULT '0',
+    `expert_pvp_mode` tinyint(1) UNSIGNED NOT NULL DEFAULT '0',
     `lastlogout` bigint(20) UNSIGNED NOT NULL DEFAULT '0',
     `blessings` tinyint(2) NOT NULL DEFAULT '0',
     `blessings1` tinyint(4) NOT NULL DEFAULT '0',

@@ -11,7 +11,7 @@ Blessings.Credits = {
 
 Blessings.Config = {
 	AdventurerBlessingLevel = configManager.getNumber(configKeys.ADVENTURERSBLESSING_LEVEL), -- Free full bless until level
-	HasToF = not configManager.getBoolean(configKeys.TOGGLE_SERVER_IS_RETRO), -- Enables/disables twist of fate
+	HasToF = not IsRetroPVP(), -- Enables/disables twist of fate
 	InquisitonBlessPriceMultiplier = 1.1, -- Bless price multiplier by henricus
 	SkulledDeathLoseStoreItem = configManager.getBoolean(configKeys.SKULLED_DEATH_LOSE_STORE_ITEM), -- Destroy all items on store when dying with red/blackskull
 }
@@ -255,7 +255,7 @@ Blessings.BuyAllBlesses = function(player)
 		return not p:hasBlessing(b)
 	end
 
-	local hasToF = Blessings.Config.HasToF and player:hasBlessing(1) or true
+	local hasToF = not Blessings.Config.HasToF or player:hasBlessing(1)
 	local missingBless = player:getBlessings(nil, donthavefilter)
 	local missingBlessAmt = #missingBless + (hasToF and 0 or 1)
 	local totalCost = 0

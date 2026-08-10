@@ -81,6 +81,8 @@ enum class ProtocolFeature : uint64_t {
 	OfficialSkillWheelPayload = 1ULL << 21, // 15.25 confirmed: 0x5F includes the current quest-bonus and gem-list layout.
 	// 15.25 confirmed: 0xA0 and 0xA7 carry chase, secure, and PvP modes without a fight-mode byte.
 	TacticsWithoutFightMode = 1ULL << 22,
+	// Tibia 11.00 confirmed: 0xA0 and 0xA7 include a fourth Expert PvP mode byte.
+	ExpertPvpModeByte = 1ULL << 23,
 };
 
 [[nodiscard]] constexpr ProtocolFeature operator|(ProtocolFeature left, ProtocolFeature right) {

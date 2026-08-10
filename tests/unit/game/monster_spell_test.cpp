@@ -15,7 +15,7 @@ TEST(MonsterSpellTest, RejectsUnsupportedDamageCondition) {
 	spell->conditionType = CONDITION_AGONY;
 	spellBlock_t spellBlock;
 
-	EXPECT_FALSE(Monsters().deserializeSpell(spell, spellBlock, "agony monster"));
+	EXPECT_FALSE(g_monsters().deserializeSpell(spell, spellBlock, "agony monster"));
 	EXPECT_FALSE(spellBlock.spell);
 }
 
@@ -25,6 +25,6 @@ TEST(MonsterSpellTest, RejectsNonDamageCondition) {
 	spell->conditionType = CONDITION_HASTE;
 	spellBlock_t spellBlock;
 
-	EXPECT_FALSE(Monsters().deserializeSpell(spell, spellBlock, "haste monster"));
+	EXPECT_FALSE(g_monsters().deserializeSpell(spell, spellBlock, "haste monster"));
 	EXPECT_FALSE(spellBlock.spell);
 }

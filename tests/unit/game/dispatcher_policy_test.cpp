@@ -218,7 +218,7 @@ TEST(DispatcherPolicyTest, ReturnsAcceptedBooleanFromFallbackLane) {
 	std::vector<DispatcherLane> attempts;
 	const bool accepted = DispatcherPolicy::scheduleWithFallbackLane(
 		[&attempts](DispatcherLane lane) {
-			attempts.emplace_back(lane);
+			attempts.push_back(lane);
 			return lane == DispatcherLane::WorldCommit;
 		},
 		DispatcherLane::ProtocolInput,
@@ -227,6 +227,12 @@ TEST(DispatcherPolicyTest, ReturnsAcceptedBooleanFromFallbackLane) {
 
 	EXPECT_TRUE(accepted);
 	EXPECT_EQ(attempts, (std::vector { DispatcherLane::ProtocolInput, DispatcherLane::WorldCommit }));
+}
+
+TEST(DispatcherPolicyTest, StopsRetryAfterPermanentShutdownRejection) {
+	EXPECT_EQ(DispatcherPolicy::classifyAdmission(true, true), DispatcherAdmissionResult::Accepted);
+	EXPECT_EQ(DispatcherPolicy::classifyAdmission(false, false), DispatcherAdmissionResult::Saturated);
+	EXPECT_EQ(DispatcherPolicy::classifyAdmission(false, true), DispatcherAdmissionResult::ShuttingDown);
 }
 
 TEST(DispatcherPolicyTest, RequeuesAnUnprocessedSliceWithoutChangingFifoOrder) {

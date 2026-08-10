@@ -173,6 +173,8 @@ Borrowed raw pointers must not cross these boundaries.
   the dispatcher, must not expire, and must handle bounded-queue rejection
   explicitly. Retain an owning handle until a dispatcher lane accepts the
   cleanup instead of running it on an I/O thread or silently dropping it.
+  Terminal dispatcher shutdown ends I/O retries because the shutdown lifecycle
+  owns the remaining teardown.
 
 ## Benchmark-only monster stress mode
 

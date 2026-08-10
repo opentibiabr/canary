@@ -116,7 +116,8 @@ void Connection::dispatchProtocolRelease() {
 		DispatcherLane::ProtocolInput,
 		DispatcherLane::WorldCommit
 	);
-	if (accepted) {
+	const auto admissionResult = DispatcherPolicy::classifyAdmission(accepted, g_dispatcher().isShuttingDown());
+	if (admissionResult != DispatcherAdmissionResult::Saturated) {
 		protocolReleaseRetryAttempts = 0;
 		return;
 	}

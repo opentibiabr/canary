@@ -59,6 +59,9 @@
     <ClInclude Include="..\src\creatures\players\components\player_storage.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_vip.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\expert_pvp.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\expert_pvp_definitions.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\player_pvp.hpp" />
     <ClInclude Include="..\src\creatures\players\components\wheel\player_wheel.hpp" />
     <ClInclude Include="..\src\creatures\players\components\weapon_proficiency.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
@@ -302,6 +305,8 @@
     <ClCompile Include="..\src\creatures\players\components\player_storage.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_vip.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\pvp\expert_pvp.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\pvp\player_pvp.cpp" />
     <ClCompile Include="..\src\creatures\players\components\wheel\player_wheel.cpp" />
     <ClCompile Include="..\src\creatures\players\components\weapon_proficiency.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />

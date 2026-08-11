@@ -53,13 +53,12 @@ npcType.onCloseChannel = function(npc, creature)
 end
 
 local function greetCallback(npc, creature)
-	local playerId = creature:getId()
-
 	local player = Player(creature)
 
+	-- No setTopic here: NpcHandler:setInteraction() resets the topic to 0 right
+	-- after CALLBACK_GREET, so the chain has to be seeded from the "barkless" branch.
 	if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) < 2 then
 		npcHandler:setMessage(MESSAGE_GREET, "There, there initiate. You will now become one of us, as so many before you. One of the {Barkless}. Walk with us and you will walk tall my friend.")
-		npcHandler:setTopic(playerId, 1)
 	end
 
 	return true
@@ -73,8 +72,17 @@ local function creatureSayCallback(npc, creature, type, message)
 		return false
 	end
 
-	if MsgContains(message, "barkless") and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) == 1 then
+	-- Tigo is the cult's entry point: he starts the mission and opens the trial
+	-- building himself. Guarded writes, so repeating the dialogue never rolls back.
+	if MsgContains(message, "barkless") and player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) < 2 then
 		npcHandler:say({ "You are now one of us. Learn to endure this world's suffering in every facet and take delight in the soothing eternity that waits for the {purest} of us on the other side." }, npc, creature)
+		if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission) < 1 then
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.Mission, 1)
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Barkless.TrialAccessDoor, 1)
+		end
+		if player:getStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline) < 1 then
+			player:setStorageValue(Storage.Quest.U11_40.CultsOfTibia.Questline, 1)
+		end
 		npcHandler:setTopic(playerId, 1)
 	elseif MsgContains(message, "purest") and npcHandler:getTopic(playerId) == 1 then
 		npcHandler:say({ "Purification is but one of the difficult steps on your way to the other side. The {trial} of tar, sulphur and ice." }, npc, creature)

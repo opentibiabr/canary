@@ -44,12 +44,13 @@ jobs:
           fi
 
           CURRENT_BASELINE=$(jq -r '."builtin-baseline"' vcpkg.json)
+          CURRENT_REGISTRY_BASELINE=$(jq -r '."default-registry".baseline' vcpkg-configuration.json)
 
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT
           echo "current=$CURRENT_BASELINE" >> $GITHUB_OUTPUT
 
-          if [ "$LATEST_BASELINE" != "$CURRENT_BASELINE" ]; then
+          if [ "$LATEST_BASELINE" != "$CURRENT_BASELINE" ] || [ "$LATEST_BASELINE" != "$CURRENT_REGISTRY_BASELINE" ]; then
             echo "needs_update=true" >> $GITHUB_OUTPUT
           else
             echo "needs_update=false" >> $GITHUB_OUTPUT
@@ -82,8 +83,9 @@ jobs:
             git checkout ${BRANCH_NAME}
 
             CURRENT_IN_BRANCH=$(jq -r '."builtin-baseline"' vcpkg.json)
+            CURRENT_REGISTRY_IN_BRANCH=$(jq -r '."default-registry".baseline' vcpkg-configuration.json)
 
-            if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ]; then
+            if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ] && [ "$CURRENT_REGISTRY_IN_BRANCH" == "${NEW_BASELINE}" ]; then
               echo "PR #${EXISTING_PR} already has baseline ${NEW_BASELINE}"
               trigger_ci
               exit 0
@@ -93,8 +95,10 @@ jobs:
 
             jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
             mv vcpkg.json.tmp vcpkg.json
+            jq --arg baseline "${NEW_BASELINE}" '."default-registry".baseline = $baseline' vcpkg-configuration.json > vcpkg-configuration.json.tmp
+            mv vcpkg-configuration.json.tmp vcpkg-configuration.json
 
-            git add vcpkg.json
+            git add vcpkg.json vcpkg-configuration.json
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
             git push origin ${BRANCH_NAME}
 
@@ -121,8 +125,10 @@ jobs:
 
             jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
             mv vcpkg.json.tmp vcpkg.json
+            jq --arg baseline "${NEW_BASELINE}" '."default-registry".baseline = $baseline' vcpkg-configuration.json > vcpkg-configuration.json.tmp
+            mv vcpkg-configuration.json.tmp vcpkg-configuration.json
 
-            git add vcpkg.json
+            git add vcpkg.json vcpkg-configuration.json
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
             git push -f origin ${BRANCH_NAME}
 

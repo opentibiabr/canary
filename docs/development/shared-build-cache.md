@@ -95,6 +95,8 @@ The first directory is persistent. The latter two are transient and are cleaned 
 
 If sharing cannot be proven, a fresh configure uses `<binary-dir>/vcpkg_installed`, `<binary-dir>/vcpkg-buildtrees`, and `<binary-dir>/vcpkg-packages`. This fallback prefers duplication over mixing incompatible binaries and cannot collide with another opt-out project.
 
+Container and packaging stages may preprovision an immutable installed tree and configure with `VCPKG_MANIFEST_INSTALL=OFF`. In that explicit mode the module preserves the caller's `VCPKG_INSTALLED_DIR`, does not assign shared transient roots, and marks the shared pool inactive. Switching an existing managed configure tree to or from this mode still requires `--fresh`. Do not use this exception for an installation that vcpkg will mutate.
+
 Windows Ninja presets that select `cl.exe` require a Visual Studio developer environment. On other hosts, set both `CC` and `CXX`, or both CMake compiler variables, when the first configure cannot identify them safely.
 
 Disable the shared installed tree for an isolated configure with:

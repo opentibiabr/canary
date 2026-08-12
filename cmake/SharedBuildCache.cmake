@@ -976,6 +976,53 @@ if(CANARY_SHARED_CACHE_READ_ONLY
     )
 endif()
 
+if(DEFINED VCPKG_MANIFEST_INSTALL
+   AND NOT VCPKG_MANIFEST_INSTALL
+)
+    if(CANARY_SHARED_VCPKG_MANAGED
+       OR CANARY_SHARED_VCPKG_ACTIVE
+    )
+        message(
+            FATAL_ERROR
+                "The previously managed shared vcpkg contract cannot switch to a preprovisioned installation in place. Re-run cmake --fresh --preset <configure-preset>."
+        )
+    endif()
+
+    set(CANARY_SHARED_VCPKG_MANAGED
+        false
+        CACHE INTERNAL
+              "Whether Canary owns VCPKG_INSTALLED_DIR"
+              FORCE
+    )
+    set(CANARY_SHARED_VCPKG_ACTIVE
+        false
+        CACHE INTERNAL
+              "Whether the shared vcpkg installed tree is active"
+              FORCE
+    )
+    set(CANARY_SHARED_VCPKG_PREPROVISIONED
+        true
+        CACHE INTERNAL
+              "Whether this configure consumes a preprovisioned vcpkg installation"
+              FORCE
+    )
+    unset(CANARY_VCPKG_CACHE_FINGERPRINT CACHE)
+    unset(CANARY_SHARED_VCPKG_BUILDTREES_ROOT CACHE)
+    unset(CANARY_SHARED_VCPKG_PACKAGES_ROOT CACHE)
+    message(
+        STATUS
+            "Shared vcpkg installed tree disabled: VCPKG_MANIFEST_INSTALL is disabled; preserving the preprovisioned VCPKG_INSTALLED_DIR"
+    )
+    return()
+endif()
+
+if(CANARY_SHARED_VCPKG_PREPROVISIONED)
+    message(
+        FATAL_ERROR
+            "The previously preprovisioned vcpkg contract cannot enable manifest installation in place. Re-run cmake --fresh --preset <configure-preset>."
+    )
+endif()
+
 if(NOT CANARY_USE_SHARED_VCPKG_INSTALLED)
     if(DEFINED VCPKG_INSTALLED_DIR
        AND NOT

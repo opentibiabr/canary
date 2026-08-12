@@ -218,6 +218,11 @@ npcHandler:setMessage(MESSAGE_GREET, "Be greeted, dear visitor. Come and {stay} 
 npcHandler:setMessage(MESSAGE_FAREWELL, "We will meet again, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Yes, flee from death. But know it shall be always one step behind you.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "It hurts me to even think about my mortal past. Its long lost and forgotten. So don't ask me about it!" })
+keywordHandler:addKeyword({ "destruction" }, StdModule.say, { npcHandler = npcHandler, text = "This ancient race was annihilated by its own doings, that's all I know. Aeons have passed since then, but the sheer presence of this complex is still defiling and desecrating this area." })
+keywordHandler:addKeyword({ "last" }, StdModule.say, { npcHandler = npcHandler, text = "If you have passed the first six seals and entered the blue fires leading to the seals' chambers, you are ready to receive my kiss ... It will open the last seal. Do you think you are ready?" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

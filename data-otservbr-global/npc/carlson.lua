@@ -66,6 +66,19 @@ addTravelKeyword("folda", "Folda for |TRAVELCOST|?", 20, Position(32046, 31578, 
 -- Basic
 keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "Where do you want to go? To {Folda}, {Senja} or {Tibia}?" })
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "ferries" }, StdModule.say, { npcHandler = npcHandler, text = "Our ferries are strong enough to stand the high waves of the Nordic Ocean." })
+keywordHandler:addKeyword({ "ferry" }, StdModule.say, { npcHandler = npcHandler, text = "Our ferries are strong enough to stand the high waves of the Nordic Ocean." })
+keywordHandler:addKeyword({ "ice islands" }, StdModule.say, { npcHandler = npcHandler, text = "We serve the routes to Senja, Folda, and Vega, and back to Tibia." })
+keywordHandler:addKeyword({ "vega" }, StdModule.say, { npcHandler = npcHandler, text = "This island is Vega." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Carlson from the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "anderson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "carlson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "nielson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "svenson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "captain" }, StdModule.say, { npcHandler = npcHandler, text = "We are ferrymen. We transport goods and passengers to the Ice Islands." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "We are ferrymen. We transport goods and passengers to the Ice Islands." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

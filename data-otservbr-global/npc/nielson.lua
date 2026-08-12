@@ -102,6 +102,17 @@ keywordHandler:addKeyword({ "captain" }, StdModule.say, {
 npcHandler:setMessage(MESSAGE_GREET, "Ahoi, young man |PLAYERNAME| and welcome to the Nordic Tibia Ferries. If you need a {passage}, let me know.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. You are welcome.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Nielson from the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "anderson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "carlson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "nielson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "svenson" }, StdModule.say, { npcHandler = npcHandler, text = "The four of us are the captains of the Nordic Tibia Ferries." })
+keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "This is Tibia, the continent." })
+keywordHandler:addKeyword({ "ferries" }, StdModule.say, { npcHandler = npcHandler, text = "Our ferries are strong enough to stand the high waves of the Nordic Ocean." })
+keywordHandler:addKeyword({ "ferry" }, StdModule.say, { npcHandler = npcHandler, text = "Our ferries are strong enough to stand the high waves of the Nordic Ocean." })
+keywordHandler:addKeyword({ "ice islands" }, StdModule.say, { npcHandler = npcHandler, text = "We serve the routes to Senja, Folda, and Vega, and back to Tibia." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

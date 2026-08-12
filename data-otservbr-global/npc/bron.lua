@@ -193,6 +193,22 @@ npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:setMessage(MESSAGE_FAREWELL, "Take care, |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Take care!")
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Bron. Pleased to meet you, |PLAYERNAME|." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am a barbarian. Me and my brother are the only ones in this region, as far as I know." })
+keywordHandler:addKeyword({ "outfit" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, it's true - I am a barbarian. Me and my brother are the only ones in this region, as far as I know." })
+keywordHandler:addKeyword({ "hut" }, StdModule.say, { npcHandler = npcHandler, text = "I am a barbarian. Me and my brother are the only ones in this region, as far as I know." })
+keywordHandler:addKeyword({ "cyclops" }, StdModule.say, { npcHandler = npcHandler, text = "Ajax simply won't understand the advantages of a well-regulated lifestyle. We have actually tried to live together, but we start to fight after a few minutes." })
+keywordHandler:addKeyword({ "ajax" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, sigh. It is hard to believe that this illiterate savage is my one and only brother." })
+keywordHandler:addKeyword({ "savage" }, StdModule.say, { npcHandler = npcHandler, text = "Ajax simply won't understand the advantages of a well-regulated lifestyle. We have actually tried to live together, but we start to fight after a few minutes." })
+keywordHandler:addKeyword({ "fight" }, StdModule.say, { npcHandler = npcHandler, text = "No, no, not a physical fight, I'm really not into all this blood and breaking bones and smashing fists into each others faces. We were just... not of the same opinion." })
+keywordHandler:addKeyword({ "blood" }, StdModule.say, { npcHandler = npcHandler, text = "Where? Where? I hope my carpet is not ruined. Last time Ajax was here he left a horrible mess." })
+keywordHandler:addKeyword({ "mess" }, StdModule.say, { npcHandler = npcHandler, text = "I really don't want to think about it anymore." })
+keywordHandler:addKeyword({ "opinion" }, StdModule.say, { npcHandler = npcHandler, text = "We always have different opinions on all sorts of matters. Such as interior decoration. Or violence." })
+keywordHandler:addKeyword({ "decoration" }, StdModule.say, { npcHandler = npcHandler, text = "Nice furniture, isn't it?" })
+keywordHandler:addKeyword({ "violence" }, StdModule.say, { npcHandler = npcHandler, text = "Convincing Ajax that it is not always necessary to use brute force... this would be such an achievement. Definitely a hard task though. ... Listen, I simply have to ask, maybe a stranger can influence him better than I can. Would you help me with my brother?" })
+keywordHandler:addKeyword({ "warrior's sweat" }, StdModule.say, { npcHandler = npcHandler, text = "Were you able to get hold of a flask with pure warrior's sweat?" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

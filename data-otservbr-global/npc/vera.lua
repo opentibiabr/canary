@@ -57,6 +57,12 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Vera. I sell furniture and equipment." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Have you moved to a new home? I'm the specialist for equipping it." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "You mean my specials, don't you?" })
+keywordHandler:addKeyword({ "type" }, StdModule.say, { npcHandler = npcHandler, text = "I have beds, chairs, containers, decoration, flowers, instruments, pillows, pottery, statues, tapestries and tables. Which of those would you like to see?" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

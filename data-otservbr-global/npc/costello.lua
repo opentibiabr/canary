@@ -117,6 +117,28 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Come back soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Costello." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm the abbot of the White Raven Monastery on the Isle of the Kings." })
+keywordHandler:addKeyword({ "isle" }, StdModule.say, { npcHandler = npcHandler, text = "We founded our monastery to guard the royal tombs and to gather wisdom and knowledge." })
+keywordHandler:addKeyword({ "wisdom" }, StdModule.say, { npcHandler = npcHandler, text = "You may enter the library upstairs. Don't go any further upstairs, though, as this area is reserved for members of our order." })
+keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "That's the name of our world and its major continent." })
+keywordHandler:addKeyword({ "god" }, StdModule.say, { npcHandler = npcHandler, text = "They created Tibia and all life on it." })
+keywordHandler:addKeyword({ "life" }, StdModule.say, { npcHandler = npcHandler, text = "There are many different life forms in our world: plants, citizens, and monsters." })
+keywordHandler:addKeyword({ "plant" }, StdModule.say, { npcHandler = npcHandler, text = "Just walk around, you'll see grass, trees, bushes and beautiful flowers." })
+keywordHandler:addKeyword({ "white raven" }, StdModule.say, { npcHandler = npcHandler, text = "The legend tells us of a white raven which led the ship of the first monk of our order here. He discovered this isle and the caves beneath it." })
+keywordHandler:addKeyword({ "order" }, StdModule.say, { npcHandler = npcHandler, text = "We founded our monastery to guard the royal tombs and to gather wisdom and knowledge." })
+keywordHandler:addKeyword({ "caves" }, StdModule.say, { npcHandler = npcHandler, text = "Anselm, the first monk of our order, discovered them while looking for a suitable burial place for his king." })
+keywordHandler:addKeyword({ "anselm" }, StdModule.say, { npcHandler = npcHandler, text = "He was a humble and pious man, and he was chosen by the royal family of Thais to find a resting place for their dead." })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "The deceased leaders of the Thaian empire rest beneath this monastery in tombs and crypts." })
+keywordHandler:addKeyword({ "knowledge" }, StdModule.say, { npcHandler = npcHandler, text = "You may enter the library upstairs. Don't go any further upstairs, though, as this area is reserved for members of our order." })
+keywordHandler:addKeyword({ "passage" }, StdModule.say, { npcHandler = npcHandler, text = "I was informed you have won the trust of the fisher Windtrouser so your passage should be granted." })
+keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "Don't mention this servant of evil here." })
+keywordHandler:addKeyword({ "excalibug" }, StdModule.say, { npcHandler = npcHandler, text = "Sadly we have only little knowledge about this topic." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, we rarely hear anything new here." })
+keywordHandler:addKeyword({ "monster" }, StdModule.say, { npcHandler = npcHandler, text = "There are really too many of them in Tibia. But who are we to question the wisdom of the gods?" })
+keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You aren't looking that bad. Sorry, I can't help you" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

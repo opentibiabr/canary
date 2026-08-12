@@ -71,6 +71,8 @@ set(VCPKG_MANIFEST_FEATURES
     CACHE STRING "vcpkg manifest features"
 )
 
+include(cmake/SharedBuildCache.cmake)
+
 # *****************************************************************************
 # Project canary
 # *****************************************************************************

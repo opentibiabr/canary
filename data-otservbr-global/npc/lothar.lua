@@ -139,14 +139,10 @@ keywordHandler:addKeyword({ "glooth" }, StdModule.say, { npcHandler = npcHandler
 keywordHandler:addKeyword({ "candle stump" }, StdModule.say, { npcHandler = npcHandler, text = "At first sight this candle might only illuminate your house. But this light is something special. Moles are, as you probably know, blind. Nevertheless they feel very appealed by this candle stump. That might be the way to tame them." })
 keywordHandler:addKeyword({ "library ticket" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, it looks quite old. The scribbled notes are barely readable. But I have the impression that you could borrow a very special book with this ticket." })
 keywordHandler:addKeyword({ "percht skull" }, StdModule.say, { npcHandler = npcHandler, text = "There are creatures of darkness and cold, living on a remote island and fighting against light and warmth. It is said that they can be subdued and forced to do the bidding of others." })
-keywordHandler:addKeyword(
-	{ "red silk flower" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "I heard stories about those artificial flowers. The werelions of the Darama Desert create them and they come in different colours. Each colour has a different meaning. ... White silk flowers are used as love pledges, for example. But red ones are decorations for bravery and valour. ... If you offer one respectfully to a white lion, such a kingly animal might accompany you willingly.",
-	}
-)
+keywordHandler:addKeyword({ "red silk flower" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "I heard stories about those artificial flowers. The werelions of the Darama Desert create them and they come in different colours. Each colour has a different meaning. ... White silk flowers are used as love pledges, for example. But red ones are decorations for bravery and valour. ... If you offer one respectfully to a white lion, such a kingly animal might accompany you willingly.",
+})
 keywordHandler:addKeyword({ "spectral scrap of cloth" }, StdModule.say, { npcHandler = npcHandler, text = "This piece of cloth will enable you to gather ghostly residue, that will be shaped by your willpower to create a rideable haze." })
 keywordHandler:addKeyword({ "the lion's heart" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, what a beautiful amulet. Really very artful and elaborate! It would be a fitting adornment even for a creature as majestic as a noble lion. If you offer it respectfully such a kingly animal might accompany you." })
 keywordHandler:addKeyword({ "the regalia of suon" }, StdModule.say, { npcHandler = npcHandler, text = "The Regalia of Suon! Only a few of them were ever forged, back in the times of the old empire of Kilmaresh. This is a very rare and precious treasure. The Regalia of Suon are a gift that would be worth even a gryphon's favour." })

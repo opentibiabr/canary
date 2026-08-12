@@ -89,14 +89,10 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "May Crunor bless and guide you, |PLAYER
 -- Dialogue keywords the NPC answers on the official server
 keywordHandler:addKeyword({ "druid" }, StdModule.say, { npcHandler = npcHandler, text = "<sigh> Druids are supposed to be healers and preservers of nature. And what have most of us become? Hunters and killers who are only interested in furthering their own cause." })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Cerdras of the Carlinian Druid Guild." })
-keywordHandler:addKeyword(
-	{ "earth" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "The song of earth is always with me. As is the song of air. Both are often in some kind of harmony and sometimes it is hard to separate the one from the other. ... If I concentrate hard enough I can distinguish the many individual songs that make the melody. ... Each boulder, each stone, each grain of sand has its own voice in the symphony of the great melody.",
-	}
-)
+keywordHandler:addKeyword({ "earth" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "The song of earth is always with me. As is the song of air. Both are often in some kind of harmony and sometimes it is hard to separate the one from the other. ... If I concentrate hard enough I can distinguish the many individual songs that make the melody. ... Each boulder, each stone, each grain of sand has its own voice in the symphony of the great melody.",
+})
 keywordHandler:addKeyword({ "yalahari" }, StdModule.say, { npcHandler = npcHandler, text = "I have heard little of the Yalahari. And the little that I know does not tempt me to learn more." })
 keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "The city sounds like a urban nightmare to me." })
 keywordHandler:addKeyword({ "hunt" }, StdModule.say, { npcHandler = npcHandler, text = "The hunt can be part of the cycle of life and death. Nowadays that cycle has been broken. People take more than they give and greed dictates their actions." })

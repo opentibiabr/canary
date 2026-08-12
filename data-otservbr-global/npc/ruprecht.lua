@@ -177,14 +177,10 @@ keywordHandler:addKeyword(
 keywordHandler:addKeyword({ "turn in" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but you do not have a token." })
 keywordHandler:addKeyword({ "christmas bakery" }, StdModule.say, { npcHandler = npcHandler, text = "The entrance to the bakery is right behind my hut." })
 keywordHandler:addKeyword({ "deer" }, StdModule.say, { npcHandler = npcHandler, text = "They are no ordinary deer, but a rare magical breed. They are fun and nice, you know. The ugly thing about them is that they prefer a stew made of old, worn boots of haste. Guess that keeps them fast and flying. But what a foul stench!!" })
-keywordHandler:addKeyword(
-	{ "token" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "If you have any tokens you'd like to turn in, just tell me to turn in the tokens. ... For 1 token you will get a gingerbread man or christmas cookie tray. For 10 tokens I will give you a recipe so you can make your own gingerbread men in the christmas bakery. ... For 25 tokens I will give you a jewel box, while you can trade 50 tokens for a hat, just like the one Santa has. ... 75 tokens are enough for a fluffy santa backpack or a snowflake tapestry, and for 100 tokens you will get a santa doll. I trade 150 tokens for a snowman doll or a snow globe. ... 250 tokens are enough for a frazzlemaw santa, a leaf golem santa, a maxxen santa, a ferumbras' teddy santa, an orclops santa, a santa music box, a santa fox, a nightmare beast santa ... a santa leech, a raccoon santa and finally 500 tokens for a santa teddy.",
-	}
-)
+keywordHandler:addKeyword({ "token" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "If you have any tokens you'd like to turn in, just tell me to turn in the tokens. ... For 1 token you will get a gingerbread man or christmas cookie tray. For 10 tokens I will give you a recipe so you can make your own gingerbread men in the christmas bakery. ... For 25 tokens I will give you a jewel box, while you can trade 50 tokens for a hat, just like the one Santa has. ... 75 tokens are enough for a fluffy santa backpack or a snowflake tapestry, and for 100 tokens you will get a santa doll. I trade 150 tokens for a snowman doll or a snow globe. ... 250 tokens are enough for a frazzlemaw santa, a leaf golem santa, a maxxen santa, a ferumbras' teddy santa, an orclops santa, a santa music box, a santa fox, a nightmare beast santa ... a santa leech, a raccoon santa and finally 500 tokens for a santa teddy.",
+})
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

@@ -13,6 +13,8 @@ Canary repositories can share expensive reusable artifacts across Git worktrees 
 | vcpkg `buildtrees` and `packages` | One per fingerprint, transient | Compatible installs serialize on one installed-root lock. Incompatible installs cannot stage or clean each other's files. |
 | sccache storage | Global per user or machine | Compiler outputs are content-addressed. Exact source roots in `SCCACHE_BASEDIRS` normalize equivalent paths across checkouts. |
 
+MSVC precompiled headers remain worktree-local. Current sccache releases report compilations using `/Fp` or `/Yc` as non-cacheable, so `SCCACHE_BASEDIRS` benefits only eligible units and tools. Do not share `.pch` files or remove PCH flags merely to force cache hits; use `sccache --show-stats` to distinguish this expected limitation from a path-normalization regression.
+
 Never junction, symlink, or otherwise share an entire `build` or `vcpkg_installed` directory manually. Do not place the pool inside a primary worktree.
 
 ## Windows setup

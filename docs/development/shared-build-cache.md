@@ -1,0 +1,225 @@
+# Shared build cache for worktrees and forks
+
+Canary repositories can share expensive reusable artifacts across Git worktrees and independent forks without sharing mutable CMake build trees. The shared pool must live on a local filesystem outside every source and build hierarchy, so removing one checkout cannot remove another checkout's dependencies.
+
+## Cache ownership
+
+| Layer | Ownership | Reason |
+| --- | --- | --- |
+| `build/<preset>` | One per worktree and preset | CMake, Ninja, objects, PCH files, and generated files contain checkout-specific paths. |
+| vcpkg binary cache | Global | vcpkg addresses binary packages by their package ABI. Different manifests and baselines can reuse a package when its ABI is identical. |
+| vcpkg downloads | Global | Sources and tools are reusable download assets. |
+| `VCPKG_INSTALLED_DIR` | One per complete dependency fingerprint | Any worktree or independent fork with the same contract uses the same installed tree. Different contracts receive different trees. |
+| vcpkg `buildtrees` and `packages` | One per fingerprint, transient | Compatible installs serialize on one installed-root lock. Incompatible installs cannot stage or clean each other's files. |
+| sccache storage | Global per user or machine | Compiler outputs are content-addressed. Exact source roots in `SCCACHE_BASEDIRS` normalize equivalent paths across checkouts. |
+
+Never junction, symlink, or otherwise share an entire `build` or `vcpkg_installed` directory manually. Do not place the pool inside a primary worktree.
+
+## Windows setup
+
+From a worktree in each independent Git repository that should participate, run:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1
+```
+
+The first invocation creates a machine-local repository registry below the shared cache root. Later invocations add the current repository's Git common directory. Every invocation re-enumerates all registered repositories and their worktrees, so `SCCACHE_BASEDIRS` and cache audits cover the complete set instead of replacing one fork with another.
+
+The default shared root is a `canary-build-cache` directory beside the active `VCPKG_ROOT`. Override it with the same short, local path in every participating repository when needed:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1 -CacheRoot <cache-root>
+```
+
+The helper:
+
+- persists `CANARY_SHARED_CACHE_ROOT` for the current Windows user;
+- verifies that the pool and its existing ancestors are on a ready local fixed volume without reparse points, persists `CANARY_SHARED_CACHE_LOCAL_FILESYSTEM_VERIFIED=ON`, and binds that proof to the exact path in `CANARY_SHARED_CACHE_VERIFIED_ROOT`;
+- registers the current independent Git repository and discovers all its worktrees;
+- preserves an existing vcpkg binary-cache configuration or creates a local file backend when absent;
+- never persists or prints an existing `VCPKG_BINARY_SOURCES`, because it may contain credentials;
+- makes the vcpkg downloads directory explicit and global;
+- does not persist or change `VCPKG_ROOT`; the active project or tool manager owns the vcpkg executable;
+- pins the Visual Studio instance selected by vcpkg in the Canary-scoped `CANARY_VCPKG_VISUAL_STUDIO_PATH`; the CMake module exports the standard vcpkg variable only to its configure process;
+- manages `SCCACHE_BASEDIRS` as the union of every registered worktree root plus pre-existing unmanaged entries;
+- creates cache directories but does not configure or compile the project.
+
+Restart open terminals and long-running development applications after setup. Restart an existing sccache server only after active builds finish. Run the helper after adding, moving, or removing worktrees.
+
+Audit all registered repositories without mutation:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1 -AuditOnly
+```
+
+Remove the current repository family from the machine-local registry before retiring it:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1 -UnregisterCurrentRepository
+```
+
+This updates the managed sccache roots but does not delete the repository or any cache data.
+
+Remove only the legacy transient directories below the active `VCPKG_ROOT` with:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1 -CleanTransientVcpkg
+```
+
+The helper refuses cleanup while build-related processes are active and holds the vcpkg root lock during deletion. It preserves installed trees, downloads, binary packages, and fingerprint-specific pools.
+
+## Non-Windows setup
+
+Set `CANARY_SHARED_CACHE_ROOT` to one short local path outside every participating checkout. After independently verifying that exact path is on a local filesystem with reliable lock and rename semantics, set `CANARY_SHARED_CACHE_LOCAL_FILESYSTEM_VERIFIED=ON` and set `CANARY_SHARED_CACHE_VERIFIED_ROOT` to the same absolute path. Repeat the verification whenever the root changes. Keep downloads, the vcpkg binary cache, and sccache global. Build the `SCCACHE_BASEDIRS` list from the exact roots emitted by `git worktree list` for every independent repository, separated by `:`.
+
+Do not use a network filesystem for mutable installed or transient pools. Its locking and rename semantics may not be strong enough for concurrent vcpkg operations.
+
+## Normal configure and build
+
+Continue using repository presets:
+
+```text
+cmake --preset <configure-preset>
+cmake --build --preset <build-preset>
+```
+
+`cmake/SharedBuildCache.cmake` runs before the first `project()` call. When it can prove the complete installation contract, it selects:
+
+```text
+<cache-root>/vcpkg-installed/v2/<fingerprint>
+<cache-root>/vcpkg-buildtrees/v2/<fingerprint>
+<cache-root>/vcpkg-packages/v2/<fingerprint>
+```
+
+The first directory is persistent. The latter two are transient and are cleaned after successful dependency builds by the preset's vcpkg options.
+
+If sharing cannot be proven, a fresh configure uses `<binary-dir>/vcpkg_installed`, `<binary-dir>/vcpkg-buildtrees`, and `<binary-dir>/vcpkg-packages`. This fallback prefers duplication over mixing incompatible binaries and cannot collide with another opt-out project.
+
+Windows Ninja presets that select `cl.exe` require a Visual Studio developer environment. On other hosts, set both `CC` and `CXX`, or both CMake compiler variables, when the first configure cannot identify them safely.
+
+Disable the shared installed tree for an isolated configure with:
+
+```text
+-DCANARY_USE_SHARED_VCPKG_INSTALLED=OFF
+```
+
+Switching an existing build tree between opt-in and opt-out changes dependency paths and therefore requires:
+
+```text
+cmake --fresh --preset <configure-preset> -DCANARY_USE_SHARED_VCPKG_INSTALLED=OFF
+```
+
+Use separate configure presets and binary directories if opt-in and opt-out builds must exist simultaneously.
+
+## Sharing across baselines and forks
+
+The repository name, branch, and absolute checkout path are not fingerprint inputs. Independent forks therefore converge when their declared and effective dependency contracts are identical.
+
+A common `builtin-baseline` improves the chance of reuse but is not sufficient. Sharing an installed tree also requires identical manifests, enabled features, registry configuration and content, ordered overlays, target and host triplets, linkage, vcpkg options, compiler/toolset identity, CMake identity, and vcpkg revision.
+
+Different baselines and manifests are supported. They select different installed and transient fingerprints while continuing to reuse the global downloads and every binary package whose vcpkg ABI remains identical. Do not force a baseline update solely to save disk space.
+
+One fixed global vcpkg tool checkout may serve several manifest baselines when that is the repository's supported workflow. If projects require different vcpkg tool revisions, activate an immutable tool root per revision or per shell. Never let concurrent projects switch one shared mutable vcpkg checkout between revisions. The selected executable, toolchain, and Git revision participate in the fingerprint.
+
+vcpkg does not provide a supported content-addressed or hardlinked representation for files expanded into different installed trees. The safe native limit is one expanded tree per exact contract; do not hardlink or junction two distinct fingerprints.
+
+### Canonical dependency contracts between forks
+
+The fingerprint deliberately does not guess that two different vcpkg declarations are semantically equivalent. For example, a byte-identical custom port delivered as an overlay and as a filesystem registry still produces different fingerprints. Those mechanisms have different precedence, version selection, and metadata rules, so automatically treating them as interchangeable could mix incompatible installations.
+
+When several maintained forks are intended to use the same dependency contract, select one canonical representation and port that representation atomically. A versioned filesystem registry is usually preferable for a maintained custom port because it records both the port payload and its version metadata. Equality requires more than copying the port directory:
+
+- keep `vcpkg.json`, the separate or embedded vcpkg configuration, registry metadata, triplets, features, and install options aligned;
+- include the filesystem registry's `versions/baseline.json` and per-port version database, not only `ports/<port>`;
+- keep the same normalized `cmake/SharedBuildCache.cmake` implementation and schema;
+- use the same vcpkg tool revision and compiler contract for configurations that are expected to converge;
+- when automation updates a baseline that is declared in both the manifest and `default-registry`, update both declarations in one change.
+
+Before canonicalizing two forks, compare the dependency inputs and prove that the selected versions, features, linkage, target and host triplets, and custom port contents are equivalent. Do not change a dependency version or a fork-specific option merely to obtain the same fingerprint. An intentional difference should remain a separate fingerprint while still sharing downloads, sccache storage, and ABI-compatible binary packages.
+
+After adopting the canonical representation, run the setup helper from the newly participating repository, configure its existing preset with `--fresh`, and compare the full fingerprint reported in `CMakeCache.txt` or the metadata directory. Matching fingerprints are the result of matching contracts; never override or manually rename a fingerprint to force convergence. If the fingerprints differ, inspect their metadata and preserve the separate pools until the remaining input difference is understood.
+
+This pool integration covers CMake manifest installs. A separately maintained Visual Studio solution or another build system must keep its expanded installed tree local unless it implements the same complete fingerprint and locking contract. It may still use the global downloads and vcpkg binary cache.
+
+## Fingerprint contract
+
+The fingerprint contains inputs that can change the manifest installation or package ABI:
+
+- the normalized implementation hash and schema of `cmake/SharedBuildCache.cmake`;
+- the complete `vcpkg.json`, including either supported embedded configuration spelling, and optional separate `vcpkg-configuration.json`;
+- contents of filesystem registries declared by the configuration;
+- ordered contents of overlay port and overlay triplet directories declared by variables or configuration;
+- target and host triplet names and selected triplet files;
+- manifest features, feature flags, linkage settings, build type, and install options;
+- chainloaded toolchain contents;
+- CMake generator, host, executable, and version;
+- C and C++ compiler executable hashes;
+- on Windows, the pinned vcpkg Visual Studio instance, `vcvarsall.bat`, and selectable MSVC compiler tool binaries;
+- selected Visual Studio toolset, Windows SDK, and host/target architecture environment;
+- vcpkg executable, toolchain, repository revision, and relevant dirty state.
+
+The module disables sharing when any required identity or the local-filesystem guarantee is ambiguous. Absolute worktree paths do not participate. Content paths inside manifests and configurations still participate through the files themselves, while referenced local trees are hashed using relative file names and contents.
+
+The module's normalized SHA-256 is part of schema `v2`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
+
+An existing configured preset never changes fingerprint or falls back in place. Cached package variables could retain paths into the old pool, so the module stops before `project()` and requests `cmake --fresh --preset <configure-preset>`.
+
+Fingerprint input files and trees are CMake configure dependencies. Adding, removing, or changing a manifest, registry, overlay, triplet, compiler, or toolchain input requests regeneration.
+
+The full SHA-256 and non-local metadata are written below `<cache-root>/metadata/v2`. Directory names use the first 24 hexadecimal characters to limit Windows path length.
+
+## Concurrency
+
+Consumers of one fingerprint request one package set and installed-root lock. Different fingerprints receive independent installed, `buildtrees`, and `packages` roots. Projects that opt out receive build-local roots.
+
+Do not manually modify a fingerprint directory. Do not prune caches while CMake, vcpkg, Ninja, a compiler, or a linker is using any registered build family.
+
+## Migrating existing build trees
+
+Reconfigure an existing preset with `--fresh`; do not create an ad-hoc build directory:
+
+```text
+cmake --fresh --preset <configure-preset>
+```
+
+Verify its `CMakeCache.txt`:
+
+```text
+CANARY_SHARED_VCPKG_ACTIVE:INTERNAL=true
+VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v2/<fingerprint>
+```
+
+Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.
+
+## Cleanup and recovery
+
+Before pruning a fingerprint:
+
+1. Confirm no configure or build process is active.
+2. Run the audit from any registered repository.
+3. Inspect every reported `CMakeCache.txt` and generated Ninja file.
+4. Preserve every installed root referenced by any registered consumer.
+5. Remove only an unreferenced fingerprint and its matching transient and metadata entries.
+
+An audit that reports an unregistered, unavailable, partially enumerated, or malformed repository/configure tree is incomplete and exits with failure. Do not prune any global fingerprint until every registered family is available and the audit succeeds.
+
+Schema migrations intentionally create a new pool. Keep the previous schema until every registered configured build has migrated, built successfully, and stopped referencing it.
+
+If one fingerprint becomes corrupt, stop all its consumers, remove only that exact directory, and reconfigure one existing preset. vcpkg recreates it from the binary cache. Do not delete downloads or the global binary cache during normal recovery.
+
+## CI and production boundaries
+
+The feature is opt-in through `CANARY_SHARED_CACHE_ROOT`. CI and fresh clones retain build-local manifest installations unless their environment explicitly enables the pool. Cache setup must not change deployment directories, runtime data, production services, or release publication behavior.
+
+## Regression checklist
+
+Before changing build or dependency configuration, verify:
+
+- `build/<preset>` remains local to each worktree;
+- all vcpkg settings are finalized before `project()`;
+- new manifest, registry, overlay, triplet, compiler, and toolchain inputs participate in the fingerprint;
+- independent forks use the same module implementation before sharing a fingerprint;
+- opt-out and fallback transients remain build-local;
+- no machine-local path appears in committed presets or documentation;
+- shared mutable state remains on a local filesystem outside every checkout;
+- the repository registry and cleanup audit cover every consumer before data is removed.

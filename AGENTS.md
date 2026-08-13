@@ -22,6 +22,26 @@
 - Do not mix unrelated changes in the same commit unless the user explicitly asks for a single combined commit.
 - Before amending or rebasing commits that may already be pushed, check the remote state and prefer `--force-with-lease` when a rewrite is explicitly approved.
 
+## Recurring Defect Prevention
+
+- When a confirmed defect represents a reusable failure mode rather than an isolated mistake, inspect analogous code paths before closing the change. Search by behavior and ownership pattern, not only by the original symbol or file name.
+- After fixing such a defect, explicitly ask whether another contributor or generated change could recreate it elsewhere. If so, add or update a narrow prevention rule in the nearest applicable `AGENTS.md` before considering the task complete, unless code or tooling already makes that failure mode impossible.
+- Back the `AGENTS.md` rule with a helper API, type constraint, static check, architecture document, or focused test when practical. Prefer enforceable safeguards; use the instruction as the repository-wide review contract.
+- A reusable rule must describe the unsafe pattern, the required alternative, and the validation expected. Do not write rules that merely restate one incident, mention a specific pull request, or depend on undocumented context.
+- Keep the audit proportional to the failure mode. Fix confirmed sibling occurrences in atomic commits, but do not expand an incident into a speculative repository-wide refactor or add a permanent rule for a genuinely isolated mistake.
+- Treat review findings caused by common human or generated-code shortcuts as candidates for prevention, especially lifetime errors, unchecked arithmetic, stale identity, unsafe ownership transfer, missing bounds, and work that can escape its cancellation domain.
+
+## Deferred Callback Lifetime Safety
+
+- Treat every scheduled, deferred, asynchronous, timer, and worker-completion callback as potentially executing after its originating object or state has been destroyed, replaced, reloaded, disconnected, or moved.
+- Do not capture raw `this`, references, iterators, or pointers into mutable containers when the callback can outlive the current call. Prefer immutable value captures and `std::weak_ptr` ownership; lock at execution time and return safely if ownership expired.
+- Re-resolving an entity by ID is insufficient when that ID can be reused. Also validate the original object identity, generation, epoch, or session token before applying mutations.
+- Operations that remove, replace, reload, or reinterpret callback-owned state must cancel pending work or advance a generation token checked by every related callback.
+- Types that own scheduled callbacks must be non-movable unless moving explicitly cancels or rebinds every pending event, preserves event ownership, and has focused regression coverage.
+- Use signed or checked arithmetic for countdowns and retry intervals so subtraction cannot wrap into a large delay.
+- A stale callback must become a no-op before performing gameplay mutations, Lua calls, combat, movement, persistence, or client output.
+- Where practical, cover destroyed owners, removed entries, reused IDs, generation mismatches, shutdown, and ownership transfer in focused tests.
+
 ## Build Policy
 
 - Compile when the change is critical, complex, or likely to break compilation. For small documentation, script, or clearly non-build-affecting changes, avoid builds unless they add real validation value.

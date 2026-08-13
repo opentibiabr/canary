@@ -554,18 +554,28 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
     <VcpkgAutoLink>true</VcpkgAutoLink>
     <VcpkgHostTriplet>x64-windows</VcpkgHostTriplet>
+    <CanaryVcpkgFeatureFlags>versions</CanaryVcpkgFeatureFlags>
+    <CanaryVcpkgManifestFeatures />
+    <CanaryVcpkgManifestNoDefaultFeatures />
+    <CanaryVcpkgOverlayPorts />
+    <CanaryVcpkgOverlayTriplets>$(VcpkgManifestRoot)\cmake\triplets</CanaryVcpkgOverlayTriplets>
+    <CanaryVcpkgInstallOptions>--clean-packages-after-build;--clean-buildtrees-after-build</CanaryVcpkgInstallOptions>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>$(MSBuildProjectDirectory)\vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
     <VcpkgConfiguration>Release</VcpkgConfiguration>
+    <CanaryVcpkgBuildType />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>$(MSBuildProjectDirectory)\vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows-static-release</VcpkgTriplet>
     <VcpkgUseStatic>false</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
+    <CanaryVcpkgBuildType>release</CanaryVcpkgBuildType>
   </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\.canary-shared-cache\SharedVcpkgCache.props"
+          Condition="'$(CanarySharedVcpkgDisable)'!='true' and Exists('$(MSBuildProjectDirectory)\.canary-shared-cache\SharedVcpkgCache.props')" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -674,5 +684,6 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets" Condition="'$(_ZVcpkgRoot)'=='' and '$(VcpkgRoot)'!='' and Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets')" />
+    <Import Project="SharedVcpkgCache.targets" />
   </ImportGroup>
 </Project>

@@ -32,10 +32,14 @@ bld/
 [Ll]og/
 build/
 CMakeUserPresets.json
-vcproj/
+/vcproj/.canary-shared-cache/
+/vcproj/.vcpkg-buildtrees/
+/vcproj/.vcpkg-packages/
+/vcproj/*
 !vcproj/canary.sln
 !vcproj/canary.vcxproj
 !vcproj/settings.props
+!vcproj/SharedVcpkgCache.targets
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

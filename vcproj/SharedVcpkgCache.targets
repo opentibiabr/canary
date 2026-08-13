@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="CanaryConfigureLocalVcpkgFallback"
+          BeforeTargets="VcpkgInstallManifestDependencies"
+          Condition="'$(CanarySharedVcpkgActive)'!='true'">
+    <SetEnv Name="VCPKG_ROOT" Value="$(VcpkgRoot)" Prefix="false" />
+    <ItemGroup>
+      <_CanaryVcpkgManifestFeature Include="$(CanaryVcpkgManifestFeatures)" Condition="'$(CanaryVcpkgManifestFeatures)'!=''" />
+      <_CanaryVcpkgOverlayPort Include="$(CanaryVcpkgOverlayPorts)" Condition="'$(CanaryVcpkgOverlayPorts)'!=''" />
+      <_CanaryVcpkgOverlayTriplet Include="$(CanaryVcpkgOverlayTriplets)" Condition="'$(CanaryVcpkgOverlayTriplets)'!=''" />
+      <_CanaryVcpkgInstallOption Include="$(CanaryVcpkgInstallOptions)" Condition="'$(CanaryVcpkgInstallOptions)'!=''" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_CanaryVcpkgFeatureFlagOptions Condition="'$(CanaryVcpkgFeatureFlags)'!=''">--feature-flags=$([System.String]::Copy('$(CanaryVcpkgFeatureFlags)').Replace(';', ','))</_CanaryVcpkgFeatureFlagOptions>
+      <_CanaryVcpkgManifestFeatureOptions>@(_CanaryVcpkgManifestFeature->'--x-feature=%(Identity)', ' ')</_CanaryVcpkgManifestFeatureOptions>
+      <_CanaryVcpkgNoDefaultFeatureOptions Condition="'$(CanaryVcpkgManifestNoDefaultFeatures)'=='1' Or '$(CanaryVcpkgManifestNoDefaultFeatures)'=='ON' Or '$(CanaryVcpkgManifestNoDefaultFeatures)'=='TRUE' Or '$(CanaryVcpkgManifestNoDefaultFeatures)'=='YES'">--x-no-default-features</_CanaryVcpkgNoDefaultFeatureOptions>
+      <_CanaryVcpkgOverlayPortOptions>@(_CanaryVcpkgOverlayPort->'&quot;--overlay-ports=%(Identity)&quot;', ' ')</_CanaryVcpkgOverlayPortOptions>
+      <_CanaryVcpkgOverlayTripletOptions>@(_CanaryVcpkgOverlayTriplet->'&quot;--overlay-triplets=%(Identity)&quot;', ' ')</_CanaryVcpkgOverlayTripletOptions>
+      <_CanaryVcpkgInstallOptions>@(_CanaryVcpkgInstallOption, ' ')</_CanaryVcpkgInstallOptions>
+      <VcpkgAdditionalInstallOptions>$(_CanaryVcpkgFeatureFlagOptions) $(_CanaryVcpkgManifestFeatureOptions) $(_CanaryVcpkgNoDefaultFeatureOptions) $(_CanaryVcpkgOverlayPortOptions) $(_CanaryVcpkgOverlayTripletOptions) $(_CanaryVcpkgInstallOptions) &quot;--x-buildtrees-root=$(MSBuildProjectDirectory)\.vcpkg-buildtrees\$(Configuration)-$(Platform)&quot; &quot;--x-packages-root=$(MSBuildProjectDirectory)\.vcpkg-packages\$(Configuration)-$(Platform)&quot;</VcpkgAdditionalInstallOptions>
+    </PropertyGroup>
+  </Target>
+
+  <Target Name="CanarySetSharedVcpkgEnvironment"
+          BeforeTargets="VcpkgTripletSelection;VcpkgInstallManifestDependencies"
+          Condition="'$(CanarySharedVcpkgActive)'=='true'">
+    <Error Text="The shared Solution cache contract does not pin a Visual Studio instance. Regenerate SharedVcpkgCache.props."
+           Condition="'$(CanaryVcpkgVisualStudioPath)'==''" />
+    <Error Text="The shared Solution cache contract does not pin its dependency CMake tool. Regenerate SharedVcpkgCache.props."
+           Condition="'$(CanaryVcpkgDependencyCMakeDirectory)'==''" />
+    <Error Text="The shared Solution cache contract does not identify its cache root. Regenerate SharedVcpkgCache.props."
+           Condition="'$(CanarySharedCacheRoot)'==''" />
+    <SetEnv Name="CANARY_VCPKG_VISUAL_STUDIO_PATH"
+            Value="$(CanaryVcpkgVisualStudioPath)"
+            Prefix="false" />
+    <SetEnv Name="VCPKG_VISUAL_STUDIO_PATH"
+            Value="$(CanaryVcpkgVisualStudioPath)"
+            Prefix="false" />
+    <SetEnv Name="VCPKG_ROOT"
+            Value="$(VcpkgRoot)"
+            Prefix="false" />
+    <SetEnv Name="PATH"
+            Value="$(CanaryVcpkgDependencyCMakeDirectory);$(PATH)"
+            Prefix="false" />
+  </Target>
+
+  <Target Name="CanaryValidateSharedVcpkgCache"
+          BeforeTargets="VcpkgInstallManifestDependencies;PrepareForBuild"
+          DependsOnTargets="CanarySetSharedVcpkgEnvironment"
+          Condition="'$(CanarySharedVcpkgActive)'=='true'">
+    <Error Text="The shared Solution cache requires vcpkg manifest integration to remain enabled."
+           Condition="'$(VcpkgEnabled)'!='true' Or '$(VcpkgEnableManifest)'!='true' Or '$(VcpkgManifestInstall)'!='true'" />
+    <Error Text="The evaluated vcpkg manifest root differs from the generated dependency contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(VcpkgManifestRoot)'!='$(CanarySharedVcpkgExpectedManifestRoot)'" />
+    <Error Text="The evaluated vcpkg target triplet differs from the generated dependency contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(VcpkgTriplet)'!='$(CanarySharedVcpkgExpectedTargetTriplet)'" />
+    <Error Text="The evaluated vcpkg host triplet differs from the generated dependency contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(VcpkgHostTriplet)'!='$(CanarySharedVcpkgExpectedHostTriplet)'" />
+    <Error Text="The evaluated vcpkg link configuration differs from the generated consumer contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(VcpkgConfiguration)'!='$(CanarySharedVcpkgExpectedConfiguration)'" />
+    <Error Text="The evaluated platform toolset differs from the generated consumer contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(PlatformToolset)'!='$(CanarySharedVcpkgExpectedToolset)'" />
+    <Error Text="The evaluated Windows SDK differs from the generated consumer contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(WindowsTargetPlatformVersion)'!='$(CanarySharedVcpkgExpectedSDK)'" />
+    <Error Text="The evaluated vcpkg install options differ from the generated dependency contract. Regenerate SharedVcpkgCache.props or remove the override."
+           Condition="'$(VcpkgAdditionalInstallOptions)'!='$(CanarySharedVcpkgExpectedInstallOptions)'" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_MANIFEST_ROOT" Value="$(VcpkgManifestRoot)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_TARGET_TRIPLET" Value="$(VcpkgTriplet)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_HOST_TRIPLET" Value="$(VcpkgHostTriplet)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_CONFIGURATION" Value="$(VcpkgConfiguration)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_TOOLSET" Value="$(PlatformToolset)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_SDK" Value="$(WindowsTargetPlatformVersion)" Prefix="false" />
+    <SetEnv Name="CANARY_SHARED_VCPKG_ACTUAL_INSTALL_OPTIONS" Value="$(VcpkgAdditionalInstallOptions)" Prefix="false" />
+    <Exec WorkingDirectory="$(VcpkgManifestRoot)"
+          Command="pwsh.exe -NoLogo -NoProfile -NonInteractive -File &quot;$(VcpkgManifestRoot)\tools\configure_shared_solution_cache.ps1&quot; -ValidateOnly -Configuration &quot;$(Configuration)&quot; -Platform &quot;$(Platform)&quot; -ProjectFile &quot;$(MSBuildProjectFullPath)&quot; -CacheRoot &quot;$(CanarySharedCacheRoot)&quot; -VcpkgRoot &quot;$(VcpkgRoot)&quot; -VisualStudioPath &quot;$(CanaryVcpkgVisualStudioPath)&quot; -CMakePath &quot;$(CanaryVcpkgDependencyCMakeDirectory)\cmake.exe&quot; -MSBuildPath &quot;$(MSBuildToolsPath)\MSBuild.exe&quot; -ExpectedDependencyFingerprint &quot;$(CanarySharedVcpkgDependencyFingerprint)&quot; -ExpectedConsumerFingerprint &quot;$(CanarySharedVcpkgConsumerFingerprint)&quot; -ExpectedInstalledRoot &quot;$(VcpkgInstalledDir)&quot;" />
+  </Target>
+</Project>

@@ -70,11 +70,12 @@ private:
 	int32_t radius;
 	uint32_t interval = 30000;
 	uint32_t checkSpawnMonsterEvent = 0;
+	uint64_t spawnGeneration = 0;
 
 	static bool findPlayer(const Position &pos);
 	bool spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, bool startup = false);
 	void checkSpawnMonster();
-	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, uint16_t interval, bool startup = false);
+	void scheduleSpawn(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &monsterType, uint16_t interval, bool startup, uint64_t generation);
 };
 
 class SpawnsMonster {

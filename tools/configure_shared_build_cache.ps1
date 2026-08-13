@@ -1382,6 +1382,9 @@ $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
             "-VisualStudioPath",
             $vcpkgVisualStudioPath
         )
+        if (-not [string]::IsNullOrWhiteSpace($SolutionMSBuildPath)) {
+            $solutionAuditArguments += @("-MSBuildPath", $SolutionMSBuildPath)
+        }
         $solutionAuditOutput = @(& pwsh.exe @solutionAuditArguments 2>&1)
         if ($LASTEXITCODE -ne 0) {
             Write-Warning "Generated Solution cache props are stale or cannot be validated: $solutionPropsPath`n$($solutionAuditOutput -join [Environment]::NewLine)"

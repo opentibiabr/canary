@@ -424,6 +424,9 @@ if ([string]::IsNullOrWhiteSpace($resolvedCMakePath)) {
     $bundledCMake = Join-Path $VisualStudioPath "Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
     $resolvedCMakePath = Resolve-Executable -Candidate $bundledCMake -Name "cmake.exe"
 }
+if ([string]::IsNullOrWhiteSpace($MSBuildPath)) {
+    $MSBuildPath = Get-EnvironmentValue -Name "CANARY_SOLUTION_MSBUILD_PATH"
+}
 $resolvedMSBuildPath = Resolve-Executable -Candidate $MSBuildPath -Name "MSBuild.exe"
 if ([string]::IsNullOrWhiteSpace($resolvedMSBuildPath)) {
     $bundledMSBuild = Join-Path $VisualStudioPath "MSBuild\Current\Bin\amd64\MSBuild.exe"

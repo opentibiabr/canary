@@ -1242,6 +1242,11 @@ $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
             $auditIncomplete = $true
             continue
         }
+        $solutionAuditConfigurations = @(
+            $activePropertyGroups |
+                ForEach-Object { [string] $_.CanarySharedVcpkgConfiguration } |
+                Select-Object -Unique
+        )
         $solutionAuditArguments = @(
             "-NoLogo",
             "-NoProfile",
@@ -1253,14 +1258,8 @@ $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
             $solutionDefinition.Project,
             "-OutputProps",
             $solutionPropsPath,
-            "-Configurations"
-        )
-        $solutionAuditArguments += @(
-            $activePropertyGroups |
-                ForEach-Object { [string] $_.CanarySharedVcpkgConfiguration } |
-                Select-Object -Unique
-        )
-        $solutionAuditArguments += @(
+            "-Configurations",
+            ($solutionAuditConfigurations -join ","),
             "-CacheRoot",
             $CacheRoot,
             "-VcpkgRoot",

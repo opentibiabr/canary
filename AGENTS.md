@@ -38,7 +38,7 @@
 - Re-resolving an entity by ID is insufficient when that ID can be reused. Also validate the original object identity, generation, epoch, or session token before applying mutations.
 - Operations that remove, replace, reload, or reinterpret callback-owned state must cancel pending work or advance a generation token checked by every related callback.
 - Types that own scheduled callbacks must be non-movable unless moving explicitly cancels or rebinds every pending event, preserves event ownership, and has focused regression coverage.
-- Use signed or checked arithmetic for countdowns and retry intervals so subtraction cannot wrap into a large delay.
+- Use checked, saturating, or explicitly bounded arithmetic for countdowns and retry intervals so subtraction cannot wrap into a large delay. Match operand signedness deliberately; changing only the destination type does not prevent mixed signed/unsigned wrap.
 - A stale callback must become a no-op before performing gameplay mutations, Lua calls, combat, movement, persistence, or client output.
 - Where practical, cover destroyed owners, removed entries, reused IDs, generation mismatches, shutdown, and ownership transfer in focused tests.
 

@@ -112,6 +112,35 @@ function Test-PathWithin {
     return $fullPath.StartsWith($fullParent, [StringComparison]::OrdinalIgnoreCase)
 }
 
+function Test-SharedFingerprintIdentity {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $CacheRoot,
+        [Parameter(Mandatory = $true)]
+        [string] $Schema,
+        [Parameter(Mandatory = $true)]
+        [string] $Fingerprint
+    )
+
+    if ($Schema -notmatch "^v[0-9]+$" -or $Fingerprint -notmatch "^[0-9a-fA-F]{64}$") {
+        return $false
+    }
+    $shortFingerprint = $Fingerprint.Substring(0, 24).ToLowerInvariant()
+    $identityPath = Join-Path $CacheRoot "metadata\$Schema\$shortFingerprint.txt"
+    if (-not (Test-Path -LiteralPath $identityPath -PathType Leaf)) {
+        return $false
+    }
+    try {
+        Assert-LocalFixedVolume -Path $identityPath -Description "The shared fingerprint identity"
+    } catch {
+        return $false
+    }
+    $identityLine = Get-Content -LiteralPath $identityPath |
+        Where-Object { $_.StartsWith("fingerprint=", [StringComparison]::OrdinalIgnoreCase) } |
+        Select-Object -First 1
+    return $identityLine -eq "fingerprint=$Fingerprint"
+}
+
 function Set-UserEnvironmentValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -709,6 +738,10 @@ if (-not $AuditOnly) {
         (Join-Path $CacheRoot "vcpkg-buildtrees\v2"),
         (Join-Path $CacheRoot "vcpkg-packages\v2"),
         (Join-Path $CacheRoot "metadata\v2"),
+        (Join-Path $CacheRoot "vcpkg-installed\v3"),
+        (Join-Path $CacheRoot "vcpkg-buildtrees\v3"),
+        (Join-Path $CacheRoot "vcpkg-packages\v3"),
+        (Join-Path $CacheRoot "metadata\v3"),
         (Join-Path $CacheRoot "registry\v2"),
         $binaryCache,
         $downloadsRoot
@@ -735,6 +768,53 @@ if (-not $AuditOnly) {
 
     if ($environmentChanged) {
         Write-Warning "Environment changes apply automatically to new processes. Restart open terminals after active builds finish; restart the sccache server before measuring cross-worktree hits."
+    }
+
+    $solutionCacheScript = Join-Path $repositoryRoot "tools\configure_shared_solution_cache.ps1"
+    $solutionProject = Join-Path $repositoryRoot "vcproj\canary.vcxproj"
+    if (
+        (Test-Path -LiteralPath $solutionCacheScript -PathType Leaf) -and
+        (Test-Path -LiteralPath $solutionProject -PathType Leaf)
+    ) {
+        if ([string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)) {
+            throw "The Solution cache bridge requires a pinned Visual Studio instance."
+        }
+        foreach ($processEnvironmentEntry in @{
+            CANARY_SHARED_CACHE_ROOT = $CacheRoot
+            CANARY_SHARED_CACHE_LOCAL_FILESYSTEM_VERIFIED = "ON"
+            CANARY_SHARED_CACHE_VERIFIED_ROOT = $CacheRoot
+            CANARY_VCPKG_VISUAL_STUDIO_PATH = $vcpkgVisualStudioPath
+            VCPKG_ROOT = $vcpkgRoot
+        }.GetEnumerator()) {
+            [Environment]::SetEnvironmentVariable(
+                $processEnvironmentEntry.Key,
+                $processEnvironmentEntry.Value,
+                "Process"
+            )
+        }
+        $solutionCacheArguments = @(
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            $solutionCacheScript,
+            "-ProjectFile",
+            $solutionProject,
+            "-CacheRoot",
+            $CacheRoot,
+            "-VcpkgRoot",
+            $vcpkgRoot,
+            "-VisualStudioPath",
+            $vcpkgVisualStudioPath
+        )
+        if ($WhatIfPreference) {
+            $solutionCacheArguments += "-WhatIf"
+        }
+        $solutionCacheOutput = @(& pwsh.exe @solutionCacheArguments 2>&1)
+        if ($LASTEXITCODE -ne 0) {
+            throw "The Solution cache bridge could not be configured.`n$($solutionCacheOutput -join [Environment]::NewLine)"
+        }
+        $solutionCacheOutput | Write-Output
     }
 
     if ($CleanTransientVcpkg) {
@@ -876,6 +956,58 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
             continue
         }
         $sharedActive = Get-CMakeCacheValue -CachePath $cachePath -Name "CANARY_SHARED_VCPKG_ACTIVE"
+        $sharedActiveBoolean = $sharedActive -eq "true" -or $sharedActive -eq "ON"
+        $dependencyFingerprint = Get-CMakeCacheValue -CachePath $cachePath -Name "CANARY_VCPKG_DEPENDENCY_FINGERPRINT"
+        if ([string]::IsNullOrWhiteSpace($dependencyFingerprint)) {
+            $dependencyFingerprint = Get-CMakeCacheValue -CachePath $cachePath -Name "CANARY_VCPKG_CACHE_FINGERPRINT"
+        }
+        $sharedBuildtreesRoot = Get-CMakeCacheValue -CachePath $cachePath -Name "CANARY_SHARED_VCPKG_BUILDTREES_ROOT"
+        $sharedPackagesRoot = Get-CMakeCacheValue -CachePath $cachePath -Name "CANARY_SHARED_VCPKG_PACKAGES_ROOT"
+        $sharedSchema = ""
+        $sharedContractValid = $true
+        if ($sharedActiveBoolean) {
+            if ($dependencyFingerprint -notmatch "^[0-9a-fA-F]{64}$") {
+                $sharedContractValid = $false
+            } else {
+                foreach ($candidateSchema in @("v1", "v2", "v3")) {
+                    $shortFingerprint = $dependencyFingerprint.Substring(0, 24).ToLowerInvariant()
+                    $expectedInstalledRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\$candidateSchema\$shortFingerprint")
+                    if ((Get-FullPath -Path $installedRoot).Equals($expectedInstalledRoot, [StringComparison]::OrdinalIgnoreCase)) {
+                        $sharedSchema = $candidateSchema
+                        break
+                    }
+                }
+                if ([string]::IsNullOrWhiteSpace($sharedSchema)) {
+                    $sharedContractValid = $false
+                }
+            }
+
+            if ($sharedContractValid) {
+                $shortFingerprint = $dependencyFingerprint.Substring(0, 24).ToLowerInvariant()
+                $expectedBuildtreesRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-buildtrees\$sharedSchema\$shortFingerprint")
+                $expectedPackagesRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-packages\$sharedSchema\$shortFingerprint")
+                $sharedContractValid =
+                    -not [string]::IsNullOrWhiteSpace($sharedBuildtreesRoot) -and
+                    -not [string]::IsNullOrWhiteSpace($sharedPackagesRoot) -and
+                    (Get-FullPath -Path $sharedBuildtreesRoot).Equals($expectedBuildtreesRoot, [StringComparison]::OrdinalIgnoreCase) -and
+                    (Get-FullPath -Path $sharedPackagesRoot).Equals($expectedPackagesRoot, [StringComparison]::OrdinalIgnoreCase) -and
+                    (Test-SharedFingerprintIdentity -CacheRoot $CacheRoot -Schema $sharedSchema -Fingerprint $dependencyFingerprint)
+                if ($sharedContractValid) {
+                    try {
+                        Assert-LocalFixedVolume -Path $installedRoot -Description "The shared installed root"
+                        Assert-LocalFixedVolume -Path $sharedBuildtreesRoot -Description "The shared buildtrees root"
+                        Assert-LocalFixedVolume -Path $sharedPackagesRoot -Description "The shared packages root"
+                    } catch {
+                        $sharedContractValid = $false
+                    }
+                }
+            }
+
+            if (-not $sharedContractValid) {
+                Write-Warning "A managed CMake cache does not identify exact, local fingerprint roots with a matching full-hash identity: $cachePath"
+                $auditIncomplete = $true
+            }
+        }
         $legacyInstalledRoot = Get-FullPath -Path (Join-Path $presetDirectory.FullName "vcpkg_installed")
         $legacyPatterns = @(
             $legacyInstalledRoot,
@@ -927,7 +1059,9 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
         [pscustomobject]@{
             Worktree             = $worktreeRoot
             Preset               = $presetDirectory.Name
-            SharedActive         = $sharedActive -eq "true" -or $sharedActive -eq "ON"
+            SharedActive         = $sharedActiveBoolean
+            Schema               = $sharedSchema
+            Fingerprint          = $dependencyFingerprint
             LegacyReferences     = $legacyReferences
             StaleSharedReferences = $staleSharedReferences
             Installed            = $installedRoot
@@ -948,6 +1082,137 @@ if ($null -eq $configureTrees) {
     Write-Output "No configured build trees found."
 } else {
     $configureTrees | Format-Table -AutoSize -Wrap | Out-String | Write-Output
+}
+
+Write-Output "Existing Solution dependency contracts"
+$solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
+    $solutionPropsPath = Join-Path $worktreeRoot "vcproj\.canary-shared-cache\SharedVcpkgCache.props"
+    if (-not (Test-Path -LiteralPath $solutionPropsPath -PathType Leaf)) {
+        continue
+    }
+    $solutionPropsDirectory = Split-Path -Parent $solutionPropsPath
+    $solutionPropsDirectoryItem = Get-Item -LiteralPath $solutionPropsDirectory -Force
+    $solutionPropsItem = Get-Item -LiteralPath $solutionPropsPath -Force
+    if (
+        ($solutionPropsDirectoryItem.Attributes -band [IO.FileAttributes]::ReparsePoint) -or
+        ($solutionPropsItem.Attributes -band [IO.FileAttributes]::ReparsePoint)
+    ) {
+        Write-Warning "Generated Solution cache props use a reparse point and cannot be audited safely: $solutionPropsPath"
+        $auditIncomplete = $true
+        continue
+    }
+
+    try {
+        [xml] $solutionProps = Get-Content -LiteralPath $solutionPropsPath -Raw
+    } catch {
+        Write-Warning "Generated Solution cache props are malformed: $solutionPropsPath"
+        $auditIncomplete = $true
+        continue
+    }
+
+    $activePropertyGroups = @(
+        $solutionProps.Project.PropertyGroup |
+            Where-Object { $_.CanarySharedVcpkgActive -eq "true" }
+    )
+    if ($activePropertyGroups.Count -eq 0) {
+        Write-Warning "Generated Solution cache props contain no active dependency contract: $solutionPropsPath"
+        $auditIncomplete = $true
+        continue
+    }
+
+    $solutionContractValid = $true
+    foreach ($propertyGroup in $activePropertyGroups) {
+        $schema = [string] $propertyGroup.CanarySharedVcpkgSchema
+        $dependencyFingerprint = [string] $propertyGroup.CanarySharedVcpkgDependencyFingerprint
+        $consumerFingerprint = [string] $propertyGroup.CanarySharedVcpkgConsumerFingerprint
+        $configurationName = [string] $propertyGroup.CanarySharedVcpkgConfiguration
+        $installedRoot = [string] $propertyGroup.VcpkgInstalledDir
+        $buildtreesRoot = [string] $propertyGroup.CanarySharedVcpkgBuildtreesRoot
+        $packagesRoot = [string] $propertyGroup.CanarySharedVcpkgPackagesRoot
+
+        if (
+            $schema -ne "v3" -or
+            $dependencyFingerprint -notmatch "^[0-9a-fA-F]{64}$" -or
+            $consumerFingerprint -notmatch "^[0-9a-fA-F]{64}$" -or
+            [string]::IsNullOrWhiteSpace($configurationName)
+        ) {
+            Write-Warning "Generated Solution cache props contain an invalid schema or fingerprint: $solutionPropsPath"
+            $auditIncomplete = $true
+            $solutionContractValid = $false
+            continue
+        }
+
+        $shortFingerprint = $dependencyFingerprint.Substring(0, 24).ToLowerInvariant()
+        $expectedInstalledRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\$schema\$shortFingerprint")
+        $expectedBuildtreesRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-buildtrees\$schema\$shortFingerprint")
+        $expectedPackagesRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-packages\$schema\$shortFingerprint")
+        $exactRoots =
+            -not [string]::IsNullOrWhiteSpace($installedRoot) -and
+            -not [string]::IsNullOrWhiteSpace($buildtreesRoot) -and
+            -not [string]::IsNullOrWhiteSpace($packagesRoot) -and
+            (Get-FullPath -Path $installedRoot).Equals($expectedInstalledRoot, [StringComparison]::OrdinalIgnoreCase) -and
+            (Get-FullPath -Path $buildtreesRoot).Equals($expectedBuildtreesRoot, [StringComparison]::OrdinalIgnoreCase) -and
+            (Get-FullPath -Path $packagesRoot).Equals($expectedPackagesRoot, [StringComparison]::OrdinalIgnoreCase)
+        if ($exactRoots) {
+            $exactRoots = Test-SharedFingerprintIdentity -CacheRoot $CacheRoot -Schema $schema -Fingerprint $dependencyFingerprint
+        }
+        if ($exactRoots) {
+            try {
+                Assert-LocalFixedVolume -Path $installedRoot -Description "The Solution installed root"
+                Assert-LocalFixedVolume -Path $buildtreesRoot -Description "The Solution buildtrees root"
+                Assert-LocalFixedVolume -Path $packagesRoot -Description "The Solution packages root"
+            } catch {
+                $exactRoots = $false
+            }
+        }
+        if (-not $exactRoots) {
+            Write-Warning "Generated Solution cache props do not identify exact, local fingerprint roots with a matching full-hash identity: $solutionPropsPath"
+            $auditIncomplete = $true
+            $solutionContractValid = $false
+        }
+
+        [pscustomobject]@{
+            Worktree    = $worktreeRoot
+            Configuration = $configurationName
+            Dependency  = $dependencyFingerprint
+            Consumer    = $consumerFingerprint
+            Installed   = $installedRoot
+        }
+    }
+
+    if ($AuditOnly -and $solutionContractValid) {
+        $solutionAuditScript = Join-Path $worktreeRoot "tools\configure_shared_solution_cache.ps1"
+        $solutionProject = Join-Path $worktreeRoot "vcproj\canary.vcxproj"
+        if (
+            -not (Test-Path -LiteralPath $solutionAuditScript -PathType Leaf) -or
+            -not (Test-Path -LiteralPath $solutionProject -PathType Leaf) -or
+            [string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)
+        ) {
+            Write-Warning "A generated Solution contract cannot be re-evaluated from its worktree: $solutionPropsPath"
+            $auditIncomplete = $true
+            continue
+        }
+        $solutionAuditOutput = @(
+            & pwsh.exe -NoLogo -NoProfile -NonInteractive `
+                -File $solutionAuditScript `
+                -AuditOnly `
+                -ProjectFile $solutionProject `
+                -OutputProps $solutionPropsPath `
+                -CacheRoot $CacheRoot `
+                -VcpkgRoot $vcpkgRoot `
+                -VisualStudioPath $vcpkgVisualStudioPath 2>&1
+        )
+        if ($LASTEXITCODE -ne 0) {
+            Write-Warning "Generated Solution cache props are stale or cannot be validated: $solutionPropsPath`n$($solutionAuditOutput -join [Environment]::NewLine)"
+            $auditIncomplete = $true
+        }
+    }
+}
+
+if ($null -eq $solutionTrees) {
+    Write-Output "No generated Solution dependency contracts found."
+} else {
+    $solutionTrees | Format-Table -AutoSize -Wrap | Out-String | Write-Output
 }
 
 if ($AuditOnly) {

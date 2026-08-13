@@ -1,7 +1,7 @@
 include_guard(GLOBAL)
 
 set(CANARY_SHARED_CACHE_SCHEMA
-    "v2"
+    "v3"
 )
 
 file(
@@ -882,6 +882,8 @@ function(canary_shared_cache_reset_managed_install reason)
     endif()
 
     unset(CANARY_VCPKG_CACHE_FINGERPRINT CACHE)
+    unset(CANARY_VCPKG_DEPENDENCY_FINGERPRINT CACHE)
+    unset(CANARY_VCPKG_CONSUMER_FINGERPRINT CACHE)
     unset(CANARY_SHARED_VCPKG_BUILDTREES_ROOT CACHE)
     unset(CANARY_SHARED_VCPKG_PACKAGES_ROOT CACHE)
 
@@ -966,6 +968,11 @@ option(
     "Compute and report the shared-cache fingerprint without writing the pool"
     false
 )
+option(
+    CANARY_SHARED_CACHE_PREPARE_ONLY
+    "Prepare a shared-cache contract without configuring a CMake project"
+    false
+)
 
 if(CANARY_SHARED_CACHE_READ_ONLY
    AND NOT CMAKE_SCRIPT_MODE_FILE
@@ -973,6 +980,22 @@ if(CANARY_SHARED_CACHE_READ_ONLY
     message(
         FATAL_ERROR
             "CANARY_SHARED_CACHE_READ_ONLY is available only in CMake script mode; it cannot safely continue into project()"
+    )
+endif()
+if(CANARY_SHARED_CACHE_PREPARE_ONLY
+   AND NOT CMAKE_SCRIPT_MODE_FILE
+)
+    message(
+        FATAL_ERROR
+            "CANARY_SHARED_CACHE_PREPARE_ONLY is available only in CMake script mode"
+    )
+endif()
+if(CANARY_SHARED_CACHE_READ_ONLY
+   AND CANARY_SHARED_CACHE_PREPARE_ONLY
+)
+    message(
+        FATAL_ERROR
+            "CANARY_SHARED_CACHE_READ_ONLY and CANARY_SHARED_CACHE_PREPARE_ONLY are mutually exclusive"
     )
 endif()
 
@@ -1002,11 +1025,14 @@ if(DEFINED VCPKG_MANIFEST_INSTALL
     )
     set(CANARY_SHARED_VCPKG_PREPROVISIONED
         true
-        CACHE INTERNAL
-              "Whether this configure consumes a preprovisioned vcpkg installation"
-              FORCE
+        CACHE
+            INTERNAL
+            "Whether this configure consumes a preprovisioned vcpkg installation"
+            FORCE
     )
     unset(CANARY_VCPKG_CACHE_FINGERPRINT CACHE)
+    unset(CANARY_VCPKG_DEPENDENCY_FINGERPRINT CACHE)
+    unset(CANARY_VCPKG_CONSUMER_FINGERPRINT CACHE)
     unset(CANARY_SHARED_VCPKG_BUILDTREES_ROOT CACHE)
     unset(CANARY_SHARED_VCPKG_PACKAGES_ROOT CACHE)
     message(
@@ -1622,11 +1648,8 @@ string(
     "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
     "host-system=${CMAKE_HOST_SYSTEM_NAME}\n"
     "host-processor=${CMAKE_HOST_SYSTEM_PROCESSOR}\n"
-    "generator=${CMAKE_GENERATOR}\n"
-    "generator-platform=${CMAKE_GENERATOR_PLATFORM}\n"
-    "generator-toolset=${CMAKE_GENERATOR_TOOLSET}\n"
-    "cmake-version=${CMAKE_VERSION}\n"
-    "cmake-sha256=${cmake_executable_hash}\n"
+    "dependency-cmake-version=${CMAKE_VERSION}\n"
+    "dependency-cmake-sha256=${cmake_executable_hash}\n"
     "cxx-compiler-name=${cxx_compiler_name}\n"
     "cxx-compiler-sha256=${cxx_compiler_hash}\n"
     "c-compiler-name=${c_compiler_name}\n"
@@ -2536,8 +2559,13 @@ if(WIN32)
         "${vcpkg_visual_studio_root}/VC/Auxiliary/Build/vcvarsall.bat"
         vcpkg_vcvarsall_signature
     )
+    canary_shared_cache_file_signature(
+        "vcpkg-msbuild"
+        "${vcpkg_visual_studio_root}/MSBuild/Current/Bin/amd64/MSBuild.exe"
+        vcpkg_msbuild_signature
+    )
     set(vcpkg_compiler_selection_signature
-        "vcpkg-visual-studio-root=${normalized_vcpkg_visual_studio_root}\n${vcpkg_msvc_signature}${vcpkg_vcvarsall_signature}"
+        "vcpkg-visual-studio-root=${normalized_vcpkg_visual_studio_root}\n${vcpkg_msvc_signature}${vcpkg_vcvarsall_signature}${vcpkg_msbuild_signature}"
     )
 endif()
 
@@ -2566,9 +2594,125 @@ else()
     )
 endif()
 
-string(SHA256 cache_fingerprint "${fingerprint_input}")
+string(SHA256 dependency_fingerprint "${fingerprint_input}")
+
+set(shared_cache_consumer
+    "cmake"
+)
+if(DEFINED CANARY_SHARED_CACHE_CONSUMER
+   AND NOT
+       CANARY_SHARED_CACHE_CONSUMER
+       STREQUAL
+       ""
+)
+    string(TOLOWER "${CANARY_SHARED_CACHE_CONSUMER}" shared_cache_consumer)
+endif()
+
+set(consumer_fingerprint_input
+    "schema=${CANARY_SHARED_CACHE_SCHEMA}\n"
+    "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+    "dependency-fingerprint=${dependency_fingerprint}\n"
+    "consumer=${shared_cache_consumer}\n"
+)
+if(shared_cache_consumer
+   STREQUAL
+   "cmake"
+)
+    string(
+        APPEND
+        consumer_fingerprint_input
+        "generator=${CMAKE_GENERATOR}\n"
+        "generator-platform=${CMAKE_GENERATOR_PLATFORM}\n"
+        "generator-toolset=${CMAKE_GENERATOR_TOOLSET}\n"
+        "cmake-version=${CMAKE_VERSION}\n"
+        "cmake-sha256=${cmake_executable_hash}\n"
+    )
+elseif(
+    shared_cache_consumer
+    STREQUAL
+    "msbuild"
+)
+    if(NOT CANARY_SHARED_CACHE_CONSUMER_TOOL)
+        message(
+            FATAL_ERROR
+                "The MSBuild consumer contract requires CANARY_SHARED_CACHE_CONSUMER_TOOL"
+        )
+    endif()
+    canary_shared_cache_resolve_program("${CANARY_SHARED_CACHE_CONSUMER_TOOL}"
+                                        consumer_tool_path
+    )
+    if(NOT consumer_tool_path)
+        message(
+            FATAL_ERROR
+                "The MSBuild consumer executable cannot be identified: ${CANARY_SHARED_CACHE_CONSUMER_TOOL}"
+        )
+    endif()
+    file(
+        SHA256
+        "${consumer_tool_path}"
+        consumer_tool_hash
+    )
+    get_filename_component(
+        consumer_tool_name
+        "${consumer_tool_path}"
+        NAME
+    )
+    string(
+        APPEND
+        consumer_fingerprint_input
+        "consumer-tool-name=${consumer_tool_name}\n"
+        "consumer-tool-sha256=${consumer_tool_hash}\n"
+    )
+    foreach(
+        consumer_setting IN
+        ITEMS CANARY_SHARED_CACHE_CONSUMER_CONFIGURATION
+              CANARY_SHARED_CACHE_CONSUMER_PLATFORM
+              CANARY_SHARED_CACHE_CONSUMER_LINK_CONFIGURATION
+              CANARY_SHARED_CACHE_CONSUMER_TOOLSET
+              CANARY_SHARED_CACHE_CONSUMER_SDK
+    )
+        if(DEFINED ${consumer_setting})
+            set(consumer_setting_value
+                "${${consumer_setting}}"
+            )
+        else()
+            set(consumer_setting_value
+                "<unset>"
+            )
+        endif()
+        string(
+            APPEND
+            consumer_fingerprint_input
+            "${consumer_setting}=${consumer_setting_value}\n"
+        )
+    endforeach()
+else()
+    message(
+        FATAL_ERROR
+            "Unsupported shared-cache consumer '${shared_cache_consumer}'"
+    )
+endif()
+string(SHA256 consumer_fingerprint "${consumer_fingerprint_input}")
+
+if(CANARY_SHARED_CACHE_FINGERPRINT_INPUT_FILE)
+    get_filename_component(
+        fingerprint_input_file
+        "${CANARY_SHARED_CACHE_FINGERPRINT_INPUT_FILE}"
+        ABSOLUTE
+        BASE_DIR
+        "${CMAKE_BINARY_DIR}"
+    )
+    file(
+        WRITE "${fingerprint_input_file}"
+        "[dependency]\n${fingerprint_input}[consumer]\n${consumer_fingerprint_input}"
+    )
+endif()
+
+set(cache_fingerprint
+    "${dependency_fingerprint}"
+)
 string(
-    SUBSTRING "${cache_fingerprint}"
+    SUBSTRING "${dependency_fingerprint}"
               0
               24
               short_fingerprint
@@ -2623,6 +2767,20 @@ if(CANARY_SHARED_VCPKG_MANAGED)
         )
     endif()
 
+    if(NOT
+       DEFINED
+       CANARY_VCPKG_CONSUMER_FINGERPRINT
+       OR NOT
+          CANARY_VCPKG_CONSUMER_FINGERPRINT
+          STREQUAL
+          consumer_fingerprint
+    )
+        message(
+            FATAL_ERROR
+                "The shared vcpkg consumer fingerprint changed. Cached build-system paths cannot be migrated safely in place. Re-run cmake --fresh --preset <configure-preset>."
+        )
+    endif()
+
     canary_shared_cache_normalize_path("${VCPKG_INSTALLED_DIR}"
                                        previous_installed_root
     )
@@ -2642,9 +2800,31 @@ if(CANARY_SHARED_VCPKG_MANAGED)
 endif()
 
 if(CANARY_SHARED_CACHE_READ_ONLY)
+    if(CANARY_SHARED_CACHE_RESULT_FILE)
+        get_filename_component(
+            shared_cache_result_file
+            "${CANARY_SHARED_CACHE_RESULT_FILE}"
+            ABSOLUTE
+            BASE_DIR
+            "${CMAKE_BINARY_DIR}"
+        )
+        file(
+            WRITE "${shared_cache_result_file}"
+            "active=true\n"
+            "schema=${CANARY_SHARED_CACHE_SCHEMA}\n"
+            "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+            "dependency-fingerprint=${dependency_fingerprint}\n"
+            "consumer-fingerprint=${consumer_fingerprint}\n"
+            "installed-root=${shared_installed_root}\n"
+            "buildtrees-root=${shared_buildtrees_root}\n"
+            "packages-root=${shared_packages_root}\n"
+            "target-triplet=${VCPKG_TARGET_TRIPLET}\n"
+            "host-triplet=${VCPKG_HOST_TRIPLET}\n"
+        )
+    endif()
     message(
         STATUS
-            "Shared vcpkg installed tree fingerprint: ${shared_installed_root} (${cache_fingerprint})"
+            "Shared vcpkg dependency fingerprint: ${shared_installed_root} (${dependency_fingerprint}); consumer ${consumer_fingerprint}"
     )
     return()
 endif()
@@ -2712,9 +2892,8 @@ string(
     APPEND
     metadata
     "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
-    "fingerprint=${cache_fingerprint}\n"
-    "cmake-version=${CMAKE_VERSION}\n"
-    "cmake-sha256=${cmake_executable_hash}\n"
+    "fingerprint=${dependency_fingerprint}\n"
+    "dependency-fingerprint=${dependency_fingerprint}\n"
     "cxx-compiler=${cxx_compiler_name}\n"
     "cxx-compiler-sha256=${cxx_compiler_hash}\n"
     "c-compiler=${c_compiler_name}\n"
@@ -2743,9 +2922,21 @@ set(VCPKG_INSTALLED_DIR
           FORCE
 )
 set(CANARY_VCPKG_CACHE_FINGERPRINT
-    "${cache_fingerprint}"
+    "${dependency_fingerprint}"
     CACHE INTERNAL
           "Fingerprint of the shared vcpkg installation contract"
+          FORCE
+)
+set(CANARY_VCPKG_DEPENDENCY_FINGERPRINT
+    "${dependency_fingerprint}"
+    CACHE INTERNAL
+          "Build-system-neutral vcpkg dependency fingerprint"
+          FORCE
+)
+set(CANARY_VCPKG_CONSUMER_FINGERPRINT
+    "${consumer_fingerprint}"
+    CACHE INTERNAL
+          "Build-system-specific consumer fingerprint"
           FORCE
 )
 set(CANARY_SHARED_VCPKG_MANAGED
@@ -2776,8 +2967,39 @@ set(CANARY_SHARED_VCPKG_ACTIVE
 if(NOT CMAKE_SCRIPT_MODE_FILE)
     file(
         WRITE "${CMAKE_BINARY_DIR}/canary-shared-cache.txt"
-        "fingerprint=${cache_fingerprint}\ninstalled=${shared_installed_root}\n"
+        "dependency-fingerprint=${dependency_fingerprint}\nconsumer-fingerprint=${consumer_fingerprint}\ninstalled=${shared_installed_root}\n"
     )
+endif()
+
+if(CANARY_SHARED_CACHE_RESULT_FILE)
+    get_filename_component(
+        shared_cache_result_file
+        "${CANARY_SHARED_CACHE_RESULT_FILE}"
+        ABSOLUTE
+        BASE_DIR
+        "${CMAKE_BINARY_DIR}"
+    )
+    file(
+        WRITE "${shared_cache_result_file}"
+        "active=true\n"
+        "schema=${CANARY_SHARED_CACHE_SCHEMA}\n"
+        "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+        "dependency-fingerprint=${dependency_fingerprint}\n"
+        "consumer-fingerprint=${consumer_fingerprint}\n"
+        "installed-root=${shared_installed_root}\n"
+        "buildtrees-root=${shared_buildtrees_root}\n"
+        "packages-root=${shared_packages_root}\n"
+        "target-triplet=${VCPKG_TARGET_TRIPLET}\n"
+        "host-triplet=${VCPKG_HOST_TRIPLET}\n"
+    )
+endif()
+
+if(CANARY_SHARED_CACHE_PREPARE_ONLY)
+    message(
+        STATUS
+            "Prepared shared vcpkg dependency contract: ${shared_installed_root} (${short_fingerprint})"
+    )
+    return()
 endif()
 
 message(

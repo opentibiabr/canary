@@ -663,23 +663,23 @@
   </PropertyGroup>
   <ItemGroup>
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
+    <ClCompile Include="@(ProtoFiles->'generated\%(Filename).pb.cc')">
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClInclude Include="@(ProtoFiles->'generated\%(Filename).pb.h')" />
   </ItemGroup>
   <Target Name="ValidateProtoCompileDependencies" BeforeTargets="ProtoCompile" Condition="'$(RunProtoCompile)'=='true'">
     <Error Text="vcpkg MSBuild targets were not found. Set VCPKG_ROOT or pass /p:VcpkgRoot=... so manifest dependencies can be installed before protobuf generation."
            Condition="'$(CanaryVcpkgManifestInstallTarget)'=='' and !Exists('$(ProtocPath)')" />
   </Target>
-  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" Condition="'$(RunProtoCompile)'=='true'" DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies">
-    <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; &quot;%(ProtoFiles.Identity)&quot;" />
-    <ItemGroup>
-      <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">
-        <IncludeInUnityFile>false</IncludeInUnityFile>
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      </ClCompile>
-      <ClInclude Include="generated\%(ProtoFiles.Filename).pb.h">
-        <IncludeInUnityFile>false</IncludeInUnityFile>
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      </ClInclude>
-    </ItemGroup>
+  <Target Name="ProtoCompile"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(RunProtoCompile)'=='true'"
+          DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies"
+          Inputs="@(ProtoFiles);$(ProtocPath)"
+          Outputs="@(ProtoFiles->'$(MSBuildProjectDirectory)\generated\%(Filename).pb.cc');@(ProtoFiles->'$(MSBuildProjectDirectory)\generated\%(Filename).pb.h')">
+    <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; @(ProtoFiles->'&quot;%(FullPath)&quot;', ' ')" />
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

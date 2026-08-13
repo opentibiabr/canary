@@ -10,6 +10,9 @@ param(
     [switch] $CleanTransientVcpkg,
 
     [Parameter()]
+    [string[]] $CleanSharedFingerprintTransients = @(),
+
+    [Parameter()]
     [switch] $UnregisterCurrentRepository
 )
 
@@ -20,7 +23,10 @@ if ($env:OS -ne "Windows_NT") {
     throw "This helper persists Windows user environment variables. Follow docs/development/shared-build-cache.md for non-Windows setup."
 }
 
-if ($AuditOnly -and ($CleanTransientVcpkg -or $UnregisterCurrentRepository)) {
+if (
+    $AuditOnly -and
+    ($CleanTransientVcpkg -or $CleanSharedFingerprintTransients.Count -gt 0 -or $UnregisterCurrentRepository)
+) {
     throw "-AuditOnly cannot be combined with a mutating option."
 }
 
@@ -454,6 +460,41 @@ function Get-CMakeCacheValue {
     return $match.Matches[0].Groups[1].Value
 }
 
+function Assert-NoActiveBuildProcesses {
+    $buildProcessNames = @(
+        "cc",
+        "cc1",
+        "cc1plus",
+        "cl",
+        "clang",
+        "clang++",
+        "clang-cl",
+        "cmake",
+        "c++",
+        "g++",
+        "gcc",
+        "jom",
+        "ld",
+        "link",
+        "lld",
+        "lld-link",
+        "make",
+        "msbuild",
+        "ninja",
+        "protoc",
+        "vcpkg"
+    )
+    $activeBuildProcesses = @(Get-Process -Name $buildProcessNames -ErrorAction SilentlyContinue)
+    if ($activeBuildProcesses.Count -eq 0) {
+        return
+    }
+
+    $processSummary = ($activeBuildProcesses |
+        Sort-Object ProcessName, Id |
+        ForEach-Object { "$($_.ProcessName):$($_.Id)" }) -join ", "
+    throw "Refusing to clean transient directories while build-related processes are running: $processSummary"
+}
+
 $repositoryRoot = (& git rev-parse --show-toplevel 2>$null).Trim()
 if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
     throw "Run this helper from a Canary Git worktree."
@@ -865,26 +906,7 @@ if (-not $AuditOnly) {
     }
 
     if ($CleanTransientVcpkg) {
-        $buildProcessNames = @(
-            "cl",
-            "clang",
-            "clang-cl",
-            "cmake",
-            "g++",
-            "gcc",
-            "link",
-            "lld-link",
-            "msbuild",
-            "ninja",
-            "vcpkg"
-        )
-        $activeBuildProcesses = @(Get-Process -Name $buildProcessNames -ErrorAction SilentlyContinue)
-        if ($activeBuildProcesses.Count -gt 0) {
-            $processSummary = ($activeBuildProcesses |
-                Sort-Object ProcessName, Id |
-                ForEach-Object { "$($_.ProcessName):$($_.Id)" }) -join ", "
-            throw "Refusing to clean transient directories while build-related processes are running: $processSummary"
-        }
+        Assert-NoActiveBuildProcesses
 
         $vcpkgLockPath = Join-Path $vcpkgRoot ".vcpkg-root"
         $vcpkgLockStream = $null
@@ -929,6 +951,79 @@ if (-not $AuditOnly) {
         } finally {
             if ($null -ne $vcpkgLockStream) {
                 $vcpkgLockStream.Dispose()
+            }
+        }
+    }
+
+    if ($CleanSharedFingerprintTransients.Count -gt 0) {
+        Assert-NoActiveBuildProcesses
+
+        foreach ($fingerprintInput in $CleanSharedFingerprintTransients | Sort-Object -Unique) {
+            $fingerprint = $fingerprintInput.Trim().ToLowerInvariant()
+            if ($fingerprint -notmatch "^[0-9a-f]{64}$") {
+                throw "A shared fingerprint cleanup target must be a full 64-character SHA-256: $fingerprintInput"
+            }
+            if (-not (Test-SharedFingerprintIdentity -CacheRoot $CacheRoot -Schema "v3" -Fingerprint $fingerprint)) {
+                throw "The shared fingerprint identity is missing or does not match: $fingerprint"
+            }
+
+            $shortFingerprint = $fingerprint.Substring(0, 24)
+            $installedRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\v3\$shortFingerprint")
+            $installedParent = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\v3")
+            if (
+                (Get-FullPath -Path (Split-Path -Parent $installedRoot)) -ne $installedParent -or
+                (Split-Path -Leaf $installedRoot) -ne $shortFingerprint -or
+                -not (Test-PathWithin -Path $installedRoot -Parent $CacheRoot)
+            ) {
+                throw "Refusing an unsafe shared installed-root lock target: $installedRoot"
+            }
+            $vcpkgLockPath = Join-Path $installedRoot "vcpkg\vcpkg-running.lock"
+            if (-not (Test-Path -LiteralPath $vcpkgLockPath -PathType Leaf)) {
+                throw "The shared fingerprint has no vcpkg filesystem lock: $vcpkgLockPath"
+            }
+
+            $vcpkgLockStream = $null
+            try {
+                $vcpkgLockStream = [IO.File]::Open(
+                    $vcpkgLockPath,
+                    [IO.FileMode]::Open,
+                    [IO.FileAccess]::ReadWrite,
+                    [IO.FileShare]::None
+                )
+
+                foreach ($directoryName in @("vcpkg-buildtrees", "vcpkg-packages")) {
+                    $schemaRoot = Get-FullPath -Path (Join-Path $CacheRoot "$directoryName\v3")
+                    $transientRoot = Get-FullPath -Path (Join-Path $schemaRoot $shortFingerprint)
+                    $transientItem = Get-Item -LiteralPath $transientRoot -Force -ErrorAction SilentlyContinue
+                    if (
+                        (Get-FullPath -Path (Split-Path -Parent $transientRoot)) -ne $schemaRoot -or
+                        (Split-Path -Leaf $transientRoot) -ne $shortFingerprint -or
+                        -not (Test-PathWithin -Path $transientRoot -Parent $CacheRoot) -or
+                        ($null -ne $transientItem -and
+                            ($transientItem.Attributes -band [IO.FileAttributes]::ReparsePoint))
+                    ) {
+                        throw "Refusing an unsafe shared transient-cache target: $transientRoot"
+                    }
+                    if (-not (Test-Path -LiteralPath $transientRoot -PathType Container)) {
+                        continue
+                    }
+                    Assert-LocalFixedVolume -Path $transientRoot -Description "The shared transient cache"
+
+                    $measurement = Get-ChildItem -LiteralPath $transientRoot -Recurse -File -Force |
+                        Measure-Object -Property Length -Sum
+                    if ($PSCmdlet.ShouldProcess($transientRoot, "remove disposable fingerprint-specific vcpkg data")) {
+                        Remove-Item -LiteralPath $transientRoot -Recurse -Force
+                        [void] (New-Item -ItemType Directory -Path $transientRoot)
+                        $removedGiB = [math]::Round($measurement.Sum / 1GB, 2)
+                        Write-Output "Removed $removedGiB GiB from $transientRoot. It can be restored from the binary cache or rebuilt."
+                    }
+                }
+            } catch [IO.IOException] {
+                throw "Refusing to clean because the fingerprint vcpkg lock cannot be acquired: $($_.Exception.Message)"
+            } finally {
+                if ($null -ne $vcpkgLockStream) {
+                    $vcpkgLockStream.Dispose()
+                }
             }
         }
     }

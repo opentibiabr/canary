@@ -70,6 +70,14 @@ pwsh -File tools/configure_shared_build_cache.ps1 -CleanTransientVcpkg
 
 The helper refuses cleanup while build-related processes are active and holds the vcpkg root lock during deletion. It preserves installed trees, downloads, binary packages, and fingerprint-specific pools.
 
+To reclaim only the disposable `buildtrees` and `packages` data for one known schema-v3 pool, pass its full dependency SHA-256:
+
+```text
+pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
+```
+
+This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+
 ## Non-Windows setup
 
 Set `CANARY_SHARED_CACHE_ROOT` to one short local path outside every participating checkout. After independently verifying that exact path is on a local filesystem with reliable lock and rename semantics, set `CANARY_SHARED_CACHE_LOCAL_FILESYSTEM_VERIFIED=ON` and set `CANARY_SHARED_CACHE_VERIFIED_ROOT` to the same absolute path. Repeat the verification whenever the root changes. Keep downloads, the vcpkg binary cache, and sccache global. Build the `SCCACHE_BASEDIRS` list from the exact roots emitted by `git worktree list` for every independent repository, separated by `:`.

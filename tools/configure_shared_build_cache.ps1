@@ -58,6 +58,49 @@ function Get-FullPath {
     )
 }
 
+function Get-SolutionCacheDefinition {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $RepositoryRoot
+    )
+
+    foreach ($relativeProjectPath in @(
+        "vcproj\canary.vcxproj",
+        "vc18\otclient.vcxproj",
+        "vc17\otclient.vcxproj"
+    )) {
+        $projectPath = Join-Path $RepositoryRoot $relativeProjectPath
+        if (-not (Test-Path -LiteralPath $projectPath -PathType Leaf)) {
+            continue
+        }
+
+        try {
+            [xml] $project = Get-Content -LiteralPath $projectPath -Raw
+        } catch {
+            throw "The Solution cache project is malformed: $projectPath"
+        }
+        $configurations = @(
+            $project.SelectNodes("//*[local-name()='ProjectConfiguration']") |
+                ForEach-Object { [string] $_.Include } |
+                Where-Object { $_ -match '^(.+)\|x64$' } |
+                ForEach-Object { ($_ -split '\|', 2)[0] } |
+                Select-Object -Unique
+        )
+        if ($configurations.Count -eq 0) {
+            throw "The Solution cache project declares no x64 configurations: $projectPath"
+        }
+
+        $projectDirectory = Split-Path -Parent $projectPath
+        return [pscustomobject]@{
+            Project        = $projectPath
+            Props          = Join-Path $projectDirectory ".canary-shared-cache\SharedVcpkgCache.props"
+            Configurations = $configurations
+        }
+    }
+
+    return $null
+}
+
 function Assert-LocalFixedVolume {
     param(
         [Parameter(Mandatory = $true)]
@@ -771,10 +814,10 @@ if (-not $AuditOnly) {
     }
 
     $solutionCacheScript = Join-Path $repositoryRoot "tools\configure_shared_solution_cache.ps1"
-    $solutionProject = Join-Path $repositoryRoot "vcproj\canary.vcxproj"
+    $solutionDefinition = Get-SolutionCacheDefinition -RepositoryRoot $repositoryRoot
     if (
         (Test-Path -LiteralPath $solutionCacheScript -PathType Leaf) -and
-        (Test-Path -LiteralPath $solutionProject -PathType Leaf)
+        $null -ne $solutionDefinition
     ) {
         if ([string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)) {
             throw "The Solution cache bridge requires a pinned Visual Studio instance."
@@ -799,7 +842,13 @@ if (-not $AuditOnly) {
             "-File",
             $solutionCacheScript,
             "-ProjectFile",
-            $solutionProject,
+            $solutionDefinition.Project,
+            "-OutputProps",
+            $solutionDefinition.Props,
+            "-Configurations"
+        )
+        $solutionCacheArguments += @($solutionDefinition.Configurations)
+        $solutionCacheArguments += @(
             "-CacheRoot",
             $CacheRoot,
             "-VcpkgRoot",
@@ -1086,7 +1135,11 @@ if ($null -eq $configureTrees) {
 
 Write-Output "Existing Solution dependency contracts"
 $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
-    $solutionPropsPath = Join-Path $worktreeRoot "vcproj\.canary-shared-cache\SharedVcpkgCache.props"
+    $solutionDefinition = Get-SolutionCacheDefinition -RepositoryRoot $worktreeRoot
+    if ($null -eq $solutionDefinition) {
+        continue
+    }
+    $solutionPropsPath = $solutionDefinition.Props
     if (-not (Test-Path -LiteralPath $solutionPropsPath -PathType Leaf)) {
         continue
     }
@@ -1182,26 +1235,42 @@ $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
 
     if ($AuditOnly -and $solutionContractValid) {
         $solutionAuditScript = Join-Path $worktreeRoot "tools\configure_shared_solution_cache.ps1"
-        $solutionProject = Join-Path $worktreeRoot "vcproj\canary.vcxproj"
         if (
             -not (Test-Path -LiteralPath $solutionAuditScript -PathType Leaf) -or
-            -not (Test-Path -LiteralPath $solutionProject -PathType Leaf) -or
+            -not (Test-Path -LiteralPath $solutionDefinition.Project -PathType Leaf) -or
             [string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)
         ) {
             Write-Warning "A generated Solution contract cannot be re-evaluated from its worktree: $solutionPropsPath"
             $auditIncomplete = $true
             continue
         }
-        $solutionAuditOutput = @(
-            & pwsh.exe -NoLogo -NoProfile -NonInteractive `
-                -File $solutionAuditScript `
-                -AuditOnly `
-                -ProjectFile $solutionProject `
-                -OutputProps $solutionPropsPath `
-                -CacheRoot $CacheRoot `
-                -VcpkgRoot $vcpkgRoot `
-                -VisualStudioPath $vcpkgVisualStudioPath 2>&1
+        $solutionAuditArguments = @(
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-File",
+            $solutionAuditScript,
+            "-AuditOnly",
+            "-ProjectFile",
+            $solutionDefinition.Project,
+            "-OutputProps",
+            $solutionPropsPath,
+            "-Configurations"
         )
+        $solutionAuditArguments += @(
+            $activePropertyGroups |
+                ForEach-Object { [string] $_.CanarySharedVcpkgConfiguration } |
+                Select-Object -Unique
+        )
+        $solutionAuditArguments += @(
+            "-CacheRoot",
+            $CacheRoot,
+            "-VcpkgRoot",
+            $vcpkgRoot,
+            "-VisualStudioPath",
+            $vcpkgVisualStudioPath
+        )
+        $solutionAuditOutput = @(& pwsh.exe @solutionAuditArguments 2>&1)
         if ($LASTEXITCODE -ne 0) {
             Write-Warning "Generated Solution cache props are stale or cannot be validated: $solutionPropsPath`n$($solutionAuditOutput -join [Environment]::NewLine)"
             $auditIncomplete = $true

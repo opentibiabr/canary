@@ -130,6 +130,12 @@ Projects whose Solution uses configuration names other than the conventional
 pwsh -File tools/configure_shared_solution_cache.ps1 -Configurations Debug,OpenGL,DirectX
 ```
 
+The setup and audit helper discovers the maintained x64 project in the common
+`vcproj`, `vc18`, or `vc17` layout and derives its configuration names from the
+project file. This keeps repositories with a CMake entry point and a native
+Solution under the same dependency contract without sharing their object,
+PCH, PDB, generated-source, or output directories.
+
 Reload the Visual Studio project after the file changes. The generated file supplies each supported configuration with its validated `VcpkgInstalledDir`, fingerprint-specific `buildtrees` and `packages` roots, cleanup options, selected vcpkg checkout, and pinned Visual Studio instance. The tracked target re-evaluates the complete contract immediately before `VcpkgInstallManifestDependencies` inside the active developer environment; stale generated values stop the build and request regeneration instead of mutating the wrong pool.
 
 The bridge uses two hashes:

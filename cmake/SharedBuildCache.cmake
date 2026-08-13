@@ -792,7 +792,11 @@ function(canary_shared_cache_native_triplet output)
             OUTPUT_VARIABLE host_processor
             ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
         )
-        if(NOT host_processor_result EQUAL 0)
+        if(NOT
+           host_processor_result
+           EQUAL
+           0
+        )
             set(host_processor)
         endif()
         string(TOLOWER "${host_processor}" host_processor)

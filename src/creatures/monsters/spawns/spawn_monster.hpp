@@ -33,14 +33,11 @@ public:
 		centerPos(initPos), radius(initRadius) { }
 	~SpawnMonster();
 
-	// non-copyable
+	// non-copyable and non-moveable
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
-
-	// moveable
-	SpawnMonster(SpawnMonster &&rhs) noexcept;
-
-	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept;
+	SpawnMonster(SpawnMonster &&) = delete;
+	SpawnMonster &operator=(SpawnMonster &&) = delete;
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(const std::shared_ptr<Monster> &monster);

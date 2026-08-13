@@ -181,31 +181,6 @@ SpawnMonster::~SpawnMonster() {
 	stopEvent();
 }
 
-// moveable
-
-SpawnMonster::SpawnMonster(SpawnMonster &&rhs) noexcept :
-	spawnedMonsterMap(std::move(rhs.spawnedMonsterMap)),
-	spawnMonsterMap(std::move(rhs.spawnMonsterMap)),
-	centerPos(rhs.centerPos),
-	radius(rhs.radius),
-	interval(rhs.interval),
-	checkSpawnMonsterEvent(rhs.checkSpawnMonsterEvent),
-	spawnGeneration(rhs.spawnGeneration) { }
-
-SpawnMonster &SpawnMonster::operator=(SpawnMonster &&rhs) noexcept {
-	if (this != &rhs) {
-		spawnMonsterMap = std::move(rhs.spawnMonsterMap);
-		spawnedMonsterMap = std::move(rhs.spawnedMonsterMap);
-
-		checkSpawnMonsterEvent = rhs.checkSpawnMonsterEvent;
-		centerPos = rhs.centerPos;
-		radius = rhs.radius;
-		interval = rhs.interval;
-		spawnGeneration = rhs.spawnGeneration;
-	}
-	return *this;
-}
-
 bool SpawnMonster::findPlayer(const Position &pos) {
 	auto spectators = Spectators().find<Player>(pos);
 	return std::ranges::any_of(spectators, [](const auto &spectator) {

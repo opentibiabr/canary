@@ -6,7 +6,7 @@ Canary repositories can share expensive reusable artifacts across Git worktrees 
 
 | Layer | Ownership | Reason |
 | --- | --- | --- |
-| `build/<preset>` | One per worktree and preset | CMake, Ninja, objects, PCH files, and generated files contain checkout-specific paths. |
+| CMake and Solution outputs | One per worktree and build system | CMake/Ninja state, MSBuild intermediate directories, objects, PCH/PDB files, generated files, and executables contain consumer-specific paths. |
 | vcpkg binary cache | Global | vcpkg addresses binary packages by their package ABI. Different manifests and baselines can reuse a package when its ABI is identical. |
 | vcpkg downloads | Global | Sources and tools are reusable download assets. |
 | `VCPKG_INSTALLED_DIR` | One per complete dependency fingerprint | Any worktree or independent fork with the same contract uses the same installed tree. Different contracts receive different trees. |
@@ -44,7 +44,7 @@ The helper:
 - does not persist or change `VCPKG_ROOT`; the active project or tool manager owns the vcpkg executable;
 - pins the Visual Studio instance selected by vcpkg in the Canary-scoped `CANARY_VCPKG_VISUAL_STUDIO_PATH`; the CMake module exports the standard vcpkg variable only to its configure process;
 - manages `SCCACHE_BASEDIRS` as the union of every registered worktree root plus pre-existing unmanaged entries;
-- creates cache directories but does not configure or compile the project.
+- creates cache directories and, when the repository carries the Solution bridge, prepares its ignored generated `.props`; it does not configure CMake or compile the project.
 
 Restart open terminals and long-running development applications after setup. Restart an existing sccache server only after active builds finish. Run the helper after adding, moving, or removing worktrees.
 
@@ -88,9 +88,9 @@ cmake --build --preset <build-preset>
 `cmake/SharedBuildCache.cmake` runs before the first `project()` call. When it can prove the complete installation contract, it selects:
 
 ```text
-<cache-root>/vcpkg-installed/v2/<fingerprint>
-<cache-root>/vcpkg-buildtrees/v2/<fingerprint>
-<cache-root>/vcpkg-packages/v2/<fingerprint>
+<cache-root>/vcpkg-installed/v3/<dependency-fingerprint>
+<cache-root>/vcpkg-buildtrees/v3/<dependency-fingerprint>
+<cache-root>/vcpkg-packages/v3/<dependency-fingerprint>
 ```
 
 The first directory is persistent. The latter two are transient and are cleaned after successful dependency builds by the preset's vcpkg options.
@@ -115,11 +115,38 @@ cmake --fresh --preset <configure-preset> -DCANARY_USE_SHARED_VCPKG_INSTALLED=OF
 
 Use separate configure presets and binary directories if opt-in and opt-out builds must exist simultaneously.
 
+## Visual Studio Solution builds
+
+Repositories that include `vcproj/SharedVcpkgCache.targets` use the same dependency resolver for CMake and MSBuild. Normal setup generates an ignored, machine-local file at `vcproj/.canary-shared-cache/SharedVcpkgCache.props`. Regenerate it directly when only the Solution contract changed:
+
+```powershell
+pwsh -File tools/configure_shared_solution_cache.ps1
+```
+
+Reload the Visual Studio project after the file changes. The generated file supplies each supported configuration with its validated `VcpkgInstalledDir`, fingerprint-specific `buildtrees` and `packages` roots, cleanup options, selected vcpkg checkout, and pinned Visual Studio instance. The tracked target re-evaluates the complete contract immediately before `VcpkgInstallManifestDependencies` inside the active developer environment; stale generated values stop the build and request regeneration instead of mutating the wrong pool.
+
+The bridge uses two hashes:
+
+- the **dependency fingerprint** is neutral between CMake and MSBuild and owns the expanded installed and transient roots;
+- the **consumer fingerprint** binds that dependency contract to the invoking build system, generator or configuration, and its build-system tool.
+
+Consequently, a Solution Release configuration and a CMake Release preset share one expanded tree only when their target and host triplets, features, registries, overlays, linkage, compiler, toolset, SDK, vcpkg revision, and dependency tools all match. Debug or any other configuration with a different contract receives another dependency fingerprint automatically. Command-line MSBuild overrides for the manifest root, triplets, link configuration, toolset, SDK, or install options are compared with the generated contract and fail closed when incompatible. Never copy a fingerprint from another configuration or edit the generated `.props`.
+
+When no generated `.props` exists, the Solution keeps `vcproj/vcpkg_installed` and uses worktree-local `vcproj/.vcpkg-buildtrees/<configuration>` and `vcproj/.vcpkg-packages/<configuration>`. This is the safe fallback when the global cache is not configured. Solution objects, PCH/PDB files, generated protocol sources, intermediate directories, and executables always remain local, even when dependencies converge with CMake.
+
+Audit only the Solution bridge without writing pools or generated files:
+
+```powershell
+pwsh -File tools/configure_shared_solution_cache.ps1 -AuditOnly
+```
+
+Use `-WhatIf` to preview the contracts. The repository-wide `configure_shared_build_cache.ps1 -AuditOnly` also scans and re-evaluates generated Solution contracts across every registered worktree. The Solution inherits the global vcpkg downloads and binary cache. It does not automatically route compiler invocations through sccache; adding such a launcher is a separate concern, and MSVC PCH compilations remain ineligible.
+
 ## Sharing across baselines and forks
 
 The repository name, branch, and absolute checkout path are not fingerprint inputs. Independent forks therefore converge when their declared and effective dependency contracts are identical.
 
-A common `builtin-baseline` improves the chance of reuse but is not sufficient. Sharing an installed tree also requires identical manifests, enabled features, registry configuration and content, ordered overlays, target and host triplets, linkage, vcpkg options, compiler/toolset identity, CMake identity, and vcpkg revision.
+A common `builtin-baseline` improves the chance of reuse but is not sufficient. Sharing an installed tree also requires identical manifests, enabled features, registry configuration and content, ordered overlays, target and host triplets, linkage, vcpkg options, compiler/toolset identity, dependency-tool identity, and vcpkg revision.
 
 Different baselines and manifests are supported. They select different installed and transient fingerprints while continuing to reuse the global downloads and every binary package whose vcpkg ABI remains identical. Do not force a baseline update solely to save disk space.
 
@@ -141,13 +168,13 @@ When several maintained forks are intended to use the same dependency contract, 
 
 Before canonicalizing two forks, compare the dependency inputs and prove that the selected versions, features, linkage, target and host triplets, and custom port contents are equivalent. Do not change a dependency version or a fork-specific option merely to obtain the same fingerprint. An intentional difference should remain a separate fingerprint while still sharing downloads, sccache storage, and ABI-compatible binary packages.
 
-After adopting the canonical representation, run the setup helper from the newly participating repository, configure its existing preset with `--fresh`, and compare the full fingerprint reported in `CMakeCache.txt` or the metadata directory. Matching fingerprints are the result of matching contracts; never override or manually rename a fingerprint to force convergence. If the fingerprints differ, inspect their metadata and preserve the separate pools until the remaining input difference is understood.
+After adopting the canonical representation, run the setup helper from the newly participating repository, configure its existing preset with `--fresh`, regenerate any Solution `.props`, and compare the full dependency fingerprints. Matching fingerprints are the result of matching contracts; never override or manually rename a fingerprint to force convergence. If the fingerprints differ, inspect their metadata and preserve the separate pools until the remaining input difference is understood.
 
-This pool integration covers CMake manifest installs. A separately maintained Visual Studio solution or another build system must keep its expanded installed tree local unless it implements the same complete fingerprint and locking contract. It may still use the global downloads and vcpkg binary cache.
+Another build system must keep its expanded installed tree local until it consumes this same neutral dependency contract, validates its own consumer fingerprint, and supplies equivalent locking and transient-root options. It may still use the global downloads and vcpkg binary cache.
 
 ## Fingerprint contract
 
-The fingerprint contains inputs that can change the manifest installation or package ABI:
+The dependency fingerprint contains inputs that can change the manifest installation or package ABI:
 
 - the normalized implementation hash and schema of `cmake/SharedBuildCache.cmake`;
 - the complete `vcpkg.json`, including either supported embedded configuration spelling, and optional separate `vcpkg-configuration.json`;
@@ -156,21 +183,23 @@ The fingerprint contains inputs that can change the manifest installation or pac
 - target and host triplet names and selected triplet files;
 - manifest features, feature flags, linkage settings, build type, and install options;
 - chainloaded toolchain contents;
-- CMake generator, host, executable, and version;
+- host identity and the CMake executable/version used as a dependency tool;
 - C and C++ compiler executable hashes;
 - on Windows, the pinned vcpkg Visual Studio instance, `vcvarsall.bat`, and selectable MSVC compiler tool binaries;
 - selected Visual Studio toolset, Windows SDK, and host/target architecture environment;
 - vcpkg executable, toolchain, repository revision, and relevant dirty state.
 
+The consumer fingerprint includes the dependency fingerprint and then adds either the CMake generator and CMake consumer identity, or the MSBuild executable, build configuration, link configuration, platform, toolset, and SDK. Consumer-specific values do not create duplicate installed trees when the dependency contract is identical, but they are validated to prevent a stale CMake cache or generated `.props` from silently changing build systems.
+
 The module disables sharing when any required identity or the local-filesystem guarantee is ambiguous. Absolute worktree paths do not participate. Content paths inside manifests and configurations still participate through the files themselves, while referenced local trees are hashed using relative file names and contents.
 
-The module's normalized SHA-256 is part of schema `v2`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
+The module's normalized SHA-256 is part of schema `v3`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
 
 An existing configured preset never changes fingerprint or falls back in place. Cached package variables could retain paths into the old pool, so the module stops before `project()` and requests `cmake --fresh --preset <configure-preset>`.
 
 Fingerprint input files and trees are CMake configure dependencies. Adding, removing, or changing a manifest, registry, overlay, triplet, compiler, or toolchain input requests regeneration.
 
-The full SHA-256 and non-local metadata are written below `<cache-root>/metadata/v2`. Directory names use the first 24 hexadecimal characters to limit Windows path length.
+The full dependency SHA-256 and non-local metadata are written below `<cache-root>/metadata/v3`. Directory names use the first 24 hexadecimal characters to limit Windows path length; the metadata lock verifies the full hash before a shortened directory is accepted.
 
 ## Concurrency
 
@@ -190,10 +219,14 @@ Verify its `CMakeCache.txt`:
 
 ```text
 CANARY_SHARED_VCPKG_ACTIVE:INTERNAL=true
-VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v2/<fingerprint>
+CANARY_VCPKG_DEPENDENCY_FINGERPRINT:INTERNAL=<full-dependency-fingerprint>
+CANARY_VCPKG_CONSUMER_FINGERPRINT:INTERNAL=<full-consumer-fingerprint>
+VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v3/<dependency-fingerprint>
 ```
 
 Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.
+
+For a Solution migration, generate the `.props`, reload the project, build every migrated configuration successfully, and confirm a no-op rebuild. Only then remove that worktree's exact `vcproj/vcpkg_installed` directory and repeat the build. If multiple configurations used the same local installed directory, all of them must be migrated and validated before deletion.
 
 ## Cleanup and recovery
 
@@ -201,11 +234,11 @@ Before pruning a fingerprint:
 
 1. Confirm no configure or build process is active.
 2. Run the audit from any registered repository.
-3. Inspect every reported `CMakeCache.txt` and generated Ninja file.
-4. Preserve every installed root referenced by any registered consumer.
+3. Inspect every reported `CMakeCache.txt`, generated Ninja file, and generated Solution contract.
+4. Preserve every installed root referenced by any registered CMake or MSBuild consumer.
 5. Remove only an unreferenced fingerprint and its matching transient and metadata entries.
 
-An audit that reports an unregistered, unavailable, partially enumerated, or malformed repository/configure tree is incomplete and exits with failure. Do not prune any global fingerprint until every registered family is available and the audit succeeds.
+An audit that reports an unregistered, unavailable, partially enumerated, or malformed repository/configure tree, a non-local/reparse root, or a missing/mismatched full-hash identity is incomplete and exits with failure. Do not prune any global fingerprint until every registered family is available and the audit succeeds.
 
 Schema migrations intentionally create a new pool. Keep the previous schema until every registered configured build has migrated, built successfully, and stopped referencing it.
 
@@ -220,6 +253,7 @@ The feature is opt-in through `CANARY_SHARED_CACHE_ROOT`. CI and fresh clones re
 Before changing build or dependency configuration, verify:
 
 - `build/<preset>` remains local to each worktree;
+- Solution intermediate/output directories, PCH/PDB files, and generated files remain local;
 - all vcpkg settings are finalized before `project()`;
 - new manifest, registry, overlay, triplet, compiler, and toolchain inputs participate in the fingerprint;
 - independent forks use the same module implementation before sharing a fingerprint;

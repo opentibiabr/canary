@@ -13,6 +13,9 @@ param(
     [string[]] $CleanSharedFingerprintTransients = @(),
 
     [Parameter()]
+    [string] $SolutionMSBuildPath,
+
+    [Parameter()]
     [switch] $UnregisterCurrentRepository
 )
 
@@ -759,6 +762,17 @@ if ([string]::IsNullOrWhiteSpace($downloadsRoot)) {
 }
 $downloadsRoot = Get-FullPath -Path $downloadsRoot
 
+if ([string]::IsNullOrWhiteSpace($SolutionMSBuildPath)) {
+    $SolutionMSBuildPath = Get-EnvironmentValue -Name "CANARY_SOLUTION_MSBUILD_PATH"
+}
+if (-not [string]::IsNullOrWhiteSpace($SolutionMSBuildPath)) {
+    $SolutionMSBuildPath = Get-FullPath -Path $SolutionMSBuildPath
+    if (-not (Test-Path -LiteralPath $SolutionMSBuildPath -PathType Leaf)) {
+        throw "The preferred Solution MSBuild executable was not found: $SolutionMSBuildPath"
+    }
+    Assert-LocalFixedVolume -Path $SolutionMSBuildPath -Description "The preferred Solution MSBuild executable"
+}
+
 $existingBaseDirs = Get-EnvironmentValue -Name "SCCACHE_BASEDIRS"
 $previousManagedBaseDirs = Get-EnvironmentValue -Name "CANARY_SCCACHE_BASEDIRS"
 $baseDirSet = [Collections.Generic.HashSet[string]]::new(
@@ -791,6 +805,9 @@ $environmentValues = [ordered]@{
 }
 if (-not [string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)) {
     $environmentValues.CANARY_VCPKG_VISUAL_STUDIO_PATH = $vcpkgVisualStudioPath
+}
+if (-not [string]::IsNullOrWhiteSpace($SolutionMSBuildPath)) {
+    $environmentValues.CANARY_SOLUTION_MSBUILD_PATH = $SolutionMSBuildPath
 }
 if ($persistBinarySources) {
     $environmentValues.VCPKG_BINARY_SOURCES = $binarySources
@@ -895,6 +912,9 @@ if (-not $AuditOnly) {
             "-VisualStudioPath",
             $vcpkgVisualStudioPath
         )
+        if (-not [string]::IsNullOrWhiteSpace($SolutionMSBuildPath)) {
+            $solutionCacheArguments += @("-MSBuildPath", $SolutionMSBuildPath)
+        }
         if ($WhatIfPreference) {
             $solutionCacheArguments += "-WhatIf"
         }

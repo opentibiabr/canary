@@ -25,6 +25,14 @@ From a worktree in each independent Git repository that should participate, run:
 pwsh -File tools/configure_shared_build_cache.ps1
 ```
 
+If the machine has more than one Visual Studio/MSBuild installation, select the executable that actually opens or builds the Solutions:
+
+```powershell
+pwsh -File tools/configure_shared_build_cache.ps1 -SolutionMSBuildPath <path-to-MSBuild.exe>
+```
+
+The helper persists that choice as `CANARY_SOLUTION_MSBUILD_PATH` and uses it whenever it regenerates Solution contracts. The exact MSBuild executable is a consumer input, so switching to another installation requires regenerating the `.props`; the neutral dependency fingerprint and expanded vcpkg tree can still remain identical.
+
 The first invocation creates a machine-local repository registry below the shared cache root. Later invocations add the current repository's Git common directory. Every invocation re-enumerates all registered repositories and their worktrees, so `SCCACHE_BASEDIRS` and cache audits cover the complete set instead of replacing one fork with another.
 
 For backward compatibility, the default shared root is a `canary-build-cache` directory beside the active `VCPKG_ROOT`. Override it with the same short, local path in every participating repository when needed:

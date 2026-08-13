@@ -845,10 +845,8 @@ if (-not $AuditOnly) {
             $solutionDefinition.Project,
             "-OutputProps",
             $solutionDefinition.Props,
-            "-Configurations"
-        )
-        $solutionCacheArguments += @($solutionDefinition.Configurations)
-        $solutionCacheArguments += @(
+            "-Configurations",
+            ($solutionDefinition.Configurations -join ","),
             "-CacheRoot",
             $CacheRoot,
             "-VcpkgRoot",

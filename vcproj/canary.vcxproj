@@ -659,7 +659,7 @@
   </Target>
   <PropertyGroup>
     <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgHostTriplet)\tools\protobuf\protoc.exe</ProtocPath>
-    <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
+    <ProtoPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\src\protobuf'))</ProtoPath>
   </PropertyGroup>
   <ItemGroup>
     <ProtoFiles Include="$(ProtoPath)\*.proto" />

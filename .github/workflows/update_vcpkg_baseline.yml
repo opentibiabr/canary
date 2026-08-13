@@ -44,12 +44,14 @@ jobs:
           fi
 
           CURRENT_BASELINE=$(jq -r '."builtin-baseline"' vcpkg.json)
+          CURRENT_REGISTRY_BASELINE=$(jq -r '."default-registry".baseline' vcpkg-configuration.json)
 
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "baseline=$LATEST_BASELINE" >> $GITHUB_OUTPUT
-          echo "current=$CURRENT_BASELINE" >> $GITHUB_OUTPUT
+          echo "current_builtin=$CURRENT_BASELINE" >> $GITHUB_OUTPUT
+          echo "current_registry=$CURRENT_REGISTRY_BASELINE" >> $GITHUB_OUTPUT
 
-          if [ "$LATEST_BASELINE" != "$CURRENT_BASELINE" ]; then
+          if [ "$LATEST_BASELINE" != "$CURRENT_BASELINE" ] || [ "$LATEST_BASELINE" != "$CURRENT_REGISTRY_BASELINE" ]; then
             echo "needs_update=true" >> $GITHUB_OUTPUT
           else
             echo "needs_update=false" >> $GITHUB_OUTPUT
@@ -60,7 +62,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_TAG: ${{ steps.vcpkg.outputs.tag }}
-          PREVIOUS: ${{ steps.vcpkg.outputs.current }}
+          PREVIOUS_BUILTIN: ${{ steps.vcpkg.outputs.current_builtin }}
+          PREVIOUS_REGISTRY: ${{ steps.vcpkg.outputs.current_registry }}
           NEW_BASELINE: ${{ steps.vcpkg.outputs.baseline }}
         run: |
           BRANCH_NAME="chore/update-vcpkg-baseline"
@@ -82,26 +85,29 @@ jobs:
             git checkout ${BRANCH_NAME}
 
             CURRENT_IN_BRANCH=$(jq -r '."builtin-baseline"' vcpkg.json)
+            CURRENT_REGISTRY_IN_BRANCH=$(jq -r '."default-registry".baseline' vcpkg-configuration.json)
 
-            if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ]; then
+            if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ] && [ "$CURRENT_REGISTRY_IN_BRANCH" == "${NEW_BASELINE}" ]; then
               echo "PR #${EXISTING_PR} already has baseline ${NEW_BASELINE}"
               trigger_ci
               exit 0
             fi
 
-            echo "Updating PR #${EXISTING_PR} from ${CURRENT_IN_BRANCH} to ${NEW_BASELINE}"
+            echo "Updating PR #${EXISTING_PR} from builtin ${CURRENT_IN_BRANCH} and registry ${CURRENT_REGISTRY_IN_BRANCH} to ${NEW_BASELINE}"
 
             jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
             mv vcpkg.json.tmp vcpkg.json
+            jq --arg baseline "${NEW_BASELINE}" '."default-registry".baseline = $baseline' vcpkg-configuration.json > vcpkg-configuration.json.tmp
+            mv vcpkg-configuration.json.tmp vcpkg-configuration.json
 
-            git add vcpkg.json
+            git add vcpkg.json vcpkg-configuration.json
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
             git push origin ${BRANCH_NAME}
 
             gh pr edit ${EXISTING_PR} --title "chore: Update vcpkg baseline to ${RELEASE_TAG}"
 
-            printf -v COMMENT_BODY '🔄 Updated to vcpkg **%s**\n\n**Previous baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s' \
-              "${RELEASE_TAG}" "${CURRENT_IN_BRANCH}" "${NEW_BASELINE}" "${RELEASE_TAG}"
+            printf -v COMMENT_BODY '🔄 Updated to vcpkg **%s**\n\n**Previous builtin baseline:** `%s`\n**Previous registry baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s' \
+              "${RELEASE_TAG}" "${CURRENT_IN_BRANCH}" "${CURRENT_REGISTRY_IN_BRANCH}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
             gh pr comment ${EXISTING_PR} --body "${COMMENT_BODY}"
             trigger_ci
@@ -121,13 +127,15 @@ jobs:
 
             jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
             mv vcpkg.json.tmp vcpkg.json
+            jq --arg baseline "${NEW_BASELINE}" '."default-registry".baseline = $baseline' vcpkg-configuration.json > vcpkg-configuration.json.tmp
+            mv vcpkg-configuration.json.tmp vcpkg-configuration.json
 
-            git add vcpkg.json
+            git add vcpkg.json vcpkg-configuration.json
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
             git push -f origin ${BRANCH_NAME}
 
-            printf -v PR_BODY '## vcpkg Baseline Update\n\nThis PR updates the vcpkg baseline to the latest release.\n\n**Release:** `%s`\n**Previous:** `%s`\n**New:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s\n\n---\n🤖 This PR is automatically updated when new vcpkg releases are published' \
-              "${RELEASE_TAG}" "${PREVIOUS}" "${NEW_BASELINE}" "${RELEASE_TAG}"
+            printf -v PR_BODY '## vcpkg Baseline Update\n\nThis PR updates the vcpkg baseline to the latest release.\n\n**Release:** `%s`\n**Previous builtin baseline:** `%s`\n**Previous registry baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s\n\n---\n🤖 This PR is automatically updated when new vcpkg releases are published' \
+              "${RELEASE_TAG}" "${PREVIOUS_BUILTIN}" "${PREVIOUS_REGISTRY}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
             gh pr create \
               --title "chore: Update vcpkg baseline to ${RELEASE_TAG}" \

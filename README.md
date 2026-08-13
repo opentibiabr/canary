@@ -59,6 +59,7 @@ environment variables, test account, and troubleshooting guide.
 
 ## Documentation
 
+- [Shared build cache for worktrees and forks](docs/development/shared-build-cache.md).
 - [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
 - [Multiprotocol runtime profiles](docs/systems/multiprotocol.md). Covers the
   current, 11.00, and 8.60 runtime contracts, port layout, client preparation,

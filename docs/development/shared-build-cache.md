@@ -99,7 +99,7 @@ If sharing cannot be proven, a fresh configure uses `<binary-dir>/vcpkg_installe
 
 Container and packaging stages may preprovision an immutable installed tree and configure with `VCPKG_MANIFEST_INSTALL=OFF`. In that explicit mode the module preserves the caller's `VCPKG_INSTALLED_DIR`, does not assign shared transient roots, and marks the shared pool inactive. Switching an existing managed configure tree to or from this mode still requires `--fresh`. Do not use this exception for an installation that vcpkg will mutate.
 
-Windows Ninja presets that select `cl.exe` require a Visual Studio developer environment. On other hosts, set both `CC` and `CXX`, or both CMake compiler variables, when the first configure cannot identify them safely.
+Windows Ninja presets that select `cl.exe` require a Visual Studio developer environment. `VsDevCmd.bat` may replace an existing `VCPKG_ROOT` with the vcpkg bundled by Visual Studio, so initialize the developer environment first and then select the project-managed `VCPKG_ROOT` before running the helper, configure, or build in that same environment. A different vcpkg installation is a different dependency contract and may intentionally select a different pool or trigger the safe local fallback. On other hosts, set both `CC` and `CXX`, or both CMake compiler variables, when the first configure cannot identify them safely.
 
 Disable the shared installed tree for an isolated configure with:
 

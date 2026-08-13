@@ -123,6 +123,13 @@ Repositories that include `vcproj/SharedVcpkgCache.targets` use the same depende
 pwsh -File tools/configure_shared_solution_cache.ps1
 ```
 
+Projects whose Solution uses configuration names other than the conventional
+`Debug` and `Release` can generate all contracts explicitly, for example:
+
+```powershell
+pwsh -File tools/configure_shared_solution_cache.ps1 -Configurations Debug,OpenGL,DirectX
+```
+
 Reload the Visual Studio project after the file changes. The generated file supplies each supported configuration with its validated `VcpkgInstalledDir`, fingerprint-specific `buildtrees` and `packages` roots, cleanup options, selected vcpkg checkout, and pinned Visual Studio instance. The tracked target re-evaluates the complete contract immediately before `VcpkgInstallManifestDependencies` inside the active developer environment; stale generated values stop the build and request regeneration instead of mutating the wrong pool.
 
 The bridge uses two hashes:

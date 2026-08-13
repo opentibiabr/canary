@@ -1,7 +1,8 @@
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
-    [ValidateSet("All", "Debug", "Release")]
+    [ValidateNotNullOrEmpty()]
     [string] $Configuration = "All",
+    [string[]] $Configurations = @(),
     [string] $Platform = "x64",
     [string] $ProjectFile,
     [string] $OutputProps,
@@ -430,7 +431,27 @@ if ([string]::IsNullOrWhiteSpace($resolvedMSBuildPath)) {
 }
 $compilerPath = (Get-Command cl.exe -ErrorAction Stop | Select-Object -First 1).Source
 
-[string[]] $configurations = if ($Configuration -eq "All") { @("Debug", "Release") } else { @($Configuration) }
+[string[]] $configurations = if ($Configurations.Count -gt 0) {
+    @($Configurations)
+} elseif ($Configuration -eq "All") {
+    @("Debug", "Release")
+} else {
+    @($Configuration)
+}
+$configurations = @(
+    $configurations |
+        ForEach-Object { $_.Trim() } |
+        Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
+        Select-Object -Unique
+)
+if ($configurations.Count -eq 0) {
+    throw "At least one Solution configuration is required."
+}
+foreach ($configurationName in $configurations) {
+    if ($configurationName -notmatch '^[A-Za-z0-9_.-]+$') {
+        throw "Unsupported Solution configuration name: $configurationName"
+    }
+}
 
 if ($AuditOnly) {
     if (-not (Test-Path -LiteralPath $OutputProps -PathType Leaf)) {

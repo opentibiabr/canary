@@ -33,6 +33,13 @@ if (
     throw "-AuditOnly cannot be combined with a mutating option."
 }
 
+if (
+    $UnregisterCurrentRepository -and
+    ($CleanTransientVcpkg -or $CleanSharedFingerprintTransients.Count -gt 0)
+) {
+    throw "-UnregisterCurrentRepository cannot be combined with a transient cleanup option. Run cleanup first."
+}
+
 $cleanupOnly = $CleanTransientVcpkg -or $CleanSharedFingerprintTransients.Count -gt 0
 
 function Get-EnvironmentValue {
@@ -940,17 +947,17 @@ if (-not $AuditOnly) {
             $solutionCacheOutput = @(& pwsh.exe @solutionCacheArguments 2>&1)
             $solutionCacheExitCode = $LASTEXITCODE
         } finally {
-            foreach ($processEnvironmentEntry in $solutionProcessEnvironment.GetEnumerator()) {
-                $previousProcessValue = $previousSolutionProcessEnvironment[$processEnvironmentEntry.Key]
+            foreach ($restoredName in @($previousSolutionProcessEnvironment.Keys)) {
+                $previousProcessValue = $previousSolutionProcessEnvironment[$restoredName]
                 if ($null -eq $previousProcessValue) {
                     [Environment]::SetEnvironmentVariable(
-                        $processEnvironmentEntry.Key,
+                        $restoredName,
                         [NullString]::Value,
                         [EnvironmentVariableTarget]::Process
                     )
                 } else {
                     [Environment]::SetEnvironmentVariable(
-                        $processEnvironmentEntry.Key,
+                        $restoredName,
                         $previousProcessValue,
                         [EnvironmentVariableTarget]::Process
                     )

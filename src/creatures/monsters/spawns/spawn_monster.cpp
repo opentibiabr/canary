@@ -470,6 +470,7 @@ void SpawnMonster::removeMonsters() {
 }
 
 void SpawnMonster::setMonsterVariant(const std::string &variant) {
+	++spawnGeneration;
 	for (auto &[monsterId, monsterInfo] : spawnMonsterMap) {
 		if (monsterId == 0) {
 			continue;

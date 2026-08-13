@@ -174,7 +174,6 @@ keywordHandler:addKeyword(
 	StdModule.say,
 	{ npcHandler = npcHandler, text = "The goblins of clan Grynch are a constant nuisance. They steal everything that is not nailed to the ground, and if possible even that. ... They do not shrink away from stealing presents from little children. If you should manage to get your hands on the stolen presents Santa will gladly return them to their rightful owners." }
 )
-keywordHandler:addKeyword({ "turn in" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but you do not have a token." })
 keywordHandler:addKeyword({ "christmas bakery" }, StdModule.say, { npcHandler = npcHandler, text = "The entrance to the bakery is right behind my hut." })
 keywordHandler:addKeyword({ "deer" }, StdModule.say, { npcHandler = npcHandler, text = "They are no ordinary deer, but a rare magical breed. They are fun and nice, you know. The ugly thing about them is that they prefer a stew made of old, worn boots of haste. Guess that keeps them fast and flying. But what a foul stench!!" })
 keywordHandler:addKeyword({ "token" }, StdModule.say, {

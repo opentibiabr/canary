@@ -86,7 +86,6 @@ keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "venore" }, StdModule.say, { npcHandler = npcHandler, text = "It's a place full of stone buildings and people. Very odd surrounding, if you ask me." })
 keywordHandler:addKeyword({ "darama" }, StdModule.say, { npcHandler = npcHandler, text = "I have never heard of this place." })
 keywordHandler:addKeyword({ "map" }, StdModule.say, { npcHandler = npcHandler, text = "I have a part of a certain map, yes. I would consider giving it to you if you do me a small favour. Would you do that?" })
-keywordHandler:addKeyword({ "the seeds of life" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, what a beautiful story. ... *yawn* Here, take this map part. We have no need for it when we are slumbering. *yawn* Some of our siblings have the third part. They took over a couple of stones in the north of some high mountains. ... There are ... dwarves I guess. ... Zzzzzz ..." })
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

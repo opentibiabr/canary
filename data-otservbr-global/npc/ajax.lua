@@ -205,9 +205,7 @@ keywordHandler:addKeyword({ "addon" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "No time for such stupid thing." })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Ajax." })
 keywordHandler:addKeyword({ "bron" }, StdModule.say, { npcHandler = npcHandler, text = "Me no talk about him." })
-keywordHandler:addKeyword({ "fight" }, StdModule.say, { npcHandler = npcHandler, text = "You. Weak." })
 keywordHandler:addKeyword({ "weapon" }, StdModule.say, { npcHandler = npcHandler, text = "Me like shiny weapons." })
-keywordHandler:addKeyword({ "behemoth fang" }, StdModule.say, { npcHandler = npcHandler, text = "You bring 50 behemoth fangs?" })
 
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 

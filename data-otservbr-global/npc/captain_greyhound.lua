@@ -110,7 +110,7 @@ keywordHandler:addKeyword({ "kazordoon" }, StdModule.say, { npcHandler = npcHand
 keywordHandler:addKeyword({ "krailos" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
 keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
 keywordHandler:addKeyword({ "oramond" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
-keywordHandler:addKeyword({ "player ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
 keywordHandler:addKeyword({ "port hope" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
 keywordHandler:addKeyword({ "rathleton" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
 keywordHandler:addKeyword({ "roshamuul" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })

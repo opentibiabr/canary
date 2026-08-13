@@ -783,6 +783,20 @@ function(canary_shared_cache_native_triplet output)
     )
         string(TOLOWER "$ENV{PROCESSOR_ARCHITECTURE}" host_processor)
     endif()
+    if(NOT host_processor
+       AND UNIX
+    )
+        execute_process(
+            COMMAND uname -m
+            RESULT_VARIABLE host_processor_result
+            OUTPUT_VARIABLE host_processor
+            ERROR_QUIET OUTPUT_STRIP_TRAILING_WHITESPACE
+        )
+        if(NOT host_processor_result EQUAL 0)
+            set(host_processor)
+        endif()
+        string(TOLOWER "${host_processor}" host_processor)
+    endif()
 
     if(host_processor
        MATCHES

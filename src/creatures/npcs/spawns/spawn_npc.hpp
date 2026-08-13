@@ -63,7 +63,7 @@ private:
 	static bool findPlayer(const Position &pos);
 	bool spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcType, const Position &pos, Direction dir, bool startup = false);
 	void checkSpawnNpc();
-	void scheduleSpawnNpc(uint32_t spawnId, uint16_t interval, uint64_t generation);
+	void scheduleSpawnNpc(uint32_t spawnId, int32_t interval, uint64_t generation);
 };
 
 class SpawnsNpc {

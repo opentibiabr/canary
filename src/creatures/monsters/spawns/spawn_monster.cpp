@@ -339,7 +339,7 @@ void SpawnMonster::checkSpawnMonster() {
 	}
 }
 
-void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &mType, uint16_t interval, bool startup, uint64_t generation) {
+void SpawnMonster::scheduleSpawn(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &mType, int32_t interval, bool startup, uint64_t generation) {
 	if (generation != spawnGeneration) {
 		return;
 	}

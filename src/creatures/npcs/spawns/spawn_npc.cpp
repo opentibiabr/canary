@@ -267,7 +267,7 @@ void SpawnNpc::checkSpawnNpc() {
 	}
 }
 
-void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, uint16_t interval, uint64_t generation) {
+void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, int32_t interval, uint64_t generation) {
 	if (generation != spawnGeneration) {
 		return;
 	}

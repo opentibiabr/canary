@@ -440,6 +440,7 @@ $compilerPath = (Get-Command cl.exe -ErrorAction Stop | Select-Object -First 1).
 }
 $configurations = @(
     $configurations |
+        ForEach-Object { $_ -split '[,;]' } |
         ForEach-Object { $_.Trim() } |
         Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
         Select-Object -Unique

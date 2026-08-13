@@ -913,16 +913,22 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 	}
 
 	if (itemId == ITEM_GOLD_POUCH && context.lootPouch == nullptr) {
+		const auto npcId = getID();
 		g_dispatcher().scheduleEvent(
 			SCHEDULER_MINTICKS,
-			[this, playerId = player->getID(), ignore] {
+			[npcId, playerId = player->getID(), ignore] {
 				const auto &scheduledPlayer = g_game().getPlayerByID(playerId);
 				if (!scheduledPlayer) {
 					return;
 				}
 
+				const auto &scheduledNpc = g_game().getNpcByID(npcId);
+				if (!scheduledNpc) {
+					return;
+				}
+
 				uint64_t totalPrice = 0;
-				onPlayerSellAllLoot(scheduledPlayer, ignore, totalPrice);
+				scheduledNpc->onPlayerSellAllLoot(scheduledPlayer, ignore, totalPrice);
 			},
 			__FUNCTION__,
 			DispatcherLane::PlayerAction,

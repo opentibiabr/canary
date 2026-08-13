@@ -25,7 +25,7 @@ From a worktree in each independent Git repository that should participate, run:
 pwsh -File tools/configure_shared_build_cache.ps1
 ```
 
-If the machine has more than one Visual Studio/MSBuild installation, select the executable that actually opens or builds the Solutions:
+The Solution bridge requires MSBuild 17.8 or newer because it queries evaluated project properties without compiling. If the machine has more than one Visual Studio/MSBuild installation, select the supported executable that actually opens or builds the Solutions:
 
 ```powershell
 pwsh -File tools/configure_shared_build_cache.ps1 -SolutionMSBuildPath <path-to-MSBuild.exe>
@@ -76,7 +76,7 @@ Remove only the legacy transient directories below the active `VCPKG_ROOT` with:
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanTransientVcpkg
 ```
 
-The helper refuses cleanup while build-related processes are active and holds the vcpkg root lock during deletion. It preserves installed trees, downloads, binary packages, and fingerprint-specific pools.
+The helper refuses cleanup while build-related processes are active and holds the vcpkg root lock during deletion. It preserves installed trees, downloads, binary packages, and fingerprint-specific pools. Cleanup mode does not register repositories, persist environment variables, create the shared layout, detect compilers, or regenerate Solution contracts.
 
 To reclaim only the disposable `buildtrees` and `packages` data for one known schema-v3 pool, pass its full dependency SHA-256:
 
@@ -84,7 +84,7 @@ To reclaim only the disposable `buildtrees` and `packages` data for one known sc
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
 ```
 
-This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
 
 ## Non-Windows setup
 
@@ -133,7 +133,7 @@ Use separate configure presets and binary directories if opt-in and opt-out buil
 
 ## Visual Studio Solution builds
 
-Repositories that include `SharedVcpkgCache.targets` in their maintained Solution directory use the same dependency resolver for CMake and MSBuild. Normal setup generates an ignored, machine-local `.canary-shared-cache/SharedVcpkgCache.props` beside the selected project. Regenerate it directly when only the Solution contract changed:
+Repositories that include `SharedVcpkgCache.targets` in their maintained Solution directory use the same dependency resolver for CMake and MSBuild. Normal setup generates an ignored, machine-local `.canary-shared-cache/SharedVcpkgCache.props` beside the selected project. The bridge discovers the maintained `vcproj`, `vc18`, or `vc17` project and all configurations for the requested platform. Regenerate it directly when only the Solution contract changed:
 
 ```powershell
 pwsh -File tools/configure_shared_solution_cache.ps1
@@ -145,6 +145,8 @@ Projects whose Solution uses configuration names other than the conventional
 ```powershell
 pwsh -File tools/configure_shared_solution_cache.ps1 -Configurations Debug,OpenGL,DirectX
 ```
+
+Configuration and platform names may contain spaces, such as `Release Static` or `Any CPU`. The helper rejects XML, path, and MSBuild metacharacters instead of embedding untrusted values in the generated condition.
 
 The setup and audit helper discovers the maintained x64 project in the common
 `vcproj`, `vc18`, or `vc17` layout and derives its configuration names from the

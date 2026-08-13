@@ -40,8 +40,8 @@
             Value="$(VcpkgRoot)"
             Prefix="false" />
     <SetEnv Name="PATH"
-            Value="$(CanaryVcpkgDependencyCMakeDirectory);$(PATH)"
-            Prefix="false" />
+            Value="$(CanaryVcpkgDependencyCMakeDirectory)"
+            Prefix="true" />
   </Target>
 
   <Target Name="CanaryValidateSharedVcpkgCache"

@@ -120,6 +120,49 @@ function Resolve-Executable {
     return $null
 }
 
+function Assert-MSBuildPropertyQuerySupport {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Executable
+    )
+
+    $versionOutput = @(& $Executable -nologo -version 2>&1)
+    $msbuildExitCode = $LASTEXITCODE
+    if ($msbuildExitCode -ne 0) {
+        throw "MSBuild version detection failed for $Executable with exit code $msbuildExitCode."
+    }
+
+    $versionMatch = [regex]::Match(
+        ($versionOutput -join [Environment]::NewLine),
+        '(?m)^\s*(\d+\.\d+(?:\.\d+){0,2})\s*$'
+    )
+    if (-not $versionMatch.Success) {
+        throw "MSBuild did not report a recognizable version: $Executable"
+    }
+
+    $msbuildVersion = [version] $versionMatch.Groups[1].Value
+    if ($msbuildVersion -lt [version] "17.8") {
+        throw "MSBuild 17.8 or newer is required for evaluated property queries. Found $msbuildVersion at $Executable."
+    }
+}
+
+function Assert-SafeMSBuildDimension {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string] $Value,
+        [Parameter(Mandatory = $true)]
+        [string] $Description
+    )
+
+    if (
+        [string]::IsNullOrWhiteSpace($Value) -or
+        $Value.Length -gt 128 -or
+        $Value -notmatch '^[A-Za-z0-9_. -]+$'
+    ) {
+        throw "Unsupported $Description name: $Value"
+    }
+}
+
 function Import-VisualStudioEnvironment {
     param(
         [Parameter(Mandatory = $true)]
@@ -188,6 +231,7 @@ function Get-MSBuildProperties {
     $arguments = @(
         $Project,
         "-nologo",
+        "-nodeReuse:false",
         "-p:Configuration=$BuildConfiguration",
         "-p:Platform=$BuildPlatform",
         "-p:CanarySharedVcpkgDisable=true",
@@ -373,7 +417,20 @@ if (-not (Test-Path -LiteralPath $resolverModule -PathType Leaf)) {
 }
 
 if ([string]::IsNullOrWhiteSpace($ProjectFile)) {
-    $ProjectFile = Join-Path $repositoryRoot "vcproj\canary.vcxproj"
+    foreach ($relativeProjectPath in @(
+        "vcproj\canary.vcxproj",
+        "vc18\otclient.vcxproj",
+        "vc17\otclient.vcxproj"
+    )) {
+        $projectCandidate = Join-Path $repositoryRoot $relativeProjectPath
+        if (Test-Path -LiteralPath $projectCandidate -PathType Leaf) {
+            $ProjectFile = $projectCandidate
+            break
+        }
+    }
+}
+if ([string]::IsNullOrWhiteSpace($ProjectFile)) {
+    throw "No maintained Visual Studio project was found. Pass -ProjectFile explicitly."
 }
 $ProjectFile = Get-FullPath -Path $ProjectFile -BasePath $repositoryRoot
 if (-not (Test-Path -LiteralPath $ProjectFile -PathType Leaf)) {
@@ -422,7 +479,12 @@ Import-VisualStudioEnvironment -Root $VisualStudioPath -PreservedVcpkgRoot $reso
 $resolvedCMakePath = Resolve-Executable -Candidate $CMakePath -Name "cmake.exe"
 if ([string]::IsNullOrWhiteSpace($resolvedCMakePath)) {
     $bundledCMake = Join-Path $VisualStudioPath "Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe"
-    $resolvedCMakePath = Resolve-Executable -Candidate $bundledCMake -Name "cmake.exe"
+    if (Test-Path -LiteralPath $bundledCMake -PathType Leaf) {
+        $resolvedCMakePath = Get-FullPath -Path $bundledCMake
+    }
+}
+if ([string]::IsNullOrWhiteSpace($resolvedCMakePath)) {
+    throw "cmake.exe was not found on PATH or in the selected Visual Studio installation. Pass -CMakePath explicitly."
 }
 if ([string]::IsNullOrWhiteSpace($MSBuildPath)) {
     $MSBuildPath = Get-EnvironmentValue -Name "CANARY_SOLUTION_MSBUILD_PATH"
@@ -430,14 +492,38 @@ if ([string]::IsNullOrWhiteSpace($MSBuildPath)) {
 $resolvedMSBuildPath = Resolve-Executable -Candidate $MSBuildPath -Name "MSBuild.exe"
 if ([string]::IsNullOrWhiteSpace($resolvedMSBuildPath)) {
     $bundledMSBuild = Join-Path $VisualStudioPath "MSBuild\Current\Bin\amd64\MSBuild.exe"
-    $resolvedMSBuildPath = Resolve-Executable -Candidate $bundledMSBuild -Name "MSBuild.exe"
+    if (Test-Path -LiteralPath $bundledMSBuild -PathType Leaf) {
+        $resolvedMSBuildPath = Get-FullPath -Path $bundledMSBuild
+    }
 }
-$compilerPath = (Get-Command cl.exe -ErrorAction Stop | Select-Object -First 1).Source
+if ([string]::IsNullOrWhiteSpace($resolvedMSBuildPath)) {
+    throw "MSBuild.exe was not found on PATH or in the selected Visual Studio installation. Pass -MSBuildPath explicitly."
+}
+Assert-MSBuildPropertyQuerySupport -Executable $resolvedMSBuildPath
+$compilerCommand = Get-Command cl.exe -ErrorAction SilentlyContinue | Select-Object -First 1
+if ($null -eq $compilerCommand) {
+    throw "cl.exe was not found after initializing the selected Visual Studio developer environment."
+}
+$compilerPath = $compilerCommand.Source
+
+$Platform = ([string] $Platform).Trim()
+Assert-SafeMSBuildDimension -Value $Platform -Description "Solution platform"
 
 [string[]] $configurations = if ($Configurations.Count -gt 0) {
     @($Configurations)
 } elseif ($Configuration -eq "All") {
-    @("Debug", "Release")
+    try {
+        [xml] $projectConfigurationDocument = Get-Content -LiteralPath $ProjectFile -Raw
+    } catch {
+        throw "The Visual Studio project is malformed and its configurations cannot be discovered: $ProjectFile. $($_.Exception.Message)"
+    }
+    @(
+        $projectConfigurationDocument.SelectNodes("//*[local-name()='ProjectConfiguration']") |
+            ForEach-Object { [string] $_.Include } |
+            Where-Object { $_.EndsWith("|$Platform", [StringComparison]::OrdinalIgnoreCase) } |
+            ForEach-Object { ($_ -split '\|', 2)[0] } |
+            Select-Object -Unique
+    )
 } else {
     @($Configuration)
 }
@@ -449,12 +535,10 @@ $configurations = @(
         Select-Object -Unique
 )
 if ($configurations.Count -eq 0) {
-    throw "At least one Solution configuration is required."
+    throw "The Visual Studio project declares no configurations for platform $Platform."
 }
 foreach ($configurationName in $configurations) {
-    if ($configurationName -notmatch '^[A-Za-z0-9_.-]+$') {
-        throw "Unsupported Solution configuration name: $configurationName"
-    }
+    Assert-SafeMSBuildDimension -Value $configurationName -Description "Solution configuration"
 }
 
 if ($AuditOnly) {
@@ -462,7 +546,11 @@ if ($AuditOnly) {
         Write-Output "Solution cache fallback is local; no generated shared-cache props exist."
         return
     }
-    [xml] $existingProps = Get-Content -LiteralPath $OutputProps -Raw
+    try {
+        [xml] $existingProps = Get-Content -LiteralPath $OutputProps -Raw
+    } catch {
+        throw "Generated Solution cache props are malformed: $OutputProps. Regenerate the file and reload the project. $($_.Exception.Message)"
+    }
     $activePropertyGroups = @(
         $existingProps.Project.PropertyGroup |
             Where-Object { $_.CanarySharedVcpkgActive -eq "true" }
@@ -567,6 +655,7 @@ foreach ($buildConfiguration in $configurations) {
 
 $propertyGroups = foreach ($entry in $resolvedContracts) {
     $condition = "'`$(Configuration)|`$(Platform)' == '$($entry.Configuration)|$Platform'"
+    $escapedCondition = [Security.SecurityElement]::Escape($condition)
     $values = [ordered]@{
         CanarySharedVcpkgActive                = "true"
         CanarySharedCacheRoot                  = $CacheRoot
@@ -593,7 +682,7 @@ $propertyGroups = foreach ($entry in $resolvedContracts) {
         $escapedValue = [Security.SecurityElement]::Escape([string] $value.Value)
         "    <$($value.Key)>$escapedValue</$($value.Key)>"
     }
-    "  <PropertyGroup Label=`"CanarySharedVcpkgCache`" Condition=`"$condition`">`n$($lines -join "`n")`n  </PropertyGroup>"
+    "  <PropertyGroup Label=`"CanarySharedVcpkgCache`" Condition=`"$escapedCondition`">`n$($lines -join "`n")`n  </PropertyGroup>"
 }
 $propsContent = @"
 <?xml version="1.0" encoding="utf-8"?>

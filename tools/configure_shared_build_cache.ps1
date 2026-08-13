@@ -33,6 +33,8 @@ if (
     throw "-AuditOnly cannot be combined with a mutating option."
 }
 
+$cleanupOnly = $CleanTransientVcpkg -or $CleanSharedFingerprintTransients.Count -gt 0
+
 function Get-EnvironmentValue {
     param(
         [Parameter(Mandatory = $true)]
@@ -250,8 +252,10 @@ function Get-GitCommonDirectory {
         [string] $RepositoryRoot
     )
 
-    $commonDirectory = (& git -C $RepositoryRoot rev-parse --path-format=absolute --git-common-dir 2>$null).Trim()
-    if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($commonDirectory)) {
+    $commonDirectoryOutput = @(& git -C $RepositoryRoot rev-parse --path-format=absolute --git-common-dir 2>$null)
+    $gitExitCode = $LASTEXITCODE
+    $commonDirectory = ($commonDirectoryOutput -join [Environment]::NewLine).Trim()
+    if ($gitExitCode -ne 0 -or [string]::IsNullOrWhiteSpace($commonDirectory)) {
         throw "Unable to identify the Git common directory for $RepositoryRoot."
     }
 
@@ -498,8 +502,10 @@ function Assert-NoActiveBuildProcesses {
     throw "Refusing to clean transient directories while build-related processes are running: $processSummary"
 }
 
-$repositoryRoot = (& git rev-parse --show-toplevel 2>$null).Trim()
-if ($LASTEXITCODE -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
+$repositoryRootOutput = @(& git rev-parse --show-toplevel 2>$null)
+$gitExitCode = $LASTEXITCODE
+$repositoryRoot = ($repositoryRootOutput -join [Environment]::NewLine).Trim()
+if ($gitExitCode -ne 0 -or [string]::IsNullOrWhiteSpace($repositoryRoot)) {
     throw "Run this helper from a Canary Git worktree."
 }
 $repositoryRoot = Get-FullPath -Path $repositoryRoot
@@ -529,9 +535,10 @@ $repositoryRegistryPath = Get-FullPath -Path (Join-Path $CacheRoot "registry\v2\
 $operationLockPath = Get-FullPath -Path (Join-Path $CacheRoot "registry\v2\operation.lock")
 $operationLock = $null
 if (-not $WhatIfPreference) {
-    if ($AuditOnly) {
+    if ($AuditOnly -or $cleanupOnly) {
         if (-not (Test-Path -LiteralPath $operationLockPath -PathType Leaf)) {
-            throw "Audit cannot prove a stable registry snapshot because the shared-cache operation lock is not initialized. Run normal setup first."
+            $operationName = if ($AuditOnly) { "Audit" } else { "Cleanup" }
+            throw "$operationName cannot acquire the shared-cache operation lock because normal setup has not initialized it. Run normal setup first."
         }
         $operationLock = Enter-SharedCacheOperationLock -LockPath $operationLockPath -FileMode Open
     } else {
@@ -626,7 +633,7 @@ if (-not [string]::IsNullOrWhiteSpace($legacyManagedBaseDirs)) {
 }
 $currentRepositoryRegistered = $registeredGitCommonDirectories.Contains($currentGitCommonDirectory)
 $currentRepositoryIsAuditCandidate = $AuditOnly -and -not $currentRepositoryRegistered
-if (-not $AuditOnly -or $currentRepositoryIsAuditCandidate) {
+if ((-not $AuditOnly -and -not $cleanupOnly) -or $currentRepositoryIsAuditCandidate) {
     [void] $registeredGitCommonDirectories.Add($currentGitCommonDirectory)
 }
 
@@ -688,7 +695,11 @@ if (-not [string]::IsNullOrWhiteSpace($explicitVcpkgVisualStudioPath)) {
     $vcpkgVisualStudioPath = $explicitVcpkgVisualStudioPath
     $visualStudioDetectionStatus = "using an existing explicit vcpkg override"
 }
-if ([string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath) -and -not $AuditOnly) {
+if (
+    [string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath) -and
+    -not $AuditOnly -and
+    -not $cleanupOnly
+) {
     $compilerDetectionRoot = Get-FullPath -Path (Join-Path $CacheRoot "compiler-detection")
     if ($PSCmdlet.ShouldProcess($compilerDetectionRoot, "detect the Visual Studio instance selected by vcpkg")) {
         [void] (New-Item -ItemType Directory -Path $compilerDetectionRoot -Force)
@@ -833,6 +844,7 @@ if ([string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)) {
 }
 
 if (-not $AuditOnly) {
+    if (-not $cleanupOnly) {
     foreach ($directory in @(
         $CacheRoot,
         (Join-Path $CacheRoot "vcpkg-installed\v2"),
@@ -880,19 +892,14 @@ if (-not $AuditOnly) {
         if ([string]::IsNullOrWhiteSpace($vcpkgVisualStudioPath)) {
             throw "The Solution cache bridge requires a pinned Visual Studio instance."
         }
-        foreach ($processEnvironmentEntry in @{
+        $solutionProcessEnvironment = [ordered]@{
             CANARY_SHARED_CACHE_ROOT = $CacheRoot
             CANARY_SHARED_CACHE_LOCAL_FILESYSTEM_VERIFIED = "ON"
             CANARY_SHARED_CACHE_VERIFIED_ROOT = $CacheRoot
             CANARY_VCPKG_VISUAL_STUDIO_PATH = $vcpkgVisualStudioPath
             VCPKG_ROOT = $vcpkgRoot
-        }.GetEnumerator()) {
-            [Environment]::SetEnvironmentVariable(
-                $processEnvironmentEntry.Key,
-                $processEnvironmentEntry.Value,
-                "Process"
-            )
         }
+        $previousSolutionProcessEnvironment = @{}
         $solutionCacheArguments = @(
             "-NoLogo",
             "-NoProfile",
@@ -918,11 +925,43 @@ if (-not $AuditOnly) {
         if ($WhatIfPreference) {
             $solutionCacheArguments += "-WhatIf"
         }
-        $solutionCacheOutput = @(& pwsh.exe @solutionCacheArguments 2>&1)
-        if ($LASTEXITCODE -ne 0) {
+        $solutionCacheOutput = @()
+        $solutionCacheExitCode = 0
+        try {
+            foreach ($processEnvironmentEntry in $solutionProcessEnvironment.GetEnumerator()) {
+                $previousSolutionProcessEnvironment[$processEnvironmentEntry.Key] =
+                    [Environment]::GetEnvironmentVariable($processEnvironmentEntry.Key, "Process")
+                [Environment]::SetEnvironmentVariable(
+                    $processEnvironmentEntry.Key,
+                    $processEnvironmentEntry.Value,
+                    "Process"
+                )
+            }
+            $solutionCacheOutput = @(& pwsh.exe @solutionCacheArguments 2>&1)
+            $solutionCacheExitCode = $LASTEXITCODE
+        } finally {
+            foreach ($processEnvironmentEntry in $solutionProcessEnvironment.GetEnumerator()) {
+                $previousProcessValue = $previousSolutionProcessEnvironment[$processEnvironmentEntry.Key]
+                if ($null -eq $previousProcessValue) {
+                    [Environment]::SetEnvironmentVariable(
+                        $processEnvironmentEntry.Key,
+                        [NullString]::Value,
+                        [EnvironmentVariableTarget]::Process
+                    )
+                } else {
+                    [Environment]::SetEnvironmentVariable(
+                        $processEnvironmentEntry.Key,
+                        $previousProcessValue,
+                        [EnvironmentVariableTarget]::Process
+                    )
+                }
+            }
+        }
+        if ($solutionCacheExitCode -ne 0) {
             throw "The Solution cache bridge could not be configured.`n$($solutionCacheOutput -join [Environment]::NewLine)"
         }
         $solutionCacheOutput | Write-Output
+    }
     }
 
     if ($CleanTransientVcpkg) {
@@ -1046,6 +1085,15 @@ if (-not $AuditOnly) {
                 }
             }
         }
+    }
+
+    if ($cleanupOnly) {
+        if ($WhatIfPreference) {
+            Write-Output "Preview only: -WhatIf prevented transient cache cleanup."
+        } else {
+            Write-Output "Cleanup complete. Repository registration, environment variables, and Solution contracts were left unchanged."
+        }
+        return
     }
 }
 
@@ -1203,10 +1251,13 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
         }
         $staleSharedReferences = $false
         foreach ($generatedFile in $generatedFiles) {
-            foreach ($line in Get-Content -LiteralPath $generatedFile) {
-                $normalizedLine = $line.Replace("\", "/").ToLowerInvariant()
+            $matchingLines = Select-String `
+                -LiteralPath $generatedFile `
+                -SimpleMatch "$sharedInstalledPrefix/" `
+                -ErrorAction Stop
+            foreach ($matchingLine in $matchingLines) {
+                $normalizedLine = $matchingLine.Line.Replace("\", "/").ToLowerInvariant()
                 if (
-                    $normalizedLine.Contains("$sharedInstalledPrefix/") -and
                     -not $normalizedLine.Contains("$currentInstalledNormalized/") -and
                     -not $normalizedLine.EndsWith("=$currentInstalledNormalized")
                 ) {

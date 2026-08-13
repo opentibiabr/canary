@@ -356,7 +356,7 @@ function Invoke-ContractResolver {
         }
 
         if (-not (Test-Path -LiteralPath $resultPath -PathType Leaf)) {
-            throw "The shared-cache resolver did not produce a result for $BuildConfiguration|$Platform."
+            throw "The shared-cache resolver did not produce a result for $BuildConfiguration|$Platform.`n$($resolverOutput -join [Environment]::NewLine)"
         }
         return Convert-ContractResult -Path $resultPath
     } finally {

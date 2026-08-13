@@ -66,9 +66,13 @@ function(
             # The manifest JSON grammar treats physical CRLF and LF line endings
             # identically. Hash their canonical form so Git checkout settings do
             # not split an otherwise identical dependency pool. Generic port and
-            # registry trees intentionally remain byte-signatured because patches
-            # and other arbitrary payloads can be line-ending-sensitive.
-            file(READ "${path}" file_contents)
+            # registry trees intentionally remain byte-signatured because
+            # patches and other arbitrary payloads can be line-ending-sensitive.
+            file(
+                READ
+                "${path}"
+                file_contents
+            )
             string(
                 REPLACE "\r\n"
                         "\n"

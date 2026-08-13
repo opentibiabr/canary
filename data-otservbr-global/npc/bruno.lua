@@ -63,6 +63,9 @@ keywordHandler:addKeyword({ "graubart" }, StdModule.say, { npcHandler = npcHandl
 npcHandler:setMessage(MESSAGE_GREET, "Ahoi, |PLAYERNAME|. You want to buy some fresh fish?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again!")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Buy all the fish you want. It's fresh and healthy, promised.")
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "aneus" }, StdModule.say, { npcHandler = npcHandler, text = "Hmm, I don't know him very well. But he has a very nice story to tell." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

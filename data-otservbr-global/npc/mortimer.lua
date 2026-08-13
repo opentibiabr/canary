@@ -680,6 +680,20 @@ end
 
 npcHandler:setCallback(CALLBACK_ON_TRADE_REQUEST, onTradeRequest)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am the local representative of the explorer society." })
+keywordHandler:addKeyword({ "explorer society" }, StdModule.say, { npcHandler = npcHandler, text = "Our noble society is dedicated to exploring the unknown. No location is too remote for our members to travel there ... No beast is too wild to be hunted. No treasure buried too deep to be unearthed ... Only the most dedicated and fearless adventurers may join our ranks." })
+keywordHandler:addKeyword({ "base" }, StdModule.say, { npcHandler = npcHandler, text = "Currently we maintain public bases in Port Hope and Northport." })
+keywordHandler:addKeyword({ "portals" }, StdModule.say, { npcHandler = npcHandler, text = "The portals should be ready to be used now. If you have an orichalcum pearl with you, enter the portal." })
+keywordHandler:addKeyword({ "orichalcum" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy an orichalcum pearl for 80 gold?" })
+keywordHandler:addKeyword({ "parchment" }, StdModule.say, { npcHandler = npcHandler, text = "The examination of scrolls with lizard writings is a valuable source of information. We buy such scrolls for 500 gold. Are you interested to sell one?" })
+keywordHandler:addKeyword({ "scroll lizard" }, StdModule.say, { npcHandler = npcHandler, text = "The examination of scrolls with lizard writings is a valuable source of information. We buy such scrolls for 500 gold. Are you interested to sell one?" })
+keywordHandler:addKeyword({ "atlas" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy an atlas for 150 gold?" })
+keywordHandler:addKeyword({ "botanists container" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy a botanist container for 500 gold?" })
+keywordHandler:addKeyword({ "preparation kit" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy a preparation kit for 250 gold?" })
+keywordHandler:addKeyword({ "crown backpack" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy a crown backpack for 800 gold?" })
+keywordHandler:addKeyword({ "ectoplasm container" }, StdModule.say, { npcHandler = npcHandler, text = "Do you want to buy an ectoplasm container for 750 gold?" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

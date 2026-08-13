@@ -132,6 +132,28 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "Greetings adventurer |PLAYERNAME|. What leads you to me?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and take care of you!")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Aneus, the storyteller." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a storyteller." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "The story of Carlin is closely related to the story of the Fields of Glory. If you are interested in details, ask me about the story." })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "Thais is an ancient city. It has its origin in a hamlet called Tradespot. To learn more about its growth and rise, ask someone else. I don't know this story." })
+keywordHandler:addKeyword({ "ab'dendriel" }, StdModule.say, { npcHandler = npcHandler, text = "The elves love stories. I learnt a lot while I lived in their city for a while. You should travel there and talk to the elves, too, and don't forget to visit their library." })
+keywordHandler:addKeyword({ "library" }, StdModule.say, { npcHandler = npcHandler, text = "Most cities have small libraries filled with treasures in the form of stories. The biggest library is located in the White Raven Monastery." })
+keywordHandler:addKeyword({ "white raven monastery" }, StdModule.say, { npcHandler = npcHandler, text = "The White Raven Monastery houses the biggest library in the known world. The monks there are a bit reclusive, though, and the Isle of the Kings is somewhat difficult to reach." })
+keywordHandler:addKeyword({ "isle of the kings" }, StdModule.say, { npcHandler = npcHandler, text = "The Isle of the Kings is the burial place of the Thaian nobility. For many centuries each king and many nobles have been buried there." })
+keywordHandler:addKeyword({ "bruno" }, StdModule.say, { npcHandler = npcHandler, text = "I don't know much about him. I only know that he's selling fish in the village." })
+keywordHandler:addKeyword({ "marlene" }, StdModule.say, { npcHandler = npcHandler, text = "A lovely woman. Still, I give you a hint: Better stay away from her! <grins>" })
+keywordHandler:addKeyword({ "graubart" }, StdModule.say, { npcHandler = npcHandler, text = "I don't know much about him. He sails much and he has seen nearly the whole world." })
+keywordHandler:addKeyword({ "dwarves" }, StdModule.say, { npcHandler = npcHandler, text = "The dwarfs have a rich history and like to tell about it. Actually some dwarfs are so old that they experienced many events in history themselves." })
+keywordHandler:addKeyword({ "gods" }, StdModule.say, { npcHandler = npcHandler, text = "The gods had great influence on humanity and other races. There are many stories related to them ... In fact, there are so many stories that it won't be sufficient to talk to some people, you will also have to research many books to learn about them." })
+keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "The stories about him are stories of grief, revenge and destruction. You can hear them almost everywhere. My story deals with similar topics but with other people." })
+keywordHandler:addKeyword({ "excalibug" }, StdModule.say, { npcHandler = npcHandler, text = "This is a story for another day." })
+keywordHandler:addKeyword({ "fields of glory" }, StdModule.say, { npcHandler = npcHandler, text = "Ok, sit down and listen. Back in the early days, one of the ancestors of our king Tibianus III wanted to build the best city in whole Tibia." })
+keywordHandler:addKeyword({ "ancestors" }, StdModule.say, { npcHandler = npcHandler, text = "Please forgive me. I forgot his name. I'm getting old." })
+keywordHandler:addKeyword({ "work harder" }, StdModule.say, { npcHandler = npcHandler, text = "The soldiers treated them like slaves." })
+keywordHandler:addKeyword({ "slaves" }, StdModule.say, { npcHandler = npcHandler, text = "You don't know what a slave is? I really hope that you will never have to make this experience." })
+keywordHandler:addKeyword({ "struck" }, StdModule.say, { npcHandler = npcHandler, text = "The soldiers of the Red Legion went to the island by night. The orcs were not prepared and the Red Legion killed hundreds of orcs with nearly no loss. ... Afterwards, they walked back to the castle." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

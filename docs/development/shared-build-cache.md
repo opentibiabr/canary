@@ -1,6 +1,6 @@
 # Shared build cache for worktrees and forks
 
-Canary repositories can share expensive reusable artifacts across Git worktrees and independent forks without sharing mutable CMake build trees. The shared pool must live on a local filesystem outside every source and build hierarchy, so removing one checkout cannot remove another checkout's dependencies.
+Related native-code repositories can share expensive reusable artifacts across Git worktrees and independent forks without sharing mutable CMake build trees. The shared pool must live on a local filesystem outside every source and build hierarchy, so removing one checkout cannot remove another checkout's dependencies.
 
 ## Cache ownership
 
@@ -27,7 +27,7 @@ pwsh -File tools/configure_shared_build_cache.ps1
 
 The first invocation creates a machine-local repository registry below the shared cache root. Later invocations add the current repository's Git common directory. Every invocation re-enumerates all registered repositories and their worktrees, so `SCCACHE_BASEDIRS` and cache audits cover the complete set instead of replacing one fork with another.
 
-The default shared root is a `canary-build-cache` directory beside the active `VCPKG_ROOT`. Override it with the same short, local path in every participating repository when needed:
+For backward compatibility, the default shared root is a `canary-build-cache` directory beside the active `VCPKG_ROOT`. Override it with the same short, local path in every participating repository when needed:
 
 ```powershell
 pwsh -File tools/configure_shared_build_cache.ps1 -CacheRoot <cache-root>
@@ -42,7 +42,7 @@ The helper:
 - never persists or prints an existing `VCPKG_BINARY_SOURCES`, because it may contain credentials;
 - makes the vcpkg downloads directory explicit and global;
 - does not persist or change `VCPKG_ROOT`; the active project or tool manager owns the vcpkg executable;
-- pins the Visual Studio instance selected by vcpkg in the Canary-scoped `CANARY_VCPKG_VISUAL_STUDIO_PATH`; the CMake module exports the standard vcpkg variable only to its configure process;
+- pins the Visual Studio instance selected by vcpkg in the compatibility variable `CANARY_VCPKG_VISUAL_STUDIO_PATH`; the CMake module exports the standard vcpkg variable only to its configure process;
 - manages `SCCACHE_BASEDIRS` as the union of every registered worktree root plus pre-existing unmanaged entries;
 - creates cache directories and, when the repository carries the Solution bridge, prepares its ignored generated `.props`; it does not configure CMake or compile the project.
 
@@ -117,7 +117,7 @@ Use separate configure presets and binary directories if opt-in and opt-out buil
 
 ## Visual Studio Solution builds
 
-Repositories that include `vcproj/SharedVcpkgCache.targets` use the same dependency resolver for CMake and MSBuild. Normal setup generates an ignored, machine-local file at `vcproj/.canary-shared-cache/SharedVcpkgCache.props`. Regenerate it directly when only the Solution contract changed:
+Repositories that include `SharedVcpkgCache.targets` in their maintained Solution directory use the same dependency resolver for CMake and MSBuild. Normal setup generates an ignored, machine-local `.canary-shared-cache/SharedVcpkgCache.props` beside the selected project. Regenerate it directly when only the Solution contract changed:
 
 ```powershell
 pwsh -File tools/configure_shared_solution_cache.ps1
@@ -145,7 +145,7 @@ The bridge uses two hashes:
 
 Consequently, a Solution Release configuration and a CMake Release preset share one expanded tree only when their target and host triplets, features, registries, overlays, linkage, compiler, toolset, SDK, vcpkg revision, and dependency tools all match. Debug or any other configuration with a different contract receives another dependency fingerprint automatically. Command-line MSBuild overrides for the manifest root, triplets, link configuration, toolset, SDK, or install options are compared with the generated contract and fail closed when incompatible. Never copy a fingerprint from another configuration or edit the generated `.props`.
 
-When no generated `.props` exists, the Solution keeps `vcproj/vcpkg_installed` and uses worktree-local `vcproj/.vcpkg-buildtrees/<configuration>` and `vcproj/.vcpkg-packages/<configuration>`. This is the safe fallback when the global cache is not configured. Solution objects, PCH/PDB files, generated protocol sources, intermediate directories, and executables always remain local, even when dependencies converge with CMake.
+When no generated `.props` exists, the Solution uses `vcpkg_installed`, `.vcpkg-buildtrees/<configuration>`, and `.vcpkg-packages/<configuration>` below its own project directory. This is the safe fallback when the global cache is not configured. Solution objects, PCH/PDB files, generated protocol sources, intermediate directories, and executables always remain local, even when dependencies converge with CMake.
 
 Audit only the Solution bridge without writing pools or generated files:
 
@@ -161,7 +161,9 @@ The repository name, branch, and absolute checkout path are not fingerprint inpu
 
 A common `builtin-baseline` improves the chance of reuse but is not sufficient. Sharing an installed tree also requires identical manifests, enabled features, registry configuration and content, ordered overlays, target and host triplets, linkage, vcpkg options, compiler/toolset identity, dependency-tool identity, and vcpkg revision.
 
-Different baselines and manifests are supported. They select different installed and transient fingerprints while continuing to reuse the global downloads and every binary package whose vcpkg ABI remains identical. Do not force a baseline update solely to save disk space.
+Repositories in one maintained fork family must inherit their vcpkg baseline, default registry baseline, version metadata, and shared custom-port payloads from that family's open upstream. A fork may add a dependency required by its own code, but it must resolve common dependencies through the same catalog instead of selecting an independent version. Scheduled update automation must synchronize from the open upstream rather than advancing each fork independently.
+
+An unrelated project family or a temporarily incompatible migration may still use a different catalog. The fingerprint isolates that contract while downloads and ABI-compatible binary packages remain global. Treat such a split as an explicit compatibility boundary, not as a disk-saving shortcut, and document why the canonical catalog cannot yet be used.
 
 One fixed global vcpkg tool checkout may serve several manifest baselines when that is the repository's supported workflow. If projects require different vcpkg tool revisions, activate an immutable tool root per revision or per shell. Never let concurrent projects switch one shared mutable vcpkg checkout between revisions. The selected executable, toolchain, and Git revision participate in the fingerprint.
 
@@ -179,7 +181,7 @@ When several maintained forks are intended to use the same dependency contract, 
 - use the same vcpkg tool revision and compiler contract for configurations that are expected to converge;
 - when automation updates a baseline that is declared in both the manifest and `default-registry`, update both declarations in one change.
 
-Before canonicalizing two forks, compare the dependency inputs and prove that the selected versions, features, linkage, target and host triplets, and custom port contents are equivalent. Do not change a dependency version or a fork-specific option merely to obtain the same fingerprint. An intentional difference should remain a separate fingerprint while still sharing downloads, sccache storage, and ABI-compatible binary packages.
+Before canonicalizing two forks, compare the dependency inputs and prove that the selected features, linkage, target and host triplets, and custom port contents are compatible. Align common dependency versions to the open upstream catalog. Preserve only genuinely additive dependencies and build-contract differences; they receive a separate fingerprint while still sharing downloads, sccache storage, and ABI-compatible binary packages.
 
 After adopting the canonical representation, run the setup helper from the newly participating repository, configure its existing preset with `--fresh`, regenerate any Solution `.props`, and compare the full dependency fingerprints. Matching fingerprints are the result of matching contracts; never override or manually rename a fingerprint to force convergence. If the fingerprints differ, inspect their metadata and preserve the separate pools until the remaining input difference is understood.
 
@@ -239,7 +241,7 @@ VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v3/<dependency-fingerprint
 
 Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.
 
-For a Solution migration, generate the `.props`, reload the project, build every migrated configuration successfully, and confirm a no-op rebuild. Only then remove that worktree's exact `vcproj/vcpkg_installed` directory and repeat the build. If multiple configurations used the same local installed directory, all of them must be migrated and validated before deletion.
+For a Solution migration, generate the `.props`, reload the project, build every migrated configuration successfully, and confirm a no-op rebuild. Only then remove that worktree's exact legacy `vcpkg_installed` directory and repeat the build. If multiple configurations used the same local installed directory, all of them must be migrated and validated before deletion.
 
 ## Cleanup and recovery
 

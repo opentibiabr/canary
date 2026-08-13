@@ -914,11 +914,17 @@ void Npc::onPlayerSellItem(const std::shared_ptr<Player> &player, uint16_t itemI
 
 	if (itemId == ITEM_GOLD_POUCH && context.lootPouch == nullptr) {
 		const auto npcId = getID();
+		const std::weak_ptr<Player> weakPlayer = player;
 		g_dispatcher().scheduleEvent(
 			SCHEDULER_MINTICKS,
-			[npcId, playerId = player->getID(), ignore] {
+			[npcId, playerId = player->getID(), weakPlayer, ignore] {
+				const auto originalPlayer = weakPlayer.lock();
+				if (!originalPlayer) {
+					return;
+				}
+
 				const auto &scheduledPlayer = g_game().getPlayerByID(playerId);
-				if (!scheduledPlayer) {
+				if (!scheduledPlayer || scheduledPlayer != originalPlayer || scheduledPlayer->isRemoved()) {
 					return;
 				}
 

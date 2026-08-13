@@ -323,7 +323,7 @@ bool Condition::executeCondition(const std::shared_ptr<Creature> &creature, int3
 	return true;
 }
 
-std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
+std::shared_ptr<ConditionDamage> Condition::createDamageCondition(ConditionId_t id, ConditionType_t type, bool buff /* = false*/, uint32_t subId /* = 0*/) {
 	switch (type) {
 		case CONDITION_POISON:
 		case CONDITION_FIRE:
@@ -335,6 +335,17 @@ std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, Conditio
 		case CONDITION_BLEEDING:
 			return ObjectPool<ConditionDamage, 1024>::allocateShared(id, type, buff, subId);
 
+		default:
+			return nullptr;
+	}
+}
+
+std::shared_ptr<Condition> Condition::createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param /* = 0*/, bool buff /* = false*/, uint32_t subId /* = 0*/, bool isPersistent /* = false*/) {
+	if (const auto damageCondition = createDamageCondition(id, type, buff, subId)) {
+		return damageCondition;
+	}
+
+	switch (type) {
 		case CONDITION_HASTE:
 		case CONDITION_PARALYZE:
 			return ObjectPool<ConditionSpeed, 1024>::allocateShared(id, type, ticks, buff, subId, param);

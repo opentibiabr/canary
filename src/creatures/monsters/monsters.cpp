@@ -45,8 +45,7 @@ bool MonsterType::canSpawn(const Position &pos) const {
 }
 
 std::shared_ptr<ConditionDamage> Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) const {
-	const auto baseCondition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0);
-	const auto condition = std::dynamic_pointer_cast<ConditionDamage>(baseCondition);
+	const auto condition = Condition::createDamageCondition(CONDITIONID_COMBAT, conditionType);
 	if (!condition) {
 		return nullptr;
 	}

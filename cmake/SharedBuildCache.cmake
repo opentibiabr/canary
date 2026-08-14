@@ -79,12 +79,6 @@ function(
                         file_contents
                         "${file_contents}"
             )
-            string(
-                REPLACE "\r"
-                        "\n"
-                        file_contents
-                        "${file_contents}"
-            )
             string(SHA256 file_hash "${file_contents}")
         else()
             file(

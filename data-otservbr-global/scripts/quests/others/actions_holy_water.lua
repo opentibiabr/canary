@@ -5,6 +5,16 @@ local effectPositions = {
 	Position(33116, 31702, 12),
 }
 
+-- The 2000 action id is a generic map-editor marker present on 147 tiles world wide
+-- (chests, barrels, drawers, coffins...). Only the 2x2 cauldron block on the witches'
+-- mountain uses these item ids together with that action id, so both must match.
+local eclipseCauldronItems = {
+	[2008] = true,
+	[2009] = true,
+	[2010] = true,
+	[2011] = true,
+}
+
 local function revertItem(position, itemId, transformId)
 	local item = Tile(position):getItemById(itemId)
 	if item then
@@ -56,6 +66,14 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 
 		-- Eclipse Quest
 	elseif target.actionid == 2000 then
+		if not eclipseCauldronItems[target.itemid] then
+			return true
+		end
+
+		if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) ~= 4 then
+			return true
+		end
+
 		item:remove(1)
 		toPosition:sendMagicEffect(CONST_ME_FIREAREA)
 		player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission02, 2)
@@ -128,7 +146,6 @@ function othersHolyWater.onUse(player, item, fromPosition, target, toPosition, i
 			end
 			nexusMessage(player, player:getName() .. " destroyed the shadow nexus! In 10 seconds it will return to its original state.")
 			item:remove(1)
-			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 22)
 			toPosition:sendMagicEffect(CONST_ME_HOLYAREA)
 		else
 			target:transform(7925)

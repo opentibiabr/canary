@@ -23,13 +23,13 @@ This PR should be reviewed as byte compatibility support:
 ## Non-goals
 
 This PR intentionally does not implement the full gameplay systems behind the
-new messages.
+new messages, except for the Task Board module described below.
 
 The following remain out of scope unless a later change adds them explicitly:
 
 - complete gameplay behavior for the new vocation/skill side payloads beyond
   byte compatibility;
-- new monetization/store offers;
+- new monetization/store offers outside the Task Board module;
 - broad gameplay rewrites unrelated to the 15.25 byte contract.
 
 ## Runtime model

@@ -4562,13 +4562,21 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 		return;
 	}
 
+	constexpr size_t maxIcons = 3;
 	auto icons = creature->getIcons();
 	if (const auto monster = creature->getMonster()) {
 		const auto overlays = player->getRaceIconOverlays(monster->getRaceId());
-		icons.insert(icons.end(), overlays.begin(), overlays.end());
+		const auto overlayCount = std::min(maxIcons, overlays.size());
+		if (overlayCount > 0) {
+			const auto baseIconCount = maxIcons - overlayCount;
+			if (icons.size() > baseIconCount) {
+				icons.resize(baseIconCount);
+			}
+			icons.insert(icons.end(), overlays.begin(), overlays.begin() + overlayCount);
+		}
 	}
 	// client only supports 3 icons, otherwise it will crash
-	const auto count = icons.size() > 3 ? 3 : icons.size();
+	const auto count = std::min(maxIcons, icons.size());
 	msg.addByte(count);
 	for (uint8_t i = 0; i < count; ++i) {
 		const auto icon = icons[i];

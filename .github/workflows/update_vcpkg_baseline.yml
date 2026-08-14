@@ -82,13 +82,17 @@ jobs:
 
           queue_auto_merge() {
             local pr_number="$1"
+            local merge_subject="chore(vcpkg): update baseline to ${RELEASE_TAG}"
+            local merge_body="vcpkg baseline: ${NEW_BASELINE}"
 
             if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
               echo "::error::Invalid baseline pull request number: ${pr_number}"
               return 1
             fi
 
-            if gh pr merge "${pr_number}" --auto --squash; then
+            if gh pr merge "${pr_number}" --auto --squash \
+              --subject "${merge_subject}" \
+              --body "${merge_body}"; then
               echo "Queued native GitHub auto-merge for PR #${pr_number}"
             else
               echo "::warning::Could not queue auto-merge for PR #${pr_number}. Repository auto-merge may be disabled or branch protection may require a review."

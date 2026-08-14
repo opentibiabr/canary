@@ -117,7 +117,14 @@ keywordHandler:addKeyword({ "ruthless seven" }, StdModule.say, { npcHandler = np
 keywordHandler:addKeyword({ "pits of inferno" }, StdModule.say, { npcHandler = npcHandler, text = "An infernal place in which the nightmare knights created a base to fight the minions of evil. It was lost when the Ruthless Seven conquered it." })
 keywordHandler:addKeyword({ "nightmare knights" }, StdModule.say, { npcHandler = npcHandler, text = "The Nightmare Knights were an ancient order dedicated to fight evil. They were guided by prophetic dreams. The order ceased to exist after their war against the Brotherhood of Bones." })
 keywordHandler:addKeyword({ "brotherhood of bones" }, StdModule.say, { npcHandler = npcHandler, text = "This brotherhood was an secret society of necromancers and followers of purest evil. They were vanquished long ago by their arch enemies, the Nightmare Knights." })
-keywordHandler:addKeyword({ "triangle of terror" }, StdModule.say, { npcHandler = npcHandler, text = "The Triangle of Terror is a cabal of three archdemons that have put aside their quarrels to establish some power in the shadows of the Ruthless Seven. Although they are all very mighty demons, compared to one of the seven, they appear weak ... So they try not to interfere much with the doings of the seven and look for power elsewhere. Their members are Morgaroth, the schemer, Ghazbaran, the lord of blades and Zoralurk, the demon with the thousand faces." })
+keywordHandler:addKeyword(
+	{ "triangle of terror" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "The Triangle of Terror is a cabal of three archdemons that have put aside their quarrels to establish some power in the shadows of the Ruthless Seven. Although they are all very mighty demons, compared to one of the seven, they appear weak ... So they try not to interfere much with the doings of the seven and look for power elsewhere. Their members are Morgaroth, the schemer, Ghazbaran, the lord of blades and Zoralurk, the demon with the thousand faces.",
+	}
+)
 keywordHandler:addKeyword({ "morgaroth" }, StdModule.say, { npcHandler = npcHandler, text = "Morgaroth belongs to the cabal Triangle of Terror. He usually has minions to do his work rather than doing it himself. Although sometimes he enters our world in person to inspire the fear his cabal is built upon." })
 keywordHandler:addKeyword({ "ghazbaran" }, StdModule.say, { npcHandler = npcHandler, text = "Ghazbaran is a member of the demonic cabal Triangle of Terror. He likes the physical challenge and combat as much as the pain and death he inflicts." })
 keywordHandler:addKeyword({ "zoralurk" }, StdModule.say, { npcHandler = npcHandler, text = "Zoralurk is said to be a member of the demon cabal called Triangle of Terror. She is rumoured to wander the lands in many disguises, poisoning the body and minds of people by word or deed." })

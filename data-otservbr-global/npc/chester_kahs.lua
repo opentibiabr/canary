@@ -313,7 +313,11 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 keywordHandler:addKeyword({ "disturb" }, StdModule.say, { npcHandler = npcHandler, text = "I'm the head of the TBI." })
 keywordHandler:addKeyword({ "how are you" }, StdModule.say, { npcHandler = npcHandler, text = "I am troubled by all the mysteries out there." })
 keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, all interesting news are confidential." })
-keywordHandler:addKeyword({ "tbi" }, StdModule.say, { npcHandler = npcHandler, text = "The Tibian Bureau of Investigation, the secret service of His Royal Highness ... The TBI is an old institution with tradition. Since centuries we are the protectors of our king and country ... We successfully fight intrigues and corruption from within and enemies from without. Only the most talented individuals are allowed to join." })
+keywordHandler:addKeyword(
+	{ "tbi" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "The Tibian Bureau of Investigation, the secret service of His Royal Highness ... The TBI is an old institution with tradition. Since centuries we are the protectors of our king and country ... We successfully fight intrigues and corruption from within and enemies from without. Only the most talented individuals are allowed to join." }
+)
 keywordHandler:addKeyword({ "cgb" }, StdModule.say, { npcHandler = npcHandler, text = "An amateurish attempt of Carlin to establish a secret service. It's nothing than a 'make-believe' game for little girls ... They should rather play salesman and customer or mother and child instead of pretending to be secret agents." })
 keywordHandler:addKeyword({ "avin" }, StdModule.say, { npcHandler = npcHandler, text = "Officially we have to accept their status as a harmless organisation to promote trade. Still, it's an open secret that they have a quite active part in the fields of interest of the Venorean traders." })
 keywordHandler:addKeyword({ "bureau" }, StdModule.say, { npcHandler = npcHandler, text = "We collect information about people and incidents." })

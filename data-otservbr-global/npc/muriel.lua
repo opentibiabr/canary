@@ -338,14 +338,42 @@ keywordHandler:addKeyword({ "sorcerer" }, StdModule.say, { npcHandler = npcHandl
 keywordHandler:addKeyword({ "power" }, StdModule.say, { npcHandler = npcHandler, text = "Of course, power is the most important thing in the universe." })
 keywordHandler:addKeyword({ "vocation" }, StdModule.say, { npcHandler = npcHandler, text = "Your vocation is your profession. There are four vocations in Tibia: Sorcerers, paladins, knights, and druids." })
 keywordHandler:addKeyword({ "rune" }, StdModule.say, { npcHandler = npcHandler, text = "Each spell that starts with 'Ad' needs a rune. You have to have a blank rune with you when you cast it. You can buy runes at the magic shop." })
-keywordHandler:addKeyword({ "arcian" }, StdModule.say, { npcHandler = npcHandler, text = "Arcian was a childhood friend of mine. We studied the art of sorcery together but later, our ways parted ... Whereas I stayed here to instruct young new sorcerers, he devoted his life to his own studies ... Since his experiments tended to become a bit dangerous and he wanted to further explore a magic phenomenon he discovered in the Plains of Havoc anyway, he moved there and took his wife and his two assistants with him ... We stayed in contact for a while and he maintained a one-way teleporter to the academy. As I was missing any message from him for some time, I travelled to the plains to learn what might have happened ... I found the house overrun by ghouls, and no living soul. I have to assume that those ghouls have killed them and dragged everyone in their lairs. I left as soon as I could ... I wouldn't have wanted to see what they've done to my old friend. It's a sad story indeed." })
+keywordHandler:addKeyword(
+	{ "arcian" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Arcian was a childhood friend of mine. We studied the art of sorcery together but later, our ways parted ... Whereas I stayed here to instruct young new sorcerers, he devoted his life to his own studies ... Since his experiments tended to become a bit dangerous and he wanted to further explore a magic phenomenon he discovered in the Plains of Havoc anyway, he moved there and took his wife and his two assistants with him ... We stayed in contact for a while and he maintained a one-way teleporter to the academy. As I was missing any message from him for some time, I travelled to the plains to learn what might have happened ... I found the house overrun by ghouls, and no living soul. I have to assume that those ghouls have killed them and dragged everyone in their lairs. I left as soon as I could ... I wouldn't have wanted to see what they've done to my old friend. It's a sad story indeed.",
+	}
+)
 keywordHandler:addKeyword({ "laira" }, StdModule.say, { npcHandler = npcHandler, text = "Laira was the wife of my childhood friend Arcian. She was a warm and caring person. I hope she had not to suffer for long as ... she was killed by the undead. Sorry, I don't want to speak about that matter anymore." })
-keywordHandler:addKeyword({ "porgol" }, StdModule.say, { npcHandler = npcHandler, text = "Porgol was a quite bright student, although a bit overambitious. I was surprised when he agreed to accompany my friend Arcian to the Plains of Havoc to support him in his studies ... I was quite sure he'd rather study at the Edron academy instead. But sometimes people surprise one in a positive way. All the more it is tragic he found his death in this assault of undead on Arcian's house." })
+keywordHandler:addKeyword(
+	{ "porgol" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Porgol was a quite bright student, although a bit overambitious. I was surprised when he agreed to accompany my friend Arcian to the Plains of Havoc to support him in his studies ... I was quite sure he'd rather study at the Edron academy instead. But sometimes people surprise one in a positive way. All the more it is tragic he found his death in this assault of undead on Arcian's house.",
+	}
+)
 keywordHandler:addKeyword({ "flaming pits" }, StdModule.say, { npcHandler = npcHandler, text = "These pits you refer to might be the legendary 'Pits of Inferno', also known as the 'Nightmare Pits'." })
 keywordHandler:addKeyword({ "nightmare pits" }, StdModule.say, { npcHandler = npcHandler, text = "They are rumoured to be hidden somewhere in the Plains of Havoc, far to the east." })
 keywordHandler:addKeyword({ "pits of inferno" }, StdModule.say, { npcHandler = npcHandler, text = "They are rumoured to be hidden somewhere in the Plains of Havoc, far to the east." })
-keywordHandler:addKeyword({ "explorer society" }, StdModule.say, { npcHandler = npcHandler, text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia." })
-keywordHandler:addKeyword({ "inscription" }, StdModule.say, { npcHandler = npcHandler, text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia." })
+keywordHandler:addKeyword(
+	{ "explorer society" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia.",
+	}
+)
+keywordHandler:addKeyword(
+	{ "inscription" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia.",
+	}
+)
 keywordHandler:addKeyword({ "cave" }, StdModule.say, { npcHandler = npcHandler, text = "I don't know exactly where it is. Someone told me you have to pass some tunnels full of orcs, somewhere underneath the king's castle. But that might be just gossip." })
 keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "The dragon was ancient beyond compare. Eventually even he had to succumb to old age and flew to the dragon cemetery to die there. Or so it is told." })
 keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "I wonder how he actually got these awesome powers." })

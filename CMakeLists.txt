@@ -192,17 +192,28 @@ endif()
 
 # === SCCACHE ===
 if(OPTIONS_ENABLE_SCCACHE)
-    find_program(SCCACHE_PATH sccache)
-    if(SCCACHE_PATH)
-        log_option_enabled("sccache")
-        set(CMAKE_C_COMPILER_LAUNCHER
-            ${SCCACHE_PATH}
-        )
-        set(CMAKE_CXX_COMPILER_LAUNCHER
-            ${SCCACHE_PATH}
-        )
+    if(MSVC
+       AND CMAKE_GENERATOR
+           MATCHES
+           "Ninja"
+    )
+        # Ninja's MSVC dependency tracking relies on /showIncludes output. With
+        # sccache as a compiler launcher, Ninja may record empty deps, which
+        # breaks incremental builds for headers and CMake unity sources.
+        log_option_disabled("sccache for MSVC Ninja dependency tracking")
     else()
-        log_option_disabled("sccache")
+        find_program(SCCACHE_PATH sccache)
+        if(SCCACHE_PATH)
+            log_option_enabled("sccache")
+            set(CMAKE_C_COMPILER_LAUNCHER
+                ${SCCACHE_PATH}
+            )
+            set(CMAKE_CXX_COMPILER_LAUNCHER
+                ${SCCACHE_PATH}
+            )
+        else()
+            log_option_disabled("sccache")
+        endif()
     endif()
 endif()
 

@@ -515,7 +515,8 @@ function Player:calculateLootFactor(monster)
 
 	local taskboard = rawget(_G, "Taskboard")
 	if taskboard and type(taskboard.getLootBonus) == "function" then
-		local taskboardBonus = tonumber(taskboard.getLootBonus(self, monster)) or 0
+		local ok, bonus = pcall(taskboard.getLootBonus, self, monster)
+		local taskboardBonus = ok and (tonumber(bonus) or 0) or 0
 		if taskboardBonus > 0 then
 			factor = factor * (1 + taskboardBonus)
 			local bonusText = string.format("task board bonus %d%%", math.floor(taskboardBonus * 100 + 0.5))

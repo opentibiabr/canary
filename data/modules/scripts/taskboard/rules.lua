@@ -482,7 +482,7 @@ return function(api)
 				if entry then
 					player:addBestiaryKill(entry.name, bestiaryKillAmount(player))
 					if type(player.sendTextMessage) == "function" then
-						player:sendTextMessage(MESSAGE_FAILURE or MESSAGE_STATUS_SMALL, "Your Bounty Talisman's bestiary bonus activated! This kill counted twice.")
+						player:sendTextMessage(MESSAGE_LOOT, "Your Bounty Talisman's bestiary bonus activated! This kill counted twice.")
 					end
 				end
 			end
@@ -696,7 +696,8 @@ return function(api)
 
 	local function changeTaskPoints(player, amount)
 		if amount > 0 and type(player.addTaskHuntingPoints) == "function" then
-			return player:addTaskHuntingPoints(amount) ~= false
+			local result = player:addTaskHuntingPoints(amount)
+			return result ~= nil and result ~= false
 		end
 		if amount < 0 and type(player.removeTaskHuntingPoints) == "function" then
 			return player:removeTaskHuntingPoints(-amount) == true
@@ -750,6 +751,12 @@ return function(api)
 		return tostring(offer.name or itemId)
 	end
 
+	local function removeStoreReward(item)
+		if type(item.remove) == "function" then
+			item:remove()
+		end
+	end
+
 	local function createStoreReward(player, offer, wrappedItemId)
 		local game = rawget(_G, "Game")
 		if type(game) ~= "table" or type(game.createItem) ~= "function" then
@@ -768,6 +775,7 @@ return function(api)
 
 		if wrappedItemId then
 			if type(item.setCustomAttribute) ~= "function" then
+				removeStoreReward(item)
 				return nil
 			end
 			item:setCustomAttribute("unWrapId", wrappedItemId)
@@ -781,10 +789,7 @@ return function(api)
 
 	local function rollbackStoreRewards(items)
 		for index = #items, 1, -1 do
-			local item = items[index]
-			if type(item.remove) == "function" then
-				item:remove()
-			end
+			removeStoreReward(items[index])
 		end
 	end
 
@@ -812,21 +817,20 @@ return function(api)
 		for _, wrappedItemId in ipairs(wrappedItemIds) do
 			local item = createStoreReward(player, offer, wrappedItemId or nil)
 			if not item then
+				rollbackStoreRewards(rewards)
 				return false
 			end
 			table.insert(rewards, item)
 		end
 
-		local inserted = {}
 		local wherever = rawget(_G, "INDEX_WHEREEVER") or -1
 		local noLimit = rawget(_G, "FLAG_NOLIMIT") or 0
 		local noError = rawget(_G, "RETURNVALUE_NOERROR") or 0
 		for _, item in ipairs(rewards) do
 			if inbox:addItemEx(item, wherever, noLimit) ~= noError then
-				rollbackStoreRewards(inserted)
+				rollbackStoreRewards(rewards)
 				return false
 			end
-			table.insert(inserted, item)
 		end
 		if type(player.sendUpdateContainer) == "function" then
 			player:sendUpdateContainer(inbox)
@@ -979,7 +983,12 @@ return function(api)
 		if grantOffer(player, state, offer) then
 			return true
 		end
-		changeTaskPoints(player, price)
+		if not changeTaskPoints(player, price) then
+			local runtimeLogger = rawget(_G, "logger")
+			if type(runtimeLogger) == "table" and type(runtimeLogger.error) == "function" then
+				runtimeLogger.error("[Taskboard] failed to refund {} task hunting points to {}", price, player:getName())
+			end
+		end
 		return false
 	end
 

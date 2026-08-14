@@ -363,9 +363,6 @@ return function(api)
 		now = math.floor(api.toFiniteNumber(now, os.time()))
 		local date = os.date("*t", now)
 		local daysUntilMonday = (2 - date.wday) % 7
-		if daysUntilMonday == 0 then
-			daysUntilMonday = 7
-		end
 
 		local hour, minute = 0, 0
 		local runtimeConfig = rawget(_G, "configManager")
@@ -392,6 +389,16 @@ return function(api)
 			min = minute,
 			sec = 0,
 		})
+		if reset <= now then
+			reset = os.time({
+				year = date.year,
+				month = date.month,
+				day = date.day + daysUntilMonday + 7,
+				hour = hour,
+				min = minute,
+				sec = 0,
+			})
+		end
 		return math.max(now + 1, reset)
 	end
 
@@ -403,7 +410,7 @@ return function(api)
 		if type(versionString) == "string" and versionString:sub(1, #known1520Build) == known1520Build then
 			return true
 		end
-		return numericVersion >= 1521
+		return numericVersion >= 1520
 	end
 
 	function api.supportsOfficialTaskboard(player)

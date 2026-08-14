@@ -295,6 +295,30 @@ test("numeric boundaries reject invalid non-finite values", function()
 	assert_true(api.getWeeklyResetTimestamp(nan) > os.time())
 end)
 
+test("catalog retries after an empty startup snapshot", function()
+	local originalGetMonsterTypes = Game.getMonsterTypes
+	local calls = 0
+	Game.getMonsterTypes = function()
+		calls = calls + 1
+		if calls == 1 then
+			return {}
+		end
+		return originalGetMonsterTypes()
+	end
+
+	local succeeded, failure = pcall(function()
+		api.catalog.ready = false
+		api.catalog.rebuild()
+		assert_equal(false, api.catalog.ready)
+		assert_true(api.catalog.isValidRace(100))
+		assert_true(calls >= 2)
+	end)
+
+	Game.getMonsterTypes = originalGetMonsterTypes
+	api.catalog.rebuild()
+	assert_true(succeeded, failure)
+end)
+
 test("persisted state replaces non-finite values with safe defaults", function()
 	local nan = 0 / 0
 	local unsafeStorage = {
@@ -1111,6 +1135,18 @@ test("weekly reset follows the configured server-save clock", function()
 		assert_equal(5, reset.hour)
 		assert_equal(30, reset.min)
 		assert_equal(0, reset.sec)
+
+		local mondayBeforeReset = os.time({ year = 2026, month = 8, day = 10, hour = 4, min = 0, sec = 0 })
+		reset = os.date("*t", api.getWeeklyResetTimestamp(mondayBeforeReset))
+		assert_equal(10, reset.day)
+		assert_equal(5, reset.hour)
+		assert_equal(30, reset.min)
+
+		local mondayAfterReset = os.time({ year = 2026, month = 8, day = 10, hour = 6, min = 0, sec = 0 })
+		reset = os.date("*t", api.getWeeklyResetTimestamp(mondayAfterReset))
+		assert_equal(17, reset.day)
+		assert_equal(5, reset.hour)
+		assert_equal(30, reset.min)
 	end)
 	rawset(_G, "configManager", originalConfigManager)
 	rawset(_G, "configKeys", originalConfigKeys)
@@ -1383,6 +1419,9 @@ test("paired decoration delivery rolls back a partial store inbox batch", functi
 				self[key] = value
 			end,
 			remove = function(self)
+				if not self.parent then
+					return true
+				end
 				for index, stored in ipairs(self.parent.items) do
 					if stored == self then
 						table.remove(self.parent.items, index)
@@ -1636,12 +1675,15 @@ test("life leech is delegated to the native real-damage path", function()
 		lifeLeech = 250,
 	}
 
-	registeredCallbacks.TaskboardCreatureOnCombat.creatureOnCombat(attacker, target, damage)
-	assert_equal(-111, damage.primary.value)
-	assert_equal(-1, damage.secondary.value)
-	assert_equal(1250, damage.lifeLeech)
+	local succeeded, failure = pcall(function()
+		registeredCallbacks.TaskboardCreatureOnCombat.creatureOnCombat(attacker, target, damage)
+		assert_equal(-111, damage.primary.value)
+		assert_equal(-1, damage.secondary.value)
+		assert_equal(1250, damage.lifeLeech)
+	end)
 	api.getDamageBonus = originalDamageBonus
 	api.getLifeLeechBonus = originalLifeLeechBonus
+	assert_true(succeeded, failure)
 end)
 
 test("weekly reward multiplier follows completion thresholds", function()
@@ -1732,24 +1774,32 @@ test("weekly state derives rewards from normalized assignments", function()
 	assert_equal(3, state.weekly.soulseals)
 end)
 
-test("weekly wire includes the soulseals tail for 15.25", function()
-	local state = api.state.ensure(player)
-	api.rules.chooseWeeklyDifficulty(player, state, 0)
-	api.state.save(player, state)
-	sentMessages = {}
-	api.wire.sendWeekly(player, state)
-	local packetWithTail = sentMessages[1]
-	local withTailCount = #packetWithTail.events
-	player.client = { version = 1520 }
-	sentMessages = {}
-	api.wire.sendWeekly(player, state)
-	local packetWithoutUnknownTail = sentMessages[1]
-	assert_equal(withTailCount - 1, #packetWithoutUnknownTail.events)
-	player.client = { version = 1520, versionString = "15.20.f23bc3" }
-	sentMessages = {}
-	api.wire.sendWeekly(player, state)
-	assert_equal(withTailCount, #sentMessages[1].events)
-	player.client = { version = 1525 }
+test("weekly wire includes the soulseals tail from 15.20", function()
+	local originalClient = player.client
+	local succeeded, failure = pcall(function()
+		local state = api.state.ensure(player)
+		api.rules.chooseWeeklyDifficulty(player, state, 0)
+		api.state.save(player, state)
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		local packetWithTail = sentMessages[1]
+		local withTailCount = #packetWithTail.events
+		player.client = { version = 1520 }
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		local packetWithTailAt1520 = sentMessages[1]
+		assert_equal(withTailCount, #packetWithTailAt1520.events)
+		player.client = { version = 1520, versionString = "15.20.f23bc3" }
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		assert_equal(withTailCount, #sentMessages[1].events)
+		player.client = { version = 1519 }
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		assert_equal(withTailCount - 1, #sentMessages[1].events)
+	end)
+	player.client = originalClient
+	assert_true(succeeded, failure)
 end)
 
 test("resource balances use u32 for bounty points and u64 for task points", function()

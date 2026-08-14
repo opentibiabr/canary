@@ -39,7 +39,7 @@ return function(api)
 		table.sort(catalog.entries, function(left, right)
 			return left.raceId < right.raceId
 		end)
-		catalog.ready = true
+		catalog.ready = #catalog.entries > 0
 	end
 
 	local function ensureCatalog()

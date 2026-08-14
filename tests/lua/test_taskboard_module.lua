@@ -285,6 +285,7 @@ api.getLifeLeechBonus = api.rules.getLifeLeechBonus
 api.onMonsterKilled = api.rules.onMonsterKilled
 rawset(_G, "Taskboard", api)
 dofile("data/scripts/eventcallbacks/creature/on_combat_taskboard.lua")
+dofile("data/scripts/eventcallbacks/player/on_kill_taskboard.lua")
 
 test("numeric boundaries reject invalid non-finite values", function()
 	local nan = 0 / 0
@@ -316,6 +317,33 @@ test("catalog retries after an empty startup snapshot", function()
 
 	Game.getMonsterTypes = originalGetMonsterTypes
 	api.catalog.rebuild()
+	assert_true(succeeded, failure)
+end)
+
+test("taskboard kill callback does not depend on a corpse", function()
+	local originalOnMonsterKilled = api.rules.onMonsterKilled
+	local originalTaskboardOnMonsterKilled = api.onMonsterKilled
+	local calls = {}
+	api.rules.onMonsterKilled = function(killer, raceId)
+		table.insert(calls, { killer = killer, raceId = raceId })
+	end
+	api.onMonsterKilled = api.rules.onMonsterKilled
+
+	local succeeded, failure = pcall(function()
+		local callback = registeredCallbacks.TaskboardPlayerOnKill
+		assert_true(callback ~= nil)
+		callback.playerOnKill(player, {
+			getType = function()
+				return Game.getMonsterTypes().alpha
+			end,
+		})
+		assert_equal(1, #calls)
+		assert_equal(player, calls[1].killer)
+		assert_equal(100, calls[1].raceId)
+	end)
+
+	api.rules.onMonsterKilled = originalOnMonsterKilled
+	api.onMonsterKilled = originalTaskboardOnMonsterKilled
 	assert_true(succeeded, failure)
 end)
 

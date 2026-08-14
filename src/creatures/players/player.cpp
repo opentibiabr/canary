@@ -6687,6 +6687,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		return false;
 	}
 	if (!monster->getSoulPit()) {
+		g_callbacks().executeCallback(EventCallback_t::playerOnKill, getPlayer(), monster);
 		addHuntingTaskKill(mType);
 		addBestiaryKill(mType);
 		addBosstiaryKill(mType);

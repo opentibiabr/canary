@@ -1,6 +1,7 @@
 target_sources(
     canary_ut
-    PRIVATE dispatcher_budget_test.cpp
+    PRIVATE condition_factory_test.cpp
+            dispatcher_budget_test.cpp
             dispatcher_policy_test.cpp
             dispatcher_wdrr_test.cpp
             events_scheduler_test.cpp
@@ -9,6 +10,7 @@ target_sources(
             monster_compute_service_test.cpp
             monster_pathfinding_test.cpp
             monster_relevance_test.cpp
+            monster_spell_test.cpp
             monster_targeting_test.cpp
             navigation_snapshot_test.cpp
             npc_shop_range_test.cpp

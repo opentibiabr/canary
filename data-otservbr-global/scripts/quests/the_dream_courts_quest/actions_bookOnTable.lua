@@ -1,6 +1,6 @@
 local questline = Storage.Quest.U12_00.TheDreamCourts.HauntedHouse.Questline
 local wordsCount = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.WordCount
-local facelessTime = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FacelessTime
+local facelessTime = Storage.Quest.U12_00.TheDreamCourts.BurriedCatedral.FacelessTimer
 
 local actions_bookOnTable = Action()
 

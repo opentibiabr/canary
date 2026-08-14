@@ -32,7 +32,9 @@ RUN vcpkgCommitId=$(grep '.builtin-baseline' vcpkg.json | awk -F: '{print $2}' |
 
 # Install dependencies using manifest mode standalone
 WORKDIR /opt/vcpkg_manifest
-COPY vcpkg.json /opt/vcpkg_manifest/
+COPY vcpkg.json vcpkg-configuration.json /opt/vcpkg_manifest/
+COPY vcpkg-registry /opt/vcpkg_manifest/vcpkg-registry
+COPY cmake/triplets /opt/vcpkg_manifest/cmake/triplets
 
 RUN --mount=type=secret,id=github_token \
 	--mount=type=cache,target=/opt/vcpkg/downloads \

@@ -1723,6 +1723,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/items/item_functions.cpp`
 
+#### `Item:setExpertPvpFieldContext(owner: Creature)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/items/item_functions.cpp`
+
 #### `Item:setOwner(creatureOrCreatureId: number|Creature)`
 
 - Returns: `boolean`
@@ -4420,6 +4425,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
+#### `Player:getPvpMode()`
+
+- Returns: `number|nil`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
 #### `Player:getReward(rewardId: number, autoCreate?: boolean)`
 
 - Returns: `boolean|nil|Item`
@@ -4581,6 +4591,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:hasAnimusMastery(monsterType: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
+#### `Player:hasAttacked(targetPlayer: Player)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`

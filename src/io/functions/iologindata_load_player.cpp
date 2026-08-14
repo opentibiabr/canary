@@ -175,6 +175,7 @@ bool IOLoginDataLoad::loadPlayerBasicInfo(const std::shared_ptr<Player> &player,
 	player->addBossPoints(result->getNumber<uint32_t>("boss_points"));
 	player->lastLoginSaved = result->getNumber<time_t>("lastlogin");
 	player->lastLogout = result->getNumber<time_t>("lastlogout");
+	player->setPvpMode(static_cast<PvpMode_t>(result->getNumber<uint16_t>("expert_pvp_mode")));
 	player->offlineTrainingTime = result->getNumber<int32_t>("offlinetraining_time") * 1000;
 	auto skill = result->getInt8FromString(result->getString("offlinetraining_skill"), __FUNCTION__);
 	player->setOfflineTrainingSkill(skill);
@@ -1019,7 +1020,7 @@ void IOLoginDataLoad::loadPlayerInitializeSystem(const std::shared_ptr<Player> &
 	// Load and apply the player's Virtue from the saved spell data, if available
 	auto kv = player->kv()->scoped("spells");
 	if (auto kvOpt = kv->get("virtue")) {
-		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()));
+		player->setVirtue(static_cast<Virtue_t>(kvOpt->getNumber()), false);
 	}
 
 	if (auto kvOpt = kv->get("harmony")) {

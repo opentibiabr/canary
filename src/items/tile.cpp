@@ -14,6 +14,7 @@
 #include "creatures/combat/condition.hpp"
 #include "creatures/creature.hpp"
 #include "creatures/monsters/monster.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "creatures/players/player.hpp"
 #include "enums/account_type.hpp"
 #include "game/game.hpp"
@@ -30,6 +31,58 @@ auto real_nullptr_tile = std::make_shared<StaticTile>(0xFFFF, 0xFFFF, 0xFF);
 const std::shared_ptr<Tile> &Tile::nullptr_tile = real_nullptr_tile;
 
 namespace {
+	bool queryExpertPvpFieldStep(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Item> &ground, const TileItemVector* items, uint32_t tileFlags, ReturnValue &ret) {
+		const auto &player = creature ? creature->getPlayer() : nullptr;
+		if (!player || !ExpertPvp::isEnabled()) {
+			return false;
+		}
+
+		bool handledExpertField = false;
+		const bool pathfinding = hasBitSet(FLAG_PATHFINDING, tileFlags);
+		if (ground && (ground->hasProperty(CONST_PROP_BLOCKSOLID) || (pathfinding && ground->hasProperty(CONST_PROP_BLOCKPATH)))) {
+			return false;
+		}
+
+		if (!items) {
+			return false;
+		}
+
+		for (const auto &item : *items) {
+			if (!item) {
+				continue;
+			}
+
+			bool handledItem = false;
+			if (const auto &field = item->getMagicField()) {
+				const auto fieldContext = ExpertPvp::getFieldContext(field);
+				const auto relation = ExpertPvp::classifyFieldRelation(fieldContext, creature);
+				const auto decision = ExpertPvp::evaluateFieldStep(fieldContext, relation.facts);
+				if (decision.handled) {
+					handledExpertField = true;
+					handledItem = true;
+					if (!decision.canStep) {
+						if (!hasBitSet(FLAG_PATHFINDING, tileFlags)) {
+							ExpertPvp::applyFieldStepSideEffects(decision, relation.facts);
+						}
+						ret = RETURNVALUE_NOTENOUGHROOM;
+						return true;
+					}
+				}
+			}
+
+			if (!handledItem && (item->hasProperty(CONST_PROP_BLOCKSOLID) || (pathfinding && item->hasProperty(CONST_PROP_BLOCKPATH)))) {
+				return false;
+			}
+		}
+
+		if (handledExpertField) {
+			ret = RETURNVALUE_NOERROR;
+			return true;
+		}
+
+		return false;
+	}
+
 	struct NavigationItemTopology {
 		TileFlags_t floorChange = TILESTATE_NONE;
 		uint16_t groundId = 0;
@@ -739,7 +792,14 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 			}
 
 			if (hasBitSet(FLAG_PATHFINDING, tileFlags) && hasFlag(TILESTATE_BLOCKPATH)) {
-				return RETURNVALUE_NOTPOSSIBLE;
+				ReturnValue expertPvpFieldStepRet = RETURNVALUE_NOERROR;
+				if (queryExpertPvpFieldStep(creature, ground, getItemList(), tileFlags, expertPvpFieldStepRet)) {
+					if (expertPvpFieldStepRet != RETURNVALUE_NOERROR) {
+						return expertPvpFieldStepRet;
+					}
+				} else {
+					return RETURNVALUE_NOTPOSSIBLE;
+				}
 			}
 
 			if (player->getParent() == nullptr && hasFlag(TILESTATE_NOLOGOUT)) {
@@ -796,6 +856,11 @@ ReturnValue Tile::queryAdd(int32_t, const std::shared_ptr<Thing> &thing, uint32_
 		if (!hasBitSet(FLAG_IGNOREBLOCKITEM, tileFlags)) {
 			// If the FLAG_IGNOREBLOCKITEM bit isn't set we dont have to iterate every single item
 			if (hasFlag(TILESTATE_BLOCKSOLID)) {
+				ReturnValue expertPvpFieldStepRet = RETURNVALUE_NOERROR;
+				if (queryExpertPvpFieldStep(creature, ground, getItemList(), tileFlags, expertPvpFieldStepRet)) {
+					return expertPvpFieldStepRet;
+				}
+
 				// NO PVP magic wall or wild growth field check
 				if (creature && creature->getPlayer()) {
 					if (const auto fieldList = getItemList()) {

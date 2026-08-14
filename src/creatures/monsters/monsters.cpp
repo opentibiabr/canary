@@ -45,7 +45,11 @@ bool MonsterType::canSpawn(const Position &pos) const {
 }
 
 std::shared_ptr<ConditionDamage> Monsters::getDamageCondition(ConditionType_t conditionType, int32_t maxDamage, int32_t minDamage, int32_t startDamage, uint32_t tickInterval) const {
-	const auto &condition = Condition::createCondition(CONDITIONID_COMBAT, conditionType, 0, 0)->static_self_cast<ConditionDamage>();
+	const auto condition = Condition::createDamageCondition(CONDITIONID_COMBAT, conditionType);
+	if (!condition) {
+		return nullptr;
+	}
+
 	condition->setParam(CONDITION_PARAM_TICKINTERVAL, tickInterval);
 	condition->setParam(CONDITION_PARAM_MINVALUE, minDamage);
 	condition->setParam(CONDITION_PARAM_MAXVALUE, maxDamage);
@@ -250,7 +254,13 @@ bool Monsters::deserializeSpell(const std::shared_ptr<MonsterSpell> &spell, spel
 			maxDamage = minDamage;
 		}
 
-		const auto &condition = getDamageCondition(spell->conditionType, maxDamage, minDamage, startDamage, tickInterval);
+		const auto condition = getDamageCondition(spell->conditionType, maxDamage, minDamage, startDamage, tickInterval);
+		if (!condition) {
+			g_logger().error("[Monsters::deserializeSpell] - "
+			                 "Invalid damage condition type {} for: {}",
+			                 static_cast<uint16_t>(spell->conditionType), description);
+			return false;
+		}
 		combatPtr->addCondition(condition);
 	}
 

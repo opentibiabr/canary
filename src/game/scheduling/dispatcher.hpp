@@ -179,6 +179,10 @@ public:
 		return dispacherContext;
 	}
 
+	[[nodiscard]] bool isShuttingDown() const noexcept {
+		return shuttingDown.load(std::memory_order_acquire);
+	}
+
 private:
 	thread_local static DispatcherContext dispacherContext;
 	struct LaneExecutionResult {

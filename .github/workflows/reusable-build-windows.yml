@@ -74,6 +74,14 @@ jobs:
           persist-credentials: false
           ref: ${{ inputs.checkout_ref }}
 
+      - name: Set up pinned build tools
+        if: matrix.type == 'CMake'
+        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14  # v4.2.3
+        with:
+          version: 2026.5.15
+          cache: true
+          env: false
+
       - name: Materialize release metadata
         if: inputs.release_tag != ''
         shell: pwsh
@@ -137,7 +145,7 @@ jobs:
         uses: lukka/run-vcpkg@v11
         with:
           # For Solution builds, keep vcpkg inside repo to match your msbuild /p:VcpkgRoot
-          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || '' }}
+          vcpkgDirectory: ${{ matrix.type == 'Solution' && format('{0}/vcpkg', github.workspace) || format('{0}/.tools/vcpkg', github.workspace) }}
           vcpkgGitURL: "https://github.com/microsoft/vcpkg.git"
           vcpkgGitCommitId: ${{ env.VCPKG_GIT_COMMIT_ID }}
 

@@ -13,16 +13,20 @@ function onCreateWildGrowth(creature, position)
 	end
 
 	local wildGrowth
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+	if IsExpertPVP() or Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		wildGrowth = ITEM_WILDGROWTH_SAFE
 	else
 		wildGrowth = ITEM_WILDGROWTH
 	end
 
-	local item = Game.createItem(wildGrowth, 1, position)
+	local item = Game.createItem(wildGrowth, 1)
 	if item then
+		item:setExpertPvpFieldContext(creature)
 		item:setDuration(30)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
+		if tile:addItemEx(item, FLAG_NOLIMIT) ~= RETURNVALUE_NOERROR then
+			return false
+		end
 	end
 end
 

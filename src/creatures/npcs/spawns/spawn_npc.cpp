@@ -155,13 +155,21 @@ bool SpawnsNpc::isInZone(const Position &centerPos, int32_t radius, const Positi
 
 void SpawnNpc::startSpawnNpcCheck() {
 	if (checkSpawnNpcEvent == 0) {
+		const std::weak_ptr<SpawnNpc> weakSelf = static_self_cast<SpawnNpc>();
 		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(
-			getInterval(), [this] { checkSpawnNpc(); }, "SpawnNpc::checkSpawnNpc", DispatcherLane::Maintenance
+			getInterval(),
+			[weakSelf] {
+				if (const auto self = weakSelf.lock()) {
+					self->checkSpawnNpc();
+				}
+			},
+			"SpawnNpc::checkSpawnNpc", DispatcherLane::Maintenance
 		);
 	}
 }
 
 SpawnNpc::~SpawnNpc() {
+	stopEvent();
 	for (const auto &[spawnId, npc] : spawnedNpcMap) {
 		if (spawnId == 0) {
 			continue;
@@ -241,24 +249,48 @@ void SpawnNpc::checkSpawnNpc() {
 				continue;
 			}
 
-			scheduleSpawnNpc(spawnId, npcInfo, 3 * NONBLOCKABLE_SPAWN_NPC_INTERVAL);
+			scheduleSpawnNpc(spawnId, 3 * NONBLOCKABLE_SPAWN_NPC_INTERVAL, spawnGeneration);
 		}
 	}
 
 	if (spawnedNpcMap.size() < spawnNpcMap.size()) {
+		const std::weak_ptr<SpawnNpc> weakSelf = static_self_cast<SpawnNpc>();
 		checkSpawnNpcEvent = g_dispatcher().scheduleEvent(
-			getInterval(), [this] { checkSpawnNpc(); }, __FUNCTION__, DispatcherLane::Maintenance
+			getInterval(),
+			[weakSelf] {
+				if (const auto self = weakSelf.lock()) {
+					self->checkSpawnNpc();
+				}
+			},
+			__FUNCTION__, DispatcherLane::Maintenance
 		);
 	}
 }
 
-void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t interval) {
+void SpawnNpc::scheduleSpawnNpc(uint32_t spawnId, int32_t interval, uint64_t generation) {
+	if (generation != spawnGeneration) {
+		return;
+	}
+
+	const auto spawnIt = spawnNpcMap.find(spawnId);
+	if (spawnIt == spawnNpcMap.end()) {
+		return;
+	}
+	spawnBlockNpc_t &sb = spawnIt->second;
+
 	if (interval <= 0) {
 		spawnNpc(spawnId, sb.npcType, sb.pos, sb.direction);
 	} else {
 		g_game().addMagicEffect(sb.pos, CONST_ME_TELEPORT);
+		const std::weak_ptr<SpawnNpc> weakSelf = static_self_cast<SpawnNpc>();
 		g_dispatcher().scheduleEvent(
-			1400, [=, this, &sb] { scheduleSpawnNpc(spawnId, sb, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL); }, __FUNCTION__, DispatcherLane::Maintenance
+			NONBLOCKABLE_SPAWN_NPC_INTERVAL,
+			[weakSelf, spawnId, interval, generation] {
+				if (const auto self = weakSelf.lock()) {
+					self->scheduleSpawnNpc(spawnId, interval - NONBLOCKABLE_SPAWN_NPC_INTERVAL, generation);
+				}
+			},
+			__FUNCTION__, DispatcherLane::Maintenance
 		);
 	}
 }
@@ -308,6 +340,7 @@ void SpawnNpc::removeNpc(const std::shared_ptr<Npc> &npc) {
 }
 
 void SpawnNpc::stopEvent() {
+	++spawnGeneration;
 	if (checkSpawnNpcEvent != 0) {
 		g_dispatcher().stopEvent(checkSpawnNpcEvent);
 		checkSpawnNpcEvent = 0;

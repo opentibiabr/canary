@@ -59,6 +59,9 @@
     <ClInclude Include="..\src\creatures\players\components\player_storage.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_title.hpp" />
     <ClInclude Include="..\src\creatures\players\components\player_vip.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\expert_pvp.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\expert_pvp_definitions.hpp" />
+    <ClInclude Include="..\src\creatures\players\components\pvp\player_pvp.hpp" />
     <ClInclude Include="..\src\creatures\players\components\wheel\player_wheel.hpp" />
     <ClInclude Include="..\src\creatures\players\components\weapon_proficiency.hpp" />
     <ClInclude Include="..\src\creatures\players\wheel\wheel_definitions.hpp" />
@@ -302,6 +305,8 @@
     <ClCompile Include="..\src\creatures\players\components\player_storage.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_title.cpp" />
     <ClCompile Include="..\src\creatures\players\components\player_vip.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\pvp\expert_pvp.cpp" />
+    <ClCompile Include="..\src\creatures\players\components\pvp\player_pvp.cpp" />
     <ClCompile Include="..\src\creatures\players\components\wheel\player_wheel.cpp" />
     <ClCompile Include="..\src\creatures\players\components\weapon_proficiency.cpp" />
     <ClCompile Include="..\src\database\database.cpp" />
@@ -549,18 +554,28 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
     <VcpkgAutoLink>true</VcpkgAutoLink>
     <VcpkgHostTriplet>x64-windows</VcpkgHostTriplet>
+    <CanaryVcpkgFeatureFlags>versions</CanaryVcpkgFeatureFlags>
+    <CanaryVcpkgManifestFeatures />
+    <CanaryVcpkgManifestNoDefaultFeatures />
+    <CanaryVcpkgOverlayPorts />
+    <CanaryVcpkgOverlayTriplets>$(VcpkgManifestRoot)\cmake\triplets</CanaryVcpkgOverlayTriplets>
+    <CanaryVcpkgInstallOptions>--clean-packages-after-build;--clean-buildtrees-after-build</CanaryVcpkgInstallOptions>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <VcpkgInstalledDir>$(MSBuildProjectDirectory)\vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows</VcpkgTriplet>
     <VcpkgConfiguration>Release</VcpkgConfiguration>
+    <CanaryVcpkgBuildType />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Vcpkg">
     <VcpkgInstalledDir>$(MSBuildProjectDirectory)\vcpkg_installed</VcpkgInstalledDir>
     <VcpkgTriplet>x64-windows-static-release</VcpkgTriplet>
     <VcpkgUseStatic>false</VcpkgUseStatic>
     <VcpkgUseMD>false</VcpkgUseMD>
+    <CanaryVcpkgBuildType>release</CanaryVcpkgBuildType>
   </PropertyGroup>
+  <Import Project="$(MSBuildProjectDirectory)\.canary-shared-cache\SharedVcpkgCache.props"
+          Condition="'$(CanarySharedVcpkgDisable)'!='true' and Exists('$(MSBuildProjectDirectory)\.canary-shared-cache\SharedVcpkgCache.props')" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -644,30 +659,31 @@
   </Target>
   <PropertyGroup>
     <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgHostTriplet)\tools\protobuf\protoc.exe</ProtocPath>
-    <ProtoPath>$(SourcePath)\protobuf</ProtoPath>
+    <ProtoPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\src\protobuf'))</ProtoPath>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(RunProtoCompile)'=='true'">
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
+    <ClCompile Include="@(ProtoFiles->'generated\%(Filename).pb.cc')">
+      <IncludeInUnityFile>false</IncludeInUnityFile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClInclude Include="@(ProtoFiles->'generated\%(Filename).pb.h')" />
   </ItemGroup>
   <Target Name="ValidateProtoCompileDependencies" BeforeTargets="ProtoCompile" Condition="'$(RunProtoCompile)'=='true'">
     <Error Text="vcpkg MSBuild targets were not found. Set VCPKG_ROOT or pass /p:VcpkgRoot=... so manifest dependencies can be installed before protobuf generation."
            Condition="'$(CanaryVcpkgManifestInstallTarget)'=='' and !Exists('$(ProtocPath)')" />
   </Target>
-  <Target Name="ProtoCompile" BeforeTargets="PrepareForBuild" Condition="'$(RunProtoCompile)'=='true'" DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies">
-    <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; &quot;%(ProtoFiles.Identity)&quot;" />
-    <ItemGroup>
-      <ClCompile Include="generated\%(ProtoFiles.Filename).pb.cc">
-        <IncludeInUnityFile>false</IncludeInUnityFile>
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      </ClCompile>
-      <ClInclude Include="generated\%(ProtoFiles.Filename).pb.h">
-        <IncludeInUnityFile>false</IncludeInUnityFile>
-        <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      </ClInclude>
-    </ItemGroup>
+  <Target Name="ProtoCompile"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(RunProtoCompile)'=='true'"
+          DependsOnTargets="$(CanaryVcpkgManifestInstallTarget);ValidateProtoCompileDependencies"
+          Inputs="@(ProtoFiles);$(ProtocPath)"
+          Outputs="@(ProtoFiles->'$(MSBuildProjectDirectory)\generated\%(Filename).pb.cc');@(ProtoFiles->'$(MSBuildProjectDirectory)\generated\%(Filename).pb.h')">
+    <Exec Command="&quot;$(ProtocPath)&quot; --proto_path=&quot;$(ProtoPath)&quot; --cpp_out=&quot;generated&quot; @(ProtoFiles->'&quot;%(FullPath)&quot;', ' ')" />
   </Target>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets" Condition="'$(_ZVcpkgRoot)'=='' and '$(VcpkgRoot)'!='' and Exists('$(VcpkgRoot)\scripts\buildsystems\msbuild\vcpkg.targets')" />
+    <Import Project="SharedVcpkgCache.targets" />
   </ImportGroup>
 </Project>

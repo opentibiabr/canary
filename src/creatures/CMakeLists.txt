@@ -40,6 +40,8 @@ target_sources(
             players/components/player_forge_history.cpp
             players/components/player_storage.cpp
             players/components/player_title.cpp
+            players/components/pvp/expert_pvp.cpp
+            players/components/pvp/player_pvp.cpp
             players/components/wheel/player_wheel.cpp
             players/components/player_vip.cpp
             players/components/wheel/wheel_gems.cpp

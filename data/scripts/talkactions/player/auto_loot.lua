@@ -1,7 +1,7 @@
 local feature = TalkAction("!autoloot")
 
 local validValues = {
-	-- "all",
+	"all",
 	"on",
 	"off",
 }
@@ -16,7 +16,7 @@ function feature.onSay(player, words, param)
 	end
 	if not table.contains(validValues, param) then
 		local validValuesStr = table.concat(validValues, "/")
-		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid param specified. Usage: !feature [" .. validValuesStr .. "]")
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Invalid param specified. Usage: !autoloot [" .. validValuesStr .. "]")
 		return true
 	end
 

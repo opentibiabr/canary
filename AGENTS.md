@@ -66,6 +66,15 @@ cmake --build --preset windows-release --target canary
 - If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
 - Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
 
+### MSVC Ninja Unity Dependency Tracking
+
+- On Windows, CMake writes Ninja's localized `msvc_deps_prefix` using the console output code page active during configuration. Ninja compares that prefix byte-for-byte with `cl.exe /showIncludes` output during the later build.
+- Do not configure a preset under one console code page and build it under another. That mismatch makes Ninja discard the include lines, leaves `.ninja_deps` with zero dependencies, and can make changed C++ or header files inside a generated unity source appear up to date.
+- When an IDE owns a preset directory, configure it from that IDE's build environment. Do not force a terminal code page onto its cache; if the environment is uncertain, compare the raw `msvc_deps_prefix` in `rules.ninja` with a raw `/showIncludes` sample first.
+- Treat this as an environment/cache mismatch, not as a source-code issue and not as a reason to clean the whole build tree. Re-run the same configure preset from the environment that will build it, then rebuild only the affected target or object files.
+- Before accepting `ninja: no work to do.` after a C++ or header edit, inspect `ninja -t deps <object>` and verify that the object records its included sources and headers. Keep MSVC compiler launchers disabled with Ninja unless they preserve raw `/showIncludes` output and this dependency check passes.
+- Never run two CMake/Ninja builds against the same preset directory concurrently. They can race while writing `.ninja_deps`; after a `premature end of file` or `stored deps info out of date` report, wait for every build to stop, run `ninja -t recompact`, and let one normal build re-establish only the stale dependency records.
+
 ## Precompiled Header Policy
 
 - The project uses `src/pch.hpp` for common standard/library headers.

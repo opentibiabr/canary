@@ -171,6 +171,40 @@ option(
 # Options Code
 # *****************************************************************************
 
+set(
+    CANARY_MSVC_NINJA
+    OFF
+)
+if(MSVC
+   AND CMAKE_GENERATOR
+       MATCHES
+       "Ninja"
+)
+    set(
+        CANARY_MSVC_NINJA
+        ON
+    )
+
+    # Native Ninja parses the raw localized /showIncludes output into
+    # .ninja_deps. A configured compiler launcher can hide or alter it.
+    foreach(
+        COMPILER_LAUNCHER
+        CMAKE_C_COMPILER_LAUNCHER
+        CMAKE_CXX_COMPILER_LAUNCHER
+    )
+        if(NOT
+           "${${COMPILER_LAUNCHER}}"
+           STREQUAL
+           ""
+        )
+            message(
+                FATAL_ERROR
+                    "MSVC Ninja builds require raw cl.exe /showIncludes output. Clear ${COMPILER_LAUNCHER} from the CMake cache or environment and reconfigure."
+            )
+        endif()
+    endforeach()
+endif()
+
 if(FEATURE_METRICS)
     log_option_enabled("metrics")
 else()
@@ -179,24 +213,24 @@ endif()
 
 # === CCACHE ===
 if(OPTIONS_ENABLE_CCACHE)
-    find_program(CCACHE ccache)
-    if(CCACHE)
-        log_option_enabled("ccache")
-        set(CMAKE_CXX_COMPILER_LAUNCHER
-            ${CCACHE}
-        )
+    if(CANARY_MSVC_NINJA)
+        log_option_disabled("ccache for MSVC Ninja dependency tracking")
     else()
-        log_option_disabled("ccache")
+        find_program(CCACHE ccache)
+        if(CCACHE)
+            log_option_enabled("ccache")
+            set(CMAKE_CXX_COMPILER_LAUNCHER
+                ${CCACHE}
+            )
+        else()
+            log_option_disabled("ccache")
+        endif()
     endif()
 endif()
 
 # === SCCACHE ===
 if(OPTIONS_ENABLE_SCCACHE)
-    if(MSVC
-       AND CMAKE_GENERATOR
-           MATCHES
-           "Ninja"
-    )
+    if(CANARY_MSVC_NINJA)
         # Ninja's MSVC dependency tracking relies on /showIncludes output. With
         # sccache as a compiler launcher, Ninja may record empty deps, which
         # breaks incremental builds for headers and CMake unity sources.

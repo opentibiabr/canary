@@ -25,6 +25,7 @@
 #include "map/map.hpp"
 #include "map/spectators.hpp"
 #include "io/iobestiary.hpp"
+#include "utils/tools.hpp"
 
 int32_t Monster::despawnRange;
 int32_t Monster::despawnRadius;
@@ -1607,7 +1608,7 @@ void Monster::onThink(uint32_t interval) {
 	}
 
 	if (challengeMeleeDuration != 0) {
-		challengeMeleeDuration -= interval;
+		challengeMeleeDuration = subtractElapsedTime(challengeMeleeDuration, interval);
 		if (challengeMeleeDuration <= 0) {
 			challengeMeleeDuration = 0;
 			targetDistance = m_monsterType->info.targetDistance;
@@ -2143,7 +2144,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 			bool canChangeTarget = true;
 
 			if (challengeFocusDuration > 0) {
-				challengeFocusDuration -= interval;
+				challengeFocusDuration = subtractElapsedTime(challengeFocusDuration, interval);
 				canChangeTarget = false;
 
 				if (challengeFocusDuration <= 0) {
@@ -2152,7 +2153,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 			}
 
 			if (fatalHoldDuration > 0 && runAwayHealth > 0) {
-				fatalHoldDuration -= interval;
+				fatalHoldDuration = subtractElapsedTime(fatalHoldDuration, interval);
 
 				if (fatalHoldDuration <= 0) {
 					fatalHoldDuration = 0;
@@ -2160,7 +2161,7 @@ void Monster::onThinkTarget(uint32_t interval) {
 			}
 
 			if (m_targetChangeCooldown > 0) {
-				m_targetChangeCooldown -= interval;
+				m_targetChangeCooldown = subtractElapsedTime(m_targetChangeCooldown, interval);
 
 				if (m_targetChangeCooldown <= 0) {
 					m_targetChangeCooldown = 0;

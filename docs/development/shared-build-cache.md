@@ -84,7 +84,7 @@ To reclaim only the disposable `buildtrees` and `packages` data for one known fi
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
 ```
 
-This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. A full dependency fingerprint must match exactly one schema metadata record: the schema and normalized module identity are part of the fingerprint, so an ambiguous match is unsafe and is not cleaned. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
 
 ## Non-Windows setup
 
@@ -104,9 +104,9 @@ cmake --build --preset <build-preset>
 `cmake/SharedBuildCache.cmake` runs before the first `project()` call. When it can prove the complete installation contract, it selects:
 
 ```text
-<cache-root>/vcpkg-installed/v4/<dependency-fingerprint>
-<cache-root>/vcpkg-buildtrees/v4/<dependency-fingerprint>
-<cache-root>/vcpkg-packages/v4/<dependency-fingerprint>
+<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-buildtrees/v4/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-packages/v4/<24-hex-dependency-fingerprint-prefix>
 ```
 
 The first directory is persistent. The latter two are transient and are cleaned after successful dependency builds by the preset's vcpkg options.
@@ -256,7 +256,7 @@ Verify its `CMakeCache.txt`:
 CANARY_SHARED_VCPKG_ACTIVE:INTERNAL=true
 CANARY_VCPKG_DEPENDENCY_FINGERPRINT:INTERNAL=<full-dependency-fingerprint>
 CANARY_VCPKG_CONSUMER_FINGERPRINT:INTERNAL=<full-consumer-fingerprint>
-VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v4/<dependency-fingerprint>
+VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
 ```
 
 Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.

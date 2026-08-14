@@ -1933,7 +1933,7 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		return 0;
 	}
 
-	uint16_t totalBonus = 0;
+	uint32_t totalBonus = 0;
 	for (const auto &[itemId, name, extraPoints] : m_unlockedScrolls) {
 		if (itemId == 0) {
 			continue;
@@ -1942,12 +1942,20 @@ uint16_t PlayerWheel::getExtraPoints() const {
 		totalBonus += extraPoints;
 	}
 
+	const auto taskBoardMultiplier = m_player.kv()->scoped("task-board")->scoped("wheel")->get("multiplier");
+	if (taskBoardMultiplier.has_value()) {
+		const auto configuredMultiplier = taskBoardMultiplier->getNumber();
+		if (configuredMultiplier > 1) {
+			totalBonus += static_cast<uint16_t>(std::min(configuredMultiplier - 1, 49.0));
+		}
+	}
+
 	if (hasCompletedMonkQuest()) {
 		const auto monkQuestBonus = std::max<int32_t>(0, g_configManager().getNumber(WHEEL_MONK_QUEST_BONUS));
 		totalBonus += static_cast<uint16_t>(std::min<int32_t>(monkQuestBonus, 0xFFFF));
 	}
 
-	return totalBonus;
+	return static_cast<uint16_t>(std::min<uint32_t>(totalBonus, std::numeric_limits<uint16_t>::max()));
 }
 
 uint16_t PlayerWheel::getWheelPoints(bool includeExtraPoints /* = true*/) const {

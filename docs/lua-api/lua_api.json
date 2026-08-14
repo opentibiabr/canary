@@ -6003,6 +6003,14 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "clearRaceIconOverlays",
+        "params": [
+          "icon: number"
+        ],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "clearSpellCooldowns",
         "params": [
           "spenders: boolean",
@@ -6386,7 +6394,9 @@
         "name": "getItemCount",
         "params": [
           "itemId: number|string",
-          "subType?: number"
+          "subType?: number",
+          "ignoreEquipped?: boolean",
+          "ignoreStoreInbox?: boolean"
         ],
         "return": "number|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
@@ -7018,6 +7028,12 @@
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
       },
       {
+        "name": "refreshVisibleCreatureIcons",
+        "params": [],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
         "name": "reloadData",
         "params": [],
         "return": "boolean|nil",
@@ -7119,7 +7135,8 @@
           "itemId: number|string",
           "count: number",
           "subType?: number",
-          "ignoreEquipped?: boolean"
+          "ignoreEquipped?: boolean",
+          "ignoreStoreInbox?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"
@@ -7660,6 +7677,16 @@
         "name": "setPronoun",
         "params": [
           "newPronoun: any"
+        ],
+        "return": "boolean|nil",
+        "source": "src/lua/functions/creatures/player/player_functions.cpp"
+      },
+      {
+        "name": "setRaceIconOverlay",
+        "params": [
+          "raceId: number",
+          "icon: number",
+          "enabled?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

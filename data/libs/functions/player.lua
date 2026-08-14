@@ -513,6 +513,16 @@ function Player:calculateLootFactor(monster)
 		suffix = string.format("vip bonus %d%%", math.floor(vipBoost * 100 + 0.5))
 	end
 
+	local taskboard = rawget(_G, "Taskboard")
+	if taskboard and type(taskboard.getLootBonus) == "function" then
+		local taskboardBonus = tonumber(taskboard.getLootBonus(self, monster)) or 0
+		if taskboardBonus > 0 then
+			factor = factor * (1 + taskboardBonus)
+			local bonusText = string.format("task board bonus %d%%", math.floor(taskboardBonus * 100 + 0.5))
+			suffix = suffix == "" and bonusText or suffix .. ", " .. bonusText
+		end
+	end
+
 	return {
 		factor = factor,
 		msgSuffix = suffix,

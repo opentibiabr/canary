@@ -4287,9 +4287,33 @@ void ProtocolGame::parseSendResourceBalance() {
 }
 
 void ProtocolGame::parseSendResourceBalance(NetworkMessage &msg) {
-	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
-		msg.getByte(true);
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		parseSendResourceBalance();
+		return;
 	}
+
+	const auto requestedResource = msg.getByte(true);
+	const bool isBountyPoints = requestedResource == RESOURCE_BOUNTY_POINTS;
+	const bool isSoulseals = requestedResource == RESOURCE_SOULSEALS;
+	if (isBountyPoints || isSoulseals) {
+		const bool supported = isBountyPoints
+			? hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets)
+			: hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialSoulSealsPackets);
+		if (!supported) {
+			return;
+		}
+
+		const auto key = isBountyPoints ? "bounty-points" : "soulseals";
+		const auto stored = player->kv()->scoped("task-board")->scoped("general")->get(key);
+		double value = stored.has_value() ? stored->getNumber() : 0;
+		if (!std::isfinite(value) || value < 0) {
+			value = 0;
+		}
+		value = std::min(value, static_cast<double>(std::numeric_limits<uint32_t>::max()));
+		sendResourceBalance(static_cast<Resource_t>(requestedResource), static_cast<uint64_t>(value));
+		return;
+	}
+
 	parseSendResourceBalance();
 }
 
@@ -4538,7 +4562,11 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 		return;
 	}
 
-	const auto icons = creature->getIcons();
+	auto icons = creature->getIcons();
+	if (const auto monster = creature->getMonster()) {
+		const auto overlays = player->getRaceIconOverlays(monster->getRaceId());
+		icons.insert(icons.end(), overlays.begin(), overlays.end());
+	}
 	// client only supports 3 icons, otherwise it will crash
 	const auto count = icons.size() > 3 ? 3 : icons.size();
 	msg.addByte(count);
@@ -4551,7 +4579,7 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 }
 
 void ProtocolGame::sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
-	if (!creature || !player || oldProtocol) {
+	if (!creature || !player || oldProtocol || !canSee(creature) || !knownCreatureSet.contains(creature->getID())) {
 		return;
 	}
 

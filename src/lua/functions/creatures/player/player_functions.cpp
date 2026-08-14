@@ -491,6 +491,9 @@ void PlayerFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "Player", "sendIconBakragore", PlayerFunctions::luaPlayerSendIconBakragore);
 	Lua::registerMethod(L, "Player", "removeIconBakragore", PlayerFunctions::luaPlayerRemoveIconBakragore);
 	Lua::registerMethod(L, "Player", "sendCreatureAppear", PlayerFunctions::luaPlayerSendCreatureAppear);
+	Lua::registerMethod(L, "Player", "setRaceIconOverlay", PlayerFunctions::luaPlayerSetRaceIconOverlay);
+	Lua::registerMethod(L, "Player", "clearRaceIconOverlays", PlayerFunctions::luaPlayerClearRaceIconOverlays);
+	Lua::registerMethod(L, "Player", "refreshVisibleCreatureIcons", PlayerFunctions::luaPlayerRefreshVisibleCreatureIcons);
 
 	Lua::registerMethod(L, "Player", "addAnimusMastery", PlayerFunctions::luaPlayerAddAnimusMastery);
 	Lua::registerMethod(L, "Player", "removeAnimusMastery", PlayerFunctions::luaPlayerRemoveAnimusMastery);
@@ -1837,8 +1840,16 @@ int PlayerFunctions::luaPlayerOpenStash(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:getItemCount
+ * @param itemId number|string
+ * @param subType? number
+ * @param ignoreEquipped? boolean
+ * @param ignoreStoreInbox? boolean
+ * @return number|nil
+ */
 int PlayerFunctions::luaPlayerGetItemCount(lua_State* L) {
-	// player:getItemCount(itemId[, subType = -1])
+	// player:getItemCount(itemId[, subType = -1[, ignoreEquipped = false[, ignoreStoreInbox = false]]])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);
@@ -1857,7 +1868,9 @@ int PlayerFunctions::luaPlayerGetItemCount(lua_State* L) {
 	}
 
 	const auto subType = Lua::getNumber<int32_t>(L, 3, -1);
-	lua_pushnumber(L, player->getItemTypeCount(itemId, subType));
+	const bool ignoreEquipped = Lua::getBoolean(L, 4, false);
+	const bool ignoreStoreInbox = Lua::getBoolean(L, 5, false);
+	lua_pushnumber(L, player->getItemTypeCount(itemId, subType, ignoreEquipped, ignoreStoreInbox));
 	return 1;
 }
 
@@ -2554,8 +2567,17 @@ int PlayerFunctions::luaPlayerRemoveStashItem(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:removeItem
+ * @param itemId number|string
+ * @param count number
+ * @param subType? number
+ * @param ignoreEquipped? boolean
+ * @param ignoreStoreInbox? boolean
+ * @return boolean|nil
+ */
 int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
-	// player:removeItem(itemId, count[, subType = -1[, ignoreEquipped = false]])
+	// player:removeItem(itemId, count[, subType = -1[, ignoreEquipped = false[, ignoreStoreInbox = false]]])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);
@@ -2576,7 +2598,8 @@ int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
 	const uint32_t count = Lua::getNumber<uint32_t>(L, 3);
 	const auto subType = Lua::getNumber<int32_t>(L, 4, -1);
 	const bool ignoreEquipped = Lua::getBoolean(L, 5, false);
-	Lua::pushBoolean(L, player->removeItemOfType(itemId, count, subType, ignoreEquipped));
+	const bool ignoreStoreInbox = Lua::getBoolean(L, 6, false);
+	Lua::pushBoolean(L, player->removeItemOfType(itemId, count, subType, ignoreEquipped, ignoreStoreInbox));
 	return 1;
 }
 
@@ -5268,6 +5291,63 @@ int PlayerFunctions::luaPlayerSendCreatureAppear(lua_State* L) {
 
 	bool isLogin = Lua::getBoolean(L, 2, false);
 	player->sendCreatureAppear(player, player->getPosition(), isLogin);
+	Lua::pushBoolean(L, true);
+	return 1;
+}
+
+/***
+ * Sets or removes a viewer-specific creature icon for every monster of a race.
+ * @function Player:setRaceIconOverlay
+ * @param raceId number
+ * @param icon number
+ * @param enabled? boolean
+ * @return boolean|nil
+ */
+int PlayerFunctions::luaPlayerSetRaceIconOverlay(lua_State* L) {
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto raceId = Lua::getNumber<uint16_t>(L, 2);
+	const auto icon = Lua::getNumber<CreatureIconModifications_t>(L, 3);
+	const bool enabled = Lua::getBoolean(L, 4, true);
+	Lua::pushBoolean(L, player->setRaceIconOverlay(raceId, icon, enabled));
+	return 1;
+}
+
+/***
+ * Removes one viewer-specific icon from every configured monster race.
+ * @function Player:clearRaceIconOverlays
+ * @param icon number
+ * @return boolean|nil
+ */
+int PlayerFunctions::luaPlayerClearRaceIconOverlays(lua_State* L) {
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	const auto icon = Lua::getNumber<CreatureIconModifications_t>(L, 2);
+	Lua::pushBoolean(L, player->clearRaceIconOverlays(icon));
+	return 1;
+}
+
+/***
+ * Resends creature icons for every creature currently visible to this player.
+ * @function Player:refreshVisibleCreatureIcons
+ * @return boolean|nil
+ */
+int PlayerFunctions::luaPlayerRefreshVisibleCreatureIcons(lua_State* L) {
+	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
+	if (!player) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	player->refreshVisibleCreatureIcons();
 	Lua::pushBoolean(L, true);
 	return 1;
 }

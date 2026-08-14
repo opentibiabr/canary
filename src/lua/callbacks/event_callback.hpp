@@ -247,6 +247,7 @@ inline void EventCallback::applyDamageReferences(lua_State* L, const std::vector
 			updateDamageEntry(L, index, "secondary", entry.damage->secondary.type, entry.damage->secondary.value);
 			updateDamageOrigin(L, index, entry.damage->origin);
 			updateDamageCritical(L, index, entry.damage->critical);
+			updateNumberField(L, index, "lifeLeech", entry.damage->lifeLeech);
 		}
 		luaL_unref(L, LUA_REGISTRYINDEX, entry.registryIndex);
 		lua_pop(L, 1);

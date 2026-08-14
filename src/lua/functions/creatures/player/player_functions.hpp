@@ -402,6 +402,9 @@ class PlayerFunctions {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
+	static int luaPlayerSetRaceIconOverlay(lua_State* L);
+	static int luaPlayerClearRaceIconOverlays(lua_State* L);
+	static int luaPlayerRefreshVisibleCreatureIcons(lua_State* L);
 
 	static int luaPlayerAddAnimusMastery(lua_State* L);
 	static int luaPlayerRemoveAnimusMastery(lua_State* L);

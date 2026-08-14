@@ -4000,6 +4000,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
+#### `Player:clearRaceIconOverlays(icon: number)`
+
+- Returns: `boolean|nil`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
 #### `Player:clearSpellCooldowns(spenders: boolean, builder: boolean)`
 
 - Returns: `boolean|nil`
@@ -4280,7 +4285,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `nil|Item`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:getItemCount(itemId: number|string, subType?: number)`
+#### `Player:getItemCount(itemId: number|string, subType?: number, ignoreEquipped?: boolean, ignoreStoreInbox?: boolean)`
 
 - Returns: `number|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -4745,6 +4750,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
+#### `Player:refreshVisibleCreatureIcons()`
+
+- Returns: `boolean|nil`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
 #### `Player:reloadData()`
 
 - Returns: `boolean|nil`
@@ -4805,7 +4815,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:removeItem(itemId: number|string, count: number, subType?: number, ignoreEquipped?: boolean)`
+#### `Player:removeItem(itemId: number|string, count: number, subType?: number, ignoreEquipped?: boolean, ignoreStoreInbox?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
@@ -5136,6 +5146,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:setPronoun(newPronoun: any)`
+
+- Returns: `boolean|nil`
+- Source: `src/lua/functions/creatures/player/player_functions.cpp`
+
+#### `Player:setRaceIconOverlay(raceId: number, icon: number, enabled?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`

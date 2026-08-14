@@ -55,6 +55,7 @@ end
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
+	{ itemName = "bounty talisman", clientId = 51978, buy = 5000 },
 	{ itemName = "ancient coin", clientId = 24390, sell = 350 },
 	{ itemName = "black pearl", clientId = 3027, buy = 560, sell = 280 },
 	{ itemName = "blue crystal shard", clientId = 16119, sell = 1500 },

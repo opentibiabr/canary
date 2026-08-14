@@ -128,7 +128,9 @@ local itemsTable = {
 	},
 }
 
-npcConfig.shop = {}
+npcConfig.shop = {
+	{ itemName = "bounty talisman", clientId = 51978, buy = 5000 },
+}
 for _, categoryTable in pairs(itemsTable) do
 	for _, itemTable in ipairs(categoryTable) do
 		table.insert(npcConfig.shop, itemTable)

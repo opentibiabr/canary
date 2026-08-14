@@ -252,7 +252,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 22 then
 				npcHandler:say({
 					"Incredible! You're a true defender of faith! I grant you the title of a High Inquisitor for your noble deeds. From now on you can obtain the blessing of the inquisition which makes the pilgrimage of ashes obsolete ...",
-					"The blessing of the inquisition will bestow upon you all available blessings for a slightly higher price than if you'd buy them separately. Also, don't forget to ask me about your {outfit} to receive the final addon as demon hunter.",
+					"The blessing of the inquisition will bestow upon you all available blessings for " .. totalBlessPrice .. " gold, which is slightly higher than if you'd buy them separately. Also, don't forget to ask me about your {outfit} to receive the final addon as demon hunter.",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 23)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission07, 3) -- The Inquisition Questlog- "Mission 7: The Shadow Nexus"

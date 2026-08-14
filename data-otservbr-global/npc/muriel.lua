@@ -324,12 +324,26 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Farewell.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 -- Dialogue keywords the NPC answers on the official server
 keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "He's not as dumb as the average fighter but a warrior nonetheless." })
-keywordHandler:addKeyword({ "explorer society" }, StdModule.say, { npcHandler = npcHandler, text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia." })
+keywordHandler:addKeyword(
+	{ "explorer society" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia.",
+	}
+)
 keywordHandler:addKeyword({ "pits of inferno" }, StdModule.say, { npcHandler = npcHandler, text = "They are rumoured to be hidden somewhere in the Plains of Havoc, far to the east." })
 keywordHandler:addKeyword({ "nightmare pits" }, StdModule.say, { npcHandler = npcHandler, text = "They are rumoured to be hidden somewhere in the Plains of Havoc, far to the east." })
 keywordHandler:addKeyword({ "flaming pits" }, StdModule.say, { npcHandler = npcHandler, text = "These pits you refer to might be the legendary 'Pits of Inferno', also known as the 'Nightmare Pits'." })
 keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "The dragon was ancient beyond compare. Eventually even he had to succumb to old age and flew to the dragon cemetery to die there. Or so it is told." })
-keywordHandler:addKeyword({ "inscription" }, StdModule.say, { npcHandler = npcHandler, text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia." })
+keywordHandler:addKeyword(
+	{ "inscription" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "I heard that a member of the Explorer Society was in fact searching for the First Dragon. What a foolish endeavour - please excuse this comment. A romantic idea and a brave venture but seriously: the First Dragon. It is just a myth! ... However the explorer found an ancient inscription underneath the city of Thais. Reportedly he discovered it in the small cave where the first time ever a dragon was sighted on Tibia.",
+	}
+)
 keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "I wonder how he actually got these awesome powers." })
 keywordHandler:addKeyword({ "excalibug" }, StdModule.say, { npcHandler = npcHandler, text = "The enchantments on this weapon must be awesome." })
 keywordHandler:addKeyword({ "tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "The king is a patron of the arcane arts." })
@@ -343,8 +357,22 @@ keywordHandler:addKeyword({ "general" }, StdModule.say, { npcHandler = npcHandle
 keywordHandler:addKeyword({ "quentin" }, StdModule.say, { npcHandler = npcHandler, text = "He has some minor magic powers." })
 keywordHandler:addKeyword({ "muriel" }, StdModule.say, { npcHandler = npcHandler, text = "I don't like jokes about my name!" })
 keywordHandler:addKeyword({ "wisdom" }, StdModule.say, { npcHandler = npcHandler, text = "The wisdom of spellcasting is the source of power." })
-keywordHandler:addKeyword({ "arcian" }, StdModule.say, { npcHandler = npcHandler, text = "Arcian was a childhood friend of mine. We studied the art of sorcery together but later, our ways parted ... Whereas I stayed here to instruct young new sorcerers, he devoted his life to his own studies ... Since his experiments tended to become a bit dangerous and he wanted to further explore a magic phenomenon he discovered in the Plains of Havoc anyway, he moved there and took his wife and his two assistants with him ... We stayed in contact for a while and he maintained a one-way teleporter to the academy. As I was missing any message from him for some time, I travelled to the plains to learn what might have happened ... I found the house overrun by ghouls, and no living soul. I have to assume that those ghouls have killed them and dragged everyone in their lairs. I left as soon as I could ... I wouldn't have wanted to see what they've done to my old friend. It's a sad story indeed." })
-keywordHandler:addKeyword({ "porgol" }, StdModule.say, { npcHandler = npcHandler, text = "Porgol was a quite bright student, although a bit overambitious. I was surprised when he agreed to accompany my friend Arcian to the Plains of Havoc to support him in his studies ... I was quite sure he'd rather study at the Edron academy instead. But sometimes people surprise one in a positive way. All the more it is tragic he found his death in this assault of undead on Arcian's house." })
+keywordHandler:addKeyword(
+	{ "arcian" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Arcian was a childhood friend of mine. We studied the art of sorcery together but later, our ways parted ... Whereas I stayed here to instruct young new sorcerers, he devoted his life to his own studies ... Since his experiments tended to become a bit dangerous and he wanted to further explore a magic phenomenon he discovered in the Plains of Havoc anyway, he moved there and took his wife and his two assistants with him ... We stayed in contact for a while and he maintained a one-way teleporter to the academy. As I was missing any message from him for some time, I travelled to the plains to learn what might have happened ... I found the house overrun by ghouls, and no living soul. I have to assume that those ghouls have killed them and dragged everyone in their lairs. I left as soon as I could ... I wouldn't have wanted to see what they've done to my old friend. It's a sad story indeed.",
+	}
+)
+keywordHandler:addKeyword(
+	{ "porgol" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "Porgol was a quite bright student, although a bit overambitious. I was surprised when he agreed to accompany my friend Arcian to the Plains of Havoc to support him in his studies ... I was quite sure he'd rather study at the Edron academy instead. But sometimes people surprise one in a positive way. All the more it is tragic he found his death in this assault of undead on Arcian's house.",
+	}
+)
 keywordHandler:addKeyword({ "gregor" }, StdModule.say, { npcHandler = npcHandler, text = "Knights! Childs with swords. Not worth of any attention." })
 keywordHandler:addKeyword({ "ronald" }, StdModule.say, { npcHandler = npcHandler, text = "Simple farmers." })
 keywordHandler:addKeyword({ "sherry" }, StdModule.say, { npcHandler = npcHandler, text = "Simple farmers." })

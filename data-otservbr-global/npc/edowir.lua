@@ -66,7 +66,14 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Come back whenever you're in need of wi
 
 -- Dialogue keywords the NPC answers on the official server
 keywordHandler:addKeyword({ "brotherhood of bones" }, StdModule.say, { npcHandler = npcHandler, text = "This brotherhood was an secret society of necromancers and followers of purest evil. They were vanquished long ago by their arch enemies, the Nightmare Knights." })
-keywordHandler:addKeyword({ "triangle of terror" }, StdModule.say, { npcHandler = npcHandler, text = "The Triangle of Terror is a cabal of three archdemons that have put aside their quarrels to establish some power in the shadows of the Ruthless Seven. Although they are all very mighty demons, compared to one of the seven, they appear weak ... So they try not to interfere much with the doings of the seven and look for power elsewhere. Their members are Morgaroth, the schemer, Ghazbaran, the lord of blades and Zoralurk, the demon with the thousand faces." })
+keywordHandler:addKeyword(
+	{ "triangle of terror" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "The Triangle of Terror is a cabal of three archdemons that have put aside their quarrels to establish some power in the shadows of the Ruthless Seven. Although they are all very mighty demons, compared to one of the seven, they appear weak ... So they try not to interfere much with the doings of the seven and look for power elsewhere. Their members are Morgaroth, the schemer, Ghazbaran, the lord of blades and Zoralurk, the demon with the thousand faces.",
+	}
+)
 keywordHandler:addKeyword({ "nightmare knights" }, StdModule.say, { npcHandler = npcHandler, text = "The Nightmare Knights were an ancient order dedicated to fight evil. They were guided by prophetic dreams. The order ceased to exist after their war against the Brotherhood of Bones." })
 keywordHandler:addKeyword({ "stone skin amulet" }, StdModule.say, { npcHandler = npcHandler, text = "Though they possess only a few charges, stone skin amulets are sought after because they offer complete protection from physical damage." })
 keywordHandler:addKeyword({ "war of the djinn" }, StdModule.say, { npcHandler = npcHandler, text = "Although some priests claim that a war was fought on behalf of the gods, it seems more likely that this was kind of a civil war between the Djinn of good and the Djinn of evil." })

@@ -375,7 +375,11 @@ keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, 
 keywordHandler:addKeyword({ "city" }, StdModule.say, { npcHandler = npcHandler, text = "The city is open to almost everyone. That literally opens doors for all kinds of criminals and fiends." })
 keywordHandler:addKeyword({ "army" }, StdModule.say, { npcHandler = npcHandler, text = "Our army might be infested with spies already." })
 keywordHandler:addKeyword({ "gods" }, StdModule.say, { npcHandler = npcHandler, text = "We are just the pawns of the gods. The best we can expect is that our play amuses them enough to keep their interest in us, so we might live a day or two longer." })
-keywordHandler:addKeyword({ "tbi" }, StdModule.say, { npcHandler = npcHandler, text = "The Tibian Bureau of Investigation, the secret service of His Royal Highness ... The TBI is an old institution with tradition. Since centuries we are the protectors of our king and country ... We successfully fight intrigues and corruption from within and enemies from without. Only the most talented individuals are allowed to join." })
+keywordHandler:addKeyword(
+	{ "tbi" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "The Tibian Bureau of Investigation, the secret service of His Royal Highness ... The TBI is an old institution with tradition. Since centuries we are the protectors of our king and country ... We successfully fight intrigues and corruption from within and enemies from without. Only the most talented individuals are allowed to join." }
+)
 keywordHandler:addKeyword({ "cgb" }, StdModule.say, { npcHandler = npcHandler, text = "An amateurish attempt of Carlin to establish a secret service. It's nothing than a 'make-believe' game for little girls ... They should rather play salesman and customer or mother and child instead of pretending to be secret agents." })
 keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "I say it was a mistake to rely on a single person for such vital services but having those Venoreans here is even worse." })
 

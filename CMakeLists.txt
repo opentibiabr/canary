@@ -171,8 +171,7 @@ option(
 # Options Code
 # *****************************************************************************
 
-set(
-    CANARY_MSVC_NINJA
+set(CANARY_MSVC_NINJA
     OFF
 )
 if(MSVC
@@ -180,8 +179,7 @@ if(MSVC
        MATCHES
        "Ninja"
 )
-    set(
-        CANARY_MSVC_NINJA
+    set(CANARY_MSVC_NINJA
         ON
     )
 
@@ -189,8 +187,7 @@ if(MSVC
     # .ninja_deps. A configured compiler launcher can hide or alter it.
     foreach(
         COMPILER_LAUNCHER
-        CMAKE_C_COMPILER_LAUNCHER
-        CMAKE_CXX_COMPILER_LAUNCHER
+        CMAKE_C_COMPILER_LAUNCHER CMAKE_CXX_COMPILER_LAUNCHER
     )
         if(NOT
            "${${COMPILER_LAUNCHER}}"

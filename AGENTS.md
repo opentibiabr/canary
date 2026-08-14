@@ -1,3 +1,9 @@
+## AGENTS.md Loading Budget
+
+- Keep this root file limited to repository-wide invariants and precise routing gates; place detailed workflows in versioned documentation or skills.
+- Codex applies a combined instruction budget (32 KiB by default) across global, root, and nested guidance. Keep critical gates first and preserve headroom for narrower scopes.
+- Do not raise `project_doc_max_bytes` as the first response to oversized guidance; remove duplication and route conditional detail first.
+
 ## Git Safety
 
 - Before committing or pushing, always check `git status --short --branch` and `git branch -vv`.
@@ -44,27 +50,9 @@
 
 ## Build Policy
 
-- Compile when the change is critical, complex, or likely to break compilation. For small documentation, script, or clearly non-build-affecting changes, avoid builds unless they add real validation value.
-- When compiling, prioritize the correct known workflow below instead of guessing commands or creating new build trees, to avoid wasting time on environment or cache mistakes.
-- When adding, removing, or renaming C++ source/header files, update every maintained build entry point in the same change. For Canary server code this usually means the relevant `CMakeLists.txt` file and the tracked Visual Studio project `vcproj/canary.vcxproj`; for tests, update the relevant test `CMakeLists.txt` as well. Missing `.cpp` entries in `vcproj/canary.vcxproj` commonly appear as unresolved external linker errors when building `vcproj/canary.sln`.
-- Before building on Windows, inspect the repository build entry points instead of guessing:
-  - Check `CMakePresets.json` and `CMakeLists.txt`.
-  - Check whether Visual Studio solutions exist, such as `vcproj/*.sln` or generated `build/**/*.sln`.
-  - Check whether a CMake cache already exists under `build/<preset>`.
-- Prefer the CMake preset workflow over Visual Studio solution builds unless the user explicitly asks for the solution path or the preset is unusable.
-- Prefer the release preset for normal local validation because it uses the intended cache and unity settings. The default Windows server build path is:
-
-```bat
-cmake --preset windows-release
-cmake --build --preset windows-release --target canary
-```
-
-- On Windows, prefer running the CMake commands from the Visual Studio Developer Command Prompt or Developer PowerShell. That environment is the expected reliable build environment because it already prepares the MSVC compiler, Windows SDK, CMake tools, Ninja, and the required environment variables.
-- If the shell is not already a Visual Studio developer environment, initialize it with `VsDevCmd.bat` before configuring or building. `cl.exe` and Ninja must be available in `PATH` before running CMake.
-- If Ninja is not in `PATH`, use the Ninja bundled with the Visual Studio CMake tools instead of changing generators or creating another build tree.
-- Treat these files/directories as signs of an active CMake/Ninja cache: `CMakeCache.txt`, `CMakeFiles/`, `build.ninja`, `.ninja_deps`, `.ninja_log`, `cmake_install.cmake`, `compile_commands.json`, `vcpkg-manifest-install.log`, and `VSInheritEnvironments.txt`.
-- If CMake reports changed compiler variables, missing `CMAKE_MAKE_PROGRAM`, or an incompatible cache, remove only the affected preset directory after verifying it is inside `build/`, then rerun the same preset. Do not create ad-hoc build directories for recovery.
-- Do not switch from CMake presets to a generated `.sln` just because configure failed. Fix the preset environment/cache first.
+- Do not compile, build, or run compile-triggering validation by default. Build only when the user explicitly requests it or at the completion point of an authorized long roadmap.
+- Before an authorized local build, read `docs/building/local-validation.md` and reuse its maintained preset, environment, and cache workflow.
+- When adding, removing, or renaming C++ source or header files, update every maintained entry point in the same change: the relevant `CMakeLists.txt`, `vcproj/canary.vcxproj`, and any affected test `CMakeLists.txt`.
 
 ## Precompiled Header Policy
 

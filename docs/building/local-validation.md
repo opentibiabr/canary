@@ -28,11 +28,20 @@ Before configuring or building:
 4. Reuse that maintained build state. Do not guess commands or create an
    alternate build tree.
 
-Run CMake from a Visual Studio Developer Command Prompt or Developer
-PowerShell. If the current shell is not a developer environment, initialize it
-with `VsDevCmd.bat`. Confirm that `cl.exe` and Ninja are available in
-`PATH`. If Ninja is missing, use the copy bundled with Visual Studio's CMake
-tools instead of changing generators or creating another build tree.
+Run CMake from an already initialized Visual Studio Developer Command Prompt or
+Developer PowerShell. If starting from a regular `cmd.exe`, run
+`VsDevCmd.bat` and keep the shared-cache helper, CMake configure, and build
+commands in that same `cmd.exe` session. Do not invoke `VsDevCmd.bat` as a
+standalone child from ordinary PowerShell because its environment changes do
+not propagate back to the parent session.
+
+After Visual Studio initialization and before any helper, configure, or build,
+select or restore the project-managed `VCPKG_ROOT`. Verify that it contains
+`vcpkg.exe` and `scripts/buildsystems/vcpkg.cmake`; `VsDevCmd.bat` may replace
+an existing value with Visual Studio's bundled vcpkg, which is a different
+dependency contract. Confirm `cl.exe` and Ninja are available in `PATH`. If
+Ninja is missing, use the copy bundled with Visual Studio's CMake tools instead
+of changing generators or creating another build tree.
 
 ## Preset workflow
 

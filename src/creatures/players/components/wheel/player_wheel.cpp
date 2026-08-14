@@ -1945,8 +1945,11 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	const auto taskBoardMultiplier = m_player.kv()->scoped("task-board")->scoped("wheel")->get("multiplier");
 	if (taskBoardMultiplier.has_value()) {
 		const auto configuredMultiplier = taskBoardMultiplier->getNumber();
-		if (configuredMultiplier > 1) {
-			totalBonus += static_cast<uint16_t>(std::min(configuredMultiplier - 1, 49.0));
+		if (std::isfinite(configuredMultiplier)) {
+			const auto normalizedMultiplier = std::clamp(configuredMultiplier, 1.0, 50.0);
+			if (normalizedMultiplier > 1.0) {
+				totalBonus += static_cast<uint16_t>(std::floor(normalizedMultiplier) - 1.0);
+			}
 		}
 	}
 

@@ -83,8 +83,8 @@ jobs:
           queue_auto_merge() {
             local pr_number="$1"
 
-            if [[ -z "${pr_number}" ]]; then
-              echo "::error::Could not determine the baseline pull request number"
+            if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+              echo "::error::Invalid baseline pull request number: ${pr_number}"
               return 1
             fi
 
@@ -99,7 +99,7 @@ jobs:
             git fetch --prune origin main
 
             if git ls-remote --exit-code --heads origin "${BRANCH_NAME}" >/dev/null 2>&1; then
-              git fetch origin "${BRANCH_NAME}"
+              git fetch origin "+refs/heads/${BRANCH_NAME}:refs/remotes/origin/${BRANCH_NAME}"
               git checkout -B "${BRANCH_NAME}" "origin/${BRANCH_NAME}"
               git rebase origin/main
               git push --force-with-lease origin "${BRANCH_NAME}"
@@ -111,7 +111,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          EXISTING_PR=$(gh pr list --state open --json number,headRefName | jq -r '.[] | select(.headRefName == "'"${BRANCH_NAME}"'") | .number')
+          EXISTING_PR=$(gh pr list --state open --base main --head "${GITHUB_REPOSITORY_OWNER}:${BRANCH_NAME}" --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$EXISTING_PR" ]; then
             echo "Found existing baseline PR #${EXISTING_PR}, updating it"
@@ -168,14 +168,14 @@ jobs:
             printf -v PR_BODY '## vcpkg Baseline Update\n\nThis PR updates the vcpkg baseline to the latest release.\n\n**Release:** `%s`\n**Previous builtin baseline:** `%s`\n**Previous registry baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s\n\n---\n🤖 This PR is automatically updated when new vcpkg releases are published' \
               "${RELEASE_TAG}" "${PREVIOUS_BUILTIN}" "${PREVIOUS_REGISTRY}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
-            gh pr create \
+            PR_URL=$(gh pr create \
               --title "chore: Update vcpkg baseline to ${RELEASE_TAG}" \
               --body "${PR_BODY}" \
               --base main \
-              --head ${BRANCH_NAME}
+              --head ${BRANCH_NAME})
 
             trigger_ci
-            NEW_PR=$(gh pr list --state open --head "${BRANCH_NAME}" --json number --jq '.[0].number')
+            NEW_PR="${PR_URL##*/}"
             queue_auto_merge "${NEW_PR}"
             echo "Created new baseline PR"
           fi

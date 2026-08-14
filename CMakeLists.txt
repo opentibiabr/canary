@@ -193,11 +193,13 @@ endif()
 # === SCCACHE ===
 if(OPTIONS_ENABLE_SCCACHE)
     if(MSVC
-       AND CMAKE_GENERATOR MATCHES "Ninja"
+       AND CMAKE_GENERATOR
+           MATCHES
+           "Ninja"
     )
-        # Ninja's MSVC dependency tracking relies on /showIncludes output.
-        # With sccache as a compiler launcher, Ninja may record empty deps,
-        # which breaks incremental builds for headers and CMake unity sources.
+        # Ninja's MSVC dependency tracking relies on /showIncludes output. With
+        # sccache as a compiler launcher, Ninja may record empty deps, which
+        # breaks incremental builds for headers and CMake unity sources.
         log_option_disabled("sccache for MSVC Ninja dependency tracking")
     else()
         find_program(SCCACHE_PATH sccache)

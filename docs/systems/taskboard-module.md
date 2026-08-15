@@ -52,7 +52,7 @@ The final byte of a bounty task record is the task marker. Generation checks the
 
 ## Runtime behavior
 
-The monster drop-loot callback calls `Taskboard.onMonsterKilled` for the corpse owner. This updates the selected bounty, the any-creature weekly task, matching weekly kill tasks, and the visible client windows. A newly completed bounty or creature-specific weekly task also emits its official client event so the 15.20+ completion feedback is preserved. Weekly item delivery counts only unequipped inventory containers and the stash; equipped items and the Store Inbox are excluded by the same filters used during removal. The stash portion is removed first, and if backpack removal fails it is restored without requiring free inventory capacity.
+The player kill callback calls `Taskboard.onMonsterKilled` for every credited player after an eligible, non-summoned monster dies. Progress is independent of corpse creation and loot generation, while reward bosses and Soulpit encounters remain excluded. This updates the selected bounty, the any-creature weekly task, matching weekly kill tasks, and the visible client windows. A newly completed bounty or creature-specific weekly task also emits its official client event so the 15.20+ completion feedback is preserved. Weekly item delivery counts only unequipped inventory containers and the stash; equipped items and the Store Inbox are excluded by the same filters used during removal. The stash portion is removed first, and if backpack removal fails it is restored without requiring free inventory capacity.
 
 Persisted weekly assignments are normalized when loaded. Invalid creature or item entries are discarded, progress is bounded by each requirement, completed records are made internally consistent, and reward counters are derived from the surviving assignments. Stored aggregate values are never trusted independently when calculating the weekly payout.
 
@@ -62,7 +62,7 @@ Persisted bounty options follow the same boundary rules: unknown races, zero req
 
 Preference probabilities apply only to Bounty generation. Each configured unwanted race has the configured chance to be skipped from that generation, while each available preferred race receives the configured priority roll before uniform selection. Weekly creature assignments always use the unweighted difficulty catalog.
 
-Bounty points are stored by this module. Shop prices consume the existing task-hunting point API exposed by the server. Weekly completion points are awarded to that same task-hunting balance when the weekly cycle rolls over. Purchased Wheel points remain module-owned in `task-board/wheel/multiplier`; the Wheel reads that bounded value as zero to 49 extra points when calculating and serializing its available points. The next price is always derived from the multiplier instead of trusting an independent persisted value. The module never counts the store inbox as weekly delivery inventory.
+Bounty points are stored by this module. Shop prices consume the existing task-hunting point API exposed by the server. Weekly completion points are awarded to that same task-hunting balance when the weekly cycle rolls over. Purchased Wheel points remain module-owned in `task-board/wheel/multiplier`; the Wheel reads that bounded value as zero to 50 extra points when calculating and serializing its available points. The next price is always derived from the multiplier instead of trusting an independent persisted value. The module never counts the store inbox as weekly delivery inventory.
 
 Task Board item rewards are delivered to the Store Inbox after its free slots are checked. Decoration offers create one unwrap kit per configured decoration id, including paired decorations. If any insertion in a reward batch fails, already inserted items are removed before the task-point debit is refunded.
 
@@ -95,7 +95,7 @@ From the repository root:
 
 ```text
 lua tests/lua/test_taskboard_module.lua
-stylua --check data/modules/scripts/taskboard data/scripts/eventcallbacks/creature/on_combat_taskboard.lua data/scripts/eventcallbacks/monster/ondroploot_taskboard.lua tests/lua/test_taskboard_module.lua
+stylua --check data/modules/scripts/taskboard data/scripts/eventcallbacks/creature/on_combat_taskboard.lua data/scripts/eventcallbacks/player/on_kill_taskboard.lua data/scripts/eventcallbacks/player/on_login_complete_taskboard.lua data/scripts/talkactions/god/manage_task_board.lua tests/lua/test_taskboard_module.lua
 ```
 
 Also run `luac -p` for every changed Lua file. The standalone suite covers parser boundaries, packet widths and version gates, KV normalization, task generation and progression, reward rollback, resource requests, creature icons, combat bonuses, Wheel progression, shop ownership, Soulpit authorization, and invalid numeric inputs.

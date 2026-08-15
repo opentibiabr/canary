@@ -1721,6 +1721,54 @@ test("weekly delivery restores stash before a failed backpack removal", function
 	assert_true(succeeded, failure)
 end)
 
+test("unupgraded bounty talisman applies its baseline bonuses", function()
+	local originalDamageChance = api.config.talisman.damageActivationChance
+	local originalLifeLeechChance = api.config.talisman.lifeLeechActivationChance
+	local originalAmmo = player.equippedAmmo
+	local originalRandom = math.random
+	local state = api.state.load(player)
+	state.bounty.tasks = {
+		{ raceId = 100, required = 10, current = 0, state = api.taskState.selected, bountyPoints = 3, experience = 0, marker = 0 },
+	}
+	state.upgrades.moreLoot = 0
+	state.upgrades.damage = 0
+	state.upgrades.lifeLeech = 0
+	state.upgrades.doubleBestiary = 0
+	api.state.save(player, state)
+	player.equippedAmmo = {
+		getId = function()
+			return api.config.talisman.itemId
+		end,
+	}
+	player.bestiaryBonusKills = 0
+	player.bestiaryUnlocked = false
+	api.config.talisman.damageActivationChance = 100
+	api.config.talisman.lifeLeechActivationChance = 100
+	math.random = function()
+		return 1
+	end
+	local target = {
+		getType = function()
+			return Game.getMonsterTypes().alpha
+		end,
+	}
+
+	local succeeded, failure = pcall(function()
+		assert_equal(0.025, api.rules.getLootBonus(player, { raceId = 100 }))
+		assert_equal(2.5, api.rules.getDamageBonus(player, target))
+		assert_equal(2.5, api.rules.getLifeLeechBonus(player, target))
+		api.rules.onMonsterKilled(player, 100)
+		assert_equal(1, player.bestiaryBonusKills)
+	end)
+
+	api.config.talisman.damageActivationChance = originalDamageChance
+	api.config.talisman.lifeLeechActivationChance = originalLifeLeechChance
+	player.equippedAmmo = originalAmmo
+	player.bestiaryUnlocked = false
+	math.random = originalRandom
+	assert_true(succeeded, failure)
+end)
+
 test("talisman effects require the bounty talisman in the ammo slot", function()
 	local originalConfigManager = rawget(_G, "configManager")
 	local originalConfigKeys = rawget(_G, "configKeys")

@@ -104,7 +104,7 @@ return function(api)
 	end
 
 	local function activeBountyTask(player, raceId)
-		if not api.isTaskboardEligible(player) then
+		if not api.isEnabled() or not api.isTaskboardEligible(player) then
 			return nil, nil
 		end
 		local state = api.state.load(player)

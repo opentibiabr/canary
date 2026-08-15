@@ -151,6 +151,7 @@ local storage = {}
 local player = {
 	client = { version = 1525 },
 	taskPoints = 500,
+	thirdSlotUnlocked = false,
 	items = {},
 	stashItems = {},
 	experience = 0,
@@ -191,6 +192,13 @@ function player:removeTaskHuntingPoints(amount)
 		return false
 	end
 	self.taskPoints = self.taskPoints - amount
+	return true
+end
+function player:taskHuntingThirdSlot(enabled)
+	if enabled == nil then
+		return self.thirdSlotUnlocked
+	end
+	self.thirdSlotUnlocked = enabled
 	return true
 end
 function player:addExperience(amount)
@@ -276,7 +284,7 @@ function player:isMonsterBestiaryUnlocked()
 end
 
 local api = {}
-for _, component in ipairs({ "settings", "catalog", "state", "rules", "wire", "actions", "soulpit", "lifecycle" }) do
+for _, component in ipairs({ "settings", "catalog", "state", "rules", "wire", "admin", "actions", "soulpit", "lifecycle" }) do
 	dofile("data/modules/scripts/taskboard/" .. component .. ".lua")(api)
 end
 api.getLootBonus = api.rules.getLootBonus
@@ -1837,6 +1845,52 @@ test("resource balances use u32 for bounty points and u64 for task points", func
 	assert_equal("u32", sentMessages[1].events[3].operation)
 	assert_equal("u64", sentMessages[2].events[3].operation)
 	assert_equal("u32", sentMessages[3].events[3].operation)
+end)
+
+test("god helpers adjust and persist task board test state", function()
+	local originalStorage = storage
+	local originalTaskPoints = player.taskPoints
+	local originalThirdSlot = player.thirdSlotUnlocked
+	local succeeded, failure = pcall(function()
+		storage = {}
+		player.taskPoints = 500
+		player.thirdSlotUnlocked = false
+
+		local changed, value = api.admin.adjustBountyPoints(player, 25)
+		assert_true(changed)
+		assert_equal(25, value)
+		assert_equal(25, api.state.load(player).general.bountyPoints)
+
+		changed, value = api.admin.adjustBountyPoints(player, -26)
+		assert_true(not changed)
+		assert_equal(25, value)
+
+		changed, value = api.admin.adjustSoulseals(player, 7)
+		assert_true(changed)
+		assert_equal(7, value)
+		assert_equal(7, api.state.load(player).general.soulseals)
+
+		changed, value = api.admin.adjustTaskPoints(player, 100)
+		assert_true(changed)
+		assert_equal(600, value)
+		changed, value = api.admin.adjustTaskPoints(player, -50)
+		assert_true(changed)
+		assert_equal(550, value)
+
+		changed, value = api.admin.setThirdSlot(player, true)
+		assert_true(changed)
+		assert_true(value)
+		assert_true(api.state.load(player).general.thirdSlotUnlocked)
+
+		changed, value = api.admin.setThirdSlot(player, false)
+		assert_true(changed)
+		assert_true(not value)
+		assert_true(not api.state.load(player).general.thirdSlotUnlocked)
+	end)
+	storage = originalStorage
+	player.taskPoints = originalTaskPoints
+	player.thirdSlotUnlocked = originalThirdSlot
+	assert_true(succeeded, failure)
 end)
 
 print(string.format("\n%d passed, %d failed", passed, failed))

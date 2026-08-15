@@ -9,6 +9,7 @@ if type(Taskboard) ~= "table" or Taskboard.__entrypoint ~= taskboardPath then
 		"state",
 		"rules",
 		"wire",
+		"admin",
 		"actions",
 		"soulpit",
 		"lifecycle",

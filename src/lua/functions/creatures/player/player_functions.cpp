@@ -3658,12 +3658,18 @@ int PlayerFunctions::luaPlayerIsPzLocked(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Player:getClient
+ * @return {version:integer,versionString:string,os:integer}|nil
+ */
 int PlayerFunctions::luaPlayerGetClient(lua_State* L) {
 	// player:getClient()
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (player) {
-		lua_createtable(L, 0, 2);
+		lua_createtable(L, 0, 3);
 		Lua::setField(L, "version", player->getProtocolVersion());
+		const auto &client = player->getClient();
+		Lua::setField(L, "versionString", client ? client->getClientVersionString() : std::string {});
 		Lua::setField(L, "os", player->getOperatingSystem());
 	} else {
 		lua_pushnil(L);

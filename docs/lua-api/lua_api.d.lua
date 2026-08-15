@@ -3280,7 +3280,7 @@ function Player:getCharmMonsterType(arg1) end
 ---@return number
 function Player:getCharmTier(charmId) end
 
----@return table|nil
+---@return {version:integer,versionString:string,os:integer}|nil
 function Player:getClient() end
 
 ---@param id number

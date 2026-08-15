@@ -4122,7 +4122,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 #### `Player:getClient()`
 
-- Returns: `table|nil`
+- Returns: `{version:integer,versionString:string,os:integer}|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
 #### `Player:getContainerById(id: number)`

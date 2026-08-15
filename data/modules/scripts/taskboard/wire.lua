@@ -177,13 +177,14 @@ return function(api)
 			msg:addByte(api.clampByte(api.rules.getShopOfferState(player, state, offer)))
 		end
 
-		local wheelMultiplier = math.max(1, math.min(api.config.wheel.maximumMultiplier, math.floor(tonumber(state.wheel.multiplier) or 1)))
+		local storedWheelMultiplier = api.normalizeWheelMultiplier(state.wheel.multiplier)
+		local wheelMultiplier = math.min(storedWheelMultiplier, api.config.wheel.maximumMultiplier)
 		local wheelPrice = api.getWheelPrice(wheelMultiplier)
 		msg:addByte(api.offerKind.wheelBonus)
 		msg:addU16(wheelMultiplier)
 		msg:addU32(wheelPrice)
 		local wheelState = api.offerState.available
-		if wheelMultiplier >= api.config.wheel.maximumMultiplier then
+		if storedWheelMultiplier > api.config.wheel.maximumMultiplier then
 			wheelState = api.offerState.bought
 		elseif (type(player.getTaskHuntingPoints) == "function" and player:getTaskHuntingPoints() or 0) < wheelPrice then
 			wheelState = api.offerState.notEnoughPoints

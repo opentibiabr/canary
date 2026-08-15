@@ -1946,7 +1946,9 @@ uint16_t PlayerWheel::getExtraPoints() const {
 	if (taskBoardMultiplier.has_value()) {
 		const auto configuredMultiplier = taskBoardMultiplier->getNumber();
 		if (std::isfinite(configuredMultiplier)) {
-			const auto normalizedMultiplier = std::clamp(configuredMultiplier, 1.0, 50.0);
+			// The persisted value is the next purchasable offer, so 51 represents
+			// the terminal state after all 50 Promotion Points were purchased.
+			const auto normalizedMultiplier = std::clamp(configuredMultiplier, 1.0, 51.0);
 			if (normalizedMultiplier > 1.0) {
 				totalBonus += static_cast<uint16_t>(std::floor(normalizedMultiplier) - 1.0);
 			}

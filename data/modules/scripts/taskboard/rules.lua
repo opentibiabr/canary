@@ -960,9 +960,9 @@ return function(api)
 		local offers = api.config.shopOffers or {}
 		local offerCount = api.getShopOfferCount()
 		if index == offerCount then
-			state.wheel.multiplier = math.max(1, math.min(api.config.wheel.maximumMultiplier, math.floor(tonumber(state.wheel.multiplier) or 1)))
+			state.wheel.multiplier = api.normalizeWheelMultiplier(state.wheel.multiplier)
 			state.wheel.price = api.getWheelPrice(state.wheel.multiplier)
-			if state.wheel.multiplier >= api.config.wheel.maximumMultiplier or getTaskPoints(player) < state.wheel.price then
+			if state.wheel.multiplier > api.config.wheel.maximumMultiplier or getTaskPoints(player) < state.wheel.price then
 				return false
 			end
 			if not changeTaskPoints(player, -state.wheel.price) then

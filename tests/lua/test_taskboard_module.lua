@@ -1310,8 +1310,36 @@ test("wheel state derives its price from a bounded multiplier", function()
 
 	wheelStorage["root/task-board/wheel/multiplier"] = 500
 	state = api.state.load(wheelPlayer)
-	assert_equal(50, state.wheel.multiplier)
+	assert_equal(51, state.wheel.multiplier)
 	assert_equal(122600, state.wheel.price)
+end)
+
+test("wheel shop grants all fifty promotion points", function()
+	local originalTaskPoints = player.taskPoints
+	local state = api.state.load(player)
+	state.wheel.multiplier = api.config.wheel.maximumMultiplier
+	state.wheel.price = api.getWheelPrice(state.wheel.multiplier)
+	player.taskPoints = state.wheel.price
+
+	local succeeded, failure = pcall(function()
+		assert_equal(true, api.rules.purchaseShopOffer(player, state, #api.config.shopOffers))
+		assert_equal(0, player.taskPoints)
+		assert_equal(api.config.wheel.maximumMultiplier + 1, state.wheel.multiplier)
+		assert_equal(false, api.rules.purchaseShopOffer(player, state, #api.config.shopOffers))
+
+		assert_equal(true, api.state.save(player, state))
+		assert_equal(api.config.wheel.maximumMultiplier + 1, api.state.load(player).wheel.multiplier)
+		sentMessages = {}
+		api.wire.sendShop(player, state)
+		local message = sentMessages[1]
+		local eventCount = #message.events
+		assert_equal("u16", message.events[eventCount - 2].operation)
+		assert_equal(api.config.wheel.maximumMultiplier, message.events[eventCount - 2].value)
+		assert_equal(api.offerState.bought, message.events[eventCount].value)
+	end)
+
+	player.taskPoints = originalTaskPoints
+	assert_true(succeeded, failure)
 end)
 
 test("weekly reset follows the configured server-save clock", function()

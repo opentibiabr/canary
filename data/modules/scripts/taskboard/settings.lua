@@ -304,8 +304,14 @@ return function(api)
 	end
 
 	function api.getWheelPrice(multiplier)
-		multiplier = clamp(multiplier, 1, api.config.wheel.maximumMultiplier)
+		multiplier = math.min(api.normalizeWheelMultiplier(multiplier), api.config.wheel.maximumMultiplier)
 		return api.clampU32((50 * multiplier * multiplier) - (50 * multiplier) + 100)
+	end
+
+	function api.normalizeWheelMultiplier(value)
+		-- The persisted value identifies the next offer. One terminal value beyond
+		-- the last offer records that all available Promotion Points were bought.
+		return clamp(api.toFiniteNumber(value, 1), 1, api.config.wheel.maximumMultiplier + 1)
 	end
 
 	function api.getShopOfferCount()

@@ -382,10 +382,11 @@ return function(api)
 		state.general.soulseals = math.max(0, (tonumber(state.general.soulseals) or 0) + (tonumber(state.weekly.soulseals) or 0))
 	end
 
-	local function addExperience(player, amount)
+	local function addExperience(player, state, amount)
 		if amount > 0 and player and type(player.addExperience) == "function" then
 			player:addExperience(amount, true)
 		end
+		refreshWeeklyExperience(player, state)
 	end
 
 	local function completeWeeklyTask(player, state, task, experience)
@@ -396,7 +397,7 @@ return function(api)
 		task.completed = true
 		state.weekly.points = (state.weekly.points or 0) + api.config.weekly.killCompletionPoints
 		state.weekly.soulseals = (state.weekly.soulseals or 0) + api.config.weekly.completionSeals
-		addExperience(player, experience)
+		addExperience(player, state, experience)
 		return true
 	end
 
@@ -416,7 +417,7 @@ return function(api)
 				state.weekly.killsCompleted = (state.weekly.killsCompleted or 0) + 1
 				state.weekly.points = (state.weekly.points or 0) + api.config.weekly.killCompletionPoints
 				state.weekly.soulseals = (state.weekly.soulseals or 0) + api.config.weekly.completionSeals
-				addExperience(player, state.weekly.killExperience)
+				addExperience(player, state, state.weekly.killExperience)
 			end
 		end
 
@@ -533,7 +534,7 @@ return function(api)
 		if not task or task.state ~= api.taskState.completed then
 			return false
 		end
-		addExperience(player, task.experience)
+		addExperience(player, state, task.experience)
 		state.general.bountyPoints = math.max(0, (state.general.bountyPoints or 0) + task.bountyPoints)
 		state.bounty.dailyRerolls = math.min(api.config.bounty.maxDailyRerolls, (state.bounty.dailyRerolls or 0) + 1)
 		rules.generateBounty(player, state)
@@ -703,7 +704,7 @@ return function(api)
 		state.weekly.itemsCompleted = (state.weekly.itemsCompleted or 0) + 1
 		state.weekly.points = (state.weekly.points or 0) + api.config.weekly.itemCompletionPoints
 		state.weekly.soulseals = (state.weekly.soulseals or 0) + api.config.weekly.completionSeals
-		addExperience(player, state.weekly.itemExperience)
+		addExperience(player, state, state.weekly.itemExperience)
 		return true
 	end
 

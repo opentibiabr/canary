@@ -661,7 +661,7 @@
     <ProtocPath>$(VcpkgInstalledDir)\$(VcpkgHostTriplet)\tools\protobuf\protoc.exe</ProtocPath>
     <ProtoPath>$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\src\protobuf'))</ProtoPath>
   </PropertyGroup>
-  <ItemGroup Condition="'$(RunProtoCompile)'=='true'">
+  <ItemGroup>
     <ProtoFiles Include="$(ProtoPath)\*.proto" />
     <ClCompile Include="@(ProtoFiles->'generated\%(Filename).pb.cc')">
       <IncludeInUnityFile>false</IncludeInUnityFile>

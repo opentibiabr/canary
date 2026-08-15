@@ -21,6 +21,8 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+$CurrentSharedCacheSchema = "v4"
+$KnownSharedCacheSchemas = @("v1", "v2", "v3", $CurrentSharedCacheSchema)
 
 if ($env:OS -ne "Windows_NT") {
     throw "This helper persists Windows user environment variables. Follow docs/development/shared-build-cache.md for non-Windows setup."
@@ -862,6 +864,10 @@ if (-not $AuditOnly) {
         (Join-Path $CacheRoot "vcpkg-buildtrees\v3"),
         (Join-Path $CacheRoot "vcpkg-packages\v3"),
         (Join-Path $CacheRoot "metadata\v3"),
+        (Join-Path $CacheRoot "vcpkg-installed\$CurrentSharedCacheSchema"),
+        (Join-Path $CacheRoot "vcpkg-buildtrees\$CurrentSharedCacheSchema"),
+        (Join-Path $CacheRoot "vcpkg-packages\$CurrentSharedCacheSchema"),
+        (Join-Path $CacheRoot "metadata\$CurrentSharedCacheSchema"),
         (Join-Path $CacheRoot "registry\v2"),
         $binaryCache,
         $downloadsRoot
@@ -1029,13 +1035,20 @@ if (-not $AuditOnly) {
             if ($fingerprint -notmatch "^[0-9a-f]{64}$") {
                 throw "A shared fingerprint cleanup target must be a full 64-character SHA-256: $fingerprintInput"
             }
-            if (-not (Test-SharedFingerprintIdentity -CacheRoot $CacheRoot -Schema "v3" -Fingerprint $fingerprint)) {
-                throw "The shared fingerprint identity is missing or does not match: $fingerprint"
+            $matchingSchemas = @(
+                $KnownSharedCacheSchemas |
+                    Where-Object {
+                        Test-SharedFingerprintIdentity -CacheRoot $CacheRoot -Schema $_ -Fingerprint $fingerprint
+                    }
+            )
+            if ($matchingSchemas.Count -ne 1) {
+                throw "The shared fingerprint identity must match exactly one known schema: $fingerprint"
             }
+            $schema = $matchingSchemas[0]
 
             $shortFingerprint = $fingerprint.Substring(0, 24)
-            $installedRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\v3\$shortFingerprint")
-            $installedParent = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\v3")
+            $installedRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\$schema\$shortFingerprint")
+            $installedParent = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\$schema")
             if (
                 (Get-FullPath -Path (Split-Path -Parent $installedRoot)) -ne $installedParent -or
                 (Split-Path -Leaf $installedRoot) -ne $shortFingerprint -or
@@ -1058,7 +1071,7 @@ if (-not $AuditOnly) {
                 )
 
                 foreach ($directoryName in @("vcpkg-buildtrees", "vcpkg-packages")) {
-                    $schemaRoot = Get-FullPath -Path (Join-Path $CacheRoot "$directoryName\v3")
+                    $schemaRoot = Get-FullPath -Path (Join-Path $CacheRoot "$directoryName\$schema")
                     $transientRoot = Get-FullPath -Path (Join-Path $schemaRoot $shortFingerprint)
                     $transientItem = Get-Item -LiteralPath $transientRoot -Force -ErrorAction SilentlyContinue
                     if (
@@ -1186,7 +1199,7 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
             if ($dependencyFingerprint -notmatch "^[0-9a-fA-F]{64}$") {
                 $sharedContractValid = $false
             } else {
-                foreach ($candidateSchema in @("v1", "v2", "v3")) {
+                foreach ($candidateSchema in $KnownSharedCacheSchemas) {
                     $shortFingerprint = $dependencyFingerprint.Substring(0, 24).ToLowerInvariant()
                     $expectedInstalledRoot = Get-FullPath -Path (Join-Path $CacheRoot "vcpkg-installed\$candidateSchema\$shortFingerprint")
                     if ((Get-FullPath -Path $installedRoot).Equals($expectedInstalledRoot, [StringComparison]::OrdinalIgnoreCase)) {
@@ -1355,7 +1368,7 @@ $solutionTrees = foreach ($worktreeRoot in $worktreeRoots) {
         $packagesRoot = [string] $propertyGroup.CanarySharedVcpkgPackagesRoot
 
         if (
-            $schema -ne "v3" -or
+            $schema -notin $KnownSharedCacheSchemas -or
             $dependencyFingerprint -notmatch "^[0-9a-fA-F]{64}$" -or
             $consumerFingerprint -notmatch "^[0-9a-fA-F]{64}$" -or
             [string]::IsNullOrWhiteSpace($configurationName)

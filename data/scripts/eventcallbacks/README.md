@@ -50,6 +50,7 @@ Event callbacks are available for several categories of game entities, such as `
 - `(bool)` `playerOnRotateItem`
 - `(void)` `playerOnWalk`
 - `(void)` `playerOnKill`
+- `(void)` `playerOnLoginComplete`
 - `(void)` `playerOnThink`
 - `(void)` `monsterOnDropLoot`
 - `(void)` `monsterPostDropLoot`

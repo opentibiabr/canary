@@ -15,6 +15,7 @@ The implementation intentionally derives behavior from the official packet contr
 - `actions.lua` parses client actions and rejects incomplete or trailing payloads.
 - `soulpit.lua` handles the 0xBA selection contract and calls an optional server-provided `SoulPit.startSoloFight` adapter.
 - `lifecycle.lua` restores viewer-specific task icons when a player logs in.
+- `on_login_complete_taskboard.lua` sends the Bounty and Weekly snapshots after the login packet sequence is complete, restoring client trackers without interleaving custom packets with the handshake.
 
 The module registrations are in `data/modules/modules.xml`. Both 0x5F and 0xBA are routed to the Task Board entry point. Because the module loader evaluates that entry point once per registered opcode, its composition is idempotent and both callbacks retain the same Task Board instance.
 

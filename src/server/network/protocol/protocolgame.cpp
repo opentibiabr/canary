@@ -44,6 +44,7 @@
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
 #include "server/network/connection/connection.hpp"
@@ -8803,6 +8804,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		if (!oldProtocol) {
 			player->sendSpellCooldowns();
 		}
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoginComplete, player);
 	}
 }
 

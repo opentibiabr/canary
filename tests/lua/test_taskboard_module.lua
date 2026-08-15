@@ -294,6 +294,7 @@ api.onMonsterKilled = api.rules.onMonsterKilled
 rawset(_G, "Taskboard", api)
 dofile("data/scripts/eventcallbacks/creature/on_combat_taskboard.lua")
 dofile("data/scripts/eventcallbacks/player/on_kill_taskboard.lua")
+dofile("data/scripts/eventcallbacks/player/on_login_complete_taskboard.lua")
 
 test("numeric boundaries reject invalid non-finite values", function()
 	local nan = 0 / 0
@@ -503,6 +504,18 @@ end)
 test("task board registers creature icon initialization on login", function()
 	assert_true(registeredCreatureEvents.TaskboardLogin ~= nil)
 	assert_true(type(registeredCreatureEvents.TaskboardLogin.onLogin) == "function")
+end)
+
+test("completed login restores bounty and weekly client state", function()
+	local callback = registeredCallbacks.TaskboardPlayerOnLoginComplete
+	assert_true(callback ~= nil)
+	sentMessages = {}
+	callback.playerOnLoginComplete(player)
+	assert_equal(8, #sentMessages)
+	assert_equal(api.packet.serverTaskboard, sentMessages[1].events[1].value)
+	assert_equal(api.window.bounty, sentMessages[1].events[2].value)
+	assert_equal(api.packet.serverTaskboard, sentMessages[5].events[1].value)
+	assert_equal(api.window.weekly, sentMessages[5].events[2].value)
 end)
 
 test("rookgaard players cannot use or benefit from task board systems", function()

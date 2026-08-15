@@ -27,9 +27,9 @@ The parser treats the first byte after client packet 0x5F as an action:
 
 | Action | Payload |
 | --- | --- |
-| 0x00, 0x01, 0x03, 0x04, 0x06, 0x0A, 0x0C | none |
-| 0x02, 0x05, 0x07, 0x08, 0x09, 0x0D, 0x0E | one byte |
-| 0x0B | one unsigned 16-bit value |
+| 0x00, 0x01, 0x03, 0x04, 0x06, 0x0A | none |
+| 0x02, 0x05, 0x07, 0x08, 0x09 | one byte |
+| 0x0B, 0x0C, 0x0D, 0x0E | one unsigned 16-bit value |
 | 0x0F, 0x10 | two unsigned 16-bit values |
 
 The parser consumes exactly the expected payload and ignores malformed packets without sending a response. This includes missing fields, unknown actions, and unexpected trailing bytes. The 0xBA selection packet contains exactly one unsigned 16-bit race id.
@@ -46,7 +46,7 @@ Resource balances use packet 0xEE. Bounty points and Soulseals are unsigned 32-b
 
 Active Bounty and specific Weekly races are mirrored into viewer-owned creature icon overlays. The protocol merges those overlays only for that viewer when a matching monster enters the screen, while the module refreshes known visible creatures after login, task selection, rerolls, claims, weekly generation, and task completion. Icon ids 8 and 9 are serialized through the existing 15.25 Other Icons record layout and share its three-icon safety limit.
 
-The weekly Soulseals tail is version-gated. It is emitted for numeric client versions 15.21 and newer, for the known `15.20.f23bc3` build prefix, and omitted for unknown 15.20 builds. No hash arithmetic or guessed build ordering is used. The current Lua client metadata exposes the numeric protocol version; a future binding that exposes the full version string can use the conservative 15.20 prefix branch.
+The weekly Soulseals tail is version-gated. It is emitted for numeric client versions 15.21 and newer, for the known `15.20.f23bc3` build prefix, and omitted for unknown 15.20 builds. No hash arithmetic or guessed build ordering is used. `Player:getClient()` exposes both the numeric protocol version and the exact login build string, allowing the module to distinguish the confirmed 15.20 build without broadening support to unknown builds.
 
 The final byte of a bounty task record is the task marker. Generation checks the configured Gold chance first and the Silver chance second; the defaults are 5% Gold and 10% Silver. Normal, Silver, and Gold tasks multiply experience and bounty-point rewards by 1, 2, and 4 respectively, while preserving the same byte width and record position.
 

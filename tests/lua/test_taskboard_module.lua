@@ -2316,6 +2316,18 @@ test("resource balances use u32 for bounty points and u64 for task points", func
 	assert_equal("u32", sentMessages[3].events[3].operation)
 end)
 
+test("task board balances stay off unsupported client profiles", function()
+	local originalClient = player.client
+	local succeeded, failure = pcall(function()
+		player.client = { version = 1100 }
+		sentMessages = {}
+		api.wire.sendBalances(player, api.state.load(player))
+		assert_equal(0, #sentMessages)
+	end)
+	player.client = originalClient
+	assert_true(succeeded, failure)
+end)
+
 test("god helpers adjust and persist task board test state", function()
 	local originalStorage = storage
 	local originalTaskPoints = player.taskPoints

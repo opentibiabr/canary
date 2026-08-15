@@ -19,6 +19,9 @@ return function(api)
 	end
 
 	function wire.sendBalances(player, state)
+		if not api.supportsOfficialTaskboard(player) then
+			return
+		end
 		local taskPoints = type(player.getTaskHuntingPoints) == "function" and player:getTaskHuntingPoints() or 0
 		sendResource(player, api.resource.bountyPoints, state.general.bountyPoints, false)
 		sendResource(player, api.resource.taskHuntingPoints, taskPoints, true)

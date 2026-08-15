@@ -1082,6 +1082,47 @@ test("bounty difficulty changes preserve the current assignment", function()
 	assert_true(succeeded, failure)
 end)
 
+test("reroll tokens replace only available bounty options", function()
+	local originalGenerateBounty = api.rules.generateBounty
+	local generationCalls = 0
+	api.rules.generateBounty = function(_, state)
+		generationCalls = generationCalls + 1
+		state.bounty.tasks = {
+			{ raceId = 103, required = 200, current = 0, state = api.taskState.notSelected },
+		}
+		return true
+	end
+
+	local succeeded, failure = pcall(function()
+		local state = api.state.load(player)
+		state.bounty.dailyRerolls = 2
+		state.bounty.tasks = {
+			{ raceId = 100, required = 100, current = 37, state = api.taskState.selected },
+		}
+		assert_equal(false, api.rules.rerollBounty(player, state))
+		assert_equal(2, state.bounty.dailyRerolls)
+		assert_equal(0, generationCalls)
+
+		state.bounty.tasks[1].current = 100
+		state.bounty.tasks[1].state = api.taskState.completed
+		assert_equal(false, api.rules.rerollBounty(player, state))
+		assert_equal(2, state.bounty.dailyRerolls)
+		assert_equal(0, generationCalls)
+
+		state.bounty.tasks = {
+			{ raceId = 100, required = 100, current = 0, state = api.taskState.notSelected },
+			{ raceId = 101, required = 100, current = 0, state = api.taskState.notSelected },
+		}
+		assert_equal(true, api.rules.rerollBounty(player, state))
+		assert_equal(1, state.bounty.dailyRerolls)
+		assert_equal(1, generationCalls)
+		assert_equal(103, state.bounty.tasks[1].raceId)
+	end)
+
+	api.rules.generateBounty = originalGenerateBounty
+	assert_true(succeeded, failure)
+end)
+
 test("bounty state discards unusable options and invalid preferences", function()
 	local bountyStorage = {
 		["root/task-board/bounty/task-count"] = 3,

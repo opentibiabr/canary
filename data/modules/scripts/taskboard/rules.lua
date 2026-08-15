@@ -542,8 +542,14 @@ return function(api)
 	end
 
 	function rules.rerollBounty(player, state)
-		if (state.bounty.dailyRerolls or 0) <= 0 then
+		local tasks = state.bounty.tasks or {}
+		if (state.bounty.dailyRerolls or 0) <= 0 or #tasks == 0 then
 			return false
+		end
+		for _, task in ipairs(tasks) do
+			if task.state ~= api.taskState.notSelected then
+				return false
+			end
 		end
 		state.bounty.dailyRerolls = state.bounty.dailyRerolls - 1
 		rules.generateBounty(player, state)

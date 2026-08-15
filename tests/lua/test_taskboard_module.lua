@@ -1826,7 +1826,7 @@ test("weekly state derives rewards from normalized assignments", function()
 	assert_equal(3, state.weekly.soulseals)
 end)
 
-test("weekly wire includes the soulseals tail from 15.20", function()
+test("weekly wire uses the exact soulseals tail version gate", function()
 	local originalClient = player.client
 	local succeeded, failure = pcall(function()
 		local state = api.state.ensure(player)
@@ -1839,9 +1839,16 @@ test("weekly wire includes the soulseals tail from 15.20", function()
 		player.client = { version = 1520 }
 		sentMessages = {}
 		api.wire.sendWeekly(player, state)
-		local packetWithTailAt1520 = sentMessages[1]
-		assert_equal(withTailCount, #packetWithTailAt1520.events)
+		assert_equal(withTailCount - 1, #sentMessages[1].events)
+		player.client = { version = 1520, versionString = "15.20.99c34c" }
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		assert_equal(withTailCount - 1, #sentMessages[1].events)
 		player.client = { version = 1520, versionString = "15.20.f23bc3" }
+		sentMessages = {}
+		api.wire.sendWeekly(player, state)
+		assert_equal(withTailCount, #sentMessages[1].events)
+		player.client = { version = 1521, versionString = "15.21.0" }
 		sentMessages = {}
 		api.wire.sendWeekly(player, state)
 		assert_equal(withTailCount, #sentMessages[1].events)

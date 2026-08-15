@@ -404,13 +404,24 @@ return function(api)
 
 	function api.usesWeeklySoulsealsTail(player)
 		local client = player and player:getClient()
-		local numericVersion = tonumber(client and client.version) or 0
 		local versionString = client and client.versionString
 		local known1520Build = "15.20.f23bc3"
-		if type(versionString) == "string" and versionString:sub(1, #known1520Build) == known1520Build then
-			return true
+		if type(versionString) == "string" then
+			local normalizedVersion = versionString:lower()
+			if normalizedVersion:sub(1, #known1520Build) == known1520Build then
+				return true
+			end
+
+			local major, minor = normalizedVersion:match("^(%d+)%.(%d+)")
+			major = tonumber(major)
+			minor = tonumber(minor)
+			if major and minor then
+				return major > 15 or (major == 15 and minor >= 21)
+			end
 		end
-		return numericVersion >= 1520
+
+		local numericVersion = math.floor(api.toFiniteNumber(client and client.version, 0))
+		return numericVersion >= 1521
 	end
 
 	function api.supportsOfficialTaskboard(player)

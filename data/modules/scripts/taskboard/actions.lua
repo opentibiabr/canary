@@ -90,7 +90,7 @@ return function(api)
 			return
 		end
 
-		local state = api.state.ensure(player)
+		local state = api.state.ensure(player, false)
 		local changed = false
 		local responseWindow = api.window.bounty
 		if action == api.action.openWeekly then

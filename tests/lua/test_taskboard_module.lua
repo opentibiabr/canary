@@ -553,6 +553,22 @@ test("strict action parser rejects trailing bytes", function()
 	assert_equal(sentBefore, #sentMessages)
 end)
 
+test("taskboard actions persist initialized state once", function()
+	local originalSave = api.state.save
+	local saveCalls = 0
+	api.state.save = function(playerToSave, state)
+		saveCalls = saveCalls + 1
+		return originalSave(playerToSave, state)
+	end
+
+	local succeeded, failure = pcall(function()
+		api.actions.handle(player, makeReader({ api.action.openBounty }, {}))
+		assert_equal(1, saveCalls)
+	end)
+	api.state.save = originalSave
+	assert_true(succeeded, failure)
+end)
+
 test("task completion events use the official client-event layouts", function()
 	local sentBefore = #sentMessages
 	api.wire.sendBountyTaskFinished(player, 100)

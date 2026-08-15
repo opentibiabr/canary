@@ -500,7 +500,7 @@ return function(api)
 		return loadState(player)
 	end
 
-	function stateApi.ensure(player)
+	function stateApi.ensure(player, persist)
 		local state = loadState(player)
 		local now = os.time()
 		if state.meta.nextWeeklyReset <= 0 then
@@ -517,7 +517,9 @@ return function(api)
 			api.rules.ensureBounty(player, state)
 			api.rules.ensureWeekly(player, state)
 		end
-		stateApi.save(player, state)
+		if persist ~= false then
+			stateApi.save(player, state)
+		end
 		return state
 	end
 end

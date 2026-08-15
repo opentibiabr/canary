@@ -17,14 +17,12 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 
 ## Canary build discipline
 
-- When a Canary build is authorized, inspect `CMakePresets.json`, `CMakeLists.txt`, any maintained solution, and the existing preset cache. Reuse the canonical preset/cache; do not create an ad-hoc tree or switch to a solution because configuration failed.
-- C++ source/header additions, removals, and renames must update every maintained entry: the relevant CMake list, server `vcproj/canary.vcxproj`, and test CMake list when applicable. Prefer `windows-release` for normal Windows CMake validation unless the task explicitly targets the solution.
-- Use the compatible Visual Studio developer or owning IDE environment and its Ninja. Recreate only a verified incompatible preset directory inside `build/`; never broad-clean caches.
+- Before an authorized local build, read `docs/building/local-validation.md`; its maintained entry-point, environment, preset, cache, and MSVC Ninja workflow is mandatory.
+- C++ source/header additions, removals, and renames must update every maintained entry: the relevant CMake list, server `vcproj/canary.vcxproj`, and test CMake list when applicable.
 
 ### MSVC Ninja dependency tracking
 
-- Configure and build an existing preset under the same code page and environment. When uncertain, compare `rules.ninja`'s `msvc_deps_prefix` with raw `cl.exe /showIncludes`; compiler launchers stay disabled for MSVC Ninja builds.
-- Treat malformed or empty `.ninja_deps` as an environment/cache state: stop concurrent builds, reconfigure, force-rebuild the affected output, then inspect `ninja -t deps <object>`. `ninja -t recompact` only compacts existing records; it cannot recreate missing dependencies.
+- Before configuring, repairing, or auditing an MSVC Ninja build, read `docs/building/local-validation.md#msvc-ninja-dependency-tracking`. Its code-page, launcher, dependency-log, and concurrency rules remain mandatory.
 
 ## Precompiled Header Policy
 

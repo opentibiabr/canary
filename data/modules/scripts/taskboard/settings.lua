@@ -259,6 +259,26 @@ return function(api)
 		return api.config.enabled == true
 	end
 
+	function api.isTaskboardEligible(player)
+		if not player then
+			return false
+		end
+		if type(player.getVocation) ~= "function" then
+			return true
+		end
+
+		local vocationRead, vocation = pcall(player.getVocation, player)
+		if not vocationRead or not vocation or type(vocation.getId) ~= "function" then
+			return true
+		end
+
+		local idRead, vocationId = pcall(vocation.getId, vocation)
+		if not idRead then
+			return true
+		end
+		return tonumber(vocationId) ~= tonumber(rawget(_G, "VOCATION_NONE") or 0)
+	end
+
 	function api.getDifficultyForLevel(level)
 		level = api.toFiniteNumber(level, 1)
 		local selected = api.difficulty.beginner

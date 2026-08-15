@@ -472,6 +472,79 @@ test("task board registers creature icon initialization on login", function()
 	assert_true(type(registeredCreatureEvents.TaskboardLogin.onLogin) == "function")
 end)
 
+test("rookgaard players cannot use or benefit from task board systems", function()
+	local originalEnsure = api.state.ensure
+	local originalLoad = api.state.load
+	local originalSave = api.state.save
+	local stateReads = 0
+	local stateWrites = 0
+	api.state.ensure = function()
+		stateReads = stateReads + 1
+		error("rookgaard task state must not be initialized")
+	end
+	api.state.load = function()
+		stateReads = stateReads + 1
+		error("rookgaard task state must not be loaded")
+	end
+	api.state.save = function()
+		stateWrites = stateWrites + 1
+		error("rookgaard task state must not be saved")
+	end
+
+	local rookPlayer = setmetatable({
+		client = player.client,
+		equippedAmmo = {
+			getId = function()
+				return api.config.talisman.itemId
+			end,
+		},
+		raceIconOverlays = {
+			[100] = {
+				[api.creatureIcon.bountyTaskMonster] = true,
+				[api.creatureIcon.weeklyTaskMonster] = true,
+			},
+		},
+		iconRefreshes = 0,
+		getVocation = function()
+			return {
+				getId = function()
+					return 0
+				end,
+			}
+		end,
+	}, { __index = player })
+	local target = {
+		getType = function()
+			return Game.getMonsterTypes().alpha
+		end,
+	}
+	local sentBefore = #sentMessages
+
+	local succeeded, failure = pcall(function()
+		assert_equal(true, api.lifecycle.onLogin(rookPlayer))
+		assert_equal(nil, rookPlayer.raceIconOverlays[100])
+		assert_equal(1, rookPlayer.iconRefreshes)
+
+		rookPlayer.raceIconOverlays[100] = { [api.creatureIcon.bountyTaskMonster] = true }
+		api.actions.handle(rookPlayer, makeReader({ api.action.openBounty }, { 1 }))
+		assert_equal(nil, rookPlayer.raceIconOverlays[100])
+		assert_equal(2, rookPlayer.iconRefreshes)
+		assert_equal(sentBefore, #sentMessages)
+
+		api.rules.onMonsterKilled(rookPlayer, 100)
+		assert_equal(0, api.rules.getLootBonus(rookPlayer, target))
+		assert_equal(0, api.rules.getDamageBonus(rookPlayer, target))
+		assert_equal(0, api.rules.getLifeLeechBonus(rookPlayer, target))
+		assert_equal(0, stateReads)
+		assert_equal(0, stateWrites)
+	end)
+
+	api.state.ensure = originalEnsure
+	api.state.load = originalLoad
+	api.state.save = originalSave
+	assert_true(succeeded, failure)
+end)
+
 test("duplicate recvbyte registrations reuse one taskboard instance", function()
 	local previousDirectory = rawget(_G, "CORE_DIRECTORY")
 	local previousTaskboard = rawget(_G, "Taskboard")

@@ -6,6 +6,12 @@ return function(api)
 		if not api.isEnabled() then
 			return true
 		end
+		if not api.isTaskboardEligible(player) then
+			if api.rules.syncCreatureIcons(player, nil) and type(player.refreshVisibleCreatureIcons) == "function" then
+				player:refreshVisibleCreatureIcons()
+			end
+			return true
+		end
 
 		local state = api.state.ensure(player)
 		if api.rules.syncCreatureIcons(player, state) and type(player.refreshVisibleCreatureIcons) == "function" then

@@ -89,6 +89,12 @@ return function(api)
 			logMalformed(player, payloadOrReason)
 			return
 		end
+		if not api.isTaskboardEligible(player) then
+			if api.rules.syncCreatureIcons(player, nil) then
+				refreshIcons(player)
+			end
+			return
+		end
 
 		local state = api.state.ensure(player, false)
 		local changed = false

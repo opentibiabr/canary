@@ -110,6 +110,9 @@ return function(api)
 	end
 
 	local function activeBountyTask(player, raceId)
+		if not api.isTaskboardEligible(player) then
+			return nil, nil
+		end
 		local state = api.state.load(player)
 		local task = state.bounty.tasks[1]
 		if not task or task.state ~= api.taskState.selected or task.raceId ~= raceId or task.current >= task.required then
@@ -448,6 +451,9 @@ return function(api)
 		if player:clearRaceIconOverlays(api.creatureIcon.weeklyTaskMonster) then
 			changed = true
 		end
+		if not api.isTaskboardEligible(player) or not state then
+			return changed
+		end
 
 		local bounty = state.bounty.tasks[1]
 		if bounty and bounty.state == api.taskState.selected and bounty.current < bounty.required and player:setRaceIconOverlay(bounty.raceId, api.creatureIcon.bountyTaskMonster) then
@@ -465,7 +471,7 @@ return function(api)
 	end
 
 	function rules.onMonsterKilled(player, raceId)
-		if not api.isEnabled() or not player or tonumber(raceId) == nil then
+		if not api.isEnabled() or not player or tonumber(raceId) == nil or not api.isTaskboardEligible(player) then
 			return
 		end
 		local state = api.state.ensure(player)

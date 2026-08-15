@@ -217,6 +217,17 @@ return function(api)
 		return api.clampU32(experience)
 	end
 
+	local function refreshWeeklyExperience(player, state)
+		local level = playerLevel(player)
+		local difficulty = api.normalizeDifficulty(state.weekly.difficulty, api.getDifficultyForLevel(level))
+		local killExperience = rules.calculateWeeklyExperience(level, difficulty, false)
+		local itemExperience = rules.calculateWeeklyExperience(level, difficulty, true)
+		local changed = state.weekly.killExperience ~= killExperience or state.weekly.itemExperience ~= itemExperience
+		state.weekly.killExperience = killExperience
+		state.weekly.itemExperience = itemExperience
+		return changed
+	end
+
 	function rules.generateBounty(player, state)
 		local difficulty = api.normalizeDifficulty(state.bounty.difficulty, api.getDifficultyForLevel(playerLevel(player)))
 		state.bounty.difficulty = difficulty
@@ -264,8 +275,7 @@ return function(api)
 		state.weekly.itemsCompleted = 0
 		state.weekly.points = 0
 		state.weekly.soulseals = 0
-		state.weekly.killExperience = rules.calculateWeeklyExperience(playerLevel(player), difficulty, false)
-		state.weekly.itemExperience = rules.calculateWeeklyExperience(playerLevel(player), difficulty, true)
+		refreshWeeklyExperience(player, state)
 		state.weekly.anyCreature = {
 			required = api.clampU16((difficulty + 1) * api.config.weekly.baseAnyCreatureKills),
 			current = 0,
@@ -335,8 +345,9 @@ return function(api)
 	end
 
 	function rules.ensureWeekly(player, state)
+		local changed = refreshWeeklyExperience(player, state)
 		if state.weekly.selectionPending or #state.weekly.kills > 0 or #state.weekly.items > 0 then
-			return false
+			return changed
 		end
 		return rules.generateWeekly(player, state, true)
 	end
@@ -393,6 +404,7 @@ return function(api)
 		if state.weekly.selectionPending then
 			return false
 		end
+		refreshWeeklyExperience(player, state)
 
 		local changed = false
 		local any = state.weekly.anyCreature
@@ -658,6 +670,7 @@ return function(api)
 		if state.weekly.selectionPending then
 			return false
 		end
+		refreshWeeklyExperience(player, state)
 		local item = state.weekly.items[(tonumber(clientIndex) or -1) + 1]
 		if not item or item.completed then
 			return false

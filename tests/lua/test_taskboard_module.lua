@@ -1297,6 +1297,42 @@ test("weekly delivery requirements use the configured item range", function()
 	assert_true(succeeded, failure)
 end)
 
+test("weekly experience follows the level at task completion", function()
+	local level = 50
+	local experiencePlayer = {
+		experience = 0,
+		getLevel = function()
+			return level
+		end,
+		kv = function()
+			return makeScope({}, "weekly-experience")
+		end,
+		addExperience = function(self, amount)
+			self.experience = self.experience + amount
+		end,
+	}
+	local state = api.state.load(experiencePlayer)
+	state.weekly.difficulty = api.difficulty.beginner
+	state.weekly.selectionPending = false
+	state.weekly.anyCreature = { required = 1, current = 0, completed = false }
+	state.weekly.kills = {}
+	state.weekly.items = {}
+	state.weekly.killExperience = api.rules.calculateWeeklyExperience(level, state.weekly.difficulty, false)
+	state.weekly.itemExperience = api.rules.calculateWeeklyExperience(level, state.weekly.difficulty, true)
+
+	level = 200
+	local expected = api.rules.calculateWeeklyExperience(level, state.weekly.difficulty, false)
+	assert_equal(true, api.rules.updateWeeklyOnKill(experiencePlayer, state, 100))
+	assert_equal(expected, state.weekly.killExperience)
+	assert_equal(expected, experiencePlayer.experience)
+
+	level = 250
+	state.weekly.items = { { index = 0, itemId = 2148, required = 1, current = 0, completed = false } }
+	local expectedItem = api.rules.calculateWeeklyExperience(level, state.weekly.difficulty, true)
+	assert_equal(true, api.rules.ensureWeekly(experiencePlayer, state))
+	assert_equal(expectedItem, state.weekly.itemExperience)
+end)
+
 test("wheel purchases persist the multiplier consumed by the Wheel", function()
 	local originalTaskPoints = player.taskPoints
 	local state = api.state.load(player)

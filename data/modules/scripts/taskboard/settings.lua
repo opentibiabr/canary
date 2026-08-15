@@ -199,7 +199,7 @@ return function(api)
 	api.config.bounty.difficulties = {
 		[api.difficulty.beginner] = {
 			minimumLevel = 1,
-			minimumStars = 0,
+			minimumStars = 2,
 			maximumStars = 2,
 			minimumKills = 50,
 			maximumKills = 100,
@@ -213,7 +213,7 @@ return function(api)
 		},
 		[api.difficulty.adept] = {
 			minimumLevel = 30,
-			minimumStars = 1,
+			minimumStars = 2,
 			maximumStars = 3,
 			minimumKills = 100,
 			maximumKills = 200,
@@ -227,7 +227,7 @@ return function(api)
 		},
 		[api.difficulty.expert] = {
 			minimumLevel = 150,
-			minimumStars = 2,
+			minimumStars = 3,
 			maximumStars = 4,
 			minimumKills = 200,
 			maximumKills = 400,
@@ -241,8 +241,8 @@ return function(api)
 		},
 		[api.difficulty.master] = {
 			minimumLevel = 400,
-			minimumStars = 3,
-			maximumStars = 255,
+			minimumStars = 4,
+			maximumStars = 5,
 			minimumKills = 300,
 			maximumKills = 600,
 			points = 27,

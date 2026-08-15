@@ -328,6 +328,39 @@ test("catalog retries after an empty startup snapshot", function()
 	assert_true(succeeded, failure)
 end)
 
+test("bounty pools match the official bestiary difficulty groups", function()
+	local originalGetMonsterTypes = Game.getMonsterTypes
+	Game.getMonsterTypes = function()
+		local monsters = {}
+		for stars = 0, 5 do
+			monsters["difficulty-" .. stars] = monster("Difficulty " .. stars, 200 + stars, stars)
+		end
+		return monsters
+	end
+
+	local expectedRaceIds = {
+		[api.difficulty.beginner] = { 202 },
+		[api.difficulty.adept] = { 202, 203 },
+		[api.difficulty.expert] = { 203, 204 },
+		[api.difficulty.master] = { 204, 205 },
+	}
+	local succeeded, failure = pcall(function()
+		api.catalog.rebuild()
+		for difficulty = api.difficulty.beginner, api.difficulty.master do
+			local pool = api.catalog.getPool(difficulty)
+			local expected = expectedRaceIds[difficulty]
+			assert_equal(#expected, #pool)
+			for index, raceId in ipairs(expected) do
+				assert_equal(raceId, pool[index].raceId)
+			end
+		end
+	end)
+
+	Game.getMonsterTypes = originalGetMonsterTypes
+	api.catalog.rebuild()
+	assert_true(succeeded, failure)
+end)
+
 test("taskboard kill callback does not depend on a corpse", function()
 	local originalOnMonsterKilled = api.rules.onMonsterKilled
 	local originalTaskboardOnMonsterKilled = api.onMonsterKilled

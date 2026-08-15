@@ -12,11 +12,19 @@ return function(api)
 		return amount
 	end
 
-	local function ensureState(player)
+	local function ensureState(player, persist)
 		if not api.state or type(api.state.ensure) ~= "function" then
 			return nil
 		end
-		return api.state.ensure(player)
+		return api.state.ensure(player, persist)
+	end
+
+	local function syncClientState(player, state, refreshWeekly)
+		if refreshWeekly and api.wire and type(api.wire.sendWeekly) == "function" and api.supportsOfficialTaskboard(player) then
+			api.wire.sendWeekly(player, state)
+		elseif api.wire and type(api.wire.sendBalances) == "function" then
+			api.wire.sendBalances(player, state)
+		end
 	end
 
 	local function saveAndSync(player, state, refreshWeekly)
@@ -24,11 +32,7 @@ return function(api)
 			return false
 		end
 
-		if refreshWeekly and api.wire and type(api.wire.sendWeekly) == "function" and api.supportsOfficialTaskboard(player) then
-			api.wire.sendWeekly(player, state)
-		elseif api.wire and type(api.wire.sendBalances) == "function" then
-			api.wire.sendBalances(player, state)
-		end
+		syncClientState(player, state, refreshWeekly)
 		return true
 	end
 
@@ -38,7 +42,7 @@ return function(api)
 			return false, nil, "invalid amount"
 		end
 
-		local state = ensureState(player)
+		local state = ensureState(player, false)
 		if not state or not state.general then
 			return false, nil, "state unavailable"
 		end
@@ -105,9 +109,7 @@ return function(api)
 		end
 
 		local updated = math.max(0, tonumber(player:getTaskHuntingPoints()) or 0)
-		if not saveAndSync(player, state) then
-			return false, current, "state could not be saved"
-		end
+		syncClientState(player, state)
 		return true, updated
 	end
 
@@ -116,7 +118,7 @@ return function(api)
 			return false, nil, "invalid slot state"
 		end
 
-		local state = ensureState(player)
+		local state = ensureState(player, false)
 		if not state or not state.general then
 			return false, nil, "state unavailable"
 		end
@@ -130,16 +132,12 @@ return function(api)
 
 		local previous = state.general.thirdSlotUnlocked == true
 		state.general.thirdSlotUnlocked = enabled
-		if not api.state.save(player, state) then
+		if not saveAndSync(player, state, true) then
+			state.general.thirdSlotUnlocked = previous
 			if type(player.taskHuntingThirdSlot) == "function" then
 				pcall(player.taskHuntingThirdSlot, player, previous)
 			end
-			return false, state.general.thirdSlotUnlocked, "state could not be saved"
-		end
-
-		state = ensureState(player)
-		if not state or not saveAndSync(player, state, true) then
-			return false, enabled, "state could not be saved"
+			return false, previous, "state could not be saved"
 		end
 		return true, state.general.thirdSlotUnlocked == true
 	end

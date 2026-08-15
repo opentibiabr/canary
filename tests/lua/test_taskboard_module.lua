@@ -1902,8 +1902,66 @@ test("god helpers adjust and persist task board test state", function()
 		assert_true(changed)
 		assert_true(not value)
 		assert_true(not api.state.load(player).general.thirdSlotUnlocked)
+
+		local invalidChanged, invalidValue, reason = api.admin.adjustBountyPoints(player, 1.5)
+		assert_true(not invalidChanged)
+		assert_equal(nil, invalidValue)
+		assert_equal("invalid amount", reason)
+
+		invalidChanged, invalidValue, reason = api.admin.adjustBountyPoints(player, 9007199254740992)
+		assert_true(not invalidChanged)
+		assert_equal(nil, invalidValue)
+		assert_equal("invalid amount", reason)
 	end)
 	storage = originalStorage
+	player.taskPoints = originalTaskPoints
+	player.thirdSlotUnlocked = originalThirdSlot
+	assert_true(succeeded, failure)
+end)
+
+test("god admin operations preserve state when persistence fails", function()
+	local originalEnsure = api.state.ensure
+	local originalSave = api.state.save
+	local originalSendBalances = api.wire.sendBalances
+	local originalTaskPoints = player.taskPoints
+	local originalThirdSlot = player.thirdSlotUnlocked
+	local state = { general = { thirdSlotUnlocked = false } }
+	local saveCalls = 0
+	local balanceCalls = 0
+
+	api.state.ensure = function()
+		return state
+	end
+	api.state.save = function()
+		saveCalls = saveCalls + 1
+		return false
+	end
+	api.wire.sendBalances = function()
+		balanceCalls = balanceCalls + 1
+	end
+
+	local succeeded, failure = pcall(function()
+		player.thirdSlotUnlocked = false
+		local changed, value, reason = api.admin.setThirdSlot(player, true)
+		assert_true(not changed)
+		assert_equal(false, value)
+		assert_equal("state could not be saved", reason)
+		assert_equal(false, state.general.thirdSlotUnlocked)
+		assert_equal(false, player.thirdSlotUnlocked)
+		assert_equal(1, saveCalls)
+
+		player.taskPoints = 500
+		saveCalls = 0
+		changed, value = api.admin.adjustTaskPoints(player, 100)
+		assert_true(changed)
+		assert_equal(600, value)
+		assert_equal(0, saveCalls)
+		assert_equal(1, balanceCalls)
+	end)
+
+	api.state.ensure = originalEnsure
+	api.state.save = originalSave
+	api.wire.sendBalances = originalSendBalances
 	player.taskPoints = originalTaskPoints
 	player.thirdSlotUnlocked = originalThirdSlot
 	assert_true(succeeded, failure)

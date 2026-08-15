@@ -559,6 +559,10 @@ return function(api)
 			return false
 		end
 		state.bounty.difficulty = difficulty
+		local currentTask = state.bounty.tasks[1]
+		if currentTask and currentTask.state ~= api.taskState.notSelected then
+			return true
+		end
 		return rules.generateBounty(player, state)
 	end
 

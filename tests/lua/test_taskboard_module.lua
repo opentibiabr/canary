@@ -900,6 +900,45 @@ test("bounty generation and kill progression persist through KV", function()
 	assert_equal(api.taskState.completed, afterKill.bounty.tasks[1].state)
 end)
 
+test("bounty difficulty changes preserve the current assignment", function()
+	local originalGenerateBounty = api.rules.generateBounty
+	local generationCalls = 0
+	api.rules.generateBounty = function(_, state)
+		generationCalls = generationCalls + 1
+		state.bounty.tasks = {
+			{ raceId = 103, required = 200, current = 0, state = api.taskState.notSelected },
+		}
+		return true
+	end
+
+	local succeeded, failure = pcall(function()
+		local state = api.state.load(player)
+		state.bounty.tasks = {
+			{ raceId = 100, required = 100, current = 37, state = api.taskState.selected },
+		}
+		assert_equal(true, api.rules.chooseBountyDifficulty(player, state, api.difficulty.adept))
+		assert_equal(api.difficulty.adept, state.bounty.difficulty)
+		assert_equal(0, generationCalls)
+		assert_equal(100, state.bounty.tasks[1].raceId)
+		assert_equal(37, state.bounty.tasks[1].current)
+
+		state.bounty.tasks[1].current = 100
+		state.bounty.tasks[1].state = api.taskState.completed
+		assert_equal(true, api.rules.chooseBountyDifficulty(player, state, api.difficulty.beginner))
+		assert_equal(api.difficulty.beginner, state.bounty.difficulty)
+		assert_equal(0, generationCalls)
+		assert_equal(api.taskState.completed, state.bounty.tasks[1].state)
+
+		state.bounty.tasks[1].state = api.taskState.notSelected
+		assert_equal(true, api.rules.chooseBountyDifficulty(player, state, api.difficulty.adept))
+		assert_equal(1, generationCalls)
+		assert_equal(103, state.bounty.tasks[1].raceId)
+	end)
+
+	api.rules.generateBounty = originalGenerateBounty
+	assert_true(succeeded, failure)
+end)
+
 test("bounty state discards unusable options and invalid preferences", function()
 	local bountyStorage = {
 		["root/task-board/bounty/task-count"] = 3,

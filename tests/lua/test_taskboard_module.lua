@@ -1268,6 +1268,35 @@ test("weekly creature tasks are ordered by required kills", function()
 	assert_equal(100, state.weekly.kills[3].raceId)
 end)
 
+test("weekly delivery requirements use the configured item range", function()
+	local originalItems = api.config.weeklyItems
+	local originalKillSlots = api.config.weekly.killSlots
+	local originalItemSlots = api.config.weekly.itemSlots
+	local originalRandom = math.random
+	api.config.weeklyItems = { { id = 2148, min = 73, max = 73 } }
+	api.config.weekly.killSlots = 0
+	api.config.weekly.itemSlots = 1
+	math.random = function(minimum)
+		return minimum
+	end
+
+	local succeeded, failure = pcall(function()
+		for difficulty = api.difficulty.beginner, api.difficulty.master do
+			local state = api.state.load(player)
+			state.weekly.difficulty = difficulty
+			api.rules.generateWeekly(player, state, false)
+			assert_equal(1, #state.weekly.items)
+			assert_equal(73, state.weekly.items[1].required)
+		end
+	end)
+
+	api.config.weeklyItems = originalItems
+	api.config.weekly.killSlots = originalKillSlots
+	api.config.weekly.itemSlots = originalItemSlots
+	math.random = originalRandom
+	assert_true(succeeded, failure)
+end)
+
 test("wheel purchases persist the multiplier consumed by the Wheel", function()
 	local originalTaskPoints = player.taskPoints
 	local state = api.state.load(player)

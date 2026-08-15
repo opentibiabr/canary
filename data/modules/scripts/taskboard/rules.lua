@@ -299,7 +299,10 @@ return function(api)
 
 		local itemPool = {}
 		for _, item in ipairs(api.catalog.getWeeklyItems()) do
-			if tonumber(item.id) and tonumber(item.id) > 0 then
+			local itemId = api.toFiniteNumber(item.id)
+			local minimum = api.toFiniteNumber(item.min)
+			local maximum = api.toFiniteNumber(item.max)
+			if itemId and itemId > 0 and minimum and minimum >= 1 and maximum and maximum >= minimum then
 				table.insert(itemPool, item)
 			end
 		end
@@ -323,7 +326,7 @@ return function(api)
 			table.insert(state.weekly.items, {
 				index = index - 1,
 				itemId = api.clampU32(item.id),
-				required = api.clampU32(randomBetween(settings.weeklyItemMinimum, settings.weeklyItemMaximum)),
+				required = api.clampU32(randomBetween(item.min, item.max)),
 				current = 0,
 				completed = false,
 			})

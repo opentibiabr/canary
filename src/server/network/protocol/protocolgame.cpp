@@ -4564,7 +4564,9 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 
 	constexpr size_t maxIcons = 3;
 	auto icons = creature->getIcons();
-	if (const auto monster = creature->getMonster()) {
+	const bool supportsTaskboardCreatureIcons = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets);
+	if (const auto monster = creature->getMonster();
+	    monster && supportsTaskboardCreatureIcons && !monster->hasBeenSummoned()) {
 		const auto overlays = player->getRaceIconOverlays(monster->getRaceId());
 		const auto overlayCount = std::min(maxIcons, overlays.size());
 		if (overlayCount > 0) {

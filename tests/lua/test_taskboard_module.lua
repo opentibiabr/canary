@@ -769,6 +769,30 @@ test("Soulpit window requires a supported client, adapter, and catalog", functio
 	rawset(_G, "SoulPit", originalAdapter)
 end)
 
+test("Soulpit stays inactive while the task board module is disabled", function()
+	local originalEnabled = api.config.enabled
+	local originalRaceIds = api.config.soulpit.raceIds
+	local originalAdapter = rawget(_G, "SoulPit")
+	api.config.enabled = false
+	api.config.soulpit.raceIds = { 100 }
+	rawset(_G, "SoulPit", {
+		startSoloFight = function()
+			return true
+		end,
+	})
+	local sentBefore = #sentMessages
+
+	local succeeded, failure = pcall(function()
+		assert_equal(false, api.soulpit.openWindow(player))
+		assert_equal(sentBefore, #sentMessages)
+	end)
+
+	api.config.enabled = originalEnabled
+	api.config.soulpit.raceIds = originalRaceIds
+	rawset(_G, "SoulPit", originalAdapter)
+	assert_true(succeeded, failure)
+end)
+
 test("Soulpit catalog filters and deduplicates configured races", function()
 	local originalRaceIds = api.config.soulpit.raceIds
 	api.config.soulpit.raceIds = { 101, "100", 101, 999 }

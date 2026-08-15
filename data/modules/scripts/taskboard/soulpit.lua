@@ -42,7 +42,7 @@ return function(api)
 	end
 
 	local function adapterCanOpen(player, adapter)
-		if not api.supportsOfficialTaskboard(player) or type(adapter) ~= "table" or type(adapter.startSoloFight) ~= "function" then
+		if not api.isEnabled() or not api.supportsOfficialTaskboard(player) or type(adapter) ~= "table" or type(adapter.startSoloFight) ~= "function" then
 			return false
 		end
 		if type(adapter.canOpenWindow) ~= "function" then

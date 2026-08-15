@@ -74,3 +74,21 @@ If CMake reports changed compiler variables, a missing
 preset directory is inside `build/`. Remove only that preset directory, then
 rerun the same preset. Do not switch to a generated solution merely because
 configuration failed; repair the preset environment or cache first.
+
+## MSVC Ninja dependency tracking
+
+CMake writes Ninja's localized `msvc_deps_prefix` during configuration. Ninja
+must receive matching raw `cl.exe /showIncludes` output while building to
+record complete header dependencies in `.ninja_deps`.
+
+- Configure and build an existing preset under the same code page and
+  environment. When an IDE owns the preset, use that IDE's build environment.
+  When uncertain, compare `rules.ninja`'s `msvc_deps_prefix` with raw
+  `/showIncludes` output instead of forcing a terminal code page onto the
+  cache.
+- Keep compiler launchers disabled for MSVC Ninja builds. A launcher can hide
+  or alter the include lines that Ninja needs for dependency tracking.
+- Treat malformed or empty `.ninja_deps` as an environment or cache state:
+  stop concurrent builds, reconfigure, force-rebuild the affected output, then
+  inspect `ninja -t deps <object>`. `ninja -t recompact` only compacts existing
+  records; it cannot recreate missing dependencies.

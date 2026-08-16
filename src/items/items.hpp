@@ -417,6 +417,7 @@ public:
 	[[nodiscard]] ItemTypes_t getLootType(const std::string &strValue) const;
 
 	bool loadFromXml();
+	bool loadFromXmlFile(const std::string &fileName);
 	void parseItemNode(const pugi::xml_node &itemNode, uint16_t id);
 
 	void buildInventoryList();

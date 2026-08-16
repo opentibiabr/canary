@@ -54,14 +54,10 @@ end
 
 -- Dialogue keywords the NPC answers on the official server
 keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "The king listens to the advice of this swordsman far too often." })
-keywordHandler:addKeyword(
-	{ "stone of insight" },
-	StdModule.say,
-	{
-		npcHandler = npcHandler,
-		text = "Ah well. This matter was taken out of our hands for now. The inquisition insisted to control the collection of these stones and by royal decree they were granted the exclusive right to do so. ... As a simple scientist I'm not in a position to question such decision, as hard as it might hit my researches. For now I can not trade any of the stones. You will have to wait for another opportunity.",
-	}
-)
+keywordHandler:addKeyword({ "stone of insight" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Ah well. This matter was taken out of our hands for now. The inquisition insisted to control the collection of these stones and by royal decree they were granted the exclusive right to do so. ... As a simple scientist I'm not in a position to question such decision, as hard as it might hit my researches. For now I can not trade any of the stones. You will have to wait for another opportunity.",
+})
 keywordHandler:addKeyword({ "pits of inferno" }, StdModule.say, { npcHandler = npcHandler, text = "Some dumb holes for adventurers seeking trouble." })
 keywordHandler:addKeyword({ "nightmare pits" }, StdModule.say, { npcHandler = npcHandler, text = "Some dumb holes for adventurers seeking trouble." })
 keywordHandler:addKeyword({ "courtmage" }, StdModule.say, { npcHandler = npcHandler, text = "The last courtmage was killed by Ferumbras in one of his attacks." })

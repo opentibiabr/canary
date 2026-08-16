@@ -296,7 +296,16 @@ bool Items::loadFromXmlFile(const std::string &fileName) {
 		return false;
 	}
 
-	for (const auto itemNode : doc.child("items").children()) {
+	const auto rootNode = doc.child("items");
+	if (!rootNode) {
+		g_logger().error(
+			"[Items::loadFromXmlFile] - Missing <items> root node in '{}'",
+			file
+		);
+		return false;
+	}
+
+	for (const auto itemNode : rootNode.children()) {
 		if (const auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
@@ -321,11 +330,11 @@ bool Items::loadFromXmlFile(const std::string &fileName) {
 			continue;
 		}
 
-		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		const auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
+		const uint32_t fromId = pugi::cast<uint16_t>(fromIdAttribute.value());
+		const uint32_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
 
-		while (id <= toId) {
-			parseItemNode(itemNode, id++);
+		for (uint32_t id = fromId; id <= toId; ++id) {
+			parseItemNode(itemNode, static_cast<uint16_t>(id));
 		}
 	}
 

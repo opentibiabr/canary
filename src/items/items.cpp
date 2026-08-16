@@ -279,40 +279,65 @@ void Items::loadFromProtobuf() {
 }
 
 bool Items::loadFromXml() {
-	pugi::xml_document doc;
-	auto folder = g_configManager().getString(CORE_DIRECTORY) + "/items/items.xml";
-	pugi::xml_parse_result result = doc.load_file(folder.c_str());
-	if (!result) {
-		printXMLError(__FUNCTION__, folder, result);
+	if (!loadFromXmlFile("items.xml")) {
 		return false;
 	}
 
-	for (const auto itemNode : doc.child("items").children()) {
-		if (auto idAttribute = itemNode.attribute("id")) {
+	return loadFromXmlFile("equipments.xml");
+}
+
+bool Items::loadFromXmlFile(const std::string &fileName) {
+	const auto file = g_configManager().getString(DATA_DIRECTORY) + "/items/" + fileName;
+
+	pugi::xml_document doc;
+	const pugi::xml_parse_result result = doc.load_file(file.c_str());
+	if (!result) {
+		printXMLError("Items::loadFromXmlFile", file, result);
+		return false;
+	}
+
+	const auto rootNode = doc.child("items");
+	if (!rootNode) {
+		g_logger().error(
+			"[Items::loadFromXmlFile] - Missing <items> root node in '{}'",
+			file
+		);
+		return false;
+	}
+
+	for (const auto itemNode : rootNode.children()) {
+		if (const auto idAttribute = itemNode.attribute("id")) {
 			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
 
-		auto fromIdAttribute = itemNode.attribute("fromid");
+		const auto fromIdAttribute = itemNode.attribute("fromid");
 		if (!fromIdAttribute) {
-			g_logger().warn("[Items::loadFromXml] - No item id found, use id or fromid");
+			g_logger().warn(
+				"[Items::loadFromXmlFile] - No item id found in '{}', use id or fromid",
+				fileName
+			);
 			continue;
 		}
 
-		auto toIdAttribute = itemNode.attribute("toid");
+		const auto toIdAttribute = itemNode.attribute("toid");
 		if (!toIdAttribute) {
-			g_logger().warn("[Items::loadFromXml] - "
-			                "tag fromid: {} without toid",
-			                fromIdAttribute.value());
+			g_logger().warn(
+				"[Items::loadFromXmlFile] - tag fromid: {} without toid in '{}'",
+				fromIdAttribute.value(),
+				fileName
+			);
 			continue;
 		}
 
-		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
-		const auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
-		while (id <= toId) {
-			parseItemNode(itemNode, id++);
+		const uint32_t fromId = pugi::cast<uint16_t>(fromIdAttribute.value());
+		const uint32_t toId = pugi::cast<uint16_t>(toIdAttribute.value());
+
+		for (uint32_t id = fromId; id <= toId; ++id) {
+			parseItemNode(itemNode, static_cast<uint16_t>(id));
 		}
 	}
+
 	return true;
 }
 

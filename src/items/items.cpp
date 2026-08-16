@@ -279,16 +279,11 @@ void Items::loadFromProtobuf() {
 }
 
 bool Items::loadFromXml() {
-	for (const auto* fileName : {
-			 "items.xml",
-			 "equipments.xml",
-		 }) {
-		if (!loadFromXmlFile(fileName)) {
-			return false;
-		}
+	if (!loadFromXmlFile("items.xml")) {
+		return false;
 	}
 
-	return true;
+	return loadFromXmlFile("equipments.xml");
 }
 
 bool Items::loadFromXmlFile(const std::string &fileName) {
@@ -301,29 +296,9 @@ bool Items::loadFromXmlFile(const std::string &fileName) {
 		return false;
 	}
 
-	const auto rootNode = doc.child("items");
-	if (!rootNode) {
-		g_logger().error(
-			"[Items::loadFromXmlFile] - Missing <items> root node in '{}'",
-			file
-		);
-		return false;
-	}
-
-	for (const auto itemNode : rootNode.children("item")) {
+	for (const auto itemNode : doc.child("items").children()) {
 		if (const auto idAttribute = itemNode.attribute("id")) {
-			const uint32_t id = pugi::cast<uint32_t>(idAttribute.value());
-
-			if (id > std::numeric_limits<uint16_t>::max()) {
-				g_logger().warn(
-					"[Items::loadFromXmlFile] - Invalid item id {} in '{}'",
-					id,
-					fileName
-				);
-				continue;
-			}
-
-			parseItemNode(itemNode, static_cast<uint16_t>(id));
+			parseItemNode(itemNode, pugi::cast<uint16_t>(idAttribute.value()));
 			continue;
 		}
 
@@ -346,31 +321,11 @@ bool Items::loadFromXmlFile(const std::string &fileName) {
 			continue;
 		}
 
-		const uint32_t fromId = pugi::cast<uint32_t>(fromIdAttribute.value());
-		const uint32_t toId = pugi::cast<uint32_t>(toIdAttribute.value());
+		auto id = pugi::cast<uint16_t>(fromIdAttribute.value());
+		const auto toId = pugi::cast<uint16_t>(toIdAttribute.value());
 
-		if (fromId > toId) {
-			g_logger().warn(
-				"[Items::loadFromXmlFile] - Invalid item range {}-{} in '{}'",
-				fromId,
-				toId,
-				fileName
-			);
-			continue;
-		}
-
-		if (toId > std::numeric_limits<uint16_t>::max()) {
-			g_logger().warn(
-				"[Items::loadFromXmlFile] - Item range {}-{} exceeds uint16_t limit in '{}'",
-				fromId,
-				toId,
-				fileName
-			);
-			continue;
-		}
-
-		for (uint32_t id = fromId; id <= toId; ++id) {
-			parseItemNode(itemNode, static_cast<uint16_t>(id));
+		while (id <= toId) {
+			parseItemNode(itemNode, id++);
 		}
 	}
 

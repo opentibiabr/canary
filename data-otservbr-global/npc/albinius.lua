@@ -287,7 +287,14 @@ end
 npcType.onCheckItem = function(npc, player, clientId, subType) end
 
 -- Dialogue keywords the NPC answers on the official server
-keywordHandler:addKeyword({ "messengers" }, StdModule.say, { npcHandler = npcHandler, text = "We were created to communicate the will of the gods to you inhabitants of the world of matter. The gods send us visions and insights which - in turn - we announce to you. ... Sometimes though the gods might decide to grant those visions directly to a recipient. The way how a message is delivered is of no importance. All what matters is the content of a message." })
+keywordHandler:addKeyword(
+	{ "messengers" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "We were created to communicate the will of the gods to you inhabitants of the world of matter. The gods send us visions and insights which - in turn - we announce to you. ... Sometimes though the gods might decide to grant those visions directly to a recipient. The way how a message is delivered is of no importance. All what matters is the content of a message.",
+	}
+)
 keywordHandler:addKeyword({ "tibiasula" }, StdModule.say, { npcHandler = npcHandler, text = "Fardos and Uman either created or awakened a new godess from her sleep: Tibiasula. She helped Fardos, Uman and Zathroth create the mighty column of Time. ... But then Zathroth killed Tibiasula and Fardos and Uman bonded her body to the column of Time, creating the elements: earth, water, fire and air." })
 keywordHandler:addKeyword({ "insights" }, StdModule.say, { npcHandler = npcHandler, text = "In these dire times the gods guide their followers and chosen ones with the help of many means. Sometimes their guidance is subtle, sometimes they send visions of different kinds. Even we messengers do not directly communicate with the gods." })
 keywordHandler:addKeyword({ "variphor" }, StdModule.say, { npcHandler = npcHandler, text = "The fiend from beyond. Do not speak or think its name as it might draw its attention on you." })
@@ -307,7 +314,14 @@ keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "kirok" }, StdModule.say, { npcHandler = npcHandler, text = "Kirok was created in a attempt to separate Uman and Zathroth." })
 keywordHandler:addKeyword({ "banor" }, StdModule.say, { npcHandler = npcHandler, text = "Banor will recruit our forces against the fiends of beyond and you will be his vanguard!" })
 keywordHandler:addKeyword({ "hope" }, StdModule.say, { npcHandler = npcHandler, text = "The gods promise new hope in the fight against the fiends from beyond." })
-keywordHandler:addKeyword({ "know" }, StdModule.say, { npcHandler = npcHandler, text = "The ancient race of the Astral Shapers were highly talented in charging items with magical energy. They used mighty forges and charging stations to add special and useful properties to items. ... They were wiped out and their cities destroyed but some of their legacy survived. At certain places of power their charging stations have endured the ravages of time. ... Even though their knowledge was shattered, some of it still exists. The so-called Shaper records is a text collection which was written down in ancient times. ... It will be our duty to the gods to unearth this knowledge, find the lost forges and use them to prepare for the battles to come." })
+keywordHandler:addKeyword(
+	{ "know" },
+	StdModule.say,
+	{
+		npcHandler = npcHandler,
+		text = "The ancient race of the Astral Shapers were highly talented in charging items with magical energy. They used mighty forges and charging stations to add special and useful properties to items. ... They were wiped out and their cities destroyed but some of their legacy survived. At certain places of power their charging stations have endured the ravages of time. ... Even though their knowledge was shattered, some of it still exists. The so-called Shaper records is a text collection which was written down in ancient times. ... It will be our duty to the gods to unearth this knowledge, find the lost forges and use them to prepare for the battles to come.",
+	}
+)
 keywordHandler:addKeyword({ "gods" }, StdModule.say, { npcHandler = npcHandler, text = "Fear not. The gods are with us. In these days this is even recognisable by the most ignorant." })
 keywordHandler:addKeyword({ "uman" }, StdModule.say, { npcHandler = npcHandler, text = "There is no Uman but Uman-Zathroth. They are the unfathomable god of knowledge and magic." })
 keywordHandler:addKeyword({ "blog" }, StdModule.say, { npcHandler = npcHandler, text = "May his rage strike down the enemies of creation." })

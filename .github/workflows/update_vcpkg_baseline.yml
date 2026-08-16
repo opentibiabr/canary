@@ -6,6 +6,10 @@ on:
     - cron: '0 2 * * *'
   workflow_dispatch:
 
+concurrency:
+  group: update-vcpkg-baseline
+  cancel-in-progress: false
+
 jobs:
   update-baseline-on-main:
     runs-on: ubuntu-latest
@@ -22,6 +26,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
+          fetch-depth: 0
           ref: main
 
       - name: Get latest vcpkg release
@@ -66,6 +71,8 @@ jobs:
           PREVIOUS_REGISTRY: ${{ steps.vcpkg.outputs.current_registry }}
           NEW_BASELINE: ${{ steps.vcpkg.outputs.baseline }}
         run: |
+          set -euo pipefail
+
           BRANCH_NAME="chore/update-vcpkg-baseline"
 
           trigger_ci() {
@@ -73,16 +80,43 @@ jobs:
             gh workflow run ci.yml --ref "${BRANCH_NAME}"
           }
 
+          queue_auto_merge() {
+            local pr_number="$1"
+
+            if [[ ! "${pr_number}" =~ ^[0-9]+$ ]]; then
+              echo "::error::Invalid baseline pull request number: ${pr_number}"
+              return 1
+            fi
+
+            if gh pr merge "${pr_number}" --auto --squash; then
+              echo "Queued native GitHub auto-merge for PR #${pr_number}"
+            else
+              echo "::warning::Could not queue auto-merge for PR #${pr_number}. Repository auto-merge may be disabled or branch protection may require a review."
+            fi
+          }
+
+          sync_update_branch() {
+            git fetch --prune origin main
+
+            if git ls-remote --exit-code --heads origin "${BRANCH_NAME}" >/dev/null 2>&1; then
+              git fetch origin "+refs/heads/${BRANCH_NAME}:refs/remotes/origin/${BRANCH_NAME}"
+              git checkout -B "${BRANCH_NAME}" "origin/${BRANCH_NAME}"
+              git rebase origin/main
+              git push --force-with-lease origin "${BRANCH_NAME}"
+            else
+              git checkout -B "${BRANCH_NAME}" origin/main
+            fi
+          }
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          EXISTING_PR=$(gh pr list --state open --json number,headRefName | jq -r '.[] | select(.headRefName == "'"${BRANCH_NAME}"'") | .number')
+          EXISTING_PR=$(gh pr list --state open --base main --head "${GITHUB_REPOSITORY_OWNER}:${BRANCH_NAME}" --limit 1 --json number --jq '.[0].number // empty')
 
           if [ -n "$EXISTING_PR" ]; then
             echo "Found existing baseline PR #${EXISTING_PR}, updating it"
 
-            git fetch origin ${BRANCH_NAME}
-            git checkout ${BRANCH_NAME}
+            sync_update_branch
 
             CURRENT_IN_BRANCH=$(jq -r '."builtin-baseline"' vcpkg.json)
             CURRENT_REGISTRY_IN_BRANCH=$(jq -r '."default-registry".baseline' vcpkg-configuration.json)
@@ -90,6 +124,7 @@ jobs:
             if [ "$CURRENT_IN_BRANCH" == "${NEW_BASELINE}" ] && [ "$CURRENT_REGISTRY_IN_BRANCH" == "${NEW_BASELINE}" ]; then
               echo "PR #${EXISTING_PR} already has baseline ${NEW_BASELINE}"
               trigger_ci
+              queue_auto_merge "${EXISTING_PR}"
               exit 0
             fi
 
@@ -101,8 +136,10 @@ jobs:
             mv vcpkg-configuration.json.tmp vcpkg-configuration.json
 
             git add vcpkg.json vcpkg-configuration.json
-            git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
-            git push origin ${BRANCH_NAME}
+            if ! git diff --cached --quiet; then
+              git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
+              git push --force-with-lease origin "${BRANCH_NAME}"
+            fi
 
             gh pr edit ${EXISTING_PR} --title "chore: Update vcpkg baseline to ${RELEASE_TAG}"
 
@@ -111,19 +148,13 @@ jobs:
 
             gh pr comment ${EXISTING_PR} --body "${COMMENT_BODY}"
             trigger_ci
+            queue_auto_merge "${EXISTING_PR}"
 
             echo "Successfully updated PR #${EXISTING_PR}"
           else
             echo "No existing baseline PR found, creating new one"
 
-            if git ls-remote --heads origin ${BRANCH_NAME} | grep -q ${BRANCH_NAME}; then
-              echo "Branch exists without PR, fetching and updating"
-              git fetch origin ${BRANCH_NAME}
-              git checkout ${BRANCH_NAME}
-            else
-              echo "Creating new branch ${BRANCH_NAME}"
-              git checkout -b ${BRANCH_NAME}
-            fi
+            sync_update_branch
 
             jq --arg baseline "${NEW_BASELINE}" '."builtin-baseline" = $baseline' vcpkg.json > vcpkg.json.tmp
             mv vcpkg.json.tmp vcpkg.json
@@ -132,17 +163,19 @@ jobs:
 
             git add vcpkg.json vcpkg-configuration.json
             git commit -m "chore: update vcpkg baseline to ${RELEASE_TAG}"
-            git push -f origin ${BRANCH_NAME}
+            git push --force-with-lease origin "${BRANCH_NAME}"
 
             printf -v PR_BODY '## vcpkg Baseline Update\n\nThis PR updates the vcpkg baseline to the latest release.\n\n**Release:** `%s`\n**Previous builtin baseline:** `%s`\n**Previous registry baseline:** `%s`\n**New baseline:** `%s`\n\n**Release notes:** https://github.com/microsoft/vcpkg/releases/tag/%s\n\n---\n🤖 This PR is automatically updated when new vcpkg releases are published' \
               "${RELEASE_TAG}" "${PREVIOUS_BUILTIN}" "${PREVIOUS_REGISTRY}" "${NEW_BASELINE}" "${RELEASE_TAG}"
 
-            gh pr create \
+            PR_URL=$(gh pr create \
               --title "chore: Update vcpkg baseline to ${RELEASE_TAG}" \
               --body "${PR_BODY}" \
               --base main \
-              --head ${BRANCH_NAME}
+              --head ${BRANCH_NAME})
 
             trigger_ci
+            NEW_PR="${PR_URL##*/}"
+            queue_auto_merge "${NEW_PR}"
             echo "Created new baseline PR"
           fi

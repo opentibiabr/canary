@@ -15,6 +15,13 @@
 #include <random>
 #include <vector>
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <type_traits>
+#endif
+
+static_assert(!std::is_move_constructible_v<SpawnMonster>);
+static_assert(!std::is_move_assignable_v<SpawnMonster>);
+
 namespace {
 	std::shared_ptr<MonsterType> makeMonsterType(const std::string &name, bool isBoss = false) {
 		auto monsterType = std::make_shared<MonsterType>(name);

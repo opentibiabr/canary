@@ -98,7 +98,6 @@ keywordHandler:addKeyword({ "gorn" }, StdModule.say, { npcHandler = npcHandler, 
 keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus III is our wise and just leader!" })
 keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "It's rumoured that Ferumbras is planning a new attack on this town." })
 keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a proud member of the king's army. It's my duty to guard the castle. Sometimes I have to deal with less important work though." })
-keywordHandler:addKeyword({ "our" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a proud member of the king's army. It's my duty to guard the castle. Sometimes I have to deal with less important work though." })
 keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "He's a fine blacksmith. Almost all of our weapons are made by him." })
 keywordHandler:addKeyword({ "tbi" }, StdModule.say, { npcHandler = npcHandler, text = "There is almost nothing known about that organisation." })
 keywordHandler:addKeyword({ "rat" }, StdModule.say, { npcHandler = npcHandler, text = "Do you bring freshly killed rats for a bounty of 1 gold each? Ask me for a trade if you want to sell them." })

@@ -68,7 +68,6 @@ keywordHandler:addKeyword({ "field" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "Frodo? He is a friend of mine." })
 keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler, text = "Too noble to care about us." })
 keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "She has a good soul." })
-keywordHandler:addKeyword({ "here" }, StdModule.say, { npcHandler = npcHandler, text = "I run a farm, what else?!" })
 keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Donald McRonald." })
 keywordHandler:addKeyword({ "farm" }, StdModule.say, { npcHandler = npcHandler, text = "It is my farm, yes." })
 keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Who cares?" })

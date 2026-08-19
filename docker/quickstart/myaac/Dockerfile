@@ -1,6 +1,6 @@
 FROM php:8.3-apache AS builder
 
-ARG MYAAC_REF=develop
+ARG MYAAC_REF=2.x
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update \

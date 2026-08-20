@@ -133,6 +133,16 @@ keywordHandler:addAliasKeyword({ "wolves" })
 keywordHandler:addKeyword({ "adventure" }, StdModule.say, { npcHandler = npcHandler, text = "I can see a bright future for you... you will soon embark on a very big adventure and explore the world of {Tibia} - maybe even influence history!" })
 keywordHandler:addAliasKeyword({ "explore" })
 
+keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are burning. Let me quench those flames." }, function(player)
+	return player:getCondition(CONDITION_FIRE)
+end, function(player)
+	local health = player:getHealth()
+	if health < 65 then
+		player:addHealth(65 - health)
+	end
+	player:removeCondition(CONDITION_FIRE)
+	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
+end)
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are poisoned. I will help you." }, function(player)
 	return player:getCondition(CONDITION_POISON)
 end, function(player)

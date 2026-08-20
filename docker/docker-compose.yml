@@ -72,7 +72,7 @@ services:
       context: .
       dockerfile: quickstart/myaac/Dockerfile
       args:
-        MYAAC_REF: "${MYAAC_REF:-develop}"
+        MYAAC_REF: "${MYAAC_REF:-2.x}"
     restart: unless-stopped
     environment:
       CANARY_DB_HOST: "${CANARY_DB_HOST:-db}"

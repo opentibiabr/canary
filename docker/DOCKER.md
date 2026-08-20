@@ -7,7 +7,7 @@ The quickstart currently starts:
 
 - MariaDB
 - Canary server from the published runtime image
-- MyAAC from the `slawkens/myaac` `develop` branch
+- MyAAC from the `slawkens/myaac` `2.x` branch
 - `opentibiabr/login-server` for the client login webservice
 - Test accounts and characters, when enabled
 
@@ -257,7 +257,7 @@ For a first login, use account `@test1` with password `test`.
 ```env
 MYAAC_HTTP_PORT=8080
 MYAAC_SITE_URL=http://localhost:8080
-MYAAC_REF=develop
+MYAAC_REF=2.x
 MYAAC_ADMIN_ACCOUNT=myaacadmin
 MYAAC_ADMIN_EMAIL=admin@localhost.local
 MYAAC_ADMIN_PASSWORD=admin123
@@ -267,7 +267,7 @@ MYAAC_TIMEZONE=America/Fortaleza
 ```
 
 `MYAAC_REF` is the Git ref used when building the MyAAC image. The default is
-`develop`, which tracks the MyAAC branch compatible with Canary `main`. To test
+`2.x`, which tracks the MyAAC branch compatible with Canary `main`. To test
 a tag or another branch, change `MYAAC_REF` and rebuild:
 
 ```bash
@@ -338,7 +338,7 @@ Use `CANARY_IMAGE` only when testing another published or locally loaded Canary
 runtime image. The default quickstart should stay on the official image.
 
 The MyAAC image is built locally from `slawkens/myaac` because the quickstart
-tracks `MYAAC_REF=develop` by default. This build installs PHP dependencies with
+tracks `MYAAC_REF=2.x` by default. This build installs PHP dependencies with
 Composer, but it does not compile Canary.
 
 ## CI Coverage

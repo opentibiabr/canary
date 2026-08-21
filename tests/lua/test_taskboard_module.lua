@@ -591,6 +591,40 @@ test("rookgaard players cannot use or benefit from task board systems", function
 	assert_true(succeeded, failure)
 end)
 
+test("staff players without a vocation can use and resync the task board", function()
+	local staffPlayer = setmetatable({
+		client = player.client,
+		getGroup = function()
+			return {
+				getAccess = function()
+					return true
+				end,
+			}
+		end,
+		getVocation = function()
+			return {
+				getId = function()
+					return 0
+				end,
+			}
+		end,
+	}, { __index = player })
+
+	assert_equal(true, api.isTaskboardEligible(staffPlayer))
+
+	sentMessages = {}
+	api.actions.handle(staffPlayer, makeReader({ api.action.openBounty }, { 1 }))
+	assert_equal(4, #sentMessages)
+	assert_equal(api.packet.serverTaskboard, sentMessages[1].events[1].value)
+	assert_equal(api.window.bounty, sentMessages[1].events[2].value)
+
+	sentMessages = {}
+	registeredCallbacks.TaskboardPlayerOnLoginComplete.playerOnLoginComplete(staffPlayer)
+	assert_equal(8, #sentMessages)
+	assert_equal(api.window.bounty, sentMessages[1].events[2].value)
+	assert_equal(api.window.weekly, sentMessages[5].events[2].value)
+end)
+
 test("duplicate recvbyte registrations reuse one taskboard instance", function()
 	local previousDirectory = rawget(_G, "CORE_DIRECTORY")
 	local previousTaskboard = rawget(_G, "Taskboard")

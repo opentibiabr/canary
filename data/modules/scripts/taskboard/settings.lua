@@ -263,6 +263,15 @@ return function(api)
 		if not player then
 			return false
 		end
+		if type(player.getGroup) == "function" then
+			local groupRead, group = pcall(player.getGroup, player)
+			if groupRead and group and type(group.getAccess) == "function" then
+				local accessRead, hasAccess = pcall(group.getAccess, group)
+				if accessRead and hasAccess == true then
+					return true
+				end
+			end
+		end
 		if type(player.getVocation) ~= "function" then
 			return true
 		end

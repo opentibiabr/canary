@@ -31,6 +31,7 @@ npcConfig.voices = {
 }
 
 npcConfig.shop = {
+	{ itemName = "bounty talisman", clientId = 51978, buy = 5000 },
 	{ itemName = "alptramun's toothbrush", clientId = 29943, sell = 270000 },
 	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "amber with a bug", clientId = 32624, sell = 41000 },

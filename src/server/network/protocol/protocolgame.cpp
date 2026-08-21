@@ -44,6 +44,7 @@
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
 #include "server/network/connection/connection.hpp"
@@ -4287,9 +4288,33 @@ void ProtocolGame::parseSendResourceBalance() {
 }
 
 void ProtocolGame::parseSendResourceBalance(NetworkMessage &msg) {
-	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
-		msg.getByte(true);
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		parseSendResourceBalance();
+		return;
 	}
+
+	const auto requestedResource = msg.getByte(true);
+	const bool isBountyPoints = requestedResource == RESOURCE_BOUNTY_POINTS;
+	const bool isSoulseals = requestedResource == RESOURCE_SOULSEALS;
+	if (isBountyPoints || isSoulseals) {
+		const bool supported = isBountyPoints
+			? hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets)
+			: hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialSoulSealsPackets);
+		if (!supported) {
+			return;
+		}
+
+		const auto key = isBountyPoints ? "bounty-points" : "soulseals";
+		const auto stored = player->kv()->scoped("task-board")->scoped("general")->get(key);
+		double value = stored.has_value() ? stored->getNumber() : 0;
+		if (!std::isfinite(value) || value < 0) {
+			value = 0;
+		}
+		value = std::min(value, static_cast<double>(std::numeric_limits<uint32_t>::max()));
+		sendResourceBalance(static_cast<Resource_t>(requestedResource), static_cast<uint64_t>(value));
+		return;
+	}
+
 	parseSendResourceBalance();
 }
 
@@ -4538,9 +4563,23 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 		return;
 	}
 
-	const auto icons = creature->getIcons();
+	constexpr size_t maxIcons = 3;
+	auto icons = creature->getIcons();
+	const bool supportsTaskboardCreatureIcons = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets);
+	if (const auto monster = creature->getMonster();
+	    monster && supportsTaskboardCreatureIcons && !monster->hasBeenSummoned()) {
+		const auto overlays = player->getRaceIconOverlays(monster->getRaceId());
+		const auto overlayCount = std::min(maxIcons, overlays.size());
+		if (overlayCount > 0) {
+			const auto baseIconCount = maxIcons - overlayCount;
+			if (icons.size() > baseIconCount) {
+				icons.resize(baseIconCount);
+			}
+			icons.insert(icons.end(), overlays.begin(), overlays.begin() + overlayCount);
+		}
+	}
 	// client only supports 3 icons, otherwise it will crash
-	const auto count = icons.size() > 3 ? 3 : icons.size();
+	const auto count = std::min(maxIcons, icons.size());
 	msg.addByte(count);
 	for (uint8_t i = 0; i < count; ++i) {
 		const auto icon = icons[i];
@@ -4551,7 +4590,7 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 }
 
 void ProtocolGame::sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
-	if (!creature || !player || oldProtocol) {
+	if (!creature || !player || oldProtocol || !canSee(creature) || !knownCreatureSet.contains(creature->getID())) {
 		return;
 	}
 
@@ -8765,6 +8804,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		if (!oldProtocol) {
 			player->sendSpellCooldowns();
 		}
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoginComplete, player);
 	}
 }
 

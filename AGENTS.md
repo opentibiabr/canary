@@ -15,6 +15,11 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 - Removal, replacement, reload, or reinterpretation must cancel pending work or advance a checked generation. Callback-owning types are non-movable unless moving cancels or safely rebinds every event.
 - Use bounded arithmetic for intervals; stale work must become a no-op before gameplay, Lua, combat, movement, persistence, or client output. Cover destroyed/replaced owners, reused IDs, shutdown, and ownership transfer where practical.
 
+## Static Ownership Lifetime Safety
+
+- Never rely on cross-translation-unit static destruction order for caches, registries, or other global owners of gameplay objects. Prefer runtime-owned state; when global ownership is unavoidable, provide an explicit idempotent drain during controlled shutdown.
+- Stop and join every producer and consumer before draining global ownership, and release retained objects while all services their destructors may access are still alive. Validate shutdown with retained entries and lifetime instrumentation where practical.
+
 ## Canary build discipline
 
 - Before an authorized local build, read `docs/building/local-validation.md`; its maintained entry-point, environment, preset, cache, and MSVC Ninja workflow is mandatory.

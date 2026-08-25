@@ -8,13 +8,12 @@ return function(api)
 		[api.action.upgradeTalisman] = true,
 		[api.action.deliverWeeklyItem] = true,
 		[api.action.chooseWeeklyDifficulty] = true,
+		[api.action.clearPreferred] = true,
+		[api.action.clearUnwanted] = true,
 	}
 
 	local u16Payload = {
 		[api.action.buyShopOffer] = true,
-		[api.action.unlockPreference] = true,
-		[api.action.clearPreferred] = true,
-		[api.action.clearUnwanted] = true,
 	}
 
 	local twoU16Payload = {

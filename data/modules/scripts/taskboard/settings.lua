@@ -127,6 +127,7 @@ return function(api)
 
 	api.config = {
 		enabled = true,
+		runtimeDiagnostics = true,
 		stateScope = "task-board",
 		stateVersion = 1,
 		preferenceSlots = 5,

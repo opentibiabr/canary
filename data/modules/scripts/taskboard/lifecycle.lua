@@ -3,6 +3,7 @@ return function(api)
 	api.lifecycle = lifecycle
 
 	function lifecycle.onLogin(player)
+		api.diagnostics.info("login", "state initialization player='{}' enabled={} eligible={}", api.diagnostics.playerName(player), api.isEnabled(), api.isTaskboardEligible(player))
 		if not api.isEnabled() then
 			return true
 		end

@@ -20,7 +20,12 @@ return function(api)
 		catalog.byRaceId = {}
 
 		local monsterTypes = Game.getMonsterTypes() or {}
+		local discovered = 0
+		local rewardBosses = 0
+		local invalidRaceIds = 0
+		local duplicateRaceIds = 0
 		for fallbackName, monsterType in pairs(monsterTypes) do
+			discovered = discovered + 1
 			local raceId = tonumber(safeCall(monsterType, "raceId")) or 0
 			local name = safeCall(monsterType, "name") or tostring(fallbackName)
 			local rewardBoss = safeCall(monsterType, "isRewardBoss") == true
@@ -33,6 +38,12 @@ return function(api)
 				}
 				catalog.byRaceId[raceId] = entry
 				table.insert(catalog.entries, entry)
+			elseif rewardBoss then
+				rewardBosses = rewardBosses + 1
+			elseif raceId <= 0 or raceId > 0xFFFF or name == "" then
+				invalidRaceIds = invalidRaceIds + 1
+			else
+				duplicateRaceIds = duplicateRaceIds + 1
 			end
 		end
 
@@ -40,6 +51,8 @@ return function(api)
 			return left.raceId < right.raceId
 		end)
 		catalog.ready = #catalog.entries > 0
+		local level = catalog.ready and "info" or "warn"
+		api.diagnostics[level]("catalog", "rebuild discovered={} usable={} rewardBosses={} invalid={} duplicates={} ready={}", discovered, #catalog.entries, rewardBosses, invalidRaceIds, duplicateRaceIds, catalog.ready)
 	end
 
 	local function ensureCatalog()

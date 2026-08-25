@@ -284,7 +284,7 @@ function player:isMonsterBestiaryUnlocked()
 end
 
 local api = {}
-for _, component in ipairs({ "settings", "catalog", "state", "rules", "wire", "admin", "actions", "soulpit", "lifecycle" }) do
+for _, component in ipairs({ "settings", "diagnostics", "catalog", "state", "rules", "wire", "admin", "actions", "soulpit", "lifecycle" }) do
 	dofile("data/modules/scripts/taskboard/" .. component .. ".lua")(api)
 end
 api.getLootBonus = api.rules.getLootBonus

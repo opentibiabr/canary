@@ -43,38 +43,36 @@ return function(api)
 	local function parse(msg)
 		local action = readByte(msg)
 		if action == nil or not knownActions[action] then
-			return nil, "unknown action"
+			return nil, "unknown action", action
 		end
 
 		local payload = {}
 		if bytePayload[action] then
 			payload[1] = readByte(msg)
 			if payload[1] == nil then
-				return nil, "missing byte payload"
+				return nil, "missing byte payload", action
 			end
 		elseif u16Payload[action] then
 			payload[1] = readU16(msg)
 			if payload[1] == nil then
-				return nil, "missing u16 payload"
+				return nil, "missing u16 payload", action
 			end
 		elseif twoU16Payload[action] then
 			payload[1] = readU16(msg)
 			payload[2] = readU16(msg)
 			if payload[1] == nil or payload[2] == nil then
-				return nil, "missing two-u16 payload"
+				return nil, "missing two-u16 payload", action
 			end
 		end
 
 		if msg:getUnreadBytes() > 0 then
-			return nil, "unexpected trailing bytes"
+			return nil, "unexpected trailing bytes", action
 		end
 		return action, payload
 	end
 
-	local function logMalformed(player, reason)
-		if logger and logger.debug then
-			logger.debug("[Taskboard] ignored malformed packet from player='{}': {}", player:getName(), reason)
-		end
+	local function logMalformed(player, reason, action, unreadBefore, unreadAfter)
+		api.diagnostics.warn("parse", "rejected player='{}' action={}({}) reason='{}' unreadBefore={} unreadAfter={}", api.diagnostics.playerName(player), tostring(action), api.diagnostics.actionName(action), reason, unreadBefore, unreadAfter)
 	end
 
 	local function refreshIcons(player)
@@ -84,12 +82,15 @@ return function(api)
 	end
 
 	function actions.handle(player, msg)
-		local action, payloadOrReason = parse(msg)
+		local unreadBefore = api.diagnostics.unreadBytes(msg)
+		local action, payloadOrReason, rejectedAction = parse(msg)
 		if not action then
-			logMalformed(player, payloadOrReason)
+			logMalformed(player, payloadOrReason, rejectedAction, unreadBefore, api.diagnostics.unreadBytes(msg))
 			return
 		end
+		api.diagnostics.info("action", "parsed player='{}' action={}({}) payload='{}' unreadBefore={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), api.diagnostics.payload(payloadOrReason), unreadBefore)
 		if not api.isTaskboardEligible(player) then
+			api.diagnostics.warn("action", "rejected ineligible player='{}' action={}({})", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action))
 			if api.rules.syncCreatureIcons(player, nil) then
 				refreshIcons(player)
 			end
@@ -143,7 +144,8 @@ return function(api)
 		if responseWindow == api.window.shop then
 			api.rules.syncShopOutfitOwnership(player, state)
 		end
-		api.state.save(player, state)
+		local saved = api.state.save(player, state)
+		api.diagnostics.info("action", "handled player='{}' action={}({}) changed={} saved={} responseWindow={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), changed, saved, responseWindow)
 		api.wire.sendWindow(player, state, responseWindow)
 	end
 end

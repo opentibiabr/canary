@@ -20,9 +20,11 @@ return function(api)
 
 	function wire.sendBalances(player, state)
 		if not api.supportsOfficialTaskboard(player) then
+			api.diagnostics.warn("send", "skipped balances for unsupported player='{}'", api.diagnostics.playerName(player))
 			return
 		end
 		local taskPoints = type(player.getTaskHuntingPoints) == "function" and player:getTaskHuntingPoints() or 0
+		api.diagnostics.info("send", "balances player='{}' bountyPoints={} taskPoints={} soulseals={}", api.diagnostics.playerName(player), state.general.bountyPoints, taskPoints, state.general.soulseals)
 		sendResource(player, api.resource.bountyPoints, state.general.bountyPoints, false)
 		sendResource(player, api.resource.taskHuntingPoints, taskPoints, true)
 		sendResource(player, api.resource.soulseals, state.general.soulseals, false)
@@ -102,6 +104,7 @@ return function(api)
 			msg:addU16(api.clampU16(preference.preferredRace))
 			msg:addU16(api.clampU16(preference.unwantedRace))
 		end
+		api.diagnostics.info("send", "window player='{}' opcode=0x{} window={} tasks={} preferences={}", api.diagnostics.playerName(player), api.diagnostics.hexByte(api.packet.serverTaskboard), api.window.bounty, taskCount, preferenceCount)
 		msg:sendToPlayer(player)
 		wire.sendBalances(player, state)
 	end
@@ -148,9 +151,11 @@ return function(api)
 		msg:addU32(api.clampU32(state.meta.nextWeeklyReset))
 		msg:addByte(state.general.thirdSlotUnlocked and 1 or 0)
 		msg:addU32(api.clampU32(api.rules.getWeeklyRewardPoints(state)))
-		if api.usesWeeklySoulsealsTail(player) then
+		local soulsealsTail = api.usesWeeklySoulsealsTail(player)
+		if soulsealsTail then
 			msg:addU32(api.clampU32(state.weekly.soulseals))
 		end
+		api.diagnostics.info("send", "window player='{}' opcode=0x{} window={} kills={} items={} selectionPending={} soulsealsTail={}", api.diagnostics.playerName(player), api.diagnostics.hexByte(api.packet.serverTaskboard), api.window.weekly, killCount, itemCount, state.weekly.selectionPending, soulsealsTail)
 		msg:sendToPlayer(player)
 		wire.sendBalances(player, state)
 	end
@@ -193,6 +198,7 @@ return function(api)
 			wheelState = api.offerState.notEnoughPoints
 		end
 		msg:addByte(wheelState)
+		api.diagnostics.info("send", "window player='{}' opcode=0x{} window={} offers={} wheelMultiplier={} wheelState={}", api.diagnostics.playerName(player), api.diagnostics.hexByte(api.packet.serverTaskboard), api.window.shop, offerCount + 1, wheelMultiplier, wheelState)
 		msg:sendToPlayer(player)
 		wire.sendBalances(player, state)
 	end

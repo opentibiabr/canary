@@ -98,8 +98,7 @@ namespace {
 	}
 
 	[[nodiscard]] size_t getUnreadBytes(const NetworkMessage &msg) {
-		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
-		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
+		return msg.getUnreadBytes();
 	}
 
 	[[nodiscard]] bool hasClientBuildPrefix(std::string_view versionString, std::string_view buildPrefix) {

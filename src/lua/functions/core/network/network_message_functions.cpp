@@ -133,10 +133,7 @@ int NetworkMessageFunctions::luaNetworkMessageGetUnreadBytes(lua_State* L) {
 	// networkMessage:getUnreadBytes()
 	const auto &message = Lua::getUserdataShared<NetworkMessage>(L, 1, "NetworkMessage");
 	if (message) {
-		const auto bufferPosition = message->getBufferPosition();
-		const auto consumedBytes = bufferPosition >= NetworkMessage::INITIAL_BUFFER_POSITION ? bufferPosition - NetworkMessage::INITIAL_BUFFER_POSITION : 0;
-		const auto unreadBytes = message->getLength() >= consumedBytes ? message->getLength() - consumedBytes : 0;
-		lua_pushnumber(L, unreadBytes);
+		lua_pushnumber(L, message->getUnreadBytes());
 	} else {
 		lua_pushnil(L);
 	}

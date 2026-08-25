@@ -1626,6 +1626,17 @@ test("weekly reset follows the configured server-save clock", function()
 	assert_true(succeeded, failure)
 end)
 
+test("default crystal coin offer serializes the current appearance id", function()
+	local sentBefore = #sentMessages
+	local state = api.state.load(player)
+	api.wire.sendShop(player, state)
+	local shopMessage = sentMessages[sentBefore + 1]
+
+	assert_equal(api.offerKind.item, shopMessage.events[4].value)
+	assert_equal("u32", shopMessage.events[7].operation)
+	assert_equal(3043, shopMessage.events[7].value)
+end)
+
 test("shop wire caps offers without moving the Wheel index", function()
 	local originalOffers = api.config.shopOffers
 	local originalTaskPoints = player.taskPoints
@@ -1838,7 +1849,7 @@ test("shop item rewards are delivered to the store inbox", function()
 		assert_equal(true, api.rules.purchaseShopOffer(player, state, 0))
 		assert_equal(400, player.taskPoints)
 		assert_equal(1, #inbox.items)
-		assert_equal(2160, inbox.items[1].id)
+		assert_equal(3043, inbox.items[1].id)
 		assert_equal(player, inbox.items[1].owner)
 		assert_equal(1234, inbox.items[1].store)
 	end)

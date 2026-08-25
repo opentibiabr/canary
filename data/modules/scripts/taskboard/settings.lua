@@ -184,7 +184,7 @@ return function(api)
 		shopOffers = {
 			{
 				kind = 0,
-				id = 2160,
+				id = 3043,
 				name = "crystal coin",
 				description = "A compact reward for a successful hunt.",
 				price = 100,

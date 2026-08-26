@@ -284,7 +284,7 @@ function player:isMonsterBestiaryUnlocked()
 end
 
 local api = {}
-for _, component in ipairs({ "settings", "diagnostics", "catalog", "state", "rules", "wire", "admin", "actions", "soulpit", "lifecycle" }) do
+for _, component in ipairs({ "settings", "diagnostics", "catalog", "state", "rules", "wire", "expansion", "admin", "actions", "soulpit", "lifecycle" }) do
 	dofile("data/modules/scripts/taskboard/" .. component .. ".lua")(api)
 end
 api.getLootBonus = api.rules.getLootBonus
@@ -1117,6 +1117,85 @@ test("bounty difficulty changes preserve the current assignment", function()
 	end)
 
 	api.rules.generateBounty = originalGenerateBounty
+	assert_true(succeeded, failure)
+end)
+
+test("legacy hunting slot does not unlock the weekly expansion", function()
+	local originalStorage = storage
+	local originalThirdSlot = player.thirdSlotUnlocked
+	storage = {}
+	player.thirdSlotUnlocked = true
+
+	local state = api.state.load(player)
+	assert_equal(false, state.general.weeklyExpansionUnlocked)
+	assert_equal(false, api.expansion.isUnlocked(player))
+
+	storage = originalStorage
+	player.thirdSlotUnlocked = originalThirdSlot
+end)
+
+test("weekly expansion fills both active assignment groups", function()
+	local originalGetPool = api.catalog.getPool
+	local originalRandom = math.random
+	local expansionStorage = {}
+	local expansionPlayer = {
+		getLevel = function()
+			return 50
+		end,
+		getClient = function()
+			return { version = 1525 }
+		end,
+		kv = function()
+			return makeScope(expansionStorage, "expansion")
+		end,
+	}
+	api.catalog.getPool = function()
+		local pool = {}
+		for raceId = 100, 107 do
+			table.insert(pool, { raceId = raceId })
+		end
+		return pool
+	end
+	math.random = function(minimum)
+		return minimum
+	end
+
+	local succeeded, failure = pcall(function()
+		local state = api.state.load(expansionPlayer)
+		state.weekly.difficulty = api.difficulty.adept
+		api.rules.generateWeekly(expansionPlayer, state, false)
+		assert_equal(api.config.weekly.killSlots, #state.weekly.kills)
+		assert_equal(api.config.weekly.itemSlots, #state.weekly.items)
+
+		local preservedRaceId = state.weekly.kills[1].raceId
+		local preservedItemId = state.weekly.items[1].itemId
+		state.weekly.kills[1].current = 7
+		state.weekly.items[1].current = 2
+		assert_true(api.state.save(expansionPlayer, state))
+
+		local changed, unlocked = api.expansion.setUnlocked(expansionPlayer, true)
+		assert_true(changed)
+		assert_true(unlocked)
+		state = api.state.load(expansionPlayer)
+		assert_true(state.general.weeklyExpansionUnlocked)
+		assert_equal(api.config.weekly.expandedKillSlots, #state.weekly.kills)
+		assert_equal(api.config.weekly.expandedItemSlots, #state.weekly.items)
+
+		local preservedKill
+		for _, task in ipairs(state.weekly.kills) do
+			if task.raceId == preservedRaceId then
+				preservedKill = task
+				break
+			end
+		end
+		assert_true(preservedKill ~= nil)
+		assert_equal(7, preservedKill.current)
+		assert_equal(preservedItemId, state.weekly.items[1].itemId)
+		assert_equal(2, state.weekly.items[1].current)
+	end)
+
+	api.catalog.getPool = originalGetPool
+	math.random = originalRandom
 	assert_true(succeeded, failure)
 end)
 
@@ -2504,11 +2583,9 @@ end)
 test("god helpers adjust and persist task board test state", function()
 	local originalStorage = storage
 	local originalTaskPoints = player.taskPoints
-	local originalThirdSlot = player.thirdSlotUnlocked
 	local succeeded, failure = pcall(function()
 		storage = {}
 		player.taskPoints = 500
-		player.thirdSlotUnlocked = false
 
 		local changed, value = api.admin.adjustBountyPoints(player, 25)
 		assert_true(changed)
@@ -2531,15 +2608,15 @@ test("god helpers adjust and persist task board test state", function()
 		assert_true(changed)
 		assert_equal(550, value)
 
-		changed, value = api.admin.setThirdSlot(player, true)
+		changed, value = api.admin.setWeeklyExpansion(player, true)
 		assert_true(changed)
 		assert_true(value)
-		assert_true(api.state.load(player).general.thirdSlotUnlocked)
+		assert_true(api.state.load(player).general.weeklyExpansionUnlocked)
 
-		changed, value = api.admin.setThirdSlot(player, false)
+		changed, value = api.admin.setWeeklyExpansion(player, false)
 		assert_true(changed)
 		assert_true(not value)
-		assert_true(not api.state.load(player).general.thirdSlotUnlocked)
+		assert_true(not api.state.load(player).general.weeklyExpansionUnlocked)
 
 		local invalidChanged, invalidValue, reason = api.admin.adjustBountyPoints(player, 1.5)
 		assert_true(not invalidChanged)
@@ -2553,7 +2630,6 @@ test("god helpers adjust and persist task board test state", function()
 	end)
 	storage = originalStorage
 	player.taskPoints = originalTaskPoints
-	player.thirdSlotUnlocked = originalThirdSlot
 	assert_true(succeeded, failure)
 end)
 
@@ -2564,7 +2640,7 @@ test("god helper prepares weekly delivery items without completing tasks", funct
 	local originalStashItems = player.stashItems
 	local weeklyCalls = 0
 	local state = {
-		general = { thirdSlotUnlocked = false },
+		general = { weeklyExpansionUnlocked = false },
 		weekly = {
 			selectionPending = false,
 			itemsCompleted = 1,
@@ -2616,7 +2692,7 @@ test("god helper recreates missing weekly delivery assignments with current ids"
 	local saveCalls = 0
 	local weeklyCalls = 0
 	local state = {
-		general = { thirdSlotUnlocked = false },
+		general = { weeklyExpansionUnlocked = false },
 		weekly = {
 			selectionPending = false,
 			itemsCompleted = 0,
@@ -2672,8 +2748,10 @@ test("god admin operations preserve state when persistence fails", function()
 	local originalSave = api.state.save
 	local originalSendBalances = api.wire.sendBalances
 	local originalTaskPoints = player.taskPoints
-	local originalThirdSlot = player.thirdSlotUnlocked
-	local state = { general = { thirdSlotUnlocked = false } }
+	local state = {
+		general = { weeklyExpansionUnlocked = false },
+		weekly = { selectionPending = true, kills = {}, items = {} },
+	}
 	local saveCalls = 0
 	local balanceCalls = 0
 
@@ -2689,13 +2767,11 @@ test("god admin operations preserve state when persistence fails", function()
 	end
 
 	local succeeded, failure = pcall(function()
-		player.thirdSlotUnlocked = false
-		local changed, value, reason = api.admin.setThirdSlot(player, true)
+		local changed, value, reason = api.admin.setWeeklyExpansion(player, true)
 		assert_true(not changed)
 		assert_equal(false, value)
 		assert_equal("state could not be saved", reason)
-		assert_equal(false, state.general.thirdSlotUnlocked)
-		assert_equal(false, player.thirdSlotUnlocked)
+		assert_equal(false, state.general.weeklyExpansionUnlocked)
 		assert_equal(1, saveCalls)
 
 		player.taskPoints = 500
@@ -2711,7 +2787,6 @@ test("god admin operations preserve state when persistence fails", function()
 	api.state.save = originalSave
 	api.wire.sendBalances = originalSendBalances
 	player.taskPoints = originalTaskPoints
-	player.thirdSlotUnlocked = originalThirdSlot
 	assert_true(succeeded, failure)
 end)
 

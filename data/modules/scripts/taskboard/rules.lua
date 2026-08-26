@@ -259,13 +259,43 @@ return function(api)
 	end
 
 	local function weeklySlotCounts(state)
-		if state.general.thirdSlotUnlocked then
-			return api.config.weekly.thirdSlotKillSlots, api.config.weekly.thirdSlotItemSlots
+		if state.general.weeklyExpansionUnlocked then
+			return api.config.weekly.expandedKillSlots, api.config.weekly.expandedItemSlots
 		end
 		return api.config.weekly.killSlots, api.config.weekly.itemSlots
 	end
 
-	local function generateWeeklyItems(state, itemSlots)
+	local function appendWeeklyKills(state, amount)
+		local usedRaceIds = {}
+		for _, task in ipairs(state.weekly.kills) do
+			usedRaceIds[task.raceId] = true
+		end
+
+		local difficulty = api.normalizeDifficulty(state.weekly.difficulty, api.difficulty.beginner)
+		local settings = difficultySettings(difficulty)
+		for _, entry in
+			ipairs(api.catalog.randomUnique(amount, function(candidate)
+				return not usedRaceIds[candidate.raceId]
+			end, difficulty))
+		do
+			usedRaceIds[entry.raceId] = true
+			table.insert(state.weekly.kills, {
+				raceId = entry.raceId,
+				required = randomBetween(settings.weeklyKillMinimum, settings.weeklyKillMaximum),
+				current = 0,
+				completed = false,
+			})
+		end
+
+		table.sort(state.weekly.kills, function(left, right)
+			if left.required == right.required then
+				return left.raceId < right.raceId
+			end
+			return left.required < right.required
+		end)
+	end
+
+	local function appendWeeklyItems(state, amount)
 		local itemPool = {}
 		for _, item in ipairs(api.catalog.getWeeklyItems()) do
 			local itemId = api.toFiniteNumber(item.id)
@@ -276,39 +306,82 @@ return function(api)
 			end
 		end
 
-		state.weekly.items = {}
 		local usedItems = {}
-		for index = 1, itemSlots do
-			if #itemPool == 0 then
-				break
-			end
+		for _, item in ipairs(state.weekly.items) do
+			usedItems[item.itemId] = true
+		end
+
+		for _ = 1, amount do
 			local available = {}
-			for _, item in ipairs(itemPool) do
-				if not usedItems[item.id] then
-					table.insert(available, item)
+			for _, candidate in ipairs(itemPool) do
+				if not usedItems[candidate.id] then
+					table.insert(available, candidate)
 				end
 			end
 			if #available == 0 then
-				usedItems = {}
-				available = itemPool
+				break
 			end
+
 			local item = available[math.random(1, #available)]
 			usedItems[item.id] = true
 			table.insert(state.weekly.items, {
-				index = index - 1,
+				index = #state.weekly.items,
 				itemId = api.clampU32(item.id),
 				required = api.clampU32(randomBetween(item.min, item.max)),
 				current = 0,
 				completed = false,
 			})
 		end
-		return #state.weekly.items > 0
+	end
+
+	local function refreshWeeklyCompletionTotals(state)
+		local killsCompleted = state.weekly.anyCreature and state.weekly.anyCreature.completed and 1 or 0
+		for _, task in ipairs(state.weekly.kills) do
+			if task.completed then
+				killsCompleted = killsCompleted + 1
+			end
+		end
+
+		local itemsCompleted = 0
+		for index, item in ipairs(state.weekly.items) do
+			item.index = index - 1
+			if item.completed then
+				itemsCompleted = itemsCompleted + 1
+			end
+		end
+
+		state.weekly.killsCompleted = killsCompleted
+		state.weekly.itemsCompleted = itemsCompleted
+		state.weekly.points = api.clampU32((killsCompleted * api.config.weekly.killCompletionPoints) + (itemsCompleted * api.config.weekly.itemCompletionPoints))
+		state.weekly.soulseals = api.clampU32((killsCompleted + itemsCompleted) * api.config.weekly.completionSeals)
+	end
+
+	function rules.ensureWeeklyAssignments(player, state)
+		if state.weekly.selectionPending then
+			return false
+		end
+
+		state.weekly.kills = state.weekly.kills or {}
+		state.weekly.items = state.weekly.items or {}
+		local killSlots, itemSlots = weeklySlotCounts(state)
+		local previousKillCount = #state.weekly.kills
+		local previousItemCount = #state.weekly.items
+
+		while #state.weekly.kills > killSlots do
+			table.remove(state.weekly.kills)
+		end
+		while #state.weekly.items > itemSlots do
+			table.remove(state.weekly.items)
+		end
+
+		appendWeeklyKills(state, killSlots - #state.weekly.kills)
+		appendWeeklyItems(state, itemSlots - #state.weekly.items)
+		refreshWeeklyCompletionTotals(state)
+		return previousKillCount ~= #state.weekly.kills or previousItemCount ~= #state.weekly.items
 	end
 
 	function rules.generateWeekly(player, state, selectionPending)
 		local difficulty = api.normalizeDifficulty(state.weekly.difficulty, api.getDifficultyForLevel(playerLevel(player)))
-		local settings = difficultySettings(difficulty)
-		local killSlots, itemSlots = weeklySlotCounts(state)
 		state.weekly.difficulty = difficulty
 		state.weekly.selectionPending = selectionPending == true
 		state.weekly.killsCompleted = 0
@@ -328,26 +401,7 @@ return function(api)
 			return true
 		end
 
-		local killSettings = {
-			minimum = settings.weeklyKillMinimum,
-			maximum = settings.weeklyKillMaximum,
-		}
-		for _, entry in ipairs(api.catalog.randomUnique(killSlots, nil, difficulty)) do
-			table.insert(state.weekly.kills, {
-				raceId = entry.raceId,
-				required = randomBetween(killSettings.minimum, killSettings.maximum),
-				current = 0,
-				completed = false,
-			})
-		end
-		table.sort(state.weekly.kills, function(left, right)
-			if left.required == right.required then
-				return left.raceId < right.raceId
-			end
-			return left.required < right.required
-		end)
-
-		generateWeeklyItems(state, itemSlots)
+		rules.ensureWeeklyAssignments(player, state)
 		return true
 	end
 
@@ -356,15 +410,16 @@ return function(api)
 			return false
 		end
 		local _, itemSlots = weeklySlotCounts(state)
-		return generateWeeklyItems(state, itemSlots)
+		appendWeeklyItems(state, itemSlots)
+		return #state.weekly.items > 0
 	end
 
 	function rules.ensureWeekly(player, state)
 		local changed = refreshWeeklyExperience(player, state)
-		if state.weekly.selectionPending or #state.weekly.kills > 0 or #state.weekly.items > 0 then
+		if state.weekly.selectionPending then
 			return changed
 		end
-		return rules.generateWeekly(player, state, true)
+		return rules.ensureWeeklyAssignments(player, state) or changed
 	end
 
 	function rules.getWeeklyRewardMultiplier(state)

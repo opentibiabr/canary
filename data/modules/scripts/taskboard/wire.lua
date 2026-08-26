@@ -149,7 +149,7 @@ return function(api)
 		msg:addByte(state.weekly.selectionPending and 1 or 0)
 		msg:addByte(api.clampByte(api.getDifficultyForLevel(player:getLevel())))
 		msg:addU32(api.clampU32(state.meta.nextWeeklyReset))
-		msg:addByte(state.general.thirdSlotUnlocked and 1 or 0)
+		msg:addByte(state.general.weeklyExpansionUnlocked and 1 or 0)
 		msg:addU32(api.clampU32(api.rules.getWeeklyRewardPoints(state)))
 		local soulsealsTail = api.usesWeeklySoulsealsTail(player)
 		if soulsealsTail then

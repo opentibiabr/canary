@@ -166,16 +166,16 @@ function taskSlotAction.onSay(player, words, param)
 		return true
 	end
 
-	local success, current, reason = taskboard.admin.setThirdSlot(target, enabled == 1)
+	local success, current, reason = taskboard.admin.setWeeklyExpansion(target, enabled == 1)
 	if not success then
-		player:sendCancelMessage("Could not update the target's task third slot (" .. tostring(reason) .. ").")
+		player:sendCancelMessage("Could not update the target's weekly task expansion (" .. tostring(reason) .. ").")
 		return true
 	end
 
 	local status = current and "enabled" or "disabled"
-	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Task third slot for %s is now %s.", target:getName(), status))
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, string.format("Weekly task expansion for %s is now %s.", target:getName(), status))
 	if target ~= player then
-		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your task third slot is now " .. status .. ".")
+		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your weekly task expansion is now " .. status .. ".")
 	end
 	return true
 end

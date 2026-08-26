@@ -131,7 +131,6 @@ return function(api)
 		stateScope = "task-board",
 		stateVersion = 1,
 		preferenceSlots = 5,
-		weeklyThirdSlotUnlocked = false,
 		bounty = {
 			slotCount = 3,
 			maxDailyRerolls = 10,
@@ -159,9 +158,9 @@ return function(api)
 		weekly = {
 			baseAnyCreatureKills = 1000,
 			killSlots = 5,
-			thirdSlotKillSlots = 8,
+			expandedKillSlots = 8,
 			itemSlots = 6,
-			thirdSlotItemSlots = 9,
+			expandedItemSlots = 9,
 			killCompletionPoints = 25,
 			itemCompletionPoints = 75,
 			completionSeals = 1,

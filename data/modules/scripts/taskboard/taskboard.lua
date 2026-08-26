@@ -10,6 +10,7 @@ if type(Taskboard) ~= "table" or Taskboard.__entrypoint ~= taskboardPath or type
 		"state",
 		"rules",
 		"wire",
+		"expansion",
 		"admin",
 		"actions",
 		"soulpit",

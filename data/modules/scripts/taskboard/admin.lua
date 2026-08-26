@@ -113,33 +113,8 @@ return function(api)
 		return true, updated
 	end
 
-	function admin.setThirdSlot(player, enabled)
-		if type(enabled) ~= "boolean" then
-			return false, nil, "invalid slot state"
-		end
-
-		local state = ensureState(player, false)
-		if not state or not state.general then
-			return false, nil, "state unavailable"
-		end
-
-		if type(player.taskHuntingThirdSlot) == "function" then
-			local ok, result = pcall(player.taskHuntingThirdSlot, player, enabled)
-			if not ok or result == nil or result == false then
-				return false, state.general.thirdSlotUnlocked == true, "task slot unavailable"
-			end
-		end
-
-		local previous = state.general.thirdSlotUnlocked == true
-		state.general.thirdSlotUnlocked = enabled
-		if not saveAndSync(player, state, true) then
-			state.general.thirdSlotUnlocked = previous
-			if type(player.taskHuntingThirdSlot) == "function" then
-				pcall(player.taskHuntingThirdSlot, player, previous)
-			end
-			return false, previous, "state could not be saved"
-		end
-		return true, state.general.thirdSlotUnlocked == true
+	function admin.setWeeklyExpansion(player, enabled)
+		return api.expansion.setUnlocked(player, enabled)
 	end
 
 	function admin.prepareWeeklyDeliveries(player)

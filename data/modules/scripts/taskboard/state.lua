@@ -26,6 +26,15 @@ return function(api)
 		return value
 	end
 
+	local function isWeeklyExpansionUnlocked(player)
+		if not player or type(player.kv) ~= "function" then
+			return false
+		end
+
+		local general = player:kv():scoped(api.config.stateScope):scoped("general")
+		return boolean(read(general, "weekly-expansion-unlocked", false))
+	end
+
 	local function newPreferences()
 		local preferences = {}
 		for index = 1, api.config.preferenceSlots do
@@ -83,7 +92,7 @@ return function(api)
 			general = {
 				bountyPoints = 0,
 				soulseals = 0,
-				thirdSlotUnlocked = api.config.weeklyThirdSlotUnlocked == true,
+				weeklyExpansionUnlocked = false,
 				shopOutfits = {},
 			},
 			bounty = {
@@ -223,7 +232,7 @@ return function(api)
 			completed = anyCompleted,
 		}
 
-		local killLimit = state.general.thirdSlotUnlocked and api.config.weekly.thirdSlotKillSlots or api.config.weekly.killSlots
+		local killLimit = state.general.weeklyExpansionUnlocked and api.config.weekly.expandedKillSlots or api.config.weekly.killSlots
 		local normalizedKills = {}
 		local usedRaceIds = {}
 		for _, task in ipairs(weekly.kills) do
@@ -249,7 +258,7 @@ return function(api)
 			end
 		end
 
-		local itemLimit = state.general.thirdSlotUnlocked and api.config.weekly.thirdSlotItemSlots or api.config.weekly.itemSlots
+		local itemLimit = state.general.weeklyExpansionUnlocked and api.config.weekly.expandedItemSlots or api.config.weekly.itemSlots
 		local normalizedItems = {}
 		for _, item in ipairs(weekly.items) do
 			local itemId = integer(item.itemId, 0, 0xFFFFFFFF)
@@ -299,13 +308,7 @@ return function(api)
 		local general = root:scoped("general")
 		state.general.bountyPoints = integer(read(general, "bounty-points", 0), 0, 0xFFFFFFFF)
 		state.general.soulseals = integer(read(general, "soulseals", 0), 0, 0xFFFFFFFF)
-		state.general.thirdSlotUnlocked = boolean(read(general, "third-slot-unlocked", state.general.thirdSlotUnlocked))
-		if type(player.taskHuntingThirdSlot) == "function" then
-			local ok, unlocked = pcall(player.taskHuntingThirdSlot, player)
-			if ok and unlocked then
-				state.general.thirdSlotUnlocked = true
-			end
-		end
+		state.general.weeklyExpansionUnlocked = isWeeklyExpansionUnlocked(player)
 		local shopOutfits = root:scoped("shop-outfits")
 		eachOutfitOffer(function(outfit)
 			local ownership = shopOutfits:scoped(outfit.key)
@@ -359,7 +362,7 @@ return function(api)
 		}
 
 		state.weekly.kills = {}
-		local killCount = integer(read(weekly, "kill-count", 0), 0, api.config.weekly.thirdSlotKillSlots)
+		local killCount = integer(read(weekly, "kill-count", 0), 0, api.config.weekly.expandedKillSlots)
 		for index = 0, killCount - 1 do
 			local task = loadTask(weekly:scoped("kill-" .. index))
 			if task then
@@ -373,7 +376,7 @@ return function(api)
 		end
 
 		state.weekly.items = {}
-		local itemCount = integer(read(weekly, "item-count", 0), 0, api.config.weekly.thirdSlotItemSlots)
+		local itemCount = integer(read(weekly, "item-count", 0), 0, api.config.weekly.expandedItemSlots)
 		for index = 0, itemCount - 1 do
 			local item = weekly:scoped("item-" .. index)
 			table.insert(state.weekly.items, {
@@ -422,7 +425,7 @@ return function(api)
 		local general = root:scoped("general")
 		general:set("bounty-points", api.clampU32(state.general.bountyPoints))
 		general:set("soulseals", api.clampU32(state.general.soulseals))
-		general:set("third-slot-unlocked", state.general.thirdSlotUnlocked == true)
+		general:set("weekly-expansion-unlocked", state.general.weeklyExpansionUnlocked == true)
 		local shopOutfits = root:scoped("shop-outfits")
 		eachOutfitOffer(function(outfit)
 			local ownership = (state.general.shopOutfits or {})[outfit.key] or {}
@@ -498,6 +501,10 @@ return function(api)
 
 	function stateApi.load(player)
 		return loadState(player)
+	end
+
+	function stateApi.isWeeklyExpansionUnlocked(player)
+		return isWeeklyExpansionUnlocked(player)
 	end
 
 	function stateApi.ensure(player, persist)

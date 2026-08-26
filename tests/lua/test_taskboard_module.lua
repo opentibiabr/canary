@@ -592,8 +592,12 @@ test("rookgaard players cannot use or benefit from task board systems", function
 end)
 
 test("staff players without a vocation can use and resync the task board", function()
+	local staffStorage = {}
 	local staffPlayer = setmetatable({
 		client = player.client,
+		kv = function()
+			return makeScope(staffStorage, "root")
+		end,
 		getGroup = function()
 			return {
 				getAccess = function()

@@ -2470,6 +2470,55 @@ test("god helpers adjust and persist task board test state", function()
 	assert_true(succeeded, failure)
 end)
 
+test("god helper prepares weekly delivery items without completing tasks", function()
+	local originalEnsure = api.state.ensure
+	local originalSendWeekly = api.wire.sendWeekly
+	local originalItems = player.items
+	local originalStashItems = player.stashItems
+	local weeklyCalls = 0
+	local state = {
+		general = {},
+		weekly = {
+			selectionPending = false,
+			itemsCompleted = 1,
+			items = {
+				{ itemId = 2148, required = 10, completed = false },
+				{ itemId = 2671, required = 5, completed = false },
+				{ itemId = 2666, required = 20, completed = true },
+			},
+		},
+	}
+
+	api.state.ensure = function()
+		return state
+	end
+	api.wire.sendWeekly = function()
+		weeklyCalls = weeklyCalls + 1
+	end
+	player.items = { [2148] = 3, [2671] = 5 }
+	player.stashItems = { [2148] = 2 }
+
+	local succeeded, failure = pcall(function()
+		local prepared, summary = api.admin.prepareWeeklyDeliveries(player)
+		assert_true(prepared)
+		assert_equal(2, summary.pendingTasks)
+		assert_equal(1, summary.preparedTasks)
+		assert_equal(1, summary.alreadyReadyTasks)
+		assert_equal(5, summary.addedItems)
+		assert_equal(7, player.stashItems[2148])
+		assert_equal(1, state.weekly.itemsCompleted)
+		assert_true(not state.weekly.items[1].completed)
+		assert_true(not state.weekly.items[2].completed)
+		assert_equal(1, weeklyCalls)
+	end)
+
+	api.state.ensure = originalEnsure
+	api.wire.sendWeekly = originalSendWeekly
+	player.items = originalItems
+	player.stashItems = originalStashItems
+	assert_true(succeeded, failure)
+end)
+
 test("god admin operations preserve state when persistence fails", function()
 	local originalEnsure = api.state.ensure
 	local originalSave = api.state.save

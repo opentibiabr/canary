@@ -141,4 +141,59 @@ return function(api)
 		end
 		return true, state.general.thirdSlotUnlocked == true
 	end
+
+	function admin.prepareWeeklyDeliveries(player)
+		local state = ensureState(player)
+		if not state or not state.weekly then
+			return false, nil, "state unavailable"
+		end
+		if state.weekly.selectionPending then
+			return false, nil, "weekly difficulty not selected"
+		end
+		if type(player.addItemStash) ~= "function" then
+			return false, nil, "stash unavailable"
+		end
+
+		local summary = {
+			pendingTasks = 0,
+			preparedTasks = 0,
+			alreadyReadyTasks = 0,
+			addedItems = 0,
+		}
+		local additions = {}
+		for _, item in ipairs(state.weekly.items or {}) do
+			if not item.completed then
+				summary.pendingTasks = summary.pendingTasks + 1
+				local itemId = tonumber(item.itemId) or 0
+				local required = math.max(0, tonumber(item.required) or 0)
+				if itemId <= 0 or itemId > 0xFFFF or required <= 0 then
+					return false, nil, "invalid weekly delivery"
+				end
+
+				local _, _, available = api.rules.getWeeklyItemAvailability(player, item)
+				local missing = math.max(0, required - available)
+				if missing > 0 then
+					table.insert(additions, { itemId = itemId, amount = missing })
+				else
+					summary.alreadyReadyTasks = summary.alreadyReadyTasks + 1
+				end
+			end
+		end
+
+		if summary.pendingTasks == 0 then
+			return false, nil, "no pending deliveries"
+		end
+
+		for _, addition in ipairs(additions) do
+			local succeeded, added = pcall(player.addItemStash, player, addition.itemId, addition.amount)
+			if not succeeded or added ~= true then
+				return false, summary, "stash update failed"
+			end
+			summary.preparedTasks = summary.preparedTasks + 1
+			summary.addedItems = summary.addedItems + addition.amount
+		end
+
+		syncClientState(player, state, true)
+		return true, summary
+	end
 end

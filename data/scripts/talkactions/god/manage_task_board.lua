@@ -60,6 +60,21 @@ local function sendAdjustmentError(player, reason, noun)
 	player:sendCancelMessage("Could not update the target's " .. noun .. ".")
 end
 
+local function parseTarget(player, param, usage)
+	local targetName = string.trim(param or "")
+	if targetName == "" then
+		player:sendCancelMessage(usage)
+		return nil
+	end
+
+	local target = Player(targetName)
+	if not target then
+		player:sendCancelMessage("A player with that name is not online.")
+		return nil
+	end
+	return target
+end
+
 local function registerBalanceAction(command, noun, usage, readValue, adjust)
 	local action = TalkAction(command)
 
@@ -168,3 +183,38 @@ end
 taskSlotAction:separator(" ")
 taskSlotAction:groupType("god")
 taskSlotAction:register()
+
+local weeklyDeliveryAction = TalkAction("/taskboarddelivery")
+
+function weeklyDeliveryAction.onSay(player, words, param)
+	if type(logCommand) == "function" then
+		logCommand(player, words, param)
+	end
+
+	local taskboard = getTaskboard(player)
+	if not taskboard then
+		return true
+	end
+
+	local target = parseTarget(player, param, "Usage: /taskboarddelivery <player>")
+	if not target then
+		return true
+	end
+
+	local success, summary, reason = taskboard.admin.prepareWeeklyDeliveries(target)
+	if not success then
+		player:sendCancelMessage("Could not prepare Weekly Delivery Tasks for " .. target:getName() .. " (" .. tostring(reason) .. ").")
+		return true
+	end
+
+	local message = string.format("Prepared %d Weekly Delivery Tasks for %s: added %d items to the stash; %d tasks were already ready. Use each Deliver button to test the normal flow.", summary.pendingTasks, target:getName(), summary.addedItems, summary.alreadyReadyTasks)
+	player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+	if target ~= player then
+		target:sendTextMessage(MESSAGE_EVENT_ADVANCE, "Your Weekly Delivery Tasks are ready to test. Open the Task Board and use each Deliver button.")
+	end
+	return true
+end
+
+weeklyDeliveryAction:separator(" ")
+weeklyDeliveryAction:groupType("god")
+weeklyDeliveryAction:register()

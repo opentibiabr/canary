@@ -79,6 +79,13 @@ IntegerVector vectorAtoi(const StringVector &stringVector);
 	return (flags & flag) != 0;
 }
 
+[[nodiscard]] constexpr int32_t subtractElapsedTime(int32_t remaining, uint32_t elapsed) noexcept {
+	if (remaining <= 0 || elapsed >= static_cast<uint32_t>(remaining)) {
+		return 0;
+	}
+	return remaining - static_cast<int32_t>(elapsed);
+}
+
 std::mt19937 &getRandomGenerator();
 int32_t uniform_random(int32_t minNumber, int32_t maxNumber);
 int32_t normal_random(int32_t minNumber, int32_t maxNumber);

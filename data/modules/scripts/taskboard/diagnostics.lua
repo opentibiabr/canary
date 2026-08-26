@@ -19,12 +19,8 @@ return function(api)
 		end
 	end
 
-	function diagnostics.info(stage, message, ...)
-		write("info", stage, message, ...)
-	end
-
-	function diagnostics.warn(stage, message, ...)
-		write("warn", stage, message, ...)
+	function diagnostics.trace(stage, message, ...)
+		write("trace", stage, message, ...)
 	end
 
 	function diagnostics.playerName(player)

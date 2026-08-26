@@ -73,7 +73,7 @@ return function(api)
 	end
 
 	local function logMalformed(player, reason, action, unreadBefore, unreadAfter)
-		api.diagnostics.warn("parse", "rejected player='{}' action={}({}) reason='{}' unreadBefore={} unreadAfter={}", api.diagnostics.playerName(player), tostring(action), api.diagnostics.actionName(action), reason, unreadBefore, unreadAfter)
+		api.diagnostics.trace("parse", "rejected player='{}' action={}({}) reason='{}' unreadBefore={} unreadAfter={}", api.diagnostics.playerName(player), tostring(action), api.diagnostics.actionName(action), reason, unreadBefore, unreadAfter)
 	end
 
 	local function refreshIcons(player)
@@ -89,9 +89,9 @@ return function(api)
 			logMalformed(player, payloadOrReason, rejectedAction, unreadBefore, api.diagnostics.unreadBytes(msg))
 			return
 		end
-		api.diagnostics.info("action", "parsed player='{}' action={}({}) payload='{}' unreadBefore={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), api.diagnostics.payload(payloadOrReason), unreadBefore)
+		api.diagnostics.trace("action", "parsed player='{}' action={}({}) payload='{}' unreadBefore={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), api.diagnostics.payload(payloadOrReason), unreadBefore)
 		if not api.isTaskboardEligible(player) then
-			api.diagnostics.warn("action", "rejected ineligible player='{}' action={}({})", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action))
+			api.diagnostics.trace("action", "rejected ineligible player='{}' action={}({})", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action))
 			if api.rules.syncCreatureIcons(player, nil) then
 				refreshIcons(player)
 			end
@@ -146,7 +146,7 @@ return function(api)
 			api.rules.syncShopOutfitOwnership(player, state)
 		end
 		local saved = api.state.save(player, state)
-		api.diagnostics.info("action", "handled player='{}' action={}({}) changed={} saved={} responseWindow={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), changed, saved, responseWindow)
+		api.diagnostics.trace("action", "handled player='{}' action={}({}) changed={} saved={} responseWindow={}", api.diagnostics.playerName(player), action, api.diagnostics.actionName(action), changed, saved, responseWindow)
 		api.wire.sendWindow(player, state, responseWindow)
 	end
 end

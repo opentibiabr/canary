@@ -51,8 +51,7 @@ return function(api)
 			return left.raceId < right.raceId
 		end)
 		catalog.ready = #catalog.entries > 0
-		local level = catalog.ready and "info" or "warn"
-		api.diagnostics[level]("catalog", "rebuild discovered={} usable={} rewardBosses={} invalid={} duplicates={} ready={}", discovered, #catalog.entries, rewardBosses, invalidRaceIds, duplicateRaceIds, catalog.ready)
+		api.diagnostics.trace("catalog", "rebuild discovered={} usable={} rewardBosses={} invalid={} duplicates={} ready={}", discovered, #catalog.entries, rewardBosses, invalidRaceIds, duplicateRaceIds, catalog.ready)
 	end
 
 	local function ensureCatalog()

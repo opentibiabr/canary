@@ -143,7 +143,7 @@ return function(api)
 	end
 
 	function admin.prepareWeeklyDeliveries(player)
-		local state = ensureState(player)
+		local state = ensureState(player, false)
 		if not state or not state.weekly then
 			return false, nil, "state unavailable"
 		end
@@ -152,6 +152,14 @@ return function(api)
 		end
 		if type(player.addItemStash) ~= "function" then
 			return false, nil, "stash unavailable"
+		end
+		if #(state.weekly.items or {}) == 0 then
+			if not api.rules.ensureWeeklyDeliveries(state) then
+				return false, nil, "weekly delivery catalog unavailable"
+			end
+			if not api.state.save(player, state) then
+				return false, nil, "state could not be saved"
+			end
 		end
 
 		local summary = {

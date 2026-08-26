@@ -1385,7 +1385,7 @@ test("weekly delivery requirements use the configured item range", function()
 	local originalKillSlots = api.config.weekly.killSlots
 	local originalItemSlots = api.config.weekly.itemSlots
 	local originalRandom = math.random
-	api.config.weeklyItems = { { id = 2148, min = 73, max = 73 } }
+	api.config.weeklyItems = { { id = 3031, min = 73, max = 73 } }
 	api.config.weekly.killSlots = 0
 	api.config.weekly.itemSlots = 1
 	math.random = function(minimum)
@@ -1406,6 +1406,88 @@ test("weekly delivery requirements use the configured item range", function()
 	api.config.weekly.killSlots = originalKillSlots
 	api.config.weekly.itemSlots = originalItemSlots
 	math.random = originalRandom
+	assert_true(succeeded, failure)
+end)
+
+test("default task board items use the current Canary ids", function()
+	local expectedItems = {
+		{ id = 3031, name = "gold coin" },
+		{ id = 3582, name = "ham" },
+		{ id = 3577, name = "meat" },
+		{ id = 3592, name = "grapes" },
+		{ id = 3601, name = "roll" },
+		{ id = 3578, name = "fish" },
+		{ id = 3600, name = "bread" },
+		{ id = 3586, name = "orange" },
+		{ id = 3583, name = "dragon ham" },
+	}
+	local itemFile = assert(io.open("data/items/items.xml", "r"))
+	local itemXml = itemFile:read("*a")
+	itemFile:close()
+	local function assertItemDefinition(itemId, expectedName)
+		local itemTag = itemXml:match('<item id="' .. itemId .. '"[^>]*>')
+		assert_true(itemTag ~= nil, "missing item definition for " .. itemId)
+		assert_true(itemTag:find('name="' .. expectedName .. '"', 1, true) ~= nil, "unexpected item name for " .. itemId)
+	end
+
+	assert_equal(#expectedItems, #api.config.weeklyItems)
+	for index, expected in ipairs(expectedItems) do
+		local configured = api.config.weeklyItems[index]
+		assert_equal(expected.id, configured.id)
+		assert_equal(nil, configured.name)
+		assertItemDefinition(expected.id, expected.name)
+	end
+	assertItemDefinition(api.config.talisman.itemId, "bounty talisman")
+	assertItemDefinition(api.config.shopOffers[1].id, api.config.shopOffers[1].name)
+
+	local state = api.state.load(player)
+	state.weekly.selectionPending = false
+	state.weekly.anyCreature = { required = 1, current = 0, completed = false }
+	state.weekly.kills = {}
+	state.weekly.items = { { itemId = expectedItems[1].id, required = 1, current = 0, completed = false } }
+	state.weekly.killsCompleted = 0
+	state.weekly.itemsCompleted = 0
+	state.weekly.points = 0
+	state.weekly.soulseals = 0
+	local sentBefore = #sentMessages
+	api.wire.sendWeekly(player, state)
+	local weeklyMessage = sentMessages[sentBefore + 1]
+	assert_equal("u32", weeklyMessage.events[8].operation)
+	assert_equal(expectedItems[1].id, weeklyMessage.events[8].value)
+end)
+
+test("weekly catalog ignores ids missing from the loaded item types", function()
+	local originalItems = api.config.weeklyItems
+	local originalItemType = rawget(_G, "ItemType")
+	api.config.weeklyItems = {
+		{ id = 3031, min = 1, max = 1 },
+		{ id = 65000, min = 1, max = 1 },
+	}
+	rawset(
+		_G,
+		"ItemType",
+		setmetatable({}, {
+			__call = function(_, itemId)
+				return {
+					getId = function()
+						return itemId == 3031 and itemId or 0
+					end,
+					getName = function()
+						return itemId == 3031 and "gold coin" or ""
+					end,
+				}
+			end,
+		})
+	)
+
+	local succeeded, failure = pcall(function()
+		local items = api.catalog.getWeeklyItems()
+		assert_equal(1, #items)
+		assert_equal(3031, items[1].id)
+	end)
+
+	api.config.weeklyItems = originalItems
+	rawset(_G, "ItemType", originalItemType)
 	assert_true(succeeded, failure)
 end)
 
@@ -1439,7 +1521,7 @@ test("weekly experience follows the level at task completion", function()
 	assert_equal(expected, experiencePlayer.experience)
 
 	level = 250
-	state.weekly.items = { { index = 0, itemId = 2148, required = 1, current = 0, completed = false } }
+	state.weekly.items = { { index = 0, itemId = 3031, required = 1, current = 0, completed = false } }
 	local expectedItem = api.rules.calculateWeeklyExperience(level, state.weekly.difficulty, true)
 	assert_equal(true, api.rules.ensureWeekly(experiencePlayer, state))
 	assert_equal(expectedItem, state.weekly.itemExperience)
@@ -1450,7 +1532,7 @@ test("weekly rewards refresh remaining experience after a level gain", function(
 	local awardCount = 0
 	local experiencePlayer = {
 		experience = 0,
-		items = { [2148] = 1 },
+		items = { [3031] = 1 },
 		getLevel = function()
 			return level
 		end,
@@ -1498,10 +1580,10 @@ test("weekly rewards refresh remaining experience after a level gain", function(
 	level = 50
 	awardCount = 0
 	experiencePlayer.experience = 0
-	experiencePlayer.items[2148] = 1
+	experiencePlayer.items[3031] = 1
 	state.weekly.anyCreature = { required = 1, current = 0, completed = false }
 	state.weekly.kills = {}
-	state.weekly.items = { { index = 0, itemId = 2148, required = 1, current = 0, completed = false } }
+	state.weekly.items = { { index = 0, itemId = 3031, required = 1, current = 0, completed = false } }
 	state.weekly.killsCompleted = 0
 	state.weekly.itemsCompleted = 0
 	state.weekly.points = 0
@@ -1955,7 +2037,7 @@ test("weekly delivery restores stash before a failed backpack removal", function
 	local originalRemoveItem = player.removeItem
 	local originalRemoveStashItem = player.removeStashItem
 	local originalAddItemStash = player.addItemStash
-	local itemId = 2148
+	local itemId = 3031
 	local originalInventoryCount = player.items[itemId]
 	local originalStashCount = player.stashItems[itemId]
 	local state = api.state.load(player)
@@ -2326,7 +2408,7 @@ test("weekly state derives rewards from normalized assignments", function()
 		["root/task-board/weekly/kill-2/current"] = 5,
 		["root/task-board/weekly/kill-2/state"] = api.taskState.completed,
 		["root/task-board/weekly/item-count"] = 2,
-		["root/task-board/weekly/item-0/item-id"] = 2148,
+		["root/task-board/weekly/item-0/item-id"] = 3031,
 		["root/task-board/weekly/item-0/required"] = 5,
 		["root/task-board/weekly/item-0/current"] = 2,
 		["root/task-board/weekly/item-0/completed"] = true,
@@ -2350,6 +2432,7 @@ test("weekly state derives rewards from normalized assignments", function()
 	assert_equal(1, #state.weekly.kills)
 	assert_equal(true, state.weekly.kills[1].completed)
 	assert_equal(1, #state.weekly.items)
+	assert_equal(3031, state.weekly.items[1].itemId)
 	assert_equal(true, state.weekly.items[1].completed)
 	assert_equal(5, state.weekly.items[1].current)
 	assert_equal(2, state.weekly.killsCompleted)
@@ -2477,14 +2560,14 @@ test("god helper prepares weekly delivery items without completing tasks", funct
 	local originalStashItems = player.stashItems
 	local weeklyCalls = 0
 	local state = {
-		general = {},
+		general = { thirdSlotUnlocked = false },
 		weekly = {
 			selectionPending = false,
 			itemsCompleted = 1,
 			items = {
-				{ itemId = 2148, required = 10, completed = false },
-				{ itemId = 2671, required = 5, completed = false },
-				{ itemId = 2666, required = 20, completed = true },
+				{ itemId = 3031, required = 10, completed = false },
+				{ itemId = 3582, required = 5, completed = false },
+				{ itemId = 3577, required = 20, completed = true },
 			},
 		},
 	}
@@ -2495,8 +2578,8 @@ test("god helper prepares weekly delivery items without completing tasks", funct
 	api.wire.sendWeekly = function()
 		weeklyCalls = weeklyCalls + 1
 	end
-	player.items = { [2148] = 3, [2671] = 5 }
-	player.stashItems = { [2148] = 2 }
+	player.items = { [3031] = 3, [3582] = 5 }
+	player.stashItems = { [3031] = 2 }
 
 	local succeeded, failure = pcall(function()
 		local prepared, summary = api.admin.prepareWeeklyDeliveries(player)
@@ -2505,7 +2588,7 @@ test("god helper prepares weekly delivery items without completing tasks", funct
 		assert_equal(1, summary.preparedTasks)
 		assert_equal(1, summary.alreadyReadyTasks)
 		assert_equal(5, summary.addedItems)
-		assert_equal(7, player.stashItems[2148])
+		assert_equal(7, player.stashItems[3031])
 		assert_equal(1, state.weekly.itemsCompleted)
 		assert_true(not state.weekly.items[1].completed)
 		assert_true(not state.weekly.items[2].completed)
@@ -2514,6 +2597,67 @@ test("god helper prepares weekly delivery items without completing tasks", funct
 
 	api.state.ensure = originalEnsure
 	api.wire.sendWeekly = originalSendWeekly
+	player.items = originalItems
+	player.stashItems = originalStashItems
+	assert_true(succeeded, failure)
+end)
+
+test("god helper recreates missing weekly delivery assignments with current ids", function()
+	local originalEnsure = api.state.ensure
+	local originalSave = api.state.save
+	local originalSendWeekly = api.wire.sendWeekly
+	local originalItems = player.items
+	local originalStashItems = player.stashItems
+	local originalRandom = math.random
+	local saveCalls = 0
+	local weeklyCalls = 0
+	local state = {
+		general = { thirdSlotUnlocked = false },
+		weekly = {
+			selectionPending = false,
+			itemsCompleted = 0,
+			items = {},
+		},
+	}
+
+	api.state.ensure = function()
+		return state
+	end
+	api.state.save = function(_, stateToSave)
+		saveCalls = saveCalls + 1
+		assert_equal(api.config.weekly.itemSlots, #stateToSave.weekly.items)
+		return true
+	end
+	api.wire.sendWeekly = function()
+		weeklyCalls = weeklyCalls + 1
+	end
+	math.random = function(minimum)
+		return minimum
+	end
+	player.items = {}
+	player.stashItems = {}
+
+	local succeeded, failure = pcall(function()
+		local prepared, summary = api.admin.prepareWeeklyDeliveries(player)
+		assert_true(prepared)
+		assert_equal(api.config.weekly.itemSlots, summary.pendingTasks)
+		assert_equal(api.config.weekly.itemSlots, summary.preparedTasks)
+		assert_equal(0, summary.alreadyReadyTasks)
+		assert_equal(1, saveCalls)
+		assert_equal(1, weeklyCalls)
+		for index = 1, api.config.weekly.itemSlots do
+			local configured = api.config.weeklyItems[index]
+			local generated = state.weekly.items[index]
+			assert_equal(configured.id, generated.itemId)
+			assert_equal(configured.min, generated.required)
+			assert_equal(configured.min, player.stashItems[configured.id])
+		end
+	end)
+
+	api.state.ensure = originalEnsure
+	api.state.save = originalSave
+	api.wire.sendWeekly = originalSendWeekly
+	math.random = originalRandom
 	player.items = originalItems
 	player.stashItems = originalStashItems
 	assert_true(succeeded, failure)

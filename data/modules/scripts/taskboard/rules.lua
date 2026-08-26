@@ -265,6 +265,46 @@ return function(api)
 		return api.config.weekly.killSlots, api.config.weekly.itemSlots
 	end
 
+	local function generateWeeklyItems(state, itemSlots)
+		local itemPool = {}
+		for _, item in ipairs(api.catalog.getWeeklyItems()) do
+			local itemId = api.toFiniteNumber(item.id)
+			local minimum = api.toFiniteNumber(item.min)
+			local maximum = api.toFiniteNumber(item.max)
+			if itemId and itemId > 0 and minimum and minimum >= 1 and maximum and maximum >= minimum then
+				table.insert(itemPool, item)
+			end
+		end
+
+		state.weekly.items = {}
+		local usedItems = {}
+		for index = 1, itemSlots do
+			if #itemPool == 0 then
+				break
+			end
+			local available = {}
+			for _, item in ipairs(itemPool) do
+				if not usedItems[item.id] then
+					table.insert(available, item)
+				end
+			end
+			if #available == 0 then
+				usedItems = {}
+				available = itemPool
+			end
+			local item = available[math.random(1, #available)]
+			usedItems[item.id] = true
+			table.insert(state.weekly.items, {
+				index = index - 1,
+				itemId = api.clampU32(item.id),
+				required = api.clampU32(randomBetween(item.min, item.max)),
+				current = 0,
+				completed = false,
+			})
+		end
+		return #state.weekly.items > 0
+	end
+
 	function rules.generateWeekly(player, state, selectionPending)
 		local difficulty = api.normalizeDifficulty(state.weekly.difficulty, api.getDifficultyForLevel(playerLevel(player)))
 		local settings = difficultySettings(difficulty)
@@ -307,41 +347,16 @@ return function(api)
 			return left.required < right.required
 		end)
 
-		local itemPool = {}
-		for _, item in ipairs(api.catalog.getWeeklyItems()) do
-			local itemId = api.toFiniteNumber(item.id)
-			local minimum = api.toFiniteNumber(item.min)
-			local maximum = api.toFiniteNumber(item.max)
-			if itemId and itemId > 0 and minimum and minimum >= 1 and maximum and maximum >= minimum then
-				table.insert(itemPool, item)
-			end
-		end
-		local usedItems = {}
-		for index = 1, itemSlots do
-			if #itemPool == 0 then
-				break
-			end
-			local available = {}
-			for _, item in ipairs(itemPool) do
-				if not usedItems[item.id] then
-					table.insert(available, item)
-				end
-			end
-			if #available == 0 then
-				usedItems = {}
-				available = itemPool
-			end
-			local item = available[math.random(1, #available)]
-			usedItems[item.id] = true
-			table.insert(state.weekly.items, {
-				index = index - 1,
-				itemId = api.clampU32(item.id),
-				required = api.clampU32(randomBetween(item.min, item.max)),
-				current = 0,
-				completed = false,
-			})
-		end
+		generateWeeklyItems(state, itemSlots)
 		return true
+	end
+
+	function rules.ensureWeeklyDeliveries(state)
+		if state.weekly.selectionPending or #(state.weekly.items or {}) > 0 then
+			return false
+		end
+		local _, itemSlots = weeklySlotCounts(state)
+		return generateWeeklyItems(state, itemSlots)
 	end
 
 	function rules.ensureWeekly(player, state)

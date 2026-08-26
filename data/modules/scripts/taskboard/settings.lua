@@ -169,15 +169,15 @@ return function(api)
 		-- This is deliberately a small, local default catalog. Servers can extend
 		-- it without changing packet writers or purchase logic.
 		weeklyItems = {
-			{ id = 2148, min = 50, max = 250 },
-			{ id = 2671, min = 10, max = 40 },
-			{ id = 2666, min = 10, max = 40 },
-			{ id = 2681, min = 10, max = 40 },
-			{ id = 2690, min = 10, max = 40 },
-			{ id = 2667, min = 10, max = 40 },
-			{ id = 2689, min = 10, max = 40 },
-			{ id = 2675, min = 10, max = 40 },
-			{ id = 2672, min = 10, max = 40 },
+			{ id = 3031, min = 50, max = 250 },
+			{ id = 3582, min = 10, max = 40 },
+			{ id = 3577, min = 10, max = 40 },
+			{ id = 3592, min = 10, max = 40 },
+			{ id = 3601, min = 10, max = 40 },
+			{ id = 3578, min = 10, max = 40 },
+			{ id = 3600, min = 10, max = 40 },
+			{ id = 3586, min = 10, max = 40 },
+			{ id = 3583, min = 10, max = 40 },
 		},
 		-- Only item and wheel offers are enabled by default so a fresh server does
 		-- not promise mount/outfit ids that its own data pack may not contain.

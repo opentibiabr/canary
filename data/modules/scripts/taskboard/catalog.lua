@@ -131,6 +131,28 @@ return function(api)
 	end
 
 	function catalog.getWeeklyItems()
-		return api.config.weeklyItems or {}
+		local configuredItems = api.config.weeklyItems or {}
+		local itemTypeFactory = rawget(_G, "ItemType")
+		if itemTypeFactory == nil then
+			return configuredItems
+		end
+
+		local usableItems = {}
+		for _, configuredItem in ipairs(configuredItems) do
+			local itemId = api.toFiniteNumber(configuredItem.id)
+			local itemType
+			if itemId and itemId == math.floor(itemId) and itemId > 0 and itemId <= 0xFFFF then
+				local resolved, value = pcall(itemTypeFactory, itemId)
+				itemType = resolved and value or nil
+			end
+			local resolvedId = tonumber(safeCall(itemType, "getId")) or 0
+			local resolvedName = tostring(safeCall(itemType, "getName") or "")
+			if resolvedId == itemId and resolvedName ~= "" then
+				table.insert(usableItems, configuredItem)
+			else
+				api.diagnostics.trace("catalog", "ignored invalid weekly delivery item id={}", tostring(configuredItem.id))
+			end
+		end
+		return usableItems
 	end
 end

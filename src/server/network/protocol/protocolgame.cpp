@@ -5142,18 +5142,14 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	    slotP && slotP->state != PreyDataState_Locked) {
 		preySlotsUnlocked++;
 	}
-	// Task hunting third slot unlocked
-	if (const auto &slotH = player->getTaskHuntingSlotById(PreySlot_Three);
-	    slotH && slotH->state != PreyTaskDataState_Locked) {
-		preySlotsUnlocked++;
-	}
-	msg.addByte(preySlotsUnlocked); // getPreySlotById + getTaskHuntingSlotById
+	msg.addByte(preySlotsUnlocked);
 
 	msg.addByte(cyclopediaSummary.m_preyWildcards); // getPreyCardsObtained
+	const auto weeklyExpansion = player->kv()->scoped("task-board")->scoped("general")->get("weekly-expansion-unlocked");
+	msg.addByte(weeklyExpansion && weeklyExpansion->get<bool>() ? 0x01 : 0x00);
 	msg.addByte(cyclopediaSummary.m_instantRewards); // getRewardCollectionObtained
 	msg.addByte(player->hasCharmExpansion() ? 0x01 : 0x00);
 	msg.addByte(cyclopediaSummary.m_hirelings); // getHirelingsObtained
-	msg.addByte(0x00); // Reserved current-client store summary field
 
 	std::vector<uint16_t> m_hSkills;
 	for (const auto &[skillId, skillName] : g_game().getHirelingSkills()) {

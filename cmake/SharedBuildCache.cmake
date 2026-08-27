@@ -1,7 +1,7 @@
 include_guard(GLOBAL)
 
 set(CANARY_SHARED_CACHE_SCHEMA
-    "v3"
+    "v4"
 )
 
 file(
@@ -31,6 +31,14 @@ function(
     path
     output
 )
+    cmake_parse_arguments(
+        signature
+        "NORMALIZE_LINE_ENDINGS"
+        ""
+        ""
+        ${ARGN}
+    )
+
     if(NOT CMAKE_SCRIPT_MODE_FILE)
         get_filename_component(
             candidate_directory
@@ -54,11 +62,31 @@ function(
     endif()
 
     if(EXISTS "${path}")
-        file(
-            SHA256
-            "${path}"
-            file_hash
-        )
+        if(signature_NORMALIZE_LINE_ENDINGS)
+            # The manifest JSON grammar treats physical CRLF and LF line endings
+            # identically. Hash their canonical form so Git checkout settings do
+            # not split an otherwise identical dependency pool. Generic port and
+            # registry trees intentionally remain byte-signatured because
+            # patches and other arbitrary payloads can be line-ending-sensitive.
+            file(
+                READ
+                "${path}"
+                file_contents
+            )
+            string(
+                REPLACE "\r\n"
+                        "\n"
+                        file_contents
+                        "${file_contents}"
+            )
+            string(SHA256 file_hash "${file_contents}")
+        else()
+            file(
+                SHA256
+                "${path}"
+                file_hash
+            )
+        endif()
         if(NOT CMAKE_SCRIPT_MODE_FILE)
             set_property(
                 DIRECTORY
@@ -1759,6 +1787,7 @@ canary_shared_cache_file_signature(
     "manifest/vcpkg.json"
     "${manifest_root}/vcpkg.json"
     manifest_signature
+    NORMALIZE_LINE_ENDINGS
 )
 string(
     APPEND
@@ -1769,6 +1798,7 @@ canary_shared_cache_file_signature(
     "manifest/vcpkg-configuration.json"
     "${manifest_root}/vcpkg-configuration.json"
     manifest_configuration_signature
+    NORMALIZE_LINE_ENDINGS
 )
 string(
     APPEND

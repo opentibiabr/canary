@@ -78,13 +78,13 @@ pwsh -File tools/configure_shared_build_cache.ps1 -CleanTransientVcpkg
 
 The helper refuses cleanup while build-related processes are active and holds the vcpkg root lock during deletion. It preserves installed trees, downloads, binary packages, and fingerprint-specific pools. Cleanup mode does not register repositories, persist environment variables, create the shared layout, detect compilers, or regenerate Solution contracts.
 
-To reclaim only the disposable `buildtrees` and `packages` data for one known schema-v3 pool, pass its full dependency SHA-256:
+To reclaim only the disposable `buildtrees` and `packages` data for one known fingerprint pool, pass its full dependency SHA-256:
 
 ```text
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
 ```
 
-This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. A full dependency fingerprint must match exactly one schema metadata record: the schema and normalized module identity are part of the fingerprint, so an ambiguous match is unsafe and is not cleaned. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
 
 ## Non-Windows setup
 
@@ -104,9 +104,9 @@ cmake --build --preset <build-preset>
 `cmake/SharedBuildCache.cmake` runs before the first `project()` call. When it can prove the complete installation contract, it selects:
 
 ```text
-<cache-root>/vcpkg-installed/v3/<dependency-fingerprint>
-<cache-root>/vcpkg-buildtrees/v3/<dependency-fingerprint>
-<cache-root>/vcpkg-packages/v3/<dependency-fingerprint>
+<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-buildtrees/v4/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-packages/v4/<24-hex-dependency-fingerprint-prefix>
 ```
 
 The first directory is persistent. The latter two are transient and are cleaned after successful dependency builds by the preset's vcpkg options.
@@ -226,13 +226,15 @@ The consumer fingerprint includes the dependency fingerprint and then adds eithe
 
 The module disables sharing when any required identity or the local-filesystem guarantee is ambiguous. Absolute worktree paths do not participate. Content paths inside manifests and configurations still participate through the files themselves, while referenced local trees are hashed using relative file names and contents.
 
-The module's normalized SHA-256 is part of schema `v3`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
+The module's normalized SHA-256 is part of schema `v4`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
+
+Schema `v4` canonicalizes CRLF and LF only while signing `vcpkg.json` and an optional `vcpkg-configuration.json`: JSON treats those physical line endings identically, so a Git checkout setting cannot split an otherwise identical dependency pool. Files in registry and overlay trees remain byte-signatured; arbitrary ports, patches, and payloads can be line-ending-sensitive and must not be treated as interchangeable.
 
 An existing configured preset never changes fingerprint or falls back in place. Cached package variables could retain paths into the old pool, so the module stops before `project()` and requests `cmake --fresh --preset <configure-preset>`.
 
 Fingerprint input files and trees are CMake configure dependencies. Adding, removing, or changing a manifest, registry, overlay, triplet, compiler, or toolchain input requests regeneration.
 
-The full dependency SHA-256 and non-local metadata are written below `<cache-root>/metadata/v3`. Directory names use the first 24 hexadecimal characters to limit Windows path length; the metadata lock verifies the full hash before a shortened directory is accepted.
+The full dependency SHA-256 and non-local metadata are written below `<cache-root>/metadata/v4`. Directory names use the first 24 hexadecimal characters to limit Windows path length; the metadata lock verifies the full hash before a shortened directory is accepted.
 
 ## Concurrency
 
@@ -254,7 +256,7 @@ Verify its `CMakeCache.txt`:
 CANARY_SHARED_VCPKG_ACTIVE:INTERNAL=true
 CANARY_VCPKG_DEPENDENCY_FINGERPRINT:INTERNAL=<full-dependency-fingerprint>
 CANARY_VCPKG_CONSUMER_FINGERPRINT:INTERNAL=<full-consumer-fingerprint>
-VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v3/<dependency-fingerprint>
+VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
 ```
 
 Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.
@@ -273,7 +275,7 @@ Before pruning a fingerprint:
 
 An audit that reports an unregistered, unavailable, partially enumerated, or malformed repository/configure tree, a non-local/reparse root, or a missing/mismatched full-hash identity is incomplete and exits with failure. Do not prune any global fingerprint until every registered family is available and the audit succeeds.
 
-Schema migrations intentionally create a new pool. Keep the previous schema until every registered configured build has migrated, built successfully, and stopped referencing it.
+Schema migrations intentionally create a new pool. Keep the previous schema until every registered configured build has migrated, built successfully, and stopped referencing it. In particular, schema `v4` replaces schema `v3` to make manifest JSON signatures independent of Git's CRLF/LF checkout conversion; do not redirect or rename an existing v3 directory by hand.
 
 If one fingerprint becomes corrupt, stop all its consumers, remove only that exact directory, and reconfigure one existing preset. vcpkg recreates it from the binary cache. Do not delete downloads or the global binary cache during normal recovery.
 

@@ -20,7 +20,7 @@ function callback.playerOnKill(player, monster)
 		return
 	end
 
-	taskboard.onMonsterKilled(player, monsterType:raceId())
+	taskboard.onMonsterKilled(player, monsterType:raceId(), monster)
 end
 
 callback:register()

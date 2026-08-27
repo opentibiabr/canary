@@ -366,22 +366,24 @@ test("taskboard kill callback does not depend on a corpse", function()
 	local originalOnMonsterKilled = api.rules.onMonsterKilled
 	local originalTaskboardOnMonsterKilled = api.onMonsterKilled
 	local calls = {}
-	api.rules.onMonsterKilled = function(killer, raceId)
-		table.insert(calls, { killer = killer, raceId = raceId })
+	api.rules.onMonsterKilled = function(killer, raceId, killedMonster)
+		table.insert(calls, { killer = killer, raceId = raceId, monster = killedMonster })
 	end
 	api.onMonsterKilled = api.rules.onMonsterKilled
 
 	local succeeded, failure = pcall(function()
 		local callback = registeredCallbacks.TaskboardPlayerOnKill
 		assert_true(callback ~= nil)
-		callback.playerOnKill(player, {
+		local killedMonster = {
 			getType = function()
 				return Game.getMonsterTypes().alpha
 			end,
-		})
+		}
+		callback.playerOnKill(player, killedMonster)
 		assert_equal(1, #calls)
 		assert_equal(player, calls[1].killer)
 		assert_equal(100, calls[1].raceId)
+		assert_equal(killedMonster, calls[1].monster)
 	end)
 
 	api.rules.onMonsterKilled = originalOnMonsterKilled
@@ -2218,6 +2220,46 @@ test("unupgraded bounty talisman remains inactive", function()
 	player.equippedAmmo = originalAmmo
 	player.bestiaryUnlocked = false
 	math.random = originalRandom
+	assert_true(succeeded, failure)
+end)
+
+test("final bounty kill keeps more loot for the killed monster", function()
+	local originalAmmo = player.equippedAmmo
+	local state = api.state.load(player)
+	state.bounty.tasks = {
+		{ raceId = 100, required = 1, current = 0, state = api.taskState.selected, bountyPoints = 3, experience = 0, marker = 0 },
+	}
+	state.upgrades.moreLoot = 1
+	api.state.save(player, state)
+	player.equippedAmmo = {
+		getId = function()
+			return api.config.talisman.itemId
+		end,
+	}
+	local killedMonster = {
+		getId = function()
+			return 9001
+		end,
+		getType = function()
+			return Game.getMonsterTypes().alpha
+		end,
+	}
+	local otherMonster = {
+		getId = function()
+			return 9002
+		end,
+		getType = killedMonster.getType,
+	}
+
+	local succeeded, failure = pcall(function()
+		api.rules.onMonsterKilled(player, 100, killedMonster)
+		assert_equal(api.taskState.completed, api.state.load(player).bounty.tasks[1].state)
+		assert_equal(0, api.rules.getLootBonus(player, otherMonster))
+		assert_equal(0.03, api.rules.getLootBonus(player, killedMonster))
+		assert_equal(0, api.rules.getLootBonus(player, killedMonster))
+	end)
+
+	player.equippedAmmo = originalAmmo
 	assert_true(succeeded, failure)
 end)
 

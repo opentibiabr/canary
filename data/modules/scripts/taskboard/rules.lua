@@ -1,5 +1,8 @@
 return function(api)
 	local rules = {}
+	-- Kill progress completes before loot is generated, so the final kill needs
+	-- a short-lived bonus snapshot bound to the exact player and monster ids.
+	local pendingFinalLootBonuses = {}
 	api.rules = rules
 
 	local function randomBetween(minimum, maximum)
@@ -107,6 +110,68 @@ return function(api)
 		end
 		local item = player:getSlotItem(ammoSlot)
 		return item ~= nil and type(item.getId) == "function" and tonumber(item:getId()) == tonumber(api.config.talisman.itemId)
+	end
+
+	local function creatureId(creature)
+		if not creature or type(creature.getId) ~= "function" then
+			return nil
+		end
+		local ok, id = pcall(creature.getId, creature)
+		id = ok and tonumber(id) or nil
+		if not id or id <= 0 then
+			return nil
+		end
+		return math.floor(id)
+	end
+
+	local function clearPendingFinalLootBonus(player, monster)
+		local monsterId = creatureId(monster)
+		local playerId = creatureId(player)
+		local pending = monsterId and playerId and pendingFinalLootBonuses[monsterId] or nil
+		if not pending then
+			return
+		end
+		pending[playerId] = nil
+		if next(pending) == nil then
+			pendingFinalLootBonuses[monsterId] = nil
+		end
+	end
+
+	local function preserveFinalLootBonus(player, monster, raceId, state)
+		local monsterId = creatureId(monster)
+		local playerId = creatureId(player)
+		local level = state and state.upgrades and state.upgrades.moreLoot or 0
+		local bonus = talismanPercent(level) / 100
+		if not monsterId or not playerId or bonus <= 0 or not hasEquippedTalisman(player) then
+			return
+		end
+
+		local pending = pendingFinalLootBonuses[monsterId] or {}
+		pending[playerId] = {
+			bonus = bonus,
+			raceId = tonumber(raceId) or 0,
+			expiresAt = os.time() + 5,
+		}
+		pendingFinalLootBonuses[monsterId] = pending
+	end
+
+	local function takeFinalLootBonus(player, monster, raceId)
+		local monsterId = creatureId(monster)
+		local playerId = creatureId(player)
+		local pending = monsterId and playerId and pendingFinalLootBonuses[monsterId] or nil
+		local bonus = pending and pending[playerId] or nil
+		if not bonus then
+			return 0
+		end
+
+		pending[playerId] = nil
+		if next(pending) == nil then
+			pendingFinalLootBonuses[monsterId] = nil
+		end
+		if bonus.expiresAt < os.time() or bonus.raceId ~= (tonumber(raceId) or 0) then
+			return 0
+		end
+		return bonus.bonus
 	end
 
 	local function activeBountyTask(player, raceId)
@@ -556,10 +621,11 @@ return function(api)
 		return changed
 	end
 
-	function rules.onMonsterKilled(player, raceId)
+	function rules.onMonsterKilled(player, raceId, monster)
 		if not api.isEnabled() or not player or tonumber(raceId) == nil or not api.isTaskboardEligible(player) then
 			return
 		end
+		clearPendingFinalLootBonus(player, monster)
 		local state = api.state.ensure(player)
 		local activeTask = state.bounty.tasks[1]
 		local bestiaryUnlocked = false
@@ -578,6 +644,9 @@ return function(api)
 					end
 				end
 			end
+		end
+		if activeTask and activeTask.state == api.taskState.selected and activeTask.raceId == tonumber(raceId) and activeTask.current < activeTask.required and activeTask.current + 1 >= activeTask.required then
+			preserveFinalLootBonus(player, monster, raceId, state)
 		end
 		local bountyChanged = rules.updateBountyOnKill(player, state, tonumber(raceId))
 		local weeklyChanged = rules.updateWeeklyOnKill(player, state, tonumber(raceId))
@@ -1103,7 +1172,7 @@ return function(api)
 		local raceId = monsterType and type(monsterType.raceId) == "function" and monsterType:raceId() or monster.raceId
 		local task, state = activeBountyTask(player, raceId)
 		if not task then
-			return 0
+			return takeFinalLootBonus(player, monster, raceId)
 		end
 		local level = state.upgrades.moreLoot or 0
 		return talismanPercent(level) / 100

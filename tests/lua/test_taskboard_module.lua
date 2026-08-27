@@ -2329,6 +2329,44 @@ test("final bounty kill keeps more loot for the killed monster", function()
 	assert_true(succeeded, failure)
 end)
 
+test("final bounty loot snapshot expires when no loot consumes it", function()
+	local originalAmmo = player.equippedAmmo
+	local originalTime = os.time
+	local now = 1000
+	local state = api.state.load(player)
+	state.bounty.tasks = {
+		{ raceId = 100, required = 1, current = 0, state = api.taskState.selected, bountyPoints = 3, experience = 0, marker = 0 },
+	}
+	state.upgrades.moreLoot = 1
+	api.state.save(player, state)
+	player.equippedAmmo = {
+		getId = function()
+			return api.config.talisman.itemId
+		end,
+	}
+	local killedMonster = {
+		getId = function()
+			return 9003
+		end,
+		getType = function()
+			return Game.getMonsterTypes().alpha
+		end,
+	}
+	os.time = function()
+		return now
+	end
+
+	local succeeded, failure = pcall(function()
+		api.rules.onMonsterKilled(player, 100, killedMonster)
+		now = now + 6
+		assert_equal(0, api.rules.getLootBonus(player, killedMonster))
+	end)
+
+	os.time = originalTime
+	player.equippedAmmo = originalAmmo
+	assert_true(succeeded, failure)
+end)
+
 test("disabled taskboard suppresses every talisman effect", function()
 	local originalEnabled = api.config.enabled
 	local originalDamageChance = api.config.talisman.damageActivationChance

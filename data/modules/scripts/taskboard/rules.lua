@@ -137,6 +137,19 @@ return function(api)
 		end
 	end
 
+	local function purgeExpiredFinalLootBonuses(now)
+		for monsterId, pending in pairs(pendingFinalLootBonuses) do
+			for playerId, bonus in pairs(pending) do
+				if bonus.expiresAt < now then
+					pending[playerId] = nil
+				end
+			end
+			if next(pending) == nil then
+				pendingFinalLootBonuses[monsterId] = nil
+			end
+		end
+	end
+
 	local function preserveFinalLootBonus(player, monster, raceId, state)
 		local monsterId = creatureId(monster)
 		local playerId = creatureId(player)
@@ -146,11 +159,13 @@ return function(api)
 			return
 		end
 
+		local now = os.time()
+		purgeExpiredFinalLootBonuses(now)
 		local pending = pendingFinalLootBonuses[monsterId] or {}
 		pending[playerId] = {
 			bonus = bonus,
 			raceId = tonumber(raceId) or 0,
-			expiresAt = os.time() + 5,
+			expiresAt = now + 5,
 		}
 		pendingFinalLootBonuses[monsterId] = pending
 	end

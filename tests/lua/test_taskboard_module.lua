@@ -1600,13 +1600,16 @@ test("default task board items use the current Canary ids", function()
 	assert_equal(expectedItems[1].id, weeklyMessage.events[8].value)
 end)
 
-test("weekly catalog ignores ids missing from the loaded item types", function()
+test("weekly catalog ignores missing items and equipped ammunition", function()
 	local originalItems = api.config.weeklyItems
 	local originalItemType = rawget(_G, "ItemType")
+	local originalWeaponAmmo = rawget(_G, "WEAPON_AMMO")
 	api.config.weeklyItems = {
 		{ id = 3031, min = 1, max = 1 },
+		{ id = 3446, min = 1, max = 1 },
 		{ id = 65000, min = 1, max = 1 },
 	}
+	rawset(_G, "WEAPON_AMMO", 7)
 	rawset(
 		_G,
 		"ItemType",
@@ -1614,10 +1617,13 @@ test("weekly catalog ignores ids missing from the loaded item types", function()
 			__call = function(_, itemId)
 				return {
 					getId = function()
-						return itemId == 3031 and itemId or 0
+						return itemId ~= 65000 and itemId or 0
 					end,
 					getName = function()
-						return itemId == 3031 and "gold coin" or ""
+						return itemId == 3031 and "gold coin" or itemId == 3446 and "arrow" or ""
+					end,
+					getWeaponType = function()
+						return itemId == 3446 and WEAPON_AMMO or 0
 					end,
 				}
 			end,
@@ -1632,6 +1638,7 @@ test("weekly catalog ignores ids missing from the loaded item types", function()
 
 	api.config.weeklyItems = originalItems
 	rawset(_G, "ItemType", originalItemType)
+	rawset(_G, "WEAPON_AMMO", originalWeaponAmmo)
 	assert_true(succeeded, failure)
 end)
 

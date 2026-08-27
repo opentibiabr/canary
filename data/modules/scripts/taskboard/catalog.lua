@@ -15,6 +15,12 @@ return function(api)
 		return ok and value or nil
 	end
 
+	local function isWeeklyDeliveryItem(itemType)
+		local ammoWeaponType = tonumber(rawget(_G, "WEAPON_AMMO"))
+		local weaponType = tonumber(safeCall(itemType, "getWeaponType"))
+		return ammoWeaponType == nil or weaponType == nil or weaponType ~= ammoWeaponType
+	end
+
 	function catalog.rebuild()
 		catalog.entries = {}
 		catalog.byRaceId = {}
@@ -147,7 +153,7 @@ return function(api)
 			end
 			local resolvedId = tonumber(safeCall(itemType, "getId")) or 0
 			local resolvedName = tostring(safeCall(itemType, "getName") or "")
-			if resolvedId == itemId and resolvedName ~= "" then
+			if resolvedId == itemId and resolvedName ~= "" and isWeeklyDeliveryItem(itemType) then
 				table.insert(usableItems, configuredItem)
 			else
 				api.diagnostics.trace("catalog", "ignored invalid weekly delivery item id={}", tostring(configuredItem.id))

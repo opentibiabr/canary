@@ -2173,7 +2173,7 @@ test("weekly delivery restores stash before a failed backpack removal", function
 	assert_true(succeeded, failure)
 end)
 
-test("unupgraded bounty talisman applies its baseline bonuses", function()
+test("unupgraded bounty talisman remains inactive", function()
 	local originalDamageChance = api.config.talisman.damageActivationChance
 	local originalLifeLeechChance = api.config.talisman.lifeLeechActivationChance
 	local originalAmmo = player.equippedAmmo
@@ -2206,11 +2206,11 @@ test("unupgraded bounty talisman applies its baseline bonuses", function()
 	}
 
 	local succeeded, failure = pcall(function()
-		assert_equal(0.025, api.rules.getLootBonus(player, { raceId = 100 }))
-		assert_equal(2.5, api.rules.getDamageBonus(player, target))
-		assert_equal(2.5, api.rules.getLifeLeechBonus(player, target))
+		assert_equal(0, api.rules.getLootBonus(player, { raceId = 100 }))
+		assert_equal(0, api.rules.getDamageBonus(player, target))
+		assert_equal(0, api.rules.getLifeLeechBonus(player, target))
 		api.rules.onMonsterKilled(player, 100)
-		assert_equal(1, player.bestiaryBonusKills)
+		assert_equal(0, player.bestiaryBonusKills)
 	end)
 
 	api.config.talisman.damageActivationChance = originalDamageChance

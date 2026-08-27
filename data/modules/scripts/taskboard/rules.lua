@@ -35,6 +35,9 @@ return function(api)
 
 	local function talismanPercent(level)
 		level = math.max(0, api.toFiniteNumber(level, 0))
+		if level <= 0 then
+			return 0
+		end
 		if level <= 15 then
 			return 2.5 + (level * 0.5)
 		end
@@ -47,6 +50,9 @@ return function(api)
 
 	local function talismanDoubleBestiaryChance(level)
 		level = math.max(0, api.toFiniteNumber(level, 0))
+		if level <= 0 then
+			return 0
+		end
 		if level <= 15 then
 			return 5 + level
 		end

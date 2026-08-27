@@ -17,6 +17,9 @@ local modulesToPreload = {
 	["gamestore.senders"] = function()
 		return moduleLoader("senders")
 	end,
+	["gamestore.taskboard"] = function()
+		return moduleLoader("taskboard")
+	end,
 	["gamestore.purchases"] = function()
 		return moduleLoader("purchases")
 	end,

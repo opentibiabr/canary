@@ -1083,6 +1083,65 @@ test("bounty generation and kill progression persist through KV", function()
 	assert_equal(api.taskState.completed, afterKill.bounty.tasks[1].state)
 end)
 
+test("kill progress saves once and refreshes icons only on completion", function()
+	local originalEnsure = api.state.ensure
+	local originalSave = api.state.save
+	local originalSendBounty = api.wire.sendBounty
+	local originalOverlays = player.raceIconOverlays
+	local originalRefreshes = player.iconRefreshes
+	local originalBestiaryUnlocked = player.bestiaryUnlocked
+	local state = api.state.load(player)
+	state.bounty.tasks = {
+		{ raceId = 100, required = 2, current = 0, state = api.taskState.selected, bountyPoints = 3, experience = 0, marker = 0 },
+	}
+	state.weekly.selectionPending = true
+	local ensureCalls = 0
+	local saveCalls = 0
+	local bountyWindows = 0
+	player.raceIconOverlays = {
+		[100] = { [api.creatureIcon.bountyTaskMonster] = true },
+	}
+	player.iconRefreshes = 0
+	player.bestiaryUnlocked = true
+	api.state.ensure = function(_, persist)
+		ensureCalls = ensureCalls + 1
+		assert_equal(false, persist)
+		return state
+	end
+	api.state.save = function()
+		saveCalls = saveCalls + 1
+		return true
+	end
+	api.wire.sendBounty = function()
+		bountyWindows = bountyWindows + 1
+	end
+
+	local succeeded, failure = pcall(function()
+		api.rules.onMonsterKilled(player, 100)
+		assert_equal(1, state.bounty.tasks[1].current)
+		assert_equal(api.taskState.selected, state.bounty.tasks[1].state)
+		assert_equal(0, player.iconRefreshes)
+		assert_true(player.raceIconOverlays[100][api.creatureIcon.bountyTaskMonster])
+
+		api.rules.onMonsterKilled(player, 100)
+		assert_equal(2, state.bounty.tasks[1].current)
+		assert_equal(api.taskState.completed, state.bounty.tasks[1].state)
+		assert_equal(1, player.iconRefreshes)
+		assert_equal(nil, player.raceIconOverlays[100])
+		assert_equal(2, ensureCalls)
+		assert_equal(2, saveCalls)
+		assert_equal(2, bountyWindows)
+	end)
+
+	api.state.ensure = originalEnsure
+	api.state.save = originalSave
+	api.wire.sendBounty = originalSendBounty
+	player.raceIconOverlays = originalOverlays
+	player.iconRefreshes = originalRefreshes
+	player.bestiaryUnlocked = originalBestiaryUnlocked
+	assert_true(succeeded, failure)
+end)
+
 test("bounty difficulty changes preserve the current assignment", function()
 	local originalGenerateBounty = api.rules.generateBounty
 	local generationCalls = 0

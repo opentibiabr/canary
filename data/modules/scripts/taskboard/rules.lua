@@ -544,11 +544,12 @@ return function(api)
 
 	function rules.updateWeeklyOnKill(player, state, raceId)
 		if state.weekly.selectionPending then
-			return false
+			return false, false
 		end
 		refreshWeeklyExperience(player, state)
 
 		local changed = false
+		local iconsChanged = false
 		local any = state.weekly.anyCreature
 		if not any.completed then
 			any.current = math.min(any.required, (any.current or 0) + 1)
@@ -569,25 +570,28 @@ return function(api)
 				if task.current >= task.required and task.required > 0 then
 					if completeWeeklyTask(player, state, task, state.weekly.killExperience) then
 						state.weekly.killsCompleted = (state.weekly.killsCompleted or 0) + 1
+						iconsChanged = true
 						api.wire.sendWeeklyTaskSpecificCreatureFinished(player, task.raceId)
 					end
 				end
 			end
 		end
-		return changed
+		return changed, iconsChanged
 	end
 
 	function rules.updateBountyOnKill(player, state, raceId)
 		local task = state.bounty.tasks[1]
 		if not task or task.state ~= api.taskState.selected or task.raceId ~= raceId or task.current >= task.required then
-			return false
+			return false, false
 		end
 		task.current = math.min(task.required, task.current + 1)
+		local iconsChanged = false
 		if task.current >= task.required then
 			task.state = api.taskState.completed
+			iconsChanged = true
 			api.wire.sendBountyTaskFinished(player, task.raceId)
 		end
-		return true
+		return true, iconsChanged
 	end
 
 	function rules.syncCreatureIcons(player, state)
@@ -626,7 +630,7 @@ return function(api)
 			return
 		end
 		clearPendingFinalLootBonus(player, monster)
-		local state = api.state.ensure(player)
+		local state = api.state.ensure(player, false)
 		local activeTask = state.bounty.tasks[1]
 		local bestiaryUnlocked = false
 		if type(player.isMonsterBestiaryUnlocked) == "function" then
@@ -648,12 +652,14 @@ return function(api)
 		if activeTask and activeTask.state == api.taskState.selected and activeTask.raceId == tonumber(raceId) and activeTask.current < activeTask.required and activeTask.current + 1 >= activeTask.required then
 			preserveFinalLootBonus(player, monster, raceId, state)
 		end
-		local bountyChanged = rules.updateBountyOnKill(player, state, tonumber(raceId))
-		local weeklyChanged = rules.updateWeeklyOnKill(player, state, tonumber(raceId))
-		local iconsChanged = rules.syncCreatureIcons(player, state)
+		local bountyChanged, bountyIconsChanged = rules.updateBountyOnKill(player, state, tonumber(raceId))
+		local weeklyChanged, weeklyIconsChanged = rules.updateWeeklyOnKill(player, state, tonumber(raceId))
 		api.state.save(player, state)
-		if iconsChanged and type(player.refreshVisibleCreatureIcons) == "function" then
-			player:refreshVisibleCreatureIcons()
+		if bountyIconsChanged or weeklyIconsChanged then
+			local iconsChanged = rules.syncCreatureIcons(player, state)
+			if iconsChanged and type(player.refreshVisibleCreatureIcons) == "function" then
+				player:refreshVisibleCreatureIcons()
+			end
 		end
 		if bountyChanged and api.wire and api.supportsOfficialTaskboard(player) then
 			api.wire.sendBounty(player, state)

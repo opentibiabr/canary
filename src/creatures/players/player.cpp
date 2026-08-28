@@ -8937,8 +8937,8 @@ bool Player::clearRaceIconOverlays(CreatureIconModifications_t icon) {
 	}
 
 	bool changed = false;
-	for (auto &entry : m_raceIconOverlays) {
-		changed = entry.second.erase(icon) > 0 || changed;
+	for (auto &[_, overlays] : m_raceIconOverlays) {
+		changed = overlays.erase(icon) > 0 || changed;
 	}
 	static_cast<void>(std::erase_if(m_raceIconOverlays, [](const auto &entry) {
 		return entry.second.empty();

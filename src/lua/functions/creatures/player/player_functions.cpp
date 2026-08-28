@@ -1849,7 +1849,6 @@ int PlayerFunctions::luaPlayerOpenStash(lua_State* L) {
  * @return number|nil
  */
 int PlayerFunctions::luaPlayerGetItemCount(lua_State* L) {
-	// player:getItemCount(itemId[, subType = -1[, ignoreEquipped = false[, ignoreStoreInbox = false]]])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);
@@ -2577,7 +2576,6 @@ int PlayerFunctions::luaPlayerRemoveStashItem(lua_State* L) {
  * @return boolean|nil
  */
 int PlayerFunctions::luaPlayerRemoveItem(lua_State* L) {
-	// player:removeItem(itemId, count[, subType = -1[, ignoreEquipped = false[, ignoreStoreInbox = false]]])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);

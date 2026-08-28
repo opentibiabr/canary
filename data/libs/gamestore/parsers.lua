@@ -278,7 +278,7 @@ local function parseBuyStoreOffer(playerId, msg)
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
-			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_WEEKLY_TASK_EXPANSION
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
 			and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS
@@ -343,8 +343,8 @@ local function parseBuyStoreOffer(playerId, msg)
 			GameStore.processSexChangePurchase(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_EXPBOOST then
 			GameStore.processExpBoostPurchase(player)
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
-			GameStore.processTaskHuntingThirdSlot(player)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_WEEKLY_TASK_EXPANSION then
+			GameStore.processWeeklyTaskExpansion(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
 			GameStore.processPreyThirdSlot(player)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYBONUS then

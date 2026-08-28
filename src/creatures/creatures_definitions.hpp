@@ -1511,6 +1511,8 @@ enum class CreatureIconModifications_t {
 	Fiendish,
 	ReducedHealth,
 	ReducedHealthExclamation,
+	WeeklyTaskMonster,
+	BountyTaskMonster,
 };
 
 enum class CreatureIconQuests_t {

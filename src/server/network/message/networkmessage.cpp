@@ -247,6 +247,22 @@ NetworkMessage::MsgSize_t NetworkMessage::getLength() const {
 
 void NetworkMessage::setLength(NetworkMessage::MsgSize_t newLength) {
 	info.length = newLength;
+	info.readEndPosition = newLength;
+}
+
+size_t NetworkMessage::getUnreadBytes() const {
+	const size_t readEndPosition = info.readEndPosition != 0 ? info.readEndPosition : INITIAL_BUFFER_POSITION + info.length;
+	return readEndPosition > info.position ? readEndPosition - info.position : 0;
+}
+
+void NetworkMessage::setPayloadLength(NetworkMessage::MsgSize_t payloadLength) {
+	if (info.position > buffer.size() || payloadLength > buffer.size() - info.position) {
+		info.overrun = true;
+		g_logger().error("[NetworkMessage::setPayloadLength] payload of {} bytes exceeds buffer from position {}", payloadLength, info.position);
+		return;
+	}
+
+	info.readEndPosition = info.position + payloadLength;
 }
 
 NetworkMessage::MsgSize_t NetworkMessage::getBufferPosition() const {
@@ -284,7 +300,7 @@ bool NetworkMessage::canAdd(size_t size) const {
 }
 
 bool NetworkMessage::canRead(int32_t size) const {
-	return size <= (info.length - (info.position - INITIAL_BUFFER_POSITION));
+	return size >= 0 && static_cast<size_t>(size) <= getUnreadBytes();
 }
 
 void NetworkMessage::append(const NetworkMessage &other) {

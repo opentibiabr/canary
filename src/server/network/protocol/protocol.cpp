@@ -194,14 +194,15 @@ bool Protocol::XTEA_decrypt(NetworkMessage &msg) const {
 
 	XTEA_transform(buffer, messageLength, false);
 
-	uint8_t paddingSize = msg.getByte();
-	uint16_t innerLength = messageLength - paddingSize;
-	if (innerLength + paddingSize > msgLength) {
-		g_logger().error("XTEA_decrypt Failed - invalid inner length: {} + {} > {}", innerLength, paddingSize, msgLength);
+	const uint8_t paddingSize = msg.getByte();
+	if (messageLength <= static_cast<size_t>(paddingSize) + sizeof(uint8_t)) {
+		g_logger().error("XTEA_decrypt Failed - invalid padding size: {} for {} decrypted bytes", paddingSize, messageLength);
 		return false;
 	}
 
-	msg.setLength(messageLength - paddingSize);
+	const auto payloadLength = messageLength - paddingSize - sizeof(uint8_t);
+	msg.setLength(static_cast<NetworkMessage::MsgSize_t>(messageLength - paddingSize));
+	msg.setPayloadLength(static_cast<NetworkMessage::MsgSize_t>(payloadLength));
 	return true;
 }
 

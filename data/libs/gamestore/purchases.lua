@@ -1,4 +1,5 @@
 local senders = require("gamestore.senders")
+local taskboard = require("gamestore.taskboard")
 local purchases = {}
 
 local sendStorePurchaseSuccessful = senders.sendStorePurchaseSuccessful
@@ -253,11 +254,11 @@ local function processPreyThirdSlot(player)
 	player:preyThirdSlot(true)
 end
 
-local function processTaskHuntingThirdSlot(player)
-	if player:taskHuntingThirdSlot() then
-		return error({ code = 1, message = "You already have unlocked all task hunting slots." })
+local function processWeeklyTaskExpansion(player)
+	local unlocked, reason = taskboard.unlockWeeklyExpansion(player)
+	if not unlocked then
+		return error({ code = 1, message = reason or "Permanent Weekly Task Expansion is unavailable." })
 	end
-	player:taskHuntingThirdSlot(true)
 end
 
 local function processPreyBonusReroll(player, offerCount)
@@ -483,7 +484,7 @@ purchases.processNameChangePurchase = processNameChangePurchase
 purchases.processSexChangePurchase = processSexChangePurchase
 purchases.processExpBoostPurchase = processExpBoostPurchase
 purchases.processPreyThirdSlot = processPreyThirdSlot
-purchases.processTaskHuntingThirdSlot = processTaskHuntingThirdSlot
+purchases.processWeeklyTaskExpansion = processWeeklyTaskExpansion
 purchases.processPreyBonusReroll = processPreyBonusReroll
 purchases.processTempleTeleportPurchase = processTempleTeleportPurchase
 purchases.processHirelingPurchase = processHirelingPurchase

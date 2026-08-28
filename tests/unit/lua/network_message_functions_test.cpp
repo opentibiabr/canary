@@ -84,6 +84,34 @@ TEST(NetworkMessageFunctionsTest, GetUnreadBytesClampsPastEndPositionToZero) {
 	lua_pop(state.L.get(), 1);
 }
 
+TEST(NetworkMessageFunctionsTest, GetUnreadBytesUsesDecodedPayloadBoundary) {
+	LuaNetworkMessageTestState state;
+	auto message = std::make_shared<NetworkMessage>();
+
+	message->setLength(16);
+	message->setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION - 1);
+	message->setPayloadLength(2);
+	message->setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+
+	pushGetUnreadBytesFunction(state.L.get());
+	pushNetworkMessage(state.L.get(), message);
+
+	ASSERT_EQ(lua_pcall(state.L.get(), 1, 1, 0), LUA_OK) << lua_tostring(state.L.get(), -1);
+	ASSERT_TRUE(lua_isnumber(state.L.get(), -1));
+	EXPECT_EQ(static_cast<uint32_t>(lua_tointeger(state.L.get(), -1)), 1);
+	lua_pop(state.L.get(), 1);
+
+	message->setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION + 1);
+
+	pushGetUnreadBytesFunction(state.L.get());
+	pushNetworkMessage(state.L.get(), message);
+
+	ASSERT_EQ(lua_pcall(state.L.get(), 1, 1, 0), LUA_OK) << lua_tostring(state.L.get(), -1);
+	ASSERT_TRUE(lua_isnumber(state.L.get(), -1));
+	EXPECT_EQ(static_cast<uint32_t>(lua_tointeger(state.L.get(), -1)), 0);
+	lua_pop(state.L.get(), 1);
+}
+
 TEST(NetworkMessageFunctionsTest, GetUnreadBytesReturnsNilForInvalidUserdata) {
 	LuaNetworkMessageTestState state;
 

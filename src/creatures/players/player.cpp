@@ -102,6 +102,23 @@ namespace {
 
 		return false;
 	}
+
+	[[nodiscard]] uint32_t appendMatchingItem(
+		const std::shared_ptr<Item> &item,
+		uint16_t itemId,
+		int32_t subType,
+		std::vector<std::shared_ptr<Item>> &itemList
+	) {
+		if (!item || item->getID() != itemId) {
+			return 0;
+		}
+
+		const auto itemCount = Item::countByType(item, subType);
+		if (itemCount > 0) {
+			itemList.push_back(item);
+		}
+		return itemCount;
+	}
 }
 
 MuteCountMap Player::muteCountMap;
@@ -5132,14 +5149,21 @@ size_t Player::getLastIndex() const {
 }
 
 uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType /*= -1*/) const {
+	return getItemTypeCount(itemId, subType, false, false);
+}
+
+uint32_t Player::getItemTypeCount(uint16_t itemId, int32_t subType, bool ignoreEquipped, bool ignoreStoreInbox) const {
 	uint32_t count = 0;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		if (ignoreStoreInbox && i == CONST_SLOT_STORE_INBOX) {
+			continue;
+		}
 		const auto &item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
-		if (item->getID() == itemId) {
+		if (!ignoreEquipped && item->getID() == itemId) {
 			count += Item::countByType(item, subType);
 		}
 
@@ -5265,7 +5289,7 @@ void Player::stashContainer(const StashContainerList &itemDict) {
 	}
 }
 
-bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/) const {
+bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType, bool ignoreEquipped /* = false*/, bool ignoreStoreInbox /* = false*/) const {
 	if (amount == 0) {
 		return true;
 	}
@@ -5274,44 +5298,33 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 
 	uint32_t count = 0;
 	for (int32_t i = CONST_SLOT_FIRST; i <= CONST_SLOT_LAST; i++) {
+		if (ignoreStoreInbox && i == CONST_SLOT_STORE_INBOX) {
+			continue;
+		}
 		const auto &item = inventory[i];
 		if (!item) {
 			continue;
 		}
 
 		if (!ignoreEquipped && item->getID() == itemId) {
-			const uint32_t itemCount = Item::countByType(item, subType);
-			if (itemCount == 0) {
-				continue;
-			}
-
-			itemList.emplace_back(item);
-
-			count += itemCount;
+			count += appendMatchingItem(item, itemId, subType, itemList);
 			if (count >= amount) {
 				g_game().internalRemoveItems(itemList, amount, Item::items[itemId].stackable);
 				return true;
 			}
-		} else if (const auto &container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				const auto &containerItem = *it;
-				if (containerItem->getID() == itemId) {
-					const uint32_t itemCount = Item::countByType(containerItem, subType);
-					if (itemCount == 0) {
-						continue;
-					}
+			continue;
+		}
 
-					itemList.emplace_back(containerItem);
+		const auto &container = item->getContainer();
+		if (!container) {
+			continue;
+		}
 
-					count += itemCount;
-					const auto stackable = Item::items[itemId].stackable;
-					// If the amount of items in the backpack is equal to or greater than the amount
-					// It will remove items and stop the iteration
-					if (count >= amount) {
-						g_game().internalRemoveItems(itemList, amount, stackable);
-						return true;
-					}
-				}
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			count += appendMatchingItem(*it, itemId, subType, itemList);
+			if (count >= amount) {
+				g_game().internalRemoveItems(itemList, amount, Item::items[itemId].stackable);
+				return true;
 			}
 		}
 	}
@@ -6677,6 +6690,7 @@ bool Player::onKilledMonster(const std::shared_ptr<Monster> &monster) {
 		return false;
 	}
 	if (!monster->getSoulPit()) {
+		g_callbacks().executeCallback(EventCallback_t::playerOnKill, getPlayer(), monster);
 		addHuntingTaskKill(mType);
 		addBestiaryKill(mType);
 		addBosstiaryKill(mType);
@@ -8895,6 +8909,64 @@ void Player::sendCreatureLight(const std::shared_ptr<Creature> &creature) const 
 void Player::sendCreatureIcon(const std::shared_ptr<Creature> &creature) const {
 	if (client && !client->oldProtocol) {
 		client->sendCreatureIcon(creature);
+	}
+}
+
+bool Player::setRaceIconOverlay(uint16_t raceId, CreatureIconModifications_t icon, bool enabled) {
+	if (raceId == 0 || icon == CreatureIconModifications_t::None || !magic_enum::enum_contains(icon)) {
+		return false;
+	}
+
+	if (enabled) {
+		return m_raceIconOverlays[raceId].insert(icon).second;
+	}
+
+	const auto raceIt = m_raceIconOverlays.find(raceId);
+	if (raceIt == m_raceIconOverlays.end() || raceIt->second.erase(icon) == 0) {
+		return false;
+	}
+	if (raceIt->second.empty()) {
+		static_cast<void>(m_raceIconOverlays.erase(raceIt));
+	}
+	return true;
+}
+
+bool Player::clearRaceIconOverlays(CreatureIconModifications_t icon) {
+	if (icon == CreatureIconModifications_t::None || !magic_enum::enum_contains(icon)) {
+		return false;
+	}
+
+	bool changed = false;
+	for (auto &[_, overlays] : m_raceIconOverlays) {
+		changed = overlays.erase(icon) > 0 || changed;
+	}
+	static_cast<void>(std::erase_if(m_raceIconOverlays, [](const auto &entry) {
+		return entry.second.empty();
+	}));
+	return changed;
+}
+
+std::vector<CreatureIcon> Player::getRaceIconOverlays(uint16_t raceId) const {
+	std::vector<CreatureIcon> icons;
+	const auto raceIt = m_raceIconOverlays.find(raceId);
+	if (raceIt == m_raceIconOverlays.end()) {
+		return icons;
+	}
+
+	icons.reserve(raceIt->second.size());
+	for (const auto icon : raceIt->second) {
+		icons.push_back(CreatureIcon { icon });
+	}
+	return icons;
+}
+
+void Player::refreshVisibleCreatureIcons() const {
+	if (!client || client->oldProtocol) {
+		return;
+	}
+
+	for (const auto &creature : Spectators().find<Creature>(getPosition(), false, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_X, MAP_MAX_CLIENT_VIEW_PORT_Y, MAP_MAX_CLIENT_VIEW_PORT_Y)) {
+		sendCreatureIcon(creature);
 	}
 }
 

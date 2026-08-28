@@ -124,6 +124,10 @@ public:
 		return version;
 	}
 
+	[[nodiscard]] const std::string &getClientVersionString() const {
+		return clientVersionString;
+	}
+
 	[[nodiscard]] const ProtocolProfile* getProtocolProfile() const {
 		return protocolProfile;
 	}

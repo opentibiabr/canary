@@ -102,6 +102,23 @@ namespace {
 
 		return false;
 	}
+
+	[[nodiscard]] uint32_t appendMatchingItem(
+		const std::shared_ptr<Item> &item,
+		uint16_t itemId,
+		int32_t subType,
+		std::vector<std::shared_ptr<Item>> &itemList
+	) {
+		if (!item || item->getID() != itemId) {
+			return 0;
+		}
+
+		const auto itemCount = Item::countByType(item, subType);
+		if (itemCount > 0) {
+			itemList.push_back(item);
+		}
+		return itemCount;
+	}
 }
 
 MuteCountMap Player::muteCountMap;
@@ -5290,38 +5307,24 @@ bool Player::removeItemOfType(uint16_t itemId, uint32_t amount, int32_t subType,
 		}
 
 		if (!ignoreEquipped && item->getID() == itemId) {
-			const uint32_t itemCount = Item::countByType(item, subType);
-			if (itemCount == 0) {
-				continue;
-			}
-
-			itemList.emplace_back(item);
-
-			count += itemCount;
+			count += appendMatchingItem(item, itemId, subType, itemList);
 			if (count >= amount) {
 				g_game().internalRemoveItems(itemList, amount, Item::items[itemId].stackable);
 				return true;
 			}
-		} else if (const auto &container = item->getContainer()) {
-			for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
-				const auto &containerItem = *it;
-				if (containerItem->getID() == itemId) {
-					const uint32_t itemCount = Item::countByType(containerItem, subType);
-					if (itemCount == 0) {
-						continue;
-					}
+			continue;
+		}
 
-					itemList.emplace_back(containerItem);
+		const auto &container = item->getContainer();
+		if (!container) {
+			continue;
+		}
 
-					count += itemCount;
-					const auto stackable = Item::items[itemId].stackable;
-					// If the amount of items in the backpack is equal to or greater than the amount
-					// It will remove items and stop the iteration
-					if (count >= amount) {
-						g_game().internalRemoveItems(itemList, amount, stackable);
-						return true;
-					}
-				}
+		for (ContainerIterator it = container->iterator(); it.hasNext(); it.advance()) {
+			count += appendMatchingItem(*it, itemId, subType, itemList);
+			if (count >= amount) {
+				g_game().internalRemoveItems(itemList, amount, Item::items[itemId].stackable);
+				return true;
 			}
 		}
 	}

@@ -1568,7 +1568,7 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	// Recvbyte modules own the byte once they run; the dispatcher must not parse it again.
 	const bool profileAllowsModule = shouldDispatchRecvbyteModuleForProfile(protocolProfile, recvbyte);
 	if (recvbyte == CLIENT_PACKET_TASKBOARD || recvbyte == CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER) {
-		const auto module = g_modules().getEventByRecvbyte(recvbyte, false);
+		const auto moduleEvent = g_modules().getEventByRecvbyte(recvbyte, false);
 		g_logger().trace(
 			"[Taskboard][route] player='{}' opcode=0x{:02X} payloadBytes={} client={} build='{}' profile='{}' profileAllows={} moduleRegistered={} moduleLoaded={}",
 			player->getName(),
@@ -1578,8 +1578,8 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 			clientVersionString,
 			protocolProfile ? protocolProfile->name : std::string_view { "<none>" },
 			profileAllowsModule,
-			module != nullptr,
-			module && module->isLoaded()
+			moduleEvent != nullptr,
+			moduleEvent && moduleEvent->isLoaded()
 		);
 	}
 	if (player

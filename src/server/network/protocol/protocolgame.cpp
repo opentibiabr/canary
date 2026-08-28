@@ -4590,7 +4590,9 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 			if (icons.size() > baseIconCount) {
 				icons.resize(baseIconCount);
 			}
-			icons.insert(icons.end(), overlays.begin(), overlays.begin() + overlayCount);
+			for (size_t overlayIndex = 0; overlayIndex < overlayCount; ++overlayIndex) {
+				icons.push_back(overlays[overlayIndex]);
+			}
 		}
 	}
 	// client only supports 3 icons, otherwise it will crash

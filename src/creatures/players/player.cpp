@@ -8923,7 +8923,7 @@ bool Player::setRaceIconOverlay(uint16_t raceId, CreatureIconModifications_t ico
 		return false;
 	}
 	if (raceIt->second.empty()) {
-		m_raceIconOverlays.erase(raceIt);
+		static_cast<void>(m_raceIconOverlays.erase(raceIt));
 	}
 	return true;
 }
@@ -8934,14 +8934,12 @@ bool Player::clearRaceIconOverlays(CreatureIconModifications_t icon) {
 	}
 
 	bool changed = false;
-	for (auto raceIt = m_raceIconOverlays.begin(); raceIt != m_raceIconOverlays.end();) {
-		changed = raceIt->second.erase(icon) > 0 || changed;
-		if (raceIt->second.empty()) {
-			raceIt = m_raceIconOverlays.erase(raceIt);
-		} else {
-			++raceIt;
-		}
+	for (auto &entry : m_raceIconOverlays) {
+		changed = entry.second.erase(icon) > 0 || changed;
 	}
+	static_cast<void>(std::erase_if(m_raceIconOverlays, [](const auto &entry) {
+		return entry.second.empty();
+	}));
 	return changed;
 }
 
@@ -8954,7 +8952,7 @@ std::vector<CreatureIcon> Player::getRaceIconOverlays(uint16_t raceId) const {
 
 	icons.reserve(raceIt->second.size());
 	for (const auto icon : raceIt->second) {
-		icons.emplace_back(icon);
+		icons.push_back(CreatureIcon { icon });
 	}
 	return icons;
 }

@@ -99,6 +99,10 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Good hunting!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Emael." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "My job is to showcase the trophies of slain monsters as aesthetical as possible. You can admire my work here in the Adventurers' Guild." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcType:register(npcConfig)

@@ -110,6 +110,24 @@ npcHandler:setMessage(MESSAGE_GREET, "Welcome to Frodo's Hut. You heard about th
 npcHandler:setMessage(MESSAGE_FAREWELL, "Please come back from time to time.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Please come back from time to time.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "killed by cyclops" }, StdModule.say, { npcHandler = npcHandler, text = "That's horrible! I am in grief. I will never hear his songs again. I will even miss that strange rhyme he was obsessed with." })
+keywordHandler:addKeyword({ "hengis wulfson" }, StdModule.say, { npcHandler = npcHandler, text = "He is a great bard. He often graced my hut with his presence, songs, and rhymes. I wonder what happened to him lately." })
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "I think the tales about him are widely exaggerated." })
+keywordHandler:addKeyword({ "sunset homes" }, StdModule.say, { npcHandler = npcHandler, text = "The sunset homes are a block of flats south of the harbour." })
+keywordHandler:addKeyword({ "graveyard" }, StdModule.say, { npcHandler = npcHandler, text = "Ah yes, the graveyard dungeon. All I know is this riddle: His Grave to the south, the tree above, his soul in the shade. No idea what that means, though!" })
+keywordHandler:addKeyword({ "tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, our beloved king! Thanks to him, alcohol is so cheap." })
+keywordHandler:addKeyword({ "recitate" }, StdModule.say, { npcHandler = npcHandler, text = "Uhm. If you insist, but I am so awful. I will stop now and then and wait, so you can tell if I should proceed, ok?" })
+keywordHandler:addKeyword({ "satanic" }, StdModule.say, { npcHandler = npcHandler, text = "Hmm, I have heard of a 'satanic influence' theory by someone called Newton or something like that... Maybe there's more in the Royal Archives." })
+keywordHandler:addKeyword({ "special" }, StdModule.say, { npcHandler = npcHandler, text = "That would be my tavern of course... well and perhaps the royal satin that was created especially for the king but sometimes is bought by wealthy citizens as well." })
+keywordHandler:addKeyword({ "formula" }, StdModule.say, { npcHandler = npcHandler, text = "A formula for a potion? No... he didn't talk to me about something like that." })
+keywordHandler:addKeyword({ "killed" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, by the gods! What do you say happened to him?" })
+keywordHandler:addKeyword({ "potion" }, StdModule.say, { npcHandler = npcHandler, text = "A formula for a potion? No... he didn't talk to me about something like that." })
+keywordHandler:addKeyword({ "rhyme" }, StdModule.say, { npcHandler = npcHandler, text = "He recitated it that often that I learned it by heart myself. I would recitate it, but I am not skilled in that kind of things." })
+keywordHandler:addKeyword({ "kiss" }, StdModule.say, { npcHandler = npcHandler, text = "Well, some years ago, I would have asked you to talk with Lynda about this matter. However, since she became a priestess, she ... changed a lot." })
+keywordHandler:addKeyword({ "talk" }, StdModule.say, { npcHandler = npcHandler, text = "Who he talked to? Hm... I'm not sure, there were a few people around. No girls or women though. Maybe just ask around for Eclesius." })
+keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "A loud neighbour, I get a lot of complaints about him." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

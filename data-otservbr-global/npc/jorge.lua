@@ -144,6 +144,15 @@ npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "replicating" }, StdModule.say, { npcHandler = npcHandler, text = "The art of creating something that looks and feels and behaves like the original. It requires a lot of appreciation for detail, diligence and time. But the outcome is ultimately rewarding, don't you think? Anyway, could you help me, please?" })
+keywordHandler:addKeyword(
+	{ "carving" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "Yes, carving. The fine art of taking an undefined, amorphous, something, a knife and making something beautiful out of it. ... Actually, it is creating something by reducing it. Beautiful, eh? I had some years to practice what my grandpa taught me - so feel free to look around later, but first - can you help me?" }
+)
+keywordHandler:addKeyword({ "raids" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, raids. From time to time, a special horde of monsters appears somewhere on this world. You will see it when it happens - just follow the people rushing there! Or ask your fellow adventurers when and where a certain raid is expected." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

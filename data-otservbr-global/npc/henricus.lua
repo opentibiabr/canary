@@ -403,6 +403,16 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Always be on guard, |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "This ungraceful haste is most suspicious!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "ruthless seven" }, StdModule.say, { npcHandler = npcHandler, text = "They're one of the mightiest weapons that our enemies have at disposal. They're the leaders of some of the most powerful forces of demonkind." })
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "He was bested in combat, but the hero who killed him, was that humble that he never claimed the fame." })
+keywordHandler:addKeyword({ "holy water" }, StdModule.say, { npcHandler = npcHandler, text = "Well, if you lost your vial of holy water, you may purchase another one from me by asking me for a trade. However only after you became an Exorcist in our ranks." })
+keywordHandler:addKeyword({ "churches" }, StdModule.say, { npcHandler = npcHandler, text = "The churches of the gods united to fight heresy and dark magic. They are the shield of the true believers, while the inquisition is the sword that fights all enemies of virtuousness." })
+keywordHandler:addKeyword({ "vampire" }, StdModule.say, { npcHandler = npcHandler, text = "These rotting minions of evil prey upon humanity as wolfs prey upon sheep. Only true faith will drive them back. If you fail on your path of virtuousness, you will easily fall prey to those creatures of the night." })
+keywordHandler:addKeyword({ "ghost" }, StdModule.say, { npcHandler = npcHandler, text = "Most ghosts are evil spirits that may not enter the afterlife due to their sins. ... A few ghosts, though, are pious souls who stick to the world of the living to fulfil an unfinished duty." })
+keywordHandler:addKeyword({ "kurik" }, StdModule.say, { npcHandler = npcHandler, text = "Kurik has only few followers who aren't united in a church. Only a few books contain teachings of Kurik and carry his legacy for those interested." })
+keywordHandler:addKeyword({ "witch" }, StdModule.say, { npcHandler = npcHandler, text = "The witches refused to join the druid or the sorcerer guild. They stuck to their own believes and rejected any supervision and guidance by the churches. Of course, such behaviour led to corruption by the forces of darkness." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

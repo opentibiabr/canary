@@ -216,6 +216,21 @@ end
 
 npcHandler:setMessage(MESSAGE_GREET, "Blessings, Player! How may I be of service? Do you wish to trade some {token}s, or would you like some {information} or {talk}? Should I {enchant} certain items for you?")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "cledwyn" }, StdModule.say, { npcHandler = npcHandler, text = "Named after my grandfather. He was a gifted jeweller. Lost in the field looking for rare stones, alas." })
+keywordHandler:addKeyword(
+	{ "family" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "You might find some O'Reilly in some other town, just like me. We're all vagabonds, really. <smiles winningly> Always on the move to trade precious tokens. ... There's a little family competition on who's the most successful token hunter, so if you should have any tokens with you, I'd be delighted to trade you some. <bows>" }
+)
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "<bows> Cledwyn O'Reilly, bespoke smith and token trader, at your service." })
+keywordHandler:addKeyword({ "city" }, StdModule.say, { npcHandler = npcHandler, text = "A most delightful place! You meet all sorts here. Some very pretty ladies, too. <winks> And I am looking forward to a good beer in the tavern after sunset." })
+keywordHandler:addKeyword({ "yana" }, StdModule.say, { npcHandler = npcHandler, text = "You already met her? Yes, she's my cousin. She also collects rare tokens, but unlike me she's interested in gold tokens. Call this passion something of a family trait." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Well, I'm a smith by trade, but my passion is to collect rare tokens made of metal or gemstones. It's something of a family trait. ... All of my family have a passion for some precious stone or metal, but as we're craftsmen, not warriors, we prefer to trade for what we want. ... At the moment, I'm rather interested in silver tokens. ... If you should happen to have any with you, I'll forge you a first-class armour in return for 100 of 'em.",
+})
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

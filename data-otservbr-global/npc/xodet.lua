@@ -177,6 +177,15 @@ npcHandler:setMessage(
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. Or do you want to look only at " .. GetFormattedShopCategoryNames(itemsTable) .. ".")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and come again.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye and come again.")
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "disintegrate rune" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but runes of this type can't be purchased here." })
+keywordHandler:addKeyword({ "life fluid" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, we removed the old life and mana fluids from our assortment. However, we offer health, spirit and mana potions in up to four sizes, just ask me for a trade." })
+keywordHandler:addKeyword({ "mana fluid" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, we removed the old life and mana fluids from our assortment. However, we offer health, spirit and mana potions in up to four sizes, just ask me for a trade." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Eclesius is a good old friend of mine." })
+keywordHandler:addKeyword({ "sorcerer" }, StdModule.say, { npcHandler = npcHandler, text = "There is a sorcerer guild in Thais. Just go to the south west of the town, it is easy to find." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I'm Xodet, the owner of this shop." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm a sorcerer and trade all kinds of magic items." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- On buy npc shop message

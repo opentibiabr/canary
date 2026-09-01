@@ -118,6 +118,20 @@ npcHandler:setCallback(CALLBACK_SET_INTERACTION, onAddFocus)
 npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "anything else" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't know about this place." })
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "I heard he now lives at the dragon cemetery." })
+keywordHandler:addKeyword({ "discovering" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "We are currently working on a huge and very ambitious project: We try to chart the world of Tibia! I know what you might think: Are there so many undiscovered places on this world? And the answer is: Yes! ... There are many secret, hidden or hardly accessible places and sites. We want to create a detailed and accurate map of our world - and we are searching for assistance concerning this project. ... So, if you want to discover Tibia's secrets, go out and discover our world, step by step and area by area. If you contribute to this project to a certain extent, you can gain the right to wear our Discoverer outfit.",
+})
+keywordHandler:addKeyword({ "service" }, StdModule.say, { npcHandler = npcHandler, text = "I can attune you to a city of your choice. If you step to the teleporter here you will not appear in the city you came from as usual, but the city of your choice. Is it what you wish?" })
+keywordHandler:addKeyword({ "area" }, StdModule.say, { npcHandler = npcHandler, text = "As an area we regard larger regions surrounding - for example - the big cities of Tibia. The Kazordoon mountains would be such an area as well as the Venorean swamps or the island of Oramond." })
+keywordHandler:addKeyword({ "map" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "We are currently working on a huge and very ambitious project: We try to chart the world of Tibia! I know what you might think: Are there so many undiscovered places on this world? And the answer is: Yes! ... There are many secret, hidden or hardly accessible places and sites. We want to create a detailed and accurate map of our world - and we are searching for assistance concerning this project. ... So, if you want to discover Tibia's secrets, go out and discover our world, step by step and area by area. If you contribute to this project to a certain extent, you can gain the right to wear our Discoverer outfit.",
+})
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

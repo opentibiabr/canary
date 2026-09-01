@@ -290,6 +290,19 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Be careful on your journeys.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "One of Tibia's greatest warriors and strategists." })
+keywordHandler:addKeyword({ "the first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "I heard he moved to a dungeon." })
+keywordHandler:addKeyword({ "spellbook" }, StdModule.say, { npcHandler = npcHandler, text = "In a spellbook, your spells are listed. There you will find the pronunciation of each spell. If you want to buy one, visit Muriel, the sorcerer." })
+keywordHandler:addKeyword({ "excalibug" }, StdModule.say, { npcHandler = npcHandler, text = "Many brave warriors died on the quest to find that fabled weapon." })
+keywordHandler:addKeyword({ "vocation" }, StdModule.say, { npcHandler = npcHandler, text = "Your vocation is your profession. There are four vocations in Tibia: Knights, paladins, sorcerers, and druids." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Now what would I have to do with a sorcerer? I have no need to talk to sorcerers." })
+keywordHandler:addKeyword({ "general" }, StdModule.say, { npcHandler = npcHandler, text = "General Harkath Bloodblade, a rolemodel." })
+keywordHandler:addKeyword({ "marvik" }, StdModule.say, { npcHandler = npcHandler, text = "Old Marvik saved life and limb of many of my boys and girls." })
+keywordHandler:addKeyword({ "lugri" }, StdModule.say, { npcHandler = npcHandler, text = "If he had some guts he would fight for what he's talking about." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "Times of war are at hand." })
+keywordHandler:addKeyword({ "army" }, StdModule.say, { npcHandler = npcHandler, text = "I personally taught many of the guards." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

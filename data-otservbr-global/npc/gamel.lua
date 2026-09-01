@@ -106,6 +106,14 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye. Tell others about... my little sho
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye. Tell others about... my little shop here.")
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "My grandfather had seen it with his own eyes!" })
+keywordHandler:addKeyword({ "berfasmur" }, StdModule.say, { npcHandler = npcHandler, text = "So, you are a new recruit in the ranks of the rebellion! To proof your worthyness, go and get us a magic crystal." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Shhh! That's of no concern to me." })
+keywordHandler:addKeyword({ "gamel" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, you know my name. Please don't tell it to the others." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Names don't matter." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am selling some... things." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

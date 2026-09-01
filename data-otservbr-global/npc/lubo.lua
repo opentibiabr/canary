@@ -160,6 +160,14 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "mountain" }, StdModule.say, { npcHandler = npcHandler, text = "It is said that once there lived a great magician on the top of this mountain." })
+keywordHandler:addKeyword({ "magician" }, StdModule.say, { npcHandler = npcHandler, text = "I don't remember his name, but it's said that his banner was the black eye." })
+keywordHandler:addKeyword({ "weapon" }, StdModule.say, { npcHandler = npcHandler, text = "If you want to buy weapons, you'll have to go to a town or city." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "There's a lot of magic flowing in the mountain to the north." })
+keywordHandler:addKeyword({ "food" }, StdModule.say, { npcHandler = npcHandler, text = "I sell the best apples in Tibia." })
+keywordHandler:addKeyword({ "inn" }, StdModule.say, { npcHandler = npcHandler, text = "Frodo runs a nice inn in the near town Thais." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

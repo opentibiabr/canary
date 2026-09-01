@@ -64,6 +64,11 @@ npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|! Do you need my service
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Visit me whenever you want to sell something.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye. Visit me whenever you want to sell something.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "weapons" }, StdModule.say, { npcHandler = npcHandler, text = "Ask me for a trade to see my offers." })
+keywordHandler:addKeyword({ "armors" }, StdModule.say, { npcHandler = npcHandler, text = "Ask me for a trade to see my offers." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Hardek, the forestaller." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

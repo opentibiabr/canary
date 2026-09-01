@@ -62,6 +62,23 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "Welcome to my little shop, adventurer! First read my blackboards.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Bye, bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Bye, bye.")
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "spellbook" }, StdModule.say, { npcHandler = npcHandler, text = "Nope, not here." })
+keywordHandler:addKeyword({ "crossbow" }, StdModule.say, { npcHandler = npcHandler, text = "We have too few crossbows on this isle for our hunters." })
+keywordHandler:addKeyword({ "weapon" }, StdModule.say, { npcHandler = npcHandler, text = "At the moment I have no weapons to offer. Weapons are very rare on this isle, so I have to buy a few." })
+keywordHandler:addKeyword({ "fibula" }, StdModule.say, { npcHandler = npcHandler, text = "It's a very nice isle. But we don't have enough weapons to defeat the many wolves." })
+keywordHandler:addKeyword({ "wolves" }, StdModule.say, { npcHandler = npcHandler, text = "They are everywhere around the village." })
+keywordHandler:addKeyword({ "potion" }, StdModule.say, { npcHandler = npcHandler, text = "The magic shops have a monopole on potions now... argl!" })
+keywordHandler:addKeyword({ "timur" }, StdModule.say, { npcHandler = npcHandler, text = "I am Timur. Sorry, I have not much equipment for sale. The business is running low." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "The magic shops have a monopole on potions now... argl!" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Timur. Sorry, I have not much equipment for sale. The business is running low." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "I am sorry, I have no watch." })
+keywordHandler:addKeyword({ "wand" }, StdModule.say, { npcHandler = npcHandler, text = "Nope, not here." })
+keywordHandler:addKeyword({ "food" }, StdModule.say, { npcHandler = npcHandler, text = "If you are looking for food, buy a rod and go fishing." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am selling equipment. Do you want something?" })
+keywordHandler:addKeyword({ "bow" }, StdModule.say, { npcHandler = npcHandler, text = "We have too few bows on this isle for our hunters." })
+keywordHandler:addKeyword({ "rod" }, StdModule.say, { npcHandler = npcHandler, text = "Nope, not here." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

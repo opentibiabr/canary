@@ -9,75 +9,23 @@ function FS.exists(path)
 	return false
 end
 
--- Validates a path so it cannot be used for shell command injection.
--- Only allows alphanumeric characters, underscores, dots, dashes,
--- slashes and backslashes, and must not contain any quote character.
--- "%" is also rejected: on Windows, cmd.exe expands "%VAR%" references at
--- parse time even inside double quotes, so a path like "%TEMP%\x" would
--- create a directory somewhere other than the literal path given.
-function FS.isPathSafe(path)
-	if type(path) ~= "string" or path == "" then
-		return false
-	end
-	-- reject quotes, semicolons, pipes, ampersands, backticks, parentheses,
-	-- dollar, greater/less-than, percent, newlines and other shell metacharacters.
-	if path:find("[%\"%';|&`$()<>%%%c]") then
-		return false
-	end
-	return true
-end
-
+-- Thin wrapper around the native fsCreateDirectories() binding
+-- (src/lua/functions/core/game/global_functions.cpp -> std::filesystem::create_directories).
+-- No shell is ever started, so there's no command-injection surface and no
+-- denylist of "unsafe" path characters -- any path std::filesystem accepts
+-- (including "%", quotes, parentheses, etc. in legitimate directory names)
+-- works correctly. Also creates any missing parent directories, so this
+-- alone now covers what FS.mkdir_p() used to do by walking components.
 function FS.mkdir(path)
-	if not FS.isPathSafe(path) then
-		return false, "unsafe path"
+	if type(path) ~= "string" or path == "" then
+		return false, "invalid path"
 	end
-	if FS.exists(path) then
-		return true
-	end
-	local cmd
-	if package.config:sub(1, 1) == "\\" then
-		-- Windows: use quoted path and /C to avoid leaking shell state
-		cmd = 'cmd /c mkdir "' .. path .. '"'
-	else
-		cmd = 'mkdir "' .. path .. '"'
-	end
-	-- os.execute() under LuaJIT/Lua 5.1 does not return a boolean: it returns
-	-- the process exit status as a number (0 on success), which is truthy in
-	-- Lua like any non-nil/non-false value -- `if not success` never caught a
-	-- failed mkdir. Handle both the LuaJIT/5.1 numeric convention and the
-	-- newer Lua (5.2+) `true/nil, "exit"/"signal", code` convention.
-	local result, reason, code = os.execute(cmd)
-	if result ~= true and result ~= 0 then
-		return false, code or reason or result
-	end
-	return true
+	return fsCreateDirectories(path)
 end
 
 function FS.mkdir_p(path)
 	if path == "" then
 		return true
 	end
-
-	local components = {}
-	for component in path:gmatch("[^/\\]+") do
-		table.insert(components, component)
-	end
-
-	local currentPath = ""
-	for i, component in ipairs(components) do
-		currentPath = currentPath .. component
-
-		if not FS.exists(currentPath) then
-			local success, err = FS.mkdir(currentPath)
-			if not success then
-				return false, err
-			end
-		end
-
-		if i < #components then
-			currentPath = currentPath .. "/"
-		end
-	end
-
-	return true
+	return FS.mkdir(path)
 end

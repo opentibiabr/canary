@@ -77,19 +77,14 @@ local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDam
 	db.query(query)
 end
 
-local function getDeathRecords(playerGuid)
-	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
+local function hasDeathRecord(playerGuid)
+	local resultId = db.storeQuery("SELECT 1 FROM `player_deaths` WHERE `player_id` = " .. playerGuid .. " LIMIT 1")
 	if not resultId then
-		return 0
+		return false
 	end
 
-	local deathRecords = 1
-	while Result.next(resultId) do
-		deathRecords = deathRecords + 1
-	end
 	Result.free(resultId)
-
-	return deathRecords
+	return true
 end
 
 local function handleGuildWar(player, killer, mostDamageKiller, killerName, mostDamageName)
@@ -104,7 +99,7 @@ local function handleGuildWar(player, killer, mostDamageKiller, killerName, most
 		return
 	end
 
-	if getDeathRecords(player:getGuid()) > 0 then
+	if hasDeathRecord(player:getGuid()) then
 		local warId = checkForGuildWar(playerGuildId, killerGuildId)
 		if warId then
 			recordGuildWarKill(killer, player, killerGuildId, playerGuildId, warId)

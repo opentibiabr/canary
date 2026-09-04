@@ -98,6 +98,20 @@ function table.serialize(x, recur)
 	end
 end
 
+-- Bounds how much work a single parse can do: a depth cap (guards the C
+-- stack against deeply-nested crafted input, e.g. a string of thousands of
+-- nested "{[1]={[1]={...") and a total-node cap (guards CPU/memory against
+-- a huge flat table). Both are generous relative to anything table.serialize()
+-- itself would ever produce for real game data.
+local function reserveParsedValue(budget, depth)
+	if depth > budget.maxDepth or budget.remainingValues <= 0 then
+		return false
+	end
+
+	budget.remainingValues = budget.remainingValues - 1
+	return true
+end
+
 -- Recursive-descent parser for the exact grammar table.serialize() produces:
 -- nil, booleans, numbers, single/double-quoted strings (with \n \t \r and
 -- \ddd escapes), and nested tables with bracketed keys. Every branch returns
@@ -108,7 +122,11 @@ end
 -- malformed input, hanging forever. Whitespace is only skipped between
 -- tokens (never inside a quoted string), so round-tripping a string or
 -- string key that contains spaces no longer corrupts it.
-local function parseSerializedValue(s, i, len)
+local function parseSerializedValue(s, i, len, depth, budget)
+	if not reserveParsedValue(budget, depth) then
+		return false
+	end
+
 	while i <= len do
 		local c = s:sub(i, i)
 		if c == " " or c == "\t" or c == "\n" or c == "\r" then
@@ -141,6 +159,26 @@ local function parseSerializedValue(s, i, len)
 	local c = s:sub(i, i)
 	if c == '"' or c == "'" then
 		local quote = c
+		-- Fast path: scan once for the first backslash, matching quote, or raw
+		-- CR/LF. An unescaped string (the common case) is returned as a single
+		-- slice with no per-character buffer at all. A raw newline before any
+		-- escape/quote is rejected here -- string.format("%q", x) always
+		-- escapes a literal newline as backslash + the newline byte, so an
+		-- un-escaped one can't be genuine %q output. No terminator found at
+		-- all means an unterminated string.
+		local firstSpecial = s:find(quote == '"' and '[\\"\r\n]' or "[\\'\r\n]", i + 1)
+		if not firstSpecial then
+			return false
+		end
+
+		local special = s:sub(firstSpecial, firstSpecial)
+		if special == quote then
+			return true, s:sub(i + 1, firstSpecial - 1), firstSpecial + 1
+		end
+		if special ~= "\\" then
+			return false
+		end
+
 		local j = i + 1
 		local out = {}
 		while j <= len do
@@ -166,12 +204,31 @@ local function parseSerializedValue(s, i, len)
 				elseif esc == "r" then
 					out[#out + 1] = "\r"
 					j = j + 2
-				else
+				elseif esc == "\\" or esc == '"' or esc == "'" then
+					-- Only the escapes string.format("%q", x) itself emits are
+					-- accepted; anything else (e.g. \x41, \a, \q) previously
+					-- fell through to a catch-all that silently kept just the
+					-- character after the backslash, quietly turning "\x41"
+					-- into "x41" instead of rejecting it as malformed.
 					out[#out + 1] = esc
 					j = j + 2
+				elseif esc == "\n" or esc == "\r" then
+					-- %q's own line-continuation escape: backslash immediately
+					-- followed by a literal newline byte (optionally paired
+					-- with its CR/LF counterpart), representing one logical \n.
+					local following = s:sub(j + 2, j + 2)
+					out[#out + 1] = "\n"
+					j = j + 2
+					if (esc == "\r" and following == "\n") or (esc == "\n" and following == "\r") then
+						j = j + 1
+					end
+				else
+					return false
 				end
 			elseif ch == quote then
 				return true, table.concat(out), j + 1
+			elseif ch == "\n" or ch == "\r" then
+				return false
 			else
 				out[#out + 1] = ch
 				j = j + 1
@@ -192,9 +249,14 @@ local function parseSerializedValue(s, i, len)
 		end
 
 		while true do
+			-- Only whitespace is skipped here -- the single separating comma
+			-- after each value is already consumed below, so a comma
+			-- reappearing at this point (leading or repeated, e.g. "{,}" or
+			-- "{[1]=1,,[2]=2}") is malformed and must fall through to the
+			-- value parser to be rejected, not be silently swallowed.
 			while i <= len do
 				local ch = s:sub(i, i)
-				if ch == "," or ch:match("%s") then
+				if ch:match("%s") then
 					i = i + 1
 				else
 					break
@@ -206,7 +268,7 @@ local function parseSerializedValue(s, i, len)
 
 			local key
 			if s:sub(i, i) == "[" then
-				local okKey, parsedKey, afterKey = parseSerializedValue(s, i + 1, len)
+				local okKey, parsedKey, afterKey = parseSerializedValue(s, i + 1, len, depth + 1, budget)
 				if not okKey then
 					return false
 				end
@@ -237,7 +299,7 @@ local function parseSerializedValue(s, i, len)
 			while i <= len and s:sub(i, i):match("%s") do
 				i = i + 1
 			end
-			local okVal, val, afterVal = parseSerializedValue(s, i, len)
+			local okVal, val, afterVal = parseSerializedValue(s, i, len, depth + 1, budget)
 			if not okVal then
 				return false
 			end
@@ -267,7 +329,11 @@ function table.unserialize(str)
 	end
 
 	local len = #str
-	local ok, result, nextIndex = parseSerializedValue(str, 1, len)
+	-- maxDepth and remainingValues are generous relative to anything
+	-- table.serialize() itself produces for real game data -- they exist to
+	-- bound work on adversarial input, not to constrain legitimate saves.
+	local budget = { maxDepth = 64, remainingValues = 200000 }
+	local ok, result, nextIndex = parseSerializedValue(str, 1, len, 1, budget)
 	if not ok then
 		return nil
 	end

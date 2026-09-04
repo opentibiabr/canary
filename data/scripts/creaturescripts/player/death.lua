@@ -74,7 +74,12 @@ local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDam
 		mostDamageUnjustified and 1 or 0,
 		db.escapeString(participantsString)
 	)
-	db.asyncQuery(query)
+	-- IronOT/CodeRabbit: this must stay synchronous. handleGuildWar(), called
+	-- right after this in onDeath, immediately does a synchronous
+	-- getDeathRecords() read against this same table -- with an async write,
+	-- that read can run before the INSERT lands, so a player's first-ever
+	-- death could read 0 records and skip the guild-war kill/score update.
+	db.query(query)
 end
 
 local function getDeathRecords(playerGuid)

@@ -194,16 +194,7 @@ keywordHandler:addKeyword({ "billy" }, StdModule.say, { npcHandler = npcHandler,
 keywordHandler:addAliasKeyword({ "willie" })
 
 -- Healing
-keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are burning. Let me quench those flames." }, function(player)
-	return player:getCondition(CONDITION_FIRE) ~= nil
-end, function(player)
-	local health = player:getHealth()
-	if health < 65 then
-		player:addHealth(65 - health)
-	end
-	player:removeCondition(CONDITION_FIRE)
-	player:getPosition():sendMagicEffect(CONST_ME_MAGIC_GREEN)
-end)
+registerHealKeyword(keywordHandler, npcHandler, "You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN, 65)
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are poisoned. I will help you." }, function(player)
 	return player:getCondition(CONDITION_POISON) ~= nil
 end, function(player)

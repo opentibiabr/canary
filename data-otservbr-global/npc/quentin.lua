@@ -122,18 +122,9 @@ stoneKeyword:addChildKeyword({ "yes" }, StdModule.say, { npcHandler = npcHandler
 stoneKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "No problem.", reset = true })
 
 -- Healing
-local function addHealKeyword(text, condition, effect)
-	keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = text }, function(player)
-		return player:getCondition(condition) ~= nil
-	end, function(player)
-		player:removeCondition(condition)
-		player:getPosition():sendMagicEffect(effect)
-	end)
-end
-
-addHealKeyword("You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN)
-addHealKeyword("You are poisoned. Let me soothe your pain.", CONDITION_POISON, CONST_ME_MAGIC_RED)
-addHealKeyword("You are electrified, my child. Let me help you to stop trembling.", CONDITION_ENERGY, CONST_ME_MAGIC_GREEN)
+registerHealKeyword(keywordHandler, npcHandler, "You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN, nil)
+registerHealKeyword(keywordHandler, npcHandler, "You are poisoned. Let me soothe your pain.", CONDITION_POISON, CONST_ME_MAGIC_RED, nil)
+registerHealKeyword(keywordHandler, npcHandler, "You are electrified, my child. Let me help you to stop trembling.", CONDITION_ENERGY, CONST_ME_MAGIC_GREEN, nil)
 
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are hurt, my child. I will heal your wounds." }, function(player)
 	return player:getHealth() < 40

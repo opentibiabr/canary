@@ -805,11 +805,115 @@ function table.copy(t, out)
 	return out
 end
 
+-- Recursive-descent parser for the exact grammar table.serialize() produces
+-- (numbers, quoted strings, true/false/nil and nested tables). Used instead
+-- of load()/loadstring() so this can never execute arbitrary Lua code.
+local function safeParseSerializedValue(s, i)
+	local c = s:sub(i, i)
+
+	local word = s:match("^([%a]+)", i)
+	if word == "nil" then
+		return nil, i + 3
+	elseif word == "true" then
+		return true, i + 4
+	elseif word == "false" then
+		return false, i + 5
+	end
+
+	local numStr, nextIdx = s:match("^([%-%d%.eE+]+)()", i)
+	if numStr and numStr:match("^[%-]?%d") then
+		local n = tonumber(numStr)
+		if n then
+			return n, nextIdx
+		end
+	end
+
+	if c == '"' or c == "'" then
+		local quote = c
+		local j = i + 1
+		local out = {}
+		while j <= #s do
+			local ch = s:sub(j, j)
+			if ch == "\\" then
+				local esc = s:sub(j + 1, j + 1)
+				if esc == "n" then
+					out[#out + 1] = "\n"
+				elseif esc == "t" then
+					out[#out + 1] = "\t"
+				elseif esc == "r" then
+					out[#out + 1] = "\r"
+				else
+					out[#out + 1] = esc
+				end
+				j = j + 2
+			elseif ch == quote then
+				j = j + 1
+				break
+			else
+				out[#out + 1] = ch
+				j = j + 1
+			end
+		end
+		return table.concat(out), j
+	end
+
+	if c == "{" then
+		local t = {}
+		i = i + 1
+		while i <= #s do
+			while s:sub(i, i) == "," do
+				i = i + 1
+			end
+			if s:sub(i, i) == "}" then
+				i = i + 1
+				break
+			end
+
+			local key
+			if s:sub(i, i) == "[" then
+				local closeIdx = s:find("%]", i + 1)
+				if not closeIdx then
+					return nil, i
+				end
+				local keyStr = s:sub(i + 1, closeIdx - 1)
+				local parsedKey = keyStr:match("^%d+$") and tonumber(keyStr) or keyStr:match('^"(.*)"$') or keyStr:match("^'(.*)'$")
+				if not parsedKey then
+					return nil, i
+				end
+				key = parsedKey
+				i = closeIdx + 1
+				if s:sub(i, i) ~= "=" then
+					return nil, i
+				end
+				i = i + 1
+			else
+				key = #t + 1
+			end
+
+			local value, newIdx = safeParseSerializedValue(s, i)
+			t[key] = value
+			i = newIdx
+		end
+		return t, i
+	end
+
+	return nil, i
+end
+
 function unserializeTable(str, out)
-	local tmp = load("return " .. str)
-	if tmp then
-		tmp = tmp()
-	else
+	if type(str) ~= "string" then
+		logger.warn("[unserializeTable] - Unserialization error: {}", str)
+		return false
+	end
+
+	local sanitized = str:gsub("%s", "")
+	if sanitized == "" then
+		logger.warn("[unserializeTable] - Unserialization error: {}", str)
+		return false
+	end
+
+	local tmp = safeParseSerializedValue(sanitized, 1)
+	if tmp == nil then
 		logger.warn("[unserializeTable] - Unserialization error: {}", str)
 		return false
 	end

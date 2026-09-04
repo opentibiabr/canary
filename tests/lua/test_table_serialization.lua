@@ -35,7 +35,14 @@ end
 -- Stubs required by functions.lua's top-level code (unrelated to what this
 -- suite exercises, but functions.lua runs its whole file body on dofile()).
 logger = { warn = function() end }
-configManager = { getBoolean = function() return false end, getNumber = function() return 0 end }
+configManager = {
+	getBoolean = function()
+		return false
+	end,
+	getNumber = function()
+		return 0
+	end,
+}
 configKeys = { LUA_SCRIPT_DEBUG_HOOK = 1, LUA_SCRIPT_DEBUG_HOOK_INTERVAL = 2 }
 Player = {}
 

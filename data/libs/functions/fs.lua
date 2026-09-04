@@ -9,42 +9,23 @@ function FS.exists(path)
 	return false
 end
 
+-- Thin wrapper around the native fsCreateDirectories() binding
+-- (src/lua/functions/core/game/global_functions.cpp -> std::filesystem::create_directories).
+-- No shell is ever started, so there's no command-injection surface and no
+-- denylist of "unsafe" path characters -- any path std::filesystem accepts
+-- (including "%", quotes, parentheses, etc. in legitimate directory names)
+-- works correctly. Also creates any missing parent directories, so this
+-- alone now covers what FS.mkdir_p() used to do by walking components.
 function FS.mkdir(path)
-	if FS.exists(path) then
-		return true
+	if type(path) ~= "string" or path == "" then
+		return false, "invalid path"
 	end
-	local success, err = os.execute('mkdir "' .. path .. '"')
-	if not success then
-		return false, err
-	end
-	return true
+	return fsCreateDirectories(path)
 end
 
 function FS.mkdir_p(path)
 	if path == "" then
 		return true
 	end
-
-	local components = {}
-	for component in path:gmatch("[^/\\]+") do
-		table.insert(components, component)
-	end
-
-	local currentPath = ""
-	for i, component in ipairs(components) do
-		currentPath = currentPath .. component
-
-		if not FS.exists(currentPath) then
-			local success, err = FS.mkdir(currentPath)
-			if not success then
-				return false, err
-			end
-		end
-
-		if i < #components then
-			currentPath = currentPath .. "/"
-		end
-	end
-
-	return true
+	return FS.mkdir(path)
 end

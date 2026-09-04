@@ -463,6 +463,12 @@ local function energyBarrierRestore(barrierUID)
 	local energyBarrier = Tile(energyBarriers[barrierUID].position):getItemById(12796)
 	if not energyBarrier then
 		energyBarrier = Game.createItem(12796, 1, energyBarriers[barrierUID].position)
+		if not energyBarrier then
+			local position = energyBarriers[barrierUID].position
+			logger.error("[The Rookie Guard] Failed to restore energy barrier {} at ({}, {}, {}).", barrierUID, position.x, position.y, position.z)
+			return
+		end
+
 		energyBarrier:setAttribute(ITEM_ATTRIBUTE_UNIQUEID, barrierUID)
 	end
 end

@@ -137,6 +137,11 @@ keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, t
 keywordHandler:addKeyword({ "duties" }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
 keywordHandler:addKeyword({ "duties" }, StdModule.say, { npcHandler = npcHandler, text = " I help linking the portals of this temple to other ancient sites of the {Astral Shapers}." })
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "astral shapers" }, StdModule.say, { npcHandler = npcHandler, text = "As far as we know today, the Astral Shapers are an ancient, very advanced race of master artisans." })
+keywordHandler:addKeyword({ "rumours" }, StdModule.say, { npcHandler = npcHandler, text = "I hope he's alright... ah, nevermind." })
+keywordHandler:addKeyword({ "chalice" }, StdModule.say, { npcHandler = npcHandler, text = "I don't really know what you're talking about, sorry." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

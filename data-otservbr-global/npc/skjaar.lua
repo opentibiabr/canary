@@ -93,6 +93,17 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Farewell, |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Run away, unworthy |PLAYERNAME|!")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "mountain" }, StdModule.say, { npcHandler = npcHandler, text = "Hundreds of years my master's castle stood on the top of this mountain. Now there is a volcano." })
+keywordHandler:addKeyword({ "volcano" }, StdModule.say, { npcHandler = npcHandler, text = "I can still feel the magical energy in the volcano." })
+keywordHandler:addKeyword({ "master" }, StdModule.say, { npcHandler = npcHandler, text = "If you are one of his followers, you need not ask about him, for you will know. And if you aren't, you are not worthy anyway!" })
+keywordHandler:addKeyword({ "castle" }, StdModule.say, { npcHandler = npcHandler, text = "The castle was destroyed when my master tried to summon a nameless creature. All that is left is this volcano." })
+keywordHandler:addKeyword({ "crypt" }, StdModule.say, { npcHandler = npcHandler, text = "Here lies my master. Only his closest followers may enter." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Skjaar the Mage, master of all spells." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "To those who have lived for a thousand years time holds no more terror." })
+keywordHandler:addKeyword({ "door" }, StdModule.say, { npcHandler = npcHandler, text = "This door seals a crypt." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Once I was the master of all mages, but now I only protect this crypt." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

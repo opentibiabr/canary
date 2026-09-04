@@ -260,6 +260,12 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|. I really hope w
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "the first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "If you'd ask me - what you just did - it's only a myth." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "He often passes me on the way to Frodo's." })
+keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, a girl like me shouldn't go to this place." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "You should ask Oswald about news. He loves them." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

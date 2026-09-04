@@ -63,6 +63,13 @@ keywordHandler:addKeyword({ "furniture" }, StdModule.say, { npcHandler = npcHand
 npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|! Do you need some equipment for your house?")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Have a look. Most furniture comes in handy kits. Just use them in your house to assemble the furniture. Do you want to see only a certain {type} of furniture?")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "anything else" }, StdModule.say, { npcHandler = npcHandler, text = "Fine." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Eddy. I sell furniture." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "You mean my specials, don't you?" })
+keywordHandler:addKeyword({ "type" }, StdModule.say, { npcHandler = npcHandler, text = "I have beds, chairs, containers, decoration, flowers, instruments, pillows, pottery, statues, tapestries and tables. Which of those would you like to see?" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "Have you moved to a new home? I'm the specialist for equipping it." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

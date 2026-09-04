@@ -925,6 +925,16 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Hey! Fools have feelings too.")
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "demoncarving" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, they showed demons, seven actually, dancing around a sword! In something like a flaming pit." })
+keywordHandler:addKeyword({ "necromancer" }, StdModule.say, { npcHandler = npcHandler, text = "Don't feed the necromancers." })
+keywordHandler:addKeyword({ "wallcarving" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, I saw some demon carvings in the dungeons as I hid there after a little joke on old Stutch." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Mwehehehe I like that guys humour. Although his gags and puns are most likely not intended. I wonder how he's doing, haven't seen him for a while." })
+keywordHandler:addKeyword({ "ghost" }, StdModule.say, { npcHandler = npcHandler, text = "Why do ghosts flee if wounded? ... They are so spineless!" })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "Most men in town are mad about her but she is some kind of an iron maiden, you know?" })
+keywordHandler:addKeyword({ "fool" }, StdModule.say, { npcHandler = npcHandler, text = "Wow, your stupidity would be pride and joy for every fool. You've already applied as a member. Let's rather talk about your current mission." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Since you met me it is happy hour for you." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

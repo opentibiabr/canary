@@ -85,6 +85,30 @@ npcHandler:setMessage(MESSAGE_GREET, "Welcome on board, |PLAYERNAME|. Where can 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Recommend us if you were satisfied with our service.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye then.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "So many claimed to have found and slain him but they had nothing to prove it." })
+keywordHandler:addKeyword({ "ab'dendriel" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "roshamuul" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "svargrond" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "vigintia" }, StdModule.say, { npcHandler = npcHandler, text = "This lovely island is close to Nostalgia. There are a fair, beautiful beaches, some festive diversion and of course enough to eat and drink." })
+keywordHandler:addKeyword({ "darashia" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "krailos" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "oramond" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "yalahar" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "travora" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I've never heard of this place." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "darama" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "venore" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "edron" }, StdModule.say, { npcHandler = npcHandler, text = "I'm sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "ferry" }, StdModule.say, { npcHandler = npcHandler, text = "I can sail you to the islands Vigintia and Nostalgia." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Kendra." })
+keywordHandler:addKeyword({ "ship" }, StdModule.say, { npcHandler = npcHandler, text = "I'd rather call it a boat or a ferry, to be honest." })
+keywordHandler:addKeyword({ "boat" }, StdModule.say, { npcHandler = npcHandler, text = "It is a ferry. I can sail you to the islands Vigintia and Nostalgia." })
+keywordHandler:addKeyword({ "kick" }, StdModule.say, { npcHandler = npcHandler, text = "Off with you!" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I run a ferry service between Thais and the islands Vigintia and Nostalgia." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

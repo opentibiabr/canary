@@ -62,6 +62,33 @@ npcHandler:setMessage(MESSAGE_GREET, "Hello |PLAYERNAME|! Welcome to our humble 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Grace our home with another visit soon, |PLAYERNAME|.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "What a strange person.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "He is an impressive warrior as far as I can tell." })
+keywordHandler:addKeyword({ "tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus granted us this farm to earn a living." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, he's a nice old man. He often comes and buys our goods. I haven't seen him since a while though." })
+keywordHandler:addKeyword({ "husband" }, StdModule.say, { npcHandler = npcHandler, text = "My husband Donald is busy on the fields almost all night and day." })
+keywordHandler:addKeyword({ "weather" }, StdModule.say, { npcHandler = npcHandler, text = "The weather is the best friend and the worst enemy of a farmer." })
+keywordHandler:addKeyword({ "spooked" }, StdModule.say, { npcHandler = npcHandler, text = "I don't know for sure. The miller claims that his mill is threatened by some monsters sometimes." })
+keywordHandler:addKeyword({ "quentin" }, StdModule.say, { npcHandler = npcHandler, text = "What a nice person he is." })
+keywordHandler:addKeyword({ "fields" }, StdModule.say, { npcHandler = npcHandler, text = "The druids helped us by placing a blessing on our fields." })
+keywordHandler:addKeyword({ "gregor" }, StdModule.say, { npcHandler = npcHandler, text = "We a mere peasants and don't know much about the guild leaders." })
+keywordHandler:addKeyword({ "marvik" }, StdModule.say, { npcHandler = npcHandler, text = "We a mere peasants and don't know much about the guild leaders." })
+keywordHandler:addKeyword({ "muriel" }, StdModule.say, { npcHandler = npcHandler, text = "We a mere peasants and don't know much about the guild leaders." })
+keywordHandler:addKeyword({ "oswald" }, StdModule.say, { npcHandler = npcHandler, text = "This lazy fellow has nothing better to do than to spread rumours." })
+keywordHandler:addKeyword({ "crops" }, StdModule.say, { npcHandler = npcHandler, text = "It's hard to harvest it, carry it to the mill in the north and make flour. If you can bake some bread I will buy it for 2 gold." })
+keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler, text = "We a mere peasants and don't know much about the guild leaders." })
+keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "He is a friend of my husband." })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "She is sooo charming. I can't believe she is not married yet! Have you met her?" })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I am Sherry McRonald." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, I don't have a watch." })
+keywordHandler:addKeyword({ "farm" }, StdModule.say, { npcHandler = npcHandler, text = "It is a hard work, but the city needs us." })
+keywordHandler:addKeyword({ "city" }, StdModule.say, { npcHandler = npcHandler, text = "The city needs our crops." })
+keywordHandler:addKeyword({ "mill" }, StdModule.say, { npcHandler = npcHandler, text = "The miller is a lazy fellow and afraid of his own mill, because he thinks it is spooked." })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus granted us this farm to earn a living." })
+keywordHandler:addKeyword({ "gorn" }, StdModule.say, { npcHandler = npcHandler, text = "He doesn't talk much to us." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I and my husband run this farm." })
+keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "He is too busy to care much about farmers like us." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

@@ -74,7 +74,7 @@ local function saveDeathRecord(playerGuid, player, killerName, byPlayer, mostDam
 		mostDamageUnjustified and 1 or 0,
 		db.escapeString(participantsString)
 	)
-	db.query(query)
+	db.asyncQuery(query)
 end
 
 local function getDeathRecords(playerGuid)
@@ -194,7 +194,7 @@ function playerDeath.onDeath(player, corpse, killer, mostDamageKiller, unjustifi
 	local killerName, byPlayer = getKillerInfo(killer)
 	local mostDamageName, byPlayerMostDamage = getMostDamageInfo(mostDamageKiller)
 
-	player:takeScreenshot(byPlayer and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
+	player:takeScreenshot(byPlayer == 1 and SCREENSHOT_TYPE_DEATHPVP or SCREENSHOT_TYPE_DEATHPVE)
 
 	if mostDamageKiller and mostDamageKiller:isPlayer() then
 		mostDamageKiller:takeScreenshot(SCREENSHOT_TYPE_PLAYERKILL)

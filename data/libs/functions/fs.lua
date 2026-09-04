@@ -41,9 +41,14 @@ function FS.mkdir(path)
 	else
 		cmd = 'mkdir "' .. path .. '"'
 	end
-	local success, err = os.execute(cmd)
-	if not success then
-		return false, err
+	-- os.execute() under LuaJIT/Lua 5.1 does not return a boolean: it returns
+	-- the process exit status as a number (0 on success), which is truthy in
+	-- Lua like any non-nil/non-false value -- `if not success` never caught a
+	-- failed mkdir. Handle both the LuaJIT/5.1 numeric convention and the
+	-- newer Lua (5.2+) `true/nil, "exit"/"signal", code` convention.
+	local result, reason, code = os.execute(cmd)
+	if result ~= true and result ~= 0 then
+		return false, code or reason or result
 	end
 	return true
 end

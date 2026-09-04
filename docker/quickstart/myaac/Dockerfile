@@ -1,6 +1,6 @@
 FROM php:8.3-apache AS builder
 
-ARG MYAAC_REF=develop
+ARG MYAAC_REF=2.x
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN apt-get update \
@@ -12,6 +12,8 @@ RUN apt-get update \
 		libpng-dev \
 		libzip-dev \
 		unzip \
+		libfreetype6-dev \
+	&& docker-php-ext-configure gd --with-freetype \
 	&& docker-php-ext-install -j"$(nproc)" gd intl mysqli opcache pdo_mysql zip \
 	&& rm -rf /var/lib/apt/lists/*
 
@@ -45,6 +47,8 @@ RUN apt-get update \
 		libpng-dev \
 		libzip-dev \
 		unzip \
+		libfreetype6-dev \
+	&& docker-php-ext-configure gd --with-freetype \
 	&& docker-php-ext-install -j"$(nproc)" gd intl mysqli opcache pdo_mysql zip \
 	&& a2enmod headers rewrite \
 	&& rm -rf /var/lib/apt/lists/*

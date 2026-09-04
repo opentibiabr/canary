@@ -806,14 +806,13 @@ function table.copy(t, out)
 end
 
 function unserializeTable(str, out)
-	local tmp = load("return " .. str)
-	if tmp then
-		tmp = tmp()
-	else
+	local value = table.unserialize(str)
+	if type(value) ~= "table" then
 		logger.warn("[unserializeTable] - Unserialization error: {}", str)
 		return false
 	end
-	return table.copy(tmp, out)
+
+	return table.copy(value, out)
 end
 
 function unpack2(tab, i)

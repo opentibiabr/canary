@@ -79,15 +79,15 @@ end
 
 local function getDeathRecords(playerGuid)
 	local resultId = db.storeQuery("SELECT `player_id` FROM `player_deaths` WHERE `player_id` = " .. playerGuid)
-	local deathRecords = 0
-	while resultId do
-		resultId = Result.next(resultId)
-		deathRecords = deathRecords + 1
+	if not resultId then
+		return 0
 	end
 
-	if resultId then
-		Result.free(resultId)
+	local deathRecords = 1
+	while Result.next(resultId) do
+		deathRecords = deathRecords + 1
 	end
+	Result.free(resultId)
 
 	return deathRecords
 end

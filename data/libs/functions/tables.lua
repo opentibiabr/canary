@@ -323,12 +323,23 @@ local function parseSerializedValue(s, i, len, depth, budget)
 	return false
 end
 
+-- A single oversized quoted/escaped string is still just one value, so
+-- remainingValues alone doesn't bound how much input it can wrap -- a
+-- multi-gigabyte string literal would sail through that budget untouched.
+-- Capping the raw source length up front closes that gap; 4 MiB is generous
+-- relative to anything table.serialize() itself would ever produce.
+local MAX_SERIALIZED_LENGTH = 4 * 1024 * 1024
+
 function table.unserialize(str)
 	if type(str) ~= "string" or str:match("^%s*$") then
 		return nil
 	end
 
 	local len = #str
+	if len > MAX_SERIALIZED_LENGTH then
+		return nil
+	end
+
 	-- maxDepth and remainingValues are generous relative to anything
 	-- table.serialize() itself produces for real game data -- they exist to
 	-- bound work on adversarial input, not to constrain legitimate saves.

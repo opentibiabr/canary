@@ -222,6 +222,27 @@ test("limits: nesting within the configured budget still round-trips", function(
 end)
 
 ---------------------------------------------------------------------------
+-- Resource limits (source length) reject oversized single-token payloads
+---------------------------------------------------------------------------
+
+test("limits: a huge single string literal is rejected by length, not just node count", function()
+	-- remainingValues only ever charges once for a whole quoted string, no matter
+	-- how long -- this exercises the separate source-byte cap that exists
+	-- precisely because a single oversized string would otherwise sail through
+	-- that budget untouched.
+	local oversized = '"' .. string.rep("a", 4 * 1024 * 1024) .. '"' -- 2 bytes over the 4 MiB cap
+	local ok, result = pcall(table.unserialize, oversized)
+	assert_true(ok, "must not raise a Lua error")
+	assert_nil(result, "must reject input over the source-length cap")
+end)
+
+test("limits: a large string literal right at the length cap still round-trips", function()
+	local payload = string.rep("a", 4 * 1024 * 1024 - 2) -- quotes bring the total to exactly 4 MiB
+	local out = table.unserialize('"' .. payload .. '"')
+	assert_equal(out, payload)
+end)
+
+---------------------------------------------------------------------------
 -- No code execution: loadstring-era attack strings must NOT run
 ---------------------------------------------------------------------------
 

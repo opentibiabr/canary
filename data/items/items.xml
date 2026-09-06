@@ -85279,4 +85279,8 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="imbuement scrolls"/>
 		<attribute key="weight" value="250"/>
 	</item>
+	<item id="51978" article="a" name="bounty talisman">
+		<attribute key="primarytype" value="extra slot"/>
+		<attribute key="weight" value="75"/>
+	</item>
 </items>

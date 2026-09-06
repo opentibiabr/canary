@@ -133,6 +133,7 @@ keywordHandler:addAliasKeyword({ "wolves" })
 keywordHandler:addKeyword({ "adventure" }, StdModule.say, { npcHandler = npcHandler, text = "I can see a bright future for you... you will soon embark on a very big adventure and explore the world of {Tibia} - maybe even influence history!" })
 keywordHandler:addAliasKeyword({ "explore" })
 
+registerHealKeyword(keywordHandler, npcHandler, "You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN, 65)
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are poisoned. I will help you." }, function(player)
 	return player:getCondition(CONDITION_POISON)
 end, function(player)

@@ -38,7 +38,7 @@ jobs:
       group: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'vcpkg-windows-binary-cache-main' || format('vcpkg-windows-{0}-{1}', github.run_id, matrix.type) }}
       cancel-in-progress: false
       queue: max
-    runs-on: windows-2025
+    runs-on: windows-2025-vs2026
     env:
       # Use GitHub Packages as a read-only vcpkg cache for PRs.
       # Only push/write binary cache on direct pushes to main, where GITHUB_TOKEN can have packages: write.
@@ -46,18 +46,42 @@ jobs:
       VCPKG_NUGET_API_KEY: ${{ github.token }}
       SCCACHE_DIR: ${{ github.workspace }}\.sccache
     steps:
-      - name: Install VS 2026 Build Tools (v145 toolset)
+      - name: Verify VS 2026 v145 toolset
         if: matrix.type == 'Solution'
         shell: pwsh
         run: |
-          choco install visualstudio2026-workload-vctools --yes --ignore-package-exit-codes=3010
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} "Microsoft Visual Studio\Installer\vswhere.exe"
+          if (-not (Test-Path -LiteralPath $vswhere -PathType Leaf)) {
+            throw "vswhere.exe is not available on the hosted Visual Studio runner"
+          }
+
+          $installationPath = & $vswhere `
+            -latest `
+            -prerelease `
+            -products "*" `
+            -version '[18.0,19.0)' `
+            -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 `
+            -property installationPath
+          if ([string]::IsNullOrWhiteSpace($installationPath)) {
+            throw "Visual Studio 2026 with the native C++ toolset is required"
+          }
+
+          $toolsetVersionPath = Join-Path $installationPath "VC\Auxiliary\Build\Microsoft.VCToolsVersion.default.txt"
+          if (-not (Test-Path -LiteralPath $toolsetVersionPath -PathType Leaf)) {
+            throw "The Visual Studio C++ toolset version file is missing: $toolsetVersionPath"
+          }
+
+          $toolsetVersion = (Get-Content -LiteralPath $toolsetVersionPath -Raw).Trim()
+          if ($toolsetVersion -notmatch '^14\.5') {
+            throw "Visual Studio 2026 must provide the v145 toolset; found $toolsetVersion"
+          }
 
       - name: Setup MSBuild.exe
         if: matrix.type == 'Solution'
         uses: microsoft/setup-msbuild@v3
         with:
           vs-prerelease: true
-          vs-version: "latest"
+          vs-version: "[18.0,19.0)"
 
       - name: Checkout repository
         if: inputs.checkout_ref == ''

@@ -41,11 +41,11 @@ return {
 		},
 		{
 			icons = { "Permanent_Hunting_Task_Slot.png" },
-			name = "Permanent Hunting Task Slot",
-			price = 900,
-			id = GameStore.SubActions.TASKHUNTING_THIRDSLOT,
-			description = "<i>Get an additional hunting tasks slot to activate additional hunting task!</i>\n\n{character}\n{info} maximum amount that can be owned by character: 3\n{info} added directly to Hunting Task dialog",
-			type = GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT,
+			name = "Permanent Weekly Task Expansion",
+			price = 750,
+			id = GameStore.SubActions.WEEKLY_TASK_EXPANSION,
+			description = "<i>Permanently expand every weekly task cycle.</i>\n\n{character}\n{once}\n{info} increases Kill Tasks from 6 to 9\n{info} increases Delivery Tasks from 6 to 9",
+			type = GameStore.OfferTypes.OFFER_TYPE_WEEKLY_TASK_EXPANSION,
 		},
 		{
 			icons = { "Gold_Converter.png" },

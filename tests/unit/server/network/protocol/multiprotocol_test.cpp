@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "server/network/protocol/protocol.hpp"
 #include "server/network/protocol/protocol_profile.hpp"
 #include "server/network/protocol/protocol_session_hint.hpp"
 #include "server/network/protocol/transport_codec.hpp"
@@ -15,10 +16,24 @@
 #include "utils/tools.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <array>
 	#include <cstddef>
+	#include <cstring>
 #endif
 
 namespace {
+	class CurrentTransportProtocol final : public Protocol {
+	public:
+		explicit CurrentTransportProtocol(const std::array<uint32_t, 4> &xteaKey) :
+			Protocol(nullptr) {
+			setXTEAKey(xteaKey.data());
+			setChecksumMethod(CHECKSUM_METHOD_SEQUENCE);
+			enableXTEAEncryption();
+		}
+
+		void onRecvFirstMessage(NetworkMessage &) override { }
+	};
+
 	[[nodiscard]] uint16_t readU16(const std::byte* buffer) {
 		return static_cast<uint16_t>(std::to_integer<uint8_t>(buffer[0])) | static_cast<uint16_t>(std::to_integer<uint8_t>(buffer[1]) << 8);
 	}
@@ -167,6 +182,35 @@ TEST(ConnectionTransportTest, ProtocolGameNoLongerImpliesModernFraming) {
 TEST(ConnectionTransportTest, LegacyEncryptedOutboundHeaderFitsInitialBuffer) {
 	constexpr auto legacyEncryptedHeaderSize = HEADER_LENGTH + CHECKSUM_LENGTH + sizeof(uint16_t);
 	EXPECT_GE(NetworkMessage::INITIAL_BUFFER_POSITION, legacyEncryptedHeaderSize);
+}
+
+TEST(ConnectionTransportTest, CurrentEncryptedPayloadExcludesPaddingHeader) {
+	constexpr std::array<uint32_t, 4> xteaKey {
+		0x10203040,
+		0x11223344,
+		0x55667788,
+		0x90ABCDEF,
+	};
+	CurrentTransportProtocol sender(xteaKey);
+	CurrentTransportProtocol receiver(xteaKey);
+	OutputMessage outgoing;
+	outgoing.addByte(0x5F);
+	outgoing.addByte(0x01);
+
+	const auto &codec = TransportCodecs::currentModern();
+	codec.encodeOutbound(sender, outgoing);
+
+	NetworkMessage incoming;
+	std::memcpy(incoming.getBuffer(), outgoing.getOutputBuffer(), outgoing.getLength());
+	incoming.setLength(outgoing.getLength());
+	incoming.setBufferPosition(HEADER_LENGTH);
+	ASSERT_TRUE(codec.prepareInbound(receiver, incoming));
+
+	EXPECT_EQ(0x5F, incoming.getByte());
+	EXPECT_EQ(1, incoming.getUnreadBytes());
+	EXPECT_EQ(0x01, incoming.getByte());
+	EXPECT_EQ(0, incoming.getUnreadBytes());
+	EXPECT_FALSE(incoming.canRead(1));
 }
 
 TEST(ConnectionTransportTest, LegacyLoginChallengeIncludesInnerMessageSize) {

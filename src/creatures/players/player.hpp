@@ -648,7 +648,7 @@ public:
 	void addMessageBuffer();
 	void removeMessageBuffer();
 
-	bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false) const;
+	bool removeItemOfType(uint16_t itemId, uint32_t itemAmount, int32_t subType, bool ignoreEquipped = false, bool ignoreStoreInbox = false) const;
 	/**
 	 * @param itemAmount is uint32_t because stash item is uint32_t max
 	 */
@@ -980,6 +980,10 @@ public:
 	void sendCreatureChangeVisible(const std::shared_ptr<Creature> &creature, bool visible);
 	void sendCreatureLight(const std::shared_ptr<Creature> &creature) const;
 	void sendCreatureIcon(const std::shared_ptr<Creature> &creature) const;
+	bool setRaceIconOverlay(uint16_t raceId, CreatureIconModifications_t icon, bool enabled = true);
+	bool clearRaceIconOverlays(CreatureIconModifications_t icon);
+	[[nodiscard]] std::vector<CreatureIcon> getRaceIconOverlays(uint16_t raceId) const;
+	void refreshVisibleCreatureIcons() const;
 	void sendUpdateCreature(const std::shared_ptr<Creature> &creature) const;
 	void sendCreatureWalkthrough(const std::shared_ptr<Creature> &creature, bool walkthrough) const;
 	void sendCreatureShield(const std::shared_ptr<Creature> &creature) const;
@@ -1630,6 +1634,7 @@ private:
 	size_t getFirstIndex() const override;
 	size_t getLastIndex() const override;
 	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType = -1) const override;
+	uint32_t getItemTypeCount(uint16_t itemId, int32_t subType, bool ignoreEquipped, bool ignoreStoreInbox) const;
 	void stashContainer(const StashContainerList &itemDict);
 	ItemsTierCountList getInventoryItemsId(bool ignoreStoreInbox = false) const;
 
@@ -1670,6 +1675,7 @@ private:
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
 	std::map<uint16_t, uint32_t> m_activeFoods;
+	std::map<uint16_t, std::set<CreatureIconModifications_t>> m_raceIconOverlays;
 
 	std::map<uint64_t, std::shared_ptr<Reward>> rewardMap;
 

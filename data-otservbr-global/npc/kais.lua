@@ -53,19 +53,12 @@ blessKeyword:addChildKeyword({ "yes" }, StdModule.bless, { npcHandler = npcHandl
 blessKeyword:addChildKeyword({ "" }, StdModule.say, { npcHandler = npcHandler, text = "Fine. You are free to decline my offer.", reset = true })
 
 -- Healing
-local function addHealKeyword(text, condition, effect)
-	keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = text }, function(player)
-		return player:getCondition(condition) ~= nil
-	end, function(player)
-		player:removeCondition(condition)
-		player:getPosition():sendMagicEffect(effect)
-	end)
-	keywordHandler:addAliasKeyword({ "help" })
-end
-
-addHealKeyword("You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN)
-addHealKeyword("You are poisoned. Let me soothe your pain.", CONDITION_POISON, CONST_ME_MAGIC_RED)
-addHealKeyword("You are electrified, my child. Let me help you to stop trembling.", CONDITION_ENERGY, CONST_ME_MAGIC_GREEN)
+registerHealKeyword(keywordHandler, npcHandler, "You are burning. Let me quench those flames.", CONDITION_FIRE, CONST_ME_MAGIC_GREEN, nil)
+keywordHandler:addAliasKeyword({ "help" })
+registerHealKeyword(keywordHandler, npcHandler, "You are poisoned. Let me soothe your pain.", CONDITION_POISON, CONST_ME_MAGIC_RED, nil)
+keywordHandler:addAliasKeyword({ "help" })
+registerHealKeyword(keywordHandler, npcHandler, "You are electrified, my child. Let me help you to stop trembling.", CONDITION_ENERGY, CONST_ME_MAGIC_GREEN, nil)
+keywordHandler:addAliasKeyword({ "help" })
 
 keywordHandler:addKeyword({ "heal" }, StdModule.say, { npcHandler = npcHandler, text = "You are hurt, my child. I will heal your wounds." }, function(player)
 	return player:getHealth() < 40

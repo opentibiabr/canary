@@ -75,7 +75,7 @@ end
 function SayEvent(npcId, playerId, messageDelayed, npcHandler, textType)
 	local npc = Npc(npcId)
 	if not npc then
-		return logger.error("[{} NpcHandler:say] - Npc parameter for npc '{}' is missing, nil or not found", npc:getName(), npc:getName())
+		return logger.error("[NpcHandler:say] - Npc parameter for npc id '{}' is missing, nil or not found", npcId)
 	end
 
 	local player = Player(playerId)

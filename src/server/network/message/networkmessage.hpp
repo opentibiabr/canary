@@ -176,6 +176,12 @@ public:
 
 	void setLength(MsgSize_t newLength);
 
+	/** Returns bytes remaining inside the decoded application payload. */
+	[[nodiscard]] size_t getUnreadBytes() const;
+
+	/** Sets the decoded payload size relative to the current read position. */
+	void setPayloadLength(MsgSize_t payloadLength);
+
 	MsgSize_t getBufferPosition() const;
 
 	void setBufferPosition(MsgSize_t newPosition);
@@ -200,6 +206,7 @@ protected:
 	struct NetworkMessageInfo {
 		MsgSize_t length = 0;
 		MsgSize_t position = INITIAL_BUFFER_POSITION;
+		MsgSize_t readEndPosition = 0;
 		bool overrun = false;
 	};
 

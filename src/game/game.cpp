@@ -9000,7 +9000,7 @@ void Game::applyManaLeech(
 ) const {
 	// Wheel of destiny bonus - mana leech chance and amount
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
+	int64_t manaSkill = static_cast<int64_t>(attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT)) + wheelLeechAmount + damage.manaLeech;
 
 	// Void charm rune
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
@@ -9009,7 +9009,8 @@ void Game::applyManaLeech(
 		}
 	}
 
-	if (manaSkill == 0) {
+	const auto boundedManaSkill = static_cast<uint16_t>(std::clamp<int64_t>(manaSkill, 0, std::numeric_limits<uint16_t>::max()));
+	if (boundedManaSkill == 0) {
 		return;
 	}
 
@@ -9019,7 +9020,7 @@ void Game::applyManaLeech(
 	int affected = damage.affected;
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_MANADRAIN;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, manaSkill, affected);
+	tmpDamage.primary.value = calculateLeechAmount(realDamage, boundedManaSkill, affected);
 
 	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
@@ -9030,7 +9031,7 @@ void Game::applyLifeLeech(
 ) const {
 	// Wheel of destiny bonus - life leech chance and amount
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
+	int64_t lifeSkill = static_cast<int64_t>(attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT)) + wheelLeechAmount + damage.lifeLeech;
 
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
@@ -9038,7 +9039,8 @@ void Game::applyLifeLeech(
 		}
 	}
 
-	if (lifeSkill == 0) {
+	const auto boundedLifeSkill = static_cast<uint16_t>(std::clamp<int64_t>(lifeSkill, 0, std::numeric_limits<uint16_t>::max()));
+	if (boundedLifeSkill == 0) {
 		return;
 	}
 
@@ -9048,7 +9050,7 @@ void Game::applyLifeLeech(
 	int affected = damage.affected;
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_HEALING;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, lifeSkill, affected);
+	tmpDamage.primary.value = calculateLeechAmount(realDamage, boundedLifeSkill, affected);
 
 	Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }

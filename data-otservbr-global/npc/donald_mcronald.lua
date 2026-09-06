@@ -52,6 +52,33 @@ npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "A general in the army." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "He sometimes comes to shop our food." })
+keywordHandler:addKeyword({ "weather" }, StdModule.say, { npcHandler = npcHandler, text = "Weather is good enough to work on the fields." })
+keywordHandler:addKeyword({ "spooked" }, StdModule.say, { npcHandler = npcHandler, text = "I dont know." })
+keywordHandler:addKeyword({ "quentin" }, StdModule.say, { npcHandler = npcHandler, text = "A generous person." })
+keywordHandler:addKeyword({ "donald" }, StdModule.say, { npcHandler = npcHandler, text = "I am Donald." })
+keywordHandler:addKeyword({ "oswald" }, StdModule.say, { npcHandler = npcHandler, text = "He ignores us and we ignore him." })
+keywordHandler:addKeyword({ "muriel" }, StdModule.say, { npcHandler = npcHandler, text = "I don't trust sorcerers like you." })
+keywordHandler:addKeyword({ "gregor" }, StdModule.say, { npcHandler = npcHandler, text = "Knights always feel superior to us farmers." })
+keywordHandler:addKeyword({ "marvik" }, StdModule.say, { npcHandler = npcHandler, text = "Druids are a great help for us, they know much about nature." })
+keywordHandler:addKeyword({ "crops" }, StdModule.say, { npcHandler = npcHandler, text = "It is hard to grow but worth the effort." })
+keywordHandler:addKeyword({ "field" }, StdModule.say, { npcHandler = npcHandler, text = "My fields are enchanted by the druids and the wheat grows very quickly." })
+keywordHandler:addKeyword({ "frodo" }, StdModule.say, { npcHandler = npcHandler, text = "Frodo? He is a friend of mine." })
+keywordHandler:addKeyword({ "elane" }, StdModule.say, { npcHandler = npcHandler, text = "Too noble to care about us." })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "She has a good soul." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "Donald McRonald." })
+keywordHandler:addKeyword({ "farm" }, StdModule.say, { npcHandler = npcHandler, text = "It is my farm, yes." })
+keywordHandler:addKeyword({ "time" }, StdModule.say, { npcHandler = npcHandler, text = "Who cares?" })
+keywordHandler:addKeyword({ "wife" }, StdModule.say, { npcHandler = npcHandler, text = "Sherry is my wife." })
+keywordHandler:addKeyword({ "city" }, StdModule.say, { npcHandler = npcHandler, text = "The city is to the north." })
+keywordHandler:addKeyword({ "mill" }, StdModule.say, { npcHandler = npcHandler, text = "I sometimes have to bring the wheat there." })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "King Tibianus is our king." })
+keywordHandler:addKeyword({ "gorn" }, StdModule.say, { npcHandler = npcHandler, text = "Hardly know him." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I run a farm, what else?!" })
+keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "A blacksmith, eh?" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

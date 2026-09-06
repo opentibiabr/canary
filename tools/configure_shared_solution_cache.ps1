@@ -267,6 +267,7 @@ function Convert-ContractResult {
         "active",
         "schema",
         "implementation-sha256",
+        "dependency-contract",
         "dependency-fingerprint",
         "consumer-fingerprint",
         "installed-root",

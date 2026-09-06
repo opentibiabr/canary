@@ -1,7 +1,13 @@
 include_guard(GLOBAL)
 
 set(CANARY_SHARED_CACHE_SCHEMA
-    "v3"
+    "v5"
+)
+
+# Bump this contract only when dependency input resolution/normalization changes.
+# Helper diagnostics and consumer validation are not installed-package identity.
+set(CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT
+    "vcpkg-inputs-v1"
 )
 
 file(
@@ -31,6 +37,14 @@ function(
     path
     output
 )
+    cmake_parse_arguments(
+        signature
+        "NORMALIZE_LINE_ENDINGS"
+        ""
+        ""
+        ${ARGN}
+    )
+
     if(NOT CMAKE_SCRIPT_MODE_FILE)
         get_filename_component(
             candidate_directory
@@ -54,11 +68,31 @@ function(
     endif()
 
     if(EXISTS "${path}")
-        file(
-            SHA256
-            "${path}"
-            file_hash
-        )
+        if(signature_NORMALIZE_LINE_ENDINGS)
+            # The manifest JSON grammar treats physical CRLF and LF line endings
+            # identically. Hash their canonical form so Git checkout settings do
+            # not split an otherwise identical dependency pool. Generic port and
+            # registry trees intentionally remain byte-signatured because
+            # patches and other arbitrary payloads can be line-ending-sensitive.
+            file(
+                READ
+                "${path}"
+                file_contents
+            )
+            string(
+                REPLACE "\r\n"
+                        "\n"
+                        file_contents
+                        "${file_contents}"
+            )
+            string(SHA256 file_hash "${file_contents}")
+        else()
+            file(
+                SHA256
+                "${path}"
+                file_hash
+            )
+        endif()
         if(NOT CMAKE_SCRIPT_MODE_FILE)
             set_property(
                 DIRECTORY
@@ -87,6 +121,11 @@ function(
     root
     output
 )
+    file(
+        TO_CMAKE_PATH
+        "${root}"
+        root
+    )
     if(NOT CMAKE_SCRIPT_MODE_FILE)
         get_filename_component(
             candidate_directory
@@ -1663,7 +1702,7 @@ set(fingerprint_input
 string(
     APPEND
     fingerprint_input
-    "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+    "dependency-contract=${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}\n"
     "host-system=${CMAKE_HOST_SYSTEM_NAME}\n"
     "host-processor=${CMAKE_HOST_SYSTEM_PROCESSOR}\n"
     "dependency-cmake-version=${CMAKE_VERSION}\n"
@@ -1700,6 +1739,14 @@ foreach(
         set(setting_value
             "${${setting}}"
         )
+        if(setting STREQUAL "VCPKG_INSTALL_OPTIONS")
+            # These exact flags only remove staging data after installation.
+            # Preserve every other option (and its order) in the dependency key.
+            list(REMOVE_ITEM setting_value
+                "--clean-buildtrees-after-build"
+                "--clean-packages-after-build"
+            )
+        endif()
         string(
             REPLACE ";"
                     "|"
@@ -1759,6 +1806,7 @@ canary_shared_cache_file_signature(
     "manifest/vcpkg.json"
     "${manifest_root}/vcpkg.json"
     manifest_signature
+    NORMALIZE_LINE_ENDINGS
 )
 string(
     APPEND
@@ -1769,6 +1817,7 @@ canary_shared_cache_file_signature(
     "manifest/vcpkg-configuration.json"
     "${manifest_root}/vcpkg-configuration.json"
     manifest_configuration_signature
+    NORMALIZE_LINE_ENDINGS
 )
 string(
     APPEND
@@ -2631,6 +2680,7 @@ set(consumer_fingerprint_input
     "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
     "dependency-fingerprint=${dependency_fingerprint}\n"
     "consumer=${shared_cache_consumer}\n"
+    "install-options=${VCPKG_INSTALL_OPTIONS}\n"
 )
 if(shared_cache_consumer
    STREQUAL
@@ -2831,6 +2881,7 @@ if(CANARY_SHARED_CACHE_READ_ONLY)
             "active=true\n"
             "schema=${CANARY_SHARED_CACHE_SCHEMA}\n"
             "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+            "dependency-contract=${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}\n"
             "dependency-fingerprint=${dependency_fingerprint}\n"
             "consumer-fingerprint=${consumer_fingerprint}\n"
             "installed-root=${shared_installed_root}\n"
@@ -2846,6 +2897,17 @@ if(CANARY_SHARED_CACHE_READ_ONLY)
     )
     return()
 endif()
+
+# Per-consumer provenance must not depend on the shared metadata's last writer.
+set(CANARY_VCPKG_CONSUMER_IMPLEMENTATION_SHA256
+    "${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}"
+    CACHE INTERNAL "Shared-cache resolver used by this consumer" FORCE
+)
+set(CANARY_VCPKG_DEPENDENCY_CONTRACT
+    "${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}"
+    CACHE INTERNAL "Versioned dependency input contract" FORCE
+)
+
 
 file(MAKE_DIRECTORY "${shared_installed_root}")
 file(MAKE_DIRECTORY "${shared_metadata_root}")
@@ -2909,6 +2971,7 @@ set(metadata
 string(
     APPEND
     metadata
+    "dependency-contract=${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}\n"
     "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
     "fingerprint=${dependency_fingerprint}\n"
     "dependency-fingerprint=${dependency_fingerprint}\n"
@@ -3002,6 +3065,7 @@ if(CANARY_SHARED_CACHE_RESULT_FILE)
         "active=true\n"
         "schema=${CANARY_SHARED_CACHE_SCHEMA}\n"
         "implementation-sha256=${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}\n"
+        "dependency-contract=${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}\n"
         "dependency-fingerprint=${dependency_fingerprint}\n"
         "consumer-fingerprint=${consumer_fingerprint}\n"
         "installed-root=${shared_installed_root}\n"

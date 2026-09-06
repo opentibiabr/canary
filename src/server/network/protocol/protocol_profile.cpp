@@ -199,7 +199,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = currentInitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::CustomMonkPackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::MemorialPackets | ProtocolFeature::PlayerDataLevelPercentU16 | ProtocolFeature::GameEventPayload | ProtocolFeature::OfficialTaskboardPackets | ProtocolFeature::OfficialVocationSpecificPlayerData | ProtocolFeature::OfficialWeaponProficiencyPayload | ProtocolFeature::GraphicalEffectSourceByte | ProtocolFeature::OfficialSoulSealsPackets | ProtocolFeature::OfficialSkillWheelPayload),
+		.features = protocolFeatureMask(ProtocolFeature::CurrentPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::ModernLoginSideSystems | ProtocolFeature::ResourceBalancePackets | ProtocolFeature::CustomMonkPackets | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::MemorialPackets | ProtocolFeature::PlayerDataLevelPercentU16 | ProtocolFeature::GameEventPayload | ProtocolFeature::OfficialTaskboardPackets | ProtocolFeature::OfficialVocationSpecificPlayerData | ProtocolFeature::OfficialWeaponProficiencyPayload | ProtocolFeature::GraphicalEffectSourceByte | ProtocolFeature::OfficialSoulSealsPackets | ProtocolFeature::OfficialSkillWheelPayload | ProtocolFeature::TacticsWithoutFightMode),
 		.name = "current",
 		.supportLabel = "",
 	};
@@ -212,7 +212,7 @@ namespace {
 		.supportState = ProtocolSupportState::Enabled,
 		.itemMapperPolicy = ItemMapperPolicy::NotRequired,
 		.initialBehavior = tibia1100InitialBehavior,
-		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow),
+		.features = protocolFeatureMask(ProtocolFeature::OldProtocolCompat | ProtocolFeature::LegacyPayload | ProtocolFeature::LoginSpeedFormula | ProtocolFeature::MarketPackets | ProtocolFeature::ImbuementWindow | ProtocolFeature::ExpertPvpModeByte),
 		.name = "tibia1100",
 		.supportLabel = "10x",
 	};

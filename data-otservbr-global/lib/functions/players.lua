@@ -58,19 +58,19 @@ function Player.checkGnomeRank(self)
 end
 
 function Player.addFamePoint(self)
-	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points)
+	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Fame_Points)
 	local current = math.max(0, points)
-	self:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points, current + 1)
+	self:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Fame_Points, current + 1)
 	self:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have received a fame point.")
 end
 
 function Player.getFamePoints(self)
-	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points)
+	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Fame_Points)
 	return math.max(0, points)
 end
 
 function Player.removeFamePoints(self, amount)
-	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points)
+	local points = self:getStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Fame_Points)
 	local current = math.max(0, points)
-	self:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Constants.Spike_Fame_Points, current - amount)
+	self:setStorageValue(Storage.Quest.U10_20.SpikeTaskQuest.Spike_Fame_Points, current - amount)
 end

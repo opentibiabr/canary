@@ -113,6 +113,12 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission02, 1) -- The Inquisition Questlog- "Mission 2: Eclipse"
 			player:addItem(133, 1)
 			npcHandler:setTopic(playerId, 0)
+		-- No topic here on purpose: mission 2 is completed by destroying the cauldron, not by
+		-- reporting. Topic 9 only checks for the grimoire, so it would let the player close the
+		-- mission without ever destroying the brew.
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 4 then
+			npcHandler:say("Your current mission is to destroy the witches' brew with the vial of holy water and to steal their grimoire.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 5 then
 			npcHandler:say("Your current mission is to destroy this coven. Are you done with that mission?", npc, creature)
 			npcHandler:setTopic(playerId, 9)
@@ -152,13 +158,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:removeItem(6499, 20) then
 				npcHandler:say({
 					"You're indeed a dedicated protector of the true believers. Don't stop now. Kill as many of these creatures as you can. ...",
-					"I also have a reward for your great efforts. Talk to me about your {demon hunter outfit} anytime from now on. Afterwards, let's talk about the next mission that's awaiting you.",
+					"I also have a reward for your great efforts. Talk to me about your {outfit} anytime from now on. Afterwards, let's talk about the next mission that's awaiting you.",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 16)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission05, 2) -- The Inquisition Questlog- "Mission 5: Essential Gathering"
 			else
 				npcHandler:say("You need 20 of them.", npc, creature)
 			end
+			npcHandler:setTopic(playerId, 0)
+		-- State 16 requires saying `outfit` to move on (16 -> 17), and this chain used to stay
+		-- silent about it. Repeats verbatim what the NPC says when entering the state.
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 16 then
+			npcHandler:say("Talk to me about your {outfit} anytime from now on. Afterwards, let's talk about the next mission that's awaiting you.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 17 then
 			npcHandler:say({
@@ -168,6 +179,10 @@ local function creatureSayCallback(npc, creature, type, message)
 			}, npc, creature)
 			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 18)
 			player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission06, 1) -- The Inquisition Questlog- "Mission 6: The Demon Ungreez"
+			npcHandler:setTopic(playerId, 0)
+		-- No topic: 18 -> 19 is triggered by killing Ungreez, not by reporting.
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 18 then
+			npcHandler:say("Your current mission is to take revenge and to kill the demon Ungreez. You'll find him in the depths of Edron.", npc, creature)
 			npcHandler:setTopic(playerId, 0)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 19 then
 			npcHandler:say({
@@ -186,6 +201,11 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 21 or player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 22 then
 			npcHandler:say("Your current mission is to destroy the shadow nexus in the Demon Forge. Are you done with that mission?", npc, creature)
 			npcHandler:setTopic(playerId, 6)
+		-- State 23 requires saying `outfit` to move on (23 -> 24, which also opens the reward
+		-- room door). Repeats verbatim what the NPC says when entering the state.
+		elseif player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 23 then
+			npcHandler:say("Don't forget to ask me about your {outfit} to receive the final addon as demon hunter.", npc, creature)
+			npcHandler:setTopic(playerId, 0)
 		end
 	elseif MsgContains(message, "yes") then
 		if npcHandler:getTopic(playerId) == 2 then
@@ -232,7 +252,7 @@ local function creatureSayCallback(npc, creature, type, message)
 			if player:getStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline) == 22 then
 				npcHandler:say({
 					"Incredible! You're a true defender of faith! I grant you the title of a High Inquisitor for your noble deeds. From now on you can obtain the blessing of the inquisition which makes the pilgrimage of ashes obsolete ...",
-					"The blessing of the inquisition will bestow upon you all available blessings for the price of 110000 gold. Also, don't forget to ask me about your {outfit} to receive the final addon as demon hunter.",
+					"The blessing of the inquisition will bestow upon you all available blessings for " .. totalBlessPrice .. " gold, which is slightly higher than if you'd buy them separately. Also, don't forget to ask me about your {outfit} to receive the final addon as demon hunter.",
 				}, npc, creature)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Questline, 23)
 				player:setStorageValue(Storage.Quest.U8_2.TheInquisitionQuest.Mission07, 3) -- The Inquisition Questlog- "Mission 7: The Shadow Nexus"

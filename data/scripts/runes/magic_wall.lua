@@ -13,16 +13,20 @@ function onCreateMagicWall(creature, position)
 	end
 
 	local magicWall
-	if Game.getWorldType() == WORLD_TYPE_NO_PVP then
+	if IsExpertPVP() or Game.getWorldType() == WORLD_TYPE_NO_PVP then
 		magicWall = ITEM_MAGICWALL_SAFE
 	else
 		magicWall = ITEM_MAGICWALL
 	end
 
-	local item = Game.createItem(magicWall, 1, position)
+	local item = Game.createItem(magicWall, 1)
 	if item then
+		item:setExpertPvpFieldContext(creature)
 		item:setDuration(16, 24)
 		item:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, string.format("Casted by: %s", creature:getName()))
+		if tile:addItemEx(item, FLAG_NOLIMIT) ~= RETURNVALUE_NOERROR then
+			return false
+		end
 	end
 end
 

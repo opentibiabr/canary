@@ -104,6 +104,19 @@ keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler
 npcHandler:setMessage(MESSAGE_GREET, "Welcome on board, |PLAYERNAME|. Where can I {sail} you today?")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Recommend us if you were satisfied with our service.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye then.")
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "farmine" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "kazordoon" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "krailos" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "oramond" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "port hope" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "rathleton" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "roshamuul" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "tiquanda" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+keywordHandler:addKeyword({ "zao" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but I don't sail there." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

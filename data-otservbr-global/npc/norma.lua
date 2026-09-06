@@ -83,7 +83,7 @@ local function creatureSayCallback(npc, creature, type, message)
 		if player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.AddonHatRook) == 1 then
 			npcHandler:say("Oh, you're back already? Did you bring a legion helmet, 100 chicken feathers and 50 honeycombs?", npc, creature)
 			npcHandler:setTopic(playerId, 2)
-		elseif player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionHatRookRook) < 1 then
+		elseif player:getStorageValue(Storage.Quest.U7_8.CitizenOutfitsRook.MissionHatRook) < 1 then
 			npcHandler:say("Pretty, isn't it? I made it myself, but I could teach you how to do that if you like. What do you say?", npc, creature)
 			npcHandler:setTopic(playerId, 1)
 		end

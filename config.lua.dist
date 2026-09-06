@@ -25,11 +25,12 @@ toggleMaintainMode = false
 maintainModeMessage = ""
 
 -- Combat settings
--- NOTE: valid values for worldType are: "pvp", "no-pvp" and "pvp-enforced"
+-- NOTE: valid values for worldType are: "expert-pvp", "retro-pvp", "pvp", "no-pvp" and "pvp-enforced"
+-- NOTE: "pvp" is kept as a compatibility alias for "retro-pvp"
 -- NOTE: removeBeginningWeaponAmmunition: spears, arrows, bolt have endless ammo (allows training for paladins)
 -- NOTE: refundManaOnBeginningWeapons: wand of vortex and snakebite refund mana used (allows training for mages)
 -- NOTE: loginProtectionTime in MS
-worldType = "pvp"
+worldType = "retro-pvp"
 hotkeyAimbotEnabled = true
 protectionLevel = 7
 pzLocked = 60 * 1000
@@ -291,7 +292,6 @@ onlyPremiumAccount = false
 -- NOTE: autoBank = true, the dropped coins from monsters will be automatically deposited to your bank account.
 -- NOTE: toggleGoldPouchAllowAnything will allow players to move items or gold to gold pouch
 -- NOTE: toggleGoldPouchQuickLootOnly will ONLY allow quickloot to move items to gold pouch
--- NOTE: toggleServerIsRetroPVP will make this server as retro, setting PARTY_PROTECTION and ADVANCED_SECURE_MODE to 0
 -- NOTE: toggleTravelsFree will make all travels from boat free
 -- NOTE: buyAolCommandFee will add fee when player buy aol by command (!aol), active changing value more than 0 (fee value. ex: 1 = 1gp  aol will be 50001)
 -- NOTE: buyBlessCommandFee will add fee when player buy bless by command (!bless), active changing value between 1 and 100 (fee percent. ex: 3 = 3%, 30 = 30%)
@@ -308,7 +308,6 @@ autoLoot = false
 autoBank = false
 toggleGoldPouchAllowAnything = false
 toggleGoldPouchQuickLootOnly = false
-toggleServerIsRetroPVP = false
 toggleTravelsFree = false
 buyAolCommandFee = 0
 buyBlessCommandFee = 0

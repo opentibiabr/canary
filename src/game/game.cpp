@@ -24,6 +24,7 @@
 #include "creatures/players/highscore_category.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "creatures/players/player.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "enums/player_wheel.hpp"
 #include "database/databasetasks.hpp"
 #include "game/scheduling/dispatcher.hpp"
@@ -91,6 +92,20 @@ namespace {
 	MonsterPostThinkQueue visibleMonsterPostThinkQueue;
 	MonsterPostThinkQueue backgroundMonsterPostThinkQueue;
 	std::array<std::atomic_uint64_t, 2> rejectedMonsterPostThinkTasks {};
+
+	SourceEffect_t classifyGraphicalEffectSource(const std::shared_ptr<Creature> &source, const std::shared_ptr<Creature> &spectator) {
+		using enum SourceEffect_t;
+		if (!source || source->getNpc()) {
+			return GLOBAL;
+		}
+		if (source == spectator) {
+			return OWN;
+		}
+		if (source->getPlayer()) {
+			return OTHERS;
+		}
+		return CREATURES;
+	}
 
 	MonsterPostThinkQueue &getMonsterPostThinkQueue(bool playerVisible) {
 		return playerVisible ? visibleMonsterPostThinkQueue : backgroundMonsterPostThinkQueue;
@@ -397,11 +412,11 @@ namespace InternalGame {
 
 	void sendBlockEffect(BlockType_t blockType, CombatType_t combatType, const Position &targetPos, const std::shared_ptr<Creature> &source) {
 		if (blockType == BLOCK_DEFENSE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_POFF);
+			g_game().addMagicEffect(targetPos, CONST_ME_POFF, source);
 		} else if (blockType == BLOCK_ARMOR) {
-			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT);
+			g_game().addMagicEffect(targetPos, CONST_ME_BLOCKHIT, source);
 		} else if (blockType == BLOCK_DODGE) {
-			g_game().addMagicEffect(targetPos, CONST_ME_DODGE);
+			g_game().addMagicEffect(targetPos, CONST_ME_DODGE, source);
 		} else if (blockType == BLOCK_IMMUNITY) {
 			uint8_t hitEffect = 0;
 			switch (combatType) {
@@ -429,7 +444,7 @@ namespace InternalGame {
 					break;
 				}
 			}
-			g_game().addMagicEffect(targetPos, hitEffect);
+			g_game().addMagicEffect(targetPos, hitEffect, source);
 		}
 
 		if (blockType != BLOCK_NONE) {
@@ -7026,7 +7041,7 @@ void Game::playerFollowCreature(uint32_t playerId, uint32_t creatureId) {
 	player->setFollowCreature(getCreatureByID(creatureId));
 }
 
-void Game::playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode) {
+void Game::playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode, PvpMode_t pvpMode) {
 	const auto &player = getPlayerByID(playerId);
 	if (!player) {
 		return;
@@ -7035,6 +7050,9 @@ void Game::playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool ch
 	player->setFightMode(fightMode);
 	player->setChaseMode(chaseMode);
 	player->setSecureMode(secureMode);
+	if (ExpertPvp::isEnabled()) {
+		player->setPvpMode(pvpMode);
+	}
 }
 
 void Game::playerRequestAddVip(uint32_t playerId, const std::string &name) {
@@ -7457,10 +7475,6 @@ void Game::playerSay(uint32_t playerId, uint16_t channelId, SpeakClasses type, c
 }
 
 bool Game::playerSaySpell(const std::shared_ptr<Player> &player, SpeakClasses type, const std::string &text) {
-	if (player->walkExhausted()) {
-		return true;
-	}
-
 	std::string words = text;
 	TalkActionResult_t result = g_talkActions().checkPlayerCanSayTalkAction(player, type, words);
 	if (result == TALKACTION_BREAK) {
@@ -8779,7 +8793,7 @@ void Game::sendDamageMessageAndEffects(
 	message.primary.value = damage.primary.value;
 	message.secondary.value = damage.secondary.value;
 
-	sendEffects(target, damage, targetPos, message, spectators);
+	sendEffects(attacker, target, damage, targetPos, message, spectators);
 
 	if (shouldSendMessage(message)) {
 		sendMessages(attacker, target, damage, targetPos, attackerPlayer, targetPlayer, message, spectators, realDamage);
@@ -8937,21 +8951,21 @@ void Game::buildMessageAsAttacker(
 }
 
 void Game::sendEffects(
-	const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos, TextMessage &message,
-	const CreatureVector &spectators
+	const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage,
+	const Position &targetPos, TextMessage &message, const CreatureVector &spectators
 ) {
 	uint16_t hitEffect;
 	if (message.primary.value) {
 		combatGetTypeInfo(damage.primary.type, target, message.primary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
+			addMagicEffect(spectators, targetPos, hitEffect, attacker);
 		}
 	}
 
 	if (message.secondary.value) {
 		combatGetTypeInfo(damage.secondary.type, target, message.secondary.color, hitEffect);
 		if (hitEffect != CONST_ME_NONE) {
-			addMagicEffect(spectators, targetPos, hitEffect);
+			addMagicEffect(spectators, targetPos, hitEffect, attacker);
 		}
 	}
 }
@@ -8986,7 +9000,7 @@ void Game::applyManaLeech(
 ) const {
 	// Wheel of destiny bonus - mana leech chance and amount
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_MANA_LEECH_AMOUNT);
-	uint16_t manaSkill = attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) + wheelLeechAmount + damage.manaLeech;
+	int64_t manaSkill = static_cast<int64_t>(attackerPlayer->getSkillLevel(SKILL_MANA_LEECH_AMOUNT)) + wheelLeechAmount + damage.manaLeech;
 
 	// Void charm rune
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VOID) == targetMonster->getRaceId()) {
@@ -8995,7 +9009,8 @@ void Game::applyManaLeech(
 		}
 	}
 
-	if (manaSkill == 0) {
+	const auto boundedManaSkill = static_cast<uint16_t>(std::clamp<int64_t>(manaSkill, 0, std::numeric_limits<uint16_t>::max()));
+	if (boundedManaSkill == 0) {
 		return;
 	}
 
@@ -9005,7 +9020,7 @@ void Game::applyManaLeech(
 	int affected = damage.affected;
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_MANADRAIN;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, manaSkill, affected);
+	tmpDamage.primary.value = calculateLeechAmount(realDamage, boundedManaSkill, affected);
 
 	Combat::doCombatMana(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
@@ -9016,7 +9031,7 @@ void Game::applyLifeLeech(
 ) const {
 	// Wheel of destiny bonus - life leech chance and amount
 	auto wheelLeechAmount = attackerPlayer->wheel().checkDrainBodyLeech(target, SKILL_LIFE_LEECH_AMOUNT);
-	uint16_t lifeSkill = attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) + wheelLeechAmount + damage.lifeLeech;
+	int64_t lifeSkill = static_cast<int64_t>(attackerPlayer->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT)) + wheelLeechAmount + damage.lifeLeech;
 
 	if (targetMonster && attackerPlayer->parseRacebyCharm(CHARM_VAMP) == targetMonster->getRaceId()) {
 		if (const auto &charm = g_iobestiary().getBestiaryCharm(CHARM_VAMP)) {
@@ -9024,7 +9039,8 @@ void Game::applyLifeLeech(
 		}
 	}
 
-	if (lifeSkill == 0) {
+	const auto boundedLifeSkill = static_cast<uint16_t>(std::clamp<int64_t>(lifeSkill, 0, std::numeric_limits<uint16_t>::max()));
+	if (boundedLifeSkill == 0) {
 		return;
 	}
 
@@ -9034,7 +9050,7 @@ void Game::applyLifeLeech(
 	int affected = damage.affected;
 	tmpDamage.origin = ORIGIN_SPELL;
 	tmpDamage.primary.type = COMBAT_HEALING;
-	tmpDamage.primary.value = calculateLeechAmount(realDamage, lifeSkill, affected);
+	tmpDamage.primary.value = calculateLeechAmount(realDamage, boundedLifeSkill, affected);
 
 	Combat::doCombatHealth(nullptr, attackerPlayer, tmpDamage, tmpParams);
 }
@@ -9326,13 +9342,22 @@ void Game::addPlayerVocation(const std::shared_ptr<Player> &target) {
 
 void Game::addMagicEffect(const Position &pos, uint16_t effect) {
 	auto spectators = Spectators().find<Player>(pos, true);
-	addMagicEffect(spectators.data(), pos, effect);
+	addMagicEffect(spectators.data(), pos, effect, nullptr);
 }
 
 void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect) {
+	addMagicEffect(spectators, pos, effect, nullptr);
+}
+
+void Game::addMagicEffect(const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source) {
+	auto spectators = Spectators().find<Player>(pos, true);
+	addMagicEffect(spectators.data(), pos, effect, source);
+}
+
+void Game::addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source) {
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendMagicEffect(pos, effect);
+			tmpPlayer->sendMagicEffect(pos, effect, classifyGraphicalEffectSource(source, spectator));
 		}
 	}
 }
@@ -9352,13 +9377,24 @@ void Game::removeMagicEffect(const CreatureVector &spectators, const Position &p
 
 void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect) {
 	auto spectators = Spectators().find<Player>(fromPos).find<Player>(toPos);
-	addDistanceEffect(spectators.data(), fromPos, toPos, effect);
+	addDistanceEffect(spectators.data(), fromPos, toPos, effect, nullptr);
 }
 
 void Game::addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect) {
+	addDistanceEffect(spectators, fromPos, toPos, effect, nullptr);
+}
+
+void Game::addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source) {
+	auto spectators = Spectators().find<Player>(fromPos).find<Player>(toPos);
+	addDistanceEffect(spectators.data(), fromPos, toPos, effect, source);
+}
+
+void Game::addDistanceEffect(
+	const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source
+) {
 	for (const auto &spectator : spectators) {
 		if (const auto &tmpPlayer = spectator->getPlayer()) {
-			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect);
+			tmpPlayer->sendDistanceShoot(fromPos, toPos, effect, classifyGraphicalEffectSource(source, spectator));
 		}
 	}
 }
@@ -11597,6 +11633,7 @@ void Game::removePlayer(const std::shared_ptr<Player> &player) {
 	mappedPlayerNames.erase(lowercase_name);
 	wildcardTree->remove(lowercase_name);
 	players.erase(player->getID());
+	ExpertPvp::refreshAllVisibleSituationMarks();
 }
 
 void Game::addNpc(const std::shared_ptr<Npc> &npc) {

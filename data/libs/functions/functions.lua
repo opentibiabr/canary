@@ -114,7 +114,7 @@ function getJackLastMissionState(player)
 		return true
 	end
 
-	if player:getStorageValue(Storage.TibiaTales.JackFutureQuest.LastMissionState) == 1 then
+	if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.LastMissionState) == 1 then
 		return "You told Jack the truth about his personality. You also explained that you and Spectulus \z
 		made a mistake by assuming him as the real Jack."
 	else

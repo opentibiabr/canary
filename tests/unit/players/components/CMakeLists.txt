@@ -1,4 +1,4 @@
 target_sources(
     canary_ut
-    PRIVATE player_storage_test.cpp
+    PRIVATE expert_pvp_test.cpp player_storage_test.cpp
 )

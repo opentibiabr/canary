@@ -128,3 +128,21 @@ TEST(NetworkMessageTest, AddBytesValidatesContent) {
 	);
 	EXPECT_EQ(testData, extractedData);
 }
+
+TEST(NetworkMessageTest, UnreadBytesExcludeModernTransportEnvelope) {
+	NetworkMessage msg;
+
+	// The modern encrypted payload starts one byte before the shared outbound
+	// staging position. Its padding-size byte belongs to the transport envelope.
+	msg.setLength(16);
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION - 1);
+	msg.setPayloadLength(2);
+
+	EXPECT_EQ(2, msg.getUnreadBytes());
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+	EXPECT_EQ(1, msg.getUnreadBytes());
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION + 1);
+	EXPECT_EQ(0, msg.getUnreadBytes());
+	msg.setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION + 2);
+	EXPECT_EQ(0, msg.getUnreadBytes());
+}

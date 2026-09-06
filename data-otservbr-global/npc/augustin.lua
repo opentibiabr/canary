@@ -31,6 +31,7 @@ npcConfig.voices = {
 }
 
 npcConfig.shop = {
+	{ itemName = "bounty talisman", clientId = 51978, buy = 5000 },
 	{ itemName = "alptramun's toothbrush", clientId = 29943, sell = 270000 },
 	{ itemName = "amber", clientId = 32626, sell = 20000 },
 	{ itemName = "amber with a bug", clientId = 32624, sell = 41000 },
@@ -178,7 +179,7 @@ npcType.onBuyItem = function(npc, player, itemId, subType, amount, ignore, inBac
 end
 -- On sell npc shop message
 npcType.onSellItem = function(npc, player, itemId, subtype, amount, ignore, name, totalCost)
-	player:sendTextMessage(MESSAGE_INFO_DESCR, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
+	player:sendTextMessage(MESSAGE_TRADE, string.format("Sold %ix %s for %i gold.", amount, name, totalCost))
 end
 -- On check npc shop message (look item)
 npcType.onCheckItem = function(npc, player, clientId, subType) end

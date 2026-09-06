@@ -30,6 +30,7 @@
 #include "creatures/players/management/waitlist.hpp"
 #include "creatures/players/player.hpp"
 #include "creatures/players/components/player_forge_history.hpp"
+#include "creatures/players/components/pvp/expert_pvp.hpp"
 #include "enums/player_icons.hpp"
 #include "game/game.hpp"
 #include "game/modal_window/modal_window.hpp"
@@ -43,6 +44,7 @@
 #include "io/ioprey.hpp"
 #include "items/items_classification.hpp"
 #include "items/weapons/weapons.hpp"
+#include "lua/callbacks/events_callbacks.hpp"
 #include "lua/creature/creatureevent.hpp"
 #include "lua/modules/modules.hpp"
 #include "server/network/connection/connection.hpp"
@@ -77,6 +79,8 @@
 namespace {
 	constexpr uint64_t PARTY_ANALYZER_THROTTLE_MS = 1000;
 	constexpr size_t UPDATE_CONTAINER_PAYLOAD_SIZE = 1;
+	constexpr uint8_t CREATURE_MARK_TIMED_SQUARE_TYPE = 0x01;
+	constexpr uint8_t CREATURE_MARK_PERSISTENT_SQUARE_TYPE = 0x02;
 	constexpr uint8_t CLIENT_PACKET_TASKBOARD = 0x5F;
 	constexpr uint8_t CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER = 0xBA;
 	constexpr uint8_t CLIENT_PACKET_OFFER_DESCRIPTION = 0xE8;
@@ -94,8 +98,7 @@ namespace {
 	}
 
 	[[nodiscard]] size_t getUnreadBytes(const NetworkMessage &msg) {
-		const auto consumedBytes = static_cast<size_t>(msg.getBufferPosition() - NetworkMessage::INITIAL_BUFFER_POSITION);
-		return msg.getLength() > consumedBytes ? msg.getLength() - consumedBytes : 0;
+		return msg.getUnreadBytes();
 	}
 
 	[[nodiscard]] bool hasClientBuildPrefix(std::string_view versionString, std::string_view buildPrefix) {
@@ -478,6 +481,10 @@ namespace {
 		return profile && profile->id == ProtocolProfileId::Tibia1100;
 	}
 
+	[[nodiscard]] bool isCurrentProtocolProfile(const ProtocolProfile* profile) {
+		return profile && profile->id == ProtocolProfileId::Current;
+	}
+
 	[[nodiscard]] bool hasProtocolFeature(const ProtocolProfile* profile, ProtocolFeature feature) {
 		return profile && profile->hasFeature(feature);
 	}
@@ -612,6 +619,21 @@ namespace {
 			default:
 				return MESSAGE_NONE;
 		}
+	}
+
+	[[nodiscard]] uint16_t getViewerAwareItemId(const std::shared_ptr<Player> &viewer, const std::shared_ptr<Item> &item) {
+		if (!viewer || !item || !ExpertPvp::isEnabled()) {
+			return item ? item->getID() : 0;
+		}
+
+		const auto fieldContext = ExpertPvp::getFieldContext(item);
+		const auto relation = ExpertPvp::classifyFieldRelation(fieldContext, viewer);
+		const auto decision = ExpertPvp::getFieldClientId(fieldContext, relation.facts);
+		if (!decision.handled || decision.clientItemId == 0) {
+			return item->getID();
+		}
+
+		return decision.clientItemId;
 	}
 } // namespace
 
@@ -756,7 +778,8 @@ void ProtocolGame::AddItem(NetworkMessage &msg, const std::shared_ptr<Item> &ite
 		return;
 	}
 
-	const ItemType &it = Item::items[item->getID()];
+	const auto clientItemId = getViewerAwareItemId(player, item);
+	const ItemType &it = Item::items[clientItemId];
 
 	msg.add<uint16_t>(it.id);
 
@@ -1001,6 +1024,9 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 			return;
 		}
+		if (ExpertPvp::isEnabled() && !hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
+			player->setPvpMode(PVP_MODE_DOVE);
+		}
 
 		player->setOperatingSystem(operatingSystem);
 
@@ -1082,6 +1108,9 @@ void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t oper
 	}
 
 	player = foundPlayer;
+	if (ExpertPvp::isEnabled() && !hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
+		player->setPvpMode(PVP_MODE_DOVE);
+	}
 
 	g_chat().removeUserFromAllChannels(player);
 	player->clearModalWindows();
@@ -1537,9 +1566,25 @@ void ProtocolGame::parsePacket(NetworkMessage &msg) {
 	}
 
 	// Recvbyte modules own the byte once they run; the dispatcher must not parse it again.
+	const bool profileAllowsModule = shouldDispatchRecvbyteModuleForProfile(protocolProfile, recvbyte);
+	if (recvbyte == CLIENT_PACKET_TASKBOARD || recvbyte == CLIENT_PACKET_SOUL_SEALS_FIGHT_MONSTER) {
+		const auto moduleEvent = g_modules().getEventByRecvbyte(recvbyte, false);
+		g_logger().trace(
+			"[Taskboard][route] player='{}' opcode=0x{:02X} payloadBytes={} client={} build='{}' profile='{}' profileAllows={} moduleRegistered={} moduleLoaded={}",
+			player->getName(),
+			recvbyte,
+			getUnreadBytes(msg),
+			clientVersion,
+			clientVersionString,
+			protocolProfile ? protocolProfile->name : std::string_view { "<none>" },
+			profileAllowsModule,
+			moduleEvent != nullptr,
+			moduleEvent && moduleEvent->isLoaded()
+		);
+	}
 	if (player
 	    && recvbyte != 0xD3
-	    && shouldDispatchRecvbyteModuleForProfile(protocolProfile, recvbyte)
+	    && profileAllowsModule
 	    && g_modules().executeOnRecvbyte(player, msg, recvbyte)) {
 		return;
 	}
@@ -2704,10 +2749,22 @@ void ProtocolGame::parseSay(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseFightModes(NetworkMessage &msg) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::TacticsWithoutFightMode)) {
+		const bool chaseMode = msg.getByte() != 0;
+		const bool secureMode = msg.getByte() != 0;
+		msg.getByte(); // PvP mode
+
+		g_game().playerSetFightModes(player->getID(), FIGHTMODE_ATTACK, chaseMode, secureMode);
+		return;
+	}
+
 	uint8_t rawFightMode = msg.getByte(); // 1 - offensive, 2 - balanced, 3 - defensive
 	uint8_t rawChaseMode = msg.getByte(); // 0 - stand while fightning, 1 - chase opponent
 	uint8_t rawSecureMode = msg.getByte(); // 0 - can't attack unmarked, 1 - can attack unmarked
-	// uint8_t rawPvpMode = msg.getByte(); // pvp mode introduced in 10.0
+	ExpertPvpModeResult pvpMode = ExpertPvp::defaultModeForClient();
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte)) {
+		pvpMode = ExpertPvp::modeFromClientByte(msg.getByte()); // pvp mode introduced in 10.0
+	}
 
 	FightMode_t fightMode;
 	if (rawFightMode == 1) {
@@ -2718,7 +2775,7 @@ void ProtocolGame::parseFightModes(NetworkMessage &msg) {
 		fightMode = FIGHTMODE_DEFENSE;
 	}
 
-	g_game().playerSetFightModes(player->getID(), fightMode, rawChaseMode != 0, rawSecureMode != 0);
+	g_game().playerSetFightModes(player->getID(), fightMode, rawChaseMode != 0, rawSecureMode != 0, pvpMode.mode);
 }
 
 void ProtocolGame::parseAttack(NetworkMessage &msg) {
@@ -4246,9 +4303,33 @@ void ProtocolGame::parseSendResourceBalance() {
 }
 
 void ProtocolGame::parseSendResourceBalance(NetworkMessage &msg) {
-	if (hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
-		msg.getByte(true);
+	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+		parseSendResourceBalance();
+		return;
 	}
+
+	const auto requestedResource = msg.getByte(true);
+	const bool isBountyPoints = requestedResource == RESOURCE_BOUNTY_POINTS;
+	const bool isSoulseals = requestedResource == RESOURCE_SOULSEALS;
+	if (isBountyPoints || isSoulseals) {
+		const bool supported = isBountyPoints
+			? hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets)
+			: hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialSoulSealsPackets);
+		if (!supported) {
+			return;
+		}
+
+		const auto key = isBountyPoints ? "bounty-points" : "soulseals";
+		const auto stored = player->kv()->scoped("task-board")->scoped("general")->get(key);
+		double value = stored.has_value() ? stored->getNumber() : 0;
+		if (!std::isfinite(value) || value < 0) {
+			value = 0;
+		}
+		value = std::min(value, static_cast<double>(std::numeric_limits<uint32_t>::max()));
+		sendResourceBalance(static_cast<Resource_t>(requestedResource), static_cast<uint64_t>(value));
+		return;
+	}
+
 	parseSendResourceBalance();
 }
 
@@ -4497,9 +4578,25 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 		return;
 	}
 
-	const auto icons = creature->getIcons();
+	constexpr size_t maxIcons = 3;
+	auto icons = creature->getIcons();
+	const bool supportsTaskboardCreatureIcons = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialTaskboardPackets);
+	if (const auto monster = creature->getMonster();
+	    monster && supportsTaskboardCreatureIcons && !monster->hasBeenSummoned()) {
+		const auto overlays = player->getRaceIconOverlays(monster->getRaceId());
+		const auto overlayCount = std::min(maxIcons, overlays.size());
+		if (overlayCount > 0) {
+			const auto baseIconCount = maxIcons - overlayCount;
+			if (icons.size() > baseIconCount) {
+				icons.resize(baseIconCount);
+			}
+			for (size_t overlayIndex = 0; overlayIndex < overlayCount; ++overlayIndex) {
+				icons.push_back(overlays[overlayIndex]);
+			}
+		}
+	}
 	// client only supports 3 icons, otherwise it will crash
-	const auto count = icons.size() > 3 ? 3 : icons.size();
+	const auto count = std::min(maxIcons, icons.size());
 	msg.addByte(count);
 	for (uint8_t i = 0; i < count; ++i) {
 		const auto icon = icons[i];
@@ -4510,7 +4607,7 @@ void ProtocolGame::addCreatureIcon(NetworkMessage &msg, const std::shared_ptr<Cr
 }
 
 void ProtocolGame::sendCreatureIcon(const std::shared_ptr<Creature> &creature) {
-	if (!creature || !player || oldProtocol) {
+	if (!creature || !player || oldProtocol || !canSee(creature) || !knownCreatureSet.contains(creature->getID())) {
 		return;
 	}
 
@@ -4636,9 +4733,22 @@ void ProtocolGame::sendCreatureSquare(const std::shared_ptr<Creature> &creature,
 	} else {
 		msg.addByte(0x93);
 		msg.add<uint32_t>(creature->getID());
-		msg.addByte(0x01);
+		msg.addByte(CREATURE_MARK_TIMED_SQUARE_TYPE);
 		msg.addByte(color);
 	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCreatureMark(const std::shared_ptr<Creature> &creature, CreatureMark_t mark) {
+	if (!canSee(creature) || !isCurrentProtocolProfile(protocolProfile)) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0x93);
+	msg.add<uint32_t>(creature->getID());
+	msg.addByte(CREATURE_MARK_PERSISTENT_SQUARE_TYPE);
+	msg.addByte(mark);
 	writeToOutputBuffer(msg);
 }
 
@@ -5034,18 +5144,14 @@ void ProtocolGame::sendCyclopediaCharacterStoreSummary() {
 	    slotP && slotP->state != PreyDataState_Locked) {
 		preySlotsUnlocked++;
 	}
-	// Task hunting third slot unlocked
-	if (const auto &slotH = player->getTaskHuntingSlotById(PreySlot_Three);
-	    slotH && slotH->state != PreyTaskDataState_Locked) {
-		preySlotsUnlocked++;
-	}
-	msg.addByte(preySlotsUnlocked); // getPreySlotById + getTaskHuntingSlotById
+	msg.addByte(preySlotsUnlocked);
 
 	msg.addByte(cyclopediaSummary.m_preyWildcards); // getPreyCardsObtained
+	const auto weeklyExpansion = player->kv()->scoped("task-board")->scoped("general")->get("weekly-expansion-unlocked");
+	msg.addByte(weeklyExpansion && weeklyExpansion->get<bool>() ? 0x01 : 0x00);
 	msg.addByte(cyclopediaSummary.m_instantRewards); // getRewardCollectionObtained
 	msg.addByte(player->hasCharmExpansion() ? 0x01 : 0x00);
 	msg.addByte(cyclopediaSummary.m_hirelings); // getHirelingsObtained
-	msg.addByte(0x00); // Reserved current-client store summary field
 
 	std::vector<uint16_t> m_hSkills;
 	for (const auto &[skillId, skillName] : g_game().getHirelingSkills()) {
@@ -5798,7 +5904,7 @@ void ProtocolGame::sendBlessingWindow() {
 	NetworkMessage msg;
 	msg.addByte(0x9B);
 
-	bool isRetro = g_configManager().getBoolean(TOGGLE_SERVER_IS_RETRO);
+	bool isRetro = ExpertPvp::isRetroPvpWorldType();
 
 	msg.addByte(isRetro ? 0x07 : 0x08);
 	for (auto blessing : magic_enum::enum_values<Blessings>()) {
@@ -8086,7 +8192,7 @@ void ProtocolGame::sendPingBack() {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (oldProtocol && !useLegacyU16Effect && type > 0xFF) {
 		return;
@@ -8109,11 +8215,15 @@ void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, u
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.x) - static_cast<int32_t>(from.x))));
 		msg.addByte(static_cast<uint8_t>(static_cast<int8_t>(static_cast<int32_t>(to.y) - static_cast<int32_t>(from.y))));
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendDistanceShoot(const Position &from, const Position &to, uint16_t type) {
+	sendDistanceShoot(from, to, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::sendRestingStatus(uint8_t protection) {
@@ -8161,7 +8271,7 @@ void ProtocolGame::sendRestingStatus(uint8_t protection) {
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source) {
 	const bool useLegacyU16Effect = oldProtocol && hasProtocolFeature(protocolProfile, ProtocolFeature::MagicEffectU16);
 	if (!canSee(pos) || (oldProtocol && !useLegacyU16Effect && type > 0xFF)) {
 		return;
@@ -8182,11 +8292,15 @@ void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
 		msg.addByte(MAGIC_EFFECTS_CREATE_EFFECT);
 		msg.add<uint16_t>(type);
 		if (hasProtocolFeature(protocolProfile, ProtocolFeature::GraphicalEffectSourceByte)) {
-			msg.addByte(magic_enum::enum_integer(SourceEffect_t::OWN));
+			msg.addByte(magic_enum::enum_integer(source));
 		}
 		msg.addByte(MAGIC_EFFECTS_END_LOOP);
 	}
 	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendMagicEffect(const Position &pos, uint16_t type) {
+	sendMagicEffect(pos, type, SourceEffect_t::OWN);
 }
 
 void ProtocolGame::removeMagicEffect(const Position &pos, uint16_t type) {
@@ -8473,11 +8587,17 @@ void ProtocolGame::sendEnterWorld() {
 void ProtocolGame::sendFightModes() {
 	NetworkMessage msg;
 	msg.addByte(0xA7);
-	msg.addByte(player->fightMode);
-	msg.addByte(player->chaseMode);
-	msg.addByte(player->secureMode);
-	if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+	if (hasProtocolFeature(protocolProfile, ProtocolFeature::TacticsWithoutFightMode)) {
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
 		msg.addByte(PVP_MODE_DOVE);
+	} else {
+		msg.addByte(player->fightMode);
+		msg.addByte(player->chaseMode);
+		msg.addByte(player->secureMode);
+		if (!hasProtocolFeature(protocolProfile, ProtocolFeature::CurrentPayload)) {
+			msg.addByte(ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte) ? player->getPvpMode() : PVP_MODE_DOVE);
+		}
 	}
 	writeToOutputBuffer(msg);
 }
@@ -8549,12 +8669,13 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		}
 	}
 
+	const bool expertPvpControlsEnabled = ExpertPvp::isEnabled() && hasProtocolFeature(protocolProfile, ProtocolFeature::ExpertPvpModeByte);
 	if (version >= 1054) {
-		msg.addByte(0x00); // can change pvp framing option
+		msg.addByte(expertPvpControlsEnabled ? 0x01 : 0x00); // can change pvp framing option
 	}
 
 	if (version >= 1058) {
-		msg.addByte(0x00); // expert mode button enabled
+		msg.addByte(expertPvpControlsEnabled ? 0x01 : 0x00); // expert mode button enabled
 	}
 
 	if (version >= 1080) {
@@ -8624,10 +8745,12 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 
 	if (player->getPlayerVocationEnum() == Vocation_t::VOCATION_MONK_CIP) {
 		sendMonkData(MonkData_t::Harmony, player->getHarmony());
-		auto virtue = player->getVirtue();
-		virtue = virtue != Virtue_t::None ? virtue : Virtue_t::Harmony;
-		sendMonkData(MonkData_t::Virtue, enumToValue(virtue));
-		sendMonkData(MonkData_t::Serenity, 1);
+		const bool officialVocationData = hasProtocolFeature(protocolProfile, ProtocolFeature::OfficialVocationSpecificPlayerData);
+		const auto virtue = player->getVirtue();
+		if (virtue != Virtue_t::None || !officialVocationData) {
+			sendMonkData(MonkData_t::Virtue, enumToValue(virtue != Virtue_t::None ? virtue : Virtue_t::Harmony));
+		}
+		sendMonkData(MonkData_t::Serenity, officialVocationData ? player->hasCondition(CONDITION_SERENE) : true);
 	}
 
 	if (version >= 1100) {
@@ -8694,6 +8817,7 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		if (!oldProtocol) {
 			player->sendSpellCooldowns();
 		}
+		g_callbacks().executeCallback(EventCallback_t::playerOnLoginComplete, player);
 	}
 }
 
@@ -9645,7 +9769,7 @@ void ProtocolGame::AddCreature(NetworkMessage &msg, const std::shared_ptr<Creatu
 
 	auto bubble = creature->getSpeechBubble();
 	msg.addByte(oldProtocol && bubble == SPEECHBUBBLE_HIRELING ? static_cast<uint8_t>(SPEECHBUBBLE_NONE) : bubble);
-	msg.addByte(0xFF); // MARK_UNMARKED
+	msg.addByte(isCurrentProtocolProfile(protocolProfile) ? ExpertPvp::getSituationCreatureMark(otherPlayer, player) : CREATURE_MARK_UNMARKED);
 	if (!oldProtocol) {
 		msg.addByte(0x00); // inspection type
 	} else if (otherPlayer) {
@@ -12048,10 +12172,25 @@ void ProtocolGame::sendMonkData(MonkData_t type, uint8_t value) {
 				msg.addByte(value != 0 ? 0x01 : 0x00);
 				break;
 			case MonkData_t::Virtue: {
-				const uint8_t virtueCount = value != 0 ? 1 : 0;
+				uint16_t spellId = 0;
+				switch (static_cast<Virtue_t>(value)) {
+					case Virtue_t::Harmony:
+						spellId = 274;
+						break;
+					case Virtue_t::Justice:
+						spellId = 275;
+						break;
+					case Virtue_t::Sustain:
+						spellId = 276;
+						break;
+					case Virtue_t::None:
+						break;
+				}
+
+				const uint8_t virtueCount = spellId != 0 ? 1 : 0;
 				msg.addByte(virtueCount);
 				if (virtueCount != 0) {
-					msg.add<uint16_t>(value);
+					msg.add<uint16_t>(spellId);
 				}
 				break;
 			}

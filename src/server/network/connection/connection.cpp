@@ -20,6 +20,24 @@
 #include "server/server.hpp"
 #include "utils/tools.hpp"
 
+namespace {
+	constexpr auto PROTOCOL_RELEASE_RETRY_DELAY = std::chrono::milliseconds(50);
+	constexpr auto PROTOCOL_RELEASE_WARNING_INTERVAL = std::chrono::seconds(5);
+
+	bool shouldLogProtocolReleaseRetry() {
+		static std::mutex warningLock;
+		static auto nextWarningAt = std::chrono::steady_clock::time_point {};
+
+		std::scoped_lock lock(warningLock);
+		const auto now = std::chrono::steady_clock::now();
+		if (now < nextWarningAt) {
+			return false;
+		}
+		nextWarningAt = now + PROTOCOL_RELEASE_WARNING_INTERVAL;
+		return true;
+	}
+}
+
 ConnectionManager &ConnectionManager::getInstance() {
 	return inject<ConnectionManager>();
 }
@@ -55,6 +73,7 @@ void ConnectionManager::closeAll() {
 Connection::Connection(asio::io_service &initIoService, ConstServicePort_ptr initservicePort) :
 	readTimer(initIoService),
 	writeTimer(initIoService),
+	protocolReleaseRetryTimer(initIoService),
 	service_port(std::move(initservicePort)),
 	transportCodec(&TransportCodecs::rawClientFirst()),
 	socket(initIoService), m_msg() {
@@ -72,12 +91,51 @@ void Connection::close(bool force) {
 	connectionState = CONNECTION_STATE_CLOSED;
 
 	if (protocol) {
-		g_dispatcher().addEvent([protocol = protocol] { protocol->release(); }, __FUNCTION__, std::chrono::milliseconds(CONNECTION_WRITE_TIMEOUT * 1000).count());
+		dispatchProtocolRelease();
 	}
 
 	if (messageQueue.empty() || force) {
 		closeSocket();
 	}
+}
+
+void Connection::dispatchProtocolRelease() {
+	std::scoped_lock lock(connectionLock);
+	if (!protocol) {
+		return;
+	}
+
+	std::function<void()> releaseTask = [protocolToRelease = protocol] {
+		protocolToRelease->release();
+	};
+	const auto producerToken = reinterpret_cast<uintptr_t>(protocol.get());
+	const bool accepted = DispatcherPolicy::scheduleWithFallbackLane(
+		[&releaseTask, producerToken](DispatcherLane lane) {
+			return g_dispatcher().addEvent(std::move(releaseTask), "Connection::dispatchProtocolRelease", 0, lane, producerToken);
+		},
+		DispatcherLane::ProtocolInput,
+		DispatcherLane::WorldCommit
+	);
+	const auto admissionResult = DispatcherPolicy::classifyAdmission(accepted, g_dispatcher().isShuttingDown());
+	if (admissionResult != DispatcherAdmissionResult::Saturated) {
+		protocolReleaseRetryAttempts = 0;
+		return;
+	}
+
+	++protocolReleaseRetryAttempts;
+	if (shouldLogProtocolReleaseRetry()) {
+		g_logger().warn(
+			"[Connection::dispatchProtocolRelease] Dispatcher saturated; retrying protocol cleanup (attempt {}).",
+			protocolReleaseRetryAttempts
+		);
+	}
+
+	protocolReleaseRetryTimer.expires_from_now(PROTOCOL_RELEASE_RETRY_DELAY);
+	protocolReleaseRetryTimer.async_wait([self = shared_from_this()](const std::error_code &error) {
+		if (error != asio::error::operation_aborted) {
+			self->dispatchProtocolRelease();
+		}
+	});
 }
 
 void Connection::closeSocket() {

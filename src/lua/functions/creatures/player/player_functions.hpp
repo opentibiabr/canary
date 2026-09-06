@@ -281,6 +281,8 @@ class PlayerFunctions {
 	static int luaPlayerHasChaseMode(lua_State* L);
 	static int luaPlayerHasSecureMode(lua_State* L);
 	static int luaPlayerGetFightMode(lua_State* L);
+	static int luaPlayerGetPvpMode(lua_State* L);
+	static int luaPlayerHasAttacked(lua_State* L);
 
 	static int luaPlayerGetBaseXpGain(lua_State* L);
 	static int luaPlayerSetBaseXpGain(lua_State* L);
@@ -400,6 +402,9 @@ class PlayerFunctions {
 	static int luaPlayerRemoveIconBakragore(lua_State* L);
 
 	static int luaPlayerSendCreatureAppear(lua_State* L);
+	static int luaPlayerSetRaceIconOverlay(lua_State* L);
+	static int luaPlayerClearRaceIconOverlays(lua_State* L);
+	static int luaPlayerRefreshVisibleCreatureIcons(lua_State* L);
 
 	static int luaPlayerAddAnimusMastery(lua_State* L);
 	static int luaPlayerRemoveAnimusMastery(lua_State* L);

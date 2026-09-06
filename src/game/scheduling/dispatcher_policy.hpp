@@ -31,6 +31,12 @@ struct DispatcherQueueSnapshot {
 	std::string_view oldestContext;
 };
 
+enum class DispatcherAdmissionResult : uint8_t {
+	Accepted,
+	Saturated,
+	ShuttingDown,
+};
+
 class DispatcherAdmissionCounter final {
 public:
 	[[nodiscard]] bool tryReserve(size_t capacity) {
@@ -180,6 +186,13 @@ public:
 			return eventId;
 		}
 		return std::invoke(scheduler, fallbackLane);
+	}
+
+	[[nodiscard]] static DispatcherAdmissionResult classifyAdmission(bool accepted, bool shuttingDown) {
+		if (accepted) {
+			return DispatcherAdmissionResult::Accepted;
+		}
+		return shuttingDown ? DispatcherAdmissionResult::ShuttingDown : DispatcherAdmissionResult::Saturated;
 	}
 
 	[[nodiscard]] static int64_t timestamp(TimePoint timePoint) {

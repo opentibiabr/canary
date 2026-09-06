@@ -103,6 +103,7 @@ npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {
+	{ itemName = "bounty talisman", clientId = 51978, buy = 5000 },
 	{ itemName = "golden amulet", clientId = 3013, buy = 6600 },
 	{ itemName = "precious necklace", clientId = 7939, buy = 5000 },
 	{ itemName = "ruby necklace", clientId = 3016, buy = 3560 },

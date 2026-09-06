@@ -202,7 +202,7 @@ void EventCallback::pushArgument(lua_State* L, const ItemType* itemType) {
 }
 
 void EventCallback::pushArgument(lua_State* L, CombatDamage &damage) {
-	lua_createtable(L, 0, 4);
+	lua_createtable(L, 0, 5);
 
 	lua_createtable(L, 0, 2);
 	Lua::setField(L, "value", damage.primary.value);
@@ -217,6 +217,8 @@ void EventCallback::pushArgument(lua_State* L, CombatDamage &damage) {
 	Lua::setField(L, "origin", damage.origin);
 	lua_pushboolean(L, damage.critical);
 	lua_setfield(L, -2, "critical");
+
+	Lua::setField(L, "lifeLeech", damage.lifeLeech);
 }
 
 void EventCallback::pushArgument(lua_State* L, const Position &position) {

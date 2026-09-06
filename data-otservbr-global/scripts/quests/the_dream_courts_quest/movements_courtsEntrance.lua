@@ -50,13 +50,13 @@ local config = {
 	[9] = {
 		hisPosition = Position(32016, 32037, 13),
 		toPosition = Position(32057, 32001, 13),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Rosebush,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.RoseBush,
 		value = -1,
 	},
 	[10] = {
 		hisPosition = Position(32055, 32001, 13),
 		toPosition = Position(32016, 32035, 13),
-		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.Rosebush,
+		storage = Storage.Quest.U12_00.TheDreamCourts.TheSevenKeys.RoseBush,
 		value = -1,
 	},
 	[11] = {

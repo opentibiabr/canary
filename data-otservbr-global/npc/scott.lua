@@ -57,6 +57,20 @@ end
 npcType.onCloseChannel = function(npc, creature)
 	npcHandler:onCloseChannel(npc, creature)
 end
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Scott." })
+keywordHandler:addKeyword({ "senja" }, StdModule.say, { npcHandler = npcHandler, text = "It's a peaceful island. Cold and lonesome but I like it." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm the keeper of the inn. You can buy food here." })
+keywordHandler:addKeyword({ "tibia" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, I'm happy to live in this world full of thrilling things." })
+keywordHandler:addKeyword({ "castle" }, StdModule.say, { npcHandler = npcHandler, text = "It is said that there are some secrets to discover around the mage's castle." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "Sometimes I travel to Carlin and visit the market." })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "It's a city in the south-west of Tibia." })
+keywordHandler:addKeyword({ "queen" }, StdModule.say, { npcHandler = npcHandler, text = "She is a strong and wise leader. We owe her protection from evil monsters." })
+keywordHandler:addKeyword({ "rumour" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "A sailor from Carlin told me that the natives of the Ice Islands pray to different gods. I think 'Chyll' is one of them or was that the name of the northern winds?? Well, doesn't matter! Primitives! ... The only green fish I know is the one you can buy at Permaret in Edron as a 'special offer' and that would be your last meal. Trust me! ... I mean there are barbarians and barbarians, some are good, the others not. One call themselves 'Norsir' the others 'Raiders', but actually they are all the same. ... It seems that this was the reason why nobody has discovered the Ice Islands before. Something must have happened because at a moment's notice they disappeared. ... The wolves and bears protect them and tear their foes into pieces if they order them to. If you ask me, this is just gossip. ... That must be the reason why the Carlin traders are so interested in getting there. They sense gold in selling wood. ... He was writing strange things about suspicious inhabitants and something about a test to become one of them. It was very hard to read the letter, I think he was drunk as hell when he wrote it. ... I heard that they dig for valuable ore which was found in an old mine. I wonder why nobody of them has returned yet. Travellers told me that they recently moved into the caverns beneath the island. There, they are growing fresh grass and even flowers! How is that possible in a frozen cave? Some kind of magic has to be involved. ... I'm just not sure whether it is of the benevolent or the malicious kind.",
+})
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

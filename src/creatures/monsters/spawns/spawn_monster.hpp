@@ -33,14 +33,11 @@ public:
 		centerPos(initPos), radius(initRadius) { }
 	~SpawnMonster();
 
-	// non-copyable
+	// non-copyable and non-moveable
 	SpawnMonster(const SpawnMonster &) = delete;
 	SpawnMonster &operator=(const SpawnMonster &) = delete;
-
-	// moveable
-	SpawnMonster(SpawnMonster &&rhs) noexcept;
-
-	SpawnMonster &operator=(SpawnMonster &&rhs) noexcept;
+	SpawnMonster(SpawnMonster &&) = delete;
+	SpawnMonster &operator=(SpawnMonster &&) = delete;
 
 	bool addMonster(const std::string &name, const Position &pos, Direction dir, uint32_t interval, uint32_t weight = 1);
 	void removeMonster(const std::shared_ptr<Monster> &monster);
@@ -70,11 +67,12 @@ private:
 	int32_t radius;
 	uint32_t interval = 30000;
 	uint32_t checkSpawnMonsterEvent = 0;
+	uint64_t spawnGeneration = 0;
 
 	static bool findPlayer(const Position &pos);
 	bool spawnMonster(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, bool startup = false);
 	void checkSpawnMonster();
-	void scheduleSpawn(uint32_t spawnMonsterId, spawnBlock_t &sb, const std::shared_ptr<MonsterType> &monsterType, uint16_t interval, bool startup = false);
+	void scheduleSpawn(uint32_t spawnMonsterId, const std::shared_ptr<MonsterType> &monsterType, int32_t interval, bool startup, uint64_t generation);
 };
 
 class SpawnsMonster {

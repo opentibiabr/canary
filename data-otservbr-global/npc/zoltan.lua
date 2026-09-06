@@ -91,7 +91,8 @@ local function creatureSayCallback(npc, creature, type, message)
 			end
 		end
 	elseif MsgContains(message, "myra") then
-		if player:getSex() == PLAYERSEX_FEMALE and player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 10 and not player:hasOutfit(138, 2) then
+		local addonHatCloak = player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak)
+		if player:getSex() == PLAYERSEX_FEMALE and addonHatCloak == 10 and not player:hasOutfit(138, 2) then
 			npcHandler:say({
 				"Bah, I know. I received some sort of 'nomination' from our outpost in Port Hope. ...",
 				"Usually it takes a little more than that for an award though. However, I honour Myra's word. ...",
@@ -102,7 +103,18 @@ local function creatureSayCallback(npc, creature, type, message)
 			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
 			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)
-		elseif player:getStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak) == 11 then
+		elseif player:getSex() == PLAYERSEX_MALE and addonHatCloak == 10 and not player:hasOutfit(133, 2) then
+			npcHandler:say({
+				"Bah, I know. I received some sort of 'nomination' from our outpost in Port Hope. ...",
+				"Usually it takes a little more than that for an award though. However, I honour Myra's word. ...",
+				"I hereby grant you the right to wear a special sign of honour, acknowledged by the academy of Edron. There you go.",
+			}, npc, creature, 100)
+			player:addOutfitAddon(133, 2) -- male summoner addon
+			player:addOutfitAddon(130, 2) -- male mage addon
+			player:getPosition():sendMagicEffect(CONST_ME_MAGIC_BLUE)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.AddonHatCloak, 11)
+			player:setStorageValue(Storage.Quest.U7_8.MageAndSummonerOutfits.MissionHatCloak, 0)
+		elseif addonHatCloak == 11 then
 			npcHandler:say("Stop bothering me. I am a far too busy man to be constantly giving out awards.", npc, creature)
 		else
 			npcHandler:say("What the hell are you talking about?", npc, creature)

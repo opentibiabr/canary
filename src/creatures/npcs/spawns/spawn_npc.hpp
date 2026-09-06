@@ -58,11 +58,12 @@ private:
 
 	uint32_t interval = 60000;
 	uint32_t checkSpawnNpcEvent = 0;
+	uint64_t spawnGeneration = 0;
 
 	static bool findPlayer(const Position &pos);
 	bool spawnNpc(uint32_t spawnId, const std::shared_ptr<NpcType> &npcType, const Position &pos, Direction dir, bool startup = false);
 	void checkSpawnNpc();
-	void scheduleSpawnNpc(uint32_t spawnId, spawnBlockNpc_t &sb, uint16_t interval);
+	void scheduleSpawnNpc(uint32_t spawnId, int32_t interval, uint64_t generation);
 };
 
 class SpawnsNpc {

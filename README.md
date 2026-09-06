@@ -59,6 +59,7 @@ environment variables, test account, and troubleshooting guide.
 
 ## Documentation
 
+- [Shared build cache for worktrees and forks](docs/development/shared-build-cache.md).
 - [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
 - [Multiprotocol runtime profiles](docs/systems/multiprotocol.md). Covers the
   current, 11.00, and 8.60 runtime contracts, port layout, client preparation,
@@ -92,18 +93,16 @@ Development builds can be downloaded from GitHub Actions artifacts. They are use
 
 ## Running Tests
 
-Tests can be run directly from the repository root using CMake test presets:
+Tests can be run from the repository root using the tool versions and tasks
+pinned in `.mise.toml`:
 
 ```bash
-# Configure and build tests for your platform
-cmake --preset linux-debug && cmake --build --preset linux-debug
+mise install
+mise run configure linux-debug
+mise run build linux-debug
+mise run test linux-debug
 
-# Run all tests
-ctest --preset linux-debug
-
-# For other platforms use:
-# ctest --preset macos-debug
-# ctest --preset windows-debug
+# Replace linux-debug with macos-debug or windows-debug as needed.
 ```
 
 For detailed testing information including adding tests and framework usage, see [tests/README.md](tests/README.md).

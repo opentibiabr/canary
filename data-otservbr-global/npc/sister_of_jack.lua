@@ -71,7 +71,7 @@ local function creatureSayCallback(npc, creature, type, message)
 
 	if MsgContains(message, "jack") then
 		if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.QuestLine) == 5 then
-			if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Mother == 1) and (player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Sister)) < 1 then
+			if player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Mother) == 1 and (player:getStorageValue(Storage.Quest.U8_7.JackFutureQuest.Sister)) < 1 then
 				npcHandler:say("Why are you asking, he didn't get himself into something again did he?", npc, creature)
 				npcHandler:setTopic(playerId, 1)
 			end

@@ -124,6 +124,10 @@ public:
 		return version;
 	}
 
+	[[nodiscard]] const std::string &getClientVersionString() const {
+		return clientVersionString;
+	}
+
 	[[nodiscard]] const ProtocolProfile* getProtocolProfile() const {
 		return protocolProfile;
 	}
@@ -351,7 +355,9 @@ private:
 	void sendBosstiaryEntryChanged(uint32_t bossid);
 
 	void sendAllowBugReport();
+	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type, SourceEffect_t source);
 	void sendDistanceShoot(const Position &from, const Position &to, uint16_t type);
+	void sendMagicEffect(const Position &pos, uint16_t type, SourceEffect_t source);
 	void sendMagicEffect(const Position &pos, uint16_t type);
 	void removeMagicEffect(const Position &pos, uint16_t type);
 	void sendRestingStatus(uint8_t protection);
@@ -458,6 +464,7 @@ private:
 	void sendTibiaTime(int32_t time);
 
 	void sendCreatureSquare(const std::shared_ptr<Creature> &creature, SquareColor_t color);
+	void sendCreatureMark(const std::shared_ptr<Creature> &creature, CreatureMark_t mark);
 
 	void sendSpellCooldown(uint16_t spellId, uint32_t time);
 	void sendSpellGroupCooldown(SpellGroup_t groupId, uint32_t time);

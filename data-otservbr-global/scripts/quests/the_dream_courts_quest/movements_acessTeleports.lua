@@ -51,7 +51,7 @@ local dreamScar = {
 	[6] = {
 		day = "Saturday",
 		bossName = "Plagueroot",
-		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlaguerootTimer,
+		storageTimer = Storage.Quest.U12_00.TheDreamCourts.DreamScarGlobal.PlagueRootTimer,
 	},
 	[7] = {
 		day = "Sunday",

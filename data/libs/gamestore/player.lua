@@ -1,4 +1,5 @@
 local senders = require("gamestore.senders")
+local taskboard = require("gamestore.taskboard")
 local player = {}
 
 local sendStoreBalanceUpdating = senders.sendStoreBalanceUpdating
@@ -16,7 +17,7 @@ local function canBuyOffer(self, offer)
 		offer.type ~= GameStore.OfferTypes.OFFER_TYPE_NAMECHANGE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_EXPBOOST
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYSLOT
-		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT
+		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_WEEKLY_TASK_EXPANSION
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_PREYBONUS
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_TEMPLE
 		and offer.type ~= GameStore.OfferTypes.OFFER_TYPE_SEXCHANGE
@@ -102,10 +103,14 @@ local function canBuyOffer(self, offer)
 				disabled = 1
 				disabledReason = "You already have charm expansion."
 			end
-		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HUNTINGSLOT then
-			if self:taskHuntingThirdSlot() then
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_WEEKLY_TASK_EXPANSION then
+			local unlocked = taskboard.isWeeklyExpansionUnlocked(self)
+			if unlocked == nil then
 				disabled = 1
-				disabledReason = "You already have 3 slots released."
+				disabledReason = "Task Board is unavailable."
+			elseif unlocked then
+				disabled = 1
+				disabledReason = "You already have the Permanent Weekly Task Expansion."
 			end
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_PREYSLOT then
 			if self:preyThirdSlot() then

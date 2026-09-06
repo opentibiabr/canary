@@ -15,6 +15,7 @@
 enum class PlayerIcon : uint8_t;
 
 class Creature;
+class ConditionDamage;
 struct MapCacheFloorCursor;
 class Player;
 class PropStream;
@@ -41,6 +42,7 @@ public:
 	int32_t getTicks() const;
 	void setTicks(int32_t newTicks);
 
+	static std::shared_ptr<ConditionDamage> createDamageCondition(ConditionId_t id, ConditionType_t type, bool buff = false, uint32_t subId = 0);
 	static std::shared_ptr<Condition> createCondition(ConditionId_t id, ConditionType_t type, int32_t ticks, int32_t param = 0, bool buff = false, uint32_t subId = 0, bool isPersistent = false);
 	static std::shared_ptr<Condition> createCondition(PropStream &propStream);
 

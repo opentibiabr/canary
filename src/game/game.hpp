@@ -398,7 +398,7 @@ public:
 	void playerSetAttackedCreature(uint32_t playerId, uint32_t creatureId);
 	void playerFollowCreature(uint32_t playerId, uint32_t creatureId);
 	void playerCancelAttackAndFollow(uint32_t playerId);
-	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode);
+	void playerSetFightModes(uint32_t playerId, FightMode_t fightMode, bool chaseMode, bool secureMode, PvpMode_t pvpMode = PVP_MODE_DOVE);
 	void playerLookAt(uint32_t playerId, uint16_t itemId, const Position &pos, uint8_t stackPos);
 	void playerLookInBattleList(uint32_t playerId, uint32_t creatureId);
 	void playerQuickLootCorpse(const std::shared_ptr<Player> &player, const std::shared_ptr<Container> &corpse, const Position &position);
@@ -536,11 +536,17 @@ public:
 	void addPlayerMana(const std::shared_ptr<Player> &target);
 	void addPlayerVocation(const std::shared_ptr<Player> &target);
 	void addMagicEffect(const Position &pos, uint16_t effect);
+	void addMagicEffect(const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source);
 	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
+	static void addMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect, const std::shared_ptr<Creature> &source);
 	void removeMagicEffect(const Position &pos, uint16_t effect);
 	static void removeMagicEffect(const CreatureVector &spectators, const Position &pos, uint16_t effect);
 	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect);
+	void addDistanceEffect(const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source);
 	static void addDistanceEffect(const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect);
+	static void addDistanceEffect(
+		const CreatureVector &spectators, const Position &fromPos, const Position &toPos, uint16_t effect, const std::shared_ptr<Creature> &source
+	);
 
 	int32_t getLightHour() const {
 		return lightHour;
@@ -950,7 +956,7 @@ private:
 	void updatePlayerPartyHuntAnalyzer(const CombatDamage &damage, const std::shared_ptr<Player> &player) const;
 
 	void sendEffects(
-		const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos,
+		const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, const CombatDamage &damage, const Position &targetPos,
 		TextMessage &message, const CreatureVector &spectators
 	);
 

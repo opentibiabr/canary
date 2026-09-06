@@ -4,8 +4,9 @@ set(CANARY_SHARED_CACHE_SCHEMA
     "v5"
 )
 
-# Bump this contract only when dependency input resolution/normalization changes.
-# Helper diagnostics and consumer validation are not installed-package identity.
+# Bump this contract only when dependency input resolution/normalization
+# changes. Helper diagnostics and consumer validation are not installed-package
+# identity.
 set(CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT
     "vcpkg-inputs-v1"
 )
@@ -1739,10 +1740,15 @@ foreach(
         set(setting_value
             "${${setting}}"
         )
-        if(setting STREQUAL "VCPKG_INSTALL_OPTIONS")
+        if(setting
+           STREQUAL
+           "VCPKG_INSTALL_OPTIONS"
+        )
             # These exact flags only remove staging data after installation.
             # Preserve every other option (and its order) in the dependency key.
-            list(REMOVE_ITEM setting_value
+            list(
+                REMOVE_ITEM
+                setting_value
                 "--clean-buildtrees-after-build"
                 "--clean-packages-after-build"
             )
@@ -2901,13 +2907,16 @@ endif()
 # Per-consumer provenance must not depend on the shared metadata's last writer.
 set(CANARY_VCPKG_CONSUMER_IMPLEMENTATION_SHA256
     "${CANARY_SHARED_CACHE_IMPLEMENTATION_SHA256}"
-    CACHE INTERNAL "Shared-cache resolver used by this consumer" FORCE
+    CACHE INTERNAL
+          "Shared-cache resolver used by this consumer"
+          FORCE
 )
 set(CANARY_VCPKG_DEPENDENCY_CONTRACT
     "${CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT}"
-    CACHE INTERNAL "Versioned dependency input contract" FORCE
+    CACHE INTERNAL
+          "Versioned dependency input contract"
+          FORCE
 )
-
 
 file(MAKE_DIRECTORY "${shared_installed_root}")
 file(MAKE_DIRECTORY "${shared_metadata_root}")

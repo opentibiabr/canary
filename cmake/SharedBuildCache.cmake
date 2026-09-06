@@ -8,7 +8,7 @@ set(CANARY_SHARED_CACHE_SCHEMA
 # changes. Helper diagnostics and consumer validation are not installed-package
 # identity.
 set(CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT
-    "vcpkg-inputs-v1"
+    "vcpkg-inputs-v2"
 )
 
 file(
@@ -70,15 +70,22 @@ function(
 
     if(EXISTS "${path}")
         if(signature_NORMALIZE_LINE_ENDINGS)
-            # The manifest JSON grammar treats physical CRLF and LF line endings
-            # identically. Hash their canonical form so Git checkout settings do
-            # not split an otherwise identical dependency pool. Generic port and
-            # registry trees intentionally remain byte-signatured because
-            # patches and other arbitrary payloads can be line-ending-sensitive.
+            # The manifest JSON grammar treats physical CRLF, LF, and standalone
+            # CR line endings identically. Hash their canonical form so Git
+            # checkout settings do not split an otherwise identical dependency
+            # pool. Generic port and registry trees intentionally remain
+            # byte-signatured because patches and other arbitrary payloads can
+            # be line-ending-sensitive.
             file(
                 READ
                 "${path}"
                 file_contents
+            )
+            file(
+                READ
+                "${path}"
+                file_contents_hex
+                HEX
             )
             string(
                 REPLACE "\r\n"
@@ -86,6 +93,33 @@ function(
                         file_contents
                         "${file_contents}"
             )
+            string(
+                REPLACE "\r"
+                        "\n"
+                        file_contents
+                        "${file_contents}"
+            )
+            # CMake's text-mode file(READ) drops a standalone trailing CR. Use
+            # the byte signature only to restore that terminator canonically.
+            string(
+                HEX
+                "${file_contents}"
+                normalized_file_contents_hex
+            )
+            if(file_contents_hex
+               MATCHES
+               "0d$"
+               AND NOT
+                   normalized_file_contents_hex
+                   MATCHES
+                   "0a$"
+            )
+                string(
+                    APPEND
+                    file_contents
+                    "\n"
+                )
+            endif()
             string(SHA256 file_hash "${file_contents}")
         else()
             file(

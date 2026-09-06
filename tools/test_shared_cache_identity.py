@@ -13,9 +13,20 @@ import unittest
 
 MODULE = Path(__file__).resolve().parents[1] / "cmake/SharedBuildCache.cmake"
 CMAKE = shutil.which("cmake")
+GIT = shutil.which("git")
 
 
 class SharedCacheIdentity(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        missing = [
+            name for name, path in (("cmake", CMAKE), ("git", GIT)) if not path
+        ]
+        if missing:
+            raise RuntimeError(
+                f"required tools are missing from PATH: {', '.join(missing)}"
+            )
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="shared-cache-identity-")
         self.addCleanup(self.temp.cleanup)
@@ -87,7 +98,7 @@ class SharedCacheIdentity(unittest.TestCase):
 
     def git(self, *args):
         subprocess.run(
-            ["git", "-C", str(self.vcpkg), *args],
+            [GIT, "-C", str(self.vcpkg), *args],
             check=True,
             capture_output=True,
             env=self.env,
@@ -164,7 +175,7 @@ class SharedCacheIdentity(unittest.TestCase):
         )
         self.assertEqual(result["active"], "true")
         self.assertEqual(result["schema"], "v5")
-        self.assertEqual(result["dependency-contract"], "vcpkg-inputs-v1")
+        self.assertEqual(result["dependency-contract"], "vcpkg-inputs-v2")
         self.assertEqual(len(result["dependency-fingerprint"]), 64)
         return result
 
@@ -201,7 +212,7 @@ class SharedCacheIdentity(unittest.TestCase):
     def test_semantic_contract_change_requires_fresh(self):
         before = self.resolve()
         self.module.write_text(
-            self.module.read_text().replace('"vcpkg-inputs-v1"', '"vcpkg-inputs-v2"'),
+            self.module.read_text().replace('"vcpkg-inputs-v2"', '"vcpkg-inputs-v3"'),
             encoding="utf-8",
         )
         self.resolve(
@@ -295,12 +306,19 @@ class SharedCacheIdentity(unittest.TestCase):
         manifest = json.loads((self.source / "vcpkg.json").read_text())
         self.write("source/vcpkg.json", json.dumps(manifest, indent=2) + "\n")
         before = self.resolve()
-        clone = self.root / "another-worktree"
-        shutil.copytree(self.source, clone)
-        clone.joinpath("vcpkg.json").write_bytes(
-            clone.joinpath("vcpkg.json").read_bytes().replace(b"\n", b"\r\n")
-        )
-        self.assert_same_pool(before, self.resolve(source=clone))
+        for name, line_ending in (
+            ("crlf-worktree", b"\r\n"),
+            ("cr-only-worktree", b"\r"),
+        ):
+            with self.subTest(line_ending=name):
+                clone = self.root / name
+                shutil.copytree(self.source, clone)
+                clone.joinpath("vcpkg.json").write_bytes(
+                    clone.joinpath("vcpkg.json")
+                    .read_bytes()
+                    .replace(b"\n", line_ending)
+                )
+                self.assert_same_pool(before, self.resolve(source=clone))
 
     def test_features_linkage_sdk_and_toolset_remain_distinct(self):
         before = self.resolve()
@@ -421,8 +439,12 @@ if __name__ == "__main__":
     parser.add_argument("--module", type=Path, default=MODULE)
     args, remaining = parser.parse_known_args()
     MODULE = args.module.resolve(strict=True)
-    if not CMAKE:
+    missing_tools = [
+        name for name, path in (("cmake", CMAKE), ("git", GIT)) if not path
+    ]
+    if missing_tools:
         parser.error(
-            "cmake must be on PATH; no compiler or installed packages are needed"
+            f"{', '.join(missing_tools)} must be on PATH; "
+            "no compiler or installed packages are needed"
         )
     unittest.main(argv=[__file__, *remaining])

@@ -23,6 +23,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 $CurrentSharedCacheSchema = "v5"
 $KnownSharedCacheSchemas = @("v1", "v2", "v3", "v4", $CurrentSharedCacheSchema)
+$SharedCacheDependencyContracts = @{
+    "v5" = "vcpkg-inputs-v2"
+}
 
 if ($env:OS -ne "Windows_NT") {
     throw "This helper persists Windows user environment variables. Follow docs/development/shared-build-cache.md for non-Windows setup."
@@ -198,10 +201,29 @@ function Test-SharedFingerprintIdentity {
     } catch {
         return $false
     }
-    $identityLine = Get-Content -LiteralPath $identityPath |
+    $identityLines = @(Get-Content -LiteralPath $identityPath)
+    $identityLine = $identityLines |
         Where-Object { $_.StartsWith("fingerprint=", [StringComparison]::OrdinalIgnoreCase) } |
         Select-Object -First 1
-    return $identityLine -eq "fingerprint=$Fingerprint"
+    if ($identityLine -ne "fingerprint=$Fingerprint") {
+        return $false
+    }
+
+    if ($SharedCacheDependencyContracts.ContainsKey($Schema)) {
+        $expectedContract = $SharedCacheDependencyContracts[$Schema]
+        $schemaLine = $identityLines |
+            Where-Object { $_.StartsWith("schema=", [StringComparison]::OrdinalIgnoreCase) } |
+            Select-Object -First 1
+        $contractLine = $identityLines |
+            Where-Object { $_.StartsWith("dependency-contract=", [StringComparison]::OrdinalIgnoreCase) } |
+            Select-Object -First 1
+        return (
+            $schemaLine -eq "schema=$Schema" -and
+            $contractLine -eq "dependency-contract=$expectedContract"
+        )
+    }
+
+    return $true
 }
 
 function Set-UserEnvironmentValue {

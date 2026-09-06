@@ -84,7 +84,7 @@ To reclaim only the disposable `buildtrees` and `packages` data for one known fi
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
 ```
 
-This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+This narrower cleanup validates the full-hash identity metadata, including the recorded schema and dependency contract for versioned schemas, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
 
 ## Non-Windows setup
 
@@ -226,7 +226,7 @@ The consumer fingerprint includes the dependency fingerprint, normalized resolve
 
 The module disables sharing when any required identity or the local-filesystem guarantee is ambiguous. Absolute worktree paths do not participate. Content paths inside manifests and configurations still participate through the files themselves, while referenced local trees are hashed using relative file names and contents.
 
-Schema `v5` uses a versioned dependency-input contract (`vcpkg-inputs-v1`) instead of hashing the whole resolver into the installed-tree identity. Comments, diagnostics, audit changes, and consumer-only validation must not create another expanded copy of identical dependencies. The normalized implementation hash remains in the consumer fingerprint and diagnostic metadata; a helper change may require a fresh consumer configure or regenerated Solution props without changing the installed pool.
+Schema `v5` uses a versioned dependency-input contract (`vcpkg-inputs-v2`) instead of hashing the whole resolver into the installed-tree identity. Comments, diagnostics, audit changes, and consumer-only validation must not create another expanded copy of identical dependencies. The normalized implementation hash remains in the consumer fingerprint and diagnostic metadata; a helper change may require a fresh consumer configure or regenerated Solution props without changing the installed pool.
 
 Bump `CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT` whenever input discovery, selection, interpretation, normalization, or compatibility rules change. It is a repository-owned literal, not a user override or an automatically changing source hash. Forks may share this version only when those semantics are identical and the resolver regression suite passes. Never copy the version merely to force reuse. This explicit boundary replaces the previous whole-module dependency hash; it does not remove manifest, registry, triplet, feature, compiler, SDK, or vcpkg checks.
 
@@ -234,7 +234,7 @@ Only the exact `--clean-buildtrees-after-build` and `--clean-packages-after-buil
 
 The shared pool metadata records its last resolver writer. CMake records `CANARY_VCPKG_CONSUMER_IMPLEMENTATION_SHA256` and `CANARY_VCPKG_DEPENDENCY_CONTRACT` in each consumer cache so audits do not confuse another compatible writer with a stale consumer. Consumer hash changes still fail closed and request refresh; the old installed path is not reassigned.
 
-Schema `v5` canonicalizes physical CRLF/LF line endings only in the manifest and its JSON configuration. Registry and overlay payloads remain byte-signatured; arbitrary patches are not normalized.
+Schema `v5` contract `vcpkg-inputs-v2` canonicalizes physical CRLF, LF, and standalone CR line endings only in the manifest and its JSON configuration. Registry and overlay payloads remain byte-signatured; arbitrary patches are not normalized.
 
 An existing configured preset never changes fingerprint or falls back in place. Cached package variables could retain paths into the old pool, so the module stops before `project()` and requests `cmake --fresh --preset <configure-preset>`.
 

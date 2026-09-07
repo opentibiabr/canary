@@ -112,6 +112,20 @@ local function reserveParsedValue(budget, depth)
 	return true
 end
 
+-- Byte-based whitespace skip: string.byte() reads a single byte without
+-- allocating a substring, and a plain numeric comparison is far cheaper than
+-- invoking the pattern-matching VM per character via s:sub(i,i):match("%s").
+-- This runs on nearly every character of the input (between every token), so
+-- it dominates parse time on large inputs -- see tests/lua/bench_table_serialization.lua.
+local function skipWhitespace(s, i, len)
+	local b = s:byte(i)
+	while b == 32 or b == 9 or b == 10 or b == 13 do
+		i = i + 1
+		b = s:byte(i)
+	end
+	return i
+end
+
 -- Recursive-descent parser for the exact grammar table.serialize() produces:
 -- nil, booleans, numbers, single/double-quoted strings (with \n \t \r and
 -- \ddd escapes), and nested tables with bracketed keys. Every branch returns
@@ -122,38 +136,65 @@ end
 -- malformed input, hanging forever. Whitespace is only skipped between
 -- tokens (never inside a quoted string), so round-tripping a string or
 -- string key that contains spaces no longer corrupts it.
+--
+-- The byte at `i` is peeked once to dispatch straight to the matching
+-- branch (word / number / string / table) instead of always attempting a
+-- word-pattern match and then a number-pattern match in sequence -- on a
+-- table of thousands of numeric or string entries, that meant two wasted
+-- pattern-VM invocations per value for the overwhelmingly common cases.
 local function parseSerializedValue(s, i, len, depth, budget)
 	if not reserveParsedValue(budget, depth) then
 		return false
 	end
 
-	while i <= len do
-		local c = s:sub(i, i)
-		if c == " " or c == "\t" or c == "\n" or c == "\r" then
-			i = i + 1
-		else
-			break
-		end
-	end
+	i = skipWhitespace(s, i, len)
 	if i > len then
 		return false
 	end
 
-	local word = s:match("^(%a+)", i)
-	if word == "nil" then
-		return true, nil, i + 3
-	elseif word == "true" then
-		return true, true, i + 4
-	elseif word == "false" then
-		return true, false, i + 5
+	local b = s:byte(i)
+
+	if (b >= 97 and b <= 122) or (b >= 65 and b <= 90) then
+		local word = s:match("^(%a+)", i)
+		if word == "nil" then
+			return true, nil, i + 3
+		elseif word == "true" then
+			return true, true, i + 4
+		elseif word == "false" then
+			return true, false, i + 5
+		end
+		return false
 	end
 
-	local numStr, afterNum = s:match("^([%-%d%.eE+]+)()", i)
-	if numStr and numStr:match("^[%-]?%d") then
-		local n = tonumber(numStr)
-		if n then
-			return true, n, afterNum
+	if b == 45 or b == 46 or (b >= 48 and b <= 57) then
+		-- Hand-rolled byte scan instead of a pattern match: same maximal-munch
+		-- semantics as `s:match("^([%-%d%.eE+]+)()", i)` (an optional single
+		-- leading '-' must be followed immediately by a digit, then the rest
+		-- of the run in the same character class is consumed regardless of
+		-- validity -- tonumber() is what ultimately rejects e.g. "5-3" or a
+		-- lone "-"), just without invoking the pattern-matching VM per value.
+		local j = i
+		local nb = s:byte(j)
+		if nb == 45 then
+			j = j + 1
+			nb = s:byte(j)
 		end
+		if not (nb and nb >= 48 and nb <= 57) then
+			return false
+		end
+		while true do
+			local cb = s:byte(j)
+			if cb and (cb == 45 or cb == 46 or cb == 43 or cb == 101 or cb == 69 or (cb >= 48 and cb <= 57)) then
+				j = j + 1
+			else
+				break
+			end
+		end
+		local n = tonumber(s:sub(i, j - 1))
+		if n then
+			return true, n, j
+		end
+		return false
 	end
 
 	local c = s:sub(i, i)
@@ -240,11 +281,8 @@ local function parseSerializedValue(s, i, len, depth, budget)
 	if c == "{" then
 		local t = {}
 		local arrayIndex = 1
-		i = i + 1
-		while i <= len and s:sub(i, i):match("%s") do
-			i = i + 1
-		end
-		if s:sub(i, i) == "}" then
+		i = skipWhitespace(s, i + 1, len)
+		if s:byte(i) == 125 then -- '}'
 			return true, t, i + 1
 		end
 
@@ -254,36 +292,23 @@ local function parseSerializedValue(s, i, len, depth, budget)
 			-- reappearing at this point (leading or repeated, e.g. "{,}" or
 			-- "{[1]=1,,[2]=2}") is malformed and must fall through to the
 			-- value parser to be rejected, not be silently swallowed.
-			while i <= len do
-				local ch = s:sub(i, i)
-				if ch:match("%s") then
-					i = i + 1
-				else
-					break
-				end
-			end
-			if s:sub(i, i) == "}" then
+			i = skipWhitespace(s, i, len)
+			if s:byte(i) == 125 then -- '}'
 				return true, t, i + 1
 			end
 
 			local key
-			if s:sub(i, i) == "[" then
+			if s:byte(i) == 91 then -- '['
 				local okKey, parsedKey, afterKey = parseSerializedValue(s, i + 1, len, depth + 1, budget)
 				if not okKey then
 					return false
 				end
-				i = afterKey
-				while i <= len and s:sub(i, i):match("%s") do
-					i = i + 1
-				end
-				if s:sub(i, i) ~= "]" then
+				i = skipWhitespace(s, afterKey, len)
+				if s:byte(i) ~= 93 then -- ']'
 					return false
 				end
-				i = i + 1
-				while i <= len and s:sub(i, i):match("%s") do
-					i = i + 1
-				end
-				if s:sub(i, i) ~= "=" then
+				i = skipWhitespace(s, i + 1, len)
+				if s:byte(i) ~= 61 then -- '='
 					return false
 				end
 				i = i + 1
@@ -296,23 +321,18 @@ local function parseSerializedValue(s, i, len, depth, budget)
 				arrayIndex = arrayIndex + 1
 			end
 
-			while i <= len and s:sub(i, i):match("%s") do
-				i = i + 1
-			end
+			i = skipWhitespace(s, i, len)
 			local okVal, val, afterVal = parseSerializedValue(s, i, len, depth + 1, budget)
 			if not okVal then
 				return false
 			end
 			t[key] = val
-			i = afterVal
+			i = skipWhitespace(s, afterVal, len)
 
-			while i <= len and s:sub(i, i):match("%s") do
-				i = i + 1
-			end
-			local nextCh = s:sub(i, i)
-			if nextCh == "}" then
+			local nextByte = s:byte(i)
+			if nextByte == 125 then -- '}'
 				return true, t, i + 1
-			elseif nextCh == "," then
+			elseif nextByte == 44 then -- ','
 				i = i + 1
 			else
 				return false
@@ -349,9 +369,7 @@ function table.unserialize(str)
 		return nil
 	end
 
-	while nextIndex <= len and str:sub(nextIndex, nextIndex):match("%s") do
-		nextIndex = nextIndex + 1
-	end
+	nextIndex = skipWhitespace(str, nextIndex, len)
 	if nextIndex ~= len + 1 then
 		return nil
 	end

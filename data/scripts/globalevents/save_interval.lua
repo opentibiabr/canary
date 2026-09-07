@@ -1,4 +1,3 @@
-local saveTimeStr = configManager.getString(configKeys.GLOBAL_SERVER_SAVE_TIME) or "00:00"
 local isSaveScheduled = false
 
 local function serverSave(interval)
@@ -14,39 +13,6 @@ local function serverSave(interval)
 	Webhook.sendMessage("Server save", message, WEBHOOK_COLOR_WARNING)
 end
 
-local function getTimeLeftMs(timeStr)
-	if type(timeStr) ~= "string" then
-		return nil
-	end
-
-	local hStr, mStr = timeStr:match("^(%d+):(%d+)$")
-	if not hStr or not mStr then
-		return nil
-	end
-
-	local h, m = tonumber(hStr), tonumber(mStr)
-	if not h or not m or h < 0 or h > 23 or m < 0 or m > 59 then
-		return nil
-	end
-
-	local nowTs = os.time()
-	local nowDate = os.date("*t", nowTs)
-	local saveTs = os.time({
-		year = nowDate.year,
-		month = nowDate.month,
-		day = nowDate.day,
-		hour = h,
-		min = m,
-		sec = 0,
-	})
-
-	if saveTs <= nowTs then
-		saveTs = saveTs + 24 * 60 * 60
-	end
-
-	return (saveTs - nowTs) * 1000
-end
-
 local save = GlobalEvent("save")
 
 function save.onTime(interval)
@@ -58,23 +24,18 @@ function save.onTime(interval)
 		return true
 	end
 
-	local WARNING = 60 * 1000
-	local timeLeft = getTimeLeftMs(saveTimeStr)
-
-	if not timeLeft or timeLeft > WARNING then
+	local warningDuration = 60 * 1000
+	if interval <= warningDuration then
+		serverSave(interval)
 		return true
 	end
 
-	if timeLeft <= 1000 then
-		serverSave(interval)
-	else
-		local secs = math.floor(timeLeft / 1000)
-		local msg = string.format("The server will save all accounts within %d seconds. " .. "You might lag or freeze for 5 seconds, please find a safe place.", secs)
-		Game.broadcastMessage(msg, MESSAGE_GAME_HIGHLIGHT)
-		logger.info(msg)
-		isSaveScheduled = true
-		addEvent(serverSave, timeLeft - 1000, interval)
-	end
+	local warningSeconds = math.floor(warningDuration / 1000)
+	local message = "The server will save all accounts within " .. warningSeconds .. " seconds. You might lag or freeze for 5 seconds, please find a safe place."
+	Game.broadcastMessage(message, MESSAGE_GAME_HIGHLIGHT)
+	logger.info(message)
+	isSaveScheduled = true
+	addEvent(serverSave, warningDuration, interval)
 
 	return true
 end

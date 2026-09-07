@@ -46,16 +46,7 @@ local function bench(name, serialized, iterations)
 	end, iterations)
 
 	local ratio = parserTime / loadstringTime
-	print(
-		string.format(
-			"%-42s %8d bytes  parser=%7.4fs  loadstring=%7.4fs  ratio=%.2fx",
-			name,
-			#serialized,
-			parserTime,
-			loadstringTime,
-			ratio
-		)
-	)
+	print(string.format("%-42s %8d bytes  parser=%7.4fs  loadstring=%7.4fs  ratio=%.2fx", name, #serialized, parserTime, loadstringTime, ratio))
 end
 
 local function buildNumericTable(n)
@@ -70,7 +61,7 @@ end
 local function buildStringTable(n)
 	local parts = { "{" }
 	for i = 1, n do
-		parts[#parts + 1] = '[' .. i .. ']="item_' .. i .. '",'
+		parts[#parts + 1] = "[" .. i .. ']="item_' .. i .. '",'
 	end
 	parts[#parts + 1] = "}"
 	return table.concat(parts)

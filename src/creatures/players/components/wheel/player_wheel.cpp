@@ -306,13 +306,15 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell area stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				for (auto grade = stage; grade > 0; --grade) {
-					if (spellTable.grade[grade].increase.area) {
-						g_logger().debug("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
+			if (spellTable.name != spellName || stage >= static_cast<uint8_t>(size)) {
+				continue;
+			}
 
-						return true;
-					}
+			for (auto grade = stage; grade > 0; --grade) {
+				if (spellTable.grade[grade].increase.area) {
+					g_logger().debug("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
+
+					return true;
 				}
 			}
 		}
@@ -325,12 +327,14 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell target stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				for (auto grade = stage; grade > 0; --grade) {
-					const auto additionalTarget = spellTable.grade[grade].increase.additionalTarget;
-					if (additionalTarget) {
-						return additionalTarget;
-					}
+			if (spellTable.name != spellName || stage >= static_cast<uint8_t>(size)) {
+				continue;
+			}
+
+			for (auto grade = stage; grade > 0; --grade) {
+				const auto additionalTarget = spellTable.grade[grade].increase.additionalTarget;
+				if (additionalTarget) {
+					return additionalTarget;
 				}
 			}
 		}
@@ -343,12 +347,14 @@ namespace {
 		for (const auto &spellTable : spellsTable) {
 			auto size = std::ssize(spellTable.grade);
 			g_logger().debug("spell duration stage {}, grade {}", stage, size);
-			if (spellTable.name == spellName && stage < static_cast<uint8_t>(size)) {
-				for (auto grade = stage; grade > 0; --grade) {
-					const auto duration = spellTable.grade[grade].increase.duration;
-					if (duration > 0) {
-						return duration;
-					}
+			if (spellTable.name != spellName || stage >= static_cast<uint8_t>(size)) {
+				continue;
+			}
+
+			for (auto grade = stage; grade > 0; --grade) {
+				const auto duration = spellTable.grade[grade].increase.duration;
+				if (duration > 0) {
+					return duration;
 				}
 			}
 		}

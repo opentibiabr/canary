@@ -107,6 +107,19 @@ npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye and enjoy your stay in Thais, |PLAYERNAME|.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "spell trainers" }, StdModule.say, { npcHandler = npcHandler, text = "Gregor, your trainer, can be found upstairs the knight arena. Walk east from this harbour, pass by the depot, crossroads and shops until you see a muddy arena. There go upstairs. I can mark it for you." })
+keywordHandler:addKeyword({ "world status" }, StdModule.say, { npcHandler = npcHandler, text = "If you'd like to know the status of this world just say the keyword for a world change." })
+keywordHandler:addKeyword({ "furniture" }, StdModule.say, { npcHandler = npcHandler, text = "Gamon is our furniture trader. His shop is in the north-eastern part of town." })
+keywordHandler:addKeyword({ "weapons" }, StdModule.say, { npcHandler = npcHandler, text = "You can buy weapons and armors at Sam's. Walk east from the harbour and pass by the depot until you reach the infamous crossroads, then turn north. Or go to Turvy in the north-eastern part of town." })
+keywordHandler:addKeyword({ "keyword" }, StdModule.say, { npcHandler = npcHandler, text = "Valid keywords are: Horestis, Mage Tower, Master's Voice, Swamp Fever, Thornfire, Twisted Waters, Awash, Steamship, Horses, Overhunting, Demon War, Sea Serpent, Deepling or Hive." })
+keywordHandler:addKeyword({ "change" }, StdModule.say, { npcHandler = npcHandler, text = "Valid keywords are: Horestis, Mage Tower, Master's Voice, Swamp Fever, Thornfire, Twisted Waters, Awash, Steamship, Horses, Overhunting, Demon War, Sea Serpent, Deepling or Hive." })
+keywordHandler:addKeyword({ "escort" }, StdModule.say, { npcHandler = npcHandler, text = "This service is only for newcomers below level 10. I think you can manage the way on your own! If you need marks on your map, let me know." })
+keywordHandler:addKeyword({ "tools" }, StdModule.say, { npcHandler = npcHandler, text = "General goods like ropes and shovels can be bought in Gorn's shop north of the temple." })
+keywordHandler:addKeyword({ "magic" }, StdModule.say, { npcHandler = npcHandler, text = "Magical equipment like runes and potions can be bought at Xodet's. Walk to the east from this harbour, pass by the depot and crossroads and you will eventually pass his shop. Or go to Topsy in the north-eastern part of town." })
+keywordHandler:addKeyword({ "gems" }, StdModule.say, { npcHandler = npcHandler, text = "Hanna buys and sells gems. Her shop is just to the right of the magic shop. Walk east from here and you can't miss it." })
+keywordHandler:addKeyword({ "food" }, StdModule.say, { npcHandler = npcHandler, text = "You could buy food at the McRonald's farm in the eastern part of town or at Frodo's tavern, north of the temple." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

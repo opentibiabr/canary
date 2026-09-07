@@ -245,6 +245,17 @@ npcHandler:setCallback(CALLBACK_REMOVE_INTERACTION, onReleaseFocus)
 
 npcHandler:setCallback(CALLBACK_GREET, greetCallback)
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "cledwyn" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, he's my cousin. He also collects rare tokens, but unlike me he's interested in silver tokens. Call this passion something of a family trait." })
+keywordHandler:addKeyword(
+	{ "family" },
+	StdModule.say,
+	{ npcHandler = npcHandler, text = "You might find my cousin Cledwyn downstairs on the main floor. We're all interested in rare tokens, always on the move to offer our services in exchange for these treasures. ... There's a kind of a competition on who's the most successful token hunter. If you should have any gold tokens with you, we could make a deal." }
+)
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "I'm Yana O'Reilly, bespoke smith and a token trader. It's a pleasure to meet you." })
+keywordHandler:addKeyword({ "yana" }, StdModule.say, { npcHandler = npcHandler, text = "Yes, that's my name. My mother chose it, it means prudence or cunningness in some old and almost forgotten Tibian language." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I'm collecting rare tokens made of metal or gemstones. At the moment, I'm interested in gold tokens. If you should happen to have some with you, I could exchange them for special weapons of different types." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, false)
 
 -- npcType registering the npcConfig table

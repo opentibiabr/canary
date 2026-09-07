@@ -112,6 +112,23 @@ end
 npcHandler:setMessage(MESSAGE_GREET, "Salutations, |PLAYERNAME| I guess you are here for the {horses}.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "minotaur" }, StdModule.say, { npcHandler = npcHandler, text = "Did you know that minotaurs ride giant bulls? It seems somewhat strange, like a human riding a cyclops." })
+keywordHandler:addKeyword({ "cyclops" }, StdModule.say, { npcHandler = npcHandler, text = "There is nothing big enough for a cyclops to ride." })
+keywordHandler:addKeyword({ "donkey" }, StdModule.say, { npcHandler = npcHandler, text = "Sorry, but the donkeys and the horses did not get along well with each other. So we sold all of the donkeys to the dwarfs." })
+keywordHandler:addKeyword({ "venore" }, StdModule.say, { npcHandler = npcHandler, text = "Venore is the heart of trade and commerce. Not even Thais can rival Venore in that field." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "Perhaps one day we will expand to Carlin. The women there will just love our ponies!" })
+keywordHandler:addKeyword({ "goblin" }, StdModule.say, { npcHandler = npcHandler, text = "As far as I know, the goblins ride all kinds of creepy things like lizards, centipedes, spiders and slugs. Most of those beasts can even walk on the ceilings of caverns and climb walls with ease!" })
+keywordHandler:addKeyword({ "mounts" }, StdModule.say, { npcHandler = npcHandler, text = "We loan mounts for a certain time. Those horses are easy to handle and loyal." })
+keywordHandler:addKeyword({ "dwarf" }, StdModule.say, { npcHandler = npcHandler, text = "Most dwarfs don't like riding at all. Though I heard one of their heroes is riding a ram, they usually use horses and donkeys as beasts of burden. Given their size it is not astounding that they prefer the smaller donkeys over the horses." })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "The city is the centre of the known world. It is almost as if everything else is just built around it!" })
+keywordHandler:addKeyword({ "elves" }, StdModule.say, { npcHandler = npcHandler, text = "I heard the elves ride every animal that roams the woods. From wolves and bears to squirrels, the elves befriend and ride them all. Just amazing!" })
+keywordHandler:addKeyword({ "straw" }, StdModule.say, { npcHandler = npcHandler, text = "Be careful, the straw is highly inflammable." })
+keywordHandler:addKeyword({ "coach" }, StdModule.say, { npcHandler = npcHandler, text = "We order our coaches from the dwarfs. They deliver high quality work that rarely breaks. Therefore we rarely have any delays. That is if there are no bandits, or monsters, or bad weather, or the horses are on the loose and such." })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "If we could convince the king to use one of our coaches on his next visit to Venore, our business would get a fundamental boost!" })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I can rent you a horse for a day or I can transport you with a coach." })
+keywordHandler:addKeyword({ "orc" }, StdModule.say, { npcHandler = npcHandler, text = "Orcs ride wolves and sometimes boars, and even spiders, as far as one can trust the rumour mill." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

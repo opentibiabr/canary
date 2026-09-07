@@ -236,6 +236,28 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye, |PLAYERNAME|!")
 npcHandler:setMessage(MESSAGE_GREET, "Greetings, |PLAYERNAME|! Why do you disturb me?")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "One dragon is as bad as the other." })
+keywordHandler:addKeyword({ "ab'dendriel" }, StdModule.say, { npcHandler = npcHandler, text = "The elves are a curious lot. Even though they distrust humans, it's quite easy to steal from them. To scam them, however, is not that easy. ... Elven laws are also very cruel. They might kill you for a minor occurrence or throw you into Hellgate." })
+keywordHandler:addKeyword({ "liberty bay" }, StdModule.say, { npcHandler = npcHandler, text = "There are many opportunities in Liberty Bay. The poor are eager allies against the rich, and the latter are often VERY rich. Still, the laws are quite strict, and poor or not, the locals are somewhat suspicious towards strangers." })
+keywordHandler:addKeyword({ "ankrahmun" }, StdModule.say, { npcHandler = npcHandler, text = "Ankrahmun is great for business despite its cruel laws. It's far too tempting to get all those treasures into your fingers to let the opportunity pass." })
+keywordHandler:addKeyword({ "kazordoon" }, StdModule.say, { npcHandler = npcHandler, text = "The dwarfs aren't easy to deal with. Of course, they have many treasures. Still, dwarfs will hold a grudge against you for decades and they might dedicate their lives to hunt you. ... If an operation in Kazordoon is not getting you a huge profit, it's wiser to leave it." })
+keywordHandler:addKeyword({ "port hope" }, StdModule.say, { npcHandler = npcHandler, text = "The city is promising but still a bit underdeveloped. Give it some years to grow and then it's ripe for harvest. For now, we try not to disturb such profitable growth." })
+keywordHandler:addKeyword({ "svargrond" }, StdModule.say, { npcHandler = npcHandler, text = "Too far away to bother about and not worth the travel. The few people that emigrated from Carlin are not wealthy, neither are the barbarians that live there. ... Not to mention the violence with which they treat strangers that annoy them." })
+keywordHandler:addKeyword({ "darashia" }, StdModule.say, { npcHandler = npcHandler, text = "A neat little town for business. A bit too far away for my taste, but as long as you don't mess it up, you can earn a living there. Still, the people there have an odd philosophy, so you might need to adjust your practices somewhat." })
+keywordHandler:addKeyword({ "disturb" }, StdModule.say, { npcHandler = npcHandler, text = "My job, uh... what should I say... well, no need to invent something, I guess. I'm the leader of the thieves guild." })
+keywordHandler:addKeyword({ "carlin" }, StdModule.say, { npcHandler = npcHandler, text = "We have hardly any business in Carlin. The laws are quite harsh and the city guard in the hands of an overzealous family which makes bribery complicated. ... With the exception of some alcohol smuggle, there is little to be gained there. And even there you have to deal with nasty competitors." })
+keywordHandler:addKeyword({ "fibula" }, StdModule.say, { npcHandler = npcHandler, text = "A backwater town, but useful as hiding place when you are wanted for something." })
+keywordHandler:addKeyword({ "oswald" }, StdModule.say, { npcHandler = npcHandler, text = "Oswald? He lives near the crossroads." })
+keywordHandler:addKeyword({ "venore" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "Venore can be a gold mine but if you aren't careful, you might end up dead in the swamp. There are people in Venore that don't like it if their terrain is trespassed. ... If you steal from the wrong guys, you're dead. If you scam the wrong person, you're dead. If you leave an unfavourable impression on the wrong person, you're dead. ... Well, I guess you got the idea.",
+})
+keywordHandler:addKeyword({ "edron" }, StdModule.say, { npcHandler = npcHandler, text = "Edron is peaceful and many people there live in opulence. So now and then it might be profitable to pay Edron a visit. On the other hand, it's a rather small town and word about your trickeries might spread faster than you'd appreciate." })
+keywordHandler:addKeyword({ "thais" }, StdModule.say, { npcHandler = npcHandler, text = "Isn't this a nasty little place? All that fools, the yelling, the backstabbing, the swindle. I just love it." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "They call me Dorian." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "My job, uh... what should I say... well, no need to invent something, I guess. I'm the leader of the thieves guild." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

@@ -97,6 +97,17 @@ keywordHandler:addAliasKeyword({ "wisdom" })
 
 npcHandler:setMessage(MESSAGE_GREET, "Welcome, pilgrim. How may I {help} you? Are you in need of {healing}?")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "sacred places" }, StdModule.say, { npcHandler = npcHandler, text = "Just ask in which of the five blessings you are interested in." })
+keywordHandler:addKeyword({ "enhanced" }, StdModule.say, {
+	npcHandler = npcHandler,
+	text = "It is said that one enhanced blessing, the 'heart of the mountain', has been lost in the icy wastes of Svargrond. Find a nomad far to the west of these barren lands, hiding in the cold there, slightly above ground. ... It is also said that a mysterious djinn, bound to an existence of slavery, lies buried somewhere beneath the northern Tiquanda jungle. I cannot confirm whether this tale is true but if you find him, you shall also find the 'blood of the mountain'.",
+})
+keywordHandler:addKeyword({ "pilgrim" }, StdModule.say, { npcHandler = npcHandler, text = "I am here to provide one of the five blessings." })
+keywordHandler:addKeyword({ "ashes" }, StdModule.say, { npcHandler = npcHandler, text = "Whenever you receive a lethal wound, your vital force is damaged and there is a chance that you lose some of your equipment. With every single of the five blessings you have, this damage and chance of loss will be reduced." })
+keywordHandler:addKeyword({ "name" }, StdModule.say, { npcHandler = npcHandler, text = "My name is Norf." })
+keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, text = "I am here to provide one of the five blessings." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

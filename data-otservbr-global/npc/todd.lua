@@ -87,6 +87,10 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Yes, goodbye |PLAYERNAME|, just leave m
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Silence at last.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "how are you" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, this headache, one of the beers Frodo served me must have been foul." })
+keywordHandler:addKeyword({ "smuggler" }, StdModule.say, { npcHandler = npcHandler, text = "I am a honest person and don't like to be insulted!" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

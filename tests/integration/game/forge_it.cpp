@@ -304,7 +304,7 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierViaGameFlowTransfersHigherTier
 	const auto* classification = fixture.getClassification();
 	ASSERT_NE(nullptr, classification);
 	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
-	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);
+	const auto transferGoldCost = fixture.fusionCostForTier(transferFromTier);
 	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
 
 	setPlayerResources(dustCost, transferGoldCost + 7);
@@ -426,7 +426,7 @@ TEST_F(ForgeIntegrationTest, ForgeTransferItemTierWithIdenticalItemIdUsesDistinc
 	const auto* classification = fixture.getClassification();
 	ASSERT_NE(nullptr, classification);
 	const auto transferCoreCost = classification->tiers.contains(transferToTier) ? classification->tiers.at(transferToTier).corePrice : 0;
-	const auto transferGoldCost = fixture.fusionCostForTier(transferToTier);
+	const auto transferGoldCost = fixture.fusionCostForTier(transferFromTier);
 	const uint64_t dustCost = g_configManager().getNumber(FORGE_TRANSFER_DUST_COST);
 
 	setPlayerResources(dustCost, transferGoldCost + 7);

@@ -7315,16 +7315,20 @@ void ProtocolGame::sendOpenForge() {
 
 			// Total count of item (receiver of tier)
 			msg.add<uint16_t>(receiveTierTotalItemCount);
-			if (receiveTierTotalItemCount > 0) {
-				for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
-					// Let's access the itemType to check the item's (receiver of tier) classification level
-					const ItemType &receiveType = Item::items[receiveItemId];
-					if (donorType.upgradeClassification == receiveType.upgradeClassification) {
-						for (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
-							msg.add<uint16_t>(receiveItemId);
-							msg.add<uint16_t>(receiveItemCount);
-						}
-					}
+			if (receiveTierTotalItemCount == 0) {
+				continue;
+			}
+
+			for (const auto &[receiveItemId, receiveTierAndCountMap] : receiveTierItemMap) {
+				// Let's access the itemType to check the item's (receiver of tier) classification level
+				const ItemType &receiveType = Item::items[receiveItemId];
+				if (donorType.upgradeClassification != receiveType.upgradeClassification) {
+					continue;
+				}
+
+				for (const auto &[receiveItemTier, receiveItemCount] : receiveTierAndCountMap) {
+					msg.add<uint16_t>(receiveItemId);
+					msg.add<uint16_t>(receiveItemCount);
 				}
 			}
 		}

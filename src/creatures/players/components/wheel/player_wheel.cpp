@@ -1247,6 +1247,16 @@ void PlayerWheel::destroyGem(uint16_t index) {
 	}
 
 	m_destroyedGems.emplace_back(gem);
+	gem.remove(gemsKV());
+
+	for (const auto affinity : magic_enum::enum_values<WheelGemAffinity_t>()) {
+		auto &activeGem = m_activeGems[static_cast<uint8_t>(affinity)];
+		if (activeGem && activeGem.uuid == gem.uuid) {
+			activeGem = emptyGem;
+			gemsKV()->scoped("active")->remove(std::string(magic_enum::enum_name(affinity)));
+		}
+	}
+
 	m_revealedGems.erase(m_revealedGems.begin() + index);
 
 	const auto totalLesserFragment = m_player.getItemTypeCount(ITEM_LESSER_FRAGMENT) + m_player.getStashItemCount(ITEM_LESSER_FRAGMENT);

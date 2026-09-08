@@ -40,7 +40,7 @@
             Value="$(VcpkgRoot)"
             Prefix="false" />
     <SetEnv Name="PATH"
-            Value="$(CanaryVcpkgDependencyCMakeDirectory)"
+            Value="$(CanaryVcpkgDependencyCMakeDirectory);"
             Prefix="true" />
   </Target>
 

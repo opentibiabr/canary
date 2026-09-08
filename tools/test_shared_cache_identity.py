@@ -9,14 +9,39 @@ import shutil
 import subprocess
 import tempfile
 import unittest
+import xml.etree.ElementTree as ElementTree
 
 
-MODULE = Path(__file__).resolve().parents[1] / "cmake/SharedBuildCache.cmake"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+MODULE = PROJECT_ROOT / "cmake/SharedBuildCache.cmake"
+SOLUTION_TARGETS = tuple(
+    PROJECT_ROOT / directory / "SharedVcpkgCache.targets"
+    for directory in ("vcproj", "vc18", "vc17")
+    if (PROJECT_ROOT / directory / "SharedVcpkgCache.targets").is_file()
+)
 CMAKE = shutil.which("cmake")
 GIT = shutil.which("git")
 
 
 class SharedCacheIdentity(unittest.TestCase):
+    def test_solution_path_prefix_preserves_search_separator(self):
+        self.assertTrue(SOLUTION_TARGETS, "No maintained Solution bridge target found")
+        for target in SOLUTION_TARGETS:
+            with self.subTest(target=target):
+                root = ElementTree.parse(target).getroot()
+                path_tasks = [
+                    element
+                    for element in root.iter()
+                    if element.tag.rsplit("}", 1)[-1] == "SetEnv"
+                    and element.attrib.get("Name") == "PATH"
+                ]
+                self.assertEqual(len(path_tasks), 1)
+                self.assertEqual(path_tasks[0].attrib.get("Prefix"), "true")
+                self.assertEqual(
+                    path_tasks[0].attrib.get("Value"),
+                    "$(CanaryVcpkgDependencyCMakeDirectory);",
+                )
+
     @classmethod
     def setUpClass(cls):
         missing = [

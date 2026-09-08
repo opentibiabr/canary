@@ -312,7 +312,7 @@ namespace {
 
 			for (auto grade = stage; grade > 0; --grade) {
 				if (spellTable.grade[grade].increase.area) {
-					g_logger().debug("[{}] spell with name {}, and stage {} has increase area", __FUNCTION__, spellName, stage);
+					g_logger().debug("[{}] spell with name {}, stage {}, and grade {} has increase area", __FUNCTION__, spellName, stage, grade);
 
 					return true;
 				}

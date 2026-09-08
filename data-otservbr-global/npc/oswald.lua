@@ -126,6 +126,22 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Finally!")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye, and don't come back too soon.")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "how are you" }, StdModule.say, { npcHandler = npcHandler, text = "If there weren't so many people harassing me, life would be great." })
+keywordHandler:addKeyword({ "harassing" }, StdModule.say, { npcHandler = npcHandler, text = "You don't need not ask me about that, you are perfect in it." })
+keywordHandler:addKeyword({ "rebellion" }, StdModule.say, { npcHandler = npcHandler, text = "There are people who talk about a rebellion against King Tibianus." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "Eclesius... Eclesius... I think they say about him that he accidentally turned his assistant into a frog. So you better pay attention!" })
+keywordHandler:addKeyword({ "tyrant" }, StdModule.say, { npcHandler = npcHandler, text = "If there weren't so many people harassing me, life would be great." })
+keywordHandler:addKeyword({ "gossip" }, StdModule.say, { npcHandler = npcHandler, text = "You know a rumour? TELL ME! TELL ME! TELL ME!" })
+keywordHandler:addKeyword({ "marvik" }, StdModule.say, { npcHandler = npcHandler, text = "Who knows what this old man is up to in his hideout when no one is watching?" })
+keywordHandler:addKeyword({ "sewer" }, StdModule.say, { npcHandler = npcHandler, text = "Our sewer system is very modern, but crowded with rats and wannabe heroes." })
+keywordHandler:addKeyword({ "power" }, StdModule.say, { npcHandler = npcHandler, text = "There are people who talk about a rebellion against King Tibianus." })
+keywordHandler:addKeyword({ "spell" }, StdModule.say, { npcHandler = npcHandler, text = "I heard about a sorcerer who was toasted by a misfired spell of himself." })
+keywordHandler:addKeyword({ "aruda" }, StdModule.say, { npcHandler = npcHandler, text = "She's a little witch, trust me. She used to be the girlfriend of this evil Partos some time ago." })
+keywordHandler:addKeyword({ "lynda" }, StdModule.say, { npcHandler = npcHandler, text = "Sweet as honey, but cold as a fish. The only thing that can soften her heart is this awfully expensive Venorean ice cream." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "You know a rumour? TELL ME! TELL ME! TELL ME!" })
+keywordHandler:addKeyword({ "mud" }, StdModule.say, { npcHandler = npcHandler, text = "I heard Sam dated a female mud-wrestler once." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

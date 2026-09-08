@@ -113,6 +113,22 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye.")
 npcHandler:setMessage(MESSAGE_SENDTRADE, "Of course, just browse through my wares. {Footballs} have to be purchased separately.")
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "harkath bloodblade" }, StdModule.say, { npcHandler = npcHandler, text = "I hardly know him." })
+keywordHandler:addKeyword({ "the first dragon" }, StdModule.say, { npcHandler = npcHandler, text = "It's told that some hero killed him and absorbed his power." })
+keywordHandler:addKeyword({ "ammunition" }, StdModule.say, { npcHandler = npcHandler, text = "Galuna sells them now in her own shop. Go and ask her about that." })
+keywordHandler:addKeyword({ "crossbow" }, StdModule.say, { npcHandler = npcHandler, text = "Galuna sells them now in her own shop. Go and ask her about that." })
+keywordHandler:addKeyword({ "eclesius" }, StdModule.say, { npcHandler = npcHandler, text = "I sometimes see him from afar, but he never makes it as far as my store, usually stops at Frodo's hut." })
+keywordHandler:addKeyword({ "general" }, StdModule.say, { npcHandler = npcHandler, text = "I don't like titles." })
+keywordHandler:addKeyword({ "galuna" }, StdModule.say, { npcHandler = npcHandler, text = "In the past she delivered all the bows and arrows to me. She has now her own shop at the paladin guild." })
+keywordHandler:addKeyword({ "arrow" }, StdModule.say, { npcHandler = npcHandler, text = "Galuna sells them now in her own shop. Go and ask her about that." })
+keywordHandler:addKeyword({ "fluid" }, StdModule.say, { npcHandler = npcHandler, text = "Find the magic shop." })
+keywordHandler:addKeyword({ "lugri" }, StdModule.say, { npcHandler = npcHandler, text = "Never heard that name." })
+keywordHandler:addKeyword({ "news" }, StdModule.say, { npcHandler = npcHandler, text = "Taxes will increase soon, so buy as much as you can right now." })
+keywordHandler:addKeyword({ "bolt" }, StdModule.say, { npcHandler = npcHandler, text = "Galuna sells them now in her own shop. Go and ask her about that." })
+keywordHandler:addKeyword({ "army" }, StdModule.say, { npcHandler = npcHandler, text = "Armies are too hierarchical for my taste." })
+keywordHandler:addKeyword({ "bow" }, StdModule.say, { npcHandler = npcHandler, text = "Galuna sells them now in her own shop. Go and ask her about that." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

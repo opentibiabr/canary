@@ -121,6 +121,9 @@ npcHandler:setMessage(MESSAGE_GREET, "Welcome on board, |PLAYERNAME|. Where can 
 npcHandler:setMessage(MESSAGE_FAREWELL, "Good bye. Recommend us if you were satisfied with our service.")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Good bye then.")
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "inquisition" }, StdModule.say, { npcHandler = npcHandler, text = "A direct edict from the honorable Henricus orders me to give passage to all potential recruits for a dangerous mission on an island to the north-east." })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

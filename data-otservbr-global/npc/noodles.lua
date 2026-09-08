@@ -109,6 +109,20 @@ npcHandler:setMessage(MESSAGE_FAREWELL, "Woof! <wiggle>")
 npcHandler:setMessage(MESSAGE_WALKAWAY, "Woof! <wiggle>")
 
 npcHandler:setCallback(CALLBACK_MESSAGE_DEFAULT, creatureSayCallback)
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "sniff banana" }, StdModule.say, { npcHandler = npcHandler, text = "Woof!" })
+keywordHandler:addKeyword({ "sniff cheese" }, StdModule.say, { npcHandler = npcHandler, text = "Woof!" })
+keywordHandler:addKeyword({ "how are you" }, StdModule.say, { npcHandler = npcHandler, text = "Wooooof! <wiggle> <wiggle> <wiggle>" })
+keywordHandler:addKeyword({ "ferumbras" }, StdModule.say, { npcHandler = npcHandler, text = "Meeep! Meeep!" })
+keywordHandler:addKeyword({ "sniff fur" }, StdModule.say, { npcHandler = npcHandler, text = "Woof!" })
+keywordHandler:addKeyword({ "tibianus" }, StdModule.say, { npcHandler = npcHandler, text = "Wooooof! <wiggle> <wiggle> <wiggle>" })
+keywordHandler:addKeyword({ "kingsday" }, StdModule.say, { npcHandler = npcHandler, text = "Wooooof!" })
+keywordHandler:addKeyword({ "eloise" }, StdModule.say, { npcHandler = npcHandler, text = "GRRRRRRR! WOOOOOOF! WOOOOOF! WOOOOOF!" })
+keywordHandler:addKeyword({ "queen" }, StdModule.say, { npcHandler = npcHandler, text = "GRRRRRRR! WOOOOOOF! WOOOOOF! WOOOOOF!" })
+keywordHandler:addKeyword({ "king" }, StdModule.say, { npcHandler = npcHandler, text = "Wooooof! <wiggle> <wiggle> <wiggle>" })
+keywordHandler:addKeyword({ "cat" }, StdModule.say, { npcHandler = npcHandler, text = "GRRRRRRR! WOOOOOOF! WOOOOOF! WOOOOOF!" })
+keywordHandler:addKeyword({ "go" }, StdModule.say, { npcHandler = npcHandler, text = "Woof! Woof!" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 -- npcType registering the npcConfig table

@@ -113,6 +113,11 @@ keywordHandler:addKeyword({ "job" }, StdModule.say, { npcHandler = npcHandler, t
 keywordHandler:addKeyword({ "sam" }, StdModule.say, { npcHandler = npcHandler, text = "I heard rumours he has some special offers for customers who know to ask for the correct things." })
 keywordHandler:addKeyword({ "rug" }, StdModule.say, { npcHandler = npcHandler, text = "Oh, silly me! Rugs are out of stock at the moment! But we expect a new shipment anytime. Just watch out for the next update!... Of our inventory I mean." })
 
+-- Dialogue keywords the NPC answers on the official server
+keywordHandler:addKeyword({ "topsy" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, those twins. Strange people they are. Oh, they are great to work with, of course. Excellent quality, competetive prices! But well... they give me the creeps!" })
+keywordHandler:addKeyword({ "turvy" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, those twins. Strange people they are. Oh, they are great to work with, of course. Excellent quality, competetive prices! But well... they give me the creeps!" })
+keywordHandler:addKeyword({ "twins" }, StdModule.say, { npcHandler = npcHandler, text = "Ah, those twins. Strange people they are. Oh, they are great to work with, of course. Excellent quality, competetive prices! But well... they give me the creeps!" })
+
 npcHandler:addModule(FocusModule:new(), npcConfig.name, true, true, true)
 
 npcConfig.shop = {

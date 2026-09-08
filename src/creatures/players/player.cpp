@@ -11556,6 +11556,11 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
+	if (!convergence && donorItem->getTier() == 0) {
+		g_logger().error("[{}] Player {} tried to transfer a tier-0 donor item", __FUNCTION__, getName());
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
 
 	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0, donorItem);
 	if (!receiveItem) {

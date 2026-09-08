@@ -92,7 +92,7 @@ jobs:
             ghcr.io/${{ steps.repo_lower.outputs.value }}:latest
             ghcr.io/${{ steps.repo_lower.outputs.value }}:${{ steps.gitversion.outputs.semVer }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-to: type=gha,mode=max,ignore-error=true
 
       - name: Build and export (PR)
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'
@@ -111,7 +111,6 @@ jobs:
           tags: |
             ghcr.io/${{ steps.repo_lower.outputs.value }}:pr
           cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Validate Docker image (PR)
         if: github.event_name != 'push' || github.ref != 'refs/heads/main'

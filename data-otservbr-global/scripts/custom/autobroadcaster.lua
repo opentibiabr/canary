@@ -31,7 +31,7 @@ function autoBroadcast.onThink(interval, lastExecution)
     currentMessageIndex = math.random(#messages)
     -- Envia a mensagem atual para todos os jogadores
     for _, player in ipairs(players) do
-        player:sendColoredMessage(messages[currentMessageIndex], MESSAGE_EVENT_ADVANCE)
+        player:sendColoredMessage(messages[currentMessageIndex])
     end
 
     return true

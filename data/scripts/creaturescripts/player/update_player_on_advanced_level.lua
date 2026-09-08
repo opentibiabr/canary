@@ -25,7 +25,11 @@ local function scheduleAdvancedPlayerSave(player)
 	end
 
 	pendingAdvanceSaves[playerId] = playerGuid
-	addEvent(saveAdvancedPlayer, advanceSaveDelay, playerId, playerGuid)
+	local eventId = addEvent(saveAdvancedPlayer, advanceSaveDelay, playerId, playerGuid)
+	if not eventId then
+		pendingAdvanceSaves[playerId] = nil
+		player:save()
+	end
 end
 
 function updatePlayerOnAdvancedLevel.onAdvance(player, skill, oldLevel, newLevel)

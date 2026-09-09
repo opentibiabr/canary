@@ -10,6 +10,7 @@
 #include "game/scheduling/monster_compute_service.hpp"
 
 #include "lib/di/container.hpp"
+#include "lib/thread/thread_pool.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
@@ -82,6 +83,7 @@ void MonsterComputeService::start(MonsterComputeConfig config) {
 		workers.reserve(workerCount);
 		for (size_t index = 0; index < workerCount; ++index) {
 			workers.emplace_back([this](std::stop_token stopToken) {
+				ThreadPool::setCurrentThreadName("canary-ai");
 				workerLoop(stopToken);
 			});
 		}

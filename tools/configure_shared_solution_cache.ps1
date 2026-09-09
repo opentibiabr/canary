@@ -176,10 +176,68 @@ function Import-VisualStudioEnvironment {
         throw "Visual Studio developer environment was not found: $developerCommand"
     }
 
-    $environmentLines = & cmd.exe /d /s /c "`"$developerCommand`" -no_logo -arch=x64 -host_arch=x64 && set"
-    if ($LASTEXITCODE -ne 0) {
-        throw "Visual Studio developer environment initialization failed with exit code $LASTEXITCODE."
+    # Validation can run below a different Visual Studio developer shell (for
+    # example, the IDE that owns MSBuild). VsDevCmd treats that inherited shell
+    # as already initialized and otherwise leaves its compiler first on PATH.
+    # Resolve the pinned vcpkg toolchain from the pre-shell environment instead.
+    $developerEnvironmentPattern =
+        '^(?:__VSCMD|VSCMD_|CommandPromptType$|DevEnvDir$|ExtensionSdkDir$|' +
+        'Framework|INCLUDE$|LIB$|LIBPATH$|NETFXSDKDir$|UCRT|UniversalCRT|' +
+        'VC(?!PKG)|VS|VisualStudio|WindowsLibPath$|WindowsSDK|WindowsSdk)'
+    $originalDeveloperEnvironment = [ordered]@{}
+    foreach ($environmentEntry in Get-ChildItem Env:) {
+        if ($environmentEntry.Name -match $developerEnvironmentPattern) {
+            $originalDeveloperEnvironment[$environmentEntry.Name] =
+                $environmentEntry.Value
+        }
     }
+    $originalPath = [Environment]::GetEnvironmentVariable("PATH", "Process")
+    $cleanPath = [Environment]::GetEnvironmentVariable(
+        "__VSCMD_PREINIT_PATH",
+        "Process"
+    )
+    if ([string]::IsNullOrWhiteSpace($cleanPath)) {
+        $cleanPath = $originalPath
+    }
+
+    $environmentLines = $null
+    $initializationExitCode = 1
+    try {
+        foreach ($environmentName in $originalDeveloperEnvironment.Keys) {
+            [Environment]::SetEnvironmentVariable(
+                $environmentName,
+                $null,
+                "Process"
+            )
+        }
+        [Environment]::SetEnvironmentVariable("PATH", $cleanPath, "Process")
+        $environmentLines = & cmd.exe /d /s /c "`"$developerCommand`" -no_logo -arch=x64 -host_arch=x64 && set"
+        $initializationExitCode = $LASTEXITCODE
+    } finally {
+        [Environment]::SetEnvironmentVariable("PATH", $originalPath, "Process")
+        foreach ($environmentEntry in $originalDeveloperEnvironment.GetEnumerator()) {
+            [Environment]::SetEnvironmentVariable(
+                $environmentEntry.Key,
+                $environmentEntry.Value,
+                "Process"
+            )
+        }
+    }
+
+    if ($initializationExitCode -ne 0) {
+        throw "Visual Studio developer environment initialization failed with exit code $initializationExitCode."
+    }
+
+    foreach ($environmentEntry in Get-ChildItem Env:) {
+        if ($environmentEntry.Name -match $developerEnvironmentPattern) {
+            [Environment]::SetEnvironmentVariable(
+                $environmentEntry.Name,
+                $null,
+                "Process"
+            )
+        }
+    }
+    [Environment]::SetEnvironmentVariable("PATH", $cleanPath, "Process")
 
     foreach ($line in $environmentLines) {
         $separator = $line.IndexOf("=")
@@ -191,6 +249,17 @@ function Import-VisualStudioEnvironment {
             $line.Substring($separator + 1),
             "Process"
         )
+    }
+
+    $selectedVisualStudio = [Environment]::GetEnvironmentVariable(
+        "VSINSTALLDIR",
+        "Process"
+    )
+    if (
+        [string]::IsNullOrWhiteSpace($selectedVisualStudio) -or
+        (Get-FullPath -Path $selectedVisualStudio) -ne (Get-FullPath -Path $Root)
+    ) {
+        throw "Visual Studio developer environment did not select the pinned installation: $Root"
     }
 
     # VsDevCmd may select the Visual Studio bundled vcpkg. The repository contract
@@ -267,6 +336,7 @@ function Convert-ContractResult {
         "active",
         "schema",
         "implementation-sha256",
+        "dependency-contract",
         "dependency-fingerprint",
         "consumer-fingerprint",
         "installed-root",

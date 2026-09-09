@@ -21,8 +21,11 @@ param(
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
-$CurrentSharedCacheSchema = "v4"
-$KnownSharedCacheSchemas = @("v1", "v2", "v3", $CurrentSharedCacheSchema)
+$CurrentSharedCacheSchema = "v5"
+$KnownSharedCacheSchemas = @("v1", "v2", "v3", "v4", $CurrentSharedCacheSchema)
+$SharedCacheDependencyContracts = @{
+    "v5" = "vcpkg-inputs-v2"
+}
 
 if ($env:OS -ne "Windows_NT") {
     throw "This helper persists Windows user environment variables. Follow docs/development/shared-build-cache.md for non-Windows setup."
@@ -198,10 +201,29 @@ function Test-SharedFingerprintIdentity {
     } catch {
         return $false
     }
-    $identityLine = Get-Content -LiteralPath $identityPath |
+    $identityLines = @(Get-Content -LiteralPath $identityPath)
+    $identityLine = $identityLines |
         Where-Object { $_.StartsWith("fingerprint=", [StringComparison]::OrdinalIgnoreCase) } |
         Select-Object -First 1
-    return $identityLine -eq "fingerprint=$Fingerprint"
+    if ($identityLine -ne "fingerprint=$Fingerprint") {
+        return $false
+    }
+
+    if ($SharedCacheDependencyContracts.ContainsKey($Schema)) {
+        $expectedContract = $SharedCacheDependencyContracts[$Schema]
+        $schemaLine = $identityLines |
+            Where-Object { $_.StartsWith("schema=", [StringComparison]::OrdinalIgnoreCase) } |
+            Select-Object -First 1
+        $contractLine = $identityLines |
+            Where-Object { $_.StartsWith("dependency-contract=", [StringComparison]::OrdinalIgnoreCase) } |
+            Select-Object -First 1
+        return (
+            $schemaLine -eq "schema=$Schema" -and
+            $contractLine -eq "dependency-contract=$expectedContract"
+        )
+    }
+
+    return $true
 }
 
 function Set-UserEnvironmentValue {
@@ -1173,7 +1195,25 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
             $auditIncomplete = $true
             continue
         }
-        if ((Get-FullPath -Path $cmakeHomeDirectory) -ne $worktreeRoot) {
+        $cmakeSourceRoot = Get-FullPath -Path $cmakeHomeDirectory
+        $releaseWorkspaceRoot = Join-Path $worktreeRoot "build\release-workspaces"
+        $sourceMatchesWorktree = $cmakeSourceRoot -eq $worktreeRoot
+        $sourceIsOwnedReleaseWorkspace = (
+            (Test-PathWithin -Path $cmakeSourceRoot -Parent $releaseWorkspaceRoot) -and
+            (Test-Path -LiteralPath $cmakeSourceRoot -PathType Container)
+        )
+        if ($sourceIsOwnedReleaseWorkspace) {
+            try {
+                Assert-LocalFixedVolume `
+                    -Path $cmakeSourceRoot `
+                    -Description "The release workspace source directory"
+            } catch {
+                Write-Warning "Ignoring a CMake cache whose release workspace source cannot prove local physical ownership: $cachePath"
+                $auditIncomplete = $true
+                continue
+            }
+        }
+        if (-not $sourceMatchesWorktree -and -not $sourceIsOwnedReleaseWorkspace) {
             Write-Warning "Ignoring a CMake cache whose source directory does not match its registered worktree: $cachePath"
             $auditIncomplete = $true
             continue
@@ -1306,6 +1346,34 @@ $configureTrees = foreach ($worktreeRoot in $worktreeRoots) {
             Where-Object { $_.Attributes -band [IO.FileAttributes]::ReparsePoint }
     )
     foreach ($reparsePresetDirectory in $reparsePresetDirectories) {
+        try {
+            $resolvedTarget = $reparsePresetDirectory.ResolveLinkTarget($true)
+            if (
+                $null -eq $resolvedTarget -or
+                -not ($resolvedTarget.Attributes -band [IO.FileAttributes]::Directory)
+            ) {
+                throw "The reparse target is missing or is not a directory."
+            }
+            Assert-LocalFixedVolume `
+                -Path $resolvedTarget.FullName `
+                -Description "The non-configure build support directory"
+        } catch {
+            Write-Warning "A build directory reparse point has an unavailable or unsafe target: $($reparsePresetDirectory.FullName)"
+            $auditIncomplete = $true
+            continue
+        }
+
+        $configureMarkers = @(@(
+            (Join-Path $reparsePresetDirectory.FullName "CMakeCache.txt"),
+            (Join-Path $reparsePresetDirectory.FullName "build.ninja"),
+            (Join-Path $reparsePresetDirectory.FullName "canary-shared-cache.txt"),
+            (Join-Path $reparsePresetDirectory.FullName "CMakeFiles")
+        ) | Where-Object { Test-Path -LiteralPath $_ })
+        if ($configureMarkers.Count -eq 0) {
+            Write-Output "Ignoring a local non-configure build support reparse point: $($reparsePresetDirectory.FullName)"
+            continue
+        }
+
         Write-Warning "A build preset directory is a reparse point and cannot be audited safely: $($reparsePresetDirectory.FullName)"
         $auditIncomplete = $true
     }

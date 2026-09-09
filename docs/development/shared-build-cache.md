@@ -84,7 +84,7 @@ To reclaim only the disposable `buildtrees` and `packages` data for one known fi
 pwsh -File tools/configure_shared_build_cache.ps1 -CleanSharedFingerprintTransients <full-dependency-fingerprint>
 ```
 
-This narrower cleanup validates the full-hash identity metadata, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. A full dependency fingerprint must match exactly one schema metadata record: the schema and normalized module identity are part of the fingerprint, so an ambiguous match is unsafe and is not cleaned. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
+This narrower cleanup validates the full-hash identity metadata, including the recorded schema and dependency contract for versioned schemas, confines both targets to the verified local cache root, holds the registry operation lock and that installed tree's vcpkg lock, and refuses to run while build processes are active. It never removes the expanded installed tree, metadata, downloads, or binary cache, and it performs no setup side effects. Because it does not prune persistent data, it remains suitable when the global consumer audit is incomplete; pruning an installed fingerprint still requires the complete audit described below.
 
 ## Non-Windows setup
 
@@ -104,9 +104,9 @@ cmake --build --preset <build-preset>
 `cmake/SharedBuildCache.cmake` runs before the first `project()` call. When it can prove the complete installation contract, it selects:
 
 ```text
-<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
-<cache-root>/vcpkg-buildtrees/v4/<24-hex-dependency-fingerprint-prefix>
-<cache-root>/vcpkg-packages/v4/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-installed/v5/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-buildtrees/v5/<24-hex-dependency-fingerprint-prefix>
+<cache-root>/vcpkg-packages/v5/<24-hex-dependency-fingerprint-prefix>
 ```
 
 The first directory is persistent. The latter two are transient and are cleaned after successful dependency builds by the preset's vcpkg options.
@@ -195,7 +195,7 @@ When several maintained forks are intended to use the same dependency contract, 
 
 - keep `vcpkg.json`, the separate or embedded vcpkg configuration, registry metadata, triplets, features, and install options aligned;
 - include the filesystem registry's `versions/baseline.json` and per-port version database, not only `ports/<port>`;
-- keep the same normalized `cmake/SharedBuildCache.cmake` implementation and schema;
+- keep the same schema, dependency-contract version, and dependency-input semantics;
 - use the same vcpkg tool revision and compiler contract for configurations that are expected to converge;
 - when automation updates a baseline that is declared in both the manifest and `default-registry`, update both declarations in one change.
 
@@ -209,12 +209,12 @@ Another build system must keep its expanded installed tree local until it consum
 
 The dependency fingerprint contains inputs that can change the manifest installation or package ABI:
 
-- the normalized implementation hash and schema of `cmake/SharedBuildCache.cmake`;
+- the schema and explicit `CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT` version owned by `cmake/SharedBuildCache.cmake`;
 - the complete `vcpkg.json`, including either supported embedded configuration spelling, and optional separate `vcpkg-configuration.json`;
 - contents of filesystem registries declared by the configuration;
 - ordered contents of overlay port and overlay triplet directories declared by variables or configuration;
 - target and host triplet names and selected triplet files;
-- manifest features, feature flags, linkage settings, build type, and install options;
+- manifest features, feature flags, linkage settings, build type, and install options except the two staging-cleanup flags described below;
 - chainloaded toolchain contents;
 - host identity and the CMake executable/version used as a dependency tool;
 - C and C++ compiler executable hashes;
@@ -222,19 +222,25 @@ The dependency fingerprint contains inputs that can change the manifest installa
 - selected Visual Studio toolset, Windows SDK, and host/target architecture environment;
 - vcpkg executable, toolchain, repository revision, and relevant dirty state.
 
-The consumer fingerprint includes the dependency fingerprint and then adds either the CMake generator and CMake consumer identity, or the MSBuild executable, build configuration, link configuration, platform, toolset, and SDK. Consumer-specific values do not create duplicate installed trees when the dependency contract is identical, but they are validated to prevent a stale CMake cache or generated `.props` from silently changing build systems.
+The consumer fingerprint includes the dependency fingerprint, normalized resolver implementation hash, and complete install options, and then adds either the CMake generator and CMake consumer identity, or the MSBuild executable, build configuration, link configuration, platform, toolset, and SDK. Consumer-specific values do not create duplicate installed trees when the dependency contract is identical, but they are validated to prevent a stale CMake cache or generated `.props` from silently changing build systems.
 
 The module disables sharing when any required identity or the local-filesystem guarantee is ambiguous. Absolute worktree paths do not participate. Content paths inside manifests and configurations still participate through the files themselves, while referenced local trees are hashed using relative file names and contents.
 
-The module's normalized SHA-256 is part of schema `v4`. Copies in different forks must therefore be byte-equivalent after newline normalization to converge. A divergent implementation selects another fingerprint even if a maintainer forgets to bump the schema.
+Schema `v5` uses a versioned dependency-input contract (`vcpkg-inputs-v2`) instead of hashing the whole resolver into the installed-tree identity. Comments, diagnostics, audit changes, and consumer-only validation must not create another expanded copy of identical dependencies. The normalized implementation hash remains in the consumer fingerprint and diagnostic metadata; a helper change may require a fresh consumer configure or regenerated Solution props without changing the installed pool.
 
-Schema `v4` canonicalizes CRLF and LF only while signing `vcpkg.json` and an optional `vcpkg-configuration.json`: JSON treats those physical line endings identically, so a Git checkout setting cannot split an otherwise identical dependency pool. Files in registry and overlay trees remain byte-signatured; arbitrary ports, patches, and payloads can be line-ending-sensitive and must not be treated as interchangeable.
+Bump `CANARY_SHARED_CACHE_DEPENDENCY_CONTRACT` whenever input discovery, selection, interpretation, normalization, or compatibility rules change. It is a repository-owned literal, not a user override or an automatically changing source hash. Forks may share this version only when those semantics are identical and the resolver regression suite passes. Never copy the version merely to force reuse. This explicit boundary replaces the previous whole-module dependency hash; it does not remove manifest, registry, triplet, feature, compiler, SDK, or vcpkg checks.
+
+Only the exact `--clean-buildtrees-after-build` and `--clean-packages-after-build` flags are excluded from the dependency key: they remove staging data after installation, not installed libraries. They remain in the complete consumer contract and effective install command. Unknown options, arguments, and their order remain dependency inputs. See the [vcpkg install reference](https://learn.microsoft.com/en-us/vcpkg/commands/install).
+
+The shared pool metadata records its last resolver writer. CMake records `CANARY_VCPKG_CONSUMER_IMPLEMENTATION_SHA256` and `CANARY_VCPKG_DEPENDENCY_CONTRACT` in each consumer cache so audits do not confuse another compatible writer with a stale consumer. Consumer hash changes still fail closed and request refresh; the old installed path is not reassigned.
+
+Schema `v5` contract `vcpkg-inputs-v2` canonicalizes physical CRLF, LF, and standalone CR line endings only in the manifest and its JSON configuration. Registry and overlay payloads remain byte-signatured; arbitrary patches are not normalized.
 
 An existing configured preset never changes fingerprint or falls back in place. Cached package variables could retain paths into the old pool, so the module stops before `project()` and requests `cmake --fresh --preset <configure-preset>`.
 
 Fingerprint input files and trees are CMake configure dependencies. Adding, removing, or changing a manifest, registry, overlay, triplet, compiler, or toolchain input requests regeneration.
 
-The full dependency SHA-256 and non-local metadata are written below `<cache-root>/metadata/v4`. Directory names use the first 24 hexadecimal characters to limit Windows path length; the metadata lock verifies the full hash before a shortened directory is accepted.
+The full dependency SHA-256 and non-local metadata are written below `<cache-root>/metadata/v5`. Directory names use the first 24 hexadecimal characters to limit Windows path length; the metadata lock verifies the full hash before a shortened directory is accepted.
 
 ## Concurrency
 
@@ -256,7 +262,7 @@ Verify its `CMakeCache.txt`:
 CANARY_SHARED_VCPKG_ACTIVE:INTERNAL=true
 CANARY_VCPKG_DEPENDENCY_FINGERPRINT:INTERNAL=<full-dependency-fingerprint>
 CANARY_VCPKG_CONSUMER_FINGERPRINT:INTERNAL=<full-consumer-fingerprint>
-VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v4/<24-hex-dependency-fingerprint-prefix>
+VCPKG_INSTALLED_DIR:PATH=<cache-root>/vcpkg-installed/v5/<24-hex-dependency-fingerprint-prefix>
 ```
 
 Also confirm that `CMakeCache.txt` and `build.ninja` contain neither a legacy local installed path nor another global fingerprint. Complete a build against the refreshed preset before deleting the old local tree, then build again after deletion. The final invocation must not recreate the local installation.
@@ -275,7 +281,9 @@ Before pruning a fingerprint:
 
 An audit that reports an unregistered, unavailable, partially enumerated, or malformed repository/configure tree, a non-local/reparse root, or a missing/mismatched full-hash identity is incomplete and exits with failure. Do not prune any global fingerprint until every registered family is available and the audit succeeds.
 
-Schema migrations intentionally create a new pool. Keep the previous schema until every registered configured build has migrated, built successfully, and stopped referencing it. In particular, schema `v4` replaces schema `v3` to make manifest JSON signatures independent of Git's CRLF/LF checkout conversion; do not redirect or rename an existing v3 directory by hand.
+Protected release tooling may configure a physical source mirror below the registered worktree's `build/release-workspaces` directory. The audit accepts that narrow ownership model only when the complete source path exists on a local fixed volume without traversing a reparse point. Other source-directory mismatches remain invalid. A top-level reparse directory below `build` is treated as non-configure support data only when its resolved target is a safe local directory and it has none of the immediate CMake configure markers. Reparse directories containing a cache, Ninja file, shared-cache record, or `CMakeFiles` remain an incomplete-audit blocker.
+
+Schema migrations intentionally create a new pool. Schema `v5` is not an in-place rename of v1-v4. Keep old pools until every registered CMake/Solution consumer has migrated, built successfully, and stopped referencing them. Initial migration can temporarily increase disk usage, so verify free space before a fresh configure. Do not automatically delete, relabel, hardlink, or merge legacy installed trees based on age, package names, or identical status files. Downloads and the binary cache remain reusable. Source-only validation does not authorize migration or deletion.
 
 If one fingerprint becomes corrupt, stop all its consumers, remove only that exact directory, and reconfigure one existing preset. vcpkg recreates it from the binary cache. Do not delete downloads or the global binary cache during normal recovery.
 
@@ -291,8 +299,18 @@ Before changing build or dependency configuration, verify:
 - Solution intermediate/output directories, PCH/PDB files, and generated files remain local;
 - all vcpkg settings are finalized before `project()`;
 - new manifest, registry, overlay, triplet, compiler, and toolchain inputs participate in the fingerprint;
-- independent forks use the same module implementation before sharing a fingerprint;
+- independent forks use the same dependency-input semantics and contract version before sharing a fingerprint;
 - opt-out and fallback transients remain build-local;
 - no machine-local path appears in committed presets or documentation;
 - shared mutable state remains on a local filesystem outside every checkout;
 - the repository registry and cleanup audit cover every consumer before data is removed.
+
+## Source-only identity regression tests
+
+From the repository root, with Python 3.10+, Git, and CMake 3.19+ on PATH:
+
+```text
+python tools/test_shared_cache_identity.py -v
+```
+
+The suite invokes the real resolver only with `CANARY_SHARED_CACHE_READ_ONLY=ON` in CMake script mode. Compiler/vcpkg files are inert fixtures; no compiler, restore, package download, configure preset, or real cache is invoked. It covers helper-only edits, semantic contract changes, CMake/MSBuild consumers, cleanup flags, manifest/registry/overlay/triplet inputs, compiler/toolchain changes, checkout paths, and fail-closed legacy transitions. The dedicated CI workflow runs it without building the project. Run it before changing dependency-contract semantics; record any intentional contract-version bump in the same change.

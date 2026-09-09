@@ -59,6 +59,8 @@ environment variables, test account, and troubleshooting guide.
 
 ## Documentation
 
+- [Hardware sizing and capacity planning](docs/hardware-sizing.md). Measure
+  RAM and CPU, compare training and hunting workloads, and review capacity.
 - [Shared build cache for worktrees and forks](docs/development/shared-build-cache.md).
 - [Docker beginner quickstart](docs/docker/quickstart-for-beginners.md).
 - [Multiprotocol runtime profiles](docs/systems/multiprotocol.md). Covers the

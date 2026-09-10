@@ -11,6 +11,8 @@
 
 #include "BS_thread_pool.hpp"
 
+#include <string_view>
+
 class ThreadPool {
 public:
 	explicit ThreadPool(Logger &logger, const uint32_t threadCount = std::thread::hardware_concurrency());
@@ -44,6 +46,8 @@ public:
 		return pool->get_thread_count();
 	}
 
+	static void setCurrentThreadName(std::string_view name) noexcept;
+
 	void start() const;
 	void shutdown();
 
@@ -64,6 +68,8 @@ public:
 	}
 
 private:
+	static void setWorkerThreadName(std::size_t index) noexcept;
+
 	std::mutex mutex;
 	std::condition_variable condition;
 

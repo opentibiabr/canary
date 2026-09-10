@@ -131,6 +131,8 @@ void Dispatcher::init() {
 	auto futureStarted = dispatcherStarted->get_future();
 
 	threadPool.detach_task([this, dispatcherStarted]() mutable {
+		ThreadPool::setCurrentThreadName("canary-dispatch");
+
 		std::unique_lock asyncLock(dummyMutex);
 
 		dispatcherStarted->set_value();

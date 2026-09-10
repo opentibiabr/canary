@@ -45,9 +45,6 @@ void ProtocolLogin::getCharacterList(const std::string &accountDescriptor, const
 	if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
 		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
 		return;
-	} else if (!oldProtocol) {
-		disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
-		return;
 	}
 
 	if (account.load() != AccountErrors_t::Ok || !account.authenticate(password)) {
@@ -279,9 +276,6 @@ void ProtocolLogin::onRecvFirstMessage(NetworkMessage &msg) {
 	if (accountDescriptor == "@livestream") {
 		if (oldProtocol && !g_configManager().getBoolean(OLD_PROTOCOL)) {
 			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(false));
-			return;
-		} else if (!oldProtocol) {
-			disconnectClient(ProtocolProfileRegistry::getUnsupportedClientProtocolMessage(g_configManager().getBoolean(OLD_PROTOCOL)));
 			return;
 		}
 

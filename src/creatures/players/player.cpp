@@ -11556,10 +11556,20 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
+	if (!convergence && donorItem->getTier() == 0) {
+		g_logger().error("[{}] Player {} tried to transfer a tier-0 donor item", __FUNCTION__, getName());
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
 
 	const auto &receiveItem = getForgeItemFromId(receiveItemId, 0, donorItem);
 	if (!receiveItem) {
 		g_logger().error("[Log 2] Player with name {} failed to transfer item with id {}", getName(), receiveItemId);
+		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
+		return;
+	}
+	if (donorItem->getClassification() != receiveItem->getClassification()) {
+		g_logger().error("[{}] Player {} tried to transfer item classification {} to classification {}", __FUNCTION__, getName(), donorItem->getClassification(), receiveItem->getClassification());
 		sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 		return;
 	}
@@ -11581,15 +11591,17 @@ void Player::forgeTransferItemTier(ForgeAction_t actionType, uint16_t donorItemI
 			continue;
 		}
 		hasMatchingClassification = true;
-		const uint8_t toTier = convergence ? donorItem->getTier() : donorItem->getTier() - 1;
-		if (!itemClassification->tiers.contains(toTier)) {
-			g_logger().error("[{}] Failed to find tier {} for item {} in classification {}", __FUNCTION__, toTier, donorItem->getClassification(), itemClassification->id);
+		const uint8_t donorTier = donorItem->getTier();
+		const uint8_t toTier = convergence ? donorTier : donorTier - 1;
+		if (!itemClassification->tiers.contains(toTier) || !itemClassification->tiers.contains(donorTier)) {
+			g_logger().error("[{}] Failed to find donor tier {} or result tier {} for item {} in classification {}", __FUNCTION__, donorTier, toTier, donorItem->getClassification(), itemClassification->id);
 			sendForgeError(RETURNVALUE_CONTACTADMINISTRATOR);
 			return;
 		}
-		const auto &tierPrices = itemClassification->tiers.at(toTier);
-		cost = convergence ? tierPrices.convergenceTransferPrice : tierPrices.regularPrice;
-		coresAmount = tierPrices.corePrice;
+		const auto &resultTierPrices = itemClassification->tiers.at(toTier);
+		const auto &donorTierPrices = itemClassification->tiers.at(donorTier);
+		cost = convergence ? resultTierPrices.convergenceTransferPrice : donorTierPrices.regularPrice;
+		coresAmount = resultTierPrices.corePrice;
 		break;
 	}
 	if (!hasMatchingClassification) {

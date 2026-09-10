@@ -10753,7 +10753,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			return;
 		}
 
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
+		const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
 		if (depotLocker == nullptr) {
 			offerStatus << "Depot locker is nullptr for player " << player->getName();
 			return;
@@ -10791,7 +10791,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	// Send market window again for update item stats and avoid item clone
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 
 	// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
 	// The player may lose the item as it will have already been removed, but will not clone
@@ -10840,7 +10840,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
 		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
 		// Send market window again for update stats
-		player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter();
 	} else {
 		const ItemType &it = Item::items[offer.itemId];
 		if (it.id == 0) {
@@ -10875,7 +10875,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
 	// Send market window again for update stats
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 	// Exhausted for cancel offer in the market
 	player->updateUIExhausted();
 	g_saveManager().savePlayer(player);
@@ -10925,7 +10925,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
+		const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
 		if (depotLocker == nullptr) {
 			offerStatus << "Depot locker is nullptr";
 			return;
@@ -10964,7 +10964,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (!offerStatus.str().empty()) {
 			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
-			player->sendMarketEnter(player->getLastDepotId());
+			player->sendMarketEnter();
 			return;
 		}
 
@@ -11007,7 +11007,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			}
 			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
-			player->sendMarketEnter(player->getLastDepotId());
+			player->sendMarketEnter();
 			return;
 		}
 
@@ -11082,7 +11082,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	// Send market window again for update item stats and avoid item clone
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 
 	if (!offerStatus.str().empty()) {
 		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");

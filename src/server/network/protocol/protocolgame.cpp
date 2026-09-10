@@ -4425,7 +4425,7 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 		if (Item::items[itemId].upgradeClassification > 0) {
 			tier = msg.get<uint8_t>();
 		}
-		player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter();
 		g_game().playerBrowseMarket(player->getID(), itemId, tier);
 	} else {
 		g_game().playerBrowseMarket(player->getID(), browseId, 0);
@@ -6735,7 +6735,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMarketEnter(uint32_t depotId) {
+void ProtocolGame::sendMarketEnter() {
 	if (!player) {
 		return;
 	}
@@ -6754,7 +6754,7 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 
 	msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max())));
 
-	std::shared_ptr<DepotLocker> depotLocker = player->getDepotLocker(depotId);
+	const auto &depotLocker = player->getActiveDepotLocker();
 	if (!depotLocker) {
 		msg.add<uint16_t>(0x00);
 		writeToOutputBuffer(msg);

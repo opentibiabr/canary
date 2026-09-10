@@ -29,16 +29,18 @@ MarketPayload::LockerWriter::LockerWriter(NetworkMessage &message) :
 }
 
 MarketPayload::AddLockerResult MarketPayload::LockerWriter::add(const LockerEntry &entry) {
+	using enum MarketPayload::AddLockerResult;
+
 	if (finished || !initialized) {
-		return AddLockerResult::Finished;
+		return Finished;
 	}
 	if (recordCount == std::numeric_limits<uint16_t>::max()) {
-		return AddLockerResult::CountLimit;
+		return CountLimit;
 	}
 
 	const size_t recordSize = sizeof(uint16_t) + sizeof(uint16_t) + (entry.hasTier ? sizeof(uint8_t) : 0);
 	if (!msg.canAdd(recordSize)) {
-		return AddLockerResult::MessageFull;
+		return MessageFull;
 	}
 
 	msg.add<uint16_t>(entry.itemId);
@@ -47,7 +49,7 @@ MarketPayload::AddLockerResult MarketPayload::LockerWriter::add(const LockerEntr
 	}
 	writeLockerAmount(msg, entry.amount);
 	++recordCount;
-	return AddLockerResult::Added;
+	return Added;
 }
 
 void MarketPayload::LockerWriter::finish() {

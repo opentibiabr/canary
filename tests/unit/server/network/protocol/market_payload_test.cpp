@@ -79,6 +79,7 @@ TEST(MarketPayloadTest, StopsLockerSnapshotBeforeCapacityWithoutPartialRecords) 
 
 	auto result = MarketPayload::AddLockerResult::Added;
 	while ((result = writer.add(entry)) == MarketPayload::AddLockerResult::Added) {
+		// Fill the message until the next complete record no longer fits.
 	}
 	EXPECT_EQ(result, MarketPayload::AddLockerResult::MessageFull);
 	ASSERT_GT(writer.count(), 10000);
@@ -105,6 +106,7 @@ TEST(MarketPayloadTest, StopsTieredLockerSnapshotAtAnExactRecordBoundary) {
 
 	auto result = MarketPayload::AddLockerResult::Added;
 	while ((result = writer.add(entry)) == MarketPayload::AddLockerResult::Added) {
+		// Fill the message until the next complete record no longer fits.
 	}
 	EXPECT_EQ(result, MarketPayload::AddLockerResult::MessageFull);
 	ASSERT_GT(writer.count(), 10000);

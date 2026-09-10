@@ -10753,12 +10753,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			return;
 		}
 
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
-		if (depotLocker == nullptr) {
-			offerStatus << "Depot locker is nullptr for player " << player->getName();
-			return;
-		}
-
 		if (it.id == ITEM_STORE_COIN) {
 			auto [transferableCoins, result] = player->getAccount()->getCoins(CoinType::Transferable);
 
@@ -10770,6 +10764,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			// Do not register a transaction for coins creating an offer
 			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
 		} else {
+			const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
+			if (!depotLocker) {
+				offerStatus << "Depot locker is nullptr for player " << player->getName();
+				return;
+			}
+
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
 				return;
@@ -10925,10 +10925,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
-		if (depotLocker == nullptr) {
-			offerStatus << "Depot locker is nullptr";
-			return;
+		std::shared_ptr<DepotLocker> depotLocker;
+		if (it.id != ITEM_STORE_COIN) {
+			depotLocker = player->getActiveDepotLocker();
+			if (!depotLocker) {
+				offerStatus << "Depot locker is nullptr";
+				return;
+			}
 		}
 
 		const std::shared_ptr<Player> &buyerPlayer = getPlayerByGUID(offer.playerId, true);

@@ -29,6 +29,7 @@ private:
 	static int luaDoTargetCombatDispel(lua_State* L);
 	static int luaDoTargetCombatHealth(lua_State* L);
 	static int luaDoTargetCombatMana(lua_State* L);
+	static int luaFsCreateDirectories(lua_State* L);
 	static int luaGetDepotId(lua_State* L);
 	static int luaGetWaypointPositionByName(lua_State* L);
 	static int luaGetWorldLight(lua_State* L);

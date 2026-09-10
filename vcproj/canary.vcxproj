@@ -236,6 +236,7 @@
     <ClInclude Include="..\src\server\network\connection\connection.hpp" />
     <ClInclude Include="..\src\server\network\message\networkmessage.hpp" />
     <ClInclude Include="..\src\server\network\message\outputmessage.hpp" />
+    <ClInclude Include="..\src\server\network\protocol\market_payload.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol_profile.hpp" />
     <ClInclude Include="..\src\server\network\protocol\protocol_session_hint.hpp" />
@@ -454,6 +455,7 @@
     <ClCompile Include="..\src\server\network\connection\connection.cpp" />
     <ClCompile Include="..\src\server\network\message\networkmessage.cpp" />
     <ClCompile Include="..\src\server\network\message\outputmessage.cpp" />
+    <ClCompile Include="..\src\server\network\protocol\market_payload.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocol.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocol_profile.cpp" />
     <ClCompile Include="..\src\server\network\protocol\protocol_session_hint.cpp" />

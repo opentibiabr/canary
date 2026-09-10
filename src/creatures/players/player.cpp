@@ -2057,6 +2057,7 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 
 std::shared_ptr<DepotLocker> Player::activateDepotLocker(uint32_t depotId) {
 	if (!client) {
+		activeDepotLocker.reset();
 		return nullptr;
 	}
 
@@ -10351,7 +10352,8 @@ void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool al
 			return;
 		}
 
-		if (!item->isInsideDepot(true)) {
+		const bool itemIsInsideDepot = item->isInsideDepot(true);
+		if (!itemIsInsideDepot) {
 			// Stow items from player backpack
 			if (const auto &backpack = getBackpack()) {
 				totalItemsToStow += sendStowItems(item, backpack, itemDict, totalItemsToStow, maxItemsToStow);
@@ -10366,12 +10368,10 @@ void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool al
 		}
 
 		// Stow items from depot locker
-		if (const auto &depotLocker = getActiveDepotLocker()) {
+		if (const auto &depotLocker = getActiveDepotLocker(); depotLocker && itemIsInsideDepot) {
 			const auto &[itemVector, itemMap] = requestLockerItems(depotLocker);
 			for (const auto &lockerItem : itemVector) {
-				if (lockerItem && item->isInsideDepot(true)) {
-					totalItemsToStow += sendStowItems(item, lockerItem, itemDict, totalItemsToStow, maxItemsToStow);
-				}
+				totalItemsToStow += lockerItem ? sendStowItems(item, lockerItem, itemDict, totalItemsToStow, maxItemsToStow) : 0;
 			}
 		}
 	} else if (const auto &container = item->getContainer()) {

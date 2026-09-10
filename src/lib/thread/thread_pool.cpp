@@ -95,8 +95,9 @@ void ThreadPool::setWorkerThreadName(const std::size_t index) noexcept {
 	constexpr std::string_view workerPrefix = "canary-wrk-";
 	std::array<char, ThreadNameCapacity> threadName {};
 	const auto indexStart = std::copy_n(workerPrefix.begin(), workerPrefix.size(), threadName.begin());
+	const auto indexOffset = static_cast<std::size_t>(indexStart - threadName.begin());
 
-	const auto [nameEnd, error] = std::to_chars(indexStart, threadName.data() + threadName.size() - 1, index);
+	const auto [nameEnd, error] = std::to_chars(threadName.data() + indexOffset, threadName.data() + threadName.size() - 1, index);
 	if (error != std::errc {}) {
 		setCurrentThreadName("canary-wrk");
 		return;

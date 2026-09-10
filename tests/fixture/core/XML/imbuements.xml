@@ -6,4 +6,8 @@
 		<attribute key="description" value="Boosts distance." />
 		<attribute key="effect" type="skill" value="distance" bonus="3" />
 	</imbuement>
+	<imbuement name="Storage Precision" base="1" category="15" iconid="2" premium="0" storage="12345">
+		<attribute key="description" value="Requires its configured storage." />
+		<attribute key="effect" type="skill" value="distance" bonus="1" />
+	</imbuement>
 </imbuements>

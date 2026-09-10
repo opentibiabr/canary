@@ -1,2 +1,2 @@
 coreDirectory = "tests/fixture/core"
-toggleImbuementShrineStorage = false
+toggleImbuementShrineStorage = true

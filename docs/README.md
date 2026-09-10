@@ -17,6 +17,7 @@ references in the surrounding subdirectories:
 | [`operations.md`](operations.md)          | Deployment, monitoring, security, backups and production operations  |
 | [`hardware-sizing.md`](hardware-sizing.md) | RAM/CPU estimates, player activity and hardware capacity planning |
 | [`systems/content-reference-auditor.md`](systems/content-reference-auditor.md) | Profile-aware gameplay content and identifier auditing |
+| [`maps/scripted-teleports.md`](maps/scripted-teleports.md) | Quest portal admission, startup ownership and regression tests |
 
 ---
 

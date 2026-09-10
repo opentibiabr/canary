@@ -16,6 +16,27 @@ function CreateMapItem(tablename)
 end
 
 -- These functions load the action/unique tables on the map
+local function loadScriptedTeleport(tile, actionId)
+	local teleport = tile:getItemByType(ITEM_TYPE_TELEPORT)
+	if not teleport then
+		logger.error("[loadLuaMapAction] - Missing scripted teleport for action id {}, position {}", actionId, tile:getPosition():toString())
+		return
+	end
+
+	-- The movement script must authorize entry before any native teleport runs.
+	teleport:setDestination(Position(0, 0, 0))
+	local ground = tile:getGround()
+	if ground and ground:getActionId() == actionId then
+		ground:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
+	end
+	for _, item in ipairs(tile:getItems() or {}) do
+		if item ~= teleport and item:getActionId() == actionId then
+			item:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
+		end
+	end
+	teleport:setAttribute(ITEM_ATTRIBUTE_ACTIONID, actionId)
+end
+
 function loadLuaMapAction(tablename)
 	-- It load actions
 	for index, value in pairs(tablename) do
@@ -24,6 +45,11 @@ function loadLuaMapAction(tablename)
 			local item
 			-- Checks if the position is valid
 			if tile then
+				if value.scriptedTeleport then
+					loadScriptedTeleport(tile, index)
+					goto continue
+				end
+
 				-- Checks that you have no items created
 				if not value.itemId == false and tile:getItemCountById(value.itemId) == 0 then
 					logger.error("[loadLuaMapAction] - Wrong item id {} found", value.itemId)

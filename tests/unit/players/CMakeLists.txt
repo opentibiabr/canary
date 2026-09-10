@@ -1,6 +1,8 @@
 target_sources(
     canary_ut
-    PRIVATE player_depot_test.cpp player_item_batch_test.cpp reward_iteration_test.cpp
+    PRIVATE player_depot_test.cpp
+            player_item_batch_test.cpp
+            reward_iteration_test.cpp
 )
 
 add_subdirectory(components)

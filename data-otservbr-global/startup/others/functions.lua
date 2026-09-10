@@ -18,13 +18,6 @@ end
 -- These functions load the action/unique tables on the map
 local function loadScriptedTeleport(tile, actionId)
 	local teleport = tile:getItemByType(ITEM_TYPE_TELEPORT)
-	if not teleport then
-		logger.error("[loadLuaMapAction] - Missing scripted teleport for action id {}, position {}", actionId, tile:getPosition():toString())
-		return
-	end
-
-	-- The movement script must authorize entry before any native teleport runs.
-	teleport:setDestination(Position(0, 0, 0))
 	local ground = tile:getGround()
 	if ground and ground:getActionId() == actionId then
 		ground:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
@@ -34,6 +27,13 @@ local function loadScriptedTeleport(tile, actionId)
 			item:removeAttribute(ITEM_ATTRIBUTE_ACTIONID)
 		end
 	end
+	if not teleport then
+		logger.error("[loadLuaMapAction] - Missing scripted teleport for action id {}, position {}", actionId, tile:getPosition():toString())
+		return
+	end
+
+	-- The movement script must authorize entry before any native teleport runs.
+	teleport:setDestination(Position(0, 0, 0))
 	teleport:setAttribute(ITEM_ATTRIBUTE_ACTIONID, actionId)
 end
 

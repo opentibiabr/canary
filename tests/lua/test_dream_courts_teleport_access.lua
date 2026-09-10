@@ -258,6 +258,25 @@ test("missing scripted portal is diagnosed without assigning its ground", functi
 	assert(#errors == 1 and tile.ground:getActionId() == 0)
 end)
 
+test("cold startup removes stale quest actions when the portal is missing", function()
+	world, errors, effects = {}, {}, {}
+	day = "Thursday"
+	local tile = makeTile(scar, 14900)
+	table.insert(tile.items, makeItem(scar, 14901, 9001))
+	assert(tile:getItemByType(ITEM_TYPE_TELEPORT) == nil)
+	loadLuaMapAction(TeleportAction)
+	assert(#errors == 1)
+
+	local player = makePlayer()
+	player.storages[quest.DreamScar.Permission] = 1
+	local result, callbacks = enter(player, scar)
+	assert(result and callbacks == 0 and player.calls == 0, "missing portal must not trigger a quest teleport")
+	assert(player.position == scar and player.nativeMoves == 0 and #player.visited == 0)
+	assert(#effects == 0 and #player.messages == 0)
+	assert(tile.ground:getActionId() == 0 and tile.items[1]:getActionId() == 0)
+	assert(tile.items[2]:getActionId() == 9001)
+end)
+
 test("ordinary native portals keep their destination and explicit item binding", function()
 	initialize()
 	local position = Position(100, 100, 7)

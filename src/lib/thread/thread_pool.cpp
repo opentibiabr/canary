@@ -13,8 +13,11 @@
 #include "utils/tools.hpp"
 #include "lib/di/container.hpp"
 
-#include <cstdio>
 #include <csignal>
+
+#ifdef _WIN32
+	#include <Windows.h>
+#endif
 
 #ifdef __linux__
 	#include <pthread.h>
@@ -22,11 +25,9 @@
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
-	#include <iterator>
-
-	#ifdef _WIN32
-		#include <windows.h>
-	#endif
+	#include <array>
+	#include <charconv>
+	#include <system_error>
 #endif
 
 /**
@@ -39,6 +40,10 @@
 #ifndef DEFAULT_NUMBER_OF_THREADS
 	#define DEFAULT_NUMBER_OF_THREADS 4
 #endif
+
+namespace {
+	constexpr std::size_t ThreadNameCapacity = 16;
+}
 
 ThreadPool &ThreadPool::getInstance() {
 	return inject<ThreadPool>();
@@ -57,29 +62,28 @@ ThreadPool::ThreadPool(Logger &logger, uint32_t threadCount) :
 
 void ThreadPool::setCurrentThreadName(std::string_view name) noexcept {
 #if defined(__linux__) || defined(_WIN32)
-	char threadName[16] = {};
-	const auto length = std::min<std::size_t>(name.size(), sizeof(threadName) - 1);
-	for (std::size_t i = 0; i < length; ++i) {
-		threadName[i] = name[i];
-	}
+	std::array<char, ThreadNameCapacity> threadName {};
+	const auto length = std::min<std::size_t>(name.size(), threadName.size() - 1);
+	std::copy_n(name.begin(), length, threadName.begin());
 #endif
 
 #ifdef __linux__
-	(void)pthread_setname_np(pthread_self(), threadName);
+	(void)pthread_setname_np(pthread_self(), threadName.data());
 #elif defined(_WIN32)
 	using SetThreadDescriptionFunction = HRESULT(WINAPI*)(HANDLE, PCWSTR);
-	static const auto setThreadDescription = []() noexcept -> SetThreadDescriptionFunction {
+	static const auto setThreadDescription = []() noexcept {
 		// Runtime lookup also supports Windows 10 1607 and Windows Server 2016.
 		const auto kernelBase = GetModuleHandleW(L"KernelBase.dll");
-		return kernelBase ? reinterpret_cast<SetThreadDescriptionFunction>(GetProcAddress(kernelBase, "SetThreadDescription")) : nullptr;
+		const auto function = kernelBase ? GetProcAddress(kernelBase, "SetThreadDescription") : nullptr;
+		return function ? reinterpret_cast<SetThreadDescriptionFunction>(function) : nullptr; // NOSONAR: The Win32 API requires converting FARPROC to the typed function pointer.
 	}();
 	if (!setThreadDescription) {
 		return;
 	}
 
-	wchar_t wideName[16] = {};
-	if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, threadName, -1, wideName, static_cast<int>(std::size(wideName))) > 0) {
-		(void)setThreadDescription(GetCurrentThread(), wideName);
+	std::array<wchar_t, ThreadNameCapacity> wideName {};
+	if (MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, threadName.data(), -1, wideName.data(), static_cast<int>(wideName.size())) > 0) {
+		(void)setThreadDescription(GetCurrentThread(), wideName.data());
 	}
 #else
 	(void)name;
@@ -87,9 +91,17 @@ void ThreadPool::setCurrentThreadName(std::string_view name) noexcept {
 }
 
 void ThreadPool::setWorkerThreadName(const std::size_t index) noexcept {
-	char threadName[16] = {};
-	(void)std::snprintf(threadName, sizeof(threadName), "canary-wrk-%zu", index);
-	setCurrentThreadName(threadName);
+	constexpr std::string_view workerPrefix = "canary-wrk-";
+	std::array<char, ThreadNameCapacity> threadName {};
+	std::copy_n(workerPrefix.begin(), workerPrefix.size(), threadName.begin());
+
+	const auto [nameEnd, error] = std::to_chars(threadName.data() + workerPrefix.size(), threadName.data() + threadName.size() - 1, index);
+	if (error != std::errc {}) {
+		setCurrentThreadName("canary-wrk");
+		return;
+	}
+
+	setCurrentThreadName({ threadName.data(), static_cast<std::size_t>(nameEnd - threadName.data()) });
 }
 
 void ThreadPool::start() const {

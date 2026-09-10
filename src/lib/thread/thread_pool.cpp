@@ -64,7 +64,8 @@ void ThreadPool::setCurrentThreadName(std::string_view name) noexcept {
 #if defined(__linux__) || defined(_WIN32)
 	std::array<char, ThreadNameCapacity> threadName {};
 	const auto length = std::min<std::size_t>(name.size(), threadName.size() - 1);
-	std::copy_n(name.begin(), length, threadName.begin());
+	const auto threadNameEnd = std::copy_n(name.begin(), length, threadName.begin());
+	*threadNameEnd = '\0';
 #endif
 
 #ifdef __linux__
@@ -93,9 +94,9 @@ void ThreadPool::setCurrentThreadName(std::string_view name) noexcept {
 void ThreadPool::setWorkerThreadName(const std::size_t index) noexcept {
 	constexpr std::string_view workerPrefix = "canary-wrk-";
 	std::array<char, ThreadNameCapacity> threadName {};
-	std::copy_n(workerPrefix.begin(), workerPrefix.size(), threadName.begin());
+	const auto indexStart = std::copy_n(workerPrefix.begin(), workerPrefix.size(), threadName.begin());
 
-	const auto [nameEnd, error] = std::to_chars(threadName.data() + workerPrefix.size(), threadName.data() + threadName.size() - 1, index);
+	const auto [nameEnd, error] = std::to_chars(indexStart, threadName.data() + threadName.size() - 1, index);
 	if (error != std::errc {}) {
 		setCurrentThreadName("canary-wrk");
 		return;

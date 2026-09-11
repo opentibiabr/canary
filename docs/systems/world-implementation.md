@@ -13,8 +13,8 @@ gates, not a claim that the implementation is already complete.
 | --- | --- | --- |
 | 1 | Reproducible inventory, consumer coverage and legacy characterization | Inventory implemented; explicit exceptional-case characterization remains |
 | 2 | Shared v2 model, schemas, selectors, descriptors and native world-tool | Contract and read-only helper implemented; application adapters follow in stages 3–5 |
-| 3 | Runtime, ownership, compatibility, lifecycle and persistence | General adapter and mode/ownership integration in progress; native runtime validation outstanding |
-| 4 | Lua API, per-instance dispatch, descriptors and consumer adapters | Pending |
+| 3 | Runtime, ownership, compatibility, lifecycle and persistence | General adapter and mode/ownership integration implemented; native runtime validation outstanding |
+| 4 | Lua API, per-instance dispatch, descriptors and consumer adapters | API/dispatch implemented; full consumer migration and native execution validation pending |
 | 5 | Full native RME authoring, container editing and unified history | Pending |
 | 6 | External changes, conflicts, recoverable concurrent publication | Pending |
 | 7 | Static migration analysis, generation, validation, apply and revert | Pending |
@@ -67,6 +67,11 @@ RME validation uses its maintained build and test entry points.
   state, persisted children, migration revisions/claims, disabled-layer ownership,
   duplicate ownership and consumed container originals. Loader Lua syntax checks
   passed; these checks do not validate server runtime execution.
+- Shared nested parameter defaults and copy isolation passed in RME's native
+  contract target. Lua characterization passed for behavior allow/deny paths,
+  missing related items and failed transformations, and for legacy routing with
+  repeated AIDs. Native World Lua bindings and dispatcher tests are authored but
+  have not been executed. The new door descriptor passed JSON Schema validation.
 - JSON Schema 2020-12 validation with jsonschema 4.26.0 accepted the complete
   example catalog, layer and descriptor used by the native tests.
 - Read-only inspection of the global map scanned 17,972,761 tiles and 23,359,453

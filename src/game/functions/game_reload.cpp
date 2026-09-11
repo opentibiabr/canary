@@ -16,6 +16,8 @@
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/game.hpp"
+#include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 #include "game/zones/zone.hpp"
 #include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
@@ -197,8 +199,9 @@ bool GameReload::reloadScripts() {
 	reloadMonsters();
 	reloadNpcs();
 	reloadItems();
-	logReloadStatus("Scripts", true);
-	return true;
+	const bool worldLoaded = g_game().worldLayers().behaviors().load();
+	logReloadStatus("Scripts", worldLoaded);
+	return worldLoaded;
 }
 
 bool GameReload::reloadItems() {

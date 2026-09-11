@@ -203,6 +203,28 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	}
 	Value value;
 	std::string error;
+	BehaviorDescriptor defaults;
+	Parameter amount;
+	amount.type = "integer";
+	amount.defaultValue = Value { int64_t(3) };
+	Parameter reward;
+	reward.type = "record";
+	reward.fields.emplace("amount", amount);
+	Parameter rewards;
+	rewards.type = "list";
+	rewards.element.push_back(reward);
+	defaults.parameters.emplace("rewards", rewards);
+	defaults.parameters.emplace("level", amount);
+	BehaviorBinding configured;
+	configured.parameters["rewards"] = Value { Value::List { Value { Value::Record {} } } };
+	auto resolved = resolveParameters(defaults, configured);
+	require(std::get<int64_t>(resolved.at("level").data) == 3, "top-level behavior default materialized");
+	auto &resolvedReward = std::get<Value::Record>(std::get<Value::List>(resolved.at("rewards").data)[0].data);
+	require(std::get<int64_t>(resolvedReward.at("amount").data) == 3, "defaults nested inside lists of records materialized");
+	resolvedReward["amount"] = Value { int64_t(99) };
+	require(std::get<Value::Record>(std::get<Value::List>(configured.parameters.at("rewards").data)[0].data).empty(), "mutable behavior result never modifies its definition");
+	require(!validateParameter(amount, Value { int64_t(9007199254740992LL) }, error), "inexact Lua integers rejected");
+	require(validateParameter(amount, Value { int64_t(9007199254740991LL) }, error), "largest exact Lua integer accepted");
 	require(!parseValue("{\"key\":1,\"key\":2}", value, error), "duplicate typed value key rejected");
 	require(!parseValue("18446744073709551615", value, error), "unsigned overflow cannot wrap into Lua integer");
 	require(!parseValue("1e999", value, error), "nonfinite values rejected");

@@ -1042,6 +1042,9 @@ namespace world_layers {
 		const auto json = encode(value);
 		const auto fail = [&](const std::string &message) { error = message; return false; };
 		const auto &type = schema.type;
+		if (const auto integer = std::get_if<int64_t>(&value.data); integer && (*integer < -9007199254740991LL || *integer > 9007199254740991LL)) {
+			return fail("Integer cannot be represented exactly by the Lua number type");
+		}
 		if (type == "boolean" && !json.is_boolean()) {
 			return fail("Expected a boolean");
 		}
@@ -1111,6 +1114,43 @@ namespace world_layers {
 			}
 		}
 		return true;
+	}
+
+	Value::Record resolveParameters(const BehaviorDescriptor &descriptor, const BehaviorBinding &binding) {
+		const auto resolve = [&](const auto &self, const Parameter &schema, const Value &input) -> Value {
+			auto result = input;
+			if (schema.type == "record") {
+				if (auto fields = std::get_if<Value::Record>(&result.data)) {
+					for (const auto &[name, field] : schema.fields) {
+						auto entry = fields->find(name);
+						if (entry == fields->end() && field.defaultValue) {
+							entry = fields->emplace(name, *field.defaultValue).first;
+						}
+						if (entry != fields->end()) {
+							entry->second = self(self, field, entry->second);
+						}
+					}
+				}
+			} else if (schema.type == "list" && schema.element.size() == 1) {
+				if (auto entries = std::get_if<Value::List>(&result.data)) {
+					for (auto &entry : *entries) {
+						entry = self(self, schema.element.front(), entry);
+					}
+				}
+			}
+			return result;
+		};
+		auto result = binding.parameters;
+		for (const auto &[name, schema] : descriptor.parameters) {
+			auto entry = result.find(name);
+			if (entry == result.end() && schema.defaultValue) {
+				entry = result.emplace(name, *schema.defaultValue).first;
+			}
+			if (entry != result.end()) {
+				entry->second = resolve(resolve, schema, entry->second);
+			}
+		}
+		return result;
 	}
 
 	void validateProjectV2(const Project &project, Diagnostics &diagnostics) {

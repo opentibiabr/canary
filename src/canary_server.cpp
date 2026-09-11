@@ -9,6 +9,7 @@
 
 #include "canary_server.hpp"
 #include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 
 #include "core.hpp"
 #include "config/configmanager.hpp"
@@ -210,6 +211,9 @@ int CanaryServer::run() {
 					throw FailedToInitializeCanary("Cannot prepare world project");
 				}
 				loadModules();
+				if (!g_game().worldLayers().behaviors().load()) {
+					throw FailedToInitializeCanary("Cannot load World behavior implementations");
+				}
 				setWorldType();
 				loadMaps();
 				if (!g_game().worldLayers().readyForStartup()) {

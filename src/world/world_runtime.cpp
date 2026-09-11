@@ -1,4 +1,5 @@
 #include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 #include "world/world_runtime_items.hpp"
 
 #include "config/configmanager.hpp"
@@ -180,6 +181,8 @@ namespace {
 }
 
 struct WorldLayerRuntime::State {
+	explicit State(WorldLayerRuntime &runtime) : behaviors(runtime) { }
+	WorldBehaviors behaviors;
 	struct Binding {
 		std::weak_ptr<Item> item;
 		std::weak_ptr<Cylinder> origin;
@@ -194,6 +197,7 @@ struct WorldLayerRuntime::State {
 	BaseTiles baseTiles;
 	std::map<LegacyKey, std::string> legacyOwners;
 	std::unordered_map<const Item*, std::string> baseIdentities;
+	std::map<std::string, uint64_t> suspended;
 	std::unordered_map<uint64_t, std::weak_ptr<Item>> originals;
 	world_layers::ApplicationPlan basePlan;
 	std::map<std::string, Binding> bindings;
@@ -205,8 +209,11 @@ struct WorldLayerRuntime::State {
 	bool captured = false, failed = false, applied = false;
 };
 
-WorldLayerRuntime::WorldLayerRuntime() : state(std::make_unique<State>()) { }
+WorldLayerRuntime::WorldLayerRuntime() : state(std::make_unique<State>(*this)) { }
 WorldLayerRuntime::~WorldLayerRuntime() = default;
+WorldBehaviors &WorldLayerRuntime::behaviors() {
+	return state->behaviors;
+}
 WorldConfigurationMode WorldLayerRuntime::mode() const {
 	return state->mode;
 }
@@ -345,6 +352,61 @@ bool WorldLayerRuntime::captureBaseMap() {
 		for (const auto &entry : state->basePlan.objects) {
 			if (entry.original) {
 				state->baseIdentities.emplace(map.items.at(entry.original).get(), entry.id);
+			}
+		}
+		if (state->mode != WorldConfigurationMode::Legacy) {
+			std::map<std::string, world_layers::MapItem> selected;
+			std::set<std::string> visiting;
+			const auto resolve = [&](const auto &self, const std::string &id) -> bool {
+				if (selected.contains(id)) {
+					return true;
+				}
+				const auto definition = state->project->find(id);
+				if (!definition || !definition->selector || !visiting.insert(id).second) {
+					return false;
+				}
+				const auto &selector = *definition->selector;
+				std::vector<world_layers::MapItem> candidates;
+				if (selector.container.empty()) {
+					auto tile = map.tile(selector.position);
+					state->baseTiles.try_emplace(key(selector.position), tile);
+					candidates = std::move(tile.items);
+				} else if (self(self, selector.container)) {
+					candidates = selected.at(selector.container).children;
+				}
+				world_layers::MapItem item;
+				std::string error;
+				if (!world_layers::resolveSelector(selector, candidates, item, error)) {
+					g_logger().error("Cannot retain suspended World ownership for {}: {}", id, error);
+					return false;
+				}
+				selected.emplace(id, std::move(item));
+				visiting.erase(id);
+				return true;
+			};
+			for (const auto &record : state->project->migrationRecords) {
+				for (const auto &claim : record.claims) {
+					if (state->project->active(claim.object) || !state->project->find(claim.object)->selector
+					    || !std::any_of(claim.responsibilities.begin(), claim.responsibilities.end(), [](const auto &name) { return name.starts_with("on"); })) {
+						continue;
+					}
+					if (!resolve(resolve, claim.object)) {
+						state->failed = true;
+						return false;
+					}
+					const auto original = selected.at(claim.object).key;
+					const auto live = map.items.at(original);
+					const auto [owner, inserted] = state->baseIdentities.emplace(live.get(), claim.object);
+					if (!inserted && owner->second != claim.object) {
+						state->failed = true;
+						g_logger().error("Suspended World {} overlaps {}", claim.object, owner->second);
+						return false;
+					}
+					state->suspended[claim.object] = original;
+				}
+			}
+			for (const auto &[key, item] : map.items) {
+				state->originals.try_emplace(key, item);
 			}
 		}
 		state->captured = true;
@@ -693,6 +755,16 @@ bool WorldLayerRuntime::apply() {
 			}
 		}
 		g_logger().info("Prepared {} World objects from {}", bindings.size(), state->project->file.generic_string());
+		for (const auto &[id, key] : state->suspended) {
+			if (const auto live = state->originals.at(key).lock(); live && !live->isRemoved()) {
+				State::Binding binding;
+				binding.item = live;
+				binding.origin = live->getParent();
+				binding.count = live->getItemCount();
+				bindings.emplace(id, std::move(binding));
+				identities.emplace(live.get(), id);
+			}
+		}
 		state->bindings.swap(bindings);
 		state->identities.swap(identities);
 		state->applied = true;
@@ -794,12 +866,12 @@ std::optional<world_layers::Position> WorldLayerRuntime::position(const std::str
 	return definition->kind == world_layers::ObjectKind::Anchor || !state->applied ? world_layers::objectPosition(*state->project, *definition) : std::nullopt;
 }
 
-std::optional<WorldObjectToken> WorldLayerRuntime::token(const std::string &id) {
+std::optional<WorldObjectToken> WorldLayerRuntime::token(const std::string &id, bool removing) {
 	if (!state->applied || state->epoch == 0 || !object(id)) {
 		return std::nullopt;
 	}
 	const auto found = state->bindings.find(id);
-	if (found == state->bindings.end() || found->second.generation == 0 || (object(id)->kind == world_layers::ObjectKind::Item && !item(id))) {
+	if (found == state->bindings.end() || found->second.generation == 0 || (object(id)->kind == world_layers::ObjectKind::Item && !item(id) && (!removing || found->second.item.expired()))) {
 		return std::nullopt;
 	}
 	return WorldObjectToken { id, found->second.generation, state->epoch };
@@ -830,6 +902,10 @@ void WorldLayerRuntime::invalidateCallbacks() {
 	advance(state->epoch);
 }
 
+uint64_t WorldLayerRuntime::callbackEpoch() const {
+	return state->epoch;
+}
+
 void WorldLayerRuntime::removed(const std::shared_ptr<Item> &removedItem) {
 	if (!removedItem || !state->applied) {
 		return;
@@ -858,8 +934,8 @@ void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const
 		const auto found = state->baseIdentities.find(original.get());
 		if (found != state->baseIdentities.end() && replacement && original != replacement) {
 			const auto id = found->second;
-			for (const auto &entry : state->basePlan.objects) {
-				if (entry.id == id && state->originals.at(entry.original).lock() == original) {
+			for (auto &[key, instance] : state->originals) {
+				if (instance.lock() == original) {
 					const auto oldUid = uid(original);
 					if (oldUid && g_game().getUniqueItem(oldUid) == original) {
 						g_game().removeUniqueItem(oldUid);
@@ -872,7 +948,7 @@ void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const
 							return;
 						}
 					}
-					state->originals[entry.original] = replacement;
+					instance = replacement;
 					state->baseIdentities.erase(found);
 					state->baseIdentities.emplace(replacement.get(), id);
 					break;
@@ -887,7 +963,7 @@ void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const
 	}
 	auto &binding = state->bindings.at(id);
 	advance(binding.generation);
-	if (!replacement || binding.generation == 0) {
+	if (!replacement) {
 		removed(original);
 		return;
 	}
@@ -895,13 +971,11 @@ void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const
 		return;
 	}
 	const auto* definition = object(id);
-	if (!definition) {
-		removed(original);
-		return;
-	}
 	const auto inheritedUid = uid(original);
-	applyAttributes(replacement, overrides(*definition));
-	if (inheritedUid && !definition->uidOverride) {
+	if (definition) {
+		applyAttributes(replacement, overrides(*definition));
+	}
+	if (inheritedUid && (!definition || !definition->uidOverride)) {
 		replacement->setAttribute(ItemAttribute_t::UNIQUEID, inheritedUid);
 	}
 	if (inheritedUid && g_game().getUniqueItem(inheritedUid) == original) {
@@ -909,11 +983,11 @@ void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const
 	}
 	if (uid(replacement) && g_game().getUniqueItem(uid(replacement)) != replacement && !g_game().addUniqueItem(uid(replacement), replacement)) {
 		g_logger().error("World {} lost its instance after a conflicting UID transformation", id);
-		removed(original);
-		return;
+		replacement->removeAttribute(ItemAttribute_t::UNIQUEID);
+		binding.generation = 0;
 	}
 	unmark(original);
-	if (definition->mode != world_layers::SourceMode::Map) {
+	if (definition && definition->mode != world_layers::SourceMode::Map) {
 		mark(replacement, state->projectId, id);
 	}
 	state->identities.erase(original.get());
@@ -947,7 +1021,7 @@ bool WorldLayerRuntime::canMove(const std::shared_ptr<Item> &movingItem, const s
 			if (const auto container = parent->getContainer()) {
 				for (const auto &child : container->getItemList()) {
 					const auto childId = identity(child);
-					if (!childId.empty() && object(childId)->lifecycle == world_layers::Lifecycle::Fixture) {
+					if (const auto childDefinition = object(childId); childDefinition && childDefinition->lifecycle == world_layers::Lifecycle::Fixture) {
 						return true;
 					}
 					if (self(self, child)) {
@@ -977,7 +1051,7 @@ void WorldLayerRuntime::moved(const std::shared_ptr<Item> &movingItem) {
 			binding.count = movingItem->getItemCount();
 		}
 		bool outside = movingItem->isRemoved();
-		if (definition->lifecycle == world_layers::Lifecycle::RefillOnStartup) {
+		if (definition && definition->lifecycle == world_layers::Lifecycle::RefillOnStartup) {
 			const auto declaredPosition = world_layers::objectPosition(*state->project, *definition);
 			outside = outside || movingItem->getParent() != binding.origin.lock() || !declaredPosition || portable(movingItem->getPosition()) != *declaredPosition;
 		}
@@ -1008,6 +1082,21 @@ void WorldLayerRuntime::cloned(const std::shared_ptr<Item> &copy) {
 	}
 }
 
+void WorldLayerRuntime::quantityChanged(const Item* item) {
+	if (!state->applied || !item) {
+		return;
+	}
+	const auto identity = state->identities.find(item);
+	if (identity == state->identities.end()) {
+		return;
+	}
+	const auto binding = state->bindings.find(identity->second);
+	if (binding != state->bindings.end() && binding->second.item.lock().get() == item && binding->second.count != item->getItemCount()) {
+		advance(binding->second.generation);
+		binding->second.count = item->getItemCount();
+	}
+}
+
 void WorldLayerRuntime::beginMovement(const std::shared_ptr<Item> &item) {
 	++state->movementDepth;
 	if (state->applied && item) {
@@ -1028,7 +1117,7 @@ void WorldLayerRuntime::endMovement() {
 
 bool WorldLayerRuntime::serializeHouseAttributes(const std::shared_ptr<Item> &source, PropWriteStream &stream) {
 	const auto id = identity(source);
-	if (id.empty()) {
+	if (id.empty() || !object(id)) {
 		source->serializeAttr(stream);
 		return true;
 	}

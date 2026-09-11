@@ -87,6 +87,27 @@ namespace world_layers {
 		return result.str();
 	}
 
+	bool resolveSelector(const Selector &selector, const std::vector<MapItem> &candidates, MapItem &selected, std::string &error) {
+		std::vector<MapItem> matches;
+		for (const auto &item : candidates) {
+			if (world_layers::matches(item, selector)) {
+				matches.push_back(item);
+			}
+		}
+		size_t occurrence = 0;
+		bool valid = matches.size() == 1;
+		if (selector.occurrence) {
+			occurrence = selector.occurrence->index;
+			valid = matches.size() == selector.occurrence->count && occurrence < matches.size() && selectorFingerprint(matches) == selector.occurrence->fingerprint;
+		}
+		if (!valid) {
+			error = "Expected one original, or matching occurrence preconditions; found " + std::to_string(matches.size());
+			return false;
+		}
+		selected = matches[occurrence];
+		return true;
+	}
+
 	bool validateMapV2(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics) {
 		const auto initialErrors = diagnostics.size();
 		validateProjectV2(project, diagnostics);
@@ -148,22 +169,11 @@ namespace world_layers {
 					} else {
 						candidates = map.selectionTile(selector.position).items;
 					}
-					std::vector<MapItem> matches;
-					for (const auto &item : candidates) {
-						if (world_layers::matches(item, selector)) {
-							matches.push_back(item);
-						}
-					}
-					size_t occurrence = 0;
-					bool selectionValid = matches.size() == 1;
-					if (selector.occurrence) {
-						occurrence = selector.occurrence->index;
-						selectionValid = matches.size() == selector.occurrence->count && occurrence < matches.size() && selectorFingerprint(matches) == selector.occurrence->fingerprint;
-					}
-					if (!selectionValid) {
-						fail(id, "/source/selector", "Expected one original, or matching occurrence preconditions; found " + std::to_string(matches.size()));
+					MapItem original;
+					std::string error;
+					if (!resolveSelector(selector, candidates, original, error)) {
+						fail(id, "/source/selector", error);
 					} else {
-						const auto &original = matches[occurrence];
 						entry.original = original.key;
 						if (!entry.original || !claimed.emplace(entry.original, id).second) {
 							fail(id, "/source/selector", "An original item can have only one World identity");
@@ -241,7 +251,9 @@ namespace world_layers {
 		}
 
 		for (const auto &[owner, original] : originals) {
-			if (project.find(owner)->mode != SourceMode::Replace) continue;
+			if (project.find(owner)->mode != SourceMode::Replace) {
+				continue;
+			}
 			std::unordered_set<uint64_t> consumed;
 			descendants(original, consumed);
 			for (const auto &[other, selected] : originals) {

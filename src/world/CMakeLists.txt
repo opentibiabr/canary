@@ -7,4 +7,5 @@ target_sources(
             world_validation.cpp
             world_runtime.cpp
             world_runtime_items.cpp
+            world_behaviors.cpp
 )

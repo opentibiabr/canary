@@ -610,9 +610,7 @@ public:
 	uint32_t getItemAmount() const {
 		return count;
 	}
-	void setItemCount(uint8_t n) {
-		count = n;
-	}
+	void setItemCount(uint8_t n);
 
 	static uint32_t countByType(const std::shared_ptr<Item> &item, int32_t subType) {
 		if (!item) {

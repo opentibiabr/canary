@@ -916,6 +916,14 @@ bool Item::isItemStorable() {
 	return (isStowable() || isContainerAndHasSomethingInside);
 }
 
+void Item::setItemCount(uint8_t n) {
+	count = n;
+	// Construction and detached staging do not have a published World binding.
+	if (getParent()) {
+		g_game().worldLayers().quantityChanged(this);
+	}
+}
+
 void Item::setSubType(uint16_t n) {
 	const ItemType &it = items[id];
 	if (it.isFluidContainer() || it.isSplash()) {

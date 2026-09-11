@@ -79,6 +79,21 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
+	class WorldMovementScope {
+	public:
+		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) : runtime(runtime) {
+			runtime.beginMovement(item);
+		}
+		~WorldMovementScope() {
+			runtime.endMovement();
+		}
+		WorldMovementScope(const WorldMovementScope &) = delete;
+		WorldMovementScope &operator=(const WorldMovementScope &) = delete;
+
+	private:
+		WorldLayerRuntime &runtime;
+	};
+
 	constexpr size_t VISIBLE_MONSTER_POST_THINK_BATCH_SIZE = 8;
 	constexpr size_t BACKGROUND_MONSTER_POST_THINK_BATCH_SIZE = 64;
 	constexpr size_t MONSTER_POST_THINK_QUEUE_CAPACITY = DISPATCHER_LANE_QUEUE_CAPACITY;
@@ -2449,15 +2464,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 		g_logger().error("[{}] toCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	struct WorldMovementScope {
-		WorldLayerRuntime &runtime;
-		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) : runtime(runtime) {
-			runtime.beginMovement(item);
-		}
-		~WorldMovementScope() {
-			runtime.endMovement();
-		}
-	} worldMovement(worldLayers(), item);
+	WorldMovementScope worldMovement(worldLayers(), item);
 	const bool worldItem = !worldLayers().identity(item).empty();
 	if (worldItem) {
 		flags |= FLAG_IGNOREAUTOSTACK;
@@ -2744,6 +2751,9 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, const st
 	std::shared_ptr<Cylinder> destCylinder = toCylinder;
 	std::shared_ptr<Item> toItem = nullptr;
 	toCylinder = toCylinder->queryDestination(index, item, toItem, flags);
+	if (toItem && item->equals(toItem) && !worldLayers().identity(toItem).empty()) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 
 	// check if we can add this item
 	ReturnValue ret = toCylinder->queryAdd(index, item, item->getItemCount(), flags);
@@ -2855,6 +2865,7 @@ ReturnValue Game::internalRemoveItem(const std::shared_ptr<Item> &items, int32_t
 	}
 
 	if (!test) {
+		WorldMovementScope worldRemoval(worldLayers(), item);
 		item->playerUpdateSupplyTracker();
 		int32_t index = cylinder->getThingIndex(item);
 		// remove the item

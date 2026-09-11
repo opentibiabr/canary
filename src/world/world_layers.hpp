@@ -204,6 +204,7 @@ namespace world_layers {
 	void validateProjectV2(const Project &project, Diagnostics &diagnostics);
 	bool parseBehavior(const std::string &source, const std::filesystem::path &file, BehaviorDescriptor &descriptor, Diagnostics &diagnostics);
 	bool validateParameter(const Parameter &schema, const Value &value, std::string &error);
+	Value::Record resolveParameters(const BehaviorDescriptor &descriptor, const BehaviorBinding &binding);
 	std::string serializeValue(const Value &value);
 	bool parseValue(const std::string &source, Value &value, std::string &error);
 	bool convertToV2(Project &project, Diagnostics &diagnostics);

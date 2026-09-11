@@ -6,6 +6,7 @@
 class Item;
 class Cylinder;
 class PropWriteStream;
+class WorldBehaviors;
 
 enum class WorldConfigurationMode { Legacy,
 	                                World,
@@ -37,6 +38,7 @@ public:
 	WorldLayerRuntime &operator=(const WorldLayerRuntime &) = delete;
 
 	bool prepare();
+	WorldBehaviors &behaviors();
 	bool captureBaseMap();
 	bool readyForStartup() const;
 	bool apply();
@@ -49,7 +51,8 @@ public:
 	const world_layers::Object* object(const std::string &id) const;
 	std::shared_ptr<Item> item(const std::string &id);
 	std::optional<world_layers::Position> position(const std::string &id);
-	std::optional<WorldObjectToken> token(const std::string &id);
+	std::optional<WorldObjectToken> token(const std::string &id, bool removing = false);
+	uint64_t callbackEpoch() const;
 	bool resolve(const WorldObjectToken &token);
 	std::string identity(const std::shared_ptr<Item> &item);
 	void invalidateCallbacks();
@@ -57,6 +60,7 @@ public:
 	void transformed(const std::shared_ptr<Item> &original, const std::shared_ptr<Item> &replacement);
 	bool canMove(const std::shared_ptr<Item> &item, const std::shared_ptr<Cylinder> &destination, uint32_t count);
 	void moved(const std::shared_ptr<Item> &item);
+	void quantityChanged(const Item* item);
 	void cloned(const std::shared_ptr<Item> &item);
 	void beginMovement(const std::shared_ptr<Item> &item);
 	void endMovement();

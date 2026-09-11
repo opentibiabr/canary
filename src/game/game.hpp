@@ -619,6 +619,7 @@ public:
 	void removeBedSleeper(uint32_t guid);
 
 	std::shared_ptr<Item> getUniqueItem(uint16_t uniqueId);
+	std::vector<std::pair<uint16_t, std::shared_ptr<Item>>> getUniqueItems() const;
 	bool addUniqueItem(uint16_t uniqueId, std::shared_ptr<Item> item);
 	void removeUniqueItem(uint16_t uniqueId);
 

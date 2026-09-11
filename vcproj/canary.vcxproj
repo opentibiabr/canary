@@ -22,6 +22,7 @@
     <ClInclude Include="..\src\world\world_validation.hpp" />
     <ClInclude Include="..\src\world\world_snapshot.hpp" />
     <ClInclude Include="..\src\world\world_runtime.hpp" />
+    <ClInclude Include="..\src\world\world_runtime_items.hpp" />
     <ClInclude Include="..\src\creatures\appearance\mounts\mounts.hpp" />
     <ClInclude Include="..\src\creatures\appearance\outfit\outfit.hpp" />
     <ClInclude Include="..\src\creatures\appearance\attached_effects\attached_effects.hpp" />
@@ -458,6 +459,7 @@
     <ClCompile Include="..\src\world\world_snapshot.cpp" />
     <ClCompile Include="..\src\world\world_validation.cpp" />
     <ClCompile Include="..\src\world\world_runtime.cpp" />
+    <ClCompile Include="..\src\world\world_runtime_items.cpp" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa_backend_mbedtls.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />

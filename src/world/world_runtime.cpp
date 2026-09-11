@@ -1,4 +1,5 @@
 #include "world/world_runtime.hpp"
+#include "world/world_runtime_items.hpp"
 
 #include "config/configmanager.hpp"
 #include "game/game.hpp"
@@ -6,28 +7,61 @@
 #include "items/containers/container.hpp"
 #include "items/item.hpp"
 #include "items/tile.hpp"
-#include "world/world_validation.hpp"
+#include "utils/tools.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
 	#include <exception>
+	#include <limits>
+	#include <set>
+	#include <tuple>
 #endif
 
 namespace {
-	::Position native(const world_layers::Position &p) {
-		return { static_cast<uint16_t>(p.x), static_cast<uint16_t>(p.y), static_cast<uint8_t>(p.z) };
-	}
-	world_layers::Position portable(const ::Position &p) {
+	using namespace world_runtime;
+	using TileKey = std::tuple<int32_t, int32_t, int32_t>;
+	using LegacyKey = std::tuple<std::filesystem::path, std::string, std::string, std::string, std::string>;
+	using BaseTiles = std::map<TileKey, world_layers::MapTile>;
+	TileKey key(const world_layers::Position &p) {
 		return { p.x, p.y, p.z };
-	}
-	uint16_t uid(const std::shared_ptr<Item> &item) {
-		return item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID);
 	}
 
 	class ServerMapView final : public world_layers::MapView {
 	public:
+		explicit ServerMapView(const BaseTiles* baseline = nullptr) : baseline(baseline) { }
+		bool knownItem(uint16_t id) const override {
+			return Item::items.hasItemType(id);
+		}
 		bool nativeTeleport(uint16_t id) const override {
-			return Item::items[id].isTeleport();
+			return knownItem(id) && Item::items[id].isTeleport();
+		}
+		bool capability(uint16_t id, const std::string &name) const override {
+			if (!knownItem(id)) {
+				return false;
+			}
+			const auto &type = Item::items[id];
+			if (name == "container") {
+				return type.isContainer();
+			}
+			if (name == "door") {
+				return type.isDoor();
+			}
+			if (name == "ground") {
+				return type.isGroundTile();
+			}
+			if (name == "movable") {
+				return type.movable;
+			}
+			if (name == "stackable") {
+				return type.stackable;
+			}
+			if (name == "readable") {
+				return type.canReadText || type.canWriteText;
+			}
+			if (name == "blocking") {
+				return type.blockSolid;
+			}
+			return MapView::capability(id, name);
 		}
 		world_layers::MapTile tile(const world_layers::Position &position) override {
 			world_layers::MapTile result;
@@ -38,42 +72,645 @@ namespace {
 			result.exists = true;
 			result.ground = tile->getGround() != nullptr;
 			result.house = tile->getHouse() != nullptr;
-			const auto append = [&](const std::shared_ptr<Item> &item) {
-				if (!item) {
+			const auto append = [&](const std::shared_ptr<Item> &item, bool ground) {
+				if (!item || excluded.contains(reinterpret_cast<uintptr_t>(item.get()))) {
 					return;
 				}
-				const auto teleport = item->getTeleport();
-				result.items.push_back({ reinterpret_cast<uintptr_t>(item.get()), item->getID(), uid(item), teleport != nullptr, teleport ? portable(teleport->getDestPos()) : world_layers::Position {} });
+				auto view = snapshot(item, items, ground);
+				const auto canonicalize = [&](const auto &self, world_layers::MapItem &entry) -> void {
+					const auto found = items.find(entry.key);
+					if (found != items.end()) {
+						const auto alias = baseKeys.find(found->second.get());
+						if (alias != baseKeys.end()) {
+							entry.key = alias->second;
+						}
+					}
+					for (auto &child : entry.children) {
+						self(self, child);
+					}
+				};
+				canonicalize(canonicalize, view);
+				result.items.push_back(std::move(view));
 				result.blocked = result.blocked || Item::items[item->getID()].blockSolid;
-				items.emplace(reinterpret_cast<uintptr_t>(item.get()), item);
 			};
-			append(tile->getGround());
+			append(tile->getGround(), true);
 			if (const auto list = tile->getItemList()) {
 				for (const auto &item : *list) {
-					append(item);
+					append(item, false);
 				}
 			}
 			return result;
 		}
+		world_layers::MapTile selectionTile(const world_layers::Position &position) override {
+			if (!baseline) {
+				return tile(position);
+			}
+			const auto it = baseline->find(key(position));
+			return it == baseline->end() ? world_layers::MapTile {} : it->second;
+		}
+		uint16_t effectiveUid(const world_layers::MapItem &original) override {
+			const auto it = items.find(original.key);
+			return it == items.end() ? original.uid : uid(it->second);
+		}
 		std::vector<world_layers::UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) override {
 			auto result = g_game().map.worldUniqueIds(requested);
-			// The UID registry can also retain items outside map tiles.
-			for (const auto id : requested) {
-				if (const auto item = g_game().getUniqueItem(id)) {
-					result.push_back({ id, reinterpret_cast<uintptr_t>(item.get()), portable(item->getPosition()) });
+			for (auto &entry : result) {
+				const auto alias = baseKeys.find(reinterpret_cast<const Item*>(entry.key));
+				if (alias != baseKeys.end()) {
+					entry.key = alias->second;
+				}
+			}
+			std::set<std::pair<uint16_t, uint64_t>> seen;
+			std::erase_if(result, [&](const auto &entry) {
+				return excluded.contains(entry.key) || !seen.emplace(entry.uid, entry.key).second;
+			});
+			for (const auto &[id, item] : g_game().getUniqueItems()) {
+				const auto alias = baseKeys.find(item.get());
+				const auto identity = alias == baseKeys.end() ? reinterpret_cast<uintptr_t>(item.get()) : alias->second;
+				if ((!requested.empty() && !requested.contains(id)) || excluded.contains(identity)) {
+					continue;
+				}
+				if (seen.emplace(id, identity).second) {
+					result.push_back({ id, identity, portable(item->getPosition()) });
 				}
 			}
 			return result;
 		}
 		std::unordered_map<uint64_t, std::shared_ptr<Item>> items;
+		std::unordered_map<const Item*, uint64_t> baseKeys;
+		std::unordered_set<uint64_t> excluded;
+
+	private:
+		const BaseTiles* baseline;
 	};
 
 	void report(const world_layers::Diagnostics &diagnostics) {
 		for (const auto &diagnostic : diagnostics) {
-			g_logger().error("World layers: {}", diagnostic.describe());
+			g_logger().error("World: {}", diagnostic.describe());
 		}
 	}
-} // namespace
+
+	std::vector<std::shared_ptr<Item>> children(const std::shared_ptr<Cylinder> &parent) {
+		if (!parent) {
+			return {};
+		}
+		if (const auto container = parent->getContainer()) {
+			const auto &items = container->getItemList();
+			return { items.begin(), items.end() };
+		}
+		if (const auto tile = parent->getTile()) {
+			std::vector<std::shared_ptr<Item>> result;
+			if (tile->getGround()) {
+				result.push_back(tile->getGround());
+			}
+			if (const auto items = tile->getItemList()) {
+				result.insert(result.end(), items->begin(), items->end());
+			}
+			return result;
+		}
+		return {};
+	}
+
+	// Invalidated identities retire at the limit; wrapping must never make an
+	// old timer token valid again.
+	void advance(uint64_t &generation) {
+		generation = generation == std::numeric_limits<uint64_t>::max() ? 0 : generation ? generation + 1
+																						 : 0;
+	}
+}
+
+struct WorldLayerRuntime::State {
+	struct Binding {
+		std::weak_ptr<Item> item;
+		std::weak_ptr<Cylinder> origin;
+		world_layers::Value::Record baseline;
+		std::optional<world_layers::Position> baseDestination;
+		uint64_t generation = 1;
+		uint16_t count = 1;
+	};
+	WorldConfigurationMode mode = WorldConfigurationMode::Legacy;
+	std::optional<world_layers::Project> project;
+	std::string projectId;
+	BaseTiles baseTiles;
+	std::map<LegacyKey, std::string> legacyOwners;
+	std::unordered_map<const Item*, std::string> baseIdentities;
+	std::unordered_map<uint64_t, std::weak_ptr<Item>> originals;
+	world_layers::ApplicationPlan basePlan;
+	std::map<std::string, Binding> bindings;
+	std::map<std::string, std::vector<std::weak_ptr<Item>>> restoredItems;
+	std::unordered_map<const Item*, std::string> identities;
+	uint64_t epoch = 1;
+	uint32_t movementDepth = 0;
+	std::vector<std::weak_ptr<Item>> moving;
+	bool captured = false, failed = false, applied = false;
+};
+
+WorldLayerRuntime::WorldLayerRuntime() : state(std::make_unique<State>()) { }
+WorldLayerRuntime::~WorldLayerRuntime() = default;
+WorldConfigurationMode WorldLayerRuntime::mode() const {
+	return state->mode;
+}
+const world_layers::Project* WorldLayerRuntime::declarations() const {
+	return state->project ? &*state->project : nullptr;
+}
+const world_layers::Object* WorldLayerRuntime::object(const std::string &id) const {
+	return state->project && state->project->active(id) ? state->project->find(id) : nullptr;
+}
+bool WorldLayerRuntime::isDeclared(const std::string &id) const {
+	return object(id) != nullptr;
+}
+bool WorldLayerRuntime::readyForStartup() const {
+	return !state->failed && (!state->project || state->captured);
+}
+
+bool WorldLayerRuntime::prepare() {
+	if (state->project || state->applied) {
+		return false;
+	}
+	try {
+		const auto &mode = g_configManager().getString(WORLD_CONFIGURATION);
+		state->mode = mode == "world" ? WorldConfigurationMode::World : mode == "mixed" ? WorldConfigurationMode::Mixed
+																						: WorldConfigurationMode::Legacy;
+		if (state->mode != WorldConfigurationMode::World) {
+			g_logger().warn("Legacy world configuration is active and will be discontinued in a future release. See docs/systems/world-migration.md. Analyze with: python -m tools.world_migrate analyze --datapack {} --all", g_configManager().getString(DATA_DIRECTORY));
+		}
+		if (state->mode == WorldConfigurationMode::Legacy) {
+			return true;
+		}
+		const auto setting = g_configManager().getString(WORLD_PROJECT);
+		const auto root = std::filesystem::path(g_configManager().getString(DATA_DIRECTORY)) / "world";
+		const auto mapName = g_configManager().getString(MAP_NAME);
+		const auto file = setting == "auto" ? root / (mapName + ".world.json") : std::filesystem::path(setting);
+		if (setting.empty()) {
+			g_logger().error("World/mixed mode requires a worldProject catalog");
+			return false;
+		}
+		world_layers::Project loaded;
+		world_layers::Diagnostics diagnostics;
+		if (!world_layers::loadProject(file, loaded, diagnostics)) {
+			report(diagnostics);
+			return false;
+		}
+		world_layers::validateProject(loaded, diagnostics);
+		// Normalize only the in-memory runtime. Opening a v1 project never rewrites it.
+		if (diagnostics.empty() && loaded.schemaVersion == 1) {
+			world_layers::convertToV2(loaded, diagnostics);
+		}
+		const auto catalog = std::filesystem::path(g_configManager().getString(CORE_DIRECTORY)) / "items/items.xml";
+		if (!std::filesystem::equivalent(loaded.map, root / (mapName + ".otbm")) || !std::filesystem::equivalent(loaded.items, catalog)) {
+			g_logger().error("World project map/items must match the configured map and item catalog");
+			return false;
+		}
+		if (!diagnostics.empty()) {
+			report(diagnostics);
+			return false;
+		}
+		for (const auto &record : loaded.migrationRecords) {
+			for (const auto &[file, digest] : record.sources) {
+				if (state->mode != WorldConfigurationMode::Mixed) {
+					continue;
+				}
+				std::string source, error;
+				if (!world_layers::readFile(file, source, error)) {
+					g_logger().error("Cannot verify World migration source {}: {}", file.generic_string(), error);
+					return false;
+				}
+				std::string normalized;
+				normalized.reserve(source.size());
+				for (size_t i = 0; i < source.size(); ++i) {
+					if (source[i] == '\r' && i + 1 < source.size() && source[i + 1] == '\n') {
+						continue;
+					}
+					normalized.push_back(source[i]);
+				}
+				if (transformToSHA256(normalized) != digest) {
+					g_logger().error("World migration source changed: {}. Analyze and reconcile its ownership before startup", file.generic_string());
+					return false;
+				}
+			}
+			for (const auto &claim : record.claims) {
+				if (!loaded.find(claim.object)) {
+					g_logger().error("World migration {} references missing object {}", record.id, claim.object);
+					return false;
+				}
+				for (const auto &responsibility : claim.responsibilities) {
+					LegacyKey key { std::filesystem::weakly_canonical(claim.file), claim.table, claim.key, claim.occurrence, responsibility };
+					if (!state->legacyOwners.emplace(std::move(key), claim.object).second) {
+						g_logger().error("Overlapping World migration claims in {}", record.file.generic_string());
+						return false;
+					}
+				}
+			}
+		}
+		state->projectId = loaded.id;
+		state->project = std::move(loaded);
+		return true;
+	} catch (const std::exception &error) {
+		g_logger().error("Cannot prepare World: {}", error.what());
+		return false;
+	}
+}
+
+bool WorldLayerRuntime::captureBaseMap() {
+	if (!state->project) {
+		return true;
+	}
+	if (state->captured || state->failed) {
+		return false;
+	}
+	try {
+		ServerMapView map;
+		for (const auto &layer : state->project->layers) {
+			if (!layer.enabled) {
+				continue;
+			}
+			for (const auto &object : layer.objects) {
+				if (object.selector && object.selector->container.empty()) {
+					const auto &p = object.selector->position;
+					if (!state->baseTiles.contains(key(p))) {
+						state->baseTiles.emplace(key(p), map.tile(p));
+					}
+				}
+			}
+		}
+		world_layers::Diagnostics diagnostics;
+		if (!world_layers::validateMap(*state->project, map, state->basePlan, diagnostics)) {
+			report(diagnostics);
+			state->failed = true;
+			return false;
+		}
+		for (const auto &[key, item] : map.items) {
+			state->originals.emplace(key, item);
+		}
+		for (const auto &entry : state->basePlan.objects) {
+			if (entry.original) {
+				state->baseIdentities.emplace(map.items.at(entry.original).get(), entry.id);
+			}
+		}
+		state->captured = true;
+		return true;
+	} catch (const std::exception &error) {
+		state->failed = true;
+		g_logger().error("Cannot capture World base selections: {}", error.what());
+		return false;
+	}
+}
+
+bool WorldLayerRuntime::apply() {
+	if (!state->project || state->applied) {
+		return !state->failed;
+	}
+	if (!readyForStartup()) {
+		return false;
+	}
+	struct Change {
+		std::string id;
+		const world_layers::Object* definition = nullptr;
+		std::shared_ptr<Item> original, item;
+		std::shared_ptr<Cylinder> oldParent, destination, relocationParent;
+		world_layers::Value::Record before, values;
+		std::optional<world_layers::Position> beforeDestination, destinationPosition;
+		bool registered = false, removed = false, added = false, mutated = false, reused = false, relocated = false, detached = false;
+	};
+	std::vector<Change> changes;
+	std::map<uint16_t, std::shared_ptr<Item>> oldRegistry;
+	bool registryReleased = false;
+	std::map<std::shared_ptr<Cylinder>, std::vector<std::shared_ptr<Item>>> orders;
+	std::map<std::string, State::Binding> bindings;
+	std::unordered_map<const Item*, std::string> identities;
+	const auto rollback = [&] {
+		// Release all newly registered UIDs before restoring any old UID (swaps).
+		for (auto &change : changes) {
+			if (change.registered && g_game().getUniqueItem(uid(change.item)) == change.item) {
+				g_game().removeUniqueItem(uid(change.item));
+			}
+			change.registered = false;
+		}
+		for (auto it = changes.rbegin(); it != changes.rend(); ++it) {
+			if (it->added && it->item->getParent()) {
+				it->item->getParent()->removeThing(it->item, it->item->getItemCount());
+			}
+			it->added = false;
+			if (it->mutated) {
+				applyAttributes(it->item, it->before);
+				if (it->beforeDestination && it->item->getTeleport()) {
+					it->item->getTeleport()->setDestPos(native(*it->beforeDestination));
+				}
+				it->mutated = false;
+			}
+			if (it->relocated && !it->item->getParent()) {
+				if (!attach(it->relocationParent, it->item, 0)) {
+					g_logger().error("World rollback could not restore persisted {}", it->id);
+				}
+			}
+			it->relocated = false;
+			if (it->removed && !it->original->getParent()) {
+				// Insert at the front; the complete original order is restored below.
+				if (!attach(it->oldParent, it->original, 0)) {
+					g_logger().error("World rollback could not restore {}", it->id);
+				}
+			}
+			it->removed = false;
+		}
+		for (const auto &[parent, order] : orders) {
+			if (const auto container = parent->getContainer()) {
+				if (!container->restoreWorldItemOrder(order)) {
+					g_logger().error("World rollback container order mismatch");
+				}
+			} else if (const auto tile = parent->getTile()) {
+				std::vector<std::shared_ptr<Item>> items;
+				for (const auto &item : order) {
+					if (item != tile->getGround()) {
+						items.push_back(item);
+					}
+				}
+				const auto list = tile->getItemList();
+				if (list && list->size() == items.size() && std::is_permutation(items.begin(), items.end(), list->begin())) {
+					std::copy(items.begin(), items.end(), list->begin());
+				}
+			}
+		}
+		if (registryReleased) {
+			for (const auto &[id, item] : oldRegistry) {
+				if (!g_game().addUniqueItem(id, item)) {
+					g_logger().error("World rollback UID {} remains unavailable", id);
+				}
+			}
+			registryReleased = false;
+		}
+	};
+	try {
+		ServerMapView map(&state->baseTiles);
+		for (const auto &[key, weak] : state->originals) {
+			if (const auto item = weak.lock()) {
+				map.items.emplace(key, item);
+				map.baseKeys.emplace(item.get(), key);
+			}
+		}
+		std::map<std::string, std::shared_ptr<Item>> stagedItems;
+		changes.reserve(state->basePlan.objects.size());
+		for (const auto &entry : state->basePlan.objects) {
+			const auto &object = *state->project->find(entry.id);
+			if (object.kind == world_layers::ObjectKind::Anchor) {
+				bindings.emplace(entry.id, State::Binding {});
+				continue;
+			}
+			Change change;
+			change.id = entry.id;
+			change.definition = &object;
+			change.values = overrides(object);
+			change.destinationPosition = entry.destination;
+			if (entry.original) {
+				const auto found = state->originals.find(entry.original);
+				change.original = found == state->originals.end() ? nullptr : found->second.lock();
+				if (!change.original || change.original->isRemoved()) {
+					g_logger().error("World original {} disappeared during startup; reassociation is required", entry.id);
+					return false;
+				}
+				change.oldParent = change.original->getParent();
+				if (object.selector && !object.selector->container.empty()) {
+					const auto parent = stagedItems.find(object.selector->container);
+					if (parent == stagedItems.end() || change.oldParent != parent->second->getContainer()) {
+						g_logger().error("World original {} changed its selected container during startup", entry.id);
+						return false;
+					}
+				}
+				const auto expected = object.selector && !object.selector->container.empty()
+					? world_layers::objectPosition(*state->project, *state->project->find(object.selector->container))
+					: object.selector ? std::optional(object.selector->position)
+									  : std::nullopt;
+				if (expected && portable(change.original->getPosition()) != *expected) {
+					g_logger().error("World original {} moved out of its selected domain during startup", entry.id);
+					return false;
+				}
+				// Persisted transformations may keep the same item identity. Its
+				// original selector still refers to the captured OTBM instance.
+			}
+			if (object.mode == world_layers::SourceMode::Map) {
+				change.item = change.original;
+				change.destination = change.oldParent;
+			} else {
+				if (object.container.empty()) {
+					change.destination = g_game().map.getTile(native(entry.position));
+				} else {
+					const auto parent = stagedItems.find(object.container);
+					if (parent != stagedItems.end()) {
+						change.destination = parent->second->getContainer();
+					}
+				}
+				if (!change.destination) {
+					g_logger().error("World destination unavailable for {}", entry.id);
+					return false;
+				}
+				std::vector<std::shared_ptr<Item>> candidates = children(change.destination);
+				if (const auto restored = state->restoredItems.find(entry.id); restored != state->restoredItems.end()) {
+					for (const auto &weak : restored->second) {
+						const auto item = weak.lock();
+						if (item && !item->isRemoved() && std::find(candidates.begin(), candidates.end(), item) == candidates.end()) {
+							candidates.push_back(item);
+						}
+					}
+				}
+				for (const auto &candidate : candidates) {
+					if (marker(candidate, state->projectId) != entry.id) {
+						continue;
+					}
+					if (candidate->getParent() != change.destination && object.lifecycle == world_layers::Lifecycle::RefillOnStartup) {
+						// A former refill domain may have moved in the JSON. Preserve
+						// the old content as an ordinary item, then refill the new one.
+						Change detached;
+						detached.id = entry.id;
+						detached.definition = &object;
+						detached.item = candidate;
+						detached.reused = detached.detached = true;
+						detached.values = overrides(object);
+						auto custom = detached.values.contains("custom") ? std::get<world_layers::Value::Record>(detached.values.at("custom").data) : world_layers::Value::Record {};
+						custom["__world.project"] = world_layers::Value {};
+						custom["__world.object"] = world_layers::Value {};
+						detached.values["custom"] = world_layers::Value { std::move(custom) };
+						detached.before = captureAttributes(candidate, detached.values);
+						changes.push_back(std::move(detached));
+						continue;
+					}
+					if (change.item) {
+						g_logger().error("World {} has multiple managed instances in its destination", entry.id);
+						return false;
+					}
+					change.item = candidate;
+					change.reused = true;
+					if (candidate->getParent() != change.destination) {
+						// Fixture content follows an explicit change of placement.
+						change.relocationParent = candidate->getParent();
+					}
+					map.excluded.insert(reinterpret_cast<uintptr_t>(candidate.get()));
+				}
+				if (!change.item) {
+					change.item = Item::CreateItem(object.itemId, object.subtype.value_or(object.count));
+				}
+				if (!change.item || (change.reused && change.item->getID() != object.itemId) || (object.lifecycle == world_layers::Lifecycle::Fixture && Item::items[object.itemId].decayTime != 0)) {
+					g_logger().error("Cannot stage World item {} (missing, changed type, or decaying fixture)", entry.id);
+					return false;
+				}
+			}
+			if (object.mode != world_layers::SourceMode::Map) {
+				auto custom = change.values.contains("custom") ? std::get<world_layers::Value::Record>(change.values.at("custom").data) : world_layers::Value::Record {};
+				custom["__world.project"] = world_layers::Value { state->projectId };
+				custom["__world.object"] = world_layers::Value { entry.id };
+				change.values["custom"] = world_layers::Value { std::move(custom) };
+			}
+			if (!change.reused && object.mode != world_layers::SourceMode::Map && Item::items[object.itemId].stackable && (change.item->getItemCount() != object.count || object.count > change.item->getStackSize())) {
+				g_logger().error("World stack count is outside the native range for {}", entry.id);
+				return false;
+			}
+			change.before = captureAttributes(change.item, change.values);
+			if (const auto teleport = change.item->getTeleport()) {
+				change.beforeDestination = portable(teleport->getDestPos());
+			}
+			State::Binding binding;
+			binding.item = change.item;
+			binding.count = change.item->getItemCount();
+			binding.origin = change.destination;
+			binding.baseline = change.before;
+			binding.baseDestination = change.beforeDestination;
+			bindings.emplace(entry.id, std::move(binding));
+			identities.emplace(change.item.get(), entry.id);
+			stagedItems.emplace(entry.id, change.item);
+			if (change.oldParent) {
+				orders.try_emplace(change.oldParent, children(change.oldParent));
+			}
+			if (change.relocationParent) {
+				orders.try_emplace(change.relocationParent, children(change.relocationParent));
+			}
+			if (change.destination && change.destination->getParent()) {
+				orders.try_emplace(change.destination, children(change.destination));
+			}
+			changes.push_back(std::move(change));
+		}
+		world_layers::ApplicationPlan finalPlan;
+		world_layers::Diagnostics diagnostics;
+		if (!world_layers::validateMap(*state->project, map, finalPlan, diagnostics)) {
+			report(diagnostics);
+			return false;
+		}
+		std::map<std::shared_ptr<Cylinder>, std::vector<std::shared_ptr<Item>>> projected;
+		const auto contents = [&](const std::shared_ptr<Cylinder> &parent) -> auto & {
+			return projected.try_emplace(parent, children(parent)).first->second;
+		};
+		for (const auto &change : changes) {
+			if (!change.detached && change.definition->mode == world_layers::SourceMode::Replace) {
+				std::erase(contents(change.oldParent), change.original);
+			}
+		}
+		for (const auto &change : changes) {
+			if (change.detached || change.definition->mode == world_layers::SourceMode::Map || (change.reused && !change.relocationParent)) {
+				continue;
+			}
+			if (change.relocationParent) {
+				std::erase(contents(change.relocationParent), change.item);
+			}
+			auto &destination = contents(change.destination);
+			if (const auto container = change.destination->getContainer()) {
+				if (destination.size() >= container->capacity() || change.definition->order > destination.size()) {
+					g_logger().error("World container capacity or insertion order is invalid for {}", change.id);
+					return false;
+				}
+				destination.insert(destination.begin() + change.definition->order, change.item);
+			} else {
+				if (destination.size() >= 0xffff || (Item::items[change.item->getID()].isGroundTile() && std::any_of(destination.begin(), destination.end(), [](const auto &item) { return Item::items[item->getID()].isGroundTile(); }))) {
+					g_logger().error("World tile capacity or ground conflicts for {}", change.id);
+					return false;
+				}
+				destination.push_back(change.item);
+			}
+		}
+		// Everything that can be allocated/configured off-map is ready. Mutations
+		// below are journaled; nothing is visible through World until publication.
+		const auto captureRegistry = [&](const auto &self, const std::shared_ptr<Item> &item, bool recursive) -> void {
+			if (!item) {
+				return;
+			}
+			const auto id = uid(item);
+			if (id && g_game().getUniqueItem(id) == item) {
+				oldRegistry.emplace(id, item);
+			}
+			if (recursive && item->getContainer()) {
+				for (const auto &child : item->getContainer()->getItemList()) {
+					self(self, child, true);
+				}
+			}
+		};
+		for (const auto &change : changes) {
+			captureRegistry(captureRegistry, change.item, false);
+			if (change.definition->mode == world_layers::SourceMode::Replace) {
+				captureRegistry(captureRegistry, change.original, true);
+			}
+		}
+		registryReleased = true;
+		for (const auto &[id, item] : oldRegistry) {
+			g_game().removeUniqueItem(id);
+		}
+		for (auto &change : changes) {
+			if (!change.detached && change.definition->mode == world_layers::SourceMode::Replace) {
+				change.removed = true;
+				change.oldParent->removeThing(change.original, change.original->getItemCount());
+				if (change.original->getParent()) {
+					rollback();
+					return false;
+				}
+			}
+		}
+		for (auto &change : changes) {
+			change.mutated = true;
+			applyAttributes(change.item, change.values);
+			if (change.destinationPosition) {
+				if (!change.item->getTeleport()) {
+					rollback();
+					return false;
+				}
+				change.item->getTeleport()->setDestPos(native(*change.destinationPosition));
+			}
+			if (change.reused && !change.detached && change.item->getParent() != change.destination) {
+				change.relocated = true;
+				change.relocationParent->removeThing(change.item, change.item->getItemCount());
+				if (change.item->getParent()) {
+					rollback();
+					return false;
+				}
+			}
+			if (!change.detached && change.definition->mode != world_layers::SourceMode::Map && (!change.reused || change.relocated)) {
+				change.added = true;
+				if (!attach(change.destination, change.item, change.definition->order)) {
+					rollback();
+					return false;
+				}
+			}
+			if (uid(change.item)) {
+				change.registered = g_game().addUniqueItem(uid(change.item), change.item);
+				if (!change.registered) {
+					rollback();
+					return false;
+				}
+			}
+		}
+		g_logger().info("Prepared {} World objects from {}", bindings.size(), state->project->file.generic_string());
+		state->bindings.swap(bindings);
+		state->identities.swap(identities);
+		state->applied = true;
+		state->baseTiles.clear();
+		state->originals.clear();
+		state->baseIdentities.clear();
+		state->restoredItems.clear();
+		return true;
+	} catch (const std::exception &error) {
+		g_logger().error("Cannot apply World: {}", error.what());
+		try {
+			rollback();
+		} catch (const std::exception &rollbackError) {
+			g_logger().error("World rollback failed: {}; startup remains aborted", rollbackError.what());
+		}
+		return false;
+	}
+}
 
 std::vector<world_layers::UniqueOccurrence> Map::worldUniqueIds(const std::unordered_set<uint16_t> &requested) {
 	std::vector<world_layers::UniqueOccurrence> result;
@@ -81,7 +718,7 @@ std::vector<world_layers::UniqueOccurrence> Map::worldUniqueIds(const std::unord
 		if (!item) {
 			return;
 		}
-		if (requested.contains(item->uniqueId)) {
+		if (item->uniqueId && (requested.empty() || requested.contains(item->uniqueId))) {
 			result.push_back({ item->uniqueId, reinterpret_cast<uintptr_t>(item.get()), position });
 		}
 		for (const auto &child : item->items) {
@@ -92,7 +729,7 @@ std::vector<world_layers::UniqueOccurrence> Map::worldUniqueIds(const std::unord
 		if (!item) {
 			return;
 		}
-		if (requested.contains(uid(item))) {
+		if (uid(item) && (requested.empty() || requested.contains(uid(item)))) {
 			result.push_back({ uid(item), reinterpret_cast<uintptr_t>(item.get()), position });
 		}
 		if (const auto container = item->getContainer()) {
@@ -131,157 +768,437 @@ std::vector<world_layers::UniqueOccurrence> Map::worldUniqueIds(const std::unord
 	return result;
 }
 
-bool WorldLayerRuntime::isDeclared(const std::string &id) const {
-	return project && project->find(id);
+std::shared_ptr<Item> WorldLayerRuntime::item(const std::string &id) {
+	if (!state->applied) {
+		return nullptr;
+	}
+	const auto found = state->bindings.find(id);
+	if (found == state->bindings.end() || found->second.generation == 0) {
+		return nullptr;
+	}
+	const auto result = found->second.item.lock();
+	if (!result || result->isRemoved()) {
+		return nullptr;
+	}
+	return result;
 }
 
-bool WorldLayerRuntime::prepare() {
-	try {
-		const auto setting = g_configManager().getString(WORLD_PROJECT);
-		if (setting.empty()) {
-			return true;
+std::optional<world_layers::Position> WorldLayerRuntime::position(const std::string &id) {
+	const auto definition = object(id);
+	if (!definition) {
+		return std::nullopt;
+	}
+	if (const auto live = item(id)) {
+		return portable(live->getPosition());
+	}
+	return definition->kind == world_layers::ObjectKind::Anchor || !state->applied ? world_layers::objectPosition(*state->project, *definition) : std::nullopt;
+}
+
+std::optional<WorldObjectToken> WorldLayerRuntime::token(const std::string &id) {
+	if (!state->applied || state->epoch == 0 || !object(id)) {
+		return std::nullopt;
+	}
+	const auto found = state->bindings.find(id);
+	if (found == state->bindings.end() || found->second.generation == 0 || (object(id)->kind == world_layers::ObjectKind::Item && !item(id))) {
+		return std::nullopt;
+	}
+	return WorldObjectToken { id, found->second.generation, state->epoch };
+}
+
+bool WorldLayerRuntime::resolve(const WorldObjectToken &reference) {
+	const auto current = token(reference.id);
+	return current && current->epoch == reference.epoch && current->generation == reference.generation;
+}
+
+std::string WorldLayerRuntime::identity(const std::shared_ptr<Item> &item) {
+	if (!item || !state->applied) {
+		return "";
+	}
+	const auto found = state->identities.find(item.get());
+	if (found == state->identities.end()) {
+		return "";
+	}
+	const auto binding = state->bindings.find(found->second);
+	if (binding == state->bindings.end() || binding->second.item.lock() != item) {
+		state->identities.erase(found);
+		return "";
+	}
+	return binding->first;
+}
+
+void WorldLayerRuntime::invalidateCallbacks() {
+	advance(state->epoch);
+}
+
+void WorldLayerRuntime::removed(const std::shared_ptr<Item> &removedItem) {
+	if (!removedItem || !state->applied) {
+		return;
+	}
+	const auto id = identity(removedItem);
+	if (!id.empty()) {
+		auto &binding = state->bindings.at(id);
+		advance(binding.generation);
+		if (state->movementDepth) {
+			state->moving.push_back(removedItem);
+		} else {
+			binding.item.reset();
+			state->identities.erase(removedItem.get());
+			unmark(removedItem);
 		}
-		const auto root = std::filesystem::path(g_configManager().getString(DATA_DIRECTORY)) / "world";
-		const auto mapName = g_configManager().getString(MAP_NAME);
-		const auto file = setting == "auto" ? root / (mapName + ".world.json") : std::filesystem::path(setting);
-		if (setting == "auto" && !std::filesystem::exists(file)) {
-			return true;
+	}
+	if (const auto container = removedItem->getContainer()) {
+		for (const auto &child : container->getItemList()) {
+			removed(child);
 		}
-		world_layers::Project loaded;
-		world_layers::Diagnostics diagnostics;
-		if (!world_layers::loadProject(file, loaded, diagnostics)) {
-			report(diagnostics);
-			return false;
-		}
-		world_layers::validateProject(loaded, diagnostics);
-		const auto catalog = std::filesystem::path(g_configManager().getString(CORE_DIRECTORY)) / "items/items.xml";
-		if (!std::filesystem::equivalent(loaded.map, root / (mapName + ".otbm")) || !std::filesystem::equivalent(loaded.items, catalog)) {
-			g_logger().error("World project map/items must match the configured map and item catalog");
-			return false;
-		}
-		if (!diagnostics.empty()) {
-			report(diagnostics);
-			return false;
-		}
-		project = std::move(loaded);
-		return true;
-	} catch (const std::exception &error) {
-		g_logger().error("Cannot prepare world layers: {}", error.what());
-		return false;
 	}
 }
 
-bool WorldLayerRuntime::apply() {
-	if (!project || applied) {
-		return true;
-	}
-	struct Change {
-		std::shared_ptr<Item> original, created;
-		std::shared_ptr<Tile> oldTile, newTile;
-		bool removed = false, added = false, registered = false, oldRegistered = false;
-	};
-	std::vector<Change> changes;
-	const auto rollback = [&] {
-		for (auto it = changes.rbegin(); it != changes.rend(); ++it) {
-			if (it->registered) {
-				g_game().removeUniqueItem(uid(it->created));
-				it->registered = false;
-			}
-			if (it->added && it->newTile->getThingIndex(it->created) >= 0) {
-				it->newTile->removeThing(it->created, 1);
-			}
-			it->added = false;
-			if (it->removed && it->oldTile->getThingIndex(it->original) < 0) {
-				it->oldTile->internalAddThing(it->original);
-			}
-			it->removed = false;
-			if (it->oldRegistered && !g_game().getUniqueItem(uid(it->original))) {
-				g_game().addUniqueItem(uid(it->original), it->original);
-			}
-			it->oldRegistered = false;
-		}
-	};
-	try {
-		ServerMapView map;
-		world_layers::ApplicationPlan plan;
-		world_layers::Diagnostics diagnostics;
-		if (!world_layers::validateMap(*project, map, plan, diagnostics)) {
-			report(diagnostics);
-			return false;
-		}
-		changes.reserve(plan.objects.size());
-		// Allocate and configure everything before touching the effective map.
-		for (const auto &entry : plan.objects) {
-			const auto &object = *project->find(entry.id);
-			Change change;
-			change.created = Item::CreateItem(object.itemId, 1);
-			change.newTile = g_game().map.getTile(native(object.position));
-			if (!change.created || !change.created->getTeleport() || Item::items[object.itemId].decayTime != 0 || !change.newTile || (change.newTile->getItemList() && change.newTile->getItemList()->size() >= 0xfffe)) {
-				g_logger().error("Cannot stage world object {}", entry.id);
-				return false;
-			}
-			if (entry.original) {
-				change.original = map.items.at(entry.original);
-				change.oldTile = change.original->getTile();
-				if (!change.oldTile || change.oldTile->getThingIndex(change.original) < 0 || change.original->getDecaying() != DECAYING_FALSE) {
-					g_logger().error("Cannot replace detached or decaying world original {}", entry.id);
-					return false;
+void WorldLayerRuntime::transformed(const std::shared_ptr<Item> &original, const std::shared_ptr<Item> &replacement) {
+	if (!state->applied) {
+		const auto found = state->baseIdentities.find(original.get());
+		if (found != state->baseIdentities.end() && replacement && original != replacement) {
+			const auto id = found->second;
+			for (const auto &entry : state->basePlan.objects) {
+				if (entry.id == id && state->originals.at(entry.original).lock() == original) {
+					const auto oldUid = uid(original);
+					if (oldUid && g_game().getUniqueItem(oldUid) == original) {
+						g_game().removeUniqueItem(oldUid);
+						if (!uid(replacement)) {
+							replacement->setAttribute(ItemAttribute_t::UNIQUEID, oldUid);
+						}
+						if (g_game().getUniqueItem(uid(replacement)) != replacement && !g_game().addUniqueItem(uid(replacement), replacement)) {
+							state->failed = true;
+							g_logger().error("World startup transformation has a conflicting UID for {}", id);
+							return;
+						}
+					}
+					state->originals[entry.original] = replacement;
+					state->baseIdentities.erase(found);
+					state->baseIdentities.emplace(replacement.get(), id);
+					break;
 				}
 			}
-			if (object.aid) {
-				change.created->setAttribute(ItemAttribute_t::ACTIONID, object.aid);
-			}
-			if (object.uid) {
-				change.created->setAttribute(ItemAttribute_t::UNIQUEID, object.uid);
-			}
-			if (entry.destination) {
-				change.created->getTeleport()->setDestPos(native(*entry.destination));
-			}
-			changes.push_back(std::move(change));
 		}
-		for (auto &change : changes) {
-			if (!change.original) {
+		return;
+	}
+	const auto id = identity(original);
+	if (id.empty()) {
+		return;
+	}
+	auto &binding = state->bindings.at(id);
+	advance(binding.generation);
+	if (!replacement || binding.generation == 0) {
+		removed(original);
+		return;
+	}
+	if (original == replacement) {
+		return;
+	}
+	const auto* definition = object(id);
+	if (!definition) {
+		removed(original);
+		return;
+	}
+	const auto inheritedUid = uid(original);
+	applyAttributes(replacement, overrides(*definition));
+	if (inheritedUid && !definition->uidOverride) {
+		replacement->setAttribute(ItemAttribute_t::UNIQUEID, inheritedUid);
+	}
+	if (inheritedUid && g_game().getUniqueItem(inheritedUid) == original) {
+		g_game().removeUniqueItem(inheritedUid);
+	}
+	if (uid(replacement) && g_game().getUniqueItem(uid(replacement)) != replacement && !g_game().addUniqueItem(uid(replacement), replacement)) {
+		g_logger().error("World {} lost its instance after a conflicting UID transformation", id);
+		removed(original);
+		return;
+	}
+	unmark(original);
+	if (definition->mode != world_layers::SourceMode::Map) {
+		mark(replacement, state->projectId, id);
+	}
+	state->identities.erase(original.get());
+	state->identities.emplace(replacement.get(), id);
+	binding.item = replacement;
+	if (state->movementDepth) {
+		state->moving.push_back(replacement);
+	}
+}
+
+bool WorldLayerRuntime::canMove(const std::shared_ptr<Item> &movingItem, const std::shared_ptr<Cylinder> &destination, uint32_t count) {
+	if (!state->applied || !movingItem) {
+		return true;
+	}
+	const auto id = identity(movingItem);
+	if (!id.empty()) {
+		const auto* definition = object(id);
+		if (definition && definition->lifecycle == world_layers::Lifecycle::Fixture) {
+			// A fixture can be reordered in its original container, but cannot
+			// become inventory content or split into a second managed instance.
+			if (destination != state->bindings.at(id).origin.lock() || count != movingItem->getItemCount()) {
+				return false;
+			}
+		}
+		if (definition && definition->lifecycle == world_layers::Lifecycle::Native && uid(movingItem) && count != movingItem->getItemCount()) {
+			return false;
+		}
+	}
+	if (destination != movingItem->getParent()) {
+		const auto fixedContent = [&](const auto &self, const std::shared_ptr<Item> &parent) -> bool {
+			if (const auto container = parent->getContainer()) {
+				for (const auto &child : container->getItemList()) {
+					const auto childId = identity(child);
+					if (!childId.empty() && object(childId)->lifecycle == world_layers::Lifecycle::Fixture) {
+						return true;
+					}
+					if (self(self, child)) {
+						return true;
+					}
+				}
+			}
+			return false;
+		};
+		if (fixedContent(fixedContent, movingItem)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void WorldLayerRuntime::moved(const std::shared_ptr<Item> &movingItem) {
+	if (!movingItem || !state->applied) {
+		return;
+	}
+	const auto id = identity(movingItem);
+	if (!id.empty()) {
+		const auto* definition = object(id);
+		auto &binding = state->bindings.at(id);
+		if (binding.count != movingItem->getItemCount()) {
+			advance(binding.generation);
+			binding.count = movingItem->getItemCount();
+		}
+		bool outside = movingItem->isRemoved();
+		if (definition->lifecycle == world_layers::Lifecycle::RefillOnStartup) {
+			const auto declaredPosition = world_layers::objectPosition(*state->project, *definition);
+			outside = outside || movingItem->getParent() != binding.origin.lock() || !declaredPosition || portable(movingItem->getPosition()) != *declaredPosition;
+		}
+		if (outside) {
+			removed(movingItem);
+		} else if (uid(movingItem) && !g_game().getUniqueItem(uid(movingItem))) {
+			g_game().addUniqueItem(uid(movingItem), movingItem);
+		}
+	}
+	if (const auto container = movingItem->getContainer()) {
+		for (const auto &child : container->getItemList()) {
+			moved(child);
+		}
+	}
+}
+
+void WorldLayerRuntime::cloned(const std::shared_ptr<Item> &copy) {
+	// Cloning configuration-derived content never clones its managed identity.
+	if (!copy) {
+		return;
+	}
+	unmark(copy);
+	if (state->applied && uid(copy)) {
+		const auto owner = g_game().getUniqueItem(uid(copy));
+		if (owner != copy && !identity(owner).empty()) {
+			copy->removeAttribute(ItemAttribute_t::UNIQUEID);
+		}
+	}
+}
+
+void WorldLayerRuntime::beginMovement(const std::shared_ptr<Item> &item) {
+	++state->movementDepth;
+	if (state->applied && item) {
+		state->moving.push_back(item);
+	}
+}
+void WorldLayerRuntime::endMovement() {
+	if (!state->movementDepth || --state->movementDepth) {
+		return;
+	}
+	for (const auto &pending : state->moving) {
+		if (const auto live = pending.lock()) {
+			moved(live);
+		}
+	}
+	state->moving.clear();
+}
+
+bool WorldLayerRuntime::serializeHouseAttributes(const std::shared_ptr<Item> &source, PropWriteStream &stream) {
+	const auto id = identity(source);
+	if (id.empty()) {
+		source->serializeAttr(stream);
+		return true;
+	}
+	const auto &binding = state->bindings.at(id);
+	// Qualified call intentionally copies only item attributes, not container
+	// children. Normal house serialization traverses the live children once.
+	const auto projection = source->Item::clone();
+	if (!projection) {
+		g_logger().error("Cannot project World attributes for house persistence: {}", id);
+		return false;
+	}
+	applyAttributes(projection, binding.baseline);
+	if (projection->getTeleport() && binding.baseDestination) {
+		projection->getTeleport()->setDestPos(native(*binding.baseDestination));
+	}
+	if (object(id)->mode != world_layers::SourceMode::Map) {
+		mark(projection, state->projectId, id);
+	}
+	if (source->getBed()) {
+		// Bed's override serializes sleeper state only. Preserve that state and
+		// append the projected general attributes/ownership without cloning it.
+		source->serializeAttr(stream);
+		projection->Item::serializeAttr(stream);
+	} else {
+		projection->serializeAttr(stream);
+	}
+	return true;
+}
+
+bool WorldLayerRuntime::allowLegacy(const WorldLegacyWrite &write, const std::shared_ptr<Item> &target) {
+	if (state->mode == WorldConfigurationMode::Legacy) {
+		return true;
+	}
+	if (state->mode == WorldConfigurationMode::World || state->failed) {
+		return false;
+	}
+	std::error_code error;
+	const auto file = std::filesystem::weakly_canonical(write.file, error);
+	if (error) {
+		state->failed = true;
+		g_logger().error("Cannot identify legacy World source {}: {}", write.file.generic_string(), error.message());
+		return false;
+	}
+	const LegacyKey key { file, write.table, write.key, write.occurrence, write.responsibility };
+	if (state->legacyOwners.contains(key)) {
+		// Disabled layers still own migrated responsibilities. Returning them to
+		// the old loader requires an explicit migration reversal.
+		return false;
+	}
+	std::string claimed;
+	if (target) {
+		if (state->applied) {
+			claimed = identity(target);
+		} else {
+			const auto it = state->baseIdentities.find(target.get());
+			if (it != state->baseIdentities.end()) {
+				for (const auto &entry : state->basePlan.objects) {
+					if (entry.id == it->second && state->originals.at(entry.original).lock() == target) {
+						claimed = it->second;
+						break;
+					}
+				}
+			}
+		}
+	}
+	const auto owns = [&](const world_layers::Object &object) {
+		if (write.responsibility == "attributes.aid") {
+			return object.aidOverride || object.aid != 0;
+		}
+		if (write.responsibility == "attributes.uid") {
+			return object.uidOverride || object.uid != 0;
+		}
+		if (write.responsibility.starts_with("attributes.")) {
+			return object.attributes.contains(write.responsibility.substr(11));
+		}
+		if (write.responsibility == "creation") {
+			return object.mode != world_layers::SourceMode::Map;
+		}
+		if (write.responsibility == "replacement") {
+			return object.mode == world_layers::SourceMode::Replace;
+		}
+		for (const auto &binding : object.behaviors) {
+			if (std::find(binding.events.begin(), binding.events.end(), write.responsibility) != binding.events.end()) {
+				return true;
+			}
+		}
+		return false;
+	};
+	bool overlap = !claimed.empty() && object(claimed) && owns(*object(claimed));
+	if (!overlap && write.responsibility == "creation") {
+		for (const auto &layer : state->project->layers) {
+			if (!layer.enabled) {
 				continue;
 			}
-			change.oldRegistered = uid(change.original) && g_game().getUniqueItem(uid(change.original)) == change.original;
-			if (change.oldRegistered) {
-				g_game().removeUniqueItem(uid(change.original));
-			}
-			change.removed = true;
-			change.oldTile->removeThing(change.original, 1);
-			if (change.oldTile->getThingIndex(change.original) >= 0) {
-				rollback();
-				g_logger().error("World layer original removal failed; restored original items");
-				return false;
-			}
-		}
-		for (auto &change : changes) {
-			change.added = true;
-			change.newTile->internalAddThing(change.created);
-			if (change.newTile->getThingIndex(change.created) < 0) {
-				rollback();
-				g_logger().error("World layer placement failed; restored original items");
-				return false;
-			}
-			if (uid(change.created)) {
-				change.registered = g_game().addUniqueItem(uid(change.created), change.created);
-				if (!change.registered) {
-					rollback();
-					g_logger().error("World layer UID registration failed; restored original items");
-					return false;
+			for (const auto &candidate : layer.objects) {
+				if (candidate.kind == world_layers::ObjectKind::Item && candidate.mode != world_layers::SourceMode::Map && candidate.itemId == write.itemId && world_layers::objectPosition(*state->project, candidate) == write.position) {
+					claimed = world_layers::objectId(layer, candidate);
+					overlap = true;
+					break;
 				}
 			}
 		}
-		g_logger().info("Applied {} world objects from {}", changes.size(), project->file.generic_string());
-		applied = true;
-		return true;
-	} catch (const std::exception &error) {
-		g_logger().error("Cannot apply world layers: {}", error.what());
-		try {
-			rollback();
-		} catch (const std::exception &rollbackError) {
-			g_logger().error("World layer rollback failed: {}; startup remains aborted", rollbackError.what());
-		}
+	}
+	if (overlap) {
+		state->failed = true;
+		g_logger().error("Unresolved World/legacy overlap: {} {}[{}] occurrence {}, responsibility {}, World object {}", file.generic_string(), write.table, write.key, write.occurrence, write.responsibility, claimed);
 		return false;
 	}
+	return true;
+}
+
+bool WorldLayerRuntime::allowLuaCreation(const world_layers::Position &position, uint16_t itemId) {
+	if (!state->project) {
+		return true;
+	}
+	for (const auto &layer : state->project->layers) {
+		if (!layer.enabled) {
+			continue;
+		}
+		for (const auto &object : layer.objects) {
+			if (object.kind == world_layers::ObjectKind::Item && object.mode != world_layers::SourceMode::Map && object.itemId == itemId && world_layers::objectPosition(*state->project, object) == position) {
+				g_logger().error("Lua position registration creates item {} already owned by World object {}", itemId, world_layers::objectId(layer, object));
+				state->failed = true;
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+WorldPersistence WorldLayerRuntime::persistence(const std::shared_ptr<Item> &item) {
+	if (!state->project || !item) {
+		return WorldPersistence::Ordinary;
+	}
+	const auto owner = item->getCustomAttribute("__world.project");
+	const auto key = item->getCustomAttribute("__world.object");
+	if (!owner && !key) {
+		return WorldPersistence::Ordinary;
+	}
+	const auto id = marker(item, state->projectId);
+	const auto definition = object(id);
+	if (id.empty() || !definition || definition->mode == world_layers::SourceMode::Map) {
+		g_logger().error("Persisted World ownership is missing, disabled, or belongs to another project (item {}). Reconcile it before startup", item->getID());
+		state->failed = true;
+		return WorldPersistence::Conflict;
+	}
+	return WorldPersistence::External;
+}
+
+void WorldLayerRuntime::restored(const std::shared_ptr<Item> &item) {
+	const auto id = marker(item, state->projectId);
+	if (!id.empty()) {
+		state->restoredItems[id].push_back(item);
+	}
+}
+
+void WorldLayerRuntime::persistenceError() {
+	state->failed = true;
+	g_logger().error("World startup aborted after house item deserialization failed; stored data was not replaced");
+}
+
+bool WorldLayerRuntime::isFixture(const Item* item) const {
+	if (!state->applied || !item) {
+		return false;
+	}
+	const auto found = state->identities.find(item);
+	if (found == state->identities.end()) {
+		return false;
+	}
+	const auto binding = state->bindings.find(found->second);
+	const auto definition = object(found->second);
+	return binding != state->bindings.end() && binding->second.item.lock().get() == item && definition && definition->lifecycle == world_layers::Lifecycle::Fixture;
 }

@@ -22,6 +22,7 @@
 #include "map/map_download.hpp"
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
+#include "world/world_runtime.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
@@ -181,6 +182,9 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 
 	// Load the map
 	load(identifier, pos);
+	if (mainMap && !g_game().worldLayers().captureBaseMap()) {
+		return;
+	}
 
 	// Only create items from lua functions if is loading main map
 	// It needs to be after the load map to ensure the map already exists before creating the items

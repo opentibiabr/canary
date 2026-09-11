@@ -1,8 +1,14 @@
 -- Run from the repository root: lua tests/world_layers/legacy_test.lua
 local enabled = false
+DATA_DIRECTORY = "data-otservbr-global"
 Game = {
 	isWorldObjectDeclared = function(id)
 		return enabled and (id == "black_knight.entry" or id == "black_knight.exit")
+	end,
+	canApplyLegacyWorld = function(file, name, key, occurrence, responsibility)
+		assert(file == DATA_DIRECTORY .. "/startup/tables/teleport.lua")
+		assert(name == "TeleportUnique" and occurrence == "item" and responsibility == "attributes.uid")
+		return not enabled or (key ~= "38012" and key ~= "38013")
 	end,
 }
 ITEM_ATTRIBUTE_UNIQUEID = 1
@@ -21,6 +27,7 @@ Tile = function()
 		end,
 		getItemById = function()
 			return {
+				getId = function() return 1949 end,
 				setAttribute = function(_, _, id)
 					assigned[id] = true
 				end,
@@ -57,4 +64,25 @@ for _, active in ipairs({ false, true }) do
 		assert((registered[id] == true) == not active, "native objects must not receive legacy movement callbacks")
 	end
 end
-print("World layer legacy activation and fallback passed")
+-- Sharing an AID does not transfer ownership of the other occurrence.
+local items = {}
+local claims = {}
+ITEM_ATTRIBUTE_ACTIONID = 2
+ItemAction = { [12107] = { itemId = 2772, itemPos = { { x = 1 }, { x = 2 } } } }
+Tile = function(position)
+	local item = {
+		getId = function() return 2772 end,
+		setAttribute = function(_, attribute, value) items[position.x] = { attribute, value } end,
+	}
+	return { getItemCountById = function() return 1 end, getItemById = function() return item end }
+end
+Game.canApplyLegacyWorld = function(file, name, key, occurrence, responsibility)
+	assert(file == DATA_DIRECTORY .. "/startup/tables/item.lua" and name == "ItemAction")
+	assert(key == "12107" and responsibility == "attributes.aid")
+	claims[occurrence] = true
+	return occurrence ~= "1.item"
+end
+loadLuaMapAction(ItemAction)
+assert(claims["1.item"] and claims["2.item"], "each occurrence must ask for ownership independently")
+assert(not items[1] and items[2][2] == 12107, "a shared AID must not suppress unclaimed occurrences")
+print("World legacy activation, fallback and occurrence routing passed")

@@ -212,6 +212,9 @@ int CanaryServer::run() {
 				loadModules();
 				setWorldType();
 				loadMaps();
+				if (!g_game().worldLayers().readyForStartup()) {
+					throw FailedToInitializeCanary("Cannot resolve World base selections");
+				}
 
 				MonsterComputeConfig monsterComputeConfig;
 				monsterComputeConfig.configuredThreads = static_cast<uint32_t>(std::max<int32_t>(0, g_configManager().getNumber(MONSTER_COMPUTE_THREADS)));

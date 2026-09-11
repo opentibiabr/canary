@@ -423,8 +423,10 @@ pushWhenAttacking = false
 toggleDownloadMap = true
 mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.6.1/otservbr.otbm"
 mapName = "otservbr"
--- "auto": load <datapack>/world/<mapName>.world.json if present.
--- Empty string disables world layers; an explicit path must exist. Restart required.
+-- Select "legacy", "world", or "mixed". Changes require a restart.
+-- Compatibility default until the complete datapack migration is installed.
+worldConfiguration = "legacy"
+-- "auto": <datapack>/world/<mapName>.world.json. Required in world/mixed mode.
 worldProject = "auto"
 mapAuthor = "OpenTibiaBR"
 

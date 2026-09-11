@@ -317,6 +317,9 @@ public:
 	// serialization
 	virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
 	bool unserializeAttr(PropStream &propStream);
+	// Detached preview for identifying persisted World ownership. Never invokes
+	// subclass callbacks or registers UIDs/sleepers; leaves the source unchanged.
+	bool inspectAttributes(PropStream propStream);
 	virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition);
 
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
@@ -672,9 +675,7 @@ public:
 		return loadedFromMap;
 	}
 
-	bool isCleanable() const {
-		return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID);
-	}
+	bool isCleanable() const;
 
 	bool hasMarketAttributes() const;
 

@@ -6,4 +6,5 @@ target_sources(
             world_snapshot.cpp
             world_validation.cpp
             world_runtime.cpp
+            world_runtime_items.cpp
 )

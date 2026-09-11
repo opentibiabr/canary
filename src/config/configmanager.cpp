@@ -71,6 +71,18 @@ bool ConfigManager::load() {
 		loadStringConfig(L, MAP_AUTHOR, "mapAuthor", "Eduardo Dantas");
 		loadStringConfig(L, MAP_DOWNLOAD_URL, "mapDownloadUrl", "");
 		loadStringConfig(L, MAP_NAME, "mapName", "canary");
+		lua_getglobal(L, "worldConfiguration");
+		const bool worldModeMissing = lua_isnil(L, -1);
+		const bool worldModeString = lua_type(L, -1) == LUA_TSTRING;
+		const std::string worldMode = worldModeString ? lua_tostring(L, -1) : "legacy";
+		lua_pop(L, 1);
+		if ((!worldModeMissing && !worldModeString) || (worldMode != "legacy" && worldMode != "world" && worldMode != "mixed")) {
+			g_logger().error("worldConfiguration must be legacy, world, or mixed");
+			lua_close(L);
+			return false;
+		}
+		// Old config files retain the compatibility path; the runtime warns once.
+		configs[WORLD_CONFIGURATION] = worldMode;
 		loadStringConfig(L, WORLD_PROJECT, "worldProject", "auto");
 		loadStringConfig(L, MYSQL_DB, "mysqlDatabase", "canary");
 		loadBoolConfig(L, MYSQL_DB_BACKUP, "mysqlDatabaseBackup", false);

@@ -33,6 +33,7 @@
 void GameFunctions::init(lua_State* L) {
 	Lua::registerTable(L, "Game");
 	Lua::registerMethod(L, "Game", "isWorldObjectDeclared", GameFunctions::luaGameIsWorldObjectDeclared);
+	Lua::registerMethod(L, "Game", "canApplyLegacyWorld", GameFunctions::luaGameCanApplyLegacyWorld);
 
 	Lua::registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 	Lua::registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
@@ -1166,5 +1167,27 @@ int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
  */
 int GameFunctions::luaGameIsWorldObjectDeclared(lua_State* L) {
 	Lua::pushBoolean(L, g_game().worldLayers().isDeclared(Lua::getString(L, 1)));
+	return 1;
+}
+
+/***
+ * @function Game.canApplyLegacyWorld
+ * @param file string
+ * @param tableName string
+ * @param entry string
+ * @param occurrence string
+ * @param responsibility string
+ * @param itemId integer
+ * @param position Position
+ * @param item? Item
+ * @return boolean
+ */
+int GameFunctions::luaGameCanApplyLegacyWorld(lua_State* L) {
+	const auto position = Lua::getPosition(L, 7);
+	const WorldLegacyWrite write {
+		Lua::getString(L, 1), Lua::getString(L, 2), Lua::getString(L, 3), Lua::getString(L, 4), Lua::getString(L, 5), { position.x, position.y, position.z }, Lua::getNumber<uint16_t>(L, 6)
+	};
+	const auto item = lua_isuserdata(L, 8) ? Lua::getUserdataShared<Item>(L, 8, "Item") : nullptr;
+	Lua::pushBoolean(L, g_game().worldLayers().allowLegacy(write, item));
 	return 1;
 }

@@ -25,6 +25,7 @@ UNIQUE_TABLES = {
 SPECIAL_TABLES = {"CreateItemOnMap", "BookDocumentTable", "SignTable", "QuestKeysUpdate"}
 KNOWN_TABLES = ACTION_TABLES | UNIQUE_TABLES | SPECIAL_TABLES
 ADAPTERS = {
+	"startup/others/functions.lua": "ownership-aware legacy compatibility routing",
 	"scripts/globalevents/others/map_attributes_loader.lua": "ownership-aware startup",
 	"scripts/movements/others/teleport.lua": "world teleport behavior",
 	"scripts/actions/system/quest_reward_common.lua": "world quest reward context",

@@ -2449,6 +2449,19 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 		g_logger().error("[{}] toCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
+	struct WorldMovementScope {
+		WorldLayerRuntime &runtime;
+		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) : runtime(runtime) {
+			runtime.beginMovement(item);
+		}
+		~WorldMovementScope() {
+			runtime.endMovement();
+		}
+	} worldMovement(worldLayers(), item);
+	const bool worldItem = !worldLayers().identity(item).empty();
+	if (worldItem) {
+		flags |= FLAG_IGNOREAUTOSTACK;
+	}
 
 	if (checkTile) {
 		if (const std::shared_ptr<Tile> &fromTile = fromCylinder->getTile()) {
@@ -2469,7 +2482,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 		}
 
 		toCylinder = subCylinder;
-		flags = 0;
+		flags = worldItem ? FLAG_IGNOREAUTOSTACK : 0;
 
 		// to prevent infinite loop
 		if (++floorN >= MAP_MAX_LAYERS) {
@@ -2487,6 +2500,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	if (item->isStackable() && count == 255 && fromCylinder->getParent() == toCylinder) {
 		count = item->getItemCount();
 	}
+	if (!worldLayers().canMove(item, toCylinder, count)
+	    || (toItem && item->equals(toItem) && (worldItem || !worldLayers().identity(toItem).empty()))) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 
 	// check if we can remove this item (using count of 1 since we don't know how
 	// much we can move yet)
@@ -2498,6 +2515,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	// check if we can add this item
 	ret = toCylinder->queryAdd(index, item, count, flags, actor);
 	if (ret == RETURNVALUE_NEEDEXCHANGE) {
+		if (!worldLayers().canMove(toItem, fromCylinder, toItem->getItemCount())) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+		WorldMovementScope exchangeMovement(worldLayers(), toItem);
 		// check if we can add it to source cylinder
 		ret = fromCylinder->queryAdd(fromCylinder->getThingIndex(item), toItem, toItem->getItemCount(), 0);
 		if (ret == RETURNVALUE_NOERROR) {
@@ -2548,6 +2569,9 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	}
 
 	std::shared_ptr<Item> moveItem = item;
+	if (!worldLayers().canMove(item, toCylinder, m)) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 	// check if we can remove this item
 	ret = fromCylinder->queryRemove(item, m, flags, actor);
 	if (ret != RETURNVALUE_NOERROR) {
@@ -2602,6 +2626,9 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	// add item
 	if (moveItem /*m - n > 0*/) {
 		toCylinder->addThing(index, moveItem);
+		if (moveItem != item && item->isRemoved()) {
+			worldLayers().transformed(item, moveItem);
+		}
 	}
 
 	if (itemIndex != -1) {
@@ -11805,6 +11832,10 @@ void Game::removeBedSleeper(uint32_t guid) {
 	}
 }
 
+std::vector<std::pair<uint16_t, std::shared_ptr<Item>>> Game::getUniqueItems() const {
+	return { uniqueItems.begin(), uniqueItems.end() };
+}
+
 std::shared_ptr<Item> Game::getUniqueItem(uint16_t uniqueId) {
 	auto it = uniqueItems.find(uniqueId);
 	if (it == uniqueItems.end()) {
@@ -11850,6 +11881,9 @@ bool Game::hasDistanceEffect(uint16_t effectId) {
 
 void Game::createLuaItemsOnMap() {
 	for (const auto [position, itemId] : mapLuaItemsStored) {
+		if (!worldLayers().allowLuaCreation({ position.x, position.y, position.z }, itemId)) {
+			continue;
+		}
 		const auto &item = Item::CreateItem(itemId, 1);
 		if (!item) {
 			g_logger().warn("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);

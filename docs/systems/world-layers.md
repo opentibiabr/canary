@@ -12,13 +12,14 @@ The global datapack includes `data-otservbr-global/world/otservbr.world.json` an
 `data-otservbr-global/world/layers/black_knight.layer.json`. Install the normal
 `otservbr.otbm` alongside the project, as with the existing datapack setup.
 
-`worldProject = "auto"` is the default. It discovers
-`<dataPackDirectory>/world/<mapName>.world.json`. If the auto-discovered file is
-absent, startup uses the existing loader. If a file is found but invalid, startup
-fails before accepting connections. An explicit path must exist and its map and
-item catalog must match the configured server paths.
+Select `worldConfiguration = "world"` to apply World configuration, or `mixed`
+with complete ownership records for a selective migration. `worldProject = "auto"`
+discovers `<dataPackDirectory>/world/<mapName>.world.json`. In these modes the file
+must exist and validate; its map and item catalog must match the server paths.
+See [configuration and migration](world-migration.md) before activating a partial
+project.
 
-Set `worldProject = ""` and restart to return to the original Black Knight
+Set `worldConfiguration = "legacy"` and restart to return to the original Black Knight
 teleports and legacy UID loader. Changes to this setting or the layer require a
 restart. Reloading Lua does not reread world layers.
 
@@ -148,7 +149,7 @@ test and the following integration scenario on a local server and map copy:
 4. Verify failure before online state for an ambiguous original, missing tile,
    duplicate UID, missing target and a cycle. Check a UID conflict in a cached tile
    and a container, not just a materialized tile.
-5. Disable `worldProject` and restart. Confirm the original Black Knight positions,
+5. Select `worldConfiguration = "legacy"` and restart. Confirm the original Black Knight positions,
    destinations and legacy registration return. Unrelated quests must be unchanged.
 
 ## Scope

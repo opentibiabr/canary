@@ -13,7 +13,7 @@ gates, not a claim that the implementation is already complete.
 | --- | --- | --- |
 | 1 | Reproducible inventory, consumer coverage and legacy characterization | Inventory implemented; explicit exceptional-case characterization remains |
 | 2 | Shared v2 model, schemas, selectors, descriptors and native world-tool | Contract and read-only helper implemented; application adapters follow in stages 3–5 |
-| 3 | Runtime, ownership, compatibility, lifecycle and persistence | Pending |
+| 3 | Runtime, ownership, compatibility, lifecycle and persistence | General adapter and mode/ownership integration in progress; native runtime validation outstanding |
 | 4 | Lua API, per-instance dispatch, descriptors and consumer adapters | Pending |
 | 5 | Full native RME authoring, container editing and unified history | Pending |
 | 6 | External changes, conflicts, recoverable concurrent publication | Pending |
@@ -63,6 +63,10 @@ RME validation uses its maintained build and test entry points.
   contract passed. Coverage includes inherited/cleared UIDs, repeated AIDs, base
   container selection, occurrence fingerprints, descriptor capabilities, unknown
   fields, relation cycles, teleport cycles and depth/number bounds.
+- Additional shared contract checks passed for separate base selection/live UID
+  state, persisted children, migration revisions/claims, disabled-layer ownership,
+  duplicate ownership and consumed container originals. Loader Lua syntax checks
+  passed; these checks do not validate server runtime execution.
 - JSON Schema 2020-12 validation with jsonschema 4.26.0 accepted the complete
   example catalog, layer and descriptor used by the native tests.
 - Read-only inspection of the global map scanned 17,972,761 tiles and 23,359,453

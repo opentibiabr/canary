@@ -1086,6 +1086,25 @@ void Container::internalAddThing(uint32_t, const std::shared_ptr<Thing> &thing) 
 	updateCacheOnAdd(item);
 }
 
+bool Container::insertWorldItem(const std::shared_ptr<Item> &item, uint32_t order) {
+	if (!item || item->getParent() || order > itemlist.size() || itemlist.size() >= capacity()) {
+		return false;
+	}
+	itemlist.insert(itemlist.begin() + order, item);
+	item->setParent(getContainer());
+	updateItemWeight(item->getWeight());
+	updateCacheOnAdd(item);
+	return true;
+}
+
+bool Container::restoreWorldItemOrder(const std::vector<std::shared_ptr<Item>> &order) {
+	if (order.size() != itemlist.size() || !std::is_permutation(order.begin(), order.end(), itemlist.begin())) {
+		return false;
+	}
+	std::copy(order.begin(), order.end(), itemlist.begin());
+	return true;
+}
+
 uint16_t Container::getFreeSlots() const {
 	uint16_t counter = std::max<uint16_t>(0, capacity() - size());
 

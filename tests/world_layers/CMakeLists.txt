@@ -1,5 +1,10 @@
 # Compile the file service independently to enable fault injection without
 # exposing test hooks in the server runtime.
+find_package(
+    nlohmann_json
+    CONFIG
+    REQUIRED
+)
 add_executable(
     world_file_contract
     file_contract_main.cpp

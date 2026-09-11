@@ -12,6 +12,11 @@ namespace world_layers {
 		uint16_t uid = 0;
 		bool teleport = false;
 		Position destination;
+		uint16_t aid = 0;
+		bool ground = false;
+		bool container = false;
+		Value::Record attributes;
+		std::vector<MapItem> children;
 	};
 
 	struct MapTile {
@@ -33,7 +38,10 @@ namespace world_layers {
 	public:
 		virtual ~MapView() = default;
 		virtual bool nativeTeleport(uint16_t itemId) const = 0;
+		virtual bool knownItem(uint16_t itemId) const;
+		virtual bool capability(uint16_t itemId, const std::string &name) const;
 		virtual MapTile tile(const Position &position) = 0;
+		// An empty request returns the complete UID census, including containers.
 		virtual std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) = 0;
 	};
 
@@ -41,6 +49,8 @@ namespace world_layers {
 		std::string id;
 		uint64_t original = 0;
 		std::optional<Position> destination;
+		Position position;
+		uint16_t effectiveUid = 0;
 	};
 
 	struct ApplicationPlan {
@@ -49,5 +59,7 @@ namespace world_layers {
 	};
 
 	bool validateMap(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics);
+	bool validateMapV2(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics);
+	std::string selectorFingerprint(const std::vector<MapItem> &items);
 
 } // namespace world_layers

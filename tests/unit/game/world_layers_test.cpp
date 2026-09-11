@@ -1,6 +1,7 @@
 #include "world/world_layers.hpp"
 #include "world/world_validation.hpp"
 #include "../../world_layers/map_fixture.hpp"
+#include "../../world_layers/contract_v2.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <gtest/gtest.h>
@@ -15,6 +16,22 @@ namespace {
 		EXPECT_TRUE(diagnostics.empty());
 		return project;
 	}
+}
+
+TEST(WorldLayers, GeneralAuthoringContractPreservesSelectionAndInheritance) {
+	std::filesystem::path scratch;
+	const auto root = std::filesystem::temp_directory_path();
+	for (unsigned index = 0; index < 10000; ++index) {
+		const auto candidate = root / ("canary-world-v2-test-" + std::to_string(index));
+		if (std::filesystem::create_directory(candidate)) {
+			scratch = candidate;
+			break;
+		}
+	}
+	ASSERT_FALSE(scratch.empty());
+	EXPECT_NO_THROW(runWorldV2Tests(scratch));
+	std::error_code error;
+	std::filesystem::remove_all(scratch, error);
 }
 
 TEST(WorldLayers, PreserveBlackKnightArrivalsAndFollowIdentity) {
@@ -61,7 +78,7 @@ TEST(WorldLayers, RejectDuplicateJsonPropertiesAndUnknownComponents) {
 	ASSERT_FALSE(diagnostics.empty());
 	EXPECT_EQ(diagnostics.front().message, "Duplicate JSON property");
 	diagnostics.clear();
-	EXPECT_FALSE(world_layers::parseLayer(R"({"schemaVersion":2,"id":"future","objects":[]})", "future.json", layer, diagnostics));
+	EXPECT_FALSE(world_layers::parseLayer(R"({"schemaVersion":3,"id":"future","objects":[]})", "future.json", layer, diagnostics));
 	diagnostics.clear();
 	EXPECT_FALSE(world_layers::parseLayer(R"({"schemaVersion":1,"id":"future","objects":[{"id":"entry","position":{"x":1,"y":1,"z":7},"origin":{"type":"layer","itemId":1949},"components":[{"type":"future"}]}]})", "future.json", layer, diagnostics));
 }

@@ -19,4 +19,5 @@ target_sources(
             spawn_monster_test.cpp
             zone_weak_cache_test.cpp
             world_layers_test.cpp
+            ../../world_layers/contract_v2.cpp
 )

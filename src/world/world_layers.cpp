@@ -161,7 +161,7 @@ namespace world_layers {
 	}
 
 	std::string Project::qualifiedId(size_t layer, size_t object) const {
-		return layers[layer].id + "." + layers[layer].objects[object].id;
+		return objectId(layers[layer], layers[layer].objects[object]);
 	}
 
 	bool isValidPosition(const Position &position) {
@@ -213,7 +213,11 @@ namespace world_layers {
 		Json json;
 		Layer parsed;
 		parsed.file = file;
-		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "id", "name", "objects" })
+		if (!reader.parse(source, json)) return false;
+		if (json.is_object() && json.value("schemaVersion", Json()) == 2) {
+			return parseLayerV2(source, file, layer, diagnostics);
+		}
+		if (!reader.keys(json, "", { "$schema", "schemaVersion", "id", "name", "objects" })
 		    || !reader.version(json) || !reader.identifier(json.value("id", Json()), "/id", parsed.id)) {
 			return false;
 		}
@@ -299,7 +303,11 @@ namespace world_layers {
 		if (!readFile(file, source, error)) {
 			return reader.fail("", error);
 		}
-		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "map", "items", "layers" }) || !reader.version(json)
+		if (!reader.parse(source, json)) return false;
+		if (json.is_object() && json.value("schemaVersion", Json()) == 2) {
+			return loadProjectV2(file, project, diagnostics);
+		}
+		if (!reader.keys(json, "", { "$schema", "schemaVersion", "map", "items", "layers" }) || !reader.version(json)
 		    || !relativeFile(reader, json.value("map", Json()), file.parent_path(), "/map", parsed.map)
 		    || !relativeFile(reader, json.value("items", Json()), file.parent_path(), "/items", parsed.items)) {
 			return false;
@@ -345,6 +353,10 @@ namespace world_layers {
 	}
 
 	void validateProject(const Project &project, Diagnostics &diagnostics) {
+		if (project.schemaVersion == 2) {
+			validateProjectV2(project, diagnostics);
+			return;
+		}
 		std::unordered_map<uint16_t, std::string> uniqueIds;
 		std::set<std::string> claims;
 		std::set<std::string> positions;
@@ -375,6 +387,9 @@ namespace world_layers {
 	}
 
 	std::string serializeLayer(const Layer &layer) {
+		if (layer.schemaVersion == 2) {
+			return serializeLayerV2(layer);
+		}
 		Json json = Json::object();
 		if (!layer.schema.empty()) {
 			json["$schema"] = layer.schema;

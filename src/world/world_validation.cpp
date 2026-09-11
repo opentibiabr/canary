@@ -15,6 +15,7 @@ namespace world_layers {
 	}
 
 	bool validateMap(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics) {
+		if (project.schemaVersion == 2) return validateMapV2(project, map, plan, diagnostics);
 		const auto initialErrors = diagnostics.size();
 		validateProject(project, diagnostics);
 		if (diagnostics.size() != initialErrors) {

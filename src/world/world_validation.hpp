@@ -65,5 +65,6 @@ namespace world_layers {
 	bool validateMapV2(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics);
 	std::string selectorFingerprint(const std::vector<MapItem> &items);
 	bool resolveSelector(const Selector &selector, const std::vector<MapItem> &candidates, MapItem &selected, std::string &error);
+	bool captureSelector(Selector &selector, const std::vector<MapItem> &candidates, uint64_t key, std::string &error);
 
 } // namespace world_layers

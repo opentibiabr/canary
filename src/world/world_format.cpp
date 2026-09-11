@@ -1038,6 +1038,18 @@ namespace world_layers {
 		return json.dump(2) + "\n";
 	}
 
+	std::string serializeMigration(const MigrationRecord &record) {
+		const auto relative = [&](const std::filesystem::path &file) { return file.lexically_relative(record.file.parent_path()).generic_string(); };
+		Json json = { { "schemaVersion", 2 }, { "id", record.id }, { "sources", Json::array() }, { "claims", Json::array() } };
+		for (const auto &[file, sha256] : record.sources) {
+			json["sources"].push_back({ { "file", relative(file) }, { "sha256", sha256 } });
+		}
+		for (const auto &claim : record.claims) {
+			json["claims"].push_back({ { "source", { { "file", relative(claim.file) }, { "table", claim.table }, { "key", claim.key }, { "declaration", claim.declaration }, { "fingerprint", claim.fingerprint } } }, { "occurrence", claim.occurrence }, { "object", claim.object }, { "responsibilities", claim.responsibilities } });
+		}
+		return json.dump(2) + "\n";
+	}
+
 	bool validateParameter(const Parameter &schema, const Value &value, std::string &error) {
 		const auto json = encode(value);
 		const auto fail = [&](const std::string &message) { error = message; return false; };

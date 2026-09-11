@@ -108,6 +108,29 @@ namespace world_layers {
 		return true;
 	}
 
+	bool captureSelector(Selector &selector, const std::vector<MapItem> &candidates, uint64_t key, std::string &error) {
+		std::vector<MapItem> selected;
+		std::optional<uint32_t> occurrence;
+		for (const auto &candidate : candidates) {
+			if (matches(candidate, selector)) {
+				if (candidate.key == key) {
+					occurrence = static_cast<uint32_t>(selected.size());
+				}
+				selected.push_back(candidate);
+			}
+		}
+		if (!key || !occurrence) {
+			error = "The selected base item no longer matches this selector";
+			return false;
+		}
+		if (selected.size() == 1 && !selector.occurrence) {
+			selector.occurrence.reset();
+		} else {
+			selector.occurrence = Occurrence { *occurrence, static_cast<uint32_t>(selected.size()), selectorFingerprint(selected) };
+		}
+		return true;
+	}
+
 	bool validateMapV2(const Project &project, MapView &map, ApplicationPlan &plan, Diagnostics &diagnostics) {
 		const auto initialErrors = diagnostics.size();
 		validateProjectV2(project, diagnostics);

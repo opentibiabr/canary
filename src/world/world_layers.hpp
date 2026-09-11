@@ -209,5 +209,6 @@ namespace world_layers {
 	bool parseValue(const std::string &source, Value &value, std::string &error);
 	bool convertToV2(Project &project, Diagnostics &diagnostics);
 	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics);
+	std::string serializeMigration(const MigrationRecord &record);
 
 } // namespace world_layers

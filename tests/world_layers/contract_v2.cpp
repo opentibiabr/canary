@@ -182,6 +182,10 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	MigrationRecord record;
 	diagnostics.clear();
 	require(loadMigration(root / "migration.json", record, diagnostics), "transition claim parses with source revision and occurrence");
+	const auto serializedMigration = serializeMigration(record);
+	write(root / "migration.json", serializedMigration);
+	MigrationRecord reread;
+	require(loadMigration(root / "migration.json", reread, diagnostics) && serializeMigration(reread) == serializedMigration, "migration identity rewrite round trip retains source preconditions");
 	project.migrationRecords.push_back(record);
 	require(check(), "migration target and responsibility validation");
 	project.layers[0].enabled = false;
@@ -203,6 +207,14 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	}
 	Value value;
 	std::string error;
+	Selector selected;
+	selected.itemId = 1949;
+	std::vector<MapItem> candidates { { 101, 1949 }, { 102, 1949 } };
+	require(captureSelector(selected, candidates, 102, error) && selected.occurrence && selected.occurrence->index == 1, "explicit clicked item captures ambiguity preconditions");
+	MapItem chosen;
+	require(resolveSelector(selected, candidates, chosen, error) && chosen.key == 102, "captured selector resolves exactly the clicked occurrence");
+	candidates.pop_back();
+	require(!resolveSelector(selected, candidates, chosen, error), "removing an indistinguishable item invalidates the captured selection");
 	BehaviorDescriptor defaults;
 	Parameter amount;
 	amount.type = "integer";

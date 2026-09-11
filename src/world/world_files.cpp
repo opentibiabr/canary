@@ -604,7 +604,8 @@ namespace world_files {
 		Lease lock;
 		bool good = false;
 	};
-	ReadGuard::ReadGuard(const std::filesystem::path &catalog, std::string &error) : state(std::make_unique<State>()) {
+	ReadGuard::ReadGuard(const std::filesystem::path &catalog, std::string &error) :
+		state(std::make_unique<State>()) {
 		state->catalog = catalog;
 		if (!revision(sidecar(catalog, ".revision"), state->token, error)) {
 			return;

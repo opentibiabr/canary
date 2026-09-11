@@ -9,6 +9,7 @@
 ---@alias TileState integer
 
 ---@class Action
+---@overload fun(): Action
 Action = {}
 
 ---@param aids number
@@ -161,6 +162,7 @@ function Charm:points(arg2) end
 function Charm:type(arg2) end
 
 ---@class Combat
+---@overload fun(): Combat
 ---@operator eq(Combat):boolean
 Combat = {}
 
@@ -200,6 +202,7 @@ function Combat:setOrigin(origin) end
 function Combat:setParameter(key, value) end
 
 ---@class Condition
+---@overload fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?
 ---@operator eq(Condition):boolean
 Condition = {}
 
@@ -606,6 +609,7 @@ function Creature:teleportTo(position, pushMovement) end
 function Creature:unregisterEvent(name) end
 
 ---@class CreatureEvent
+---@overload fun(eventName: string): CreatureEvent
 CreatureEvent = {}
 
 ---@param callback fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean
@@ -989,6 +993,7 @@ function Game.setWorldType(type) end
 function Game.startRaid(raidName) end
 
 ---@class GlobalEvent
+---@overload fun(name: string): GlobalEvent
 GlobalEvent = {}
 
 ---@param interval number
@@ -2552,6 +2557,7 @@ function MoveEvent:uid(ids) end
 function MoveEvent:vocation(vocName, showInDescription, lastVoc) end
 
 ---@class NetworkMessage
+---@overload fun(): NetworkMessage
 ---@operator eq(NetworkMessage):boolean
 NetworkMessage = {}
 
@@ -4360,6 +4366,7 @@ function Spdlog.info(text) end
 function Spdlog.warn(text) end
 
 ---@class Spell
+---@overload fun(nameOrTypeOrId: string|integer): Spell?
 ---@operator eq(Spell):boolean
 Spell = {}
 
@@ -4519,6 +4526,7 @@ function Spell:vocation(vocation) end
 function Spell:words(words, separator) end
 
 ---@class TalkAction
+---@overload fun(...: string): TalkAction
 TalkAction = {}
 
 ---@return boolean|string
@@ -4772,6 +4780,7 @@ function Vocation:getRequiredSkillTries(skillType, skillLevel) end
 function Vocation:getSoulGainTicks() end
 
 ---@class Weapon
+---@overload fun(type: integer): Weapon?
 Weapon = {}
 
 ---@param callback string
@@ -4930,6 +4939,12 @@ function World.get(id) end
 function World.resolve(token) end
 
 ---@class WorldBehavior
+---@field onUse fun(context: WorldContext, player: Player, item: Item, fromPosition: Position, target: Item|Creature|table, toPosition: Position, isHotkey: boolean): boolean
+---@field onStepIn fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean
+---@field onStepOut fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean
+---@field onAddItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean
+---@field onRemoveItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean
+---@overload fun(id: string, contractVersion: integer): WorldBehavior
 WorldBehavior = {}
 
 ---@return boolean

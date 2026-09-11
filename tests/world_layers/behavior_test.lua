@@ -11,8 +11,13 @@ dofile("data-otservbr-global/scripts/world_behaviors/quest_gated_door.lua")
 local level, storage, doorId, transformations, denied = 20, 1, 1662, 0, 0
 local available, canTransform = true, true
 local player = {
-	getLevel = function() return level end,
-	getStorageValue = function(_, key) assert(key == 60001); return storage end,
+	getLevel = function()
+		return level
+	end,
+	getStorageValue = function(_, key)
+		assert(key == 60001)
+		return storage
+	end,
 	sendTextMessage = function(_, kind, message)
 		assert(kind == MESSAGE_EVENT_ADVANCE and message == "Denied")
 		denied = denied + 1
@@ -21,17 +26,31 @@ local player = {
 local door = {
 	transform = function(_, itemId)
 		transformations = transformations + 1
-		if canTransform then doorId = itemId end
+		if canTransform then
+			doorId = itemId
+		end
 		return true
 	end,
-	getId = function() return doorId end,
+	getId = function()
+		return doorId
+	end,
 }
 local parameters = { requiredLevel = 20, storageKey = 60001, requiredValue = 1, openDoorItemId = 1663, deniedMessage = "Denied" }
 local context = {
-	parameter = function(_, key) return parameters[key] end,
+	parameter = function(_, key)
+		return parameters[key]
+	end,
 	relation = function(_, name)
 		assert(name == "door")
-		return { getObject = function() return available and { getItem = function() return door end } or nil end }
+		return {
+			getObject = function()
+				return available and {
+					getItem = function()
+						return door
+					end,
+				} or nil
+			end,
+		}
 	end,
 }
 level = 19

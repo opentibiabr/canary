@@ -1,17 +1,29 @@
 -- Compatibility routing only. World values live in world/*.json.
 local legacyWorldTables = {
-	ChestAction = "chest.lua", ChestUnique = "chest.lua",
-	CorpseAction = "corpse.lua", CorpseUnique = "corpse.lua",
-	CreateItemOnMap = "create_item.lua", KeyDoorAction = "door_key.lua",
-	LevelDoorAction = "door_level.lua", QuestDoorAction = "door_quest.lua",
-	QuestDoorUnique = "door_quest.lua", ItemAction = "item.lua",
-	ItemUnique = "item.lua", DailyRewardAction = "item_daily_reward.lua",
-	ItemUnmovableAction = "item_unmovable.lua", LeverAction = "lever.lua",
-	LeverUnique = "lever.lua", TeleportAction = "teleport.lua",
-	TeleportUnique = "teleport.lua", TeleportItemAction = "teleport_item.lua",
-	TeleportItemUnique = "teleport_item.lua", TileAction = "tile.lua",
-	TileUnique = "tile.lua", TilePickAction = "tile_pick.lua",
-	BookDocumentTable = "writeable.lua", SignTable = "writeable.lua",
+	ChestAction = "chest.lua",
+	ChestUnique = "chest.lua",
+	CorpseAction = "corpse.lua",
+	CorpseUnique = "corpse.lua",
+	CreateItemOnMap = "create_item.lua",
+	KeyDoorAction = "door_key.lua",
+	LevelDoorAction = "door_level.lua",
+	QuestDoorAction = "door_quest.lua",
+	QuestDoorUnique = "door_quest.lua",
+	ItemAction = "item.lua",
+	ItemUnique = "item.lua",
+	DailyRewardAction = "item_daily_reward.lua",
+	ItemUnmovableAction = "item_unmovable.lua",
+	LeverAction = "lever.lua",
+	LeverUnique = "lever.lua",
+	TeleportAction = "teleport.lua",
+	TeleportUnique = "teleport.lua",
+	TeleportItemAction = "teleport_item.lua",
+	TeleportItemUnique = "teleport_item.lua",
+	TileAction = "tile.lua",
+	TileUnique = "tile.lua",
+	TilePickAction = "tile_pick.lua",
+	BookDocumentTable = "writeable.lua",
+	SignTable = "writeable.lua",
 }
 
 local function legacyWorldSource(tablename)
@@ -24,8 +36,7 @@ local function legacyWorldSource(tablename)
 end
 
 local function allowLegacyWorld(source, index, occurrence, responsibility, item, position, itemId)
-	return Game.canApplyLegacyWorld(source.file, source.name, tostring(index), occurrence,
-		responsibility, itemId or (item and item:getId()) or 0, position, item)
+	return Game.canApplyLegacyWorld(source.file, source.name, tostring(index), occurrence, responsibility, itemId or (item and item:getId()) or 0, position, item)
 end
 
 -- This function load the table "CreateItemOnMap"from script "create_item.lua"

@@ -502,7 +502,8 @@ namespace world_layers {
 		}
 	};
 
-	MapSnapshot::MapSnapshot() : state(std::make_unique<State>()) { }
+	MapSnapshot::MapSnapshot() :
+		state(std::make_unique<State>()) { }
 	MapSnapshot::~MapSnapshot() = default;
 	bool MapSnapshot::knownItem(uint16_t id) const {
 		return state->types[id].known;

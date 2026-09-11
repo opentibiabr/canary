@@ -27,7 +27,9 @@ Tile = function()
 		end,
 		getItemById = function()
 			return {
-				getId = function() return 1949 end,
+				getId = function()
+					return 1949
+				end,
 				setAttribute = function(_, _, id)
 					assigned[id] = true
 				end,
@@ -71,10 +73,21 @@ ITEM_ATTRIBUTE_ACTIONID = 2
 ItemAction = { [12107] = { itemId = 2772, itemPos = { { x = 1 }, { x = 2 } } } }
 Tile = function(position)
 	local item = {
-		getId = function() return 2772 end,
-		setAttribute = function(_, attribute, value) items[position.x] = { attribute, value } end,
+		getId = function()
+			return 2772
+		end,
+		setAttribute = function(_, attribute, value)
+			items[position.x] = { attribute, value }
+		end,
 	}
-	return { getItemCountById = function() return 1 end, getItemById = function() return item end }
+	return {
+		getItemCountById = function()
+			return 1
+		end,
+		getItemById = function()
+			return item
+		end,
+	}
 end
 Game.canApplyLegacyWorld = function(file, name, key, occurrence, responsibility)
 	assert(file == DATA_DIRECTORY .. "/startup/tables/item.lua" and name == "ItemAction")

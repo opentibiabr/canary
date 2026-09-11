@@ -16,6 +16,7 @@
 #include "creatures/players/player.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
+#include "world/world_runtime.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
@@ -31,6 +32,7 @@
 
 void GameFunctions::init(lua_State* L) {
 	Lua::registerTable(L, "Game");
+	Lua::registerMethod(L, "Game", "isWorldObjectDeclared", GameFunctions::luaGameIsWorldObjectDeclared);
 
 	Lua::registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 	Lua::registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);
@@ -1154,5 +1156,15 @@ int GameFunctions::luaGameGetMonstersByBestiaryStars(lua_State* L) {
 		Lua::pushSharedUserdata<MonsterType>(L, monsterType);
 		lua_rawseti(L, -2, ++index);
 	}
+	return 1;
+}
+
+/***
+ * @function Game.isWorldObjectDeclared
+ * @param id string
+ * @return boolean
+ */
+int GameFunctions::luaGameIsWorldObjectDeclared(lua_State* L) {
+	Lua::pushBoolean(L, g_game().worldLayers().isDeclared(Lua::getString(L, 1)));
 	return 1;
 }

@@ -423,6 +423,9 @@ pushWhenAttacking = false
 toggleDownloadMap = true
 mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.6.1/otservbr.otbm"
 mapName = "otservbr"
+-- "auto": load <datapack>/world/<mapName>.world.json if present.
+-- Empty string disables world layers; an explicit path must exist. Restart required.
+worldProject = "auto"
 mapAuthor = "OpenTibiaBR"
 
 -- Party List limitations

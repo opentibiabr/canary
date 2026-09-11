@@ -16,7 +16,10 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 end
 
 for uniqueRange = 38001, 40000 do
-	teleport:uid(uniqueRange)
+	local setting = TeleportUnique[uniqueRange]
+	if not (setting and setting.worldObject and Game.isWorldObjectDeclared(setting.worldObject)) then
+		teleport:uid(uniqueRange)
+	end
 end
 
 teleport:register()

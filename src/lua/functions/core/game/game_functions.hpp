@@ -14,6 +14,7 @@ public:
 	static void init(lua_State* L);
 
 private:
+	static int luaGameIsWorldObjectDeclared(lua_State* L);
 	static int luaGameCreateMonsterType(lua_State* L);
 	static int luaGameCreateNpcType(lua_State* L);
 	static int luaGameGetMonsterTypeByName(lua_State* L);

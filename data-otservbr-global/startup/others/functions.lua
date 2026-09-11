@@ -57,6 +57,9 @@ end
 function loadLuaMapUnique(tablename)
 	-- It load uniques
 	for index, value in pairs(tablename) do
+		if value.worldObject and Game.isWorldObjectDeclared(value.worldObject) then
+			goto continue
+		end
 		local tile = Tile(value.itemPos)
 		local item
 		-- Checks if the position is valid

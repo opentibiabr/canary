@@ -18,6 +18,9 @@
     <ClInclude Include="..\src\config\configmanager.hpp" />
     <ClInclude Include="..\src\config\config_definitions.hpp" />
     <ClInclude Include="..\src\core.hpp" />
+    <ClInclude Include="..\src\world\world_layers.hpp" />
+    <ClInclude Include="..\src\world\world_validation.hpp" />
+    <ClInclude Include="..\src\world\world_runtime.hpp" />
     <ClInclude Include="..\src\creatures\appearance\mounts\mounts.hpp" />
     <ClInclude Include="..\src\creatures\appearance\outfit\outfit.hpp" />
     <ClInclude Include="..\src\creatures\appearance\attached_effects\attached_effects.hpp" />
@@ -448,6 +451,9 @@
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
+    <ClCompile Include="..\src\world\world_layers.cpp" />
+    <ClCompile Include="..\src\world\world_validation.cpp" />
+    <ClCompile Include="..\src\world\world_runtime.cpp" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa_backend_mbedtls.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />

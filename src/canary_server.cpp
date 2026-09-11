@@ -8,6 +8,7 @@
  */
 
 #include "canary_server.hpp"
+#include "world/world_runtime.hpp"
 
 #include "core.hpp"
 #include "config/configmanager.hpp"
@@ -205,6 +206,9 @@ int CanaryServer::run() {
 #endif
 				rsa.start();
 				initializeDatabase();
+				if (!g_game().worldLayers().prepare()) {
+					throw FailedToInitializeCanary("Cannot prepare world project");
+				}
 				loadModules();
 				setWorldType();
 				loadMaps();
@@ -226,6 +230,9 @@ int CanaryServer::run() {
 
 				setupHousesRent();
 				g_game().transferHouseItemsToDepot();
+				if (!g_game().worldLayers().apply()) {
+					throw FailedToInitializeCanary("Cannot apply world project");
+				}
 
 				IOMarket::checkExpiredOffers();
 				IOMarket::getInstance().updateStatistics();

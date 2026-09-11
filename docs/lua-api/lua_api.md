@@ -1111,6 +1111,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
+#### `Game.isWorldObjectDeclared(id: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
 #### `Game.loadMap(path: string)`
 
 - Returns: `nil`

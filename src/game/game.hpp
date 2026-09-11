@@ -92,10 +92,13 @@ struct PlayerStats {
 	uint32_t totalUniqueIPs = 0;
 };
 
+class WorldLayerRuntime;
+
 class Game {
 public:
 	Game();
 	~Game();
+	WorldLayerRuntime &worldLayers();
 
 	// Singleton - ensures we don't accidentally copy it.
 	Game(const Game &) = delete;
@@ -772,6 +775,7 @@ public:
 	std::shared_ptr<Container> findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 
 private:
+	std::unique_ptr<WorldLayerRuntime> worldLayerRuntime;
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 

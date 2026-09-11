@@ -1701,6 +1701,14 @@
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
+        "name": "isWorldObjectDeclared",
+        "params": [
+          "id: string"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
         "name": "loadMap",
         "params": [
           "path: string"

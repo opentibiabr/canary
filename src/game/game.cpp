@@ -8,6 +8,7 @@
  */
 
 #include "game/game.hpp"
+#include "world/world_runtime.hpp"
 
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -543,6 +544,7 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
+	worldLayerRuntime = std::make_unique<WorldLayerRuntime>();
 	[[maybe_unused]] auto &[choices1_text, choices1_value] = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
 	[[maybe_unused]] auto &[choices2_text, choices2_value] = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	[[maybe_unused]] auto &[choices3_text, choices3_value] = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
@@ -762,6 +764,10 @@ Game::Game() {
 }
 
 Game::~Game() = default;
+
+WorldLayerRuntime &Game::worldLayers() {
+	return *worldLayerRuntime;
+}
 
 Game &Game::getInstance() {
 	return inject<Game>();

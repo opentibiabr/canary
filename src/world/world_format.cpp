@@ -756,11 +756,11 @@ namespace world_layers {
 		return true;
 	}
 
-	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics) {
+	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics, SourceFiles* sources) {
 		FormatReader reader(file, diagnostics);
 		std::string source, error;
 		Json json;
-		if (!readFile(file, source, error)) {
+		if (!readProjectSource(file, source, error, sources)) {
 			return reader.fail("", error);
 		}
 		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "id", "sources", "claims" })) {
@@ -843,14 +843,14 @@ namespace world_layers {
 		return true;
 	}
 
-	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics) {
+	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources) {
 		FormatReader reader(file, diagnostics);
 		std::string source, error;
 		Json value;
 		Project parsed;
 		parsed.file = file;
 		parsed.schemaVersion = 2;
-		if (!readFile(file, source, error)) {
+		if (!readProjectSource(file, source, error, sources)) {
 			return reader.fail("", error);
 		}
 		if (!reader.parse(source, value) || !reader.keys(value, "", { "$schema", "schemaVersion", "id", "map", "items", "layers", "behaviorCatalog", "migrations" })) {
@@ -882,7 +882,7 @@ namespace world_layers {
 			if (!files.insert(layer.file).second) {
 				return reader.fail("/layers/file", "Duplicate document path");
 			}
-			if (!readFile(layer.file, source, error)) {
+			if (!readProjectSource(layer.file, source, error, sources)) {
 				return reader.fail("/layers/file", layer.file.generic_string() + ": " + error);
 			}
 			const auto layerFile = layer.file;
@@ -906,7 +906,7 @@ namespace world_layers {
 				if (!files.insert(path).second) {
 					return reader.fail("/behaviorCatalog", "Duplicate document path");
 				}
-				if (!readFile(path, source, error)) {
+				if (!readProjectSource(path, source, error, sources)) {
 					return reader.fail("/behaviorCatalog", path.generic_string() + ": " + error);
 				}
 				if (!parseBehavior(source, path, behavior, diagnostics)) {
@@ -931,7 +931,7 @@ namespace world_layers {
 					return reader.fail("/migrations", "Duplicate document path");
 				}
 				MigrationRecord record;
-				if (!loadMigration(path, record, diagnostics)) {
+				if (!loadMigration(path, record, diagnostics, sources)) {
 					return false;
 				}
 				parsed.migrationRecords.push_back(std::move(record));

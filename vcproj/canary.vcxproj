@@ -18,6 +18,7 @@
     <ClInclude Include="..\src\config\configmanager.hpp" />
     <ClInclude Include="..\src\config\config_definitions.hpp" />
     <ClInclude Include="..\src\core.hpp" />
+    <ClInclude Include="..\src\world\world_files.hpp" />
     <ClInclude Include="..\src\world\world_layers.hpp" />
     <ClInclude Include="..\src\world\world_validation.hpp" />
     <ClInclude Include="..\src\world\world_snapshot.hpp" />
@@ -457,6 +458,7 @@
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
     <ClCompile Include="..\src\world\world_layers.cpp" />
+    <ClCompile Include="..\src\world\world_files.cpp" />
     <ClCompile Include="..\src\world\world_format.cpp" />
     <ClCompile Include="..\src\world\world_selectors.cpp" />
     <ClCompile Include="..\src\world\world_snapshot.cpp" />

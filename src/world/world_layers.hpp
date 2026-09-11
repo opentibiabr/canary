@@ -191,14 +191,16 @@ namespace world_layers {
 	bool isValidPosition(const Position &position);
 	std::optional<Position> destination(const Project &project, const Object &object);
 	bool parseLayer(const std::string &source, const std::filesystem::path &file, Layer &layer, Diagnostics &diagnostics);
-	bool loadProject(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics);
+	using SourceFiles = std::map<std::filesystem::path, std::string>;
+	bool loadProject(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources = nullptr);
+	bool readProjectSource(const std::filesystem::path &file, std::string &content, std::string &error, SourceFiles* sources);
 	void validateProject(const Project &project, Diagnostics &diagnostics);
 	std::string serializeLayer(const Layer &layer);
 	bool readFile(const std::filesystem::path &file, std::string &content, std::string &error);
 	std::string objectId(const Layer &layer, const Object &object);
 	std::optional<Position> objectPosition(const Project &project, const Object &object);
 	bool parseLayerV2(const std::string &source, const std::filesystem::path &file, Layer &layer, Diagnostics &diagnostics);
-	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics);
+	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources = nullptr);
 	std::string serializeLayerV2(const Layer &layer);
 	std::string serializeProject(const Project &project);
 	void validateProjectV2(const Project &project, Diagnostics &diagnostics);
@@ -208,7 +210,7 @@ namespace world_layers {
 	std::string serializeValue(const Value &value);
 	bool parseValue(const std::string &source, Value &value, std::string &error);
 	bool convertToV2(Project &project, Diagnostics &diagnostics);
-	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics);
+	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics, SourceFiles* sources = nullptr);
 	std::string serializeMigration(const MigrationRecord &record);
 
 } // namespace world_layers

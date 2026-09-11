@@ -1,4 +1,5 @@
 #include "world/world_layers.hpp"
+#include "world/world_files.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <nlohmann/json.hpp>
@@ -296,20 +297,37 @@ namespace world_layers {
 		return true;
 	}
 
-	bool loadProject(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics) {
+	bool readProjectSource(const std::filesystem::path &file, std::string &content, std::string &error, SourceFiles* sources) {
+		if (sources) {
+			const auto found = sources->find(file);
+			if (found != sources->end()) {
+				content = found->second;
+				return true;
+			}
+		}
+		if (!readFile(file, content, error)) {
+			return false;
+		}
+		if (sources) {
+			sources->emplace(file, content);
+		}
+		return true;
+	}
+
+	static bool loadProjectDocuments(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources) {
 		Reader reader(file, diagnostics);
 		std::string source, error;
 		Json json;
 		Project parsed;
 		parsed.file = file;
-		if (!readFile(file, source, error)) {
+		if (!readProjectSource(file, source, error, sources)) {
 			return reader.fail("", error);
 		}
 		if (!reader.parse(source, json)) {
 			return false;
 		}
 		if (json.is_object() && json.value("schemaVersion", Json()) == 2) {
-			return loadProjectV2(file, project, diagnostics);
+			return loadProjectV2(file, project, diagnostics, sources);
 		}
 		if (!reader.keys(json, "", { "$schema", "schemaVersion", "map", "items", "layers" }) || !reader.version(json)
 		    || !relativeFile(reader, json.value("map", Json()), file.parent_path(), "/map", parsed.map)
@@ -334,7 +352,7 @@ namespace world_layers {
 			if (!files.insert(layerFile).second) {
 				return reader.fail("/layers", "Duplicate layer file");
 			}
-			if (!readFile(layerFile, source, error)) {
+			if (!readProjectSource(layerFile, source, error, sources)) {
 				diagnostics.push_back({ layerFile, "", "", error });
 				return false;
 			}
@@ -354,6 +372,48 @@ namespace world_layers {
 		}
 		project = std::move(parsed);
 		return true;
+	}
+
+	bool loadProject(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources) {
+		try {
+			std::string error;
+			world_files::ReadGuard guard(file, error);
+			if (!guard.valid()) {
+				diagnostics.push_back({ file, "", "", error });
+				return false;
+			}
+			Project parsed;
+			SourceFiles captured;
+			if (!loadProjectDocuments(file, parsed, diagnostics, &captured)) {
+				return false;
+			}
+			for (const auto &behavior : parsed.behaviors) {
+				std::string content;
+				if (!readProjectSource(behavior.script, content, error, &captured)) {
+					diagnostics.push_back({ behavior.script, "", "", error });
+					return false;
+				}
+			}
+			for (const auto &[path, bytes] : captured) {
+				world_files::Revision actual;
+				if (!world_files::revision(path, actual, error) || actual != world_files::Revision(bytes)) {
+					diagnostics.push_back({ path, "", "", error.empty() ? "Document changed while the project was loading" : error });
+					return false;
+				}
+			}
+			if (!guard.unchanged(error)) {
+				diagnostics.push_back({ file, "", "", error });
+				return false;
+			}
+			project = std::move(parsed);
+			if (sources) {
+				*sources = std::move(captured);
+			}
+			return true;
+		} catch (const std::exception &exception) {
+			diagnostics.push_back({ file, "", "", exception.what() });
+			return false;
+		}
 	}
 
 	void validateProject(const Project &project, Diagnostics &diagnostics) {

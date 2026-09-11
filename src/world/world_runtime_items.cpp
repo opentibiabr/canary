@@ -44,6 +44,19 @@ namespace world_runtime {
 		return item->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID);
 	}
 
+	std::vector<std::shared_ptr<Item>> mapOrderedItems(const TileItemVector &items) {
+		std::vector<std::shared_ptr<Item>> result;
+		result.reserve(items.size());
+		// OTBM/RME order is bottom-to-top. The server stores down items in
+		// reverse order before the always-on-top group; gameplay keeps that
+		// native order, while occurrence selectors use the authored order.
+		result.insert(result.end(), items.getBeginTopItem(), items.getEndTopItem());
+		for (auto it = items.getEndDownItem(); it != items.getBeginDownItem();) {
+			result.push_back(*--it);
+		}
+		return result;
+	}
+
 	Value::Record overrides(const world_layers::Object &object) {
 		auto result = object.attributes;
 		if (object.aidOverride || object.aid) {

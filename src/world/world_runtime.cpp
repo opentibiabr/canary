@@ -97,7 +97,7 @@ namespace {
 			};
 			append(tile->getGround(), true);
 			if (const auto list = tile->getItemList()) {
-				for (const auto &item : *list) {
+				for (const auto &item : mapOrderedItems(*list)) {
 					append(item, false);
 				}
 			}

@@ -391,20 +391,6 @@ std::shared_ptr<Item> Item::createItemBatch(uint16_t itemId, uint32_t count, uin
 };
 
 std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0*/, Position* itemPosition /*= nullptr*/, bool createWrappableItem /* false*/, bool customCharges /* false */) {
-	// A map which contains items that, when on creating, should be transformed to the default type.
-	static const phmap::flat_hash_map<ItemID_t, ItemID_t> ItemTransformationMap = {
-		{ ITEM_SWORD_RING_ACTIVATED, ITEM_SWORD_RING },
-		{ ITEM_CLUB_RING_ACTIVATED, ITEM_CLUB_RING },
-		{ ITEM_DWARVEN_RING_ACTIVATED, ITEM_DWARVEN_RING },
-		{ ITEM_RING_HEALING_ACTIVATED, ITEM_RING_HEALING },
-		{ ITEM_STEALTH_RING_ACTIVATED, ITEM_STEALTH_RING },
-		{ ITEM_TIME_RING_ACTIVATED, ITEM_TIME_RING },
-		{ ITEM_PAIR_SOFT_BOOTS_ACTIVATED, ITEM_PAIR_SOFT_BOOTS },
-		{ ITEM_DEATH_RING_ACTIVATED, ITEM_DEATH_RING },
-		{ ITEM_PRISMATIC_RING_ACTIVATED, ITEM_PRISMATIC_RING },
-		{ ITEM_OLD_DIAMOND_ARROW, ITEM_DIAMOND_ARROW },
-	};
-
 	std::shared_ptr<Item> newItem = nullptr;
 
 	const ItemType &it = Item::items[type];
@@ -446,12 +432,12 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		} else if (it.isBed()) {
 			newItem = std::make_shared<BedItem>(type);
 		} else {
-			const auto itemMap = ItemTransformationMap.find(static_cast<ItemID_t>(it.id));
-			if (itemMap != ItemTransformationMap.end()) {
-				newItem = std::make_shared<Item>(itemMap->second, count);
-			} else {
-				newItem = std::make_shared<Item>(type, count);
+			uint16_t creationType = it.transformDeEquipTo != 0 ? it.transformDeEquipTo : type;
+			// The old Diamond Arrow is a legacy asset alias, not an equipment state.
+			if (it.id == ITEM_OLD_DIAMOND_ARROW) {
+				creationType = ITEM_DIAMOND_ARROW;
 			}
+			newItem = std::make_shared<Item>(creationType, count);
 		}
 	} else if (type > 0 && itemPosition) {
 		const auto position = *itemPosition;

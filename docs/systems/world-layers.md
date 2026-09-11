@@ -22,10 +22,14 @@ Set `worldProject = ""` and restart to return to the original Black Knight
 teleports and legacy UID loader. Changes to this setting or the layer require a
 restart. Reloading Lua does not reread world layers.
 
-Open `otservbr.world.json` in a compatible RME. Select a portal in **World Layers**,
-use **Go to object**, and drag it on the map or edit its coordinates in the panel.
-**Go to arrival** navigates across floors. Ctrl+S writes changed layer files.
-The editor's normal OTBM workflow remains available by opening the OTBM separately.
+Open `otservbr.otbm` normally in a compatible RME; its sibling world catalog loads
+automatically. For a catalog stored elsewhere, use **Map > Load Server Worlds...**
+or configure its path beside the NPC and monster paths in Preferences. **Worlds**
+is a category of the normal palette. Select and drag external portals on the map,
+or double-click them to edit their normal item properties. **Go to arrival**
+navigates across floors. Terrain and ordinary items remain editable in the same
+tab. Ctrl+S writes world changes to layers and base-map changes to OTBM; changing
+only a world object does not serialize the OTBM. Undo/redo follows one timeline.
 
 ## Project and layer contract
 
@@ -52,7 +56,7 @@ optional display `name`, `position`, `origin`, optional `attributes` and optiona
 
 - Layer IDs use lowercase letters, digits and underscores, starting with a letter.
   Local object IDs additionally allow dots and hyphens. Each part is at most 128 characters.
-- Positions have integer X/Y in 0â€“65535 and floor in 0â€“15. The null position is invalid.
+- Positions have integer X/Y in 0..65535 and floor in 0..15. The null position is invalid.
 - `origin.type` is `layer`; `origin.itemId` must identify a native teleport in v1.
 - `origin.replaces`, when present, selects one original teleport by its original
   position and item ID. Exactly one match is required. This anchor does not move
@@ -135,9 +139,9 @@ authorized local build workflow in `docs/building/local-validation.md`.
 Before releasing changes to this contract, also run the editor's headless contract
 test and the following integration scenario on a local server and map copy:
 
-1. Record the OTBM hash, open the project in RME and inspect both original locations.
+1. Record the OTBM hash, open the OTBM in RME and inspect both original locations.
    Each effective portal must appear once. Hide the layer to inspect the originals.
-2. Move the exit to a valid tile, undo, redo and save. Reopen the project. The exit
+2. Move the exit to a valid tile, undo, redo and save. Reopen the OTBM. The exit
    and entry's resolved arrival must follow the edit, and the OTBM hash must match.
 3. Start Canary with the edited project. Verify native travel with a player, an NPC
    or monster, and a movable item, including arrival position and effects.

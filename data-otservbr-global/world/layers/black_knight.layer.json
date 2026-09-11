@@ -1,0 +1,78 @@
+{
+  "$schema": "../../../schemas/world-layer-v1.schema.json",
+  "schemaVersion": 1,
+  "id": "black_knight",
+  "name": "Black Knight",
+  "objects": [
+    {
+      "id": "entry",
+      "name": "Entrance",
+      "position": {
+        "x": 32874,
+        "y": 31941,
+        "z": 12
+      },
+      "origin": {
+        "type": "layer",
+        "itemId": 1949,
+        "replaces": {
+          "position": {
+            "x": 32874,
+            "y": 31941,
+            "z": 12
+          },
+          "itemId": 1949
+        }
+      },
+      "attributes": {
+        "uid": 38012
+      },
+      "components": [
+        {
+          "type": "teleport",
+          "destination": "black_knight.exit",
+          "destinationOffset": {
+            "x": 0,
+            "y": -7,
+            "z": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "exit",
+      "name": "Exit",
+      "position": {
+        "x": 32874,
+        "y": 31955,
+        "z": 11
+      },
+      "origin": {
+        "type": "layer",
+        "itemId": 1949,
+        "replaces": {
+          "position": {
+            "x": 32874,
+            "y": 31955,
+            "z": 11
+          },
+          "itemId": 1949
+        }
+      },
+      "attributes": {
+        "uid": 38013
+      },
+      "components": [
+        {
+          "type": "teleport",
+          "destination": "black_knight.entry",
+          "destinationOffset": {
+            "x": 0,
+            "y": 1,
+            "z": 0
+          }
+        }
+      ]
+    }
+  ]
+}

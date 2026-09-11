@@ -1,0 +1,9 @@
+{
+  "$schema": "../../schemas/world-project-v1.schema.json",
+  "schemaVersion": 1,
+  "map": "otservbr.otbm",
+  "items": "../../data/items/items.xml",
+  "layers": [
+    "layers/black_knight.layer.json"
+  ]
+}

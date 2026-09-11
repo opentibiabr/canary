@@ -61,6 +61,12 @@ namespace world_layers {
 	bool MapView::knownItem(uint16_t itemId) const {
 		return itemId != 0;
 	}
+	MapTile MapView::selectionTile(const Position &position) {
+		return tile(position);
+	}
+	uint16_t MapView::effectiveUid(const MapItem &original) {
+		return original.uid;
+	}
 	bool MapView::capability(uint16_t itemId, const std::string &name) const {
 		return name == "teleport" && nativeTeleport(itemId);
 	}
@@ -140,7 +146,7 @@ namespace world_layers {
 							candidates = parent->second.children;
 						}
 					} else {
-						candidates = tile(selector.position).items;
+						candidates = map.selectionTile(selector.position).items;
 					}
 					std::vector<MapItem> matches;
 					for (const auto &item : candidates) {
@@ -166,7 +172,7 @@ namespace world_layers {
 						if (object->mode == SourceMode::Replace) {
 							descendants(original, staged.originals);
 						} else {
-							entry.effectiveUid = original.uid;
+							entry.effectiveUid = map.effectiveUid(original);
 						}
 					}
 				} else if (object->replaces) {
@@ -234,8 +240,22 @@ namespace world_layers {
 			return false;
 		}
 
+		for (const auto &[owner, original] : originals) {
+			if (project.find(owner)->mode != SourceMode::Replace) continue;
+			std::unordered_set<uint64_t> consumed;
+			descendants(original, consumed);
+			for (const auto &[other, selected] : originals) {
+				if (other != owner && consumed.contains(selected.key)) {
+					fail(other, "/source/selector", "The selected original is consumed by replacement " + owner);
+				}
+			}
+		}
+
 		std::map<uint16_t, std::string> effective;
 		for (const auto &entry : staged.objects) {
+			if (entry.original && staged.originals.contains(entry.original) && project.find(entry.id)->mode == SourceMode::Map) {
+				fail(entry.id, "/source/selector", "This original is inside a replaced container");
+			}
 			if (entry.effectiveUid && !effective.emplace(entry.effectiveUid, entry.id).second) {
 				fail(entry.id, "/attributes/uid", "Duplicate effective UID: " + effective[entry.effectiveUid]);
 			}

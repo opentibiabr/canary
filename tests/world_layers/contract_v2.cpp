@@ -22,6 +22,8 @@ namespace {
 		using Key = std::tuple<int32_t, int32_t, int32_t>;
 		std::map<Key, MapTile> tiles;
 		std::vector<UniqueOccurrence> ids;
+		std::map<Key, MapTile> baseline;
+		std::map<uint64_t, uint16_t> persistedUids;
 		bool nativeTeleport(uint16_t id) const override {
 			return id == 1949;
 		}
@@ -40,6 +42,14 @@ namespace {
 		MapTile tile(const Position &p) override {
 			const auto it = tiles.find({ p.x, p.y, p.z });
 			return it == tiles.end() ? MapTile {} : it->second;
+		}
+		MapTile selectionTile(const Position &p) override {
+			const auto it = baseline.find({ p.x, p.y, p.z });
+			return it == baseline.end() ? tile(p) : it->second;
+		}
+		uint16_t effectiveUid(const MapItem &item) override {
+			const auto it = persistedUids.find(item.key);
+			return it == persistedUids.end() ? item.uid : it->second;
 		}
 		std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) override {
 			std::vector<UniqueOccurrence> result;
@@ -153,6 +163,36 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	project.rebuildIndex(diagnostics);
 	require(project.find("example.lever") != nullptr, "layer rename leaves object identity stable");
 	project.layers[0].id = originalLayerId;
+
+	map.baseline[{ 100, 104, 7 }] = map.tiles[{ 100, 104, 7 }];
+	map.tiles[{ 100, 104, 7 }].items.front().children.push_back({ 1001, 2828 });
+	require(check(), "persisted/refilled child does not make a base selector ambiguous");
+	map.tiles[{ 100, 104, 7 }].items.front().children.pop_back();
+	map.baseline.clear();
+	map.persistedUids[5] = 45001;
+	require(!check(), "live inherited UID is validated independently of original selection");
+	map.persistedUids.clear();
+	project.find("example.bookcase")->mode = SourceMode::Replace;
+	require(!check(), "cannot bind a child removed by its parent's replacement");
+	project.find("example.bookcase")->mode = SourceMode::Map;
+
+	const std::string digest(64, 'a');
+	const auto migration = std::string(R"({"schemaVersion":2,"id":"fixture-migration","sources":[{"file":"legacy.lua","sha256":")") + digest + R"("}],"claims":[{"source":{"file":"legacy.lua","table":"LeverAction","key":"12107","declaration":2,"fingerprint":")" + digest + R"("},"occurrence":"1.item","object":"example.lever","responsibilities":["attributes.aid","onUse"]}]})";
+	write(root / "migration.json", migration);
+	MigrationRecord record;
+	diagnostics.clear();
+	require(loadMigration(root / "migration.json", record, diagnostics), "transition claim parses with source revision and occurrence");
+	project.migrationRecords.push_back(record);
+	require(check(), "migration target and responsibility validation");
+	project.layers[0].enabled = false;
+	require(check(), "disabled layer retains migration ownership");
+	project.layers[0].enabled = true;
+	project.migrationRecords.push_back(record);
+	require(!check(), "duplicate migration/ownership rejected");
+	project.migrationRecords.clear();
+	write(root / "migration.json", R"({"schemaVersion":2,"id":"bad","sources":[],"claims":[{"source":{"file":"legacy.lua"},"occurrence":"1.item","object":"example.lever","responsibilities":["attributes.aid"]}]})");
+	diagnostics.clear();
+	require(!loadMigration(root / "migration.json", record, diagnostics), "claims without source revisions rejected");
 
 	for (const auto* invalid : {
 			 R"({"schemaVersion":2,"id":"test","objects":[{"id":"x","id":"y","kind":"anchor","position":{"x":1,"y":1,"z":7}}]})",

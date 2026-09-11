@@ -152,6 +152,22 @@ namespace world_layers {
 
 	using Diagnostics = std::vector<Diagnostic>;
 
+	struct LegacyClaim {
+		std::filesystem::path file;
+		std::string table, key, occurrence, fingerprint, object;
+		uint32_t declaration = 1;
+		std::vector<std::string> responsibilities;
+	};
+
+	struct MigrationRecord {
+		std::filesystem::path file;
+		std::string id;
+		// SHA-256 of UTF-8 source with CRLF normalized to LF. These are
+		// transition preconditions, not another operational configuration.
+		std::map<std::filesystem::path, std::string> sources;
+		std::vector<LegacyClaim> claims;
+	};
+
 	struct Project {
 		std::filesystem::path file;
 		std::filesystem::path map;
@@ -162,6 +178,7 @@ namespace world_layers {
 		std::string id, schema;
 		std::vector<BehaviorDescriptor> behaviors;
 		std::vector<std::filesystem::path> migrations;
+		std::vector<MigrationRecord> migrationRecords;
 
 		const Object* find(const std::string &id) const;
 		Object* find(const std::string &id);
@@ -190,5 +207,6 @@ namespace world_layers {
 	std::string serializeValue(const Value &value);
 	bool parseValue(const std::string &source, Value &value, std::string &error);
 	bool convertToV2(Project &project, Diagnostics &diagnostics);
+	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics);
 
 } // namespace world_layers

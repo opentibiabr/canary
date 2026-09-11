@@ -6,6 +6,7 @@
 	#include <cmath>
 	#include <limits>
 	#include <set>
+	#include <tuple>
 #endif
 
 namespace world_layers {
@@ -754,6 +755,93 @@ namespace world_layers {
 		return true;
 	}
 
+	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics) {
+		Reader reader(file, diagnostics);
+		std::string source, error;
+		Json json;
+		if (!readFile(file, source, error)) {
+			return reader.fail("", error);
+		}
+		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "id", "sources", "claims" })) {
+			return false;
+		}
+		if (!json.contains("schemaVersion") || !json["schemaVersion"].is_number_integer() || json["schemaVersion"] != 2) {
+			return reader.fail("/schemaVersion", "Expected schemaVersion 2");
+		}
+		MigrationRecord result;
+		result.file = file;
+		if (!reader.text(json.value("id", Json()), "/id", result.id) || result.id.empty()) {
+			return reader.fail("/id", "Expected a migration identity");
+		}
+		if (!json.contains("sources") || !json["sources"].is_array() || !json.contains("claims") || !json["claims"].is_array()) {
+			return reader.fail("", "Expected sources and claims arrays");
+		}
+		const auto hash = [&](const Json &value, const std::string &field, std::string &result) {
+			if (!reader.text(value, field, result) || result.size() != 64 || !std::all_of(result.begin(), result.end(), [](char ch) { return (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f'); })) {
+				return reader.fail(field, "Expected lowercase SHA-256");
+			}
+			return true;
+		};
+		for (const auto &entry : json["sources"]) {
+			std::filesystem::path path;
+			std::string digest;
+			if (!reader.keys(entry, "/sources", { "file", "sha256" }) || !reader.relative(entry.value("file", Json()), "/sources/file", path) || !hash(entry.value("sha256", Json()), "/sources/sha256", digest)) {
+				return false;
+			}
+			if (!result.sources.emplace(path, digest).second) {
+				return reader.fail("/sources", "Duplicate source path");
+			}
+		}
+		std::set<std::tuple<std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string, std::string>> claims;
+		for (const auto &entry : json["claims"]) {
+			LegacyClaim claim;
+			if (!reader.keys(entry, "/claims", { "source", "occurrence", "object", "responsibilities" })) {
+				return false;
+			}
+			const auto origin = entry.value("source", Json());
+			if (!reader.keys(origin, "/claims/source", { "file", "table", "key", "declaration", "fingerprint" }) || !reader.relative(origin.value("file", Json()), "/claims/source/file", claim.file)) {
+				return false;
+			}
+			if (!result.sources.contains(claim.file)) {
+				return reader.fail("/claims/source/file", "Source lacks a revision precondition");
+			}
+			if (!reader.text(origin.value("table", Json()), "/claims/source/table", claim.table) || !reader.text(origin.value("key", Json()), "/claims/source/key", claim.key) || !hash(origin.value("fingerprint", Json()), "/claims/source/fingerprint", claim.fingerprint)) {
+				return false;
+			}
+			const auto ordinal = origin.value("declaration", Json(1));
+			if (!ordinal.is_number_integer() || ordinal < 1 || ordinal > UINT32_MAX) {
+				return reader.fail("/claims/source/declaration", "Expected a positive declaration occurrence");
+			}
+			claim.declaration = ordinal.get<uint32_t>();
+			if (!reader.text(entry.value("occurrence", Json()), "/claims/occurrence", claim.occurrence) || !reader.text(entry.value("object", Json()), "/claims/object", claim.object)) {
+				return false;
+			}
+			if (claim.table.empty() || claim.key.empty() || claim.occurrence.empty() || claim.object.empty()) {
+				return reader.fail("/claims", "Claim identity fields cannot be empty");
+			}
+			if (!entry.contains("responsibilities") || !entry["responsibilities"].is_array() || entry["responsibilities"].empty()) {
+				return reader.fail("/claims/responsibilities", "Expected non-empty responsibilities");
+			}
+			for (const auto &value : entry["responsibilities"]) {
+				std::string responsibility;
+				if (!reader.text(value, "/claims/responsibilities", responsibility)) {
+					return false;
+				}
+				const std::set<std::string> known { "attributes.aid", "attributes.uid", "attributes.text", "attributes.description", "attributes.name", "attributes.article", "attributes.plural", "attributes.writer", "attributes.date", "attributes.custom", "creation", "replacement", "onUse", "onStepIn", "onStepOut", "onAddItem", "onRemoveItem" };
+				if (!known.contains(responsibility)) {
+					return reader.fail("/claims/responsibilities", "Unknown responsibility: " + responsibility);
+				}
+				if (!claims.emplace(claim.file, claim.table, claim.key, claim.declaration, claim.occurrence, claim.object, responsibility).second) {
+					return reader.fail("/claims", "Duplicate ownership claim");
+				}
+				claim.responsibilities.push_back(responsibility);
+			}
+			result.claims.push_back(std::move(claim));
+		}
+		record = std::move(result);
+		return true;
+	}
+
 	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics) {
 		Reader reader(file, diagnostics);
 		std::string source, error;
@@ -841,6 +929,11 @@ namespace world_layers {
 				if (!files.insert(path).second) {
 					return reader.fail("/migrations", "Duplicate document path");
 				}
+				MigrationRecord record;
+				if (!loadMigration(path, record, diagnostics)) {
+					return false;
+				}
+				parsed.migrationRecords.push_back(std::move(record));
 				parsed.migrations.push_back(path);
 			}
 		}
@@ -1133,6 +1226,23 @@ namespace world_layers {
 						if (relation.minimum && !binding.relations.contains(name)) {
 							fail("/behaviors/relations/" + name, "Missing required relation");
 						}
+					}
+				}
+			}
+		}
+		std::set<std::string> migrationIds;
+		std::set<std::tuple<std::filesystem::path, std::string, std::string, std::string, std::string>> claims;
+		for (const auto &record : project.migrationRecords) {
+			if (!migrationIds.insert(record.id).second) {
+				diagnostics.push_back({ record.file, "", "/id", "Duplicate migration identity" });
+			}
+			for (const auto &claim : record.claims) {
+				if (!project.find(claim.object)) {
+					diagnostics.push_back({ record.file, claim.object, "/claims/object", "Missing migration target" });
+				}
+				for (const auto &responsibility : claim.responsibilities) {
+					if (!claims.emplace(claim.file.lexically_normal(), claim.table, claim.key, claim.occurrence, responsibility).second) {
+						diagnostics.push_back({ record.file, claim.object, "/claims", "More than one migration owns this legacy occurrence/responsibility" });
 					}
 				}
 			}

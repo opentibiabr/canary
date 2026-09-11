@@ -41,6 +41,9 @@ namespace world_layers {
 		virtual bool knownItem(uint16_t itemId) const;
 		virtual bool capability(uint16_t itemId, const std::string &name) const;
 		virtual MapTile tile(const Position &position) = 0;
+		// Runtime selection reads the captured OTBM, before startup/persistence.
+		virtual MapTile selectionTile(const Position &position);
+		virtual uint16_t effectiveUid(const MapItem &original);
 		// An empty request returns the complete UID census, including containers.
 		virtual std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) = 0;
 	};

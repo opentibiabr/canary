@@ -1,0 +1,894 @@
+{
+  "schemaVersion": 1,
+  "summary": {
+    "files": 16,
+    "tables": 25,
+    "declarations": 1661,
+    "selected": 1661,
+    "consumers": 29,
+    "classifications": {
+      "automatic": 853,
+      "inactive": 22,
+      "known-adaptation": 751,
+      "needs-analysis": 30,
+      "runtime-state": 5
+    }
+  },
+  "tables": [
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestAction",
+      "entries": 3,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "entries": 389,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/corpse.lua",
+      "table": "CorpseAction",
+      "entries": 4,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/corpse.lua",
+      "table": "CorpseUnique",
+      "entries": 6,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/create_item.lua",
+      "table": "CreateItemOnMap",
+      "entries": 2,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/door_key.lua",
+      "table": "KeyDoorAction",
+      "entries": 35,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/door_level.lua",
+      "table": "LevelDoorAction",
+      "entries": 12,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorAction",
+      "entries": 159,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorUnique",
+      "entries": 6,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "entries": 298,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemUnique",
+      "entries": 258,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/item_daily_reward.lua",
+      "table": "DailyRewardAction",
+      "entries": 0,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/item_unmovable.lua",
+      "table": "ItemUnmovableAction",
+      "entries": 1,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/lever.lua",
+      "table": "LeverAction",
+      "entries": 35,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/lever.lua",
+      "table": "LeverUnique",
+      "entries": 120,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/teleport.lua",
+      "table": "TeleportAction",
+      "entries": 15,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/teleport.lua",
+      "table": "TeleportUnique",
+      "entries": 79,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "entries": 20,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemUnique",
+      "entries": 4,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/tile.lua",
+      "table": "TileAction",
+      "entries": 89,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/tile.lua",
+      "table": "TileUnique",
+      "entries": 33,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/tile_pick.lua",
+      "table": "TilePickAction",
+      "entries": 1,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "entries": 61,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "SignTable",
+      "entries": 26,
+      "classification": "configuration"
+    },
+    {
+      "file": "startup/tables/storage_keys_update.lua",
+      "table": "QuestKeysUpdate",
+      "entries": 5,
+      "classification": "runtime-state"
+    }
+  ],
+  "consumers": [
+    {
+      "file": "data-otservbr-global/scripts/actions/other/teleport_item.lua",
+      "table": "TeleportItemUnique",
+      "lines": [
+        7
+      ],
+      "aliases": [
+        {
+          "name": "setting",
+          "line": 7
+        }
+      ],
+      "classification": "known-adaptation",
+      "destination": "world use-teleport behavior"
+    },
+    {
+      "file": "data-otservbr-global/scripts/actions/system/quest_reward_common.lua",
+      "table": "ChestUnique",
+      "lines": [
+        154
+      ],
+      "aliases": [
+        {
+          "name": "setting",
+          "line": 154
+        }
+      ],
+      "classification": "known-adaptation",
+      "destination": "world quest reward context"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "BookDocumentTable",
+      "lines": [
+        29
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "ChestAction",
+      "lines": [
+        2
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "ChestUnique",
+      "lines": [
+        3
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "CorpseAction",
+      "lines": [
+        4
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "CorpseUnique",
+      "lines": [
+        5
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "CreateItemOnMap",
+      "lines": [
+        22
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "ItemAction",
+      "lines": [
+        10
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "ItemUnique",
+      "lines": [
+        11
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "ItemUnmovableAction",
+      "lines": [
+        12
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "KeyDoorAction",
+      "lines": [
+        6
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "LevelDoorAction",
+      "lines": [
+        7
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "LeverAction",
+      "lines": [
+        13
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "LeverUnique",
+      "lines": [
+        14
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "QuestDoorAction",
+      "lines": [
+        8
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "QuestDoorUnique",
+      "lines": [
+        9
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "QuestKeysUpdate",
+      "lines": [
+        23
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "SignTable",
+      "lines": [
+        28
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TeleportAction",
+      "lines": [
+        15
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TeleportItemAction",
+      "lines": [
+        17
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TeleportItemUnique",
+      "lines": [
+        18
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TeleportUnique",
+      "lines": [
+        16
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TileAction",
+      "lines": [
+        19
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TilePickAction",
+      "lines": [
+        21
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/globalevents/others/map_attributes_loader.lua",
+      "table": "TileUnique",
+      "lines": [
+        20
+      ],
+      "aliases": [],
+      "classification": "known-adaptation",
+      "destination": "ownership-aware startup"
+    },
+    {
+      "file": "data-otservbr-global/scripts/movements/others/remove-create_item.lua",
+      "table": "TileUnique",
+      "lines": [
+        17,
+        48
+      ],
+      "aliases": [
+        {
+          "name": "setting",
+          "line": 17
+        },
+        {
+          "name": "setting",
+          "line": 48
+        }
+      ],
+      "classification": "known-adaptation",
+      "destination": "world tile mechanism behavior"
+    },
+    {
+      "file": "data-otservbr-global/scripts/movements/others/teleport.lua",
+      "table": "TeleportUnique",
+      "lines": [
+        10,
+        19
+      ],
+      "aliases": [
+        {
+          "name": "setting",
+          "line": 10
+        },
+        {
+          "name": "setting",
+          "line": 19
+        }
+      ],
+      "classification": "known-adaptation",
+      "destination": "world teleport behavior"
+    },
+    {
+      "file": "data-otservbr-global/scripts/quests/dawnport/actions_the_rare_herb.lua",
+      "table": "ItemUnique",
+      "lines": [
+        4
+      ],
+      "aliases": [
+        {
+          "name": "setting",
+          "line": 4
+        }
+      ],
+      "classification": "known-adaptation",
+      "destination": "world instance context; retain quest state logic"
+    }
+  ],
+  "pending": [
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6093",
+      "occurrence": 1,
+      "fingerprint": "90bc2edf8c15ed14636d1e9fc7c396948abb8a45c4b609b3ccd5dc1e9786139e",
+      "issues": [
+        {
+          "line": 998,
+          "column": 13,
+          "message": "unproven constant keyAction"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6117",
+      "occurrence": 1,
+      "fingerprint": "3fcb1eeb230ca7ca39b2275c3f8bc4a66068332488e6b0ee7b3f3d338b706d52",
+      "issues": [
+        {
+          "line": 1182,
+          "message": "key 6117 occurs 2 times in ChestUnique; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6117",
+      "occurrence": 2,
+      "fingerprint": "45e28b09148c06266458d788a7ba0fa16b564b403d6f9998e6dd2e37c8332df4",
+      "issues": [
+        {
+          "line": 1190,
+          "message": "key 6117 occurs 2 times in ChestUnique; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6121",
+      "occurrence": 1,
+      "fingerprint": "021e5bc190e03fce0460ef8e76e5a6cfac929532961a809fdf7a00749ea48da3",
+      "issues": [
+        {
+          "line": 1224,
+          "message": "key 6121 occurs 2 times in ChestUnique; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6121",
+      "occurrence": 2,
+      "fingerprint": "6a662f755b01aa2e64b20adb608977f3bdc8571809944a2d27322e51908a7e15",
+      "issues": [
+        {
+          "line": 1233,
+          "message": "key 6121 occurs 2 times in ChestUnique; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/corpse.lua",
+      "table": "CorpseAction",
+      "key": "20001",
+      "occurrence": 1,
+      "fingerprint": "81f3f9e466767b8c2853c08c6df53f3a2029a88ff4d06ffddc303de27b0c73c9",
+      "issues": [
+        {
+          "line": 9,
+          "column": 21,
+          "message": "unproven constant xxxxx"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorAction",
+      "key": "45216",
+      "occurrence": 1,
+      "fingerprint": "fb6d5fcf457c964d89f7fc767bf5c75329a06f0d25e3a1aff4ebf6d5667ee0d2",
+      "issues": [
+        {
+          "line": 239,
+          "message": "key 45216 occurs 2 times in QuestDoorAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorAction",
+      "key": "45216",
+      "occurrence": 2,
+      "fingerprint": "32edd38df4dea31f84eb5c065d3dbbebf4a52b7065ae65d848b33677a40af894",
+      "issues": [
+        {
+          "line": 770,
+          "message": "key 45216 occurs 2 times in QuestDoorAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "4649",
+      "occurrence": 1,
+      "fingerprint": "a45381ecb1aca454bcedd49b54314dda1ff666c0dee4c24cd9a68c56abc40364",
+      "issues": [
+        {
+          "line": 475,
+          "message": "key 4649 occurs 2 times in ItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "4649",
+      "occurrence": 2,
+      "fingerprint": "a45381ecb1aca454bcedd49b54314dda1ff666c0dee4c24cd9a68c56abc40364",
+      "issues": [
+        {
+          "line": 481,
+          "message": "key 4649 occurs 2 times in ItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "12107",
+      "occurrence": 1,
+      "fingerprint": "485cb08aff77bf2c45fbe40c9476cd73168fbf2d67e54fb230a9404daf791c22",
+      "issues": [
+        {
+          "line": 1094,
+          "message": "key 12107 occurs 2 times in ItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "12107",
+      "occurrence": 2,
+      "fingerprint": "b23ce50bc0707672c91ef9ecbf28453d9cb41fbe2feddd951472a789b75ea3bc",
+      "issues": [
+        {
+          "line": 1102,
+          "message": "key 12107 occurs 2 times in ItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/item_unmovable.lua",
+      "table": "ItemUnmovableAction",
+      "key": "100",
+      "occurrence": 1,
+      "fingerprint": "014e0edae3550a15c29bdcd5ce39cbf44d127083725c8db9aac1d5e8bb5b336d",
+      "issues": [
+        {
+          "line": 8,
+          "column": 10,
+          "message": "unproven constant xxxxx"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 1,
+      "fingerprint": "17238ea7986c31fadcb811d6892b0f9b2c81251b3a549395f51129bd4bd0df96",
+      "issues": [
+        {
+          "line": 53,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 2,
+      "fingerprint": "ed791ffadf07440ab6315fe05b8431ecd653a3d3806639f0d340322588c5199d",
+      "issues": [
+        {
+          "line": 59,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 3,
+      "fingerprint": "dd7f2cb8f9da3b4a513b848276560a23fd1c955546fa771df7fd14d7cc19633a",
+      "issues": [
+        {
+          "line": 65,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 4,
+      "fingerprint": "c9670c5e3edc1dcd71c7831f02f1ab597761bb703d1f1cc4b1096d84fa409054",
+      "issues": [
+        {
+          "line": 71,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 5,
+      "fingerprint": "eb323da74eadb94b2ea980bf3dfa3a0dc2beaed20efaf3f283c07900eaf18a21",
+      "issues": [
+        {
+          "line": 77,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 6,
+      "fingerprint": "6046dcd034aacf085789dca58671f5f929c06f93bff7701232727d62a7cce297",
+      "issues": [
+        {
+          "line": 83,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 7,
+      "fingerprint": "9f000509816aca8682782e87b2538838f075a25d27a1fe2cde72fcfad9756734",
+      "issues": [
+        {
+          "line": 89,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 8,
+      "fingerprint": "e8289d334be47e3d8f6e1206b2c7c070ea9fe071e93b9727a2b05420aa194a8c",
+      "issues": [
+        {
+          "line": 95,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 9,
+      "fingerprint": "3deaef809df69f5a6b7f15f2dc6de1df067364c979886ee71a1a65191467bc31",
+      "issues": [
+        {
+          "line": 101,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 10,
+      "fingerprint": "67fe8032c4e50f1d2dd5e8eff83575312962538c307c3090fc99184d1f8e1443",
+      "issues": [
+        {
+          "line": 107,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 11,
+      "fingerprint": "d65745f249895b3044b00242bc0092a4b470700ab704b16bb76431518ab010b0",
+      "issues": [
+        {
+          "line": 113,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 12,
+      "fingerprint": "75f6dc665b4de41b84e34b3fb37ae0991108166393bc486144d5952c4058ed36",
+      "issues": [
+        {
+          "line": 119,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 13,
+      "fingerprint": "80a1a051cb852ddf4e9fe552532ab07bc48895beda27ea39f429728b438b40f4",
+      "issues": [
+        {
+          "line": 125,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 14,
+      "fingerprint": "f8aee1c1bf6370903d4d0896f5b7f3b741c70f106653910978d639bd6ceb2ea1",
+      "issues": [
+        {
+          "line": 131,
+          "message": "key 24873 occurs 14 times in TeleportItemAction; no automatic winner"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "27",
+      "occurrence": 1,
+      "fingerprint": "2784bb8c2b14b47fdd69105c742d70e9908463526fd76d842c3cbc2175339aa7",
+      "issues": [
+        {
+          "line": 337,
+          "column": 14,
+          "message": "unproven constant Nagor"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "34",
+      "occurrence": 1,
+      "fingerprint": "0ae3535089c6327e3cb26fe26df41657e861af9cf3260920b7d6e0dc89e8acd3",
+      "issues": [
+        {
+          "line": 413,
+          "column": 14,
+          "message": "unproven constant kharos"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "38",
+      "occurrence": 1,
+      "fingerprint": "af27b3f81fb84f94a4d1348645945c99d94b980e1e47e11761910687964245ce",
+      "issues": [
+        {
+          "line": 469,
+          "column": 14,
+          "message": "unproven constant Nagor"
+        }
+      ]
+    }
+  ]
+}

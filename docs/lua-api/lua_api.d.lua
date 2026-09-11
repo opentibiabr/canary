@@ -705,6 +705,17 @@ Game = {}
 ---@return boolean
 function Game.addInfluencedMonster(monster, stack) end
 
+---@param file string
+---@param tableName string
+---@param entry string
+---@param occurrence string
+---@param responsibility string
+---@param itemId integer
+---@param position Position
+---@param item? Item
+---@return boolean
+function Game.canApplyLegacyWorld(file, tableName, entry, occurrence, responsibility, itemId, position, item) end
+
 ---@param id number
 ---@return nil|Charm
 function Game.createBestiaryCharm(id) end
@@ -4902,6 +4913,65 @@ Webhook = {}
 ---@param url any
 ---@return nil
 function Webhook.sendMessage(title, message, color, url) end
+
+---@class World
+World = {}
+
+---@param item Item
+---@return WorldObject|nil
+function World.fromItem(item) end
+
+---@param id string
+---@return WorldObject|nil
+function World.get(id) end
+
+---@param token table
+---@return WorldObject|nil
+function World.resolve(token) end
+
+---@class WorldBehavior
+WorldBehavior = {}
+
+---@return boolean
+function WorldBehavior:register() end
+
+---@class WorldContext
+WorldContext = {}
+
+---@return WorldObject|nil
+function WorldContext:object() end
+
+---@param name string
+---@return boolean|integer|number|string|table|Position|WorldReference|nil
+function WorldContext:parameter(name) end
+
+---@param name string
+---@return WorldReference|WorldReference[]|nil
+function WorldContext:relation(name) end
+
+---@class WorldObject
+WorldObject = {}
+
+---@return integer|nil
+function WorldObject:getInitialItemId() end
+
+---@return Item|nil
+function WorldObject:getItem() end
+
+---@return Position|nil
+function WorldObject:getPosition() end
+
+---@return table|nil
+function WorldObject:token() end
+
+---@class WorldReference
+WorldReference = {}
+
+---@return WorldObject|nil
+function WorldReference:getObject() end
+
+---@return Position|nil
+function WorldReference:getPosition() end
 
 ---@class Zone
 ---@operator eq(Zone):boolean

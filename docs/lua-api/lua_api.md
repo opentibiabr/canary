@@ -869,6 +869,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
+#### `Game.canApplyLegacyWorld(file: string, tableName: string, entry: string, occurrence: string, responsibility: string, itemId: integer, position: Position, item?: Item)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
 #### `Game.createBestiaryCharm(id: number)`
 
 - Returns: `nil|Charm`
@@ -6168,6 +6173,81 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/network/webhook_functions.cpp`
+
+### World
+
+#### `World.fromItem(item: Item)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `World.get(id: string)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `World.resolve(token: table)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldBehavior
+
+#### `WorldBehavior:register()`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldContext
+
+#### `WorldContext:object()`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldContext:parameter(name: string)`
+
+- Returns: `boolean|integer|number|string|table|Position|WorldReference|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldContext:relation(name: string)`
+
+- Returns: `WorldReference|WorldReference[]|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldObject
+
+#### `WorldObject:getInitialItemId()`
+
+- Returns: `integer|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:getItem()`
+
+- Returns: `Item|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:getPosition()`
+
+- Returns: `Position|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:token()`
+
+- Returns: `table|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldReference
+
+#### `WorldReference:getObject()`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldReference:getPosition()`
+
+- Returns: `Position|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
 
 ### Zone
 

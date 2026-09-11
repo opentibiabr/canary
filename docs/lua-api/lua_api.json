@@ -1286,6 +1286,21 @@
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
+        "name": "canApplyLegacyWorld",
+        "params": [
+          "file: string",
+          "tableName: string",
+          "entry: string",
+          "occurrence: string",
+          "responsibility: string",
+          "itemId: integer",
+          "position: Position",
+          "item?: Item"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
         "name": "createBestiaryCharm",
         "params": [
           "id: number"
@@ -9230,6 +9245,104 @@
         ],
         "return": "nil",
         "source": "src/lua/functions/core/network/webhook_functions.cpp"
+      }
+    ],
+    "World": [
+      {
+        "name": "fromItem",
+        "params": [
+          "item: Item"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "get",
+        "params": [
+          "id: string"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "resolve",
+        "params": [
+          "token: table"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldBehavior": [
+      {
+        "name": "register",
+        "params": [],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldContext": [
+      {
+        "name": "object",
+        "params": [],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "parameter",
+        "params": [
+          "name: string"
+        ],
+        "return": "boolean|integer|number|string|table|Position|WorldReference|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "relation",
+        "params": [
+          "name: string"
+        ],
+        "return": "WorldReference|WorldReference[]|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldObject": [
+      {
+        "name": "getInitialItemId",
+        "params": [],
+        "return": "integer|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getItem",
+        "params": [],
+        "return": "Item|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getPosition",
+        "params": [],
+        "return": "Position|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "token",
+        "params": [],
+        "return": "table|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldReference": [
+      {
+        "name": "getObject",
+        "params": [],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getPosition",
+        "params": [],
+        "return": "Position|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
       }
     ],
     "Zone": [

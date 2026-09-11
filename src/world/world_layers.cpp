@@ -15,7 +15,8 @@ namespace world_layers {
 
 		class Reader {
 		public:
-			Reader(const std::filesystem::path &file, Diagnostics &diagnostics) : file(file), diagnostics(diagnostics) { }
+			Reader(const std::filesystem::path &file, Diagnostics &diagnostics) :
+				file(file), diagnostics(diagnostics) { }
 
 			bool fail(const std::string &field, const std::string &message) {
 				diagnostics.push_back({ file, object, field, message });
@@ -93,7 +94,8 @@ namespace world_layers {
 				}
 				std::vector<std::set<std::string>> keys;
 				bool duplicate = false;
-				result = Json::parse(source, [&](int, Json::parse_event_t event, Json &parsed) {
+				result = Json::parse(
+					source, [&](int, Json::parse_event_t event, Json &parsed) {
 			if (event == Json::parse_event_t::object_start) {
 				keys.emplace_back();
 			} else if (event == Json::parse_event_t::object_end) {
@@ -101,7 +103,8 @@ namespace world_layers {
 			} else if (event == Json::parse_event_t::key && !keys.back().insert(parsed.get<std::string>()).second) {
 				duplicate = true;
 			}
-			return true; }, false);
+			return true; }, false
+				);
 				if (result.is_discarded()) {
 					return fail("", "Invalid JSON");
 				}

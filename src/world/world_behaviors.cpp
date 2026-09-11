@@ -23,7 +23,8 @@ namespace {
 	}
 	class WorldAction final : public Action {
 	public:
-		explicit WorldAction(std::string id) : id(std::move(id)) { }
+		explicit WorldAction(std::string id) :
+			id(std::move(id)) { }
 		bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &from, const std::shared_ptr<Thing> &target, const Position &to, bool hotkey) override {
 			return g_game().worldLayers().behaviors().use(id, player, item, from, target, to, hotkey);
 		}
@@ -34,7 +35,8 @@ namespace {
 }
 
 struct WorldBehaviors::State {
-	explicit State(WorldLayerRuntime &world) : world(world) { }
+	explicit State(WorldLayerRuntime &world) :
+		world(world) { }
 	WorldLayerRuntime &world;
 	uint64_t epoch = 1;
 	std::filesystem::path loading;
@@ -109,7 +111,8 @@ struct WorldBehaviors::State {
 	}
 };
 
-WorldBehaviors::WorldBehaviors(WorldLayerRuntime &world) : state(std::make_unique<State>(world)) { }
+WorldBehaviors::WorldBehaviors(WorldLayerRuntime &world) :
+	state(std::make_unique<State>(world)) { }
 WorldBehaviors::~WorldBehaviors() = default;
 
 void WorldBehaviors::clear() {

@@ -81,7 +81,8 @@ std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 namespace {
 	class WorldMovementScope {
 	public:
-		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) : runtime(runtime) {
+		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) :
+			runtime(runtime) {
 			runtime.beginMovement(item);
 		}
 		~WorldMovementScope() {

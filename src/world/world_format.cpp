@@ -70,7 +70,8 @@ namespace world_layers {
 
 		class Reader {
 		public:
-			Reader(const std::filesystem::path &file, Diagnostics &diagnostics) : file(file), diagnostics(diagnostics) { }
+			Reader(const std::filesystem::path &file, Diagnostics &diagnostics) :
+				file(file), diagnostics(diagnostics) { }
 			std::string object;
 			bool fail(const std::string &field, const std::string &message) {
 				diagnostics.push_back({ file, object, field, message });

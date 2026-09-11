@@ -29,7 +29,8 @@ namespace {
 
 	class ServerMapView final : public world_layers::MapView {
 	public:
-		explicit ServerMapView(const BaseTiles* baseline = nullptr) : baseline(baseline) { }
+		explicit ServerMapView(const BaseTiles* baseline = nullptr) :
+			baseline(baseline) { }
 		bool knownItem(uint16_t id) const override {
 			return Item::items.hasItemType(id);
 		}
@@ -181,7 +182,8 @@ namespace {
 }
 
 struct WorldLayerRuntime::State {
-	explicit State(WorldLayerRuntime &runtime) : behaviors(runtime) { }
+	explicit State(WorldLayerRuntime &runtime) :
+		behaviors(runtime) { }
 	WorldBehaviors behaviors;
 	struct Binding {
 		std::weak_ptr<Item> item;
@@ -209,7 +211,8 @@ struct WorldLayerRuntime::State {
 	bool captured = false, failed = false, applied = false;
 };
 
-WorldLayerRuntime::WorldLayerRuntime() : state(std::make_unique<State>(*this)) { }
+WorldLayerRuntime::WorldLayerRuntime() :
+	state(std::make_unique<State>(*this)) { }
 WorldLayerRuntime::~WorldLayerRuntime() = default;
 WorldBehaviors &WorldLayerRuntime::behaviors() {
 	return state->behaviors;

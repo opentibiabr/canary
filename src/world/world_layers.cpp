@@ -213,7 +213,9 @@ namespace world_layers {
 		Json json;
 		Layer parsed;
 		parsed.file = file;
-		if (!reader.parse(source, json)) return false;
+		if (!reader.parse(source, json)) {
+			return false;
+		}
 		if (json.is_object() && json.value("schemaVersion", Json()) == 2) {
 			return parseLayerV2(source, file, layer, diagnostics);
 		}
@@ -303,7 +305,9 @@ namespace world_layers {
 		if (!readFile(file, source, error)) {
 			return reader.fail("", error);
 		}
-		if (!reader.parse(source, json)) return false;
+		if (!reader.parse(source, json)) {
+			return false;
+		}
 		if (json.is_object() && json.value("schemaVersion", Json()) == 2) {
 			return loadProjectV2(file, project, diagnostics);
 		}

@@ -88,10 +88,16 @@ namespace world_layers {
 						next = destination(project, *generated->second);
 					} else {
 						const auto tile = map.tile(*next);
+						if (!tile.exists || !tile.ground || tile.house || tile.blocked) {
+							fail(layer, object, "/components/destination", "Arrival requires an existing, unblocked, non-house tile with ground");
+							break;
+						}
 						next.reset();
 						for (const auto &item : tile.items) {
 							if (item.teleport && !resolved.originals.contains(item.key)) {
-								if (isValidPosition(item.destination)) {
+								if (!isValidPosition(item.destination)) {
+									fail(layer, object, "/components/destination", "Base teleport has an invalid destination");
+								} else {
 									next = item.destination;
 								}
 								break;

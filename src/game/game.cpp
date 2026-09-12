@@ -2752,7 +2752,7 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, const st
 	std::shared_ptr<Cylinder> destCylinder = toCylinder;
 	std::shared_ptr<Item> toItem = nullptr;
 	toCylinder = toCylinder->queryDestination(index, item, toItem, flags);
-	if (toItem && item->equals(toItem) && !worldLayers().identity(toItem).empty()) {
+	if (toItem && item->equals(toItem) && (!worldLayers().identity(item).empty() || !worldLayers().identity(toItem).empty())) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
 

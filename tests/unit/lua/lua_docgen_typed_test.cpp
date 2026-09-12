@@ -7,7 +7,8 @@
 #endif
 
 TEST(LuaBindingScannerTest, TypedRegistrationUsesTraitNameAndConstructorDocumentationAcrossFiles) {
-	const auto root = std::filesystem::temp_directory_path() / ("canary-docgen-typed-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+	const auto root = std::filesystem::path(TESTS_BINARY_DIR) / ("canary-docgen-typed-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
+	ASSERT_TRUE(std::filesystem::create_directories(root.parent_path()) || std::filesystem::is_directory(root.parent_path()));
 	ASSERT_TRUE(std::filesystem::create_directory(root));
 	struct Cleanup {
 		std::filesystem::path root;

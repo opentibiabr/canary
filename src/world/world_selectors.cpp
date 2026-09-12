@@ -123,7 +123,7 @@ namespace world_layers {
 			error = "The selected base item no longer matches this selector";
 			return false;
 		}
-		if (selected.size() == 1 && !selector.occurrence) {
+		if (selected.size() == 1) {
 			selector.occurrence.reset();
 		} else {
 			selector.occurrence = Occurrence { *occurrence, static_cast<uint32_t>(selected.size()), selectorFingerprint(selected) };
@@ -181,6 +181,7 @@ namespace world_layers {
 					std::vector<MapItem> candidates;
 					if (!selector.container.empty()) {
 						if (!resolve(selector.container)) {
+							visiting.erase(id);
 							return false;
 						}
 						const auto parent = originals.find(selector.container);
@@ -229,6 +230,7 @@ namespace world_layers {
 				}
 				if (!object->container.empty()) {
 					if (!resolve(object->container)) {
+						visiting.erase(id);
 						return false;
 					}
 					const auto* parent = project.find(object->container);
@@ -251,7 +253,7 @@ namespace world_layers {
 						const auto &offset = object->teleport->destinationOffset;
 						entry.destination = Position { targetPosition->x + offset.x, targetPosition->y + offset.y, targetPosition->z + offset.z };
 						const auto &arrival = tile(*entry.destination);
-						if (!arrival.exists || !arrival.ground || arrival.blocked) {
+						if (!arrival.exists || !arrival.ground || arrival.house || arrival.blocked) {
 							fail(id, "/components/destination", "Arrival requires an existing unblocked tile with ground");
 						}
 					}
@@ -339,10 +341,18 @@ namespace world_layers {
 					}
 				} else {
 					const auto &base = tile(*next);
+					if (!base.exists || !base.ground || base.house || base.blocked) {
+						fail(portal->id, "/components/destination", "Arrival requires an existing, unblocked, non-house tile with ground");
+						break;
+					}
 					next.reset();
 					for (const auto &item : base.items) {
 						if (item.teleport && !staged.originals.contains(item.key)) {
-							next = item.destination;
+							if (!isValidPosition(item.destination)) {
+								fail(portal->id, "/components/destination", "Base teleport has an invalid destination");
+							} else {
+								next = item.destination;
+							}
 							break;
 						}
 					}

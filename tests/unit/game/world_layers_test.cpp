@@ -21,7 +21,8 @@ namespace {
 
 TEST(WorldLayers, GeneralAuthoringContractPreservesSelectionAndInheritance) {
 	std::filesystem::path scratch;
-	const auto root = std::filesystem::temp_directory_path();
+	const auto root = std::filesystem::path(TESTS_BINARY_DIR);
+	ASSERT_TRUE(std::filesystem::create_directories(root) || std::filesystem::is_directory(root));
 	for (unsigned index = 0; index < 10000; ++index) {
 		const auto candidate = root / ("canary-world-v2-test-" + std::to_string(index));
 		if (std::filesystem::create_directory(candidate)) {
@@ -88,6 +89,7 @@ TEST(WorldLayers, DiagnoseMissingReferencesAndArrivalOverflow) {
 	auto project = pilot();
 	auto* entry = project.find("black_knight.entry");
 	ASSERT_NE(entry, nullptr);
+	ASSERT_TRUE(entry->teleport.has_value());
 	entry->teleport->destination = "missing.object";
 	world_layers::Diagnostics diagnostics;
 	world_layers::validateProject(project, diagnostics);
@@ -117,7 +119,9 @@ TEST(WorldLayers, OnlyConsumedOriginalsMayKeepTheirUid) {
 TEST(WorldLayers, RejectAmbiguousOriginalAndOccupiedOrMissingTile) {
 	auto project = pilot();
 	WorldMapFixture map(project);
-	auto &tile = map.tiles[WorldMapFixture::key(project.find("black_knight.entry")->position)];
+	const auto* entry = project.find("black_knight.entry");
+	ASSERT_NE(entry, nullptr);
+	auto &tile = map.tiles[WorldMapFixture::key(entry->position)];
 	tile.items.push_back({ 999, 1949, 0, true, {} });
 	world_layers::ApplicationPlan plan;
 	world_layers::Diagnostics diagnostics;
@@ -137,10 +141,27 @@ TEST(WorldLayers, RejectEffectiveTeleportCyclesIncludingBaseMap) {
 	auto project = pilot();
 	WorldMapFixture map(project);
 	const auto entry = project.find("black_knight.entry");
-	const auto arrival = *world_layers::destination(project, *entry);
+	ASSERT_NE(entry, nullptr);
+	const auto destination = world_layers::destination(project, *entry);
+	ASSERT_TRUE(destination.has_value());
+	const auto arrival = *destination;
 	map.tiles[WorldMapFixture::key(arrival)].items.push_back({ 999, 1949, 0, true, entry->position });
 	world_layers::ApplicationPlan plan;
 	world_layers::Diagnostics diagnostics;
 	EXPECT_FALSE(world_layers::validateMap(project, map, plan, diagnostics));
 	EXPECT_TRUE(std::any_of(diagnostics.begin(), diagnostics.end(), [](const auto &error) { return error.message == "Effective teleport cycle"; }));
+}
+
+TEST(WorldLayers, RejectInvalidArrivalAfterFollowingBaseTeleport) {
+	auto project = pilot();
+	WorldMapFixture map(project);
+	const auto* entry = project.find("black_knight.entry");
+	ASSERT_NE(entry, nullptr);
+	const auto arrival = world_layers::destination(project, *entry);
+	ASSERT_TRUE(arrival.has_value());
+	map.tiles[WorldMapFixture::key(*arrival)].items.push_back({ 999, 1949, 0, true, { 65000, 65000, 7 } });
+	world_layers::ApplicationPlan plan;
+	world_layers::Diagnostics diagnostics;
+	EXPECT_FALSE(world_layers::validateMap(project, map, plan, diagnostics));
+	EXPECT_TRUE(std::any_of(diagnostics.begin(), diagnostics.end(), [](const auto &error) { return error.message == "Arrival requires an existing, unblocked, non-house tile with ground"; }));
 }

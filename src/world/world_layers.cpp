@@ -235,6 +235,7 @@ namespace world_layers {
 		}
 		for (const auto &value : json["objects"]) {
 			Object object;
+			reader.object.clear();
 			if (!reader.keys(value, "/objects", { "id", "name", "position", "origin", "attributes", "components" })
 			    || !reader.identifier(value.value("id", Json()), "/id", object.id, true)) {
 				return false;
@@ -358,6 +359,9 @@ namespace world_layers {
 			}
 			if (!parseLayer(source, layerFile, layer, diagnostics)) {
 				return false;
+			}
+			if (layer.schemaVersion != 1) {
+				return reader.fail("/layers", "A version 1 catalog can include version 1 layers only");
 			}
 			if (!layerIds.insert(layer.id).second) {
 				return reader.fail("/layers", "Duplicate layer identity: " + layer.id);

@@ -310,6 +310,7 @@ namespace world_layers {
 		}
 
 		bool readObject(FormatReader &reader, const Json &value, Object &object) {
+			reader.object.clear();
 			if (!reader.keys(value, "/objects", { "id", "name", "kind", "source", "position", "lifecycle", "attributes", "components", "relations", "behaviors" })
 			    || !reader.identifier(value.value("id", Json()), "/id", object.id)) {
 				return false;
@@ -1290,7 +1291,7 @@ namespace world_layers {
 			}
 		}
 		std::set<std::string> migrationIds;
-		std::set<std::tuple<std::filesystem::path, std::string, std::string, std::string, std::string>> claims;
+		std::set<std::tuple<std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string>> claims;
 		for (const auto &record : project.migrationRecords) {
 			if (!migrationIds.insert(record.id).second) {
 				diagnostics.push_back({ record.file, "", "/id", "Duplicate migration identity" });
@@ -1300,7 +1301,7 @@ namespace world_layers {
 					diagnostics.push_back({ record.file, claim.object, "/claims/object", "Missing migration target" });
 				}
 				for (const auto &responsibility : claim.responsibilities) {
-					if (!claims.emplace(claim.file.lexically_normal(), claim.table, claim.key, claim.occurrence, responsibility).second) {
+					if (!claims.emplace(claim.file.lexically_normal(), claim.table, claim.key, claim.declaration, claim.occurrence, responsibility).second) {
 						diagnostics.push_back({ record.file, claim.object, "/claims", "More than one migration owns this legacy occurrence/responsibility" });
 					}
 				}

@@ -198,7 +198,7 @@ namespace world_layers {
 			pugi::xml_document document;
 			const auto loaded = document.load_file(file.c_str());
 			if (!loaded || !document.child("items")) {
-				error = loaded.description();
+				error = loaded ? "Missing <items> root element" : loaded.description();
 				return false;
 			}
 			for (const auto item : document.child("items").children("item")) {
@@ -316,7 +316,11 @@ namespace world_layers {
 				const auto attribute = reader.number<uint8_t>();
 				switch (attribute) {
 					case 0:
-						return reader.cursor == reader.bytes.size();
+						if (reader.cursor != reader.bytes.size()) {
+							error = "Unexpected data after OTBM item attributes";
+							return false;
+						}
+						return true;
 					case 4:
 						item.aid = reader.number<uint16_t>();
 						break;
@@ -424,7 +428,14 @@ namespace world_layers {
 							}
 						}
 						if (!custom.empty()) {
-							item.attributes["custom"] = Value { std::move(custom) };
+							auto &stored = item.attributes["custom"];
+							if (!std::holds_alternative<Value::Record>(stored.data)) {
+								stored.data = Value::Record {};
+							}
+							auto &attributes = std::get<Value::Record>(stored.data);
+							for (auto &[name, value] : custom) {
+								attributes[name] = std::move(value);
+							}
 						}
 						break;
 					}
@@ -641,6 +652,7 @@ namespace world_layers {
 		for (const auto &position : positions) {
 			requested.insert(key(position));
 		}
+		std::set<TileKey> tilePositions;
 		OTBM reader { bytes };
 		Node root;
 		if (!reader.start(root) || (root.type != 0 && root.type != 1)) {
@@ -687,6 +699,9 @@ namespace world_layers {
 				const Position position { base.x + props.number<uint8_t>(), base.y + props.number<uint8_t>(), base.z };
 				if (!props.valid || !isValidPosition(position)) {
 					return fail("Invalid OTBM tile position");
+				}
+				if (!tilePositions.insert(key(position)).second) {
+					return fail("Duplicate OTBM tile position");
 				}
 				MapTile tile;
 				tile.exists = true;
@@ -744,9 +759,7 @@ namespace world_layers {
 																																: 4; };
 						return order(a) < order(b);
 					});
-					if (!loaded->tiles.emplace(key(position), std::move(tile)).second) {
-						return fail("Duplicate OTBM tile position");
-					}
+					loaded->tiles.emplace(key(position), std::move(tile));
 				}
 			}
 			if (!reader.end()) {

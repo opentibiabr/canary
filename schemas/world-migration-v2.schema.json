@@ -18,6 +18,7 @@
     "receipt": {
       "type": "string",
       "minLength": 1,
+      "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$",
       "description": "Relative path to tool-owned recovery metadata; not runtime configuration."
     },
     "sources": {
@@ -27,7 +28,8 @@
         "properties": {
           "file": {
             "type": "string",
-            "minLength": 1
+            "minLength": 1,
+            "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
           },
           "sha256": {
             "type": "string",
@@ -51,7 +53,8 @@
             "properties": {
               "file": {
                 "type": "string",
-                "minLength": 1
+                "minLength": 1,
+                "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
               },
               "table": {
                 "type": "string",
@@ -72,10 +75,11 @@
               }
             },
             "required": [
-              "file",
-              "table",
-              "key",
-              "fingerprint"
+                "file",
+                "table",
+                "key",
+                "declaration",
+                "fingerprint"
             ],
             "additionalProperties": false
           },

@@ -185,7 +185,9 @@ int main(int argc, char** argv) {
 				convert = true;
 				continue;
 			}
-			if ((name != "--map" && name != "--items" && name != "--positions") || index >= argc || options.contains(name)) {
+			const bool accepted = (command == "validate" && (name == "--map" || name == "--items"))
+				|| (command == "inspect" && (name == "--map" || name == "--items" || name == "--positions"));
+			if (!accepted || index >= argc || options.contains(name)) {
 				std::cerr << "Unknown, duplicate or incomplete option: " << name << '\n';
 				return 2;
 			}

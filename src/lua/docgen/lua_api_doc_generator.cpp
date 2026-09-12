@@ -1725,6 +1725,9 @@ LuaBindingScanner::LuaBindingScanner(std::filesystem::path rootPath) :
 
 LuaScanResult LuaBindingScanner::scan() const {
 	LuaScanResult result;
+	std::map<std::filesystem::path, std::string> sources;
+	LuaStringMap userdataNames;
+	const std::regex traitPattern(R"regex(LuaUserdataTraits\s*<\s*([A-Za-z_][A-Za-z0-9_:]*)\s*>\s*\{[^}]*\bname\s*=\s*"([^"]+)")regex");
 	const auto sourceRoot = root / "src";
 	std::error_code ec;
 	if (!std::filesystem::exists(sourceRoot, ec) || ec) {
@@ -1753,25 +1756,28 @@ LuaScanResult LuaBindingScanner::scan() const {
 			continue;
 		}
 
-		scanFile(entry.path(), result);
+		std::ifstream stream(entry.path());
+		if (stream.is_open()) {
+			std::stringstream buffer;
+			buffer << stream.rdbuf();
+			auto content = buffer.str();
+			if (content.find("LuaUserdataTraits") != std::string::npos) {
+				for (auto trait = std::sregex_iterator(content.begin(), content.end(), traitPattern); trait != std::sregex_iterator(); ++trait) {
+					userdataNames[(*trait)[1].str()] = (*trait)[2].str();
+				}
+			}
+			if (content.find("Lua::register") != std::string::npos || content.find("luaL_Reg") != std::string::npos) {
+				sources.emplace(entry.path(), std::move(content));
+			}
+		}
 		incrementIterator(it, ec);
+	}
+	for (const auto &[file, content] : sources) {
+		parseLuaReg(content, file, result);
+		parseRegistrations(content, file, userdataNames, result);
 	}
 
 	return result;
-}
-
-void LuaBindingScanner::scanFile(const std::filesystem::path &filePath, LuaScanResult &result) const {
-	std::ifstream stream(filePath);
-	if (!stream.is_open()) {
-		return;
-	}
-
-	std::stringstream buffer;
-	buffer << stream.rdbuf();
-	const auto content = buffer.str();
-
-	parseLuaReg(content, filePath, result);
-	parseRegistrations(content, filePath, result);
 }
 void LuaBindingScanner::parseLuaReg(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
 	// Canary does NOT use luaL_Reg, but kept in case there is some legacy code
@@ -1808,7 +1814,16 @@ void LuaBindingScanner::parseLuaReg(const std::string &content, const std::files
 	}
 }
 
-void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const {
+void LuaBindingScanner::parseRegistrations(const std::string &content, const std::filesystem::path &filePath, const LuaStringMap &userdataNames, LuaScanResult &result) const {
+	const std::regex typedClassPattern(R"regex(Lua::registerSharedClass\s*<\s*([A-Za-z_][A-Za-z0-9_:]*)\s*>\s*\(\s*[^,]*,\s*"([^"]*)"(?:\s*,\s*([A-Za-z0-9_:]+))?)regex");
+	for (auto it = std::sregex_iterator(content.begin(), content.end(), typedClassPattern); it != std::sregex_iterator(); ++it) {
+		const auto name = userdataNames.find((*it)[1].str());
+		if (name == userdataNames.end()) {
+			continue;
+		}
+		addUnique(result.classes, name->second);
+		applyExplicitLuaClassDoc(result, name->second, content, (*it)[3].str(), static_cast<size_t>(it->position(0)));
+	}
 
 	std::regex classPattern(
 		R"regex(Lua::register(?:Shared)?Class\s*\(\s*[^,]*,\s*"([^"]+)"\s*,\s*"([^"]*)"(?:\s*,\s*([A-Za-z0-9_:]+))?)regex",

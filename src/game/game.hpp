@@ -92,10 +92,13 @@ struct PlayerStats {
 	uint32_t totalUniqueIPs = 0;
 };
 
+class WorldLayerRuntime;
+
 class Game {
 public:
 	Game();
 	~Game();
+	WorldLayerRuntime &worldLayers();
 
 	// Singleton - ensures we don't accidentally copy it.
 	Game(const Game &) = delete;
@@ -113,10 +116,11 @@ public:
 
 	void logCyclopediaStats();
 
+	/** Ensure the configured main map file is downloaded when it is missing. */
+	void ensureMainMapAvailable(const std::string &filename);
 	/**
-	 * Load the main map
-	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
-	 * \returns true if the custom map was loaded successfully
+	 * Load the main map.
+	 * \param filename Main map name without the .otbm extension.
 	 */
 	void loadMainMap(const std::string &filename);
 	/**
@@ -616,6 +620,7 @@ public:
 	void removeBedSleeper(uint32_t guid);
 
 	std::shared_ptr<Item> getUniqueItem(uint16_t uniqueId);
+	std::vector<std::pair<uint16_t, std::shared_ptr<Item>>> getUniqueItems() const;
 	bool addUniqueItem(uint16_t uniqueId, std::shared_ptr<Item> item);
 	void removeUniqueItem(uint16_t uniqueId);
 
@@ -772,6 +777,7 @@ public:
 	std::shared_ptr<Container> findManagedContainer(const std::shared_ptr<Player> &player, bool &fallbackConsumed, ObjectCategory_t category, bool isLootContainer);
 
 private:
+	std::unique_ptr<WorldLayerRuntime> worldLayerRuntime;
 	std::map<uint16_t, Achievement> m_achievements;
 	std::map<std::string, uint16_t> m_achievementsNameToId;
 

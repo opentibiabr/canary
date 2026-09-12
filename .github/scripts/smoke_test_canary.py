@@ -144,6 +144,7 @@ def write_smoke_config(args: argparse.Namespace) -> None:
     replacements = {
         "dataPackDirectory": lua_string(args.data_pack),
         "mapName": lua_string(args.map_name),
+        "worldConfiguration": lua_string(args.world_configuration),
         "mapDownloadUrl": lua_string(""),
         "toggleDownloadMap": "false",
         "toggleMapCustom": "false",
@@ -246,12 +247,27 @@ def restore_config(config_path: Path, existed: bool, previous_content: bytes | N
         pass
 
 
-def assert_clean_log(log_text: str, fail_on_warnings: bool) -> None:
+def legacy_warning(data_pack: str) -> str:
+    return (
+        "Legacy world configuration is active and will be discontinued in a future release. "
+        "See docs/systems/world-migration.md. Analyze with: python -m tools.world_migrate analyze "
+        f"--datapack {data_pack} --all"
+    )
+
+
+def assert_clean_log(log_text: str, fail_on_warnings: bool, expected_legacy_warning: str | None = None) -> None:
     if not log_text.strip():
         raise RuntimeError("Canary produced no runtime log output")
 
     pattern = r"\b(warn|warning|error|critical|fatal)\b" if fail_on_warnings else r"\b(error|critical|fatal)\b"
-    bad_lines = [line for line in log_text.splitlines() if re.search(pattern, line, re.IGNORECASE)]
+    lines = log_text.splitlines()
+    if expected_legacy_warning is not None:
+        expected = re.compile(r"^\[[^\]]+\](?: \[thread \d+\])? \[warning\] " + re.escape(expected_legacy_warning) + r"\s*$")
+        matched = [line for line in lines if expected.fullmatch(line)]
+        if len(matched) != 1:
+            raise RuntimeError("Legacy startup must report its deprecation warning exactly once")
+        lines = [line for line in lines if not expected.fullmatch(line)]
+    bad_lines = [line for line in lines if re.search(pattern, line, re.IGNORECASE)]
     if bad_lines:
         message = "\n".join(bad_lines[:40])
         print(f"::error title=Canary runtime log issue::{github_escape(message)}")
@@ -276,11 +292,11 @@ def run_smoke(args: argparse.Namespace) -> None:
 
         log_dir = REPO_ROOT / "build/runtime-smoke-logs"
         log_dir.mkdir(parents=True, exist_ok=True)
-        label = f"{args.data_pack}-{args.map_name}-{uuid.uuid4().hex[:8]}"
+        label = f"{args.data_pack}-{args.map_name}-{args.world_configuration}-{uuid.uuid4().hex[:8]}"
         stdout_path = log_dir / f"{label}.stdout.log"
         stderr_path = log_dir / f"{label}.stderr.log"
 
-        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} binary={binary}")
+        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} world={args.world_configuration} binary={binary}")
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen([str(binary)], cwd=REPO_ROOT, stdout=stdout_file, stderr=stderr_file)
 
@@ -319,8 +335,9 @@ def run_smoke(args: argparse.Namespace) -> None:
         time.sleep(1)
         runtime_log = read_logs(log_paths)
         print(runtime_log)
-        assert_clean_log(runtime_log, args.fail_on_warnings)
-        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name}.")
+        expected = legacy_warning(args.data_pack) if args.world_configuration in {"legacy", "mixed"} else None
+        assert_clean_log(runtime_log, args.fail_on_warnings, expected)
+        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name} world={args.world_configuration}.")
     finally:
         restore_config(config_path, config_existed, previous_config)
 
@@ -330,6 +347,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--binary-path", required=True)
     parser.add_argument("--data-pack", choices=["data-canary", "data-otservbr-global"], default="data-canary")
     parser.add_argument("--map-name", default="")
+    parser.add_argument("--world-configuration", choices=["legacy", "world", "mixed"], default="legacy")
     parser.add_argument("--map-download-url", default="")
     parser.add_argument("--map-cache-path", default="")
     parser.add_argument("--db-host", default="127.0.0.1")

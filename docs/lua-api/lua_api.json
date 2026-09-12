@@ -1286,6 +1286,21 @@
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
+        "name": "canApplyLegacyWorld",
+        "params": [
+          "file: string",
+          "tableName: string",
+          "entry: string",
+          "occurrence: string",
+          "responsibility: string",
+          "itemId: integer",
+          "position: Position",
+          "item?: Item"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
         "name": "createBestiaryCharm",
         "params": [
           "id: number"
@@ -1696,6 +1711,14 @@
         "name": "hasEffect",
         "params": [
           "effectId: number"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
+        "name": "isWorldObjectDeclared",
+        "params": [
+          "id: string"
         ],
         "return": "boolean",
         "source": "src/lua/functions/core/game/game_functions.cpp"
@@ -9224,6 +9247,104 @@
         "source": "src/lua/functions/core/network/webhook_functions.cpp"
       }
     ],
+    "World": [
+      {
+        "name": "fromItem",
+        "params": [
+          "item: Item"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "get",
+        "params": [
+          "id: string"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "resolve",
+        "params": [
+          "token: table"
+        ],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldBehavior": [
+      {
+        "name": "register",
+        "params": [],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldContext": [
+      {
+        "name": "object",
+        "params": [],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "parameter",
+        "params": [
+          "name: string"
+        ],
+        "return": "boolean|integer|number|string|table|Position|WorldReference|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "relation",
+        "params": [
+          "name: string"
+        ],
+        "return": "WorldReference|WorldReference[]|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldObject": [
+      {
+        "name": "getInitialItemId",
+        "params": [],
+        "return": "integer|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getItem",
+        "params": [],
+        "return": "Item|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getPosition",
+        "params": [],
+        "return": "Position|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "token",
+        "params": [],
+        "return": "table|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
+    "WorldReference": [
+      {
+        "name": "getObject",
+        "params": [],
+        "return": "WorldObject|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      },
+      {
+        "name": "getPosition",
+        "params": [],
+        "return": "Position|nil",
+        "source": "src/lua/functions/core/game/world_functions.cpp"
+      }
+    ],
     "Zone": [
       {
         "name": "addArea",
@@ -9572,11 +9693,36 @@
       "y integer",
       "z integer",
       "stackpos integer"
+    ],
+    "WorldBehavior": [
+      "onUse fun(context: WorldContext, player: Player, item: Item, fromPosition: Position, target: Item|Creature|table, toPosition: Position, isHotkey: boolean): boolean",
+      "onStepIn fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean",
+      "onStepOut fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean",
+      "onAddItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean",
+      "onRemoveItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean"
     ]
   },
   "classOverloads": {
+    "Action": [
+      "fun(): Action"
+    ],
+    "Combat": [
+      "fun(): Combat"
+    ],
+    "Condition": [
+      "fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?"
+    ],
+    "CreatureEvent": [
+      "fun(eventName: string): CreatureEvent"
+    ],
+    "GlobalEvent": [
+      "fun(name: string): GlobalEvent"
+    ],
     "MoveEvent": [
       "fun(): MoveEvent"
+    ],
+    "NetworkMessage": [
+      "fun(): NetworkMessage"
     ],
     "NpcType": [
       "fun(name: string): NpcType"
@@ -9590,6 +9736,18 @@
       "fun(): Position",
       "fun(x?: integer, y?: integer, z?: integer, stackpos?: integer): Position",
       "fun(position: Position): Position"
+    ],
+    "Spell": [
+      "fun(nameOrTypeOrId: string|integer): Spell?"
+    ],
+    "TalkAction": [
+      "fun(...: string): TalkAction"
+    ],
+    "Weapon": [
+      "fun(type: integer): Weapon?"
+    ],
+    "WorldBehavior": [
+      "fun(id: string, contractVersion: integer): WorldBehavior"
     ]
   },
   "globals": []

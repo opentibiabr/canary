@@ -432,7 +432,7 @@ std::shared_ptr<Item> Item::CreateItem(const uint16_t type, uint16_t count /*= 0
 		} else if (it.isBed()) {
 			newItem = std::make_shared<BedItem>(type);
 		} else {
-			uint16_t creationType = it.transformDeEquipTo != 0 ? it.transformDeEquipTo : type;
+			uint16_t creationType = it.isActiveEquipment() ? it.transformDeEquipTo : type;
 			// The old Diamond Arrow is a legacy asset alias, not an equipment state.
 			if (it.id == ITEM_OLD_DIAMOND_ARROW) {
 				creationType = ITEM_DIAMOND_ARROW;

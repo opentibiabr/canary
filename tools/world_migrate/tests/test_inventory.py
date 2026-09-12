@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from contextlib import chdir
 from pathlib import Path
 
 from tools.world_migrate.cli import _workspace_path
@@ -61,11 +62,12 @@ class MigrationInventoryTests(unittest.TestCase):
 
 	def test_cli_paths_are_canonicalized_inside_the_repository(self):
 		self.assertEqual(within(self.root, "artifacts/report.json"), self.root / "artifacts/report.json")
-		self.assertEqual(_workspace_path(self.root, "artifacts/report.json"), self.root / "artifacts/report.json")
 		with self.assertRaisesRegex(ValueError, "leaves its root"):
 			within(self.root, "../report.json")
-		with self.assertRaisesRegex(ValueError, "leaves its root"):
-			_workspace_path(self.root, "../report.json")
+		with chdir(self.root):
+			self.assertEqual(Path(_workspace_path("artifacts/report.json")), self.root / "artifacts/report.json")
+			with self.assertRaisesRegex(ValueError, "leaves its root"):
+				_workspace_path("../report.json")
 
 	def test_publication_backups_and_drafts_are_not_live_consumers(self):
 		before = analyze(self.root, "data-example")

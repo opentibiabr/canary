@@ -13,7 +13,7 @@ end
 function teleport.onStepIn(context, creature, item, position, fromPosition)
 	local player = creature:getPlayer()
 	if not player then
-		return true
+		return context:parameter("nonPlayerResult")
 	end
 	return transfer(context, player)
 end

@@ -101,6 +101,10 @@
     "achievement": {
       "type": "string",
       "label": "Achievement"
+    },
+    "emptyItemId": {
+      "type": "itemId",
+      "label": "Item name used by the empty-reward message"
     }
   },
   "relations": {},

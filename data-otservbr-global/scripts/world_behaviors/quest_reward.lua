@@ -13,7 +13,7 @@ local function rewardList(values)
 end
 
 function reward.onUse(context, player, item, fromPosition, target, toPosition, isHotkey)
-	local setting = { itemId = context:object():getInitialItemId() }
+	local setting = { itemId = context:parameter("emptyItemId") or context:object():getInitialItemId() }
 	for _, name in ipairs({ "storage", "useKV", "questName", "container", "keyAction", "isKey", "weight", "timerStorage", "time" }) do
 		setting[name] = context:parameter(name)
 	end

@@ -13,6 +13,11 @@
       "minimum": 0,
       "maximum": 65535,
       "required": true
+    },
+    "nonPlayerResult": {
+      "type": "boolean",
+      "default": true,
+      "label": "Movement result for non-player creatures"
     }
   },
   "relations": {

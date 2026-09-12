@@ -65,8 +65,9 @@ local creature = {
 local destination = { x = 100, y = 110, z = 7 }
 dofile(DATA_DIRECTORY .. "/scripts/world_behaviors/player_teleport.lua")
 local teleport = registered["world.player_teleport"]
-local teleportContext = context({ effect = 11 }, { destination = destination })
+local teleportContext = context({ effect = 11, nonPlayerResult = true }, { destination = destination })
 assert(teleport.onStepIn(teleportContext, creature) and #moves == 0)
+assert(not teleport.onStepIn(context({ nonPlayerResult = false }, {}), creature) and #moves == 0)
 assert(teleport.onStepIn(teleportContext, player) and moves[1] == destination and effects[1] == 11)
 assert(teleport.onUse(teleportContext, player) and #moves == 2)
 assert(not teleport.onUse(context({ effect = 11 }, {}), player) and #moves == 2)
@@ -100,6 +101,21 @@ assert(mechanism.onStepIn(mechanismContext, player) and removed == 1)
 assert(mechanism.onStepIn(mechanismContext, player) and removed == 1)
 assert(mechanism.onStepOut(mechanismContext, player) and created == 1)
 assert(mechanism.onStepOut(mechanismContext, player) and created == 1)
+
+dofile(DATA_DIRECTORY .. "/scripts/world_behaviors/lever_remove_item.lua")
+local lever = registered["world.lever_remove_item"]
+local leverContext = context({ firstItemId = 2772, secondItemId = 2773, targetItem = 1221 }, { target = destination })
+local leverId = 2772
+local leverItem = {
+	getId = function()
+		return leverId
+	end,
+	transform = function(_, id)
+		leverId = id
+	end,
+}
+assert(lever.onUse(leverContext, player, leverItem) and leverId == 2773 and removed == 1)
+assert(lever.onUse(leverContext, player, leverItem) and leverId == 2772 and removed == 2)
 
 local awarded, text, achievements, messages, storages, kv = {}, {}, {}, {}, {}, {}
 local hasRoom = true
@@ -203,6 +219,8 @@ assert(awarded[1][1] == 3031 and awarded[1][2] == 3 and text[1] == "An old note"
 assert(storages[60001] == 1 and storages[60002] == 8200 and messages[1] == "You have found 3 gems.")
 assert(reward.onUse(context(parameters), player, {}) and #awarded == 1)
 assert(messages[#messages] == "The item2472 is empty.")
+parameters.emptyItemId = 28827
+assert(reward.onUse(context(parameters), player, {}) and messages[#messages] == "The item28827 is empty.")
 storages, hasRoom = {}, false
 assert(reward.onUse(context(parameters), player, {}) and #awarded == 1 and storages[60001] == nil)
 hasRoom = true

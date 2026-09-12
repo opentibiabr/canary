@@ -14,6 +14,7 @@ BEHAVIORS = {
 	"quest.reward": "quest_reward",
 	"world.player_teleport": "player_teleport",
 	"world.tile_mechanism": "tile_mechanism",
+	"world.lever_remove_item": "lever_remove_item",
 }
 
 
@@ -69,6 +70,7 @@ def consumer_constants(pack: Path) -> dict:
 
 def reward_parameters(value: dict, key: str, constants: dict) -> dict:
 	parameters = {name: copy.deepcopy(value[name]) for name in REWARD_FIELDS if name in value}
+	parameters["emptyItemId"] = value["itemId"]
 	for name in ("reward", "randomReward"):
 		if name not in parameters:
 			continue

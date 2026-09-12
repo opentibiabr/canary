@@ -652,7 +652,7 @@ namespace world_layers {
 		for (const auto &position : positions) {
 			requested.insert(key(position));
 		}
-		std::set<TileKey> tilePositions;
+		std::set<Key> tilePositions;
 		OTBM reader { bytes };
 		Node root;
 		if (!reader.start(root) || (root.type != 0 && root.type != 1)) {

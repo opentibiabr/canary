@@ -207,6 +207,7 @@ int CanaryServer::run() {
 #endif
 				rsa.start();
 				initializeDatabase();
+				g_game().ensureMainMapAvailable(g_configManager().getString(MAP_NAME));
 				if (!g_game().worldLayers().prepare()) {
 					throw FailedToInitializeCanary("Cannot prepare world project");
 				}

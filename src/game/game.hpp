@@ -116,10 +116,11 @@ public:
 
 	void logCyclopediaStats();
 
+	/** Ensure the configured main map file is downloaded when it is missing. */
+	void ensureMainMapAvailable(const std::string &filename);
 	/**
-	 * Load the main map
-	 * \param filename Is the map custom name (Example: "map".otbm, not is necessary add extension .otbm)
-	 * \returns true if the custom map was loaded successfully
+	 * Load the main map.
+	 * \param filename Main map name without the .otbm extension.
 	 */
 	void loadMainMap(const std::string &filename);
 	/**

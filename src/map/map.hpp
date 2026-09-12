@@ -44,6 +44,8 @@ public:
 	 * \returns true if the map was loaded successfully
 	 */
 	void load(const std::string &identifier, const Position &pos = Position());
+	/** Make the configured main-map file available before consumers inspect it. */
+	void ensureMainMapAvailable(const std::string &identifier);
 	/**
 	 * Load the main map
 	 * \param identifier Is the main map name (name of file .otbm)

@@ -1077,6 +1077,10 @@ void Game::loadItemsPrice() {
 	}
 }
 
+void Game::ensureMainMapAvailable(const std::string &filename) {
+	map.ensureMainMapAvailable(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm");
+}
+
 void Game::loadMainMap(const std::string &filename) {
 	Monster::despawnRange = g_configManager().getNumber(DEFAULT_DESPAWNRANGE);
 	Monster::despawnRadius = g_configManager().getNumber(DEFAULT_DESPAWNRADIUS);

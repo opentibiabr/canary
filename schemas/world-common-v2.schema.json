@@ -306,9 +306,28 @@
               "onStepIn",
               "onStepOut",
               "onAddItem",
-              "onRemoveItem"
+              "onRemoveItem",
+              "onEquip",
+              "onDeEquip"
             ]
           }
+        },
+        "eventOptions": {
+          "type": "object",
+          "properties": {
+            "onUse": {
+              "type": "object",
+              "properties": {
+                "allowFarUse": { "type": "boolean" },
+                "blockWalls": { "type": "boolean" },
+                "checkFloor": { "type": "boolean" }
+              },
+              "additionalProperties": false
+            },
+            "onEquip": { "$ref": "#/$defs/equipmentOptions" },
+            "onDeEquip": { "$ref": "#/$defs/equipmentOptions" }
+          },
+          "additionalProperties": false
         },
         "parameters": {
           "type": "object"
@@ -322,6 +341,30 @@
         "contractVersion",
         "events"
       ],
+      "additionalProperties": false
+    },
+    "equipmentOptions": {
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["head", "necklace", "backpack", "armor", "right-hand", "left-hand", "hand", "legs", "feet", "ring", "ammo"]
+          }
+        },
+        "level": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "magicLevel": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "premium": { "type": "boolean" },
+        "vocations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "vocationDescription": { "type": "string" }
+      },
+      "required": ["slots"],
       "additionalProperties": false
     },
     "parameter": {

@@ -1,5 +1,6 @@
 #include "world/world_snapshot.hpp"
 #include "world/world_files.hpp"
+#include "world/world_effective.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -158,7 +159,7 @@ int main(int argc, char** argv) {
 			return 0;
 		}
 		if (argc < 2 || std::string(argv[1]) == "--help") {
-			std::cout << "world-tool validate PROJECT [--map OTBM] [--items ITEMS_XML]\nworld-tool inspect --map OTBM --items ITEMS_XML --positions POSITIONS_JSON\nworld-tool normalize PROJECT [--convert-v2]\nworld-tool publish MANIFEST --root DIRECTORY --confirm-offline\nworld-tool recover CATALOG --root DIRECTORY (--finish|--rollback) --confirm-offline\n";
+			std::cout << "world-tool validate PROJECT [--map OTBM] [--items ITEMS_XML]\nworld-tool inspect --map OTBM --items ITEMS_XML --positions POSITIONS_JSON\nworld-tool inspect-identifiers --map OTBM --items ITEMS_XML\nworld-tool normalize PROJECT [--convert-v2]\nworld-tool publish MANIFEST --root DIRECTORY --confirm-offline\nworld-tool recover CATALOG --root DIRECTORY (--finish|--rollback) --confirm-offline\n";
 			return argc < 2 ? 2 : 0;
 		}
 		const std::string command = argv[1];
@@ -175,7 +176,7 @@ int main(int argc, char** argv) {
 				return 2;
 			}
 			projectFile = std::filesystem::absolute(std::filesystem::u8path(argv[index++]));
-		} else if (command != "inspect") {
+		} else if (command != "inspect" && command != "inspect-identifiers") {
 			std::cerr << "Unknown command\n";
 			return 2;
 		}
@@ -186,7 +187,8 @@ int main(int argc, char** argv) {
 				continue;
 			}
 			const bool accepted = (command == "validate" && (name == "--map" || name == "--items"))
-				|| (command == "inspect" && (name == "--map" || name == "--items" || name == "--positions"));
+				|| (command == "inspect" && (name == "--map" || name == "--items" || name == "--positions"))
+				|| (command == "inspect-identifiers" && (name == "--map" || name == "--items"));
 			if (!accepted || index >= argc || options.contains(name)) {
 				std::cerr << "Unknown, duplicate or incomplete option: " << name << '\n';
 				return 2;
@@ -239,16 +241,18 @@ int main(int argc, char** argv) {
 			items = options.contains("--items") ? std::filesystem::u8path(options.at("--items")) : project.items;
 			positions = projectPositions(project);
 		} else {
-			if (!options.contains("--map") || !options.contains("--items") || !options.contains("--positions")) {
-				std::cerr << "inspect requires --map, --items and --positions\n";
+			if (!options.contains("--map") || !options.contains("--items") || (command == "inspect" && !options.contains("--positions"))) {
+				std::cerr << command << " requires --map and --items" << (command == "inspect" ? " and --positions" : "") << '\n';
 				return 2;
 			}
 			map = std::filesystem::u8path(options.at("--map"));
 			items = std::filesystem::u8path(options.at("--items"));
-			std::string error;
-			if (!readPositions(std::filesystem::u8path(options.at("--positions")), positions, error)) {
-				std::cerr << error << '\n';
-				return 2;
+			if (command == "inspect") {
+				std::string error;
+				if (!readPositions(std::filesystem::u8path(options.at("--positions")), positions, error)) {
+					std::cerr << error << '\n';
+					return 2;
+				}
 			}
 		}
 		MapSnapshot snapshot;
@@ -261,9 +265,14 @@ int main(int argc, char** argv) {
 			if (!validateMap(project, snapshot, plan, diagnostics)) {
 				return diagnosticsResult(diagnostics);
 			}
+			EffectiveWorldModel effective;
+			if (!buildEffectiveWorldModel(project, snapshot, EffectiveMode::World, {}, effective, diagnostics)) {
+				return diagnosticsResult(diagnostics);
+			}
 			output["valid"] = Value { true };
 			output["objects"] = Value { int64_t(plan.objects.size()) };
-		} else {
+			output["effective"] = effectiveWorldValue(effective);
+		} else if (command == "inspect") {
 			Value::List tiles;
 			for (const auto &position : positions) {
 				tiles.push_back(snapshot.inspect(position));
@@ -274,6 +283,32 @@ int main(int argc, char** argv) {
 				uids.push_back(Value { Value::Record { { "uid", Value { int64_t(entry.uid) } }, { "key", Value { int64_t(entry.key) } }, { "position", Value { Value::Record { { "x", Value { int64_t(entry.position.x) } }, { "y", Value { int64_t(entry.position.y) } }, { "z", Value { int64_t(entry.position.z) } } } } } } });
 			}
 			output["uniqueIds"] = Value { uids };
+		} else {
+			Value::List identifiers;
+			for (const auto &entry : snapshot.identifiers()) {
+				Value::List containers;
+				for (const auto key : entry.containers) {
+					containers.push_back(Value { int64_t(key) });
+				}
+				Value::Record identifier {
+					{ "key", Value { int64_t(entry.key) } },
+					{ "position", Value { Value::Record { { "x", Value { int64_t(entry.position.x) } }, { "y", Value { int64_t(entry.position.y) } }, { "z", Value { int64_t(entry.position.z) } } } } },
+					{ "itemId", Value { int64_t(entry.itemId) } },
+					{ "aid", Value { int64_t(entry.aid) } },
+					{ "uid", Value { int64_t(entry.uid) } },
+					{ "part", Value { std::string(entry.ground ? "ground" : "item") } },
+					{ "containers", Value { containers } },
+				};
+				if (entry.occurrence) {
+					identifier["occurrence"] = Value { Value::Record {
+						{ "index", Value { int64_t(entry.occurrence->index) } },
+						{ "count", Value { int64_t(entry.occurrence->count) } },
+						{ "fingerprint", Value { entry.occurrence->fingerprint } },
+					} };
+				}
+				identifiers.push_back(Value { identifier });
+			}
+			output["identifiers"] = Value { identifiers };
 		}
 		std::cout << serializeValue(Value { output }) << '\n';
 		return 0;

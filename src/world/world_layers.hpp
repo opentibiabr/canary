@@ -76,6 +76,9 @@ namespace world_layers {
 		std::string id;
 		uint32_t contractVersion = 1;
 		std::vector<std::string> events;
+		// Invocation rules belong to the event binding rather than gameplay
+		// parameters. They preserve dispatch checks while Lua owns the rule body.
+		std::map<std::string, Value::Record> eventOptions;
 		Value::Record parameters;
 		std::map<std::string, std::vector<Reference>> relations;
 		bool operator==(const BehaviorBinding &) const = default;
@@ -152,9 +155,17 @@ namespace world_layers {
 
 	using Diagnostics = std::vector<Diagnostic>;
 
-	struct LegacyClaim {
+	enum class MigrationSourceKind { LuaTable,
+		                             OtbmItem,
+		                             LuaRegistration };
+	enum class MigrationHashFormat { Utf8Lf,
+		                             Binary };
+
+	struct MigrationClaim {
+		MigrationSourceKind kind = MigrationSourceKind::LuaTable;
 		std::filesystem::path file;
 		std::string table, key, occurrence, fingerprint, object;
+		std::string registration, selector, value, event;
 		uint32_t declaration = 1;
 		std::vector<std::string> responsibilities;
 	};
@@ -163,10 +174,11 @@ namespace world_layers {
 		std::filesystem::path file;
 		std::filesystem::path receipt; // optional, tool-owned recovery metadata
 		std::string id;
-		// SHA-256 of UTF-8 source with CRLF normalized to LF. These are
-		// transition preconditions, not another operational configuration.
+		// Full revisions guard migration ownership sources. Binary OTBM revisions
+		// are historical/apply evidence and are not permanent runtime gates.
 		std::map<std::filesystem::path, std::string> sources;
-		std::vector<LegacyClaim> claims;
+		std::map<std::filesystem::path, MigrationHashFormat> sourceFormats;
+		std::vector<MigrationClaim> claims;
 	};
 
 	struct Project {

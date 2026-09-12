@@ -67,6 +67,14 @@ namespace world_layers {
 	uint16_t MapView::effectiveUid(const MapItem &original) {
 		return original.uid;
 	}
+
+	std::vector<IdentifierOccurrence> MapView::identifiers() {
+		std::vector<IdentifierOccurrence> result;
+		for (const auto &entry : uniqueIds({})) {
+			result.push_back({ entry.key, entry.position, 0, 0, entry.uid });
+		}
+		return result;
+	}
 	bool MapView::capability(uint16_t itemId, const std::string &name) const {
 		return name == "teleport" && nativeTeleport(itemId);
 	}

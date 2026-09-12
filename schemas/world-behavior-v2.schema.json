@@ -46,7 +46,9 @@
           "onStepIn",
           "onStepOut",
           "onAddItem",
-          "onRemoveItem"
+          "onRemoveItem",
+          "onEquip",
+          "onDeEquip"
         ]
       }
     },

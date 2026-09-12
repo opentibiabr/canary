@@ -33,6 +33,20 @@ namespace world_layers {
 		Position position;
 	};
 
+	// A compact census entry for every base-map item that carries an AID or UID.
+	// The stable selector preconditions live beside the historical byte key so a
+	// distant OTBM edit does not invalidate an adopted object.
+	struct IdentifierOccurrence {
+		uint64_t key = 0;
+		Position position;
+		uint16_t itemId = 0;
+		uint16_t aid = 0;
+		uint16_t uid = 0;
+		bool ground = false;
+		std::vector<uint64_t> containers;
+		std::optional<Occurrence> occurrence;
+	};
+
 	// All calls are synchronous snapshots; keys identify items only during validation.
 	class MapView {
 	public:
@@ -46,6 +60,9 @@ namespace world_layers {
 		virtual uint16_t effectiveUid(const MapItem &original);
 		// An empty request returns the complete UID census, including containers.
 		virtual std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) = 0;
+		// Explicit migration/inspection only. Interactive map paths must use an
+		// incremental implementation and must not trigger a full-map traversal.
+		virtual std::vector<IdentifierOccurrence> identifiers();
 	};
 
 	struct ResolvedObject {

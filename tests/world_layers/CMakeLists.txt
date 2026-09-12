@@ -11,6 +11,7 @@ add_executable(
     file_contract.cpp
     contract_v2.cpp
     ../../src/world/world_layers.cpp
+    ../../src/world/world_effective.cpp
     ../../src/world/world_format.cpp
     ../../src/world/world_selectors.cpp
     ../../src/world/world_validation.cpp

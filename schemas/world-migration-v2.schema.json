@@ -34,6 +34,13 @@
           "sha256": {
             "type": "string",
             "pattern": "^[0-9a-f]{64}$"
+          },
+          "format": {
+            "enum": [
+              "utf8-lf",
+              "binary"
+            ],
+            "default": "utf8-lf"
           }
         },
         "required": [
@@ -56,11 +63,41 @@
                 "minLength": 1,
                 "pattern": "^(?![A-Za-z]:)(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
               },
+              "kind": {
+                "enum": [
+                  "luaTable",
+                  "otbmItem",
+                  "luaRegistration"
+                ],
+                "default": "luaTable"
+              },
               "table": {
                 "type": "string",
                 "minLength": 1
               },
               "key": {
+                "type": "string",
+                "minLength": 1
+              },
+              "registration": {
+                "enum": [
+                  "Action",
+                  "MoveEvent"
+                ]
+              },
+              "selector": {
+                "enum": [
+                  "position",
+                  "uid",
+                  "aid",
+                  "itemId"
+                ]
+              },
+              "value": {
+                "type": "string",
+                "minLength": 1
+              },
+              "event": {
                 "type": "string",
                 "minLength": 1
               },
@@ -75,11 +112,50 @@
               }
             },
             "required": [
-                "file",
-                "table",
-                "key",
-                "declaration",
-                "fingerprint"
+              "file",
+              "declaration",
+              "fingerprint"
+            ],
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "kind": {
+                      "const": "otbmItem"
+                    }
+                  },
+                  "required": [
+                    "kind"
+                  ]
+                },
+                "then": {},
+                "else": {
+                  "if": {
+                    "properties": {
+                      "kind": {
+                        "const": "luaRegistration"
+                      }
+                    },
+                    "required": [
+                      "kind"
+                    ]
+                  },
+                  "then": {
+                    "required": [
+                      "registration",
+                      "selector",
+                      "value",
+                      "event"
+                    ]
+                  },
+                  "else": {
+                    "required": [
+                      "table",
+                      "key"
+                    ]
+                  }
+                }
+              }
             ],
             "additionalProperties": false
           },
@@ -113,7 +189,9 @@
                 "onStepIn",
                 "onStepOut",
                 "onAddItem",
-                "onRemoveItem"
+                "onRemoveItem",
+                "onEquip",
+                "onDeEquip"
               ]
             }
           }

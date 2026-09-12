@@ -533,14 +533,27 @@ namespace world_layers {
 		std::array<ItemType, 65536> types;
 		std::map<Key, MapTile> tiles;
 		std::vector<UniqueOccurrence> ids;
+		std::vector<IdentifierOccurrence> identifiers;
 		uint64_t tileCount = 0, itemCount = 0;
-		void census(const MapItem &item, const Position &position) {
-			++itemCount;
-			if (item.uid) {
-				ids.push_back({ item.uid, item.key, position });
-			}
-			for (const auto &child : item.children) {
-				census(child, position);
+		void census(const std::vector<MapItem> &siblings, const Position &position, const std::vector<uint64_t> &containers = {}) {
+			for (const auto &item : siblings) {
+				++itemCount;
+				if (item.uid) {
+					ids.push_back({ item.uid, item.key, position });
+				}
+				if (item.aid || item.uid) {
+					Selector selector;
+					selector.itemId = item.itemId;
+					selector.ground = item.ground;
+					std::string error;
+					if (!captureSelector(selector, siblings, item.key, error)) {
+						throw std::runtime_error(error);
+					}
+					identifiers.push_back({ item.key, position, item.itemId, item.aid, item.uid, item.ground, containers, selector.occurrence });
+				}
+				auto childContainers = containers;
+				childContainers.push_back(item.key);
+				census(item.children, position, childContainers);
 			}
 		}
 	};
@@ -625,6 +638,9 @@ namespace world_layers {
 			}
 		}
 		return result;
+	}
+	std::vector<IdentifierOccurrence> MapSnapshot::identifiers() {
+		return state->identifiers;
 	}
 	uint64_t MapSnapshot::tileCount() const {
 		return state->tileCount;
@@ -749,8 +765,8 @@ namespace world_layers {
 					tile.ground = tile.ground || item.ground;
 					tile.blocked = tile.blocked || loaded->types[item.itemId].blocking;
 					portal = portal || item.teleport;
-					loaded->census(item, position);
 				}
+				loaded->census(tile.items, position);
 				++loaded->tileCount;
 				if (portal || requested.contains(key(position))) {
 					// RME and the server normalize the top-item group while loading.

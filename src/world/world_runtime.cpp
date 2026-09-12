@@ -1,5 +1,6 @@
 #include "world/world_runtime.hpp"
 #include "world/world_behaviors.hpp"
+#include "world/world_effective.hpp"
 #include "world/world_runtime_items.hpp"
 
 #include "config/configmanager.hpp"
@@ -280,6 +281,13 @@ bool WorldLayerRuntime::prepare() {
 				if (state->mode != WorldConfigurationMode::Mixed) {
 					continue;
 				}
+				const auto format = record.sourceFormats.find(file);
+				if (format != record.sourceFormats.end() && format->second == world_layers::MigrationHashFormat::Binary) {
+					// Binary revisions guard bundle application and remain immutable
+					// evidence in the receipt. Selector preconditions, not a permanent
+					// whole-map hash, validate an adopted item at startup.
+					continue;
+				}
 				std::string source, error;
 				if (!world_layers::readFile(file, source, error)) {
 					g_logger().error("Cannot verify World migration source {}: {}", file.generic_string(), error);
@@ -304,6 +312,9 @@ bool WorldLayerRuntime::prepare() {
 					return false;
 				}
 				for (const auto &responsibility : claim.responsibilities) {
+					if (claim.kind != world_layers::MigrationSourceKind::LuaTable) {
+						continue;
+					}
 					LegacyKey key { std::filesystem::weakly_canonical(claim.file), claim.table, claim.key, claim.occurrence, responsibility };
 					if (!state->legacyOwners.emplace(std::move(key), claim.object).second) {
 						g_logger().error("Overlapping World migration claims in {}", record.file.generic_string());
@@ -653,6 +664,12 @@ bool WorldLayerRuntime::apply() {
 		}
 		world_layers::ApplicationPlan finalPlan;
 		world_layers::Diagnostics diagnostics;
+		world_layers::EffectiveWorldModel effective;
+		const auto effectiveMode = state->mode == WorldConfigurationMode::World ? world_layers::EffectiveMode::World : world_layers::EffectiveMode::Mixed;
+		if (!world_layers::buildEffectiveWorldModel(*state->project, map, effectiveMode, {}, effective, diagnostics)) {
+			report(diagnostics);
+			return false;
+		}
 		if (!world_layers::validateMap(*state->project, map, finalPlan, diagnostics)) {
 			report(diagnostics);
 			return false;

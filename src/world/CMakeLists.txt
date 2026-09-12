@@ -1,6 +1,7 @@
 target_sources(
     ${CORE_TARGET_NAME}
     PRIVATE world_layers.cpp
+            world_effective.cpp
             world_files.cpp
             world_format.cpp
             world_selectors.cpp

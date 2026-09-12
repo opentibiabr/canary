@@ -16,6 +16,7 @@ namespace world_layers {
 		bool capability(uint16_t itemId, const std::string &name) const override;
 		MapTile tile(const Position &position) override;
 		std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) override;
+		std::vector<IdentifierOccurrence> identifiers() override;
 		uint64_t tileCount() const;
 		uint64_t itemCount() const;
 		Value inspect(const Position &position);

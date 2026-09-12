@@ -21,6 +21,11 @@ namespace world_files {
 	bool revision(const std::filesystem::path &file, Revision &result, std::string &error);
 	bool publish(const Publication &publication, std::string &error);
 	bool recover(const std::filesystem::path &catalog, const std::filesystem::path &root, bool rollback, std::string &error);
+	bool beginCoordination(const std::filesystem::path &catalog, std::string &error);
+	bool endCoordination(const std::filesystem::path &catalog, std::string &error);
+	bool recoverCoordination(const std::filesystem::path &catalog, const std::filesystem::path &root, bool rollback, std::string &error);
+	bool transactionPending(const std::filesystem::path &catalog);
+	bool coordinatedPending(const std::filesystem::path &catalog);
 	bool pending(const std::filesystem::path &catalog);
 #ifdef WORLD_FILES_TEST_HOOKS
 	// Fault injection exists only in the standalone file-contract test target.

@@ -291,7 +291,7 @@ namespace world_layers {
 		}
 
 		bool readBinding(FormatReader &reader, const Json &value, BehaviorBinding &binding) {
-			if (!reader.keys(value, "/behaviors", { "id", "contractVersion", "events", "parameters", "relations" })
+			if (!reader.keys(value, "/behaviors", { "id", "contractVersion", "events", "eventOptions", "parameters", "relations" })
 			    || !reader.identifier(value.value("id", Json()), "/behaviors/id", binding.id)
 			    || !reader.number(value.value("contractVersion", Json()), "/behaviors/contractVersion", binding.contractVersion, 1, 0xffffffffLL)
 			    || !reader.strings(value.value("events", Json()), "/behaviors/events", binding.events)) {
@@ -299,6 +299,17 @@ namespace world_layers {
 			}
 			if (binding.events.empty()) {
 				return reader.fail("/behaviors/events", "A behavior must explicitly own at least one event");
+			}
+			if (value.contains("eventOptions")) {
+				if (!value["eventOptions"].is_object()) {
+					return reader.fail("/behaviors/eventOptions", "Expected options grouped by event");
+				}
+				for (const auto &entry : value["eventOptions"].items()) {
+					if (!entry.value().is_object()) {
+						return reader.fail("/behaviors/eventOptions/" + entry.key(), "Expected an option object");
+					}
+					binding.eventOptions.emplace(entry.key(), std::get<Value::Record>(decode(entry.value()).data));
+				}
 			}
 			if (value.contains("parameters")) {
 				if (!value["parameters"].is_object()) {
@@ -692,7 +703,7 @@ namespace world_layers {
 		if (value.contains("name") && !reader.text(value["name"], "/name", parsed.name)) {
 			return false;
 		}
-		const std::set<std::string> events { "onUse", "onStepIn", "onStepOut", "onAddItem", "onRemoveItem" };
+		const std::set<std::string> events { "onUse", "onStepIn", "onStepOut", "onAddItem", "onRemoveItem", "onEquip", "onDeEquip" };
 		if (parsed.events.empty()) {
 			return reader.fail("/events", "Expected at least one supported event");
 		}
@@ -789,29 +800,59 @@ namespace world_layers {
 		};
 		for (const auto &entry : json["sources"]) {
 			std::filesystem::path path;
-			std::string digest;
-			if (!reader.keys(entry, "/sources", { "file", "sha256" }) || !reader.relative(entry.value("file", Json()), "/sources/file", path) || !hash(entry.value("sha256", Json()), "/sources/sha256", digest)) {
+			std::string digest, format = "utf8-lf";
+			if (!reader.keys(entry, "/sources", { "file", "sha256", "format" }) || !reader.relative(entry.value("file", Json()), "/sources/file", path) || !hash(entry.value("sha256", Json()), "/sources/sha256", digest)
+			    || (entry.contains("format") && !reader.text(entry["format"], "/sources/format", format))) {
 				return false;
+			}
+			if (format != "utf8-lf" && format != "binary") {
+				return reader.fail("/sources/format", "Expected utf8-lf or binary");
 			}
 			if (!result.sources.emplace(path, digest).second) {
 				return reader.fail("/sources", "Duplicate source path");
 			}
+			result.sourceFormats.emplace(path, format == "binary" ? MigrationHashFormat::Binary : MigrationHashFormat::Utf8Lf);
 		}
-		std::set<std::tuple<std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string, std::string>> claims;
+		std::set<std::tuple<MigrationSourceKind, std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string, std::string>> claims;
 		for (const auto &entry : json["claims"]) {
-			LegacyClaim claim;
+			MigrationClaim claim;
 			if (!reader.keys(entry, "/claims", { "source", "occurrence", "object", "responsibilities" })) {
 				return false;
 			}
 			const auto origin = entry.value("source", Json());
-			if (!reader.keys(origin, "/claims/source", { "file", "table", "key", "declaration", "fingerprint" }) || !reader.relative(origin.value("file", Json()), "/claims/source/file", claim.file)) {
+			if (!reader.keys(origin, "/claims/source", { "kind", "file", "table", "key", "registration", "selector", "value", "event", "declaration", "fingerprint" }) || !reader.relative(origin.value("file", Json()), "/claims/source/file", claim.file)) {
 				return false;
 			}
 			if (!result.sources.contains(claim.file)) {
 				return reader.fail("/claims/source/file", "Source lacks a revision precondition");
 			}
-			if (!reader.text(origin.value("table", Json()), "/claims/source/table", claim.table) || !reader.text(origin.value("key", Json()), "/claims/source/key", claim.key) || !hash(origin.value("fingerprint", Json()), "/claims/source/fingerprint", claim.fingerprint)) {
+			std::string kind = "luaTable";
+			if ((origin.contains("kind") && !reader.text(origin["kind"], "/claims/source/kind", kind)) || !hash(origin.value("fingerprint", Json()), "/claims/source/fingerprint", claim.fingerprint)) {
 				return false;
+			}
+			if (kind == "luaTable") {
+				claim.kind = MigrationSourceKind::LuaTable;
+				if (!reader.text(origin.value("table", Json()), "/claims/source/table", claim.table) || !reader.text(origin.value("key", Json()), "/claims/source/key", claim.key) || claim.table.empty() || claim.key.empty()) {
+					return reader.fail("/claims/source", "Lua table claims require table and key");
+				}
+			} else if (kind == "otbmItem") {
+				claim.kind = MigrationSourceKind::OtbmItem;
+				if (result.sourceFormats.at(claim.file) != MigrationHashFormat::Binary) {
+					return reader.fail("/claims/source/file", "OTBM item claims require a binary source revision");
+				}
+			} else if (kind == "luaRegistration") {
+				claim.kind = MigrationSourceKind::LuaRegistration;
+				if (!reader.text(origin.value("registration", Json()), "/claims/source/registration", claim.registration)
+				    || !reader.text(origin.value("selector", Json()), "/claims/source/selector", claim.selector)
+				    || !reader.text(origin.value("value", Json()), "/claims/source/value", claim.value)
+				    || !reader.text(origin.value("event", Json()), "/claims/source/event", claim.event)
+				    || (claim.registration != "Action" && claim.registration != "MoveEvent")
+				    || !std::set<std::string> { "position", "uid", "aid", "itemId" }.contains(claim.selector)
+				    || claim.value.empty() || claim.event.empty()) {
+					return reader.fail("/claims/source", "Lua registration claims require a supported registration, selector, value and event");
+				}
+			} else {
+				return reader.fail("/claims/source/kind", "Expected luaTable, otbmItem or luaRegistration");
 			}
 			const auto ordinal = origin.value("declaration", Json(1));
 			if (!ordinal.is_number_integer() || ordinal < 1 || ordinal > UINT32_MAX) {
@@ -821,7 +862,7 @@ namespace world_layers {
 			if (!reader.text(entry.value("occurrence", Json()), "/claims/occurrence", claim.occurrence) || !reader.text(entry.value("object", Json()), "/claims/object", claim.object)) {
 				return false;
 			}
-			if (claim.table.empty() || claim.key.empty() || claim.occurrence.empty() || claim.object.empty()) {
+			if (claim.occurrence.empty() || claim.object.empty()) {
 				return reader.fail("/claims", "Claim identity fields cannot be empty");
 			}
 			if (!entry.contains("responsibilities") || !entry["responsibilities"].is_array() || entry["responsibilities"].empty()) {
@@ -832,11 +873,26 @@ namespace world_layers {
 				if (!reader.text(value, "/claims/responsibilities", responsibility)) {
 					return false;
 				}
-				const std::set<std::string> known { "attributes.aid", "attributes.uid", "attributes.text", "attributes.description", "attributes.name", "attributes.article", "attributes.plural", "attributes.writer", "attributes.date", "attributes.custom", "creation", "replacement", "onUse", "onStepIn", "onStepOut", "onAddItem", "onRemoveItem" };
+				const std::set<std::string> known { "attributes.aid", "attributes.uid", "attributes.text", "attributes.description", "attributes.name", "attributes.article", "attributes.plural", "attributes.writer", "attributes.date", "attributes.custom", "creation", "replacement", "onUse", "onStepIn", "onStepOut", "onAddItem", "onRemoveItem", "onEquip", "onDeEquip" };
 				if (!known.contains(responsibility)) {
 					return reader.fail("/claims/responsibilities", "Unknown responsibility: " + responsibility);
 				}
-				if (!claims.emplace(claim.file, claim.table, claim.key, claim.declaration, claim.occurrence, claim.object, responsibility).second) {
+				if (claim.kind == MigrationSourceKind::OtbmItem && responsibility != "attributes.aid" && responsibility != "attributes.uid") {
+					return reader.fail("/claims/responsibilities", "OTBM item claims can own only AID or UID attributes");
+				}
+				if (claim.kind == MigrationSourceKind::LuaRegistration && responsibility != claim.event) {
+					return reader.fail("/claims/responsibilities", "Lua registration claims must own their declared event");
+				}
+				std::string primary = "otbm";
+				std::string secondary = claim.fingerprint;
+				if (claim.kind == MigrationSourceKind::LuaTable) {
+					primary = claim.table;
+					secondary = claim.key;
+				} else if (claim.kind == MigrationSourceKind::LuaRegistration) {
+					primary = claim.registration + ":" + claim.selector;
+					secondary = claim.value;
+				}
+				if (!claims.emplace(claim.kind, claim.file, primary, secondary, claim.declaration, claim.occurrence, claim.object, responsibility).second) {
 					return reader.fail("/claims", "Duplicate ownership claim");
 				}
 				claim.responsibilities.push_back(responsibility);
@@ -1003,7 +1059,11 @@ namespace world_layers {
 			if (!object.behaviors.empty()) {
 				value["behaviors"] = Json::array();
 				for (const auto &binding : object.behaviors) {
-					value["behaviors"].push_back({ { "id", binding.id }, { "contractVersion", binding.contractVersion }, { "events", binding.events }, { "parameters", encode(Value { binding.parameters }) }, { "relations", relationsJson(binding.relations) } });
+					Json eventOptions = Json::object();
+					for (const auto &[event, options] : binding.eventOptions) {
+						eventOptions[event] = encode(Value { options });
+					}
+					value["behaviors"].push_back({ { "id", binding.id }, { "contractVersion", binding.contractVersion }, { "events", binding.events }, { "eventOptions", eventOptions }, { "parameters", encode(Value { binding.parameters }) }, { "relations", relationsJson(binding.relations) } });
 				}
 			}
 			json["objects"].push_back(std::move(value));
@@ -1050,10 +1110,28 @@ namespace world_layers {
 			json["receipt"] = relative(record.receipt);
 		}
 		for (const auto &[file, sha256] : record.sources) {
-			json["sources"].push_back({ { "file", relative(file) }, { "sha256", sha256 } });
+			Json source { { "file", relative(file) }, { "sha256", sha256 } };
+			const auto format = record.sourceFormats.find(file);
+			if (format != record.sourceFormats.end() && format->second == MigrationHashFormat::Binary) {
+				source["format"] = "binary";
+			}
+			json["sources"].push_back(std::move(source));
 		}
 		for (const auto &claim : record.claims) {
-			json["claims"].push_back({ { "source", { { "file", relative(claim.file) }, { "table", claim.table }, { "key", claim.key }, { "declaration", claim.declaration }, { "fingerprint", claim.fingerprint } } }, { "occurrence", claim.occurrence }, { "object", claim.object }, { "responsibilities", claim.responsibilities } });
+			Json source { { "file", relative(claim.file) }, { "declaration", claim.declaration }, { "fingerprint", claim.fingerprint } };
+			if (claim.kind == MigrationSourceKind::LuaTable) {
+				source["table"] = claim.table;
+				source["key"] = claim.key;
+			} else if (claim.kind == MigrationSourceKind::OtbmItem) {
+				source["kind"] = "otbmItem";
+			} else {
+				source["kind"] = "luaRegistration";
+				source["registration"] = claim.registration;
+				source["selector"] = claim.selector;
+				source["value"] = claim.value;
+				source["event"] = claim.event;
+			}
+			json["claims"].push_back({ { "source", std::move(source) }, { "occurrence", claim.occurrence }, { "object", claim.object }, { "responsibilities", claim.responsibilities } });
 		}
 		return json.dump(2) + "\n";
 	}
@@ -1254,6 +1332,59 @@ namespace world_layers {
 						if (std::find(descriptor->events.begin(), descriptor->events.end(), event) == descriptor->events.end()) {
 							fail("/behaviors/events", "Event is not declared by the descriptor: " + event);
 						}
+						if ((event == "onEquip" || event == "onDeEquip") && !binding.eventOptions.contains(event)) {
+							fail("/behaviors/eventOptions/" + event, "Equipment behavior requires invocation options and explicit slots");
+						}
+					}
+					for (const auto &[event, options] : binding.eventOptions) {
+						if (std::find(binding.events.begin(), binding.events.end(), event) == binding.events.end()) {
+							fail("/behaviors/eventOptions/" + event, "Options require ownership of the same event");
+							continue;
+						}
+						const auto option = [&](const std::string &name) -> const Value* {
+							const auto found = options.find(name);
+							return found == options.end() ? nullptr : &found->second;
+						};
+						if (event == "onUse") {
+							for (const auto &[name, value] : options) {
+								if (!std::set<std::string> { "allowFarUse", "blockWalls", "checkFloor" }.contains(name) || !std::holds_alternative<bool>(value.data)) {
+									fail("/behaviors/eventOptions/onUse/" + name, "Expected a supported boolean Action option");
+								}
+							}
+						} else if (event == "onEquip" || event == "onDeEquip") {
+							const std::set<std::string> allowed { "slots", "level", "magicLevel", "premium", "vocations", "vocationDescription" };
+							for (const auto &[name, value] : options) {
+								if (!allowed.contains(name)) {
+									fail("/behaviors/eventOptions/" + event + "/" + name, "Unknown equipment option");
+								} else if ((name == "premium" && !std::holds_alternative<bool>(value.data)) || (name == "vocationDescription" && !std::holds_alternative<std::string>(value.data))) {
+									fail("/behaviors/eventOptions/" + event + "/" + name, "Equipment option has an invalid type");
+								} else if (name == "level" || name == "magicLevel") {
+									const auto number = std::get_if<int64_t>(&value.data);
+									if (!number || *number < 0 || *number > UINT32_MAX) {
+										fail("/behaviors/eventOptions/" + event + "/" + name, "Expected a non-negative 32-bit integer");
+									}
+								} else if (name == "slots" || name == "vocations") {
+									const auto list = std::get_if<Value::List>(&value.data);
+									if (!list || (name == "slots" && list->empty()) || std::any_of(list->begin(), list->end(), [](const auto &entry) { return !std::holds_alternative<std::string>(entry.data); })) {
+										fail("/behaviors/eventOptions/" + event + "/" + name, "Expected a list of strings");
+									} else {
+										std::set<std::string> unique;
+										const std::set<std::string> slots { "head", "necklace", "backpack", "armor", "right-hand", "left-hand", "hand", "legs", "feet", "ring", "ammo" };
+										for (const auto &entry : *list) {
+											const auto &text = std::get<std::string>(entry.data);
+											if (text.empty() || !unique.insert(text).second || (name == "slots" && !slots.contains(text))) {
+												fail("/behaviors/eventOptions/" + event + "/" + name, "Expected unique supported non-empty values");
+											}
+										}
+									}
+								}
+							}
+							if (!option("slots")) {
+								fail("/behaviors/eventOptions/" + event + "/slots", "Equipment behavior requires explicit slots");
+							}
+						} else if (!options.empty()) {
+							fail("/behaviors/eventOptions/" + event, "This event does not define invocation options");
+						}
 					}
 					for (const auto &[name, value] : binding.parameters) {
 						const auto it = descriptor->parameters.find(name);
@@ -1291,7 +1422,7 @@ namespace world_layers {
 			}
 		}
 		std::set<std::string> migrationIds;
-		std::set<std::tuple<std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string>> claims;
+		std::set<std::tuple<MigrationSourceKind, std::filesystem::path, std::string, std::string, uint32_t, std::string, std::string>> claims;
 		for (const auto &record : project.migrationRecords) {
 			if (!migrationIds.insert(record.id).second) {
 				diagnostics.push_back({ record.file, "", "/id", "Duplicate migration identity" });
@@ -1301,8 +1432,24 @@ namespace world_layers {
 					diagnostics.push_back({ record.file, claim.object, "/claims/object", "Missing migration target" });
 				}
 				for (const auto &responsibility : claim.responsibilities) {
-					if (!claims.emplace(claim.file.lexically_normal(), claim.table, claim.key, claim.declaration, claim.occurrence, responsibility).second) {
-						diagnostics.push_back({ record.file, claim.object, "/claims", "More than one migration owns this legacy occurrence/responsibility" });
+					std::string primary = "otbm";
+					std::string secondary = claim.fingerprint;
+					if (claim.kind == MigrationSourceKind::LuaTable) {
+						primary = claim.table;
+						secondary = claim.key;
+					} else if (claim.kind == MigrationSourceKind::LuaRegistration) {
+						primary = claim.registration + ":" + claim.selector;
+						secondary = claim.value;
+					}
+					if (!claims.emplace(claim.kind, claim.file.lexically_normal(), primary, secondary, claim.declaration, claim.occurrence, responsibility).second) {
+						diagnostics.push_back({ record.file, claim.object, "/claims", "More than one migration owns this source occurrence/responsibility" });
+					}
+					if (responsibility.starts_with("on")) {
+						const auto* target = project.find(claim.object);
+						const bool bound = target && std::any_of(target->behaviors.begin(), target->behaviors.end(), [&](const auto &binding) { return std::find(binding.events.begin(), binding.events.end(), responsibility) != binding.events.end(); });
+						if (!bound) {
+							diagnostics.push_back({ record.file, claim.object, "/claims/responsibilities", "Event ownership requires a matching behavior binding" });
+						}
 					}
 				}
 			}

@@ -7,6 +7,7 @@ write to the map. It supports schema versions 1 and 2.
 ```sh
 world-tool validate data-otservbr-global/world/otservbr.world.json
 world-tool inspect --map data-otservbr-global/world/otservbr.otbm --items data/items/items.xml --positions artifacts/world-migration/positions.json
+world-tool inspect-identifiers --map data-otservbr-global/world/otservbr.otbm --items data/items/items.xml
 world-tool normalize data-otservbr-global/world/otservbr.world.json
 ```
 
@@ -30,6 +31,13 @@ shared validator, including occurrence preconditions when necessary. The tile's
 in the server's loading order. Python does not duplicate those selection rules.
 Unknown reserved sprites in unrelated map content can be
 inspected; an active World declaration still requires a known item type.
+
+`inspect-identifiers` performs a compact full-map census without a positions
+file. Its output contains only AID/UID-bearing instances and the container path,
+ground/item part and occurrence fingerprint needed to adopt them. `validate`
+also returns the canonical effective World identifier view, where a map item and
+its override are one instance and all nonzero effective UIDs are checked
+globally.
 
 This validates the initial OTBM configuration. Persistence, other startup
 producers, live behavior implementations and gameplay require runtime validation.

@@ -21,6 +21,7 @@ class RepositoryMigrationTests(unittest.TestCase):
 
 	def test_every_legacy_declaration_has_an_explicit_destination(self):
 		self.assertFalse(self.report["issues"])
+		self.assertEqual(self.report["summary"]["behaviorPendings"], len(self.report["dispatch"]["issues"]))
 		self.assertEqual({identity(e) for e in self.report["declarations"]}, {identity(e) for e in self.coverage["declarations"]})
 		claims = {(c["source"]["table"], c["source"]["key"], c["source"]["declaration"], c["source"]["fingerprint"]) for c in self.record["claims"]}
 		for entry in self.coverage["declarations"]:

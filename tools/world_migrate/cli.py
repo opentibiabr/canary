@@ -29,6 +29,7 @@ def main(argv: list[str] | None = None) -> int:
 	analysis.add_argument("--file", help="datapack-relative source path")
 	analysis.add_argument("--table")
 	analysis.add_argument("--entry", action="append", default=[])
+	analysis.add_argument("--mode", choices=("legacy", "world", "mixed"), help="explicit analysis profile; required when config.lua is dynamic")
 	analysis.add_argument("--report", type=Path, help="explicitly write a full JSON report")
 	for name in ("generate", "validate", "apply", "revert"):
 		command = commands.add_parser(name)
@@ -62,7 +63,7 @@ def main(argv: list[str] | None = None) -> int:
 			return 1 if result.get("pending") else 0
 		if args.all and (args.file or args.table or args.entry):
 			parser.error("--all cannot be combined with selectors")
-		report = analyze(root, args.datapack, selected_file=args.file, selected_table=args.table, entries=args.entry)
+		report = analyze(root, args.datapack, selected_file=args.file, selected_table=args.table, entries=args.entry, mode_override=args.mode)
 		if args.report:
 			report_path = _workspace_path(args.report)
 			Path(report_path).parent.mkdir(parents=True, exist_ok=True)
@@ -72,7 +73,9 @@ def main(argv: list[str] | None = None) -> int:
 		print(json.dumps(report["summary"], ensure_ascii=False, indent=2))
 		for issue in report["issues"]:
 			print(f"{issue['file']}:{issue.get('line', 1)}: {issue['message']}", file=sys.stderr)
-		return 1 if report["issues"] else 0
+		if report["configurationMode"]["confidence"] != "proven":
+			print("config.lua: configuration mode is unknown; run analyze again with --mode legacy, --mode world or --mode mixed", file=sys.stderr)
+		return 1 if report["issues"] or report["configurationMode"]["confidence"] != "proven" else 0
 	except (ValueError, OSError) as error:
 		print(f"world-migrate: {error}", file=sys.stderr)
 		return 2

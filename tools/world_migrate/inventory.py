@@ -12,6 +12,7 @@ from typing import Any
 
 from tools.canary_audit.lua_lexer import LuaLexError, tokenize
 from .lua_ast import Node, Reader, Unresolved, evaluate, json_value
+from .dispatch import analyze_dispatch
 
 
 ACTION_TABLES = {
@@ -34,6 +35,49 @@ ADAPTERS = {
 	"scripts/movements/others/remove-create_item.lua": "world tile mechanism behavior",
 	"scripts/quests/dawnport/actions_the_rare_herb.lua": "world instance context; retain quest state logic",
 }
+
+
+def configuration_mode(repository: Path, override: str | None = None) -> tuple[dict[str, Any], dict[str, str]]:
+	"""Read the active mode without evaluating config.lua.
+
+	An absent option has the server's compatibility meaning (legacy). Any
+	dynamic or repeated assignment remains unknown and must be resolved by an
+	explicit analysis profile.
+	"""
+	path = repository / "config.lua"
+	if not path.is_file():
+		configured = {"value": "legacy", "confidence": "proven", "file": "config.lua", "sha256": None, "reason": "config.lua is absent; compatibility default applies"}
+		if override is not None:
+			configured.update(value=override, source="explicit", configuredValue="legacy", reason="explicit analysis profile; config.lua is absent")
+		return configured, {}
+	content = path.read_bytes()
+	result = {path.relative_to(repository).as_posix(): fingerprint(content)}
+	try:
+		tokens = tokenize(content.decode("utf-8"), max_tokens=1_000_000)
+	except (LuaLexError, UnicodeError) as error:
+		configured = {"value": None, "confidence": "unknown", "file": path.relative_to(repository).as_posix(), "sha256": result[path.relative_to(repository).as_posix()], "reason": str(error)}
+		if override is not None:
+			configured.update(value=override, confidence="proven", source="explicit", configuredValue=None)
+		return configured, result
+	assignments: list[tuple[Any, int]] = []
+	for index, token in enumerate(tokens[:-2]):
+		if token.kind == "identifier" and token.value == "worldConfiguration" and tokens[index + 1].value == "=":
+			value = tokens[index + 2]
+			assignments.append((value.value if value.kind == "string" else None, token.line))
+	if not assignments:
+		configured = {"value": "legacy", "confidence": "proven", "file": path.relative_to(repository).as_posix(), "sha256": result[path.relative_to(repository).as_posix()], "reason": "option absent; compatibility default applies"}
+		if override is not None:
+			configured.update(value=override, source="explicit", configuredValue="legacy", reason="explicit analysis profile; option is absent")
+		return configured, result
+	if len(assignments) != 1 or assignments[0][0] not in {"legacy", "world", "mixed"}:
+		configured = {"value": None, "confidence": "unknown", "file": path.relative_to(repository).as_posix(), "sha256": result[path.relative_to(repository).as_posix()], "lines": [line for _, line in assignments], "reason": "mode is dynamic, invalid, or assigned more than once"}
+		if override is not None:
+			configured.update(value=override, confidence="proven", source="explicit", configuredValue=None)
+		return configured, result
+	configured = {"value": assignments[0][0], "confidence": "proven", "file": path.relative_to(repository).as_posix(), "sha256": result[path.relative_to(repository).as_posix()], "line": assignments[0][1]}
+	if override is not None:
+		configured.update(value=override, source="explicit", configuredValue=assignments[0][0])
+	return configured, result
 
 
 def fingerprint(content: bytes) -> str:
@@ -211,12 +255,13 @@ def consumers(repository: Path, datapack: Path, definitions: set[Path], tables: 
 	return result, sources, issues
 
 
-def analyze(repository: Path, datapack_name: str, *, selected_file: str | None = None, selected_table: str | None = None, entries: list[str] | None = None) -> dict:
+def analyze(repository: Path, datapack_name: str, *, selected_file: str | None = None, selected_table: str | None = None, entries: list[str] | None = None, mode_override: str | None = None) -> dict:
 	repository = repository.resolve()
 	datapack = within(repository, datapack_name)
 	files, issues = loader_files(datapack)
+	mode, mode_sources = configuration_mode(repository, mode_override)
 	constants, constant_sources = constants_from_datapack(repository, datapack)
-	sources = {f"{datapack_name}/startup/tables/load.lua": fingerprint((datapack / "startup/tables/load.lua").read_bytes()), **constant_sources}
+	sources = {f"{datapack_name}/startup/tables/load.lua": fingerprint((datapack / "startup/tables/load.lua").read_bytes()), **constant_sources, **mode_sources}
 	declarations, table_inventory = [], []
 	for path in files:
 		relative = path.relative_to(datapack).as_posix()
@@ -267,9 +312,10 @@ def analyze(repository: Path, datapack_name: str, *, selected_file: str | None =
 					entry["issues"].append({"line": field.key.span.line, "message": "Unresolved declaration key"})
 				declarations.append(entry)
 	consumer_list, consumer_sources, consumer_issues = consumers(repository, datapack, set(files), {table["table"] for table in table_inventory})
+	dispatch = analyze_dispatch(repository, datapack)
 	sources.update(consumer_sources)
 	issues.extend(consumer_issues)
 	selected = [entry for entry in declarations if entry["selected"]]
 	if (selected_file or selected_table or entries) and not selected:
 		raise ValueError("the selection did not match any declaration")
-	return {"schemaVersion": 1, "toolVersion": "2.0.0", "datapack": datapack_name, "sources": dict(sorted(sources.items())), "files": [path.relative_to(datapack).as_posix() for path in files], "tables": table_inventory, "declarations": declarations, "consumers": consumer_list, "issues": issues, "summary": {"files": len(files), "tables": len(table_inventory), "declarations": len(declarations), "selected": len(selected), "consumers": len(consumer_list), "classifications": dict(sorted(Counter(entry["classification"] for entry in selected).items()))}}
+	return {"schemaVersion": 1, "toolVersion": "2.0.0", "datapack": datapack_name, "configurationMode": mode, "sources": dict(sorted(sources.items())), "files": [path.relative_to(datapack).as_posix() for path in files], "tables": table_inventory, "declarations": declarations, "consumers": consumer_list, "dispatch": dispatch, "issues": issues, "summary": {"files": len(files), "tables": len(table_inventory), "declarations": len(declarations), "selected": len(selected), "consumers": len(consumer_list), "registrations": len(dispatch["registrations"]), "behaviorPendings": len(dispatch["issues"]), "configurationMode": mode.get("value"), "configurationConfidence": mode["confidence"], "classifications": dict(sorted(Counter(entry["classification"] for entry in selected).items()))}}

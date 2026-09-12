@@ -71,6 +71,18 @@ class MigrationBundleTests(NativeWorldToolFixture):
 			apply_bundle(self.root, self.directory, self.exe, offline=True)
 		self.assertEqual(self.catalog.read_bytes(), self.original_catalog)
 
+	def test_repeated_adoption_preserves_existing_identity_and_explicit_zero_override(self):
+		identity = "existing.map-item"
+		layer_path = self.world / "existing.layer.json"
+		write_new(layer_path, json_bytes({"schemaVersion": 2, "id": "existing", "objects": [{"id": identity, "kind": "item", "source": {"mode": "map", "selector": {"position": {"x": 100, "y": 100, "z": 7}, "part": "item", "itemId": 200}}, "attributes": {"aid": 0, "text": "preserve authored data"}}]}))
+		self.catalog.write_bytes(json_bytes({"schemaVersion": 2, "id": "test", "map": "example.otbm", "items": "../../data/items/items.xml", "layers": [{"file": "existing.layer.json", "enabled": True}]}))
+		generate(self.root, self.report, self.directory, self.exe)
+		second_catalog = read_json(self.directory / "after/data-example/world/example.world.json")
+		second_layer = read_json(self.directory / "after/data-example/world" / second_catalog["layers"][0]["file"])
+		self.assertEqual(len(second_layer["objects"]), 1)
+		self.assertEqual(second_layer["objects"][0]["id"], identity)
+		self.assertEqual(second_layer["objects"][0]["attributes"], {"aid": 0, "text": "preserve authored data"})
+
 	def test_first_catalog_is_created_only_on_apply_and_removed_by_revert(self):
 		self.catalog.unlink()
 		result = generate(self.root, self.report, self.directory, self.exe)

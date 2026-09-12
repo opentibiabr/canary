@@ -51,8 +51,9 @@ def has_table_behavior(entry: dict) -> bool:
 
 
 class Converter:
-	def __init__(self, root: Path, pack: Path, catalog_file: Path, catalog: dict, layers: dict[str, dict], inspected: dict, migration: dict, resolutions: Resolutions):
+	def __init__(self, root: Path, pack: Path, catalog_file: Path, map_file: Path, catalog: dict, layers: dict[str, dict], layer_enabled: dict[str, bool], inspected: dict, migration: dict, resolutions: Resolutions):
 		self.root, self.pack, self.catalog_file = root, pack, catalog_file
+		self.map_file = map_file
 		self.catalog, self.layers, self.migration = catalog, layers, migration
 		self.tiles = {canonical(tile["position"]): tile for tile in inspected["tiles"]}
 		self.unique_ids = inspected.get("uniqueIds", [])
@@ -68,11 +69,69 @@ class Converter:
 		self.pending, self.outcomes = [], []
 		self.by_original: dict[int, dict] = {}
 		self.attribute_sources: dict[tuple[int, str], tuple[dict, str]] = {}
+		self.preexisting: set[int] = set()
+		self.disabled_objects: set[str] = set()
+		self.otbm_claims: set[tuple[int, str, str]] = set()
+		self.object_items: dict[int, dict] = {}
 		self.resolutions = resolutions
 		self.behavior_ids: set[str] = set()
 		self.configurations: dict[int, dict] = {}
 		self.consumer_constants = consumer_constants(pack)
 		self.existing = {obj["id"]: obj for layer in layers.values() for obj in layer["objects"]}
+		object_layer = {obj["id"]: name for name, layer in layers.items() for obj in layer["objects"]}
+		resolved: dict[str, dict] = {}
+		resolving: set[str] = set()
+
+		def match_selector(selector: dict, candidates: list[dict]) -> dict | None:
+			matches = [item for item in candidates if item.get("itemId") == selector.get("itemId") and ("container" in selector or item.get("part") == selector.get("part"))]
+			attributes = selector.get("attributes", {})
+			matches = [item for item in matches if all(item.get("attributes", {}).get(name) == value for name, value in attributes.items())]
+			occurrence = selector.get("occurrence")
+			if occurrence is None:
+				return matches[0] if len(matches) == 1 else None
+			if attributes:
+				# The native validator owns the fingerprint algorithm. A selector
+				# narrowed by attributes is kept pending unless it is unambiguous.
+				return matches[0] if len(matches) == 1 else None
+			if len(matches) != occurrence.get("count", -1) or not 0 <= occurrence.get("index", -1) < len(matches):
+				return None
+			chosen = matches[occurrence["index"]]
+			return chosen if chosen.get("selector", {}).get("occurrence") == occurrence else None
+
+		def resolve_existing(identity: str) -> dict | None:
+			if identity in resolved:
+				return resolved[identity]
+			if identity in resolving:
+				return None
+			obj = self.existing.get(identity)
+			selector = obj.get("source", {}).get("selector") if obj else None
+			if not selector:
+				return None
+			resolving.add(identity)
+			if "container" in selector:
+				parent = resolve_existing(selector["container"])
+				candidates = parent.get("children", []) if parent else []
+			else:
+				tile = self.tiles.get(canonical(selector.get("position")))
+				candidates = tile.get("items", []) if tile else []
+			item = match_selector(selector, candidates)
+			resolving.remove(identity)
+			if item:
+				resolved[identity] = item
+			return item
+
+		for identity in sorted(self.existing):
+			item = resolve_existing(identity)
+			if item is None:
+				continue
+			previous = self.by_original.get(item["key"])
+			if previous is not None and previous["id"] != identity:
+				raise ValueError(f"base item is associated with both {previous['id']} and {identity}")
+			self.by_original[item["key"]] = self.existing[identity]
+			self.object_items[id(self.existing[identity])] = item
+			self.preexisting.add(item["key"])
+			if not layer_enabled.get(object_layer[identity], True):
+				self.disabled_objects.add(identity)
 
 	def behavior(self, entry: dict, obj: dict, special: dict | None = None) -> list[str]:
 		table, value = entry["table"], entry["value"]
@@ -133,7 +192,13 @@ class Converter:
 	def bind(self, entry: dict, occurrence: str, item: dict, attributes: dict) -> dict:
 		if item["key"] in self.by_original:
 			obj = self.by_original[item["key"]]
+			if obj["id"] in self.disabled_objects:
+				raise ValueError(f"{obj['id']} already owns this base item in a disabled layer; reactivate or move it before adopting responsibilities")
 			for name, value in attributes.items():
+				if item["key"] in self.preexisting and name in obj.get("attributes", {}):
+					# Re-adoption is idempotent: the already-authored override is the
+					# effective World value, including explicit zero.
+					continue
 				if name in obj.get("attributes", {}) and obj["attributes"][name] != value:
 					previous = self.attribute_sources[(item["key"], name)][0]
 					if not self.resolutions.replace(previous, entry, name):
@@ -149,10 +214,25 @@ class Converter:
 			if attributes:
 				obj["attributes"] = attributes
 			self.by_original[item["key"]] = obj
+			self.object_items[id(obj)] = item
 			self.layer(entry)["objects"].append(obj)
 			for name in attributes:
 				self.attribute_sources[(item["key"], name)] = (entry, occurrence)
 		return obj
+
+	def claim_otbm(self, item: dict, obj: dict, responsibilities: list[str]) -> None:
+		for responsibility in responsibilities:
+			if responsibility not in {"attributes.aid", "attributes.uid"}:
+				continue
+			identity = (item["key"], obj["id"], responsibility)
+			if identity in self.otbm_claims:
+				continue
+			self.otbm_claims.add(identity)
+			selector = obj.get("source", {}).get("selector", {})
+			fingerprint = sha(canonical({"itemId": item["itemId"], "selector": selector, "attributes": item.get("attributes", {})}).encode("utf-8"))
+			origin = {"kind": "otbmItem", "file": relative(self.map_file, self.catalog_file.parent / "migrations"), "declaration": 1, "fingerprint": fingerprint}
+			occurrence = "selector:" + sha(canonical(selector).encode("utf-8"))[:20]
+			self.migration["claims"].append({"source": origin, "occurrence": occurrence, "object": obj["id"], "responsibilities": [responsibility]})
 
 	def finish(self) -> None:
 		# A table also configures pre-existing UID consumers outside itemPos.
@@ -185,6 +265,9 @@ class Converter:
 		file = self.pack / entry["file"]
 		origin = {"file": relative(file, self.catalog_file.parent / "migrations"), "table": entry["table"], "key": entry["key"], "declaration": entry["occurrence"], "fingerprint": entry["fingerprint"]}
 		self.migration["claims"].append({"source": origin, "occurrence": occurrence, "object": obj["id"], "responsibilities": responsibilities})
+		item = self.object_items.get(id(obj))
+		if item:
+			self.claim_otbm(item, obj, responsibilities)
 
 	def created(self, entry: dict, occurrence: str, item_id: int, placement: dict, attributes: dict) -> dict:
 		obj = {"id": object_id(entry, occurrence), "kind": "item", "source": {"mode": "create", "itemId": item_id, "count": 1, "placement": placement}, "lifecycle": "refillOnStartup"}
@@ -362,6 +445,9 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	report = read_json(report_file, root)
 	if report.get("schemaVersion") != 1 or report.get("toolVersion") != "2.0.0":
 		raise ValueError("Unsupported analysis report; run analyze with this version")
+	mode = report.get("configurationMode", {})
+	if mode.get("confidence") != "proven" or mode.get("value") not in {"legacy", "world", "mixed"}:
+		raise ValueError("Configuration mode is unknown; analyze again with --mode legacy, --mode world or --mode mixed")
 	pack = within(root, report["datapack"])
 	sources = dict(report["sources"])
 	for name, expected in sources.items():
@@ -376,12 +462,15 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	catalog = loaded["project"]
 	catalog.pop("$schema", None)
 	layers = {}
+	layer_enabled = {}
 	for reference, layer in zip(catalog["layers"], loaded["layers"], strict=True):
 		path = (project_file.parent / reference["file"]).resolve()
 		if not path.is_relative_to(pack / "world"):
 			raise ValueError("Move imported layers into world before generating a migration")
 		layer.pop("$schema", None)
-		layers[path.relative_to(root).as_posix()] = layer
+		name = path.relative_to(root).as_posix()
+		layers[name] = layer
+		layer_enabled[name] = reference.get("enabled", True)
 	selected = [entry for entry in report["declarations"] if entry["selected"]]
 	migration_id = "migration-" + sha(canonical([(entry["file"], entry["table"], entry["key"], entry["occurrence"], entry["fingerprint"]) for entry in selected]).encode("utf-8"))[:20]
 	migration_file = project_file.parent / "migrations" / f"{migration_id}.json"
@@ -411,12 +500,13 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	if digest(map_file) != map_revision:
 		raise ValueError("The OTBM changed while inspecting it")
 	migration = {"schemaVersion": 2, "id": migration_id, "receipt": f"{migration_id}.receipt.json", "sources": [], "claims": []}
+	migration["sources"].append({"file": relative(logical_map, migration_file.parent), "sha256": map_revision, "format": "binary"})
 	for name in sorted({entry["file"] for entry in selected}):
 		path = pack / name
 		# Runtime provenance uses normalized Lua source, while filesystem guards
 		# deliberately retain exact bytes (including the original line endings).
 		migration["sources"].append({"file": relative(path, migration_file.parent), "sha256": sha(path.read_text(encoding="utf-8").encode("utf-8"))})
-	converter = Converter(root, pack, project_file, catalog, layers, inspected, migration, resolutions)
+	converter = Converter(root, pack, project_file, logical_map, catalog, layers, layer_enabled, inspected, migration, resolutions)
 	# loadMapAttributes applies texts/books before attribute tables, and the
 	# creation table last. In particular, creation must not duplicate a book
 	# which the preceding loader already supplied at the same tile.
@@ -437,5 +527,5 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	outputs.update({name: json_bytes(layer) for name, layer in layers.items()})
 	outputs[project_file.relative_to(root).as_posix()] = json_bytes(catalog)
 	outputs[migration_file.relative_to(root).as_posix()] = json_bytes(migration)
-	metadata = {"id": migration_id, "datapack": report["datapack"], "catalog": project_file.relative_to(root).as_posix(), "map": {"file": logical_map.relative_to(root).as_posix(), "sha256": map_revision}, "items": {"file": items.relative_to(root).as_posix(), "sources": item_sources}, "pending": converter.pending, "consumers": consumers, "receipt": migration_file.with_suffix(".receipt.json").relative_to(root).as_posix()}
+	metadata = {"id": migration_id, "datapack": report["datapack"], "catalog": project_file.relative_to(root).as_posix(), "map": {"file": logical_map.relative_to(root).as_posix(), "sha256": map_revision}, "items": {"file": items.relative_to(root).as_posix(), "sources": item_sources}, "configuration": mode, "pending": converter.pending, "consumers": consumers, "receipt": migration_file.with_suffix(".receipt.json").relative_to(root).as_posix()}
 	return create_bundle(root, output, metadata, outputs, sources, dict(report, outcomes=converter.outcomes, resolutionEvidence=resolutions.used), absent_outputs=absent_outputs)

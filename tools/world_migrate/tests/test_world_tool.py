@@ -82,6 +82,18 @@ class NativeWorldToolTests(NativeWorldToolFixture):
 		self.assertEqual(items[2]["children"][0]["selector"], {"itemId": 400})
 		self.assertEqual(before,{p.name:p.read_bytes() for p in self.root.iterdir()})
 
+	def test_identifier_census_includes_unselected_items_and_container_paths(self):
+		result = self.command("inspect-identifiers", "--map", "example.otbm", "--items", "items.xml")
+		self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+		data = json.loads(result.stdout)
+		self.assertEqual(data["tilesScanned"], 1)
+		self.assertEqual(data["itemsScanned"], 4)
+		self.assertEqual(len(data["identifiers"]), 2)
+		self.assertEqual(data["identifiers"][0]["aid"], 12107)
+		self.assertEqual(data["identifiers"][0]["containers"], [])
+		self.assertEqual(data["identifiers"][1]["uid"], 45000)
+		self.assertEqual(len(data["identifiers"][1]["containers"]), 1)
+
 	def test_publisher_rejects_missing_offline_confirmation_and_stale_versions(self):
 		self.write_json("publication.json", {"schemaVersion": 1, "catalog": "map.world.json", "changes": [{"file": "config.lua", "before": "before.lua", "after": "after.lua"}], "guards": []})
 		(self.root / "before.lua").write_text("old", encoding="utf-8")
@@ -115,7 +127,9 @@ class NativeWorldToolTests(NativeWorldToolFixture):
 		self.write_json("example.layer.json",{"schemaVersion":2,"id":"test","objects":objects})
 		result=self.command("validate","example.world.json")
 		self.assertEqual(result.returncode,0,result.stdout+result.stderr)
-		self.assertEqual(json.loads(result.stdout)["objects"],2)
+		data = json.loads(result.stdout)
+		self.assertEqual(data["objects"],2)
+		self.assertIn("effective", data)
 
 
 if __name__ == "__main__":

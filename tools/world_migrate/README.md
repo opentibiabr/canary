@@ -14,6 +14,13 @@ python -m tools.world_migrate apply --bundle artifacts/world-migration/bundle --
 python -m tools.world_migrate revert --receipt data-otservbr-global/world/migrations/migration-id.json --world-tool ./world-tool --confirm-offline
 ```
 
+`analyze` reads `worldConfiguration` statically. A missing option has the
+compatibility value `legacy`. Dynamic or repeated assignments are reported as
+unknown; rerun with `--mode legacy`, `--mode world` or `--mode mixed` only after
+choosing the intended analysis profile. The report and bundle retain that
+choice and the exact `config.lua` revision, including the absence of that file.
+Application is refused if the configuration revision changes.
+
 On Windows, use the same arguments on a single line and `world-tool.exe`, for
 example `--world-tool "tools-bin/world-tool.exe"`. Alternatively, set
 `WORLD_TOOL_PATH` to the helper or install it on `PATH`. `--project` selects a
@@ -39,6 +46,16 @@ declarations or unresolved Lua consumers block application, even if the generate
 JSON is structurally valid. Repeated or shadowed Lua keys require explicit
 characterization; they are not merged or resurrected automatically.
 
+The report also contains a separate `dispatch` inventory for Action and
+MoveEvent registrations. It records the registration category that actually
+succeeded, selectors rejected as duplicates, position/UID/AID/itemId priority,
+equipment slot filters and the ordered MoveEvent sequence. Cross-file order,
+dynamic selectors and callbacks with shared mutable locals remain behavior
+pending. These findings do not block an independently safe AID/UID adoption;
+they do block treating an arbitrary numerical match as proof that a handler can
+be replaced. The maintained consumer adapters still require their own exact
+source revisions and closed behavior contract.
+
 Repository-specific decisions are supplied explicitly with
 `--resolutions tools/world_migrate/resolutions/data-otservbr-global.json` during
 generation. This evidence is bound to the inspected map hash, declaration
@@ -48,13 +65,13 @@ It is never selected automatically for another installation. LuaJIT traversal
 order was characterized for the competing assignments; Lua 5.4 iteration order
 is not assumed to be equivalent.
 
-The native UID census also finds existing OTBM items that consume table settings
-without appearing in `itemPos`. Those instances receive their own bindings,
-including children of containers. A reviewed collision may remove the newly
-configured target's compatibility UID only when an equivalent World behavior
-replaces its dispatch; the original UID remains unique. AID sharing never implies
-ownership of another object. Events follow the final UID assignment, so a reward
-overwritten by a later loader is not accidentally activated.
+The native identifier census includes every map item with AID or UID, whether it
+is selected or not, including ground and nested container children. UID
+validation runs on the resulting canonical instances: a base item and its World
+override count once, while creates and replacements are included separately.
+Removing an item from a batch does not remove it from this validation. No command
+renumbers or clears a conflict automatically. AID sharing never implies
+ownership of another object.
 
 Review `bundle.json`, `analysis.json` and `after/` before applying. The bundle's
 snapshots are immutable revision preconditions: editing them invalidates the
@@ -62,6 +79,12 @@ bundle. Regenerate from reviewed source changes instead. Selecting entries keeps
 the complete inventory and leaves unselected declarations and comments intact.
 Legacy source tables remain as compatibility configuration; there is no ongoing
 Lua/JSON synchronization.
+
+The complete OTBM hash is an application guard and immutable historical evidence
+in the receipt. It is not a permanent startup dependency. After publication,
+selectors and occurrence fingerprints validate each adopted item locally, so a
+distant terrain edit does not invalidate unrelated World objects. A changed
+target or ambiguous sibling set produces a diagnostic for that object.
 
 Apply and revert require the server and editing sessions to be stopped. They use
 the shared native file service for revisions, cooperative locking, displaced

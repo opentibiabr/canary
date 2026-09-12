@@ -38,6 +38,17 @@ class MigrationInventoryTests(unittest.TestCase):
 		self.assertEqual([e["classification"] for e in report["declarations"][:2]], ["needs-analysis"] * 2)
 		self.assertEqual(report["consumers"][0]["aliases"], [{"name": "settings", "line": 1}])
 		self.assertEqual(report["consumers"][0]["classification"], "needs-analysis")
+		self.assertEqual(report["configurationMode"]["value"], "legacy")
+		self.assertIsNone(report["configurationMode"]["sha256"])
+
+	def test_dynamic_configuration_requires_an_explicit_static_profile(self):
+		(self.root / "config.lua").write_text('worldConfiguration = chooseMode()\n', encoding="utf-8")
+		unknown = analyze(self.root, "data-example")
+		self.assertEqual(unknown["configurationMode"]["confidence"], "unknown")
+		explicit = analyze(self.root, "data-example", mode_override="mixed")
+		self.assertEqual(explicit["configurationMode"]["value"], "mixed")
+		self.assertEqual(explicit["configurationMode"]["source"], "explicit")
+		self.assertIsNone(explicit["configurationMode"]["configuredValue"])
 
 	def test_selection_keeps_full_inventory_and_leaves_other_declarations_unselected(self):
 		report = analyze(self.root, "data-example", selected_table="ItemUnique", entries=["18"])

@@ -79,7 +79,7 @@ def require_keys(value: Any, required: set[str], optional: set[str] = frozenset(
 def load_bundle(directory: Path, root: Path | None = None) -> dict:
 	directory = within(root, directory) if root is not None else directory.resolve()
 	data = read_json(directory / "bundle.json", directory)
-	require_keys(data, {"schemaVersion", "id", "datapack", "catalog", "map", "items", "files", "sources", "pending", "consumers", "receipt"})
+	require_keys(data, {"schemaVersion", "id", "datapack", "catalog", "map", "items", "files", "sources", "pending", "consumers", "receipt"}, {"configuration"})
 	if data["schemaVersion"] != 1:
 		raise ValueError("Unsupported migration bundle version")
 	if not isinstance(data["id"], str) or not re.fullmatch(r"[a-z0-9][a-z0-9_.-]{0,127}", data["id"]):
@@ -107,6 +107,17 @@ def load_bundle(directory: Path, root: Path | None = None) -> dict:
 	return data
 
 
+def _configuration_guard(root: Path, data: dict) -> None:
+	configuration = data.get("configuration")
+	if configuration is None:
+		return
+	require_keys(configuration, {"value", "confidence", "file", "sha256"}, {"reason", "line", "lines", "source", "configuredValue"})
+	if configuration["confidence"] != "proven" or configuration["value"] not in {"legacy", "world", "mixed"}:
+		raise ValueError("Migration bundle does not have a proven configuration profile")
+	if digest(within(root, configuration["file"])) != configuration["sha256"]:
+		raise ValueError(f"Configuration changed since analysis: {configuration['file']}")
+
+
 def _map_arguments(root: Path, data: dict, override: Path | None) -> tuple[Path, Path]:
 	map_file = override.resolve() if override else within(root, data["map"]["file"])
 	items = within(root, data["items"]["file"])
@@ -131,6 +142,7 @@ def validate_bundle(root: Path, directory: Path, executable: str | Path | None, 
 	directory = within(root, directory)
 	data = load_bundle(directory, root)
 	_ready(data)
+	_configuration_guard(root, data)
 	map_file, items = _map_arguments(root, data, map_override)
 	result = native(executable, "validate", within(directory / "after", data["catalog"]), "--map", map_file, "--items", items)
 	# Native inspection is read-only; never acknowledge a map/catalog revision
@@ -168,6 +180,7 @@ def apply_bundle(root: Path, directory: Path, executable: str | Path | None, *, 
 	directory = within(root, directory)
 	data = load_bundle(directory, root)
 	_ready(data)
+	_configuration_guard(root, data)
 	state = _state(root, data)
 	if state == "conflict":
 		raise ValueError("Migration conflicts with current files; no configuration was written")
@@ -241,6 +254,7 @@ def revert_bundle(root: Path, receipt_file: Path, executable: str | Path | None,
 		raise ValueError("Unsupported migration receipt")
 	recovery = within(root, receipt["recovery"])
 	data = load_bundle(recovery, root)
+	_configuration_guard(root, data)
 	if digest(recovery / "bundle.json") != receipt["bundleSha256"] or data != receipt["bundle"]:
 		raise ValueError("Recovery metadata does not match the receipt")
 	state = _state(root, data)

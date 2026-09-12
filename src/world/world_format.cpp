@@ -1446,9 +1446,11 @@ namespace world_layers {
 					}
 					if (responsibility.starts_with("on")) {
 						const auto* target = project.find(claim.object);
-						const bool bound = target && std::any_of(target->behaviors.begin(), target->behaviors.end(), [&](const auto &binding) { return std::find(binding.events.begin(), binding.events.end(), responsibility) != binding.events.end(); });
+						const bool behaviorBound = target && std::any_of(target->behaviors.begin(), target->behaviors.end(), [&](const auto &binding) { return std::find(binding.events.begin(), binding.events.end(), responsibility) != binding.events.end(); });
+						const bool componentBound = target && responsibility == "onStepIn" && target->teleport.has_value();
+						const bool bound = behaviorBound || componentBound;
 						if (!bound) {
-							diagnostics.push_back({ record.file, claim.object, "/claims/responsibilities", "Event ownership requires a matching behavior binding" });
+							diagnostics.push_back({ record.file, claim.object, "/claims/responsibilities", "Event ownership requires a matching World behavior or component" });
 						}
 					}
 				}

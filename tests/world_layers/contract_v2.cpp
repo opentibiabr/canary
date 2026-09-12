@@ -222,6 +222,20 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	require(loadMigration(root / "source-kinds.json", rereadSourceKinds, diagnostics) && serializeMigration(rereadSourceKinds) == serializedSourceKinds, "all migration source kinds round trip");
 	project.migrationRecords.push_back(record);
 	require(check(), "migration target and responsibility validation");
+	auto teleportRecord = record;
+	teleportRecord.id = "fixture-teleport-migration";
+	teleportRecord.claims.front().key = "45001";
+	teleportRecord.claims.front().object = "example.portal";
+	teleportRecord.claims.front().responsibilities = { "onStepIn" };
+	project.migrationRecords.push_back(teleportRecord);
+	require(check(), "native teleport component satisfies migrated onStepIn ownership");
+	auto* portal = project.find("example.portal");
+	require(portal && portal->teleport.has_value(), "teleport ownership fixture is complete");
+	const auto portalTeleport = portal->teleport;
+	portal->teleport.reset();
+	require(!check(), "event ownership without a World behavior or component is rejected");
+	portal->teleport = portalTeleport;
+	project.migrationRecords.pop_back();
 	map.identifierRows = {
 		{ 1, { 100, 100, 7 }, 2012, 0, 0, false },
 		{ 2, { 104, 102, 7 }, 1662, 0, 0, false },

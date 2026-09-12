@@ -292,11 +292,11 @@ def run_smoke(args: argparse.Namespace) -> None:
 
         log_dir = REPO_ROOT / "build/runtime-smoke-logs"
         log_dir.mkdir(parents=True, exist_ok=True)
-        label = f"{args.data_pack}-{args.map_name}-{uuid.uuid4().hex[:8]}"
+        label = f"{args.data_pack}-{args.map_name}-{args.world_configuration}-{uuid.uuid4().hex[:8]}"
         stdout_path = log_dir / f"{label}.stdout.log"
         stderr_path = log_dir / f"{label}.stderr.log"
 
-        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} binary={binary}")
+        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} world={args.world_configuration} binary={binary}")
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen([str(binary)], cwd=REPO_ROOT, stdout=stdout_file, stderr=stderr_file)
 
@@ -337,7 +337,7 @@ def run_smoke(args: argparse.Namespace) -> None:
         print(runtime_log)
         expected = legacy_warning(args.data_pack) if args.world_configuration in {"legacy", "mixed"} else None
         assert_clean_log(runtime_log, args.fail_on_warnings, expected)
-        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name}.")
+        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name} world={args.world_configuration}.")
     finally:
         restore_config(config_path, config_existed, previous_config)
 

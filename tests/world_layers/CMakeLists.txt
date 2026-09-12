@@ -37,9 +37,8 @@ add_test(
     COMMAND world_file_contract "${CMAKE_CURRENT_BINARY_DIR}/scratch"
 )
 
-# The migrator delegates validation and publication to this exact native helper.
-# Building tests does not require running a server or evaluating gameplay Lua.
-add_subdirectory(../../tools/world_tool world_tool)
+# The root build includes the same helper in release artifacts and tests.
+# Running it does not start a server or evaluate gameplay Lua.
 find_package(
     Python3 3.12
     COMPONENTS Interpreter

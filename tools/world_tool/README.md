@@ -64,6 +64,11 @@ contains tool-owned recovery metadata and is never another runtime configuration
 
 ## Maintained build targets
 
+The Canary Linux and Windows CMake binary packages include `world-tool` alongside
+the server. Extract the package, retaining its runtime libraries, and pass the
+helper's path to the migrator. No server compilation or startup is required.
+CI runs the binary fixture tests against that packaged executable before upload.
+
 The standalone CMake target in this directory depends on `nlohmann-json` and
 `pugixml`, using the repository's manifest dependencies. RME also maintains
 `vcproj/Project/WorldTool.vcxproj` alongside its existing Visual Studio targets.

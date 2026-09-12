@@ -225,25 +225,29 @@ jobs:
           path: .cache/canary-maps/otservbr.otbm
           key: ${{ steps.global-map.outputs.key }}
 
-      - name: Smoke test Global datapack runtime
+      - name: Smoke test Global legacy, World and mixed startup
         if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke
         run: |
-          python3 .github/scripts/smoke_test_canary.py \
-            --binary-path build/${{ matrix.buildtype }}/bin/canary \
-            --data-pack data-otservbr-global \
-            --map-name otservbr \
-            --map-download-url "${{ steps.global-map.outputs.url }}" \
-            --map-cache-path .cache/canary-maps/otservbr.otbm \
-            --db-host 127.0.0.1 \
-            --db-port 3306 \
-            --db-user root \
-            --db-password root \
-            --db-name canary_smoke_${{ matrix.buildtype }}_global \
-            --login-port 7371 \
-            --game-port 7372 \
-            --status-port 7371 \
-            --startup-timeout-seconds 900 \
-            --fail-on-warnings
+          set -euo pipefail
+          for mode in legacy world mixed; do
+            python3 .github/scripts/smoke_test_canary.py \
+              --binary-path build/${{ matrix.buildtype }}/bin/canary \
+              --data-pack data-otservbr-global \
+              --map-name otservbr \
+              --world-configuration "${mode}" \
+              --map-download-url "${{ steps.global-map.outputs.url }}" \
+              --map-cache-path .cache/canary-maps/otservbr.otbm \
+              --db-host 127.0.0.1 \
+              --db-port 3306 \
+              --db-user root \
+              --db-password root \
+              --db-name "canary_smoke_${{ matrix.buildtype }}_global_${mode}" \
+              --login-port 7371 \
+              --game-port 7372 \
+              --status-port 7371 \
+              --startup-timeout-seconds 900 \
+              --fail-on-warnings
+          done
 
       - name: Save global map cache
         if: matrix.buildtype == 'linux-release' && inputs.run_global_smoke && steps.restore-global-map.outputs.cache-hit != 'true'
@@ -348,6 +352,11 @@ jobs:
           name: linux-${{ matrix.buildtype }}-runtime-smoke-logs
           path: build/runtime-smoke-logs/
           if-no-files-found: ignore
+
+      - name: Validate packaged World helper
+        env:
+          WORLD_TOOL_PATH: ${{ github.workspace }}/build/${{ matrix.buildtype }}/bin/world-tool
+        run: python3 -m unittest tools.world_migrate.tests.test_world_tool.NativeWorldToolTests -v
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v7

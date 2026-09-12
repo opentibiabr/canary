@@ -11,9 +11,10 @@ namespace {
 	world_layers::Project pilot() {
 		world_layers::Project project;
 		world_layers::Diagnostics diagnostics;
-		const auto file = std::filesystem::path(TESTS_SOURCE_DIR) / "data-otservbr-global/world/otservbr.world.json";
+		const auto file = std::filesystem::path(TESTS_SOURCE_DIR) / "tests/world_layers/fixtures/world.world.json";
 		EXPECT_TRUE(world_layers::loadProject(file, project, diagnostics));
 		EXPECT_TRUE(diagnostics.empty());
+		EXPECT_EQ(project.schemaVersion, 1);
 		return project;
 	}
 }

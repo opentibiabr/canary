@@ -40,14 +40,23 @@ add_test(
 # The migrator delegates validation and publication to this exact native helper.
 # Building tests does not require running a server or evaluating gameplay Lua.
 add_subdirectory(../../tools/world_tool world_tool)
-find_package(Python3 3.12 COMPONENTS Interpreter REQUIRED)
+find_package(
+    Python3 3.12
+    COMPONENTS Interpreter
+    REQUIRED
+)
 add_test(
     NAME world_migration_contract
-    COMMAND "${Python3_EXECUTABLE}" -m unittest discover -s tools/world_migrate/tests -t . -p "test_*.py" -v
+    COMMAND
+        "${Python3_EXECUTABLE}" -m unittest discover -s
+        tools/world_migrate/tests -t . -p "test_*.py" -v
 )
 set_tests_properties(
     world_migration_contract
-    PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
-               ENVIRONMENT "WORLD_TOOL_PATH=$<TARGET_FILE:world-tool>"
-               TIMEOUT 300
+    PROPERTIES WORKING_DIRECTORY
+               "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+               ENVIRONMENT
+               "WORLD_TOOL_PATH=$<TARGET_FILE:world-tool>"
+               TIMEOUT
+               300
 )

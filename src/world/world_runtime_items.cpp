@@ -116,10 +116,10 @@ namespace world_runtime {
 		}
 	}
 
-	world_layers::MapItem snapshot(const std::shared_ptr<Item> &item, std::unordered_map<uint64_t, std::shared_ptr<Item>> &items, bool ground) {
+	world_layers::MapItem snapshot(const std::shared_ptr<Item> &item, std::unordered_map<uint64_t, std::shared_ptr<Item>> &items, bool ground, bool mapSource) {
 		world_layers::MapItem result;
 		result.key = reinterpret_cast<uintptr_t>(item.get());
-		result.itemId = item->getID();
+		result.itemId = mapSource ? item->getMapSourceId() : item->getID();
 		result.uid = uid(item);
 		result.aid = item->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID);
 		result.ground = ground;
@@ -150,7 +150,7 @@ namespace world_runtime {
 		if (const auto container = item->getContainer()) {
 			result.container = true;
 			for (const auto &child : container->getItemList()) {
-				result.children.push_back(snapshot(child, items));
+				result.children.push_back(snapshot(child, items, false, mapSource));
 			}
 		}
 		return result;

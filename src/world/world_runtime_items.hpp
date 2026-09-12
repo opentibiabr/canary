@@ -16,7 +16,7 @@ namespace world_runtime {
 	world_layers::Value::Record overrides(const world_layers::Object &object);
 	world_layers::Value::Record captureAttributes(const std::shared_ptr<Item> &item, const world_layers::Value::Record &fields);
 	void applyAttributes(const std::shared_ptr<Item> &item, const world_layers::Value::Record &values);
-	world_layers::MapItem snapshot(const std::shared_ptr<Item> &item, std::unordered_map<uint64_t, std::shared_ptr<Item>> &items, bool ground = false);
+	world_layers::MapItem snapshot(const std::shared_ptr<Item> &item, std::unordered_map<uint64_t, std::shared_ptr<Item>> &items, bool ground = false, bool mapSource = false);
 	bool attach(const std::shared_ptr<Cylinder> &parent, const std::shared_ptr<Item> &item, uint32_t order);
 	std::string marker(const std::shared_ptr<Item> &item, const std::string &project);
 	void mark(const std::shared_ptr<Item> &item, const std::string &project, const std::string &id);

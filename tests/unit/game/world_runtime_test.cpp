@@ -151,3 +151,45 @@ TEST_F(WorldRuntimeItemsTest, OccurrencesUseAuthoredOrderInsteadOfGameplayOrder)
 	EXPECT_EQ(gameplay.getTopDownItem(), secondDown);
 	EXPECT_EQ(gameplay.getTopTopItem(), upper);
 }
+
+TEST_F(WorldRuntimeItemsTest, BaseSelectionRetainsAuthoredTypesAcrossNativeFieldConversion) {
+	const std::pair<uint16_t, uint16_t> conversions[] = {
+		{ ITEM_FIREFIELD_PVP_FULL, ITEM_FIREFIELD_PERSISTENT_FULL },
+		{ ITEM_FIREFIELD_PVP_MEDIUM, ITEM_FIREFIELD_PERSISTENT_MEDIUM },
+		{ ITEM_FIREFIELD_PVP_SMALL, ITEM_FIREFIELD_PERSISTENT_SMALL },
+		{ ITEM_ENERGYFIELD_PVP, ITEM_ENERGYFIELD_PERSISTENT },
+		{ ITEM_POISONFIELD_PVP, ITEM_POISONFIELD_PERSISTENT },
+		{ ITEM_MAGICWALL, ITEM_MAGICWALL_PERSISTENT },
+		{ ITEM_WILDGROWTH, ITEM_WILDGROWTH_PERSISTENT }
+	};
+	for (const auto &[authored, effective] : conversions) {
+		SCOPED_TRACE(authored);
+		auto &type = Item::items.getItems()[effective];
+		struct RestoreType {
+			ItemType &target;
+			ItemType previous;
+			~RestoreType() {
+				target = std::move(previous);
+			}
+		} restore { type, std::move(type) };
+		type = ItemType {};
+		type.id = effective;
+		Position position { 100, 100, 7 };
+		const auto item = Item::CreateItem(authored, position);
+		ASSERT_NE(item, nullptr);
+		EXPECT_EQ(item->getID(), effective);
+		std::unordered_map<uint64_t, std::shared_ptr<Item>> instances;
+		const auto base = world_runtime::snapshot(item, instances, false, true);
+		const auto live = world_runtime::snapshot(item, instances);
+		world_layers::Selector selector;
+		selector.itemId = authored;
+		world_layers::MapItem selected;
+		std::string error;
+		EXPECT_TRUE(world_layers::resolveSelector(selector, { base }, selected, error));
+		EXPECT_EQ(selected.key, reinterpret_cast<uintptr_t>(item.get()));
+		EXPECT_EQ(live.itemId, effective);
+		const auto clone = item->clone();
+		ASSERT_NE(clone, nullptr);
+		EXPECT_EQ(clone->getMapSourceId(), effective);
+	}
+}

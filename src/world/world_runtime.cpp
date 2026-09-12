@@ -78,7 +78,7 @@ namespace {
 				if (!item || excluded.contains(reinterpret_cast<uintptr_t>(item.get()))) {
 					return;
 				}
-				auto view = snapshot(item, items, ground);
+				auto view = snapshot(item, items, ground, baseline == nullptr);
 				const auto canonicalize = [&](const auto &self, world_layers::MapItem &entry) -> void {
 					const auto found = items.find(entry.key);
 					if (found != items.end()) {

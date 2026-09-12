@@ -661,6 +661,7 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 }
 
 std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) {
+	const auto originalId = itemId;
 	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
 			itemId = ITEM_FIREFIELD_PERSISTENT_FULL;
@@ -694,7 +695,15 @@ std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) 
 			break;
 	}
 
-	return Item::CreateItem(itemId, 0, &itemPosition);
+	auto item = Item::CreateItem(itemId, 0, &itemPosition);
+	if (item && itemId != originalId) {
+		item->mapSourceId = originalId;
+	}
+	return item;
+}
+
+uint16_t Item::getMapSourceId() const {
+	return mapSourceId ? mapSourceId : id;
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :

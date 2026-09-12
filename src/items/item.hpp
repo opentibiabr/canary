@@ -334,6 +334,7 @@ public:
 	uint16_t getID() const {
 		return id;
 	}
+	uint16_t getMapSourceId() const;
 	void setID(uint16_t newid);
 
 	// Returns the player that is holding this item in his inventory
@@ -771,6 +772,9 @@ protected:
 	std::weak_ptr<Cylinder> m_parent;
 
 	uint16_t id; // the same id as in ItemType
+	// Transient OTBM provenance, before native persistent-field conversion.
+	// This is not an item attribute and must not be cloned or serialized.
+	uint16_t mapSourceId = 0;
 	uint8_t count = 1; // number of stacked items
 
 	bool loadedFromMap = false;

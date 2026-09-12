@@ -234,6 +234,7 @@ def evaluate(node: Node, constants: Mapping[str, Any] | None = None, *, reject_d
 	if node.kind == "table":
 		result = {}
 		seen = set()
+		json_keys = set()
 		for field in node.value:
 			key = evaluate(field.key, constants)
 			if type(key) not in {str, int, float, bool}:
@@ -242,7 +243,11 @@ def evaluate(node: Node, constants: Mapping[str, Any] | None = None, *, reject_d
 			identity = ("boolean" if isinstance(key, bool) else "value", key)
 			if identity in seen and reject_duplicates:
 				raise Unresolved(f"duplicate table key {key!r}", field.key.span)
+			json_key = str(key)
+			if key in result or json_key in json_keys:
+				raise Unresolved(f"Lua table key {key!r} collides in the JSON representation", field.key.span)
 			seen.add(identity)
+			json_keys.add(json_key)
 			value = evaluate(field.value, constants, reject_duplicates=reject_duplicates)
 			if value is None:
 				result.pop(key, None)

@@ -246,3 +246,12 @@ class MigrationBundleTests(NativeWorldToolFixture):
 		path.write_bytes(path.read_bytes() + b" ")
 		with self.assertRaisesRegex(ValueError, "snapshot was changed"):
 			validate_bundle(self.root, self.directory, self.exe)
+
+	def test_reports_and_bundles_cannot_leave_the_repository(self):
+		outside = self.root.parent / "outside-world-migration"
+		with self.assertRaisesRegex(ValueError, "path leaves its root"):
+			generate(self.root, outside / "analysis.json", self.directory, self.exe)
+		with self.assertRaisesRegex(ValueError, "path leaves its root"):
+			generate(self.root, self.report, outside / "bundle", self.exe)
+		with self.assertRaisesRegex(ValueError, "path leaves its root"):
+			validate_bundle(self.root, outside / "bundle", self.exe)

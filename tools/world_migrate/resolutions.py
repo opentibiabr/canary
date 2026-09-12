@@ -21,7 +21,7 @@ class Resolutions:
 		path = path.resolve()
 		if not path.is_relative_to(root):
 			raise ValueError("Resolution evidence must be stored in this repository")
-		data = read_json(path)
+		data = read_json(path, root)
 		require_keys(data, {"schemaVersion", "datapack", "mapSha256", "decisions", "conflicts"})
 		if data.get("schemaVersion") != 1 or data.get("datapack") != report["datapack"]:
 			raise ValueError("Unsupported repository resolution contract")

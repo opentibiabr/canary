@@ -19,7 +19,9 @@ def json_bytes(value: Any) -> bytes:
 	return (json.dumps(value, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
 
 
-def read_json(path: Path) -> Any:
+def read_json(path: Path, root: Path | None = None) -> Any:
+	if root is not None:
+		path = within(root, path)
 	def pairs(entries):
 		result = {}
 		for key, value in entries:
@@ -74,8 +76,9 @@ def require_keys(value: Any, required: set[str], optional: set[str] = frozenset(
 		raise ValueError(f"Invalid metadata fields; expected {sorted(required)}, optional {sorted(optional)}")
 
 
-def load_bundle(directory: Path) -> dict:
-	data = read_json(directory / "bundle.json")
+def load_bundle(directory: Path, root: Path | None = None) -> dict:
+	directory = within(root, directory) if root is not None else directory.resolve()
+	data = read_json(directory / "bundle.json", directory)
 	require_keys(data, {"schemaVersion", "id", "datapack", "catalog", "map", "items", "files", "sources", "pending", "consumers", "receipt"})
 	if data["schemaVersion"] != 1:
 		raise ValueError("Unsupported migration bundle version")
@@ -124,15 +127,16 @@ def _ready(data: dict) -> None:
 
 
 def validate_bundle(root: Path, directory: Path, executable: str | Path | None, map_override: Path | None = None) -> dict:
-	directory = directory.resolve()
-	data = load_bundle(directory)
+	root = root.resolve()
+	directory = within(root, directory)
+	data = load_bundle(directory, root)
 	_ready(data)
 	map_file, items = _map_arguments(root, data, map_override)
 	result = native(executable, "validate", within(directory / "after", data["catalog"]), "--map", map_file, "--items", items)
 	# Native inspection is read-only; never acknowledge a map/catalog revision
 	# that changed while the validator was reading it.
 	_map_arguments(root, data, map_override)
-	if load_bundle(directory) != data:
+	if load_bundle(directory, root) != data:
 		raise ValueError("Bundle changed while validating; review its new revision")
 	return {"valid": True, "id": data["id"], "objects": result["objects"]}
 
@@ -160,15 +164,16 @@ def _source_guards(root: Path, data: dict, side: str) -> None:
 def apply_bundle(root: Path, directory: Path, executable: str | Path | None, *, offline: bool, map_override: Path | None = None) -> dict:
 	if not offline:
 		raise ValueError("apply requires --confirm-offline; stop the server and editing sessions first")
-	root, directory = root.resolve(), directory.resolve()
-	data = load_bundle(directory)
+	root = root.resolve()
+	directory = within(root, directory)
+	data = load_bundle(directory, root)
 	_ready(data)
 	state = _state(root, data)
 	if state == "conflict":
 		raise ValueError("Migration conflicts with current files; no configuration was written")
 	receipt_path = within(root, data["receipt"])
 	if state == "after" and receipt_path.is_file():
-		receipt = read_json(receipt_path)
+		receipt = read_json(receipt_path, root)
 		if receipt.get("id") != data["id"] or receipt.get("bundleSha256") != digest(directory / "bundle.json") or receipt.get("state") != "applied":
 			raise ValueError("Existing receipt does not describe this applied bundle")
 		_source_guards(root, data, "after")
@@ -177,7 +182,7 @@ def apply_bundle(root: Path, directory: Path, executable: str | Path | None, *, 
 		raise ValueError("Configuration is present without a matching receipt; recover the interrupted publication")
 	_source_guards(root, data, "before")
 	validate_bundle(root, directory, executable, map_override)
-	if load_bundle(directory) != data:
+	if load_bundle(directory, root) != data:
 		raise ValueError("Bundle changed before publication; review its new revision")
 	recovery = str(Path(data["receipt"]).parent / ".recovery" / data["id"]).replace("\\", "/")
 	receipt = {"schemaVersion": 1, "id": data["id"], "state": "applied", "bundleSha256": digest(directory / "bundle.json"), "bundle": data, "recovery": recovery}
@@ -202,7 +207,7 @@ def apply_bundle(root: Path, directory: Path, executable: str | Path | None, *, 
 			manifest["guards"].append({"file": entry["file"], "expected": entry["snapshot"]})
 		previous_receipt = receipt_path.read_bytes() if receipt_path.is_file() else None
 		if previous_receipt is not None:
-			old = read_json(receipt_path)
+			old = read_json(receipt_path, root)
 			if old.get("id") != data["id"] or old.get("state") != "reverted" or old.get("bundleSha256") != receipt["bundleSha256"]:
 				raise ValueError("An unrelated receipt already exists; it will not be overwritten")
 			write_new(staging / "previous-receipt.json", previous_receipt)
@@ -225,17 +230,17 @@ def revert_bundle(root: Path, receipt_file: Path, executable: str | Path | None,
 		# A newly created ownership record is removed by revert; its durable
 		# receipt remains available for repeating the original CLI command.
 		receipt_file = receipt_file.with_suffix(".receipt.json")
-	receipt = read_json(receipt_file)
+	receipt = read_json(receipt_file, root)
 	if receipt.get("schemaVersion") == 2 and isinstance(receipt.get("receipt"), str):
 		receipt_file = (receipt_file.parent / receipt["receipt"]).resolve()
 		if not receipt_file.is_relative_to(root):
 			raise ValueError("Receipt leaves the repository")
-		receipt = read_json(receipt_file)
+		receipt = read_json(receipt_file, root)
 	require_keys(receipt, {"schemaVersion", "id", "state", "bundleSha256", "bundle", "recovery"})
 	if receipt["schemaVersion"] != 1 or receipt["state"] not in {"applied", "reverted"}:
 		raise ValueError("Unsupported migration receipt")
 	recovery = within(root, receipt["recovery"])
-	data = load_bundle(recovery)
+	data = load_bundle(recovery, root)
 	if digest(recovery / "bundle.json") != receipt["bundleSha256"] or data != receipt["bundle"]:
 		raise ValueError("Recovery metadata does not match the receipt")
 	state = _state(root, data)
@@ -282,7 +287,8 @@ def revert_bundle(root: Path, receipt_file: Path, executable: str | Path | None,
 
 def create_bundle(root: Path, directory: Path, metadata: dict, outputs: dict[str, bytes | None], sources: dict[str, str], report: dict, *, absent_outputs: set[str] = frozenset()) -> dict:
 	"""Materialize immutable before/after snapshots without publishing anything."""
-	root, directory = root.resolve(), directory.resolve()
+	root = root.resolve()
+	directory = within(root, directory)
 	directory.mkdir(parents=True, exist_ok=False)
 	data = dict(metadata, schemaVersion=1, files=[], sources=[])
 	for name, expected in sorted(sources.items()):
@@ -311,5 +317,5 @@ def create_bundle(root: Path, directory: Path, metadata: dict, outputs: dict[str
 			data["files"].append({"file": name, "before": f"before/{name}" if before is not None else None, "after": f"after/{name}" if after is not None else None, "beforeSha256": sha(before), "afterSha256": sha(after)})
 	write_new(directory / "analysis.json", json_bytes(report))
 	write_new(directory / "bundle.json", json_bytes(data))
-	load_bundle(directory)
+	load_bundle(directory, root)
 	return {"generated": True, "id": data["id"], "files": len(data["files"]), "pending": len(data["pending"]), "bundle": str(directory)}

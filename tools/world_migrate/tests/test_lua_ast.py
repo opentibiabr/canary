@@ -15,6 +15,11 @@ class LuaConfigurationTests(unittest.TestCase):
 		with self.assertRaisesRegex(Unresolved, "duplicate table key"):
 			evaluate(assignment.value)
 
+	def test_lua_keys_that_collapse_in_python_or_json_are_rejected(self):
+		for source in ("{[true]=1,[1]=2}", '{[1]=1,["1"]=2}'):
+			with self.subTest(source=source), self.assertRaisesRegex(Unresolved, "collides in the JSON representation"):
+				self.value(source)
+
 	def test_literals_preserve_lua_string_and_number_values(self):
 		self.assertEqual(self.value('{text=[=[\nfirst\r\nsecond]=], count=0017, hex=0x1f, number=-4.25e1, yes=true, no=false}'), {"text": "first\nsecond", "count": 17, "hex": 31, "number": -42.5, "yes": True, "no": False})
 		self.assertEqual(self.value('"before\\\r\nafter"'), "before\nafter")

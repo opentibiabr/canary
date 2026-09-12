@@ -355,7 +355,11 @@ def project_input(root: Path, pack: Path, project_file: Path | None, map_overrid
 
 def generate(root: Path, report_file: Path, output: Path, executable: str | Path | None, project_file: Path | None = None, map_override: Path | None = None, resolutions_file: Path | None = None) -> dict:
 	root = root.resolve()
-	report = read_json(report_file)
+	report_file = within(root, report_file)
+	output = within(root, output)
+	project_file = within(root, project_file) if project_file else None
+	resolutions_file = within(root, resolutions_file) if resolutions_file else None
+	report = read_json(report_file, root)
 	if report.get("schemaVersion") != 1 or report.get("toolVersion") != "2.0.0":
 		raise ValueError("Unsupported analysis report; run analyze with this version")
 	pack = within(root, report["datapack"])

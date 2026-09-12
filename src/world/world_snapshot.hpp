@@ -18,6 +18,7 @@ namespace world_layers {
 		std::vector<UniqueOccurrence> uniqueIds(const std::unordered_set<uint16_t> &requested) override;
 		uint64_t tileCount() const;
 		uint64_t itemCount() const;
+		Value inspect(const Position &position);
 
 	private:
 		struct State;

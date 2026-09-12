@@ -763,7 +763,7 @@ namespace world_layers {
 		if (!readProjectSource(file, source, error, sources)) {
 			return reader.fail("", error);
 		}
-		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "id", "sources", "claims" })) {
+		if (!reader.parse(source, json) || !reader.keys(json, "", { "$schema", "schemaVersion", "id", "sources", "claims", "receipt" })) {
 			return false;
 		}
 		if (!json.contains("schemaVersion") || !json["schemaVersion"].is_number_integer() || json["schemaVersion"] != 2) {
@@ -771,6 +771,9 @@ namespace world_layers {
 		}
 		MigrationRecord result;
 		result.file = file;
+		if (json.contains("receipt") && !reader.relative(json["receipt"], "/receipt", result.receipt)) {
+			return false;
+		}
 		if (!reader.text(json.value("id", Json()), "/id", result.id) || result.id.empty()) {
 			return reader.fail("/id", "Expected a migration identity");
 		}
@@ -1042,6 +1045,9 @@ namespace world_layers {
 	std::string serializeMigration(const MigrationRecord &record) {
 		const auto relative = [&](const std::filesystem::path &file) { return file.lexically_relative(record.file.parent_path()).generic_string(); };
 		Json json = { { "schemaVersion", 2 }, { "id", record.id }, { "sources", Json::array() }, { "claims", Json::array() } };
+		if (!record.receipt.empty()) {
+			json["receipt"] = relative(record.receipt);
+		}
 		for (const auto &[file, sha256] : record.sources) {
 			json["sources"].push_back({ { "file", relative(file) }, { "sha256", sha256 } });
 		}

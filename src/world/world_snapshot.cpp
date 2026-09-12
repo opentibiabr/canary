@@ -9,6 +9,7 @@
 	#include <fstream>
 	#include <set>
 	#include <span>
+	#include <stdexcept>
 	#include <tuple>
 #endif
 
@@ -484,6 +485,37 @@ namespace world_layers {
 			}
 			return Value { Value::Record { { "key", Value { int64_t(item.key) } }, { "itemId", Value { int64_t(item.itemId) } }, { "part", Value { std::string(item.ground ? "ground" : "item") } }, { "container", Value { item.container } }, { "teleport", Value { item.teleport } }, { "attributes", Value { attributes } }, { "children", Value { children } } } };
 		}
+
+		Value inspectedItem(const MapItem &item, const std::vector<MapItem> &siblings, const Position &position, bool contained) {
+			auto value = itemValue(item);
+			auto &record = std::get<Value::Record>(value.data);
+			Selector selector;
+			selector.itemId = item.itemId;
+			selector.ground = item.ground;
+			if (contained) {
+				selector.container = "parent";
+			}
+			std::string error;
+			if (!captureSelector(selector, siblings, item.key, error)) {
+				throw std::runtime_error(error);
+			}
+			Value::Record selection { { "itemId", Value { int64_t(item.itemId) } } };
+			if (!contained) {
+				selection["position"] = Value { Value::Record { { "x", Value { int64_t(position.x) } }, { "y", Value { int64_t(position.y) } }, { "z", Value { int64_t(position.z) } } } };
+				selection["part"] = Value { std::string(item.ground ? "ground" : "item") };
+			}
+			if (selector.occurrence) {
+				const auto &occurrence = *selector.occurrence;
+				selection["occurrence"] = Value { Value::Record { { "index", Value { int64_t(occurrence.index) } }, { "count", Value { int64_t(occurrence.count) } }, { "fingerprint", Value { occurrence.fingerprint } } } };
+			}
+			record["selector"] = Value { selection };
+			Value::List children;
+			for (const auto &child : item.children) {
+				children.push_back(inspectedItem(child, item.children, position, true));
+			}
+			record["children"] = Value { children };
+			return value;
+		}
 	}
 
 	struct MapSnapshot::State {
@@ -505,6 +537,37 @@ namespace world_layers {
 	MapSnapshot::MapSnapshot() :
 		state(std::make_unique<State>()) { }
 	MapSnapshot::~MapSnapshot() = default;
+	Value MapSnapshot::inspect(const Position &position) {
+		const auto snapshot = tile(position);
+		auto value = snapshotValue(position, snapshot);
+		auto &record = std::get<Value::Record>(value.data);
+		Value::List items;
+		Value::Record legacy, first;
+		for (const auto &item : snapshot.items) {
+			items.push_back(inspectedItem(item, snapshot.items, position, false));
+			if (item.ground) {
+				legacy["ground"] = Value { int64_t(item.key) };
+				first.emplace(std::to_string(item.itemId), Value { int64_t(item.key) });
+			} else {
+				legacy[state->types[item.itemId].topOrder ? "topTop" : "topDown"] = Value { int64_t(item.key) };
+			}
+		}
+		// Native Tile::getItemById examines ground, down items in reverse map
+		// order, then the ordered top-item group. Export that decision alongside
+		// exact selectors so migration never reimplements selection in Python.
+		for (auto it = snapshot.items.rbegin(); it != snapshot.items.rend(); ++it) {
+			if (!it->ground && !state->types[it->itemId].topOrder) {
+				first.emplace(std::to_string(it->itemId), Value { int64_t(it->key) });
+			}
+		}
+		for (const auto &item : snapshot.items) {
+			first.emplace(std::to_string(item.itemId), Value { int64_t(item.key) });
+		}
+		legacy["firstByItemId"] = Value { first };
+		record["legacy"] = Value { legacy };
+		record["items"] = Value { items };
+		return value;
+	}
 	bool MapSnapshot::knownItem(uint16_t id) const {
 		return state->types[id].known;
 	}
@@ -675,6 +738,12 @@ namespace world_layers {
 				}
 				++loaded->tileCount;
 				if (portal || requested.contains(key(position))) {
+					// RME and the server normalize the top-item group while loading.
+					std::stable_sort(tile.items.begin(), tile.items.end(), [&](const auto &a, const auto &b) {
+						const auto order = [&](const auto &item) { return item.ground ? 0 : loaded->types[item.itemId].topOrder ? loaded->types[item.itemId].topOrder
+																																: 4; };
+						return order(a) < order(b);
+					});
 					if (!loaded->tiles.emplace(key(position), std::move(tile)).second) {
 						return fail("Duplicate OTBM tile position");
 					}

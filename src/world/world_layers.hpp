@@ -161,6 +161,7 @@ namespace world_layers {
 
 	struct MigrationRecord {
 		std::filesystem::path file;
+		std::filesystem::path receipt; // optional, tool-owned recovery metadata
 		std::string id;
 		// SHA-256 of UTF-8 source with CRLF normalized to LF. These are
 		// transition preconditions, not another operational configuration.

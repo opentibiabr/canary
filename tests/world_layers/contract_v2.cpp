@@ -182,10 +182,12 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	MigrationRecord record;
 	diagnostics.clear();
 	require(loadMigration(root / "migration.json", record, diagnostics), "transition claim parses with source revision and occurrence");
+	record.receipt = root / "migration.receipt.json";
 	const auto serializedMigration = serializeMigration(record);
 	write(root / "migration.json", serializedMigration);
 	MigrationRecord reread;
 	require(loadMigration(root / "migration.json", reread, diagnostics) && serializeMigration(reread) == serializedMigration, "migration identity rewrite round trip retains source preconditions");
+	require(reread.receipt == record.receipt, "tool recovery metadata remains associated after migration serialization");
 	project.migrationRecords.push_back(record);
 	require(check(), "migration target and responsibility validation");
 	project.layers[0].enabled = false;

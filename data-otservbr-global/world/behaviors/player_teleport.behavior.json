@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 2,
+  "id": "world.player_teleport",
+  "name": "Player teleport",
+  "events": [
+    "onUse",
+    "onStepIn"
+  ],
+  "parameters": {
+    "effect": {
+      "type": "integer",
+      "label": "Arrival effect",
+      "minimum": 0,
+      "maximum": 65535,
+      "required": true
+    }
+  },
+  "relations": {
+    "destination": {
+      "type": "objectRef",
+      "targetKind": "anchor",
+      "required": true,
+      "allowOffset": true,
+      "label": "Arrival"
+    }
+  },
+  "contractVersion": 1,
+  "script": "../../scripts/world_behaviors/player_teleport.lua",
+  "targetKind": "item"
+}

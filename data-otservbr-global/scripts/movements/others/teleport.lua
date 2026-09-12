@@ -7,7 +7,7 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local setting = TeleportUnique[item.uid]
+	local setting = TeleportUnique and TeleportUnique[item.uid]
 	if setting then
 		player:teleportTo(setting.destination)
 		player:getPosition():sendMagicEffect(setting.effect)
@@ -16,7 +16,7 @@ function teleport.onStepIn(creature, item, position, fromPosition)
 end
 
 for uniqueRange = 38001, 40000 do
-	local setting = TeleportUnique[uniqueRange]
+	local setting = TeleportUnique and TeleportUnique[uniqueRange]
 	if not (setting and setting.worldObject and Game.isWorldObjectDeclared(setting.worldObject)) then
 		teleport:uid(uniqueRange)
 	end

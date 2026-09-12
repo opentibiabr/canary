@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 2,
+  "id": "world.tile_mechanism",
+  "name": "Pressure tile mechanism",
+  "events": [
+    "onStepIn",
+    "onStepOut"
+  ],
+  "parameters": {
+    "targetItem": {
+      "type": "itemId",
+      "label": "Item removed on entry and restored on exit",
+      "required": true
+    }
+  },
+  "relations": {
+    "target": {
+      "type": "objectRef",
+      "targetKind": "anchor",
+      "required": true,
+      "allowOffset": true,
+      "label": "Target position"
+    }
+  },
+  "contractVersion": 1,
+  "script": "../../scripts/world_behaviors/tile_mechanism.lua",
+  "targetKind": "item"
+}

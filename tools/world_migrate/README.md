@@ -1,48 +1,69 @@
 # World migration
 
-The migration tool reads the actual `startup/tables/load.lua` inventory and its
-consumers without executing Lua. It requires Python 3.12. Configuration literals
-are parsed structurally using the content auditor's lexer, retaining duplicate
-keys, source locations and unresolved expressions. The native `world-tool` is the
-authority for project and OTBM validation.
-
-## Analyze
-
-Run from the repository root. Analysis does not change files:
+Run the package from the repository root with Python 3.12. It uses the existing
+`canary_audit` lexer for static Lua analysis. It never executes Lua or uses `eval`.
+Validation, original-item selection and publication use the distributed native
+`world-tool`; no server compilation is needed to migrate a datapack.
 
 ```sh
 python -m tools.world_migrate analyze --datapack data-otservbr-global --all
+python -m tools.world_migrate analyze --datapack data-otservbr-global --file startup/tables/item.lua --table ItemAction --entry 13107 --report artifacts/world-migration/analysis.json
+python -m tools.world_migrate generate --report artifacts/world-migration/analysis.json --output artifacts/world-migration/bundle --world-tool ./world-tool
+python -m tools.world_migrate validate --bundle artifacts/world-migration/bundle --world-tool ./world-tool
+python -m tools.world_migrate apply --bundle artifacts/world-migration/bundle --world-tool ./world-tool --confirm-offline
+python -m tools.world_migrate revert --receipt data-otservbr-global/world/migrations/migration-id.json --world-tool ./world-tool --confirm-offline
 ```
 
-Request a report explicitly to save the full inventory, source revisions,
-declarations and consumer locations:
+On Windows, use the same arguments on a single line and `world-tool.exe`, for
+example `--world-tool "tools-bin/world-tool.exe"`. Alternatively, set
+`WORLD_TOOL_PATH` to the helper or install it on `PATH`. `--project` selects a
+catalog when the datapack has more than one. `--map` reads the matching OTBM from
+another local path; its SHA-256 must match the map used during generation.
+
+Analysis only prints results unless `--report` is present. Generation reserves a
+new output directory and writes reviewable before/after snapshots, the inventory
+and a bundle manifest. It does not activate the result. A failed or incomplete
+generation leaves its output available for inspection; choose a new directory
+when generating again. Existing files are never silently replaced at this step.
+
+The current converters cover AID/UID assignments, explicit false selectors, sign
+text, books in existing containers and item creation. Other recognized
+configuration families and unknown consumer variants
+remain localized pending entries until their adapters are available. Pending
+declarations or unresolved Lua consumers block application, even if the generated
+JSON is structurally valid. Repeated or shadowed Lua keys require explicit
+characterization; they are not merged or resurrected automatically.
+
+Review `bundle.json`, `analysis.json` and `after/` before applying. The bundle's
+snapshots are immutable revision preconditions: editing them invalidates the
+bundle. Regenerate from reviewed source changes instead. Selecting entries keeps
+the complete inventory and leaves unselected declarations and comments intact.
+Legacy source tables remain as compatibility configuration; there is no ongoing
+Lua/JSON synchronization.
+
+Apply and revert require the server and editing sessions to be stopped. They use
+the shared native file service for revisions, cooperative locking, displaced
+versions, interrupted writes and recovery. The ownership record points to its
+receipt; recovery snapshots live under `world/migrations/.recovery/`. Those
+snapshots are not listed as active catalog content. Keep them while rollback is
+required. The OTBM is inspected and hashed but never modified.
+
+Reapplying the same bundle is a no-op when all resulting files still match its
+receipt. Reversion restores the previous files after validating the reconstructed
+old project. Neither operation overwrites later JSON/Lua edits. A conflict must be
+reviewed rather than forced. The receipt remains after reversion, allowing repeat
+revert or reapply. Configuration-mode changes are explicit; the migration tool
+does not silently switch a running installation between legacy, mixed and World.
+
+For an interrupted publication, use the helper's `recover` command with the
+original catalog and publication root; see [world-tool](../world_tool/README.md).
+
+Run contract tests using an existing compatible native artifact:
 
 ```sh
-python -m tools.world_migrate analyze --datapack data-otservbr-global --file startup/tables/teleport.lua --table TeleportUnique --entry 38012 --entry 38013 --report artifacts/world-migration/analysis.json
+python -m unittest discover -s tools/world_migrate/tests -t . -v
 ```
 
-These commands also work in PowerShell; quote paths containing spaces. Selection
-marks entries in the complete inventory, so unselected declarations and consumers
-remain available for conflict and coverage checks. A selection matching nothing
-is an error. Empty tables are inventoried.
-
-Classifications distinguish automatic configuration, known consumer adaptations,
-inactive data, runtime state and cases requiring analysis. A classification is
-not map validation or permission to activate unresolved data. Duplicate keys are
-reported before evaluating a table; the tool never combines them or chooses a
-winner implicitly. Constants require an identified static definition. Dynamic
-expressions and unknown consumers block automatic conversion.
-
-Player storage migrations remain in the existing execution path. The World
-migration concerns configuration, not player or quest state.
-
-## Development validation
-
-```sh
-python -m unittest discover -s tools/world_migrate/tests -v
-```
-
-Implementation and acceptance status are tracked in
-[`world-implementation.md`](../../docs/systems/world-implementation.md). Generation,
-native validation, application and reversal are subsequent implementation gates;
-the analysis command does not claim those operations have completed.
+Set `WORLD_TOOL_PATH` first to include native OTBM, publication and full bundle
+lifecycle tests. Without it, those native tests are explicitly skipped. Static
+analysis tests still run. Native CTest runs the helper-backed tests automatically.

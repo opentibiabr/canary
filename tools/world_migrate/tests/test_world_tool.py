@@ -34,7 +34,7 @@ def node(kind, props=b"", children=()):
 
 
 @unittest.skipUnless(os.environ.get("WORLD_TOOL_PATH"), "set WORLD_TOOL_PATH to a compatible native artifact")
-class NativeWorldToolTests(unittest.TestCase):
+class NativeWorldToolFixture(unittest.TestCase):
 	def setUp(self):
 		self.temp = tempfile.TemporaryDirectory()
 		self.addCleanup(self.temp.cleanup)
@@ -62,6 +62,8 @@ class NativeWorldToolTests(unittest.TestCase):
 	def command(self, *args):
 		return subprocess.run([self.exe,*args],cwd=self.root,capture_output=True,text=True,encoding="utf-8",timeout=30)
 
+
+class NativeWorldToolTests(NativeWorldToolFixture):
 	def test_inspection_sees_ground_attributes_containers_and_all_uids_without_writes(self):
 		before = {p.name:p.read_bytes() for p in self.root.iterdir()}
 		result=self.command("inspect","--map","example.otbm","--items","items.xml","--positions","positions.json")
@@ -74,7 +76,26 @@ class NativeWorldToolTests(unittest.TestCase):
 		self.assertEqual(items[1]["attributes"]["aid"],12107)
 		self.assertEqual(items[2]["children"][0]["attributes"]["uid"],45000)
 		self.assertEqual(data["uniqueIds"][0]["uid"],45000)
+		self.assertEqual(data["tiles"][0]["legacy"]["topDown"], items[2]["key"])
+		self.assertEqual(items[1]["selector"], {"itemId": 200, "part": "item", "position": {"x": 100, "y": 100, "z": 7}})
+		self.assertEqual(items[2]["children"][0]["selector"], {"itemId": 400})
 		self.assertEqual(before,{p.name:p.read_bytes() for p in self.root.iterdir()})
+
+	def test_publisher_rejects_missing_offline_confirmation_and_stale_versions(self):
+		self.write_json("publication.json", {"schemaVersion": 1, "catalog": "map.world.json", "changes": [{"file": "config.lua", "before": "before.lua", "after": "after.lua"}], "guards": []})
+		(self.root / "before.lua").write_text("old", encoding="utf-8")
+		(self.root / "after.lua").write_text("new", encoding="utf-8")
+		(self.root / "config.lua").write_text("different", encoding="utf-8")
+		result = self.command("publish", "publication.json", "--root", str(self.root))
+		self.assertNotEqual(result.returncode, 0)
+		self.assertIn("confirm-offline", result.stderr)
+		result = self.command("publish", "publication.json", "--root", str(self.root), "--confirm-offline")
+		self.assertNotEqual(result.returncode, 0)
+		self.assertEqual((self.root / "config.lua").read_text(), "different")
+		(self.root / "config.lua").write_text("old", encoding="utf-8")
+		result = self.command("publish", "publication.json", "--root", str(self.root), "--confirm-offline")
+		self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+		self.assertEqual((self.root / "config.lua").read_text(), "new")
 
 	def test_truncated_map_is_rejected(self):
 		(self.root / "example.otbm").write_bytes(self.map[:-2])

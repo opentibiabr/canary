@@ -9,6 +9,7 @@ add_executable(
     world_file_contract
     file_contract_main.cpp
     file_contract.cpp
+    contract_v2.cpp
     ../../src/world/world_layers.cpp
     ../../src/world/world_format.cpp
     ../../src/world/world_selectors.cpp
@@ -34,4 +35,19 @@ target_link_libraries(
 add_test(
     NAME world_file_contract
     COMMAND world_file_contract "${CMAKE_CURRENT_BINARY_DIR}/scratch"
+)
+
+# The migrator delegates validation and publication to this exact native helper.
+# Building tests does not require running a server or evaluating gameplay Lua.
+add_subdirectory(../../tools/world_tool world_tool)
+find_package(Python3 3.12 COMPONENTS Interpreter REQUIRED)
+add_test(
+    NAME world_migration_contract
+    COMMAND "${Python3_EXECUTABLE}" -m unittest discover -s tools/world_migrate/tests -t . -p "test_*.py" -v
+)
+set_tests_properties(
+    world_migration_contract
+    PROPERTIES WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../.."
+               ENVIRONMENT "WORLD_TOOL_PATH=$<TARGET_FILE:world-tool>"
+               TIMEOUT 300
 )

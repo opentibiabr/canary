@@ -2,412 +2,392 @@
 
 set -euo pipefail
 
-# ============================================================================
-# Configuration
-# ============================================================================
+# Linux build and executable history. See docs/building/recompile.md.
+# The running server is restarted only with --restart-service.
 
-VCPKG_PATH=${1:-"$HOME"}
-VCPKG_PATH="$VCPKG_PATH/vcpkg/scripts/buildsystems/vcpkg.cmake"
-BUILD_TYPE=${2:-"linux-release"}
-ARCHITECTURE=$(uname -m)
-EXTRA_CMAKE_ARGS=("${@:3}")
-IS_ARM64=0
-WORKTREE_ROOT=$PWD
-BACKED_UP_EXECUTABLE=""
-BACKED_UP_EXECUTABLE_OLD=""
+WORKTREE_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
+BUILD_TYPE=linux-release
+BUILD_JOBS=${CMAKE_BUILD_PARALLEL_LEVEL:-2}
+VCPKG_PARENT_DIRECTORY=""
+EXTRA_CMAKE_ARGS=()
+RESTART_SERVICE=0
+EXECUTABLE_UPDATED=0
+BACKUP_DIRECTORY="$WORKTREE_ROOT/backups/executables"
+RETENTION_SECONDS=$((7 * 24 * 60 * 60))
+PUBLISH_TEMP=""
+PRUNE_ALLOWED=1
 
-# ============================================================================
-# Logging helpers
-# ============================================================================
+info() { printf '[INFO] %s\n' "$*"; }
+error() { printf '[ERROR] %s\n' "$*" >&2; }
+die() { error "$*"; exit 1; }
 
-info() {
-	local message_info=$1
-	echo -e "\033[1;34m[INFO]\033[0m $message_info"
+usage() {
+	cat <<'EOF'
+Usage: ./recompile.sh [vcpkg-parent-directory] [configure-preset] [options]
+                      [-- <cmake-options...>]
+
+Linux/Bash entry point; Windows users can run help/tests through WSL.
+Defaults: existing VCPKG_ROOT (otherwise $HOME/vcpkg), linux-release, 2 jobs.
+An existing CMAKE_BUILD_PARALLEL_LEVEL overrides the default job count.
+
+Options:
+  -h, --help          Show this help without building or changing files.
+  -j, --jobs N        Limit both the build and vcpkg to N parallel jobs.
+  --restart-service   Restart canary.service only if a different executable
+                      was installed successfully.
+
+For compatibility, CMake -D options may also follow the two positional arguments
+without '--'. Script options such as --jobs must come before the CMake options.
+
+The existing build/<preset> tree, cached CMake and dependency caches are reused. The script
+sets TOGGLE_BIN_FOLDER=ON to link in build/<preset>/bin, then atomically installs
+canary (or canary-debug) at the repository root. CMake path/generator overrides
+and TOGGLE_BIN_FOLDER=OFF are not supported by this entry point.
+After configuration, a Ninja dry run checks for pending work. An up-to-date
+build reuses its output; SHA-256 comparison decides whether to install/restart.
+
+Exact ELF copies and metadata are kept in backups/executables for seven days
+after their last use/backup. Identical binaries share one backup. Cleanup runs
+after each successful invocation, including an up-to-date build; running
+versions are retained. Failed builds leave the installed executable intact.
+
+Examples:
+  ./recompile.sh
+  ./recompile.sh "$HOME" linux-debug --jobs 1
+  ./recompile.sh -- -DOPTIONS_ENABLE_OPENMP=OFF
+  ./recompile.sh --restart-service
+
+Guide: docs/building/recompile.md
+EOF
 }
 
-success() {
-	local message_success=$1
-	echo -e "\033[1;32m[OK]\033[0m $message_success"
+usage_error() { error "$*"; printf 'Use --help for usage.\n' >&2; exit 2; }
+
+parse_arguments() {
+	local positional_count=0 argument
+	while (($#)); do
+		argument=$1
+		shift
+		case "$argument" in
+			-h | --help) usage; exit 0 ;;
+			--restart-service) RESTART_SERVICE=1 ;;
+			-j | --jobs)
+				(($#)) || usage_error "$argument requires a positive job count."
+				BUILD_JOBS=$1
+				shift
+				;;
+			--jobs=*) BUILD_JOBS=${argument#*=} ;;
+			-D*)
+				((positional_count == 2)) || usage_error "Put CMake options after '--' or after both positional arguments."
+				EXTRA_CMAKE_ARGS=("$argument" "$@")
+				break
+				;;
+			--)
+				(($#)) || usage_error "The '--' separator requires CMake options."
+				EXTRA_CMAKE_ARGS=("$@")
+				break
+				;;
+			-*) usage_error "Unknown option: $argument" ;;
+			*)
+				case "$positional_count" in
+					0) VCPKG_PARENT_DIRECTORY=$argument ;;
+					1) BUILD_TYPE=$argument ;;
+					*) usage_error "Unexpected positional argument: $argument" ;;
+				esac
+				((positional_count += 1))
+				;;
+		esac
+	done
+	[[ $BUILD_JOBS =~ ^[1-9][0-9]{0,2}$ ]] || usage_error "Jobs must be a positive integer below 1000."
+	[[ $BUILD_TYPE =~ ^linux-[a-zA-Z0-9_-]+$ ]] || usage_error "Select an existing Linux configure preset."
+	for argument in "${EXTRA_CMAKE_ARGS[@]}"; do
+		case "$argument" in
+			-B* | -S* | -G* | --preset* | --build* | --install* | --workflow* | --toolchain*)
+				usage_error "CMake path/generator overrides are not supported: $argument"
+				;;
+			*TOGGLE_BIN_FOLDER*=* | *CMAKE_TOOLCHAIN_FILE*=*)
+				usage_error "This script manages TOGGLE_BIN_FOLDER and CMAKE_TOOLCHAIN_FILE; use the vcpkg positional argument."
+				;;
+		esac
+	done
 }
 
-error() {
-	local message_error=$1
-	echo -e "\033[1;31m[ERROR]\033[0m $message_error" >&2
-}
-
-# ============================================================================
-# Environment checks
-# ============================================================================
-
-check_command() {
-	local command_name=$1
-	if ! command -v "$command_name" >/dev/null; then
-		error "The command '$command_name' is not available. Please install it and try again."
-		exit 1
-	fi
-}
-
-check_architecture() {
-	if [[ $ARCHITECTURE == "aarch64"* ]]; then
-		info "Architecture detected: $ARCHITECTURE (ARM)"
-		IS_ARM64=1
-	else
-		info "Architecture detected: $ARCHITECTURE"
-	fi
-}
-
-check_vcpkg() {
-	if [[ ! -f "$VCPKG_PATH" ]]; then
-		error "vcpkg toolchain not found at: $VCPKG_PATH"
-		error "Pass the vcpkg parent directory as the first argument, or install vcpkg in \$HOME."
-		exit 1
-	fi
-}
-
-# ============================================================================
-# Generic progress runner
-# Runs a command in background, tails its log, and parses progress lines.
-# Args:
-#   $1 = display label (e.g. "vcpkg", "Build")
-#   $2 = log file path
-#   $3 = regex pattern (with capture groups for current and total)
-#   $4 = capture group index for "current" value
-#   $5 = capture group index for "total" value
-#   $6..$N = command and its arguments
-# ============================================================================
-
-run_with_progress() {
-	local label=$1
-	local log_file=$2
-	local pattern=$3
-	local current_idx=$4
-	local total_idx=$5
-	shift 5
-
-	# Truncate previous log
-	: >"$log_file"
-
-	local progress_marker
-	progress_marker=$(mktemp)
-	echo "0" >"$progress_marker"
-
-	# Launch command in background
-	"$@" >"$log_file" 2>&1 &
-	local cmd_pid=$!
-
-	# Tail the log in parallel; auto-exits when cmd_pid dies
-	(
-		# Small wait so the log file definitely exists
-		while [[ ! -s "$log_file" ]] && kill -0 "$cmd_pid" 2>/dev/null; do
-			sleep 0.1
-		done
-
-		tail -f "$log_file" --pid="$cmd_pid" 2>/dev/null | while IFS= read -r line; do
-			if [[ $line =~ $pattern ]]; then
-				local current=${BASH_REMATCH[$current_idx]}
-				local total=${BASH_REMATCH[$total_idx]}
-				# Guard against non-numeric matches (defensive: malformed regex)
-				if ! [[ $current =~ ^[0-9]+$ && $total =~ ^[0-9]+$ && $total -gt 0 ]]; then
-					continue
-				fi
-				local progress=$((current * 100 / total))
-				printf "\r\033[1;32m[INFO]\033[0m %s progress: [%3d%%] (%d/%d)   " \
-					"$label" "$progress" "$current" "$total"
-				echo "1" >"$progress_marker"
-			fi
-		done
-	)
-
-	local cmd_status=0
-	wait "$cmd_pid" || cmd_status=1
-
-	local had_progress
-	had_progress=$(cat "$progress_marker")
-	rm -f "$progress_marker"
-
-	# Newline only if we actually printed a progress bar
-	[[ $had_progress == 1 ]] && echo
-
-	return $cmd_status
-}
-
-# ============================================================================
-# Build steps
-# ============================================================================
-
-setup_canary() {
-	if [ -d "build" ]; then
-		info "Existing build directory found, reusing it."
-		cd build
-	else
-		info "Creating build directory..."
-		mkdir -p build && cd build
-	fi
-}
-
-absolute_path() {
-	local path=$1
-	case "$path" in
-		/* | [A-Za-z]:/* | [A-Za-z]:\\*)
-			printf '%s\n' "$path"
-			;;
-		*)
-			printf '%s\n' "${WORKTREE_ROOT}/${path}"
-			;;
-	esac
-}
+check_command() { command -v "$1" >/dev/null || die "Required command not found: $1"; }
 
 cache_value() {
-	local variable_name=$1
-	local cache_file="build/${BUILD_TYPE}/CMakeCache.txt"
-
-	if [[ ! -f "$cache_file" ]]; then
-		return 1
-	fi
-
-	local cache_line
-	while IFS= read -r cache_line || [[ -n "$cache_line" ]]; do
-		cache_line=${cache_line%$'\r'}
-		if [[ $cache_line == "$variable_name":*=* || $cache_line == "$variable_name="* ]]; then
-			printf '%s\n' "${cache_line#*=}"
+	local key=$1 line
+	[[ -f "$BUILD_DIRECTORY/CMakeCache.txt" ]] || return 1
+	while IFS= read -r line || [[ -n $line ]]; do
+		line=${line%$'\r'}
+		if [[ $line == "$key":*=* ]]; then
+			printf '%s\n' "${line#*=}"
 			return 0
 		fi
-	done <"$cache_file"
-
+	done <"$BUILD_DIRECTORY/CMakeCache.txt"
 	return 1
 }
 
-cmake_arg_value() {
-	local variable_name=$1
-	local index=0
-	local found=0
-	local value=""
+digest() { sha256sum -- "$1" | cut -d ' ' -f 1; }
 
-	while ((index < ${#EXTRA_CMAKE_ARGS[@]})); do
-		local arg="${EXTRA_CMAKE_ARGS[$index]}"
+is_executable_elf() {
+	LC_ALL=C readelf -h -- "$1" 2>/dev/null | grep -Eq '^[[:space:]]*Type:[[:space:]]+(EXEC|DYN)[[:space:]]'
+}
 
-		if [[ $arg == -D"$variable_name"=* || $arg == -D"$variable_name":*=* ]]; then
-			value=${arg#*=}
-			found=1
-		elif [[ $arg == "-D" ]]; then
-			((index += 1))
-			if ((index >= ${#EXTRA_CMAKE_ARGS[@]})); then
-				break
-			fi
-
-			arg="${EXTRA_CMAKE_ARGS[$index]}"
-			if [[ $arg == "$variable_name"=* || $arg == "$variable_name":*=* ]]; then
-				value=${arg#*=}
-				found=1
-			fi
-		fi
-
-		((index += 1))
+# Backups have a dedicated, flat namespace. Never follow a directory symlink
+# into another tree, and never recursively delete anything during retention.
+check_directories() {
+	local path
+	for path in "$WORKTREE_ROOT/build" "$BUILD_DIRECTORY" "$BUILD_DIRECTORY/bin" \
+		"$WORKTREE_ROOT/backups" "$BACKUP_DIRECTORY"; do
+		[[ ! -L $path ]] || die "Refusing a symlinked build/backup directory: $path"
+		[[ ! -e $path || -d $path ]] || die "Expected a directory: $path"
 	done
-
-	if [[ $found == 0 ]]; then
-		return 1
-	fi
-
-	printf '%s\n' "$value"
 }
 
-cmake_value() {
-	local variable_name=$1
-	local fallback=${2-}
-	local value
-
-	if value=$(cmake_arg_value "$variable_name"); then
-		printf '%s\n' "$value"
-	elif value=$(cache_value "$variable_name"); then
-		printf '%s\n' "$value"
-	elif [[ $# -ge 2 ]]; then
-		printf '%s\n' "$fallback"
-	else
-		return 1
-	fi
-}
-
-default_cmake_build_type() {
-	case "$BUILD_TYPE" in
-		*[Dd][Ee][Bb][Uu][Gg]*)
-			printf '%s\n' "Debug"
-			;;
-		*)
-			printf '%s\n' "RelWithDebInfo"
-			;;
-	esac
-}
-
-cmake_enabled() {
-	case "${1-}" in
-		1 | [Oo][Nn] | [Tt][Rr][Uu][Ee] | [Yy][Ee][Ss])
-			return 0
-			;;
-		*)
+archive_executable() {
+	local source=$1 name=$2 checksum destination metadata saved_at build_id checkout temp
+	[[ -f $source ]] || return 0
+	checksum=$(digest "$source") || return 1
+	[[ $checksum =~ ^[a-f0-9]{64}$ ]] || return 1
+	destination="$BACKUP_DIRECTORY/$name-$checksum.bin"
+	metadata="$BACKUP_DIRECTORY/$name-$checksum.meta"
+	[[ ! -L $destination && ! -L $metadata ]] || { error "Refusing symlinked backup: $destination"; return 1; }
+	if [[ -e $destination ]]; then
+		[[ -f $destination && $(digest "$destination") == "$checksum" ]] || {
+			error "Existing backup failed its SHA-256 check: $destination"
 			return 1
-			;;
-	esac
-}
-
-executable_name() {
-	local build_type
-	build_type=$(cmake_value "CMAKE_BUILD_TYPE" "$(default_cmake_build_type)")
-
-	if [[ $build_type == "Debug" ]]; then
-		printf '%s\n' "canary-debug"
+		}
 	else
-		printf '%s\n' "canary"
-	fi
-}
-
-executable_suffix() {
-	local suffix
-	if suffix=$(cmake_value "CMAKE_EXECUTABLE_SUFFIX"); then
-		printf '%s\n' "$suffix"
-		return
-	fi
-
-	case "$(uname -s)" in
-		MINGW* | MSYS* | CYGWIN*)
-			printf '%s\n' ".exe"
-			;;
-		*)
-			printf '%s\n' ""
-			;;
-	esac
-}
-
-runtime_output_directory() {
-	local toggle_bin_folder
-	toggle_bin_folder=$(cmake_value "TOGGLE_BIN_FOLDER" "OFF")
-
-	if cmake_enabled "$toggle_bin_folder"; then
-		local cache_binary_dir
-		if cache_binary_dir=$(cache_value "CMAKE_CACHEFILE_DIR"); then
-			printf '%s\n' "${cache_binary_dir}/bin"
-		else
-			printf '%s\n' "build/${BUILD_TYPE}/bin"
+		is_executable_elf "$source" || { error "Expected an ELF executable: $source"; return 1; }
+		temp=$(mktemp "$BACKUP_DIRECTORY/.binary.XXXXXX") || return 1
+		if ! cp --preserve=mode -- "$source" "$temp" || [[ $(digest "$temp") != "$checksum" ]]; then
+			rm -f -- "$temp"
+			error "Could not verify a complete backup of $source"
+			return 1
 		fi
-	else
-		printf '%s\n' "."
+		mv -fT -- "$temp" "$destination" || return 1
+		info "Saved executable: $destination"
 	fi
-}
-
-executable_path() {
-	local output_directory
-	output_directory=$(runtime_output_directory)
-
-	local executable_file
-	executable_file="$(executable_name)$(executable_suffix)"
-
-	if [[ $output_directory == "." ]]; then
-		printf '%s\n' "$executable_file"
-	else
-		printf '%s\n' "${output_directory}/${executable_file}"
-	fi
-}
-
-move_executable() {
-	local current_executable
-	current_executable=$(executable_path)
-
-	if [[ -f "$current_executable" ]]; then
-		info "Saving previous build as ${current_executable}.old"
-		mv -f "$current_executable" "${current_executable}.old"
-		BACKED_UP_EXECUTABLE=$(absolute_path "$current_executable")
-		BACKED_UP_EXECUTABLE_OLD=$(absolute_path "${current_executable}.old")
-	fi
-}
-
-restore_executable_backup() {
-	if [[ -z $BACKED_UP_EXECUTABLE || -z $BACKED_UP_EXECUTABLE_OLD ]]; then
-		return 0
-	fi
-
-	if [[ ! -f $BACKED_UP_EXECUTABLE_OLD || -e $BACKED_UP_EXECUTABLE ]]; then
-		return 0
-	fi
-
-	info "Restoring previous build from ${BACKED_UP_EXECUTABLE_OLD}"
-	cp -p "$BACKED_UP_EXECUTABLE_OLD" "$BACKED_UP_EXECUTABLE"
-}
-
-fail_after_build_step() {
-	local message=$1
-	restore_executable_backup
-	error "$message"
-	exit 1
-}
-
-configure_or_restore() {
-	if ! configure_canary; then
-		fail_after_build_step "CMake configuration failed."
-	fi
-}
-
-compile_or_restore() {
-	if ! compile_canary; then
-		fail_after_build_step "Build failed."
-	fi
-}
-
-configure_canary() {
-	info "Configuring Canary (this includes vcpkg dependency install)..."
-
-	if [[ $IS_ARM64 == 1 ]]; then
-		export VCPKG_FORCE_SYSTEM_BINARIES=1
-	fi
-
-	# vcpkg emits lines like:
-	#   "Installing 1/16 openssl:arm64-linux@3.6.2..."
-	#   "Building 3/16 boost-asio:arm64-linux..."
-	#   "Restored 5/16 fmt:arm64-linux..."
-	# Group 1: action (discarded), Group 2: current, Group 3: total
-	local vcpkg_pattern='(Installing|Building|Restored)[[:space:]]+([0-9]+)/([0-9]+)'
-
-	if ! run_with_progress "vcpkg" "cmake_log.txt" "$vcpkg_pattern" 2 3 \
-		cmake -DCMAKE_TOOLCHAIN_FILE="$VCPKG_PATH" "${EXTRA_CMAKE_ARGS[@]}" .. \
-		--preset "$BUILD_TYPE"; then
-		error "CMake configuration failed. Full log:"
-		cat cmake_log.txt
+	# This is backup time, not the executable's old compilation mtime.
+	saved_at=$(date -u +%s)
+	build_id=$(LC_ALL=C readelf -n -- "$destination" | sed -n 's/.*Build ID: //p') || return 1
+	checkout=$(git -C "$WORKTREE_ROOT" rev-parse HEAD 2>/dev/null) || checkout=unknown
+	temp=$(mktemp "$BACKUP_DIRECTORY/.metadata.XXXXXX") || return 1
+	if ! printf 'format=canary-executable-backup-v1\nname=%s\nsha256=%s\nbuild_id=%s\nsaved_at_epoch=%s\nsaved_at_utc=%s\ncheckout_at_backup=%s\n' \
+		"$name" "$checksum" "${build_id:-unavailable}" "$saved_at" "$(date -u +%FT%TZ)" "$checkout" >"$temp"; then
+		rm -f -- "$temp"
 		return 1
 	fi
-
-	success "Configuration complete."
+	mv -fT -- "$temp" "$metadata"
 }
 
-compile_canary() {
-	info "Starting the build process..."
+archive_running_executables() {
+	local before_build=${1:-0} process target name comm
+	for process in /proc/[0-9]*; do
+		[[ -d $process ]] || continue
+		if ! target=$(readlink -- "$process/exe" 2>/dev/null); then
+			comm=$(cat "$process/comm" 2>/dev/null) || continue
+			if [[ $comm == canary* ]]; then
+				PRUNE_ALLOWED=0
+			fi
+			continue
+		fi
+		target=${target% (deleted)}
+		case "$target" in
+			"$WORKTREE_ROOT/canary-debug" | "$WORKTREE_ROOT/build/"*/bin/canary-debug | "$BACKUP_DIRECTORY/canary-debug-"*.bin) name=canary-debug ;;
+			"$WORKTREE_ROOT/canary" | "$WORKTREE_ROOT/build/"*/bin/canary | "$BACKUP_DIRECTORY/canary-"*.bin) name=canary ;;
+			*) continue ;;
+		esac
+		if ! archive_executable "$process/exe" "$name"; then
+			error "Could not preserve the running executable for PID ${process##*/}."
+			return 1
+		fi
+		if ((before_build)) && [[ $target == "$BUILD_DIRECTORY/bin/$name" ]]; then
+			error "PID ${process##*/} runs from the compiler output. Build from a separate checkout or start the root executable first."
+			return 1
+		fi
+	done
+}
 
-	# CMake/Ninja build emits lines like "[42/300] Building CXX object..."
-	# Group 1: current, Group 2: total
-	local build_pattern='^\[([0-9]+)/([0-9]+)\]'
+prune_backups() {
+	local metadata filename name checksum saved_at now binary
+	if ((PRUNE_ALLOWED == 0)); then
+		info "Cleanup skipped: a Canary process could not be inspected."
+		return 0
+	fi
+	now=$(date -u +%s)
+	for metadata in "$BACKUP_DIRECTORY"/*.meta; do
+		[[ -f $metadata && ! -L $metadata ]] || continue
+		filename=${metadata##*/}
+		[[ $filename =~ ^(canary|canary-debug)-([a-f0-9]{64})\.meta$ ]] || continue
+		name=${BASH_REMATCH[1]}
+		checksum=${BASH_REMATCH[2]}
+		grep -qx 'format=canary-executable-backup-v1' "$metadata" || continue
+		grep -qx "name=$name" "$metadata" || continue
+		grep -qx "sha256=$checksum" "$metadata" || continue
+		saved_at=$(sed -n 's/^saved_at_epoch=//p' "$metadata")
+		[[ $saved_at =~ ^[1-9][0-9]{0,10}$ ]] || continue
+		((now - saved_at > RETENTION_SECONDS)) || continue
+		binary="${metadata%.meta}.bin"
+		[[ -f $binary && ! -L $binary ]] || continue
+		rm -- "$binary" "$metadata" || return 1
+		info "Removed expired executable: ${binary##*/}"
+	done
+}
 
-	if ! run_with_progress "Build" "build_log.txt" "$build_pattern" 1 2 \
-		cmake --build "$BUILD_TYPE"; then
-		error "Build failed. Full log:"
-		cat build_log.txt
+# tee keeps the complete log; pipefail retains command failures. No detached
+# tail process, temporary progress marker or lost stderr is involved.
+run_with_progress() {
+	local label=$1 log_file=$2 pattern=$3 line current total
+	shift 3
+	"$@" 2>&1 | tee "$log_file" | while IFS= read -r line; do
+		if [[ -t 1 && $line =~ $pattern ]]; then
+			current=${BASH_REMATCH[1]}
+			total=${BASH_REMATCH[2]}
+			if ((total > 0)); then
+				printf '\r[%s] %3d%% (%d/%d)\033[K' "$label" "$((current * 100 / total))" "$current" "$total"
+			fi
+		else
+			printf '%s\n' "$line"
+		fi
+	done
+}
+
+build_has_pending_work() {
+	local cmake_command=$1 plan_log="$WORKTREE_ROOT/build/build_plan_log.txt"
+	if ! LC_ALL=C "$cmake_command" --build "$BUILD_DIRECTORY" --target "$EXECUTABLE_NAME" \
+		--parallel "$BUILD_JOBS" -- -n >"$plan_log" 2>&1; then
+		cat -- "$plan_log" >&2
+		return 2
+	fi
+	# These presets use Ninja. Unknown output is treated as pending work;
+	# an empty log or a command mentioning "up to date" is not proof of a no-op.
+	if grep -qx 'ninja: no work to do\.' "$plan_log"; then
 		return 1
 	fi
-
-	success "Build completed successfully!"
+	return 0
 }
 
-# ============================================================================
-# Main
-# ============================================================================
+publish_executable() {
+	local built="$BUILD_DIRECTORY/bin/$EXECUTABLE_NAME"
+	local installed="$WORKTREE_ROOT/$EXECUTABLE_NAME"
+	local checksum
+	[[ -f $built && -x $built && ! -L $built ]] || die "Build did not produce the expected executable: $built"
+	is_executable_elf "$built" || die "Build output is not an ELF executable: $built"
+	checksum=$(digest "$built")
+	archive_executable "$built" "$EXECUTABLE_NAME" || die "Could not archive the new executable."
+	if [[ -f $installed && $(digest "$installed") == "$checksum" ]]; then
+		info "Executable unchanged; no replacement or service restart is needed."
+		return 0
+	fi
+	[[ ! -e $installed || -f $installed ]] || die "Installed executable path is not a regular file: $installed"
+	[[ ! -L $installed ]] || die "Refusing to replace a symlinked executable: $installed"
+	# Copy into the destination filesystem, verify it, then rename. A running
+	# process keeps its old inode; a failed build/copy never truncates its binary.
+	PUBLISH_TEMP=$(mktemp "$WORKTREE_ROOT/.$EXECUTABLE_NAME.install.XXXXXX")
+	cp --preserve=mode -- "$built" "$PUBLISH_TEMP" || die "Could not stage the executable for installation."
+	[[ $(digest "$PUBLISH_TEMP") == "$checksum" ]] || die "Installed copy failed SHA-256 verification."
+	mv -fT -- "$PUBLISH_TEMP" "$installed" || die "Could not atomically install $installed"
+	PUBLISH_TEMP=""
+	EXECUTABLE_UPDATED=1
+	info "Installed executable: $installed"
+}
+
+restart_service_if_requested() {
+	((RESTART_SERVICE && EXECUTABLE_UPDATED)) || return 0
+	check_command sudo
+	[[ -x /usr/bin/systemctl ]] || die "systemctl not found at /usr/bin/systemctl"
+	sudo -n /usr/bin/systemctl restart canary.service || die "New executable is installed, but canary.service could not be restarted."
+	info "canary.service restarted."
+}
 
 main() {
-	check_command "cmake"
-	check_command "tail"
-	check_vcpkg
-	check_architecture
-	move_executable
-	setup_canary
-
-	configure_or_restore
-	compile_or_restore
+	local command name cached_root cached_toolchain cmake_command path plan_status=0
+	[[ $(uname -s) == Linux ]] || die "This entry point requires Linux."
+	for command in flock sha256sum readelf git tee cut sed grep date realpath readlink mktemp cp mv rm; do
+		check_command "$command"
+	done
+	BUILD_DIRECTORY="$WORKTREE_ROOT/build/$BUILD_TYPE"
+	check_directories
+	mkdir -p -- "$WORKTREE_ROOT/build"
+	# Every preset can publish at the same repository root. Serialize that shared
+	# output and the backup namespace, without locking other repositories.
+	[[ ! -L "$WORKTREE_ROOT/build/.recompile.lock" ]] || die "Refusing a symlinked build lock."
+	exec 9>>"$WORKTREE_ROOT/build/.recompile.lock"
+	flock -n 9 || die "Another recompile.sh owns this repository's build/output lock."
+	if cached_root=$(cache_value CMAKE_HOME_DIRECTORY); then
+		[[ $(realpath -m -- "$cached_root") == "$WORKTREE_ROOT" ]] || die "The existing CMake cache belongs to a different source directory."
+	fi
+	if cmake_command=$(cache_value CMAKE_COMMAND); then
+		[[ -f $cmake_command && -x $cmake_command ]] || die "The CMake recorded in this preset is unavailable: $cmake_command"
+	else
+		cmake_command=$(command -v cmake) || die "Required command not found: cmake"
+	fi
+	if [[ -n $VCPKG_PARENT_DIRECTORY ]]; then
+		VCPKG_ROOT="$VCPKG_PARENT_DIRECTORY/vcpkg"
+	elif [[ -z ${VCPKG_ROOT:-} ]] && cached_toolchain=$(cache_value CMAKE_TOOLCHAIN_FILE); then
+		VCPKG_ROOT=${cached_toolchain%/scripts/buildsystems/vcpkg.cmake}
+	else
+		VCPKG_ROOT=${VCPKG_ROOT:-"$HOME/vcpkg"}
+	fi
+	VCPKG_ROOT=$(realpath -m -- "$VCPKG_ROOT")
+	[[ -f "$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" ]] || die "vcpkg toolchain not found under $VCPKG_ROOT"
+	if cached_toolchain=$(cache_value CMAKE_TOOLCHAIN_FILE); then
+		[[ $(realpath -m -- "$cached_toolchain") == "$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" ]] || die "Use the vcpkg installation already configured in this preset."
+	fi
+	export VCPKG_ROOT
+	export VCPKG_MAX_CONCURRENCY="$BUILD_JOBS"
+	[[ $(uname -m) != aarch64* ]] || export VCPKG_FORCE_SYSTEM_BINARIES=1
+	(umask 077; mkdir -p -- "$BACKUP_DIRECTORY")
+	for name in canary canary-debug; do
+		for path in "$WORKTREE_ROOT/$name" "$BUILD_DIRECTORY/bin/$name"; do
+			[[ ! -L $path && ( ! -e $path || -f $path ) ]] || die "Expected a regular executable, not a link/directory: $path"
+		done
+		archive_executable "$WORKTREE_ROOT/$name" "$name" || die "Could not back up the installed executable."
+		path="$BUILD_DIRECTORY/bin/$name"
+		if [[ -f $path ]]; then
+			if is_executable_elf "$path"; then
+				archive_executable "$path" "$name" || die "Could not back up the previous build output."
+			else
+				info "Previous compiler output is incomplete; it will be rebuilt: $path"
+			fi
+		fi
+		[[ ! "$WORKTREE_ROOT/$name" -ef "$BUILD_DIRECTORY/bin/$name" ]] || die "Compiler output is a hardlink to the installed executable."
+	done
+	archive_running_executables 1 || die "Running executable backup/preflight failed."
+	cd -- "$WORKTREE_ROOT"
+	info "Configuring $BUILD_TYPE in its existing build tree ($BUILD_JOBS jobs)."
+	if ! run_with_progress vcpkg "$WORKTREE_ROOT/build/cmake_log.txt" '[[:space:]]([0-9]+)/([0-9]+)[[:space:]]' \
+		"$cmake_command" --preset "$BUILD_TYPE" "${EXTRA_CMAKE_ARGS[@]}" \
+		-DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" -DTOGGLE_BIN_FOLDER=ON; then
+		die "CMake configuration failed. Installed executable kept. Log: build/cmake_log.txt"
+	fi
+	check_directories
+	[[ $(cache_value CMAKE_CACHEFILE_DIR) == "$BUILD_DIRECTORY" ]] || die "Unexpected CMake binary directory."
+	[[ $(cache_value TOGGLE_BIN_FOLDER) == ON ]] || die "CMake did not select the staged bin output directory."
+	EXECUTABLE_NAME=$(cache_value CMAKE_PROJECT_NAME)
+	[[ $EXECUTABLE_NAME == canary || $EXECUTABLE_NAME == canary-debug ]] || die "Unexpected CMake target: $EXECUTABLE_NAME"
+	info "Checking for pending build work."
+	build_has_pending_work "$cmake_command" || plan_status=$?
+	case "$plan_status" in
+		0)
+			if ! run_with_progress Build "$WORKTREE_ROOT/build/build_log.txt" '^\[([0-9]+)/([0-9]+)\]' \
+				"$cmake_command" --build "$BUILD_DIRECTORY" --target "$EXECUTABLE_NAME" --parallel "$BUILD_JOBS"; then
+				die "Build failed. Installed executable kept. Log: build/build_log.txt"
+			fi
+			;;
+		1) info "Build is up to date; reusing the existing compiler output." ;;
+		*) die "Could not inspect pending build work. Installed executable kept. Log: build/build_plan_log.txt" ;;
+	esac
+	publish_executable
+	# A server can restart during a long build. Refresh the actually running
+	# version again immediately before considering any backup for expiry.
+	archive_running_executables || die "Could not preserve a running version; backup cleanup skipped."
+	prune_backups || die "Backup cleanup failed. The installed executable was kept."
+	restart_service_if_requested
+	info "Done. Backups: $BACKUP_DIRECTORY"
 }
 
+trap 'if [[ -n $PUBLISH_TEMP ]]; then rm -f -- "$PUBLISH_TEMP"; fi' EXIT
+parse_arguments "$@"
 main

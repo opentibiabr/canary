@@ -21,6 +21,9 @@ class LuaConfigurationTests(unittest.TestCase):
 
 	def test_nested_tables_and_proven_constants(self):
 		self.assertEqual(self.value('{position=Position(100, 101, 7), reward={{10,2}}, storage=Storage.Test}', {"Storage.Test": 120}), {"position": {"x": 100, "y": 101, "z": 7}, "reward": {1: {1: 10, 2: 2}}, "storage": 120})
+		self.assertEqual(self.value('{[Storage.Test[1]]=true}', {"Storage.Test[1]": 12107}), {12107: True})
+		with self.assertRaises(Unresolved):
+			self.value('{[Storage.Test[index]]=true}', {"Storage.Test[1]": 12107})
 
 	def test_dynamic_values_and_missing_constants_are_not_executed_or_guessed(self):
 		for source in ('{value=os.execute("write")}', '{value=1 + 2}', '{value=UNKNOWN}', '{value=1e999}'):

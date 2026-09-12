@@ -10,6 +10,7 @@ from pathlib import Path
 
 from .bundle import create_bundle, digest, json_bytes, native, read_json, sha, write_new
 from .inventory import ACTION_TABLES, UNIQUE_TABLES, canonical, within
+from .gameplay import REWARD_FIELDS, adapt_consumers, behavior_files, consumer_constants, reward_parameters
 
 
 def relative(path: Path, parent: Path) -> str:
@@ -41,6 +42,29 @@ class Converter:
 		self.tiles = {canonical(tile["position"]): tile for tile in inspected["tiles"]}
 		self.pending, self.outcomes = [], []
 		self.by_original: dict[int, dict] = {}
+		self.behavior_ids: set[str] = set()
+		self.consumer_constants = consumer_constants(pack)
+		self.existing = {obj["id"]: obj for layer in layers.values() for obj in layer["objects"]}
+
+	def behavior(self, entry: dict, obj: dict) -> list[str]:
+		table, value = entry["table"], entry["value"]
+		binding = None
+		if table == "ChestUnique" and "reward" in value:
+			binding = {"id": "quest.reward", "contractVersion": 1, "events": ["onUse"], "parameters": reward_parameters(value, entry["key"], self.consumer_constants)}
+		elif table in {"TeleportUnique", "TeleportItemUnique", "TileUnique"}:
+			mechanism = table == "TileUnique"
+			position = value.get("targetPos" if mechanism else "destination")
+			if position is None:
+				return []
+			name = "target" if mechanism else "destination"
+			anchor = {"id": object_id(entry, name), "kind": "anchor", "position": position}
+			self.layer(entry)["objects"].append(anchor)
+			binding = {"id": "world.tile_mechanism" if mechanism else "world.player_teleport", "contractVersion": 1, "events": ["onStepIn", "onStepOut"] if mechanism else ["onUse" if table == "TeleportItemUnique" else "onStepIn"], "parameters": {"targetItem": value["targetItem"]} if mechanism else {"effect": value["effect"]}, "relations": {name: {"object": anchor["id"]}}}
+		if binding is None:
+			return []
+		self.behavior_ids.add(binding["id"])
+		obj.setdefault("behaviors", []).append(binding)
+		return binding["events"]
 
 	def item(self, position: dict, item_id: int | None = None, role: str = "item") -> dict:
 		tile = self.tiles.get(canonical(position))
@@ -143,6 +167,15 @@ class Converter:
 		if entry["classification"] == "needs-analysis":
 			raise ValueError("; ".join(issue["message"] for issue in entry["issues"]) or entry["destination"])
 		table, value = entry["table"], entry["value"]
+		if table == "TeleportUnique" and value.get("worldObject") in self.existing:
+			# An explicitly associated, already-authored object remains authoritative.
+			# Migration claims ownership without replacing edited positions/relations.
+			obj = self.existing[value["worldObject"]]
+			if obj.get("attributes", {}).get("uid") != int(entry["key"]) or not obj.get("components"):
+				raise ValueError("The existing World association no longer supplies the legacy UID/teleport responsibility")
+			self.claim(entry, "item", obj, ["attributes.uid", "onStepIn"])
+			self.outcomes.append({"source": object_id(entry, "declaration"), "status": "already-world", "objects": [obj["id"]]})
+			return
 		if table == "BookDocumentTable":
 			self.book(entry)
 			return
@@ -152,6 +185,12 @@ class Converter:
 		if table not in ACTION_TABLES | UNIQUE_TABLES | {"SignTable"}:
 			raise ValueError(f"Conversion adapter is required for {table}")
 		allowed = {"itemId", "itemPos", "text"} if table == "SignTable" else {"itemId", "itemPos"}
+		if table == "ChestUnique":
+			allowed |= REWARD_FIELDS
+		elif table in {"TeleportUnique", "TeleportItemUnique"}:
+			allowed |= {"destination", "effect"}
+		elif table == "TileUnique":
+			allowed |= {"targetPos", "targetItem"}
 		if value.keys() - allowed:
 			raise ValueError("Behavior/configuration fields require an adapter: " + ", ".join(sorted(value.keys() - allowed)))
 		item_id = value.get("itemId")
@@ -192,7 +231,8 @@ class Converter:
 		ids = []
 		for occurrence, item in targets:
 			obj = self.bind(entry, occurrence, item, copy.deepcopy(attributes))
-			self.claim(entry, occurrence, obj, [f"attributes.{name}" for name in attributes])
+			events = self.behavior(entry, obj)
+			self.claim(entry, occurrence, obj, [f"attributes.{name}" for name in attributes] + events)
 			ids.append(obj["id"])
 		self.outcomes.append({"source": object_id(entry, "declaration"), "status": "converted", "objects": ids})
 
@@ -266,15 +306,11 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 		except (ValueError, KeyError, TypeError) as error:
 			converter.pending.append({"file": entry["file"], "table": entry["table"], "key": entry["key"], "line": entry["line"], "message": str(error)})
 	catalog.setdefault("migrations", []).append(relative(migration_file, project_file.parent))
-	consumers = []
 	selected_tables = {entry["table"] for entry in selected}
-	for entry in report["consumers"]:
-		if entry["table"] not in selected_tables:
-			continue
-		local = Path(entry["file"]).relative_to(report["datapack"]).as_posix() if Path(entry["file"]).is_relative_to(report["datapack"]) else entry["file"]
-		status = "preserved" if local in {"startup/others/functions.lua", "scripts/globalevents/others/map_attributes_loader.lua"} else "blocked"
-		consumers.append(dict(entry, status=status))
-	outputs = {name: json_bytes(layer) for name, layer in layers.items()}
+	consumers, patches = adapt_consumers(root, pack, report["consumers"], selected_tables)
+	outputs = behavior_files(root, pack, catalog, converter.behavior_ids)
+	outputs.update(patches)
+	outputs.update({name: json_bytes(layer) for name, layer in layers.items()})
 	outputs[project_file.relative_to(root).as_posix()] = json_bytes(catalog)
 	outputs[migration_file.relative_to(root).as_posix()] = json_bytes(migration)
 	metadata = {"id": migration_id, "datapack": report["datapack"], "catalog": project_file.relative_to(root).as_posix(), "map": {"file": logical_map.relative_to(root).as_posix(), "sha256": map_revision}, "items": {"file": items.relative_to(root).as_posix(), "sources": item_sources}, "pending": converter.pending, "consumers": consumers, "receipt": migration_file.with_suffix(".receipt.json").relative_to(root).as_posix()}

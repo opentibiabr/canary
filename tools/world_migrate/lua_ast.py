@@ -156,11 +156,19 @@ class Reader:
 				return Node("unknown", "number is not finite", span)
 		if first.kind == "identifier":
 			index = start + 1
-			parts = [str(first.value)]
-			while index + 1 < end and tokens[index].value == "." and tokens[index + 1].kind == "identifier":
-				parts.append(str(tokens[index + 1].value))
-				index += 2
-			name = ".".join(parts)
+			name = str(first.value)
+			while index < end:
+				if index + 1 < end and tokens[index].value == "." and tokens[index + 1].kind == "identifier":
+					name += "." + str(tokens[index + 1].value)
+					index += 2
+				elif index + 2 < end and tokens[index].value == "[" and self.pairs.get(index) == index + 2:
+					key = self.value(index + 1, index + 2, depth + 1)
+					if key.kind != "scalar" or type(key.value) is not int:
+						break
+					name += f"[{key.value}]"
+					index += 3
+				else:
+					break
 			if index == end:
 				return Node("symbol", name, span)
 			if name == "Position" and index < end and tokens[index].value == "(" and self.pairs.get(index) == end - 1:

@@ -4,7 +4,7 @@ import json
 import shutil
 from pathlib import Path
 
-from tools.world_migrate.bundle import apply_bundle, read_json, revert_bundle, validate_bundle, write_new, json_bytes
+from tools.world_migrate.bundle import apply_bundle, read_json, revert_bundle, validate_bundle, write_new, json_bytes, sha
 from tools.world_migrate.convert import generate
 from tools.world_migrate.inventory import analyze
 from tools.world_migrate.tests.test_world_tool import NativeWorldToolFixture
@@ -105,6 +105,40 @@ class MigrationBundleTests(NativeWorldToolFixture):
 		with self.assertRaisesRegex(ValueError, "unresolved Lua consumers"):
 			apply_bundle(self.root, self.directory, self.exe, offline=True)
 		self.assertEqual(self.catalog.read_bytes(), self.original_catalog)
+
+	def test_reward_adapter_migrates_consumer_text_and_patches_only_a_recognized_revision(self):
+		root = Path(__file__).resolve().parents[3]
+		consumer = "scripts/actions/system/quest_reward_common.lua"
+		contract = read_json(root / "tools/world_migrate/consumer_adapters.json")["files"][consumer]
+		after = (root / "data-otservbr-global" / consumer).read_text(encoding="utf-8")
+		lines = after.splitlines()
+		delta, patches = 0, []
+		for patch in contract["patches"]:
+			patches.append((patch["startLine"] + delta, patch))
+			delta += len(patch["after"]) - len(patch["before"])
+		for start, patch in reversed(patches):
+			lines[start:start + len(patch["after"])] = patch["before"]
+		before = "\n".join(lines) + "\n"
+		self.assertEqual(sha(before.encode("utf-8")), contract["beforeSha256"])
+		write_new(self.pack / consumer, before.replace("\n", "\r\n").encode("utf-8"))
+		self.source.write_bytes(b'ChestUnique = {[6013]={itemId=200,itemPos={x=100,y=100,z=7},storage=60001,randomReward={{400,2}},reward={{nil,nil}}}}\r\n')
+		self.original_source = self.source.read_bytes()
+		self.report.write_bytes(json_bytes(analyze(self.root, "data-example")))
+		self.generated()
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
+		self.assertEqual((self.directory / "after/data-example" / consumer).read_text(encoding="utf-8"), after)
+		layer = read_json(self.directory / "after/data-example/world/systems/item.layer.json")
+		params = layer["objects"][0]["behaviors"][0]["parameters"]
+		self.assertEqual(params["reward"], [])
+		self.assertEqual(params["randomReward"], [{"itemId": 400, "count": 2}])
+		self.assertIn("Hardek *", params["rewardText"])
+
+	def test_a_custom_loader_at_a_known_filename_is_not_silently_accepted(self):
+		write_new(self.pack / "startup/others/functions.lua", b"local function loader() return ItemAction[13107] end\n")
+		self.report.write_bytes(json_bytes(analyze(self.root, "data-example")))
+		self.generated()
+		with self.assertRaisesRegex(ValueError, "unresolved Lua consumers"):
+			validate_bundle(self.root, self.directory, self.exe)
 
 	def test_bundle_snapshot_edits_and_missing_offline_confirmation_are_rejected(self):
 		self.generated()

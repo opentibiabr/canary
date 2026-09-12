@@ -88,8 +88,9 @@ def constants_from_datapack(repository: Path, datapack: Path) -> tuple[dict[str,
 				return
 			counts = Counter(field.key.value for field in node.value if field.key.kind == "scalar")
 			for field in node.value:
-				if field.key.kind == "scalar" and isinstance(field.key.value, str) and counts[field.key.value] == 1:
-					leaves(prefix + "." + field.key.value, field.value)
+				if field.key.kind == "scalar" and type(field.key.value) in {str, int} and counts[field.key.value] == 1:
+					suffix = "." + field.key.value if isinstance(field.key.value, str) else f"[{field.key.value}]"
+					leaves(prefix + suffix, field.value)
 		assignments = reader.assignments()
 		counts = Counter(assignment.name for assignment in assignments)
 		for assignment in assignments:
@@ -246,6 +247,9 @@ def analyze(repository: Path, datapack_name: str, *, selected_file: str | None =
 				if counts[key] > 1:
 					entry.update(classification="needs-analysis", destination="characterize duplicate declaration without activating shadowed data")
 					entry["issues"].append({"line": field.span.line, "message": f"key {key} occurs {counts[key]} times in {table}; no automatic winner"})
+				if key.startswith("unresolved-at-"):
+					entry.update(classification="needs-analysis", destination="resolve the declaration key")
+					entry["issues"].append({"line": field.key.span.line, "message": "Unresolved declaration key"})
 				declarations.append(entry)
 	consumer_list, consumer_sources, consumer_issues = consumers(repository, datapack, set(files), {table["table"] for table in table_inventory})
 	sources.update(consumer_sources)

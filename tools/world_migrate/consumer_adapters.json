@@ -1,0 +1,331 @@
+{
+  "schemaVersion": 1,
+  "files": {
+    "scripts/actions/system/quest_reward_common.lua": {
+      "kind": "gameplay",
+      "afterSha256": "4895c92791cc9a3c2612cc5b69e009dd39826c9fc7b06d3e3e6897d728f7db0f",
+      "beforeSha256": "3394214ca803640b0148854f3a2cb8dd8e4ecd3749268800d4a3f8c50330f1cd",
+      "patches": [
+        {
+          "startLine": 0,
+          "before": [
+            "-- Common chest reward",
+            "-- You just need to add a new table in the data/startup/tables/chest.lua file",
+            "-- This script will pull everything from there"
+          ],
+          "after": [
+            "-- Compatibility configuration for the legacy reward handler.",
+            "-- New World rewards are authored in world JSON and use the same execution helper."
+          ]
+        },
+        {
+          "startLine": 58,
+          "before": [
+            "local function playerAddItem(params, item, rewardIndex)",
+            "\tlocal player = params.player",
+            "\tif not checkWeightAndBackpackRoom(player, params.weight, params.message) then",
+            "\t\treturn false",
+            "\tend",
+            "",
+            "\tif params.key then",
+            "\t\tlocal itemType = ItemType(params.itemid)",
+            "\t\t-- 21392 Is key of Dawnport",
+            "\t\t-- Needs independent verification because it cannot be set as \"key\" in items.xml",
+            "\t\t-- Because it generate bug in the item description",
+            "\t\tif itemType:isKey() or itemType:getId(21392) then",
+            "\t\t\t-- If is key not in container, uses the \"isKey = true\" variab",
+            "\t\t\tkeyItem = player:addItem(params.itemid, params.count)",
+            "\t\t\tkeyItem:setActionId(params.storage)",
+            "\t\tend",
+            "\telse",
+            "\t\taddItem = player:addItem(params.itemid, params.count)",
+            "\t\t-- If the item is writeable, just put its unique and the text in the \"AttributeTable\"",
+            "\t\tlocal attribute = AttributeTable[item.uid]",
+            "\t\tif attribute then",
+            "\t\t\taddItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)",
+            "\t\tend",
+            "\t\tlocal achievement = achievementTable[item.uid]",
+            "\t\tif achievement then",
+            "\t\t\tplayer:addAchievement(achievement)",
+            "\t\tend",
+            "\tend",
+            "",
+            "\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, params.message .. \".\")",
+            "\tif params.useKV then",
+            "\t\tplayer:questKV(params.questName):set(\"completed\", true)",
+            "\t\tif params.timer then",
+            "\t\t\tplayer:questKV(params.questName):set(\"params.questName\", os.time() + params.time * 3600) -- multiplicação por hora",
+            "\t\tend",
+            "\telse",
+            "\t\tif params.storage == nil then",
+            "\t\t\tlogger.warn(\"Storage key is nil for reward index {}, itemid {}\", rewardIndex, params.itemid)",
+            "\t\t\treturn false",
+            "\t\tend",
+            "",
+            "\t\tplayer:setStorageValue(params.storage, 1)",
+            "\t\tif params.timer then",
+            "\t\t\tplayer:setStorageValue(params.timer, os.time() + params.time * 3600) -- multiplicação por hora",
+            "\t\tend",
+            "\tend",
+            "\treturn true",
+            "end",
+            "",
+            "local function playerAddContainerItem(params, item, rewardIndex)",
+            "\tlocal player = params.player",
+            "",
+            "\tlocal reward = params.containerReward",
+            "\tlocal itemType = ItemType(params.itemid)",
+            "\tif itemType:isKey() then",
+            "\t\tkeyItem = reward:addItem(params.itemid, params.count)",
+            "\t\tif params.storage then",
+            "\t\t\tkeyItem:setActionId(params.action)",
+            "\t\tend",
+            "\telse",
+            "\t\tlocal rewardItem = reward:addItem(params.itemid, params.count)",
+            "\t\tlocal attribute = AttributeTable[item.uid]",
+            "\t\tif attribute and rewardItem then",
+            "\t\t\trewardItem:setAttribute(ITEM_ATTRIBUTE_TEXT, attribute.text)",
+            "\t\tend",
+            "\tend",
+            "",
+            "\tlocal achievement = achievementTable[item.uid]",
+            "\tif achievement then",
+            "\t\tplayer:addAchievement(achievement)",
+            "\tend",
+            "",
+            "\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, \"You have found a \" .. getItemName(params.itemBagName) .. \".\")",
+            "\tif params.useKV then",
+            "\t\tplayer:questKV(params.questName):set(\"completed\", true)",
+            "\t\tif params.timer then",
+            "\t\t\tplayer:questKV(params.questName):set(\"params.questName\", os.time() + params.time * 3600) -- multiplicação por hora",
+            "\t\tend",
+            "\telse",
+            "\t\tif params.storage == nil then",
+            "\t\t\tlogger.warn(\"Storage key is nil for reward index {}, itemid {} in container\", rewardIndex, params.itemid)",
+            "\t\t\treturn false",
+            "\t\tend",
+            "",
+            "\t\tplayer:setStorageValue(params.storage, 1)",
+            "\t\tif params.timer then",
+            "\t\t\tplayer:setStorageValue(params.timer, os.time() + params.time * 3600) -- multiplicação por hora",
+            "\t\tend",
+            "\tend",
+            "\treturn true",
+            "end",
+            ""
+          ],
+          "after": [
+            "local executeReward = dofile(DATA_DIRECTORY .. \"/lib/core/world_quest_reward.lua\")"
+          ]
+        },
+        {
+          "startLine": 153,
+          "before": [
+            "\tlocal setting = ChestUnique[item.uid]",
+            "\tif not setting then",
+            "\t\treturn true",
+            "\tend",
+            "",
+            "\tif setting.weight then",
+            "\t\tlocal message = \"You have found a \" .. getItemName(setting.container) .. \".\"",
+            "",
+            "\t\tlocal backpack = player:getSlotItem(CONST_SLOT_BACKPACK)",
+            "\t\tif not backpack or backpack:getEmptySlots(true) < 1 then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. \" But you have no room to take it.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\t\tif (player:getFreeCapacity() / 100) < setting.weight then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, message .. \". Weighing \" .. setting.weight .. \" oz, it is too heavy for you to carry.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\tend",
+            "",
+            "\tif setting.useKV then",
+            "\t\tif player:questKV(setting.questName):get(\"completed\") then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, \"The \" .. getItemName(setting.itemId) .. \" is empty.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\t\tif setting.timerStorage and player:questKV(setting.questName):get(\"timer\") and player:questKV(setting.questName):get(\"timer\") > os.time() then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, \"The \" .. getItemName(setting.itemId) .. \" is empty.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\telse",
+            "\t\tif player:getStorageValue(setting.storage) >= 1 then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, \"The \" .. getItemName(setting.itemId) .. \" is empty.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\t\tif setting.timerStorage and player:getStorageValue(setting.timerStorage) > os.time() then",
+            "\t\t\tplayer:sendTextMessage(MESSAGE_EVENT_ADVANCE, \"The \" .. getItemName(setting.itemId) .. \" is empty.\")",
+            "\t\t\treturn true",
+            "\t\tend",
+            "\tend",
+            "",
+            "\tif setting.randomReward then",
+            "\t\tlocal randomReward = math.random(#setting.randomReward)",
+            "\t\tsetting.reward[1][1] = setting.randomReward[randomReward][1]",
+            "\t\tsetting.reward[1][2] = setting.randomReward[randomReward][2]",
+            "\tend",
+            "",
+            "\tlocal container = player:addItem(setting.container)",
+            "\tfor i = 1, #setting.reward do",
+            "\t\tlocal itemid = setting.reward[i][1]",
+            "\t\tlocal count = setting.reward[i][2]",
+            "\t\tlocal itemDescriptions = getItemDescriptions(itemid)",
+            "\t\tlocal itemArticle = itemDescriptions.article",
+            "\t\tlocal itemName = itemDescriptions.name",
+            "\t\tlocal itemBagName = setting.container",
+            "\t\tlocal itemBag = container",
+            "",
+            "\t\tif not setting.container then",
+            "\t\t\tlocal addItemParams = {",
+            "\t\t\t\tplayer = player,",
+            "\t\t\t\titemid = itemid,",
+            "\t\t\t\tcount = count,",
+            "\t\t\t\tweight = getItemWeight(itemid) * count,",
+            "\t\t\t\tstorage = setting.storage,",
+            "\t\t\t\tkey = setting.isKey,",
+            "\t\t\t\ttimer = setting.timerStorage,",
+            "\t\t\t\ttime = setting.time,",
+            "\t\t\t\tquestName = setting.questName,",
+            "\t\t\t\tuseKV = setting.useKV,",
+            "\t\t\t}",
+            "",
+            "\t\t\tif count > 1 and ItemType(itemid):isStackable() then",
+            "\t\t\t\tif itemDescriptions.plural then",
+            "\t\t\t\t\titemName = itemDescriptions.plural",
+            "\t\t\t\tend",
+            "\t\t\t\taddItemParams.message = \"You have found \" .. count .. \" \" .. itemName",
+            "\t\t\telseif ItemType(itemid):getCharges() > 0 then",
+            "\t\t\t\taddItemParams.message = \"You have found \" .. itemArticle .. \" \" .. itemName",
+            "\t\t\t\tif not ItemType(itemid):isRune() then",
+            "\t\t\t\t\taddItemParams.weight = getItemWeight(itemid)",
+            "\t\t\t\tend",
+            "\t\t\telse",
+            "\t\t\t\taddItemParams.message = \"You have found \" .. itemArticle .. \" \" .. itemName",
+            "\t\t\tend",
+            "\t\t\tif not playerAddItem(addItemParams, item, i) then",
+            "\t\t\t\treturn true",
+            "\t\t\tend",
+            "\t\tend",
+            "",
+            "\t\tif setting.container then",
+            "\t\t\tlocal addContainerItemParams = {",
+            "\t\t\t\tplayer = player,",
+            "\t\t\t\titemid = itemid,",
+            "\t\t\t\tcount = count,",
+            "\t\t\t\tweight = setting.weight,",
+            "\t\t\t\tstorage = setting.storage,",
+            "\t\t\t\taction = setting.keyAction,",
+            "\t\t\t\titemBagName = itemBagName,",
+            "\t\t\t\tcontainerReward = itemBag,",
+            "\t\t\t\tquestName = setting.questName,",
+            "\t\t\t\tuseKV = setting.useKV,",
+            "\t\t\t}",
+            "",
+            "\t\t\tif not playerAddContainerItem(addContainerItemParams, item, i) then",
+            "\t\t\t\treturn true",
+            "\t\t\tend",
+            "\t\tend",
+            "\tend",
+            "",
+            "\treturn true"
+          ],
+          "after": [
+            "\tlocal setting = ChestUnique and ChestUnique[item.uid]",
+            "\treturn executeReward(player, item, setting, AttributeTable[item.uid], achievementTable[item.uid])"
+          ]
+        }
+      ]
+    },
+    "scripts/movements/others/teleport.lua": {
+      "kind": "gameplay",
+      "afterSha256": "ab42a60dce4377a0e437f5dffe0f1f39b2bd1fc1682c49e5846b661037f8a3c3",
+      "beforeSha256": "a12c75a75f4e284d3880ccf8a65aaa04fbb5cc7434648e2f54cbdb6548ca0832",
+      "patches": [
+        {
+          "startLine": 9,
+          "before": [
+            "\tlocal setting = TeleportUnique[item.uid]"
+          ],
+          "after": [
+            "\tlocal setting = TeleportUnique and TeleportUnique[item.uid]"
+          ]
+        },
+        {
+          "startLine": 18,
+          "before": [
+            "\tlocal setting = TeleportUnique[uniqueRange]"
+          ],
+          "after": [
+            "\tlocal setting = TeleportUnique and TeleportUnique[uniqueRange]"
+          ]
+        }
+      ]
+    },
+    "scripts/actions/other/teleport_item.lua": {
+      "kind": "gameplay",
+      "afterSha256": "93bf39bf450f3a48a08d160f584f0253a3bb1fae4f880da7074c334e8a48a601",
+      "beforeSha256": "afdc48f5b4387c1a752f6df632e2e104efecb1b379cc783beec6268eee09444b",
+      "patches": [
+        {
+          "startLine": 6,
+          "before": [
+            "\tlocal setting = TeleportItemUnique[item.uid]"
+          ],
+          "after": [
+            "\tlocal setting = TeleportItemUnique and TeleportItemUnique[item.uid]"
+          ]
+        }
+      ]
+    },
+    "scripts/movements/others/remove-create_item.lua": {
+      "kind": "gameplay",
+      "afterSha256": "363176c055377654afbd810e13fa8dbdbaa702e8c0a4413cf8ab7ca863a8788c",
+      "beforeSha256": "861e45bd2ac8e804f245a48fc80df2834621ea13b818f94f2dec7482d752984c",
+      "patches": [
+        {
+          "startLine": 16,
+          "before": [
+            "\tlocal setting = TileUnique[item.uid]"
+          ],
+          "after": [
+            "\tlocal setting = TileUnique and TileUnique[item.uid]"
+          ]
+        },
+        {
+          "startLine": 47,
+          "before": [
+            "\tlocal setting = TileUnique[item.uid]"
+          ],
+          "after": [
+            "\tlocal setting = TileUnique and TileUnique[item.uid]"
+          ]
+        }
+      ]
+    },
+    "scripts/quests/dawnport/actions_the_rare_herb.lua": {
+      "kind": "gameplay",
+      "afterSha256": "462ecdc9e1465608d848243f49f0d454421c9cb1fcad4fdba2befe090cba1108",
+      "beforeSha256": "86dc6a30f8ba118b8d5bcdd08f43f5a136c85b55437102e9ed7bc9211635910d",
+      "patches": [
+        {
+          "startLine": 3,
+          "before": [
+            "\tlocal setting = ItemUnique[item.uid]"
+          ],
+          "after": [
+            "\tlocal setting = World.fromItem(item) or (ItemUnique and ItemUnique[item.uid])"
+          ]
+        }
+      ]
+    },
+    "startup/others/functions.lua": {
+      "kind": "compatibility",
+      "afterSha256": "152f8eb675bea89a0511623674626a7f0d671d8fb19c581ae54f240590606f5b"
+    },
+    "scripts/globalevents/others/map_attributes_loader.lua": {
+      "kind": "compatibility",
+      "afterSha256": "0a14010ba0a853e7ca9a4dafafa72e42375dbd199e9905384a1aa4462a5f638d"
+    }
+  }
+}

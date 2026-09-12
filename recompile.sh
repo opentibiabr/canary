@@ -15,6 +15,7 @@ EXECUTABLE_UPDATED=0
 BACKUP_DIRECTORY="$WORKTREE_ROOT/backups/executables"
 RETENTION_SECONDS=$((7 * 24 * 60 * 60))
 PUBLISH_TEMP=""
+LOG_TEMP=""
 PRUNE_ALLOWED=1
 
 info() { printf '[INFO] %s\n' "$*"; }
@@ -108,11 +109,15 @@ parse_arguments() {
 			*TOGGLE_BIN_FOLDER*=* | *CMAKE_TOOLCHAIN_FILE*=*)
 				usage_error "This script manages TOGGLE_BIN_FOLDER and CMAKE_TOOLCHAIN_FILE; use the vcpkg positional argument."
 				;;
+			*) ;;
 		esac
 	done
 }
 
-check_command() { command -v "$1" >/dev/null || die "Required command not found: $1"; }
+check_command() {
+	local command_name=$1
+	command -v "$command_name" >/dev/null || die "Required command not found: $command_name"
+}
 
 cache_value() {
 	local key=$1 line
@@ -127,10 +132,14 @@ cache_value() {
 	return 1
 }
 
-digest() { sha256sum -- "$1" | cut -d ' ' -f 1; }
+digest() {
+	local path=$1
+	sha256sum -- "$path" | cut -d ' ' -f 1
+}
 
 is_executable_elf() {
-	LC_ALL=C readelf -h -- "$1" 2>/dev/null | grep -Eq '^[[:space:]]*Type:[[:space:]]+(EXEC|DYN)[[:space:]]'
+	local path=$1
+	LC_ALL=C readelf -h -- "$path" 2>/dev/null | grep -Eq '^[[:space:]]*Type:[[:space:]]+(EXEC|DYN)[[:space:]]'
 }
 
 # Backups have a dedicated, flat namespace. Never follow a directory symlink
@@ -142,6 +151,9 @@ check_directories() {
 		[[ ! -L $path ]] || die "Refusing a symlinked build/backup directory: $path"
 		[[ ! -e $path || -d $path ]] || die "Expected a directory: $path"
 	done
+	path="$BUILD_DIRECTORY/CMakeCache.txt"
+	[[ ! -L $path ]] || die "Refusing a symlinked CMake cache: $path"
+	[[ ! -e $path || -f $path ]] || die "Expected a regular CMake cache: $path"
 }
 
 archive_executable() {
@@ -182,7 +194,7 @@ archive_executable() {
 }
 
 archive_running_executables() {
-	local before_build=${1:-0} process target name comm
+	local before_build=${1:-0} process target name comm executable_fd stable_source stable_target
 	for process in /proc/[0-9]*; do
 		[[ -d $process ]] || continue
 		if ! target=$(readlink -- "$process/exe" 2>/dev/null); then
@@ -198,11 +210,31 @@ archive_running_executables() {
 			"$WORKTREE_ROOT/canary" | "$WORKTREE_ROOT/build/"*/bin/canary | "$BACKUP_DIRECTORY/canary-"*.bin) name=canary ;;
 			*) continue ;;
 		esac
-		if ! archive_executable "$process/exe" "$name"; then
+		# Hold the executable inode open while hashing and copying it. The process
+		# may exit after readlink, and Linux may immediately reuse its PID.
+		if ! exec {executable_fd}<"$process/exe"; then
+			[[ ! -e "$process/exe" ]] && continue
+			error "Could not open the running executable for PID ${process##*/}."
+			return 1
+		fi
+		stable_source="/proc/$$/fd/$executable_fd"
+		if ! stable_target=$(readlink -- "$stable_source" 2>/dev/null); then
+			exec {executable_fd}<&-
+			error "Could not inspect the running executable for PID ${process##*/}."
+			return 1
+		fi
+		stable_target=${stable_target% (deleted)}
+		if [[ $stable_target != "$target" ]]; then
+			exec {executable_fd}<&-
+			continue
+		fi
+		if ! archive_executable "$stable_source" "$name"; then
+			exec {executable_fd}<&-
 			error "Could not preserve the running executable for PID ${process##*/}."
 			return 1
 		fi
-		if ((before_build)) && [[ $target == "$BUILD_DIRECTORY/bin/$name" ]]; then
+		exec {executable_fd}<&-
+		if ((before_build)) && [[ $stable_target == "$BUILD_DIRECTORY/bin/$name" ]]; then
 			error "PID ${process##*/} runs from the compiler output. Build from a separate checkout or start the root executable first."
 			return 1
 		fi
@@ -235,12 +267,32 @@ prune_backups() {
 	done
 }
 
+# Logs are first written to a private file in build/. Renaming that file over
+# the public log path replaces a pre-existing symlink instead of following it.
+start_log() {
+	local log_file=$1
+	local log_directory=${log_file%/*}
+	[[ -d $log_directory && ! -L $log_directory ]] || return 1
+	LOG_TEMP=$(mktemp "$log_directory/.recompile-log.XXXXXX")
+}
+
+finish_log() {
+	local log_file=$1
+	if ! mv -fT -- "$LOG_TEMP" "$log_file"; then
+		rm -f -- "$LOG_TEMP"
+		LOG_TEMP=""
+		return 1
+	fi
+	LOG_TEMP=""
+}
+
 # tee keeps the complete log; pipefail retains command failures. No detached
 # tail process, temporary progress marker or lost stderr is involved.
 run_with_progress() {
-	local label=$1 log_file=$2 pattern=$3 line current total
+	local label=$1 log_file=$2 pattern=$3 line current total command_status=0
 	shift 3
-	"$@" 2>&1 | tee "$log_file" | while IFS= read -r line; do
+	start_log "$log_file" || { error "Could not create a safe temporary log for $log_file"; return 1; }
+	"$@" 2>&1 | tee "$LOG_TEMP" | while IFS= read -r line; do
 		if [[ -t 1 && $line =~ $pattern ]]; then
 			current=${BASH_REMATCH[1]}
 			total=${BASH_REMATCH[2]}
@@ -250,13 +302,18 @@ run_with_progress() {
 		else
 			printf '%s\n' "$line"
 		fi
-	done
+	done || command_status=$?
+	finish_log "$log_file" || { error "Could not publish log: $log_file"; return 1; }
+	return "$command_status"
 }
 
 build_has_pending_work() {
-	local cmake_command=$1 plan_log="$WORKTREE_ROOT/build/build_plan_log.txt"
-	if ! LC_ALL=C "$cmake_command" --build "$BUILD_DIRECTORY" --target "$EXECUTABLE_NAME" \
-		--parallel "$BUILD_JOBS" -- -n >"$plan_log" 2>&1; then
+	local cmake_command=$1 plan_log="$WORKTREE_ROOT/build/build_plan_log.txt" command_status=0
+	start_log "$plan_log" || { error "Could not create a safe temporary log for $plan_log"; return 2; }
+	LC_ALL=C "$cmake_command" --build "$BUILD_DIRECTORY" --target "$EXECUTABLE_NAME" \
+		--parallel "$BUILD_JOBS" -- -n >"$LOG_TEMP" 2>&1 || command_status=$?
+	finish_log "$plan_log" || { error "Could not publish log: $plan_log"; return 2; }
+	if ((command_status != 0)); then
 		cat -- "$plan_log" >&2
 		return 2
 	fi
@@ -276,7 +333,7 @@ publish_executable() {
 	is_executable_elf "$built" || die "Build output is not an ELF executable: $built"
 	checksum=$(digest "$built")
 	archive_executable "$built" "$EXECUTABLE_NAME" || die "Could not archive the new executable."
-	if [[ -f $installed && $(digest "$installed") == "$checksum" ]]; then
+	if [[ -f $installed && -x $installed && ! -L $installed && $(digest "$installed") == "$checksum" ]]; then
 		info "Executable unchanged; no replacement or service restart is needed."
 		return 0
 	fi
@@ -337,6 +394,7 @@ main() {
 	fi
 	export VCPKG_ROOT
 	export VCPKG_MAX_CONCURRENCY="$BUILD_JOBS"
+	export CMAKE_BUILD_PARALLEL_LEVEL="$BUILD_JOBS"
 	[[ $(uname -m) != aarch64* ]] || export VCPKG_FORCE_SYSTEM_BINARIES=1
 	(umask 077; mkdir -p -- "$BACKUP_DIRECTORY")
 	for name in canary canary-debug; do
@@ -388,6 +446,6 @@ main() {
 	info "Done. Backups: $BACKUP_DIRECTORY"
 }
 
-trap 'if [[ -n $PUBLISH_TEMP ]]; then rm -f -- "$PUBLISH_TEMP"; fi' EXIT
+trap 'if [[ -n $PUBLISH_TEMP ]]; then rm -f -- "$PUBLISH_TEMP"; fi; if [[ -n $LOG_TEMP ]]; then rm -f -- "$LOG_TEMP"; fi' EXIT
 parse_arguments "$@"
 main

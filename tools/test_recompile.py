@@ -29,7 +29,8 @@ assert (root / '.fixture').is_file()
 args = sys.argv[1:]
 with (root / 'calls.jsonl').open('a') as stream:
     stream.write(json.dumps(dict(args=args, vcpkg_jobs=os.environ.get('VCPKG_MAX_CONCURRENCY'),
-                                system_binaries=os.environ.get('VCPKG_FORCE_SYSTEM_BINARIES'))) + '\n')
+                                 cmake_jobs=os.environ.get('CMAKE_BUILD_PARALLEL_LEVEL'),
+                                 system_binaries=os.environ.get('VCPKG_FORCE_SYSTEM_BINARIES'))) + '\n')
 mode = os.environ.get('FIXTURE_MODE', '')
 if args[0] == '--preset':
     assert pathlib.Path.cwd() == root
@@ -211,7 +212,20 @@ class RecompileTest(unittest.TestCase):
         self.assertEqual(["--", "-n"], calls[1]["args"][-2:])
         self.assertEqual(["--parallel", "1"], calls[2]["args"][-2:])
         self.assertEqual("1", calls[0]["vcpkg_jobs"])
+        self.assertEqual("1", calls[0]["cmake_jobs"])
         self.assertFalse((self.root / "restart.json").exists())
+
+    def test_explicit_jobs_override_inherited_cmake_parallelism(self):
+        self.run_script("--jobs", "1", CMAKE_BUILD_PARALLEL_LEVEL="17")
+        self.assertTrue(all(call["cmake_jobs"] == "1" for call in self.calls()))
+
+    def test_matching_nonexecutable_file_is_reinstalled_and_restarted(self):
+        inode = self.installed.stat().st_ino
+        self.installed.chmod(0o644)
+        self.run_script("--restart-service", FIXTURE_BINARY=str(TRUE))
+        self.assertNotEqual(inode, self.installed.stat().st_ino)
+        self.assertTrue(os.access(self.installed, os.X_OK))
+        self.assertTrue((self.root / "restart.json").exists())
 
     def test_no_change_deduplicates_and_does_not_restart_or_replace(self):
         inode = self.installed.stat().st_ino
@@ -427,6 +441,33 @@ endif()
         self.run_script(expected=1)
         self.assertEqual([sentinel], list(outside.iterdir()))
         self.assertFalse(self.calls())
+
+    def test_symlinked_cmake_cache_is_rejected_without_touching_its_target(self):
+        outside = self.directory / "outside-cache"
+        outside.write_text("keep")
+        build = self.root / "build/linux-release"
+        build.mkdir(parents=True)
+        (build / "CMakeCache.txt").symlink_to(outside)
+        self.run_script(expected=1)
+        self.assertEqual("keep", outside.read_text())
+        self.assertFalse(self.calls())
+
+    def test_log_symlinks_are_replaced_without_touching_their_targets(self):
+        build = self.root / "build"
+        build.mkdir()
+        sentinels = []
+        for name in ("cmake_log.txt", "build_plan_log.txt", "build_log.txt"):
+            outside = self.directory / f"outside-{name}"
+            outside.write_text("keep")
+            (build / name).symlink_to(outside)
+            sentinels.append(outside)
+        self.run_script()
+        for outside in sentinels:
+            self.assertEqual("keep", outside.read_text())
+        for name in ("cmake_log.txt", "build_plan_log.txt", "build_log.txt"):
+            log = build / name
+            self.assertTrue(log.is_file())
+            self.assertFalse(log.is_symlink())
 
     def test_symlinked_or_hardlinked_output_is_rejected_before_build(self):
         staged = self.root / "build/linux-release/bin/canary"

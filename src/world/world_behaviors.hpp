@@ -44,6 +44,7 @@ public:
 	bool owns(const std::shared_ptr<Item> &item, const std::string &event) const;
 	std::shared_ptr<Action> action(const std::shared_ptr<Item> &item);
 	bool use(const std::string &id, const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &from, const std::shared_ptr<Thing> &target, const Position &to, bool hotkey);
+	std::optional<bool> equip(const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, uint8_t slot, bool isCheck, bool equipping);
 	std::optional<bool> step(const std::shared_ptr<Item> &item, const std::shared_ptr<Creature> &creature, const Position &position, bool entering);
 	std::optional<bool> move(const std::shared_ptr<Item> &owner, const std::shared_ptr<Item> &moving, const std::shared_ptr<Item> &tileItem, const Position &position, bool adding);
 

@@ -5,6 +5,7 @@
 #include "game/game.hpp"
 #include "items/item.hpp"
 #include "lua/creature/actions.hpp"
+#include "lua/creature/movement.hpp"
 #include "lua/functions/core/game/world_functions.hpp"
 #include "lua/scripts/scripts.hpp"
 #include "world/world_runtime.hpp"
@@ -16,6 +17,124 @@
 #endif
 
 namespace {
+	const world_layers::Value* eventOption(const world_layers::BehaviorBinding &binding, const std::string &event, const std::string &name) {
+		const auto eventOptions = binding.eventOptions.find(event);
+		if (eventOptions == binding.eventOptions.end()) {
+			return nullptr;
+		}
+		const auto option = eventOptions->second.find(name);
+		return option == eventOptions->second.end() ? nullptr : &option->second;
+	}
+
+	const bool* booleanOption(const world_layers::BehaviorBinding &binding, const std::string &event, const std::string &name) {
+		const auto value = eventOption(binding, event, name);
+		return value ? std::get_if<bool>(&value->data) : nullptr;
+	}
+
+	const int64_t* integerOption(const world_layers::BehaviorBinding &binding, const std::string &event, const std::string &name) {
+		const auto value = eventOption(binding, event, name);
+		return value ? std::get_if<int64_t>(&value->data) : nullptr;
+	}
+
+	uint32_t slotMask(const world_layers::BehaviorBinding &binding, const std::string &event) {
+		const auto value = eventOption(binding, event, "slots");
+		const auto slots = value ? std::get_if<world_layers::Value::List>(&value->data) : nullptr;
+		uint32_t mask = 0;
+		if (!slots) {
+			return mask;
+		}
+		for (const auto &entry : *slots) {
+			const auto name = std::get_if<std::string>(&entry.data);
+			if (!name) {
+				continue;
+			}
+			if (*name == "head") {
+				mask |= SLOTP_HEAD;
+			} else if (*name == "necklace") {
+				mask |= SLOTP_NECKLACE;
+			} else if (*name == "backpack") {
+				mask |= SLOTP_BACKPACK;
+			} else if (*name == "armor") {
+				mask |= SLOTP_ARMOR;
+			} else if (*name == "right-hand") {
+				mask |= SLOTP_RIGHT;
+			} else if (*name == "left-hand") {
+				mask |= SLOTP_LEFT;
+			} else if (*name == "hand") {
+				mask |= SLOTP_HAND;
+			} else if (*name == "legs") {
+				mask |= SLOTP_LEGS;
+			} else if (*name == "feet") {
+				mask |= SLOTP_FEET;
+			} else if (*name == "ring") {
+				mask |= SLOTP_RING;
+			} else if (*name == "ammo") {
+				mask |= SLOTP_AMMO;
+			}
+		}
+		return mask;
+	}
+
+	uint32_t slotFlag(uint8_t slot) {
+		switch (static_cast<Slots_t>(slot)) {
+			case CONST_SLOT_HEAD:
+				return SLOTP_HEAD;
+			case CONST_SLOT_NECKLACE:
+				return SLOTP_NECKLACE;
+			case CONST_SLOT_BACKPACK:
+				return SLOTP_BACKPACK;
+			case CONST_SLOT_ARMOR:
+				return SLOTP_ARMOR;
+			case CONST_SLOT_RIGHT:
+				return SLOTP_RIGHT;
+			case CONST_SLOT_LEFT:
+				return SLOTP_LEFT;
+			case CONST_SLOT_LEGS:
+				return SLOTP_LEGS;
+			case CONST_SLOT_FEET:
+				return SLOTP_FEET;
+			case CONST_SLOT_RING:
+				return SLOTP_RING;
+			case CONST_SLOT_AMMO:
+				return SLOTP_AMMO;
+			default:
+				return 0;
+		}
+	}
+
+	std::shared_ptr<MoveEvent> equipmentEvent(const world_layers::BehaviorBinding &binding, const std::string &event) {
+		auto moveEvent = std::make_shared<MoveEvent>();
+		moveEvent->setSlot(slotMask(binding, event));
+		if (const auto level = integerOption(binding, event, "level")) {
+			moveEvent->setRequiredLevel(static_cast<uint32_t>(*level));
+			moveEvent->setWieldInfo(WIELDINFO_LEVEL);
+		}
+		if (const auto magicLevel = integerOption(binding, event, "magicLevel")) {
+			moveEvent->setRequiredMagLevel(static_cast<uint32_t>(*magicLevel));
+			moveEvent->setWieldInfo(WIELDINFO_MAGLV);
+		}
+		if (const auto premium = booleanOption(binding, event, "premium")) {
+			moveEvent->setNeedPremium(*premium);
+			moveEvent->setWieldInfo(WIELDINFO_PREMIUM);
+		}
+		if (const auto value = eventOption(binding, event, "vocations")) {
+			if (const auto vocations = std::get_if<world_layers::Value::List>(&value->data)) {
+				for (const auto &entry : *vocations) {
+					if (const auto vocation = std::get_if<std::string>(&entry.data)) {
+						moveEvent->addVocEquipMap(*vocation);
+					}
+				}
+				moveEvent->setWieldInfo(WIELDINFO_VOCREQ);
+			}
+		}
+		if (const auto value = eventOption(binding, event, "vocationDescription")) {
+			if (const auto description = std::get_if<std::string>(&value->data)) {
+				moveEvent->setVocationString(*description);
+			}
+		}
+		return moveEvent;
+	}
+
 	std::filesystem::path behaviorPath(const std::filesystem::path &file) {
 		std::error_code error;
 		const auto path = std::filesystem::weakly_canonical(file, error);
@@ -23,8 +142,18 @@ namespace {
 	}
 	class WorldAction final : public Action {
 	public:
-		explicit WorldAction(std::string id) :
-			id(std::move(id)) { }
+		WorldAction(std::string id, const world_layers::BehaviorBinding &binding) :
+			id(std::move(id)) {
+			if (const auto option = booleanOption(binding, "onUse", "allowFarUse")) {
+				setAllowFarUse(*option);
+			}
+			if (const auto option = booleanOption(binding, "onUse", "blockWalls")) {
+				setCheckLineOfSight(*option);
+			}
+			if (const auto option = booleanOption(binding, "onUse", "checkFloor")) {
+				setCheckFloor(*option);
+			}
+		}
 		bool executeUse(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, const Position &from, const std::shared_ptr<Thing> &target, const Position &to, bool hotkey) override {
 			return g_game().worldLayers().behaviors().use(id, player, item, from, target, to, hotkey);
 		}
@@ -46,6 +175,7 @@ struct WorldBehaviors::State {
 	std::map<std::string, std::map<std::string, const world_layers::BehaviorBinding*>> bindings;
 	std::map<std::string, std::set<std::string>> owned;
 	std::map<std::string, std::shared_ptr<Action>> actions;
+	std::map<std::string, std::map<std::string, std::shared_ptr<MoveEvent>>> equipment;
 	std::set<std::pair<std::string, std::string>> reported;
 
 	const world_layers::BehaviorBinding* binding(const std::string &id, const std::string &event) const {
@@ -151,6 +281,7 @@ bool WorldBehaviors::load() {
 	state->bindings.clear();
 	state->owned.clear();
 	state->actions.clear();
+	state->equipment.clear();
 	std::set<std::filesystem::path> scripts;
 	for (const auto &layer : project->layers) {
 		if (!layer.enabled) {
@@ -163,7 +294,9 @@ bool WorldBehaviors::load() {
 					state->bindings[id][event] = &binding;
 					state->owned[id].insert(event);
 					if (event == "onUse") {
-						state->actions.emplace(id, std::make_shared<WorldAction>(id));
+						state->actions.emplace(id, std::make_shared<WorldAction>(id, binding));
+					} else if (event == "onEquip" || event == "onDeEquip") {
+						state->equipment[id].emplace(event, equipmentEvent(binding, event));
 					}
 				}
 			}
@@ -177,9 +310,6 @@ bool WorldBehaviors::load() {
 						continue;
 					}
 					state->owned[claim.object].insert(event);
-					if (event == "onUse") {
-						state->actions.emplace(claim.object, std::make_shared<WorldAction>(claim.object));
-					}
 				}
 			}
 		}
@@ -283,6 +413,32 @@ bool WorldBehaviors::use(const std::string &id, const std::shared_ptr<Player> &p
 		Lua::pushPosition(L, to);
 		Lua::pushBoolean(L, hotkey);
 		return 6;
+	});
+}
+
+std::optional<bool> WorldBehaviors::equip(const std::shared_ptr<Item> &item, const std::shared_ptr<Player> &player, uint8_t slot, bool isCheck, bool equipping) {
+	const auto id = state->world.identity(item);
+	const std::string event = equipping ? "onEquip" : "onDeEquip";
+	const auto object = state->equipment.find(id);
+	if (object == state->equipment.end()) {
+		return std::nullopt;
+	}
+	const auto configured = object->second.find(event);
+	if (configured == object->second.end() || (configured->second->getSlot() & slotFlag(slot)) == 0) {
+		return std::nullopt;
+	}
+	const auto nativeResult = equipping
+		? MoveEvent::EquipItem(configured->second, player, item, static_cast<Slots_t>(slot), isCheck)
+		: MoveEvent::DeEquipItem(configured->second, player, item, static_cast<Slots_t>(slot), false);
+	if (nativeResult != 1) {
+		return false;
+	}
+	return state->call(id, event, [&](lua_State* L) {
+		Lua::pushThing(L, player);
+		Lua::pushThing(L, item);
+		lua_pushnumber(L, slot);
+		Lua::pushBoolean(L, equipping ? isCheck : false);
+		return 4;
 	});
 }
 

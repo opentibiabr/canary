@@ -330,6 +330,11 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 }
 
 uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) {
+	if (const auto worldResult = g_game().worldLayers().behaviors().equip(item, player, slot, isCheck, true)) {
+		g_events().eventPlayerOnInventoryUpdate(player, item, slot, true);
+		g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, true);
+		return *worldResult;
+	}
 	const auto &moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
@@ -340,6 +345,11 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot) {
+	if (const auto worldResult = g_game().worldLayers().behaviors().equip(item, player, slot, false, false)) {
+		g_events().eventPlayerOnInventoryUpdate(player, item, slot, false);
+		g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, false);
+		return *worldResult;
+	}
 	const auto &moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;

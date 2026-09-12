@@ -280,7 +280,7 @@ def revert_bundle(root: Path, receipt_file: Path, executable: str | Path | None,
 	return {"reverted": True, "alreadyReverted": False}
 
 
-def create_bundle(root: Path, directory: Path, metadata: dict, outputs: dict[str, bytes | None], sources: dict[str, str], report: dict) -> dict:
+def create_bundle(root: Path, directory: Path, metadata: dict, outputs: dict[str, bytes | None], sources: dict[str, str], report: dict, *, absent_outputs: set[str] = frozenset()) -> dict:
 	"""Materialize immutable before/after snapshots without publishing anything."""
 	root, directory = root.resolve(), directory.resolve()
 	directory.mkdir(parents=True, exist_ok=False)
@@ -300,6 +300,8 @@ def create_bundle(root: Path, directory: Path, metadata: dict, outputs: dict[str
 	for name, after in sorted(outputs.items()):
 		path = within(root, name)
 		before = path.read_bytes() if path.is_file() else None
+		if name in absent_outputs and before is not None:
+			raise ValueError(f"A new catalog appeared during generation; review it before extending it: {name}")
 		if name in sources and sha(before) != sources[name]:
 			raise ValueError(f"Source changed while snapshotting: {name}")
 		for side, content in (("before", before), ("after", after)):

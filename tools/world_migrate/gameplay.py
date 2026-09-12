@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import os
 from pathlib import Path
 
 from .bundle import read_json, sha
@@ -102,16 +103,18 @@ def reward_parameters(value: dict, key: str, constants: dict) -> dict:
 	return parameters
 
 
-def behavior_files(root: Path, pack: Path, catalog: dict, behavior_ids: set[str]) -> dict[str, bytes]:
+def behavior_files(root: Path, pack: Path, catalog: dict, behavior_ids: set[str], catalog_file: Path | None = None) -> dict[str, bytes]:
 	"""Include implementations and descriptors in the same reviewable bundle."""
 	templates = Path(__file__).resolve().parents[2] / "data-otservbr-global"
 	outputs = {}
 	for identity in sorted(behavior_ids):
 		name = BEHAVIORS[identity]
-		reference = f"behaviors/{name}.behavior.json"
+		descriptor = pack / "world/behaviors" / f"{name}.behavior.json"
+		parent = catalog_file.parent if catalog_file else pack / "world"
+		reference = Path(os.path.relpath(descriptor, parent)).as_posix()
 		if reference not in catalog.setdefault("behaviorCatalog", []):
 			catalog["behaviorCatalog"].append(reference)
-		paths = [f"world/{reference}", f"scripts/world_behaviors/{name}.lua"]
+		paths = [descriptor.relative_to(pack).as_posix(), f"scripts/world_behaviors/{name}.lua"]
 		if identity == "quest.reward":
 			paths.append("lib/core/world_quest_reward.lua")
 		for name in paths:

@@ -323,6 +323,36 @@ class Converter:
 		self.outcomes.append({"source": object_id(entry, "declaration"), "status": "converted", "objects": ids})
 
 
+def project_input(root: Path, pack: Path, project_file: Path | None, map_override: Path | None, executable: str | Path | None) -> tuple[Path, dict, set[str]]:
+	world = pack / "world"
+	if project_file is None:
+		catalogs = sorted(world.glob("*.world.json"))
+		if len(catalogs) > 1:
+			raise ValueError("Supply --project: more than one World catalog belongs to this datapack")
+		if catalogs:
+			project_file = catalogs[0]
+		else:
+			maps = [map_override.resolve()] if map_override else sorted(world.glob("*.otbm"))
+			if len(maps) != 1:
+				raise ValueError("Supply --map or --project: a new catalog requires an unambiguous OTBM")
+			project_file = world / (maps[0].stem + ".world.json")
+	project_file = project_file.resolve()
+	if not project_file.is_relative_to(world) or not project_file.name.endswith(".world.json"):
+		raise ValueError("The catalog must be a .world.json file in the selected datapack's world directory")
+	if project_file.exists():
+		return project_file, native(executable, "normalize", project_file, "--convert-v2"), set()
+	if map_override:
+		original = map_override.resolve()
+		logical_map = original if original.is_relative_to(world) else world / original.name
+	else:
+		logical_map = project_file.with_name(project_file.name.removesuffix(".world.json") + ".otbm")
+		if not logical_map.is_file():
+			raise ValueError("The new catalog has no sibling OTBM; supply --map with its intended base map")
+	id_part = re.sub(r"[^a-z0-9_-]", "_", logical_map.stem.lower())
+	catalog = {"schemaVersion": 2, "id": "world-" + id_part, "map": relative(logical_map, project_file.parent), "items": relative(root / "data/items/items.xml", project_file.parent), "layers": [], "behaviorCatalog": [], "migrations": []}
+	return project_file, {"project": catalog, "layers": [], "files": []}, {project_file.relative_to(root).as_posix()}
+
+
 def generate(root: Path, report_file: Path, output: Path, executable: str | Path | None, project_file: Path | None = None, map_override: Path | None = None, resolutions_file: Path | None = None) -> dict:
 	root = root.resolve()
 	report = read_json(report_file)
@@ -333,15 +363,7 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	for name, expected in sources.items():
 		if digest(within(root, name)) != expected:
 			raise ValueError(f"Source changed since analysis: {name}")
-	if project_file is None:
-		catalogs = sorted((pack / "world").glob("*.world.json"))
-		if len(catalogs) != 1:
-			raise ValueError("Supply --project: expected exactly one World catalog in this datapack")
-		project_file = catalogs[0]
-	project_file = project_file.resolve()
-	if not project_file.is_relative_to(pack / "world"):
-		raise ValueError("The catalog must belong to the selected datapack's world directory")
-	loaded = native(executable, "normalize", project_file, "--convert-v2")
+	project_file, loaded, absent_outputs = project_input(root, pack, project_file, map_override, executable)
 	if "files" not in loaded:
 		raise ValueError("The native helper is too old to supply exact source revisions")
 	for entry in loaded["files"]:
@@ -406,10 +428,10 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	catalog.setdefault("migrations", []).append(relative(migration_file, project_file.parent))
 	selected_tables = {entry["table"] for entry in selected}
 	consumers, patches = adapt_consumers(root, pack, report["consumers"], selected_tables)
-	outputs = behavior_files(root, pack, catalog, converter.behavior_ids)
+	outputs = behavior_files(root, pack, catalog, converter.behavior_ids, project_file)
 	outputs.update(patches)
 	outputs.update({name: json_bytes(layer) for name, layer in layers.items()})
 	outputs[project_file.relative_to(root).as_posix()] = json_bytes(catalog)
 	outputs[migration_file.relative_to(root).as_posix()] = json_bytes(migration)
 	metadata = {"id": migration_id, "datapack": report["datapack"], "catalog": project_file.relative_to(root).as_posix(), "map": {"file": logical_map.relative_to(root).as_posix(), "sha256": map_revision}, "items": {"file": items.relative_to(root).as_posix(), "sources": item_sources}, "pending": converter.pending, "consumers": consumers, "receipt": migration_file.with_suffix(".receipt.json").relative_to(root).as_posix()}
-	return create_bundle(root, output, metadata, outputs, sources, dict(report, outcomes=converter.outcomes, resolutionEvidence=resolutions.used))
+	return create_bundle(root, output, metadata, outputs, sources, dict(report, outcomes=converter.outcomes, resolutionEvidence=resolutions.used), absent_outputs=absent_outputs)

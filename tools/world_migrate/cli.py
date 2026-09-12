@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
 		if name == "generate":
 			command.add_argument("--report", type=Path, required=True)
 			command.add_argument("--output", type=Path, required=True)
-			command.add_argument("--project", type=Path, help="catalog to extend; defaults to the datapack's sole catalog")
+			command.add_argument("--project", type=Path, help="catalog to extend or create; otherwise discover the sole catalog or OTBM")
 			command.add_argument("--resolutions", type=Path, help="explicit reviewed decisions for matching source and OTBM revisions")
 		elif name == "revert":
 			command.add_argument("--receipt", type=Path, required=True)

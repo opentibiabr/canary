@@ -17,7 +17,11 @@ python -m tools.world_migrate revert --receipt data-otservbr-global/world/migrat
 On Windows, use the same arguments on a single line and `world-tool.exe`, for
 example `--world-tool "tools-bin/world-tool.exe"`. Alternatively, set
 `WORLD_TOOL_PATH` to the helper or install it on `PATH`. `--project` selects a
-catalog when the datapack has more than one. `--map` reads the matching OTBM from
+catalog when the datapack has more than one. If no catalog exists, generation
+prepares a sibling catalog for the sole OTBM in `world/`; use `--project` and
+`--map` when the target is ambiguous or the map is stored elsewhere. A new
+catalog remains inside the review bundle until `apply`. Reversion removes it
+only when its published revision still matches. `--map` reads the matching OTBM from
 another local path; its SHA-256 must match the map used during generation.
 
 Analysis only prints results unless `--report` is present. Generation reserves a

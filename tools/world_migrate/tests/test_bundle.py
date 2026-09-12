@@ -4,6 +4,7 @@ import json
 import shutil
 import struct
 from pathlib import Path
+from unittest.mock import patch
 
 from tools.world_migrate.bundle import apply_bundle, read_json, revert_bundle, validate_bundle, write_new, json_bytes, sha
 from tools.world_migrate.convert import generate
@@ -69,6 +70,53 @@ class MigrationBundleTests(NativeWorldToolFixture):
 		with self.assertRaisesRegex(ValueError, "Source changed"):
 			apply_bundle(self.root, self.directory, self.exe, offline=True)
 		self.assertEqual(self.catalog.read_bytes(), self.original_catalog)
+
+	def test_first_catalog_is_created_only_on_apply_and_removed_by_revert(self):
+		self.catalog.unlink()
+		result = generate(self.root, self.report, self.directory, self.exe)
+		self.assertEqual(result["pending"], 0)
+		self.assertFalse(self.catalog.exists())
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
+		applied = apply_bundle(self.root, self.directory, self.exe, offline=True)
+		self.assertEqual(read_json(self.catalog)["map"], "example.otbm")
+		self.assertTrue(apply_bundle(self.root, self.directory, self.exe, offline=True)["alreadyApplied"])
+		self.assertTrue(revert_bundle(self.root, self.root / applied["receipt"], self.exe, offline=True)["reverted"])
+		self.assertFalse(self.catalog.exists())
+		self.assertEqual(self.source.read_bytes(), self.original_source)
+		self.assertEqual((self.world / "example.otbm").read_bytes(), self.map)
+
+	def test_first_catalog_requires_an_unambiguous_map_and_supports_explicit_target(self):
+		self.catalog.unlink()
+		(self.world / "second.otbm").write_bytes(self.map)
+		with self.assertRaisesRegex(ValueError, "unambiguous OTBM"):
+			generate(self.root, self.report, self.directory, self.exe)
+		target = self.world / "catalogs/example.world.json"
+		result = generate(self.root, self.report, self.directory, self.exe, project_file=target, map_override=self.world / "example.otbm")
+		self.assertEqual(result["pending"], 0)
+		self.assertFalse(target.exists())
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
+
+	def test_catalog_created_concurrently_is_not_adopted_as_an_overwrite_baseline(self):
+		from tools.world_migrate.bundle import create_bundle
+		self.catalog.unlink()
+		def concurrent_catalog(*args, **kwargs):
+			self.catalog.write_bytes(self.original_catalog)
+			return create_bundle(*args, **kwargs)
+		with patch("tools.world_migrate.convert.create_bundle", side_effect=concurrent_catalog):
+			with self.assertRaisesRegex(ValueError, "catalog appeared"):
+				generate(self.root, self.report, self.directory, self.exe)
+		self.assertEqual(self.catalog.read_bytes(), self.original_catalog)
+
+	def test_nested_new_catalog_resolves_migrated_behavior_descriptors(self):
+		self.catalog.unlink()
+		self.source.write_bytes(b'ChestUnique = {[6000]={itemId=200,itemPos={x=100,y=100,z=7},storage=60001,reward={{400,1}}}}\n')
+		self.report.write_bytes(json_bytes(analyze(self.root, "data-example")))
+		target = self.world / "catalogs/example.world.json"
+		result = generate(self.root, self.report, self.directory, self.exe, project_file=target, map_override=self.world / "example.otbm")
+		self.assertEqual(result["pending"], 0)
+		catalog = read_json(self.directory / "after/data-example/world/catalogs/example.world.json")
+		self.assertEqual(catalog["behaviorCatalog"], ["../behaviors/quest_reward.behavior.json"])
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
 
 	def test_books_and_creation_keep_content_order_and_do_not_create_the_same_root_item_twice(self):
 		loader = self.pack / "startup/tables/load.lua"

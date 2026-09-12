@@ -2,6 +2,7 @@
 #include "game/game.hpp"
 #include "items/item.hpp"
 #include "items/containers/container.hpp"
+#include "items/tile.hpp"
 #include "lib/logging/in_memory_logger.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
@@ -131,4 +132,22 @@ TEST_F(WorldRuntimeItemsTest, BaseFingerprintIgnoresInternalOwnershipMetadata) {
 	world_runtime::mark(item, "library", "library.book");
 	const auto after = world_runtime::snapshot(item, instances);
 	EXPECT_EQ(world_layers::selectorFingerprint({ before }), world_layers::selectorFingerprint({ after }));
+}
+
+TEST_F(WorldRuntimeItemsTest, OccurrencesUseAuthoredOrderInsteadOfGameplayOrder) {
+	const auto firstDown = makeItem();
+	const auto secondDown = makeItem();
+	const auto bottom = makeItem();
+	const auto upper = makeItem();
+	TileItemVector gameplay;
+	gameplay.push_back(secondDown);
+	gameplay.push_back(firstDown);
+	gameplay.increaseDownItemCount();
+	gameplay.increaseDownItemCount();
+	gameplay.push_back(bottom);
+	gameplay.push_back(upper);
+	const auto authored = world_runtime::mapOrderedItems(gameplay);
+	EXPECT_EQ(authored, (std::vector<std::shared_ptr<Item>> { bottom, upper, firstDown, secondDown }));
+	EXPECT_EQ(gameplay.getTopDownItem(), secondDown);
+	EXPECT_EQ(gameplay.getTopTopItem(), upper);
 }

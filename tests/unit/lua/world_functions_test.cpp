@@ -24,7 +24,10 @@ protected:
 		DI::setTestContainer(previous);
 	}
 	void run(const char* source) {
-		ASSERT_EQ(luaL_dostring(L, source), LUA_OK) << lua_tostring(L, -1);
+		ASSERT_TRUE(Lua::reserveScriptEnv());
+		const auto result = luaL_dostring(L, source);
+		Lua::resetScriptEnv();
+		ASSERT_EQ(result, LUA_OK) << lua_tostring(L, -1);
 	}
 	di::extension::injector<> injector;
 	di::extension::injector<>* previous = nullptr;

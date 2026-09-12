@@ -172,6 +172,7 @@ function loadLuaMapBookDocument(tablename)
 					-- Check if the item need to be in a container
 					if container then
 						if not allowLegacyWorld(source, index, "item", "creation", nil, value.position, value.itemId) then
+							allowLegacyWorld(source, index, "item", "attributes.text", nil, value.position, value.itemId)
 							goto continue
 						end
 						-- Create the item inside the container
@@ -182,6 +183,7 @@ function loadLuaMapBookDocument(tablename)
 						-- Create the item at map position if dont was found
 						if not item then
 							if not allowLegacyWorld(source, index, "item", "creation", nil, value.position, value.itemId) then
+								allowLegacyWorld(source, index, "item", "attributes.text", nil, value.position, value.itemId)
 								goto continue
 							end
 							item = Game.createItem(value.itemId, 1, value.position)

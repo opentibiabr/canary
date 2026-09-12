@@ -1170,6 +1170,11 @@ bool WorldLayerRuntime::allowLegacy(const WorldLegacyWrite &write, const std::sh
 		// the old loader requires an explicit migration reversal.
 		return false;
 	}
+	if (!target && write.responsibility.starts_with("attributes.") && state->legacyOwners.contains(LegacyKey { file, write.table, write.key, write.occurrence, "creation" })) {
+		state->failed = true;
+		g_logger().error("World owns creation of {} {}[{}] occurrence {}, but legacy still owns {}. Migrate this dependent write before startup", file.generic_string(), write.table, write.key, write.occurrence, write.responsibility);
+		return false;
+	}
 	std::string claimed;
 	if (target) {
 		if (state->applied) {

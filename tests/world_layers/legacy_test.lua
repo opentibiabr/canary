@@ -118,4 +118,35 @@ for _, mode in ipairs({ "legacy", "world", "mixed" }) do
 	assert((loaded[DATA_DIRECTORY .. "/startup/tables/storage_keys_update.lua"] == true) == (mode == "world"))
 end
 dofile = executeFile
+
+-- Suppressed creation still checks ownership of writes requiring that item.
+-- Otherwise a partial migration could silently discard the book's text.
+BookDocumentTable = {
+	{ itemId = 2828, containerId = 2435, position = { x = 1, y = 1, z = 7 }, text = "Contained" },
+	{ itemId = 2828, position = { x = 2, y = 1, z = 7 }, text = "On tile" },
+}
+local responsibilities = {}
+logger.debug = function() end
+Tile = function()
+	return {
+		getItemById = function(_, id)
+			if id == 2435 then
+				return {
+					addItem = function()
+						error("owned creation must not run")
+					end,
+				}
+			end
+		end,
+	}
+end
+Game.canApplyLegacyWorld = function(_, name, key, occurrence, responsibility)
+	assert(name == "BookDocumentTable" and occurrence == "item")
+	responsibilities[key .. ":" .. responsibility] = true
+	return false
+end
+loadLuaMapBookDocument(BookDocumentTable)
+for _, key in ipairs({ "1", "2" }) do
+	assert(responsibilities[key .. ":creation"] and responsibilities[key .. ":attributes.text"])
+end
 print("World legacy activation, fallback and occurrence routing passed")

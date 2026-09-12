@@ -321,7 +321,7 @@
     },
     "startup/others/functions.lua": {
       "kind": "compatibility",
-      "afterSha256": "152f8eb675bea89a0511623674626a7f0d671d8fb19c581ae54f240590606f5b"
+      "afterSha256": "c546c11ffc628f5ce7ef02b6f2cae82923a3a8f01cd14d6b7402dfd33ce82b85"
     },
     "scripts/globalevents/others/map_attributes_loader.lua": {
       "kind": "compatibility",

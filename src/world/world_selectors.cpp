@@ -310,7 +310,7 @@ namespace world_layers {
 		std::map<TileKey, const ResolvedObject*> portals;
 		for (const auto &entry : staged.objects) {
 			const auto* object = project.find(entry.id);
-			if (!object || object->kind != ObjectKind::Item || !object->container.empty() || !map.nativeTeleport(object->itemId)) {
+			if (!object || object->kind != ObjectKind::Item || !object->container.empty() || !object->teleport || !map.nativeTeleport(object->itemId)) {
 				continue;
 			}
 			if (!portals.emplace(tileKey(entry.position), &entry).second) {

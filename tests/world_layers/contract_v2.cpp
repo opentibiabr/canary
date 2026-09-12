@@ -63,6 +63,7 @@ namespace {
 	};
 	const char* layerSource = R"json({"schemaVersion":2,"id":"authoring-example","name":"Biblioteca — São João","objects":[
 		{"id":"example.sign","kind":"item","source":{"mode":"map","selector":{"position":{"x":100,"y":100,"z":7},"part":"item","itemId":2012}},"attributes":{"text":"Entrada da biblioteca.\nRespeite os visitantes.","aid":0}},
+		{"id":"example.attribute_only_portal","kind":"item","source":{"mode":"map","selector":{"position":{"x":108,"y":108,"z":7},"part":"item","itemId":1949}},"attributes":{"aid":4914}},
 		{"id":"example.arrival","kind":"anchor","position":{"x":110,"y":110,"z":7}},
 		{"id":"example.portal","kind":"item","source":{"mode":"create","itemId":1949,"count":1,"placement":{"position":{"x":102,"y":100,"z":7}}},"lifecycle":"fixture","attributes":{"uid":45001},"components":[{"type":"teleport","destination":{"object":"example.arrival","offset":{"x":0,"y":-1,"z":0}}}]},
 		{"id":"example.door","kind":"item","source":{"mode":"map","selector":{"position":{"x":104,"y":102,"z":7},"part":"item","itemId":1662}},"attributes":{"aid":12107}},
@@ -114,10 +115,12 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	bookcase.children.push_back({ 5, 2828 });
 	map.tiles[{ 100, 104, 7 }].items.push_back(bookcase);
 	map.tiles[{ 104, 100, 7 }].items.push_back({ 6, 1949, 0, true, {} });
+	map.tiles[{ 108, 108, 7 }].items.push_back({ 8, 1949, 0, true, { 108, 109, 7 } });
+	map.tiles[{ 108, 109, 7 }].blocked = true;
 	ApplicationPlan plan;
 	const auto check = [&] { diagnostics.clear(); return validateMap(project, map, plan, diagnostics); };
-	require(check(), diagnostics.empty() ? "resolve complete example" : diagnostics.front().describe());
-	require(plan.objects.size() == 9 && plan.originals.size() == 1 && plan.originals.contains(6), "bindings are not suppressed originals; replacements are");
+	require(check(), diagnostics.empty() ? "attribute-only native teleport preserves its base-map behavior" : diagnostics.front().describe());
+	require(plan.objects.size() == 10 && plan.originals.size() == 1 && plan.originals.contains(6), "bindings are not suppressed originals; replacements are");
 	require(plan.objects[0].original == 1, "bind exact original");
 	map.tiles[{ 100, 100, 7 }].ground = false;
 	require(check(), "existing wall items can be configured on a tile without ground");

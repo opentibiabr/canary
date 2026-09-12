@@ -1,11 +1,12 @@
 from __future__ import annotations
 
+import io
 import tempfile
 import unittest
-from contextlib import chdir
+from contextlib import chdir, redirect_stderr, redirect_stdout
 from pathlib import Path
 
-from tools.world_migrate.cli import _workspace_path
+from tools.world_migrate.cli import _workspace_path, main
 from tools.world_migrate.inventory import analyze, loader_files, within
 
 
@@ -68,6 +69,14 @@ class MigrationInventoryTests(unittest.TestCase):
 			self.assertEqual(Path(_workspace_path("artifacts/report.json")), self.root / "artifacts/report.json")
 			with self.assertRaisesRegex(ValueError, "leaves its root"):
 				_workspace_path("../report.json")
+
+	def test_cli_rejects_a_report_outside_the_repository(self):
+		outside = self.root.parent / f"{self.root.name}-outside-report.json"
+		self.addCleanup(outside.unlink, missing_ok=True)
+		with chdir(self.root), redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+			result = main(["analyze", "--datapack", "data-example", "--all", "--report", f"../{outside.name}"])
+		self.assertEqual(result, 2)
+		self.assertFalse(outside.exists())
 
 	def test_publication_backups_and_drafts_are_not_live_consumers(self):
 		before = analyze(self.root, "data-example")

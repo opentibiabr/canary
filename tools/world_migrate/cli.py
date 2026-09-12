@@ -4,12 +4,22 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 
 from .inventory import analyze
-from .inventory import within
 from .bundle import apply_bundle, revert_bundle, validate_bundle
+
+
+def _workspace_path(root: Path, value: str | Path) -> Path:
+	base = os.path.realpath(root)
+	path = os.path.realpath(root / value)
+	comparison_base = os.path.normcase(base)
+	comparison_path = os.path.normcase(path)
+	if comparison_path != comparison_base and not comparison_path.startswith(comparison_base + os.sep):
+		raise ValueError(f"path leaves its root: {value}")
+	return Path(path)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -43,20 +53,20 @@ def main(argv: list[str] | None = None) -> int:
 		if args.command != "analyze":
 			if args.command == "generate":
 				from .convert import generate
-				result = generate(root, within(root, args.report), within(root, args.output), args.world_tool, within(root, args.project) if args.project else None, args.map, within(root, args.resolutions) if args.resolutions else None)
+				result = generate(root, _workspace_path(root, args.report), _workspace_path(root, args.output), args.world_tool, _workspace_path(root, args.project) if args.project else None, args.map, _workspace_path(root, args.resolutions) if args.resolutions else None)
 			elif args.command == "validate":
-				result = validate_bundle(root, within(root, args.bundle), args.world_tool, args.map)
+				result = validate_bundle(root, _workspace_path(root, args.bundle), args.world_tool, args.map)
 			elif args.command == "apply":
-				result = apply_bundle(root, within(root, args.bundle), args.world_tool, offline=args.confirm_offline, map_override=args.map)
+				result = apply_bundle(root, _workspace_path(root, args.bundle), args.world_tool, offline=args.confirm_offline, map_override=args.map)
 			else:
-				result = revert_bundle(root, within(root, args.receipt), args.world_tool, offline=args.confirm_offline, map_override=args.map)
+				result = revert_bundle(root, _workspace_path(root, args.receipt), args.world_tool, offline=args.confirm_offline, map_override=args.map)
 			print(json.dumps(result, ensure_ascii=False, indent=2))
 			return 1 if result.get("pending") else 0
 		if args.all and (args.file or args.table or args.entry):
 			parser.error("--all cannot be combined with selectors")
 		report = analyze(root, args.datapack, selected_file=args.file, selected_table=args.table, entries=args.entry)
 		if args.report:
-			report_path = within(root, args.report)
+			report_path = _workspace_path(root, args.report)
 			report_path.parent.mkdir(parents=True, exist_ok=True)
 			# A report is an explicit output, not an activation or source edit.
 			report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2, allow_nan=False) + "\n", encoding="utf-8", newline="\n")

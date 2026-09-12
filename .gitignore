@@ -401,6 +401,7 @@ sftp-config.json
 # Binaries
 canary
 canary.old
+/backups/executables/
 
 # VCPKG
 .tools/

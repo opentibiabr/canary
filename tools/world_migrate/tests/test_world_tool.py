@@ -76,6 +76,7 @@ class NativeWorldToolTests(NativeWorldToolFixture):
 		self.assertEqual(items[1]["attributes"]["aid"],12107)
 		self.assertEqual(items[2]["children"][0]["attributes"]["uid"],45000)
 		self.assertEqual(data["uniqueIds"][0]["uid"],45000)
+		self.assertEqual(data["uniqueIds"][0]["position"], {"x": 100, "y": 100, "z": 7})
 		self.assertEqual(data["tiles"][0]["legacy"]["topDown"], items[2]["key"])
 		self.assertEqual(items[1]["selector"], {"itemId": 200, "part": "item", "position": {"x": 100, "y": 100, "z": 7}})
 		self.assertEqual(items[2]["children"][0]["selector"], {"itemId": 400})

@@ -301,7 +301,7 @@ namespace world_layers {
 			}
 			const auto identity = "base item " + std::to_string(occurrence.key);
 			if (occurrence.uid && !effective.emplace(occurrence.uid, identity).second) {
-				fail("", "/attributes/uid", "Duplicate effective UID " + std::to_string(occurrence.uid));
+				fail("", "/attributes/uid", "Duplicate effective UID " + std::to_string(occurrence.uid) + " at " + std::to_string(occurrence.position.x) + "," + std::to_string(occurrence.position.y) + "," + std::to_string(occurrence.position.z) + "; already used by " + effective.at(occurrence.uid));
 			}
 		}
 

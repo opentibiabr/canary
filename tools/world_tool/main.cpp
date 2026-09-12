@@ -269,7 +269,7 @@ int main(int argc, char** argv) {
 			output["tiles"] = Value { tiles };
 			Value::List uids;
 			for (const auto &entry : snapshot.uniqueIds({})) {
-				uids.push_back(Value { Value::Record { { "uid", Value { int64_t(entry.uid) } }, { "key", Value { int64_t(entry.key) } } } });
+				uids.push_back(Value { Value::Record { { "uid", Value { int64_t(entry.uid) } }, { "key", Value { int64_t(entry.key) } }, { "position", Value { Value::Record { { "x", Value { int64_t(entry.position.x) } }, { "y", Value { int64_t(entry.position.y) } }, { "z", Value { int64_t(entry.position.z) } } } } } } });
 			}
 			output["uniqueIds"] = Value { uids };
 		}

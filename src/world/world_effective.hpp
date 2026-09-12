@@ -7,18 +7,18 @@
 namespace world_layers {
 
 	enum class EffectiveMode { Legacy,
-	                           World,
-	                           Mixed };
+		                       World,
+		                       Mixed };
 	enum class EffectiveConfidence { Proven,
-	                                 Predicted,
-	                                 Unknown };
+		                             Predicted,
+		                             Unknown };
 	enum class EffectiveOwner { BaseMap,
-	                            Legacy,
-	                            World,
-	                            SuspendedWorld,
-	                            Unknown };
+		                        Legacy,
+		                        World,
+		                        SuspendedWorld,
+		                        Unknown };
 	enum class IdentifierProperty { Aid,
-	                                Uid };
+		                            Uid };
 
 	struct LegacyIdentifierWrite {
 		uint64_t itemKey = 0;

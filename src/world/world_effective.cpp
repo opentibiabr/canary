@@ -19,20 +19,28 @@ namespace world_layers {
 
 		const char* confidenceName(EffectiveConfidence value) {
 			switch (value) {
-				case EffectiveConfidence::Proven: return "proven";
-				case EffectiveConfidence::Predicted: return "predicted";
-				case EffectiveConfidence::Unknown: return "unknown";
+				case EffectiveConfidence::Proven:
+					return "proven";
+				case EffectiveConfidence::Predicted:
+					return "predicted";
+				case EffectiveConfidence::Unknown:
+					return "unknown";
 			}
 			return "unknown";
 		}
 
 		const char* ownerName(EffectiveOwner value) {
 			switch (value) {
-				case EffectiveOwner::BaseMap: return "otbm";
-				case EffectiveOwner::Legacy: return "legacy";
-				case EffectiveOwner::World: return "world";
-				case EffectiveOwner::SuspendedWorld: return "suspendedWorld";
-				case EffectiveOwner::Unknown: return "unknown";
+				case EffectiveOwner::BaseMap:
+					return "otbm";
+				case EffectiveOwner::Legacy:
+					return "legacy";
+				case EffectiveOwner::World:
+					return "world";
+				case EffectiveOwner::SuspendedWorld:
+					return "suspendedWorld";
+				case EffectiveOwner::Unknown:
+					return "unknown";
 			}
 			return "unknown";
 		}
@@ -310,7 +318,8 @@ namespace world_layers {
 			};
 			instances.push_back(Value { record });
 		}
-		const char* mode = model.mode == EffectiveMode::Legacy ? "legacy" : model.mode == EffectiveMode::World ? "world" : "mixed";
+		const char* mode = model.mode == EffectiveMode::Legacy ? "legacy" : model.mode == EffectiveMode::World ? "world"
+																											   : "mixed";
 		return Value { Value::Record {
 			{ "mode", Value { std::string(mode) } },
 			{ "uidComplete", Value { model.uidComplete } },

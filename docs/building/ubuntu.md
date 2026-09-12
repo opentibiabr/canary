@@ -3,6 +3,7 @@
 ## Supported OS
 
 - Ubuntu 24.04
+- Ubuntu 26.04
 
 ## 1. Install the required software
 

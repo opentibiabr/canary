@@ -3,6 +3,7 @@
 ## Supported OS
 
 - Windows 11 + WSL2 with Ubuntu 24.04
+- Windows 11 + WSL2 with Ubuntu 26.04
 
 ## 1. Install the required software
 

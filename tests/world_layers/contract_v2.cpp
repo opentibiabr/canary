@@ -119,6 +119,12 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	require(check(), diagnostics.empty() ? "resolve complete example" : diagnostics.front().describe());
 	require(plan.objects.size() == 9 && plan.originals.size() == 1 && plan.originals.contains(6), "bindings are not suppressed originals; replacements are");
 	require(plan.objects[0].original == 1, "bind exact original");
+	map.tiles[{ 100, 100, 7 }].ground = false;
+	require(check(), "existing wall items can be configured on a tile without ground");
+	map.tiles[{ 100, 100, 7 }].ground = true;
+	map.tiles[{ 102, 100, 7 }].ground = false;
+	require(!check(), "external item placement still requires ground");
+	map.tiles[{ 102, 100, 7 }].ground = true;
 	project.find("example.external_book")->position = { 0, 0, 0 };
 	require(check(), "container position comes from its declared parent");
 	project.find("example.external_book")->uid = 45003;

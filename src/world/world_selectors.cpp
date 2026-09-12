@@ -237,8 +237,8 @@ namespace world_layers {
 					}
 				} else {
 					const auto &placement = tile(entry.position);
-					if (!placement.exists || !placement.ground) {
-						fail(id, "/source/placement", "Expected an existing tile with ground");
+					if (!placement.exists || (object->mode != SourceMode::Map && !placement.ground)) {
+						fail(id, "/source/placement", "Expected an existing tile; external placement also requires ground");
 					}
 				}
 				if (object->teleport) {

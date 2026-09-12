@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.world_migrate.inventory import analyze, loader_files
+from tools.world_migrate.inventory import analyze, loader_files, within
 
 
 class MigrationInventoryTests(unittest.TestCase):
@@ -57,6 +57,11 @@ class MigrationInventoryTests(unittest.TestCase):
 		self.write("startup/tables/load.lua", 'dofile(DATA_DIRECTORY .. "/../../outside.lua")')
 		with self.assertRaisesRegex(ValueError, "leaves its root"):
 			loader_files(self.pack)
+
+	def test_cli_paths_are_canonicalized_inside_the_repository(self):
+		self.assertEqual(within(self.root, "artifacts/report.json"), self.root / "artifacts/report.json")
+		with self.assertRaisesRegex(ValueError, "leaves its root"):
+			within(self.root, "../report.json")
 
 	def test_publication_backups_and_drafts_are_not_live_consumers(self):
 		before = analyze(self.root, "data-example")

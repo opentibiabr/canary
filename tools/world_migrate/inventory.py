@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -44,10 +45,13 @@ def canonical(value: Any) -> str:
 
 
 def within(root: Path, value: str | Path) -> Path:
-	path = (root / value).resolve()
-	if not path.is_relative_to(root.resolve()):
+	base = os.path.realpath(root)
+	path = os.path.realpath(root / value)
+	comparison_base = os.path.normcase(base)
+	comparison_path = os.path.normcase(path)
+	if comparison_path != comparison_base and not comparison_path.startswith(comparison_base + os.sep):
 		raise ValueError(f"path leaves its root: {value}")
-	return path
+	return Path(path)
 
 
 def loader_files(datapack: Path) -> tuple[list[Path], list[dict]]:

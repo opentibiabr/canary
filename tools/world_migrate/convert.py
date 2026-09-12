@@ -11,6 +11,7 @@ from pathlib import Path
 from .bundle import create_bundle, digest, json_bytes, native, read_json, sha, write_new
 from .inventory import ACTION_TABLES, UNIQUE_TABLES, canonical, within
 from .gameplay import REWARD_FIELDS, adapt_consumers, behavior_files, consumer_constants, reward_parameters
+from .resolutions import Resolutions
 
 
 def relative(path: Path, parent: Path) -> str:
@@ -35,21 +36,55 @@ def object_id(entry: dict, occurrence: str) -> str:
 	return f"legacy.{entry['table'].lower()}.{key}.{sha(identity.encode('utf-8'))[:12]}"
 
 
+def has_table_behavior(entry: dict) -> bool:
+	"""Match the registered ranges of the fingerprint-verified consumers."""
+	if entry["classification"] in {"inactive", "runtime-state", "needs-analysis"} or entry["table"] not in {"ChestUnique", "TeleportUnique", "TeleportItemUnique", "TileUnique"}:
+		return False
+	table, key, value = entry["table"], int(entry["key"]), entry["value"]
+	if table == "ChestUnique":
+		return "reward" in value and (5000 <= key <= 9000 or 10000 <= key <= 12000 or key == 14092)
+	return (
+		table == "TeleportUnique" and 38001 <= key <= 40000 and "destination" in value
+		or table == "TeleportItemUnique" and 15001 <= key <= 20000 and "destination" in value
+		or table == "TileUnique" and 29001 <= key <= 30000 and "targetPos" in value
+	)
+
+
 class Converter:
-	def __init__(self, root: Path, pack: Path, catalog_file: Path, catalog: dict, layers: dict[str, dict], inspected: dict, migration: dict):
+	def __init__(self, root: Path, pack: Path, catalog_file: Path, catalog: dict, layers: dict[str, dict], inspected: dict, migration: dict, resolutions: Resolutions):
 		self.root, self.pack, self.catalog_file = root, pack, catalog_file
 		self.catalog, self.layers, self.migration = catalog, layers, migration
 		self.tiles = {canonical(tile["position"]): tile for tile in inspected["tiles"]}
+		self.unique_ids = inspected.get("uniqueIds", [])
+		self.items, self.parents = {}, {}
+		def index(items: list[dict], parent: dict | None = None) -> None:
+			for item in items:
+				self.items[item["key"]] = item
+				if parent is not None:
+					self.parents[item["key"]] = parent
+				index(item.get("children", []), item)
+		for tile in inspected["tiles"]:
+			index(tile["items"])
 		self.pending, self.outcomes = [], []
 		self.by_original: dict[int, dict] = {}
+		self.attribute_sources: dict[tuple[int, str], tuple[dict, str]] = {}
+		self.resolutions = resolutions
 		self.behavior_ids: set[str] = set()
+		self.configurations: dict[int, dict] = {}
 		self.consumer_constants = consumer_constants(pack)
 		self.existing = {obj["id"]: obj for layer in layers.values() for obj in layer["objects"]}
 
-	def behavior(self, entry: dict, obj: dict) -> list[str]:
+	def behavior(self, entry: dict, obj: dict, special: dict | None = None) -> list[str]:
 		table, value = entry["table"], entry["value"]
 		binding = None
-		if table == "ChestUnique" and "reward" in value:
+		if special is not None:
+			binding = copy.deepcopy(special)
+			for name, position in binding.pop("positions", {}).items():
+				anchor = self.anchor(entry, name, position)
+				binding.setdefault("relations", {})[name] = {"object": anchor["id"]}
+		elif not has_table_behavior(entry):
+			return []
+		elif table == "ChestUnique":
 			binding = {"id": "quest.reward", "contractVersion": 1, "events": ["onUse"], "parameters": reward_parameters(value, entry["key"], self.consumer_constants)}
 		elif table in {"TeleportUnique", "TeleportItemUnique", "TileUnique"}:
 			mechanism = table == "TileUnique"
@@ -57,14 +92,25 @@ class Converter:
 			if position is None:
 				return []
 			name = "target" if mechanism else "destination"
-			anchor = {"id": object_id(entry, name), "kind": "anchor", "position": position}
-			self.layer(entry)["objects"].append(anchor)
+			anchor = self.anchor(entry, name, position)
 			binding = {"id": "world.tile_mechanism" if mechanism else "world.player_teleport", "contractVersion": 1, "events": ["onStepIn", "onStepOut"] if mechanism else ["onUse" if table == "TeleportItemUnique" else "onStepIn"], "parameters": {"targetItem": value["targetItem"]} if mechanism else {"effect": value["effect"]}, "relations": {name: {"object": anchor["id"]}}}
 		if binding is None:
 			return []
 		self.behavior_ids.add(binding["id"])
 		obj.setdefault("behaviors", []).append(binding)
 		return binding["events"]
+
+	def anchor(self, entry: dict, name: str, position: dict) -> dict:
+		identity = object_id(entry, name)
+		objects = self.layer(entry)["objects"]
+		for obj in objects:
+			if obj["id"] == identity:
+				if obj.get("position") != position or obj["kind"] != "anchor":
+					raise ValueError("Conflicting positions for one migrated relation")
+				return obj
+		anchor = {"id": identity, "kind": "anchor", "position": position}
+		objects.append(anchor)
+		return anchor
 
 	def item(self, position: dict, item_id: int | None = None, role: str = "item") -> dict:
 		tile = self.tiles.get(canonical(position))
@@ -89,15 +135,51 @@ class Converter:
 			obj = self.by_original[item["key"]]
 			for name, value in attributes.items():
 				if name in obj.get("attributes", {}) and obj["attributes"][name] != value:
-					raise ValueError(f"Two declarations assign different {name} values to the same original; characterize their loader order")
-			obj.setdefault("attributes", {}).update(attributes)
+					previous = self.attribute_sources[(item["key"], name)][0]
+					if not self.resolutions.replace(previous, entry, name):
+						continue
+				obj.setdefault("attributes", {})[name] = value
+				self.attribute_sources[(item["key"], name)] = (entry, occurrence)
 		else:
-			obj = {"id": object_id(entry, occurrence), "kind": "item", "source": {"mode": "map", "selector": copy.deepcopy(item["selector"])}}
+			selector = copy.deepcopy(item["selector"])
+			if item["key"] in self.parents:
+				parent = self.bind(entry, occurrence + ".container", self.parents[item["key"]], {})
+				selector["container"] = parent["id"]
+			obj = {"id": object_id(entry, occurrence), "kind": "item", "source": {"mode": "map", "selector": selector}}
 			if attributes:
 				obj["attributes"] = attributes
 			self.by_original[item["key"]] = obj
 			self.layer(entry)["objects"].append(obj)
+			for name in attributes:
+				self.attribute_sources[(item["key"], name)] = (entry, occurrence)
 		return obj
+
+	def finish(self) -> None:
+		# A table also configures pre-existing UID consumers outside itemPos.
+		# Resolve the final effective UID before assigning any event: a later
+		# loader may have overwritten a reward's UID on its declared tile.
+		keys = list(dict.fromkeys([*self.by_original, *(item["key"] for item in self.unique_ids if item["uid"] in self.configurations)]))
+		for key in keys:
+			item = self.items[key]
+			obj = self.by_original.get(key)
+			uid = obj.get("attributes", {}).get("uid", item["attributes"]["uid"]) if obj else item["attributes"]["uid"]
+			writer = self.attribute_sources.get((key, "uid"))
+			decision = self.resolutions.world_identity(writer[0]) if writer else None
+			entry = writer[0] if decision else self.configurations.get(uid)
+			if entry is None:
+				continue
+			occurrence = writer[1] if writer and writer[0] == entry else "uid-consumer"
+			try:
+				obj = obj or self.bind(entry, occurrence, item, {})
+				events = self.behavior(entry, obj, decision.get("behavior") if decision else None)
+				if decision and not events:
+					raise ValueError("Removing a compatibility UID requires a characterized replacement behavior")
+				if events:
+					self.claim(entry, occurrence, obj, events)
+					if occurrence == "uid-consumer":
+						self.outcomes.append({"source": object_id(entry, "declaration"), "status": "implicit-consumer", "objects": [obj["id"]]})
+			except (ValueError, KeyError, TypeError) as error:
+				self.pending.append({"file": entry["file"], "table": entry["table"], "key": entry["key"], "line": entry["line"], "message": str(error)})
 
 	def claim(self, entry: dict, occurrence: str, obj: dict, responsibilities: list[str]) -> None:
 		file = self.pack / entry["file"]
@@ -206,6 +288,10 @@ class Converter:
 		if key is not None and not 0 <= key <= 65535:
 			raise ValueError("AID/UID is outside the supported range")
 		attributes = {"text": value["text"]} if table == "SignTable" else {"aid" if table in ACTION_TABLES else "uid": key}
+		if self.resolutions.world_identity(entry):
+			if table not in UNIQUE_TABLES:
+				raise ValueError("World identity replacement requires a UID declaration")
+			attributes["uid"] = 0
 		if table == "SignTable" and not isinstance(value["text"], str):
 			raise ValueError("Expected literal sign text")
 		targets = []
@@ -223,21 +309,21 @@ class Converter:
 						raise ValueError("The legacy sign loader only applies text when exactly one item exists")
 				occurrence = f"{i}.{role}" if table in ACTION_TABLES else "item"
 				targets.append((occurrence, item))
-		# Validate the full declaration before changing the output model.
+		# Validate every competing assignment before changing the output model.
 		for occurrence, item in targets:
 			existing = self.by_original.get(item["key"], {}).get("attributes", {})
-			if any(name in existing and existing[name] != value for name, value in attributes.items()):
-				raise ValueError("Conflicting attributes on the same base item require explicit characterization")
+			for name, value in attributes.items():
+				if name in existing and existing[name] != value:
+					self.resolutions.replace(self.attribute_sources[(item["key"], name)][0], entry, name)
 		ids = []
 		for occurrence, item in targets:
 			obj = self.bind(entry, occurrence, item, copy.deepcopy(attributes))
-			events = self.behavior(entry, obj)
-			self.claim(entry, occurrence, obj, [f"attributes.{name}" for name in attributes] + events)
+			self.claim(entry, occurrence, obj, [f"attributes.{name}" for name in attributes])
 			ids.append(obj["id"])
 		self.outcomes.append({"source": object_id(entry, "declaration"), "status": "converted", "objects": ids})
 
 
-def generate(root: Path, report_file: Path, output: Path, executable: str | Path | None, project_file: Path | None = None, map_override: Path | None = None) -> dict:
+def generate(root: Path, report_file: Path, output: Path, executable: str | Path | None, project_file: Path | None = None, map_override: Path | None = None, resolutions_file: Path | None = None) -> dict:
 	root = root.resolve()
 	report = read_json(report_file)
 	if report.get("schemaVersion") != 1 or report.get("toolVersion") != "2.0.0":
@@ -280,6 +366,8 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	map_revision = digest(map_file)
 	if map_revision is None:
 		raise ValueError("The map is missing; supply --map with the matching OTBM")
+	resolutions = Resolutions(root, report, map_revision, sources, resolutions_file)
+	resolved_entries = [resolutions.entry(entry) for entry in selected]
 	items = within(root, project_file.parent / catalog["items"])
 	item_sources = [{"file": path.relative_to(root).as_posix(), "sha256": digest(path)} for path in (items, items.with_name("appearances.dat"))]
 	requested = {canonical(position): position for entry in selected for position in positions(entry.get("value"))}
@@ -287,6 +375,13 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 		positions_file = Path(temporary) / "positions.json"
 		write_new(positions_file, json_bytes(list(requested.values())))
 		inspected = native(executable, "inspect", "--map", map_file, "--items", items, "--positions", positions_file)
+		configured_uids = {int(entry["key"]) for entry in resolved_entries if has_table_behavior(entry) and not entry["value"].get("worldObject")}
+		implicit_positions = {canonical(item["position"]): item["position"] for item in inspected["uniqueIds"] if item["uid"] in configured_uids and canonical(item["position"]) not in requested}
+		if implicit_positions:
+			implicit_file = Path(temporary) / "implicit-positions.json"
+			write_new(implicit_file, json_bytes(list(implicit_positions.values())))
+			implicit = native(executable, "inspect", "--map", map_file, "--items", items, "--positions", implicit_file)
+			inspected["tiles"].extend(implicit["tiles"])
 	if digest(map_file) != map_revision:
 		raise ValueError("The OTBM changed while inspecting it")
 	migration = {"schemaVersion": 2, "id": migration_id, "receipt": f"{migration_id}.receipt.json", "sources": [], "claims": []}
@@ -295,16 +390,19 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 		# Runtime provenance uses normalized Lua source, while filesystem guards
 		# deliberately retain exact bytes (including the original line endings).
 		migration["sources"].append({"file": relative(path, migration_file.parent), "sha256": sha(path.read_text(encoding="utf-8").encode("utf-8"))})
-	converter = Converter(root, pack, project_file, catalog, layers, inspected, migration)
+	converter = Converter(root, pack, project_file, catalog, layers, inspected, migration, resolutions)
 	# loadMapAttributes applies texts/books before attribute tables, and the
 	# creation table last. In particular, creation must not duplicate a book
 	# which the preceding loader already supplied at the same tile.
-	order = {"SignTable": 0, "BookDocumentTable": 1, "CreateItemOnMap": 3}
-	for entry in sorted(selected, key=lambda entry: order.get(entry["table"], 2)):
+	order = {name: index for index, name in enumerate(("SignTable", "BookDocumentTable", "ChestAction", "ChestUnique", "CorpseAction", "CorpseUnique", "KeyDoorAction", "LevelDoorAction", "QuestDoorAction", "QuestDoorUnique", "ItemAction", "ItemUnique", "ItemUnmovableAction", "LeverAction", "LeverUnique", "TeleportAction", "TeleportUnique", "TeleportItemAction", "TeleportItemUnique", "TileAction", "TileUnique", "TilePickAction", "CreateItemOnMap"))}
+	for entry in sorted(resolved_entries, key=lambda entry: order.get(entry["table"], 100)):
 		try:
 			converter.declaration(entry)
+			if has_table_behavior(entry) and not entry["value"].get("worldObject"):
+				converter.configurations[int(entry["key"])] = entry
 		except (ValueError, KeyError, TypeError) as error:
 			converter.pending.append({"file": entry["file"], "table": entry["table"], "key": entry["key"], "line": entry["line"], "message": str(error)})
+	converter.finish()
 	catalog.setdefault("migrations", []).append(relative(migration_file, project_file.parent))
 	selected_tables = {entry["table"] for entry in selected}
 	consumers, patches = adapt_consumers(root, pack, report["consumers"], selected_tables)
@@ -314,4 +412,4 @@ def generate(root: Path, report_file: Path, output: Path, executable: str | Path
 	outputs[project_file.relative_to(root).as_posix()] = json_bytes(catalog)
 	outputs[migration_file.relative_to(root).as_posix()] = json_bytes(migration)
 	metadata = {"id": migration_id, "datapack": report["datapack"], "catalog": project_file.relative_to(root).as_posix(), "map": {"file": logical_map.relative_to(root).as_posix(), "sha256": map_revision}, "items": {"file": items.relative_to(root).as_posix(), "sources": item_sources}, "pending": converter.pending, "consumers": consumers, "receipt": migration_file.with_suffix(".receipt.json").relative_to(root).as_posix()}
-	return create_bundle(root, output, metadata, outputs, sources, dict(report, outcomes=converter.outcomes))
+	return create_bundle(root, output, metadata, outputs, sources, dict(report, outcomes=converter.outcomes, resolutionEvidence=resolutions.used))

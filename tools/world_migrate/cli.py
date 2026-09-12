@@ -29,6 +29,7 @@ def main(argv: list[str] | None = None) -> int:
 			command.add_argument("--report", type=Path, required=True)
 			command.add_argument("--output", type=Path, required=True)
 			command.add_argument("--project", type=Path, help="catalog to extend; defaults to the datapack's sole catalog")
+			command.add_argument("--resolutions", type=Path, help="explicit reviewed decisions for matching source and OTBM revisions")
 		elif name == "revert":
 			command.add_argument("--receipt", type=Path, required=True)
 		else:
@@ -40,7 +41,7 @@ def main(argv: list[str] | None = None) -> int:
 		if args.command != "analyze":
 			if args.command == "generate":
 				from .convert import generate
-				result = generate(Path.cwd(), args.report, args.output, args.world_tool, args.project, args.map)
+				result = generate(Path.cwd(), args.report, args.output, args.world_tool, args.project, args.map, args.resolutions)
 			elif args.command == "validate":
 				result = validate_bundle(Path.cwd(), args.bundle, args.world_tool, args.map)
 			elif args.command == "apply":

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import struct
 from pathlib import Path
 
 from tools.world_migrate.bundle import apply_bundle, read_json, revert_bundle, validate_bundle, write_new, json_bytes, sha
@@ -139,6 +140,54 @@ class MigrationBundleTests(NativeWorldToolFixture):
 		self.generated()
 		with self.assertRaisesRegex(ValueError, "unresolved Lua consumers"):
 			validate_bundle(self.root, self.directory, self.exe)
+
+	def reward_with_base_uid(self):
+		# The existing UID consumer is a book inside a container, not itemPos.
+		self.map = self.map.replace(struct.pack("<H", 45000), struct.pack("<H", 5000))
+		(self.world / "example.otbm").write_bytes(self.map)
+		self.source.write_bytes(b'ChestUnique = {[5000]={itemId=200,itemPos={x=100,y=100,z=7},storage=60001,reward={{400,1}}}}\n')
+		consumer = "scripts/actions/system/quest_reward_common.lua"
+		root = Path(__file__).resolve().parents[3]
+		write_new(self.pack / consumer, (root / "data-otservbr-global" / consumer).read_bytes())
+		self.report.write_bytes(json_bytes(analyze(self.root, "data-example")))
+		entry = read_json(self.report)["declarations"][0]
+		return {key: entry[key] for key in ("file", "table", "key", "occurrence", "fingerprint")}
+
+	def test_uid_collision_requires_review_and_preserves_implicit_nested_reward_consumer(self):
+		identity = self.reward_with_base_uid()
+		generate(self.root, self.report, self.root / "unresolved", self.exe)
+		with self.assertRaisesRegex(ValueError, "UID"):
+			validate_bundle(self.root, self.root / "unresolved", self.exe)
+		resolution = self.root / "decisions.json"
+		write_new(resolution, json_bytes({"schemaVersion": 1, "datapack": "data-example", "mapSha256": sha(self.map), "decisions": [dict(identity, action="world-identity", reason="Keep the original UID and use instance dispatch on the configured item.")], "conflicts": []}))
+		result = generate(self.root, self.report, self.directory, self.exe, resolutions_file=resolution)
+		self.assertEqual(result["pending"], 0)
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
+		objects = read_json(self.directory / "after/data-example/world/systems/item.layer.json")["objects"]
+		main, parent, child = objects
+		self.assertEqual(main["attributes"], {"uid": 0})
+		self.assertEqual(parent["source"]["selector"]["itemId"], 300)
+		self.assertEqual(child["source"]["selector"], {"container": parent["id"], "itemId": 400})
+		self.assertNotIn("attributes", child)
+		self.assertEqual(main["behaviors"], child["behaviors"])
+		self.assertEqual(child["behaviors"][0]["parameters"]["emptyItemId"], 200)
+		self.assertEqual((self.world / "example.otbm").read_bytes(), self.map)
+
+	def test_overwritten_uid_does_not_activate_the_earlier_reward_on_that_item(self):
+		first = self.reward_with_base_uid()
+		self.source.write_bytes(self.source.read_bytes() + b'CorpseUnique = {[6000]={itemId=200,itemPos={x=100,y=100,z=7}}}\n')
+		self.report.write_bytes(json_bytes(analyze(self.root, "data-example")))
+		entries = read_json(self.report)["declarations"]
+		second = {key: entries[1][key] for key in first}
+		resolution = self.root / "decisions.json"
+		write_new(resolution, json_bytes({"schemaVersion": 1, "datapack": "data-example", "mapSha256": sha(self.map), "decisions": [], "conflicts": [{"attribute": "uid", "sources": [first, second], "winner": second["fingerprint"], "reason": "The corpse loader runs after the chest loader."}]}))
+		result = generate(self.root, self.report, self.directory, self.exe, resolutions_file=resolution)
+		self.assertEqual(result["pending"], 0)
+		self.assertTrue(validate_bundle(self.root, self.directory, self.exe)["valid"])
+		objects = read_json(self.directory / "after/data-example/world/systems/item.layer.json")["objects"]
+		self.assertEqual(objects[0]["attributes"], {"uid": 6000})
+		self.assertNotIn("behaviors", objects[0])
+		self.assertEqual(objects[-1]["behaviors"][0]["id"], "quest.reward")
 
 	def test_bundle_snapshot_edits_and_missing_offline_confirmation_are_rejected(self):
 		self.generated()

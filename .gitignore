@@ -413,6 +413,14 @@ vcpkg_installed
 database_backup
 cache/lua-bytecode/
 
+# Local World publication history and per-installation migration receipts
+*.world.json.lock
+*.world.json.pending
+*.world.json.revision
+*.world.json.transactions/
+**/world/migrations/.recovery/
+**/world/migrations/*.receipt.json
+
 # CLION
 cmake-build-*
 compile_commands.json

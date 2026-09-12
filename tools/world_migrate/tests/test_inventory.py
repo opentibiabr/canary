@@ -58,6 +58,14 @@ class MigrationInventoryTests(unittest.TestCase):
 		with self.assertRaisesRegex(ValueError, "leaves its root"):
 			loader_files(self.pack)
 
+	def test_publication_backups_and_drafts_are_not_live_consumers(self):
+		before = analyze(self.root, "data-example")
+		for name in ("world/migrations/.recovery/old/source.lua", "world/test.world.json.transactions/old/script.lua", "world/draft/script-1.draft.lua"):
+			self.write(name, "return ItemAction[17]")
+		after = analyze(self.root, "data-example")
+		self.assertEqual(before["consumers"], after["consumers"])
+		self.assertEqual(before["sources"], after["sources"])
+
 
 if __name__ == "__main__":
 	unittest.main()

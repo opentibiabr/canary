@@ -26,13 +26,31 @@ and a bundle manifest. It does not activate the result. A failed or incomplete
 generation leaves its output available for inspection; choose a new directory
 when generating again. Existing files are never silently replaced at this step.
 
-The current converters cover AID/UID assignments, explicit false selectors, sign
-text, books in existing containers and item creation. Other recognized
-configuration families and unknown consumer variants
-remain localized pending entries until their adapters are available. Pending
+The converters cover AID/UID assignments, explicit false selectors, sign text,
+books in existing containers, item creation, teleports, tile mechanisms and quest
+rewards, including the consumer's reward text and achievements. Consumer patches
+apply only to recognized source revisions. Customized consumers remain pending;
+their filename alone does not authorize replacing them. Pending
 declarations or unresolved Lua consumers block application, even if the generated
 JSON is structurally valid. Repeated or shadowed Lua keys require explicit
 characterization; they are not merged or resurrected automatically.
+
+Repository-specific decisions are supplied explicitly with
+`--resolutions tools/world_migrate/resolutions/data-otservbr-global.json` during
+generation. This evidence is bound to the inspected map hash, declaration
+fingerprints and any characterized consumer dependencies. It documents inactive
+placeholders, shadowed entries, competing loader assignments and UID collisions.
+It is never selected automatically for another installation. LuaJIT traversal
+order was characterized for the competing assignments; Lua 5.4 iteration order
+is not assumed to be equivalent.
+
+The native UID census also finds existing OTBM items that consume table settings
+without appearing in `itemPos`. Those instances receive their own bindings,
+including children of containers. A reviewed collision may remove the newly
+configured target's compatibility UID only when an equivalent World behavior
+replaces its dispatch; the original UID remains unique. AID sharing never implies
+ownership of another object. Events follow the final UID assignment, so a reward
+overwritten by a later loader is not accidentally activated.
 
 Review `bundle.json`, `analysis.json` and `after/` before applying. The bundle's
 snapshots are immutable revision preconditions: editing them invalidates the

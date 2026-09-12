@@ -149,6 +149,8 @@ def classify(table: str, value: Any) -> tuple[str, str, list[str]]:
 		return "automatic", "selected item attributes", ["attributes.text"]
 	if table == "CreateItemOnMap":
 		return "known-adaptation", "reconciled external item", ["creation"]
+	if table in ACTION_TABLES and isinstance(value.get("itemPos"), dict) and set(value["itemPos"]) <= {"x", "y", "z"}:
+		return "inactive", "the action loader iterates an array; a coordinate record has no array entries", []
 	responsibilities = ["attributes.aid" if table in ACTION_TABLES else "attributes.uid"]
 	if table not in ACTION_TABLES | UNIQUE_TABLES:
 		return "needs-analysis", "unknown table loader", []
@@ -170,7 +172,15 @@ def classify(table: str, value: Any) -> tuple[str, str, list[str]]:
 def consumers(repository: Path, datapack: Path, definitions: set[Path], tables: set[str]) -> tuple[list[dict], dict[str, str], list[dict]]:
 	result, sources, issues = [], {}, []
 	roots = {repository / "data", datapack}
-	for path in sorted({path for root in roots if root.is_dir() for path in root.rglob("*.lua")}):
+	paths = set()
+	for root in roots:
+		if not root.is_dir():
+			continue
+		for directory, folders, files in root.walk():
+			# These are file-service snapshots, never executable datapack input.
+			folders[:] = [name for name in folders if name not in {".recovery", ".git", "__pycache__"} and not name.endswith(".world.json.transactions")]
+			paths.update(directory / name for name in files if name.endswith(".lua") and not name.endswith(".draft.lua"))
+	for path in sorted(paths):
 		if path in definitions:
 			continue
 		content = path.read_bytes()
@@ -236,7 +246,8 @@ def analyze(repository: Path, datapack_name: str, *, selected_file: str | None =
 					key = f"unresolved-at-{field.key.span.line}"
 				occurrences[key] += 1
 				selected = (selected_file is None or relative == selected_file) and (selected_table is None or table == selected_table) and (not entries or key in entries)
-				entry = {"file": relative, "table": table, "key": key, "occurrence": occurrences[key], "line": field.span.line, "column": field.span.column, "start": field.span.start, "end": field.span.end, "fingerprint": fingerprint(reader.source[field.span.start:field.span.end].encode("utf-8")), "selected": selected, "constants": sorted(symbols(field.value)), "issues": []}
+				declaration_source = reader.source[field.span.start:field.span.end].replace("\r\n", "\n").replace("\r", "\n")
+				entry = {"file": relative, "table": table, "key": key, "occurrence": occurrences[key], "line": field.span.line, "column": field.span.column, "start": field.span.start, "end": field.span.end, "fingerprint": fingerprint(declaration_source.encode("utf-8")), "selected": selected, "constants": sorted(symbols(field.value)), "issues": []}
 				try:
 					value = evaluate(field.value, constants)
 					classification, destination, responsibilities = classify(table, value)

@@ -1,0 +1,4709 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-lever",
+  "name": "Lever",
+  "objects": [
+    {
+      "id": "legacy.leveraction.4001.c454669192a9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 431,
+          "part": "ground",
+          "position": {
+            "x": 32848,
+            "y": 32277,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4001
+      }
+    },
+    {
+      "id": "legacy.leveraction.4650.d603bb24cf11",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9110,
+          "part": "item",
+          "position": {
+            "x": 32972,
+            "y": 32412,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4650
+      }
+    },
+    {
+      "id": "legacy.leveraction.4906.4321d7d0ccd8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9110,
+          "part": "item",
+          "position": {
+            "x": 33251,
+            "y": 32039,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4906
+      }
+    },
+    {
+      "id": "legacy.leveraction.4906.4c2785e102e7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 17470,
+          "part": "item",
+          "position": {
+            "x": 33251,
+            "y": 32039,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4906
+      }
+    },
+    {
+      "id": "legacy.leveraction.4906.7d970a5b4443",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 499,
+          "part": "ground",
+          "position": {
+            "x": 33251,
+            "y": 32039,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4906
+      }
+    },
+    {
+      "id": "legacy.leveraction.4906.afff3656d77f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9110,
+          "part": "item",
+          "position": {
+            "x": 33218,
+            "y": 32096,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4906
+      }
+    },
+    {
+      "id": "legacy.leveraction.4906.3f58ff7a632b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 499,
+          "part": "ground",
+          "position": {
+            "x": 33218,
+            "y": 32096,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4906
+      }
+    },
+    {
+      "id": "legacy.leveraction.5500.97c512e3ea01",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33095,
+            "y": 31942,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 5500
+      }
+    },
+    {
+      "id": "legacy.leveraction.5501.470e22139196",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33138,
+            "y": 31952,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 5501
+      }
+    },
+    {
+      "id": "legacy.leveraction.5520.06d5ae5413cd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9110,
+          "part": "item",
+          "position": {
+            "x": 33299,
+            "y": 32144,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 5520
+      }
+    },
+    {
+      "id": "legacy.leveraction.7799.e59f57e4b75e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 431,
+          "part": "ground",
+          "position": {
+            "x": 32842,
+            "y": 32274,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 7799
+      }
+    },
+    {
+      "id": "legacy.leveraction.7799.a2abf20fcd20",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 431,
+          "part": "ground",
+          "position": {
+            "x": 32842,
+            "y": 32275,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 7799
+      }
+    },
+    {
+      "id": "legacy.leveraction.7799.6a16a78f4cd3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 431,
+          "part": "ground",
+          "position": {
+            "x": 32842,
+            "y": 32276,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 7799
+      }
+    },
+    {
+      "id": "legacy.leveraction.8013.214490fb3707",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 31123,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8013
+      }
+    },
+    {
+      "id": "legacy.leveraction.8013.150a5fd8c1fa",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 31124,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8013
+      }
+    },
+    {
+      "id": "legacy.leveraction.8013.f0155195e16b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 31125,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8013
+      }
+    },
+    {
+      "id": "legacy.leveraction.8013.e14922533c8f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 31126,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8013
+      }
+    },
+    {
+      "id": "legacy.leveraction.8013.25a6b220375f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 31127,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8013
+      }
+    },
+    {
+      "id": "legacy.leveraction.8033.fdff78ffbac6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32836,
+            "y": 32278,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 8033
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.48ae6507cecd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33358,
+            "y": 32701,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.7689d4b2a557",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33349,
+            "y": 32680,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.9c5450e66625",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33305,
+            "y": 32734,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.a68e7f6eda19",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33357,
+            "y": 32749,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.83dd8df46fa9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33368,
+            "y": 32763,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.fc82ed2a564d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33382,
+            "y": 32786,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.484d893b8c36",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33338,
+            "y": 32702,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12121.17b6b2a41905",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33320,
+            "y": 32682,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12121
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.4e0c618794c2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33027,
+            "y": 32530,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.fbe21a47d4f4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33006,
+            "y": 32563,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.24ce47bd390e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33123,
+            "y": 32599,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.78be68c6d3e7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33028,
+            "y": 32588,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.fac9468d58c7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33147,
+            "y": 32524,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.978e27e05dfc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33104,
+            "y": 32514,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.c2caba96d36b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33055,
+            "y": 32487,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.34e613b948f9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33036,
+            "y": 32507,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.a271ac6fefc0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33089,
+            "y": 32514,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.6874119a5fb7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33077,
+            "y": 32507,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12122.f3565013ad85",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33130,
+            "y": 32489,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12122
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.f7370360b8ab",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33183,
+            "y": 32884,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.8a9c7e6e6551",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33181,
+            "y": 32889,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.784236ff88e4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33175,
+            "y": 32884,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.0365b4cdfbd8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33176,
+            "y": 32880,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.ee5bc7f02869",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33182,
+            "y": 32880,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12123.53cadab25ab3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33176,
+            "y": 32889,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12123
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.441f047c56e8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32891,
+            "y": 32590,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.97da64a5eb1f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32843,
+            "y": 32649,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.55374cecb81c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32808,
+            "y": 32613,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.0f01e5747a96",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32775,
+            "y": 32583,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.6dcbdb35780a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32756,
+            "y": 32494,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12129.8cff460668aa",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32799,
+            "y": 32556,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12129
+      }
+    },
+    {
+      "id": "legacy.leveraction.12574.c2c16fded660",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32576,
+            "y": 31862,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 12574
+      }
+    },
+    {
+      "id": "legacy.leveraction.26663.380887e41cb9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 32792,
+            "y": 32820,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 26663
+      }
+    },
+    {
+      "id": "legacy.leveraction.26664.65364480d640",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 32840,
+            "y": 32820,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 26664
+      }
+    },
+    {
+      "id": "legacy.leveraction.30001.d86cb7c1c259",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 32107,
+            "y": 31901,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30001
+      }
+    },
+    {
+      "id": "legacy.leveraction.30001.035230961e72",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4516,
+          "part": "ground",
+          "position": {
+            "x": 32107,
+            "y": 31901,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30001
+      }
+    },
+    {
+      "id": "legacy.leveraction.30001.0a63aa945857",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 32104,
+            "y": 31906,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30001
+      }
+    },
+    {
+      "id": "legacy.leveraction.30001.addd94670337",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4515,
+          "part": "ground",
+          "position": {
+            "x": 32104,
+            "y": 31906,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30001
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.5cd75474e0f3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.17fe2455a922",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.e3f552503aa0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.b268b689b0f1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.473757fb6ba0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.1c11956b14ec",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.1c81cf4e6c92",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.061c3377665e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.04f370573442",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 33062,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.027b75ffe9e7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32994,
+            "y": 31547,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.8502326f0548",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 32994,
+            "y": 31547,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.9452a0b6d942",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32994,
+            "y": 31547,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.3c7174ac2a6a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.1c1926ffea3a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.e55d03bff129",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.81f54b868278",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.1317d271952c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.774fe2b95416",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32992,
+            "y": 31539,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.355ae7d41a23",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.0d4785a54e6a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.6214555f76cd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.ec0742f151f5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.1f3dbfe626b8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.4277f81c077a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 33056,
+            "y": 31527,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.499f51190d00",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 33064,
+            "y": 31489,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.131095667716",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33064,
+            "y": 31489,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30002.7a06200362ec",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7065,
+          "part": "ground",
+          "position": {
+            "x": 33064,
+            "y": 31489,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30002
+      }
+    },
+    {
+      "id": "legacy.leveraction.30003.ebfe51b8d2f4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 33079,
+            "y": 31014,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30003
+      }
+    },
+    {
+      "id": "legacy.leveraction.30003.ef522e97c8e1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2317,
+          "part": "item",
+          "position": {
+            "x": 33079,
+            "y": 31014,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30003
+      }
+    },
+    {
+      "id": "legacy.leveraction.30003.9ac559ef07bd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9929,
+          "part": "ground",
+          "position": {
+            "x": 33079,
+            "y": 31014,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30003
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.6c112c0e3214",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32645,
+            "y": 32465,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.97077df8009d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32645,
+            "y": 32465,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.a8dab7589f57",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32647,
+            "y": 32483,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.38cb5219cbf3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32647,
+            "y": 32483,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.58fc1858bfec",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32619,
+            "y": 32523,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.5af08769ddc8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32619,
+            "y": 32523,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.894e20676ab1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32610,
+            "y": 32523,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.ab20acadee28",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32610,
+            "y": 32523,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.b9e4bf47c9be",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32583,
+            "y": 32482,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.5a3951b0017e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32583,
+            "y": 32482,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.76f24d2d26f9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32584,
+            "y": 32465,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30004.c5ca8ee7707a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32584,
+            "y": 32465,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30004
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.de9f23c666a5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32568,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.93099dde4dfe",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 502,
+          "part": "ground",
+          "position": {
+            "x": 32568,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.310f52a468e0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32570,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.ee1d0fe03e59",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 501,
+          "part": "ground",
+          "position": {
+            "x": 32570,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.af703f3413c3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32599,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.857de61c6c77",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 502,
+          "part": "ground",
+          "position": {
+            "x": 32599,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.6eb6335e9dfa",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32601,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30005.7f5cf60e7600",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 501,
+          "part": "ground",
+          "position": {
+            "x": 32601,
+            "y": 31421,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30005
+      }
+    },
+    {
+      "id": "legacy.leveraction.30006.7896f1ee595f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32148,
+            "y": 32105,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30006
+      }
+    },
+    {
+      "id": "legacy.leveraction.30006.de6bdb3045e7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 354,
+          "part": "ground",
+          "position": {
+            "x": 32148,
+            "y": 32105,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30006
+      }
+    },
+    {
+      "id": "legacy.leveraction.30007.e34b713d3453",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32414,
+            "y": 32252,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30007
+      }
+    },
+    {
+      "id": "legacy.leveraction.30007.d2af251ccff7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6379,
+          "part": "item",
+          "position": {
+            "x": 32414,
+            "y": 32252,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30007
+      }
+    },
+    {
+      "id": "legacy.leveraction.30007.26327e8b6fea",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32414,
+            "y": 32252,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30007
+      }
+    },
+    {
+      "id": "legacy.leveraction.30007.b9c74b0a1f17",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32413,
+            "y": 32230,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30007
+      }
+    },
+    {
+      "id": "legacy.leveraction.30007.9f18a4def7f5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 368,
+          "part": "ground",
+          "position": {
+            "x": 32413,
+            "y": 32230,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30007
+      }
+    },
+    {
+      "id": "legacy.leveraction.30008.9bd954a83bb3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32600,
+            "y": 32105,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30008
+      }
+    },
+    {
+      "id": "legacy.leveraction.30008.41aef67ebedf",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32600,
+            "y": 32105,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 30008
+      }
+    },
+    {
+      "id": "legacy.leveraction.34305.7aba8d58510b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33628,
+            "y": 32665,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34305
+      }
+    },
+    {
+      "id": "legacy.leveraction.34306.998d71cb1950",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33631,
+            "y": 32665,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34306
+      }
+    },
+    {
+      "id": "legacy.leveraction.34307.3718a3e71470",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33628,
+            "y": 32683,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34307
+      }
+    },
+    {
+      "id": "legacy.leveraction.34308.7a2da3925036",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33631,
+            "y": 32683,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34308
+      }
+    },
+    {
+      "id": "legacy.leveraction.34309.2c98c27c6d9a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33628,
+            "y": 32701,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34309
+      }
+    },
+    {
+      "id": "legacy.leveraction.34310.bfacb4ce7d30",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33631,
+            "y": 32701,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34310
+      }
+    },
+    {
+      "id": "legacy.leveraction.34311.c259c8094c71",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33628,
+            "y": 32719,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34311
+      }
+    },
+    {
+      "id": "legacy.leveraction.34312.3ae430586d5a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33631,
+            "y": 32719,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34312
+      }
+    },
+    {
+      "id": "legacy.leveraction.34324.b9de819a0bfa",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33628,
+            "y": 32616,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34324
+      }
+    },
+    {
+      "id": "legacy.leveraction.34324.7d016108d6b7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 33671,
+            "y": 32623,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 34324
+      }
+    },
+    {
+      "id": "legacy.leverunique.1006.e567936c5294",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33240,
+            "y": 31722,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1006
+      }
+    },
+    {
+      "id": "legacy.leverunique.1007.766079ff33ed",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33224,
+            "y": 31722,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1007
+      }
+    },
+    {
+      "id": "legacy.leverunique.1008.5bb9165b2eeb",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33224,
+            "y": 31734,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1008
+      }
+    },
+    {
+      "id": "legacy.leverunique.1009.2714e83aa872",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33240,
+            "y": 31734,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1009
+      }
+    },
+    {
+      "id": "legacy.leverunique.1017.a7eed624adbe",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33172,
+            "y": 31896,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1017
+      }
+    },
+    {
+      "id": "legacy.leverunique.1022.0db90ab5be5e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33229,
+            "y": 31499,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1022
+      }
+    },
+    {
+      "id": "legacy.leverunique.1023.26aafe0198e7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33455,
+            "y": 32356,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1023
+      }
+    },
+    {
+      "id": "legacy.leverunique.1024.4a7c87ef4039",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33385,
+            "y": 32455,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1024
+      }
+    },
+    {
+      "id": "legacy.leverunique.1025.f0f4b6c46eb1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33593,
+            "y": 32643,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1025
+      }
+    },
+    {
+      "id": "legacy.leverunique.1026.db18727606e1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33680,
+            "y": 32740,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1026
+      }
+    },
+    {
+      "id": "legacy.leverunique.1027.e32c3197a65e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33418,
+            "y": 32848,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1027
+      }
+    },
+    {
+      "id": "legacy.leverunique.1028.b4b9b3ef483f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33434,
+            "y": 32784,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1028
+      }
+    },
+    {
+      "id": "legacy.leverunique.1029.4cafde151a45",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33402,
+            "y": 32465,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1029
+      }
+    },
+    {
+      "id": "legacy.leverunique.1030.3e7249a89604",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33202,
+            "y": 31475,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1030
+      }
+    },
+    {
+      "id": "legacy.leverunique.1031.5fcce281c90d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33385,
+            "y": 32410,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1031
+      }
+    },
+    {
+      "id": "legacy.leverunique.1032.6464c2bcead7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33403,
+            "y": 32391,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1032
+      }
+    },
+    {
+      "id": "legacy.leverunique.1033.f486f297b1a0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33410,
+            "y": 32441,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1033
+      }
+    },
+    {
+      "id": "legacy.leverunique.1034.763767bc3327",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 8911,
+          "part": "item",
+          "position": {
+            "x": 33430,
+            "y": 32418,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1034
+      }
+    },
+    {
+      "id": "legacy.leverunique.1037.4d78cad2945c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32800,
+            "y": 32339,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1037
+      }
+    },
+    {
+      "id": "legacy.leverunique.1040.4ed7db0dae5c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32862,
+            "y": 32557,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1040
+      }
+    },
+    {
+      "id": "legacy.leverunique.1041.42182921232d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32862,
+            "y": 32555,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1041
+      }
+    },
+    {
+      "id": "legacy.leverunique.1053.56cf126c2676",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32801,
+            "y": 32640,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 1053
+      }
+    },
+    {
+      "id": "legacy.leverunique.2004.139837e1f3f0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32873,
+            "y": 32263,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2004
+      }
+    },
+    {
+      "id": "legacy.leverunique.2050.f3e8cb96b4d5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32874,
+            "y": 32334,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2050
+      }
+    },
+    {
+      "id": "legacy.leverunique.2051.c02873eb1cff",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32891,
+            "y": 32328,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2051
+      }
+    },
+    {
+      "id": "legacy.leverunique.2052.6d64bcb1d936",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32843,
+            "y": 32352,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2052
+      }
+    },
+    {
+      "id": "legacy.leverunique.2053.61b58ee0e15e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32889,
+            "y": 32349,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2053
+      }
+    },
+    {
+      "id": "legacy.leverunique.2054.c0a27edb5f6c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32887,
+            "y": 32330,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2054
+      }
+    },
+    {
+      "id": "legacy.leverunique.2055.498769c3f3d3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32846,
+            "y": 32318,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2055
+      }
+    },
+    {
+      "id": "legacy.leverunique.2056.f11642ceba58",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32887,
+            "y": 32355,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2056
+      }
+    },
+    {
+      "id": "legacy.leverunique.2057.c7735e4d9fdc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32853,
+            "y": 32359,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2057
+      }
+    },
+    {
+      "id": "legacy.leverunique.2058.3e803859ec4f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32843,
+            "y": 32359,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2058
+      }
+    },
+    {
+      "id": "legacy.leverunique.2059.8e87f2c194e9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32847,
+            "y": 32332,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2059
+      }
+    },
+    {
+      "id": "legacy.leverunique.2060.0fde3db9f000",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32886,
+            "y": 32337,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2060
+      }
+    },
+    {
+      "id": "legacy.leverunique.2061.fe0a91605595",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32874,
+            "y": 32365,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2061
+      }
+    },
+    {
+      "id": "legacy.leverunique.2062.84fb1b2d9918",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32850,
+            "y": 32366,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2062
+      }
+    },
+    {
+      "id": "legacy.leverunique.2063.b8575ddb2d32",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32859,
+            "y": 32364,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2063
+      }
+    },
+    {
+      "id": "legacy.leverunique.2064.d659d3123255",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32874,
+            "y": 32354,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2064
+      }
+    },
+    {
+      "id": "legacy.leverunique.2065.41918a5c9862",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32848,
+            "y": 32335,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2065
+      }
+    },
+    {
+      "id": "legacy.leverunique.2246.191dbfa60a47",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32763,
+            "y": 32291,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2246
+      }
+    },
+    {
+      "id": "legacy.leverunique.2247.63505436b559",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32761,
+            "y": 32291,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2247
+      }
+    },
+    {
+      "id": "legacy.leverunique.2248.c1a25839a178",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32763,
+            "y": 32289,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2248
+      }
+    },
+    {
+      "id": "legacy.leverunique.2249.e9011904e7a9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32761,
+            "y": 32289,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2249
+      }
+    },
+    {
+      "id": "legacy.leverunique.2272.64fc81c277c8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32838,
+            "y": 32263,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 2272
+      }
+    },
+    {
+      "id": "legacy.leverunique.3041.c69b412b98ee",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32837,
+            "y": 32221,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3041
+      }
+    },
+    {
+      "id": "legacy.leverunique.3042.00594ba41d9e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32836,
+            "y": 32229,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3042
+      }
+    },
+    {
+      "id": "legacy.leverunique.3043.b54b585c8457",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32833,
+            "y": 32224,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3043
+      }
+    },
+    {
+      "id": "legacy.leverunique.3184.470bf1dfc04d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33078,
+            "y": 31079,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3184
+      }
+    },
+    {
+      "id": "legacy.leverunique.3185.4f4c98b5fc24",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33082,
+            "y": 31109,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3185
+      }
+    },
+    {
+      "id": "legacy.leverunique.3300.1bc03937e0cf",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32850,
+            "y": 32268,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3300
+      }
+    },
+    {
+      "id": "legacy.leverunique.3301.160c2f7741e4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32862,
+            "y": 32312,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3301
+      }
+    },
+    {
+      "id": "legacy.leverunique.3302.a22d4a964005",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32851,
+            "y": 32308,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3302
+      }
+    },
+    {
+      "id": "legacy.leverunique.3304.057f5cc6d46a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32826,
+            "y": 32263,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 0
+      },
+      "behaviors": [
+        {
+          "id": "world.lever_remove_item",
+          "contractVersion": 1,
+          "events": [
+            "onUse"
+          ],
+          "parameters": {
+            "firstItemId": 2772,
+            "secondItemId": 2773,
+            "targetItem": 1772
+          },
+          "relations": {
+            "target": {
+              "object": "legacy.leverunique.3304.32239a00ae76"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy.leverunique.30001.566e140acd2b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33416,
+            "y": 32102,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30001
+      }
+    },
+    {
+      "id": "legacy.leverunique.30002.4516fb49ba41",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 33582,
+            "y": 31844,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30002
+      }
+    },
+    {
+      "id": "legacy.leverunique.30004.52280d8194a1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32227,
+            "y": 32278,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30004
+      }
+    },
+    {
+      "id": "legacy.leverunique.30005.3fc71047e70c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32225,
+            "y": 32285,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30005
+      }
+    },
+    {
+      "id": "legacy.leverunique.30006.e3a0b7bfb043",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32792,
+            "y": 31595,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30006
+      }
+    },
+    {
+      "id": "legacy.leverunique.30007.3cf2adf3241c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33330,
+            "y": 31574,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30007
+      }
+    },
+    {
+      "id": "legacy.leverunique.30008.0d84b657d077",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32180,
+            "y": 31633,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30008
+      }
+    },
+    {
+      "id": "legacy.leverunique.30009.2a75b21bdc8b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33290,
+            "y": 31715,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30009
+      }
+    },
+    {
+      "id": "legacy.leverunique.30010.997234b6a544",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32315,
+            "y": 31910,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30010
+      }
+    },
+    {
+      "id": "legacy.leverunique.30011.cbb75a1de8c6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32212,
+            "y": 31888,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30011
+      }
+    },
+    {
+      "id": "legacy.leverunique.30012.3b5ac07d61e5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 27260,
+          "part": "item",
+          "position": {
+            "x": 32266,
+            "y": 31861,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30012
+      }
+    },
+    {
+      "id": "legacy.leverunique.30013.22342f05ec4f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32220,
+            "y": 31843,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30013
+      }
+    },
+    {
+      "id": "legacy.leverunique.30014.57c57b3d177a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32220,
+            "y": 31845,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30014
+      }
+    },
+    {
+      "id": "legacy.leverunique.30015.77a033c890cb",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32220,
+            "y": 31844,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30015
+      }
+    },
+    {
+      "id": "legacy.leverunique.30016.a01ac2e506d6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32220,
+            "y": 31842,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30016
+      }
+    },
+    {
+      "id": "legacy.leverunique.30017.53d2748537cd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2773,
+          "part": "item",
+          "position": {
+            "x": 32220,
+            "y": 31846,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30017
+      }
+    },
+    {
+      "id": "legacy.leverunique.30018.7b9a81f977db",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32310,
+            "y": 31975,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30018
+      }
+    },
+    {
+      "id": "legacy.leverunique.30019.3d5dcdfc167c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32310,
+            "y": 31976,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30019
+      }
+    },
+    {
+      "id": "legacy.leverunique.30020.8fe664e3d625",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32312,
+            "y": 31975,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30020
+      }
+    },
+    {
+      "id": "legacy.leverunique.30021.6023fb528daa",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32312,
+            "y": 31976,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30021
+      }
+    },
+    {
+      "id": "legacy.leverunique.30022.7144cd797eae",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32314,
+            "y": 31975,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30022
+      }
+    },
+    {
+      "id": "legacy.leverunique.30023.eb3e29045525",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32314,
+            "y": 31976,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30023
+      }
+    },
+    {
+      "id": "legacy.leverunique.30024.6d41d04dd47c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32778,
+            "y": 32232,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30024
+      }
+    },
+    {
+      "id": "legacy.leverunique.30025.f971292fdb95",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 33226,
+            "y": 31671,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30025
+      }
+    },
+    {
+      "id": "legacy.leverunique.30026.446c2de60e43",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 9125,
+          "part": "item",
+          "position": {
+            "x": 32481,
+            "y": 31904,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30026
+      }
+    },
+    {
+      "id": "legacy.leverunique.30027.a4408f04b7d2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32479,
+            "y": 31905,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30027
+      }
+    },
+    {
+      "id": "legacy.leverunique.30028.9d7dfa2cbeb9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32478,
+            "y": 31904,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30028
+      }
+    },
+    {
+      "id": "legacy.leverunique.50095.80a17c1fd233",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32815,
+            "y": 32333,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50095
+      }
+    },
+    {
+      "id": "legacy.leverunique.50097.e6ed9052c8d5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32811,
+            "y": 32357,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50097
+      }
+    },
+    {
+      "id": "legacy.leverunique.50098.1c329ff74b1d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32803,
+            "y": 32353,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50098
+      }
+    },
+    {
+      "id": "legacy.leverunique.50104.5551189982a6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32821,
+            "y": 32341,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50104
+      }
+    },
+    {
+      "id": "legacy.leverunique.50105.5723d94c7f0c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32821,
+            "y": 32346,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50105
+      }
+    },
+    {
+      "id": "legacy.leverunique.50106.2c8e8d27f719",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32915,
+            "y": 32215,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 50106
+      }
+    },
+    {
+      "id": "legacy.leverunique.63951.083893a113d4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32399,
+            "y": 32209,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63951
+      }
+    },
+    {
+      "id": "legacy.leverunique.63952.a3b0077baeed",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32412,
+            "y": 32204,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63952
+      }
+    },
+    {
+      "id": "legacy.leverunique.63953.be5c8095fdc8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32414,
+            "y": 32201,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63953
+      }
+    },
+    {
+      "id": "legacy.leverunique.63954.8a3f6899ad1f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32435,
+            "y": 32197,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63954
+      }
+    },
+    {
+      "id": "legacy.leverunique.63955.418381ffbe15",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32438,
+            "y": 32191,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63955
+      }
+    },
+    {
+      "id": "legacy.leverunique.63956.900c49b41c8b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32430,
+            "y": 32191,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63956
+      }
+    },
+    {
+      "id": "legacy.leverunique.63957.2072f3cc27b1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32404,
+            "y": 32195,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63957
+      }
+    },
+    {
+      "id": "legacy.leverunique.63958.2b1022eb8a70",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32399,
+            "y": 32200,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63958
+      }
+    },
+    {
+      "id": "legacy.leverunique.63959.9b733f57c461",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32440,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63959
+      }
+    },
+    {
+      "id": "legacy.leverunique.63960.8b5e667009e1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32456,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63960
+      }
+    },
+    {
+      "id": "legacy.leverunique.63961.81da6c6e4611",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32468,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63961
+      }
+    },
+    {
+      "id": "legacy.leverunique.63962.593efb9d5cca",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32476,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63962
+      }
+    },
+    {
+      "id": "legacy.leverunique.63963.a58633f2a38e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32484,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63963
+      }
+    },
+    {
+      "id": "legacy.leverunique.63964.f2ee4e9f1c35",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32496,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63964
+      }
+    },
+    {
+      "id": "legacy.leverunique.63965.b9d09e00d759",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32512,
+            "y": 32201,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63965
+      }
+    },
+    {
+      "id": "legacy.leverunique.63966.41849cad5a33",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32517,
+            "y": 32197,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63966
+      }
+    },
+    {
+      "id": "legacy.leverunique.63967.86122798978c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32512,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63967
+      }
+    },
+    {
+      "id": "legacy.leverunique.63968.777fbf4bff54",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32504,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63968
+      }
+    },
+    {
+      "id": "legacy.leverunique.63969.ea6afad9ca2e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32496,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63969
+      }
+    },
+    {
+      "id": "legacy.leverunique.63970.eb0f35e02d15",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32489,
+            "y": 32197,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63970
+      }
+    },
+    {
+      "id": "legacy.leverunique.63971.1f8649bc30e2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32484,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63971
+      }
+    },
+    {
+      "id": "legacy.leverunique.63972.8f830797bf42",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32476,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63972
+      }
+    },
+    {
+      "id": "legacy.leverunique.63973.79f7061d8682",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32468,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63973
+      }
+    },
+    {
+      "id": "legacy.leverunique.63974.87c4e67398fc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32461,
+            "y": 32197,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63974
+      }
+    },
+    {
+      "id": "legacy.leverunique.63975.189f01060866",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32456,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63975
+      }
+    },
+    {
+      "id": "legacy.leverunique.63976.5c3133980c7f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32448,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63976
+      }
+    },
+    {
+      "id": "legacy.leverunique.63977.7de5a44ad294",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32440,
+            "y": 32191,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 63977
+      }
+    },
+    {
+      "id": "legacy.leverunique.30029.e5162d710018",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32182,
+            "y": 32145,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30029
+      }
+    },
+    {
+      "id": "legacy.leverunique.30030.506d72a6059a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32673,
+            "y": 32086,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30030
+      }
+    },
+    {
+      "id": "legacy.leverunique.30031.b647d70b09ad",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32614,
+            "y": 32173,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30031
+      }
+    },
+    {
+      "id": "legacy.leverunique.30032.9a424c7fc04a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32594,
+            "y": 32212,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30032
+      }
+    },
+    {
+      "id": "legacy.leverunique.30033.b18ebf94bde1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32616,
+            "y": 32222,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30033
+      }
+    },
+    {
+      "id": "legacy.leverunique.30034.528c40592363",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32573,
+            "y": 32121,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30034
+      }
+    },
+    {
+      "id": "legacy.leverunique.30035.92de4e8166ad",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2772,
+          "part": "item",
+          "position": {
+            "x": 32792,
+            "y": 31579,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "uid": 30035
+      }
+    },
+    {
+      "id": "legacy.leverunique.3304.32239a00ae76",
+      "kind": "anchor",
+      "position": {
+        "x": 32826,
+        "y": 32274,
+        "z": 11
+      }
+    }
+  ]
+}

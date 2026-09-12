@@ -5,10 +5,10 @@
     "tables": 25,
     "declarations": 1661,
     "selected": 1661,
-    "consumers": 29,
+    "consumers": 53,
     "classifications": {
-      "automatic": 853,
-      "inactive": 22,
+      "automatic": 829,
+      "inactive": 46,
       "known-adaptation": 751,
       "needs-analysis": 30,
       "runtime-state": 5

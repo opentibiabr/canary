@@ -98,4 +98,24 @@ end
 loadLuaMapAction(ItemAction)
 assert(claims["1.item"] and claims["2.item"], "each occurrence must ask for ownership independently")
 assert(not items[1] and items[2][2] == 12107, "a shared AID must not suppress unclaimed occurrences")
+
+-- World startup must not populate compatibility tables for gameplay consumers.
+local executeFile = dofile
+configKeys = { WORLD_CONFIGURATION = 1 }
+for _, mode in ipairs({ "legacy", "world", "mixed" }) do
+	configManager = {
+		getString = function()
+			return mode
+		end,
+	}
+	local loaded = {}
+	dofile = function(file)
+		loaded[file] = true
+	end
+	executeFile(DATA_DIRECTORY .. "/startup/startup.lua")
+	assert(loaded[DATA_DIRECTORY .. "/startup/others/load.lua"])
+	assert((loaded[DATA_DIRECTORY .. "/startup/tables/load.lua"] == true) == (mode ~= "world"))
+	assert((loaded[DATA_DIRECTORY .. "/startup/tables/storage_keys_update.lua"] == true) == (mode == "world"))
+end
+dofile = executeFile
 print("World legacy activation, fallback and occurrence routing passed")

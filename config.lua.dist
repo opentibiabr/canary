@@ -424,8 +424,8 @@ toggleDownloadMap = true
 mapDownloadUrl = "https://github.com/opentibiabr/canary/releases/download/v3.6.1/otservbr.otbm"
 mapName = "otservbr"
 -- Select "legacy", "world", or "mixed". Changes require a restart.
--- Compatibility default until the complete datapack migration is installed.
-worldConfiguration = "legacy"
+-- World JSON is authoritative. Old configs without this option keep legacy.
+worldConfiguration = "world"
 -- "auto": <datapack>/world/<mapName>.world.json. Required in world/mixed mode.
 worldProject = "auto"
 mapAuthor = "OpenTibiaBR"

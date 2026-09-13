@@ -58,6 +58,7 @@ function hirelingFoods.onUse(player, item, fromPosition, target, toPosition, isH
 
 	player:say(dish.message, TALKTYPE_MONSTER_SAY)
 	player:setExhaustion("special-foods-cooldown", 10 * 60)
+	player:getPosition():sendSingleSoundEffect(SOUND_EFFECT_TYPE_ACTION_EAT, player:isInGhostMode() and nil or player)
 
 	item:remove(1)
 	return true

@@ -1402,9 +1402,9 @@ void WeaponProficiency::applyOn(WeaponProficiencyHealth_t healthType, WeaponProf
 
 	const auto &playerCreature = m_player.getCreature();
 	if (healthType == WeaponProficiencyHealth_t::LIFE) {
-		Combat::doCombatHealth(playerCreature, playerCreature, damage, params);
+		Combat::doCombatHealth(nullptr, playerCreature, damage, params);
 	} else {
-		Combat::doCombatMana(playerCreature, playerCreature, damage, params);
+		Combat::doCombatMana(nullptr, playerCreature, damage, params);
 	}
 }
 

@@ -1385,22 +1385,26 @@ void WeaponProficiency::applyOn(WeaponProficiencyHealth_t healthType, WeaponProf
 		statsType = gainType == WeaponProficiencyGain_t::KILL ? MANA_GAIN_ON_KILL : MANA_GAIN_ON_HIT;
 	}
 
+	const auto statValue = getStat(statsType);
+	if (statValue <= 0) {
+		return;
+	}
+
 	CombatParams params;
 	params.combatType = COMBAT_HEALING;
-	params.soundImpactEffect = SoundEffect_t::SPELL_LIGHT_HEALING;
 
 	CombatDamage damage;
 
 	damage.origin = ORIGIN_WEAPON_PROFICIENCY;
 
 	damage.primary.type = params.combatType;
-	damage.primary.value = getStat(statsType);
+	damage.primary.value = static_cast<int32_t>(statValue);
 
 	const auto &playerCreature = m_player.getCreature();
 	if (healthType == WeaponProficiencyHealth_t::LIFE) {
-		Combat::doCombatHealth(nullptr, playerCreature, damage, params);
+		Combat::doCombatHealth(playerCreature, playerCreature, damage, params);
 	} else {
-		Combat::doCombatMana(nullptr, playerCreature, damage, params);
+		Combat::doCombatMana(playerCreature, playerCreature, damage, params);
 	}
 }
 

@@ -2055,6 +2055,19 @@ std::shared_ptr<DepotLocker> Player::getDepotLocker(uint32_t depotId) {
 	return depotLocker;
 }
 
+std::shared_ptr<DepotLocker> Player::activateDepotLocker(uint32_t depotId) {
+	if (!client) {
+		activeDepotLocker.reset();
+		return nullptr;
+	}
+
+	activeDepotLocker = getDepotLocker(depotId);
+	if (activeDepotLocker) {
+		depotStorageLoaded = true;
+	}
+	return activeDepotLocker;
+}
+
 std::shared_ptr<RewardChest> Player::getRewardChest() {
 	if (rewardChest != nullptr) {
 		return rewardChest;
@@ -2445,12 +2458,12 @@ void Player::sendCloseShop() const {
 	}
 }
 
-void Player::sendMarketEnter(uint32_t depotId) const {
-	if (!client || this->getLastDepotId() == -1 || !depotId) {
+void Player::sendMarketEnter() const {
+	if (!client || !activeDepotLocker) {
 		return;
 	}
 
-	client->sendMarketEnter(depotId);
+	client->sendMarketEnter();
 }
 
 void Player::sendMarketLeave() {
@@ -8542,7 +8555,7 @@ void Player::receivePing() {
 }
 
 void Player::sendOpenStash(bool isNpc) const {
-	if (client && ((getLastDepotId() != -1) || isNpc)) {
+	if (client && (activeDepotLocker || isNpc)) {
 		client->sendOpenStash();
 	}
 }
@@ -10339,7 +10352,8 @@ void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool al
 			return;
 		}
 
-		if (!item->isInsideDepot(true)) {
+		const bool itemIsInsideDepot = item->isInsideDepot(true);
+		if (!itemIsInsideDepot) {
 			// Stow items from player backpack
 			if (const auto &backpack = getBackpack()) {
 				totalItemsToStow += sendStowItems(item, backpack, itemDict, totalItemsToStow, maxItemsToStow);
@@ -10354,11 +10368,10 @@ void Player::stowItem(const std::shared_ptr<Item> &item, uint32_t count, bool al
 		}
 
 		// Stow items from depot locker
-		const auto &depotLocker = getDepotLocker(getLastDepotId());
-		const auto &[itemVector, itemMap] = requestLockerItems(depotLocker);
-		for (const auto &lockerItem : itemVector) {
-			if (lockerItem && item->isInsideDepot(true)) {
-				totalItemsToStow += sendStowItems(item, lockerItem, itemDict, totalItemsToStow, maxItemsToStow);
+		if (const auto &depotLocker = getActiveDepotLocker(); depotLocker && itemIsInsideDepot) {
+			const auto &[itemVector, itemMap] = requestLockerItems(depotLocker);
+			for (const auto &lockerItem : itemVector) {
+				totalItemsToStow += lockerItem ? sendStowItems(item, lockerItem, itemDict, totalItemsToStow, maxItemsToStow) : 0;
 			}
 		}
 	} else if (const auto &container = item->getContainer()) {
@@ -10708,7 +10721,7 @@ void Player::requestDepotItems() {
 	ItemsTierCountList inventoryCache;
 	uint16_t count = 0;
 
-	const auto &depotLocker = getDepotLocker(getLastDepotId());
+	const auto &depotLocker = getActiveDepotLocker();
 	if (!depotLocker) {
 		return;
 	}
@@ -10772,7 +10785,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier) {
 		stashCount = getStashItemCount(itemId);
 	}
 
-	const auto &depotLocker = getDepotLocker(getLastDepotId());
+	const auto &depotLocker = getActiveDepotLocker();
 	if (!depotLocker) {
 		return;
 	}
@@ -10811,7 +10824,7 @@ void Player::requestDepotSearchItem(uint16_t itemId, uint8_t tier) {
 }
 
 void Player::retrieveAllItemsFromDepotSearch(uint16_t itemId, uint8_t tier, bool isDepot) {
-	const auto &depotLocker = getDepotLocker(getLastDepotId());
+	const auto &depotLocker = getActiveDepotLocker();
 	if (!depotLocker) {
 		return;
 	}
@@ -10920,7 +10933,7 @@ void Player::openContainerFromDepotSearch(const Position &pos) {
 }
 
 std::shared_ptr<Item> Player::getItemFromDepotSearch(uint16_t itemId, const Position &pos) {
-	const auto &depotLocker = getDepotLocker(getLastDepotId());
+	const auto &depotLocker = getActiveDepotLocker();
 	if (!depotLocker) {
 		return nullptr;
 	}

@@ -309,10 +309,12 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 
 		// depot container
 		if (const auto &depot = container->getDepotLocker()) {
-			const auto &myDepotLocker = player->getDepotLocker(depot->getDepotId());
+			const auto &myDepotLocker = player->activateDepotLocker(depot->getDepotId());
+			if (!myDepotLocker) {
+				return RETURNVALUE_CANNOTUSETHISOBJECT;
+			}
 			myDepotLocker->setParent(depot->getParent()->getTile());
 			openContainer = myDepotLocker;
-			player->setLastDepotId(depot->getDepotId());
 		} else {
 			openContainer = container;
 		}

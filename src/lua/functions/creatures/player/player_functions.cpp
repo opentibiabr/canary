@@ -1331,7 +1331,10 @@ int PlayerFunctions::luaPlayerGetDepotChest(lua_State* L) {
 	const bool autoCreate = Lua::getBoolean(L, 3, false);
 	const auto &depotChest = player->getDepotChest(depotId, autoCreate);
 	if (depotChest) {
-		player->setLastDepotId(depotId);
+		player->markDepotStorageLoaded();
+		if (player->getClient() && !player->getActiveDepotLocker()) {
+			player->activateDepotLocker(0);
+		}
 		Lua::pushUserdata<Item>(L, depotChest);
 		Lua::setItemMetatable(L, -1, depotChest);
 	} else {
@@ -4111,7 +4114,7 @@ int PlayerFunctions::luaPlayerOpenMarket(lua_State* L) {
 		return 1;
 	}
 
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 	Lua::pushBoolean(L, true);
 	return 1;
 }

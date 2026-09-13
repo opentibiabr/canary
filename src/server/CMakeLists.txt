@@ -3,6 +3,7 @@ target_sources(
     PRIVATE network/connection/connection.cpp
             network/message/networkmessage.cpp
             network/message/outputmessage.cpp
+            network/protocol/market_payload.cpp
             network/protocol/protocol.cpp
             network/protocol/protocol_profile.cpp
             network/protocol/protocolgame.cpp

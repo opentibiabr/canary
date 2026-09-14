@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import glob
+import importlib.util
 import os
 import re
 import shutil
@@ -285,10 +286,24 @@ def run_smoke(args: argparse.Namespace) -> None:
     config_path = REPO_ROOT / "config.lua"
     config_existed = config_path.exists()
     previous_config = config_path.read_bytes() if config_existed else None
+    probe_path = None
+    probe_bytes = None
+    probe_marker = None
     try:
         prepare_map(args)
         initialize_database(args)
         write_smoke_config(args)
+        if args.world_probe:
+            spec = importlib.util.spec_from_file_location("world_runtime_probe", Path(__file__).with_name("world_runtime_probe.py"))
+            probe = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(probe)
+            project = REPO_ROOT / args.data_pack / "world" / f"{args.map_name}.world.json"
+            source, probe_marker = probe.build_probe(project, args.world_configuration)
+            probe_bytes = source.encode("utf-8")
+            target = REPO_ROOT / args.data_pack / "scripts" / f"world_runtime_probe_{uuid.uuid4().hex}.lua"
+            with target.open("xb") as stream:
+                stream.write(probe_bytes)
+            probe_path = target
 
         log_dir = REPO_ROOT / "build/runtime-smoke-logs"
         log_dir.mkdir(parents=True, exist_ok=True)
@@ -313,9 +328,12 @@ def run_smoke(args: argparse.Namespace) -> None:
 
                 log_text = read_logs(log_paths)
                 saw_online_log = "server online!" in log_text.lower()
-                online = saw_online_log
+                online = saw_online_log and (probe_marker is None or probe_marker in log_text)
                 if online:
                     break
+                if "[error]" in log_text or "[critical]" in log_text:
+                    print(log_text)
+                    raise RuntimeError("Canary reported an error before completing startup acceptance")
 
             if not online:
                 log_text = read_logs(log_paths)
@@ -340,6 +358,10 @@ def run_smoke(args: argparse.Namespace) -> None:
         print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name} world={args.world_configuration}.")
     finally:
         restore_config(config_path, config_existed, previous_config)
+        if probe_path is not None:
+            if probe_path.read_bytes() != probe_bytes:
+                raise RuntimeError(f"The temporary runtime probe changed externally; preserved '{probe_path}'")
+            probe_path.unlink()
 
 
 def parse_args() -> argparse.Namespace:
@@ -348,6 +370,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--data-pack", choices=["data-canary", "data-otservbr-global"], default="data-canary")
     parser.add_argument("--map-name", default="")
     parser.add_argument("--world-configuration", choices=["legacy", "world", "mixed"], default="legacy")
+    parser.add_argument("--world-probe", action="store_true", help="Verify every v2 declaration through the live Lua API after startup.")
     parser.add_argument("--map-download-url", default="")
     parser.add_argument("--map-cache-path", default="")
     parser.add_argument("--db-host", default="127.0.0.1")

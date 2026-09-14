@@ -235,6 +235,7 @@ jobs:
               --data-pack data-otservbr-global \
               --map-name otservbr \
               --world-configuration "${mode}" \
+              --world-probe \
               --map-download-url "${{ steps.global-map.outputs.url }}" \
               --map-cache-path .cache/canary-maps/otservbr.otbm \
               --db-host 127.0.0.1 \

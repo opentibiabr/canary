@@ -23,6 +23,7 @@
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <atomic>
 	#include <limits>
+	#include <magic_enum/magic_enum.hpp>
 	#include <optional>
 	#include <utility>
 #endif

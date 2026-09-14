@@ -317,6 +317,7 @@ private:
 	std::atomic<int64_t> queueLatencyLoggingStartedAt = 0;
 
 	friend class CanaryServer;
+	friend class ConnectionWriteDiagnosticsTest;
 };
 
 constexpr auto g_dispatcher = Dispatcher::getInstance;

@@ -15,8 +15,10 @@
 	#include <gtest/gtest.h>
 	#include <array>
 	#include <iostream>
+	#include <mutex>
 	#include <string>
 	#include <thread>
+	#include <utility>
 	#include <vector>
 #endif
 
@@ -44,14 +46,24 @@ namespace {
 
 		void onSendMessage(const OutputMessage_ptr &message) override {
 			++preparedMessages;
+			if (checkMessageOwnership) {
+				// The queue and the preparing worker must each retain this message.
+				EXPECT_EQ(2, message.use_count());
+			}
 			if (preparedMessages == closeOnPreparation) {
 				getConnection()->close(true);
 			}
 			Protocol::onSendMessage(message);
 		}
 
+		void release() override {
+			++releaseCount;
+		}
+
 		size_t preparedMessages = 0;
 		size_t closeOnPreparation = 0;
+		size_t releaseCount = 0;
+		bool checkMessageOwnership = false;
 	};
 }
 
@@ -129,6 +141,11 @@ protected:
 		connection->onWriteOperation(asio::error::bad_descriptor, 0, 3, true);
 	}
 
+	void reportUnacceptedWrite() {
+		const auto unaccepted = ConnectionManager::getInstance().createConnection(io, nullptr);
+		unaccepted->onWriteOperation(asio::error::bad_descriptor, 0, 3, true);
+	}
+
 	std::shared_ptr<LoopbackProtocol> useQueuedProtocol(size_t closeOnPreparation = 0) {
 		auto protocol = std::make_shared<LoopbackProtocol>(connection);
 		protocol->closeOnPreparation = closeOnPreparation;
@@ -154,6 +171,39 @@ protected:
 
 	void completeWriteAfterClose() {
 		connection->onWriteOperation({}, 3, 3, true);
+	}
+
+	void executeProtocolRelease() {
+		// Exercise the real admitted task synchronously; this fixture does not
+		// start the server dispatcher or claim to test its consumer thread.
+		auto &dispatcher = g_dispatcher();
+		const auto &thread = dispatcher.getThreadTask();
+		auto tasks = [&] {
+			std::scoped_lock lock(thread->mutex);
+			return std::exchange(thread->tasks[static_cast<size_t>(DispatcherLane::ProtocolInput)], {});
+		}();
+		ASSERT_EQ(1, tasks.size());
+		for (auto &task : tasks) {
+			EXPECT_EQ("Connection::dispatchProtocolRelease", task.getContext());
+			dispatcher.releaseDispatcherSlot(task);
+			EXPECT_TRUE(task.execute());
+		}
+		EXPECT_TRUE(thread->tasks[static_cast<size_t>(DispatcherLane::WorldCommit)].empty());
+	}
+
+	void expectReadErrorRetained(void (Connection::*read)(const std::error_code &)) {
+		const std::error_code expected = asio::error::eof;
+		(connection.get()->*read)(expected);
+		(connection.get()->*read)(asio::error::operation_aborted);
+		EXPECT_EQ(expected, connection->firstReadError);
+	}
+
+	void expectProxyReadErrorRetained() {
+		expectReadErrorRetained(&Connection::parseProxyIdentification);
+	}
+
+	void expectPacketReadErrorRetained() {
+		expectReadErrorRetained(&Connection::parsePacket);
 	}
 
 	std::vector<std::pair<std::string, std::string>> writeDiagnostics() const {
@@ -228,6 +278,7 @@ TEST_F(ConnectionWriteDiagnosticsTest, WriteFailureRetainsPeerAndReportsClosureW
 	EXPECT_NE(std::string::npos, diagnostic.find("bytes_written=0/3, queued_messages=1"));
 	EXPECT_NE(std::string::npos, diagnostic.find("closeBeforeWrite"));
 	EXPECT_NE(std::string::npos, diagnostic.find("forced_close=true"));
+	EXPECT_EQ(std::string::npos, diagnostic.find("age_ms=-1"));
 	expectDrained();
 
 	// A burst must not restore the original per-failure warning spam.
@@ -235,6 +286,13 @@ TEST_F(ConnectionWriteDiagnosticsTest, WriteFailureRetainsPeerAndReportsClosureW
 		queueMessage();
 		reportFailedWrite();
 	}
+	// A new connection shares the warning budget and can lack accepted/close metadata.
+	reportUnacceptedWrite();
+	const auto unacceptedDiagnostics = writeDiagnostics();
+	ASSERT_FALSE(unacceptedDiagnostics.empty());
+	const auto &unacceptedDiagnostic = unacceptedDiagnostics.back().second;
+	EXPECT_NE(std::string::npos, unacceptedDiagnostic.find("age_ms=-1"));
+	EXPECT_NE(std::string::npos, unacceptedDiagnostic.find("close_requested_by=none, close_line=0"));
 	size_t warnings = 0;
 	for (const auto &[entryLevel, entryMessage] : writeDiagnostics()) {
 		warnings += entryLevel == "warning";
@@ -252,7 +310,7 @@ TEST_F(ConnectionWriteDiagnosticsTest, WriteFailureRetainsPeerAndReportsClosureW
 	ASSERT_FALSE(nextDiagnostics.empty());
 	const auto &[nextLevel, nextDiagnostic] = nextDiagnostics.back();
 	EXPECT_EQ("warning", nextLevel);
-	EXPECT_NE(std::string::npos, nextDiagnostic.find("suppressed_since_last_warning=10"));
+	EXPECT_NE(std::string::npos, nextDiagnostic.find("suppressed_since_last_warning=11"));
 	const std::error_code eof = asio::error::eof;
 	EXPECT_NE(std::string::npos, nextDiagnostic.find("first_read_error=" + std::string(eof.category().name()) + ":" + std::to_string(eof.value())));
 }
@@ -326,6 +384,42 @@ TEST_F(ConnectionWriteDiagnosticsTest, GracefulCloseCanEscalateToForcedClose) {
 	EXPECT_EQ(0, protocol->preparedMessages);
 	EXPECT_TRUE(writeDiagnostics().empty());
 	expectDrained();
+	EXPECT_EQ(0, protocol->releaseCount);
+	executeProtocolRelease();
+	EXPECT_EQ(1, protocol->releaseCount);
+}
+
+TEST_F(ConnectionWriteDiagnosticsTest, WorkerRetainsMessageDuringPreparation) {
+	const auto protocol = useQueuedProtocol();
+	protocol->checkMessageOwnership = true;
+	queuePublicSend();
+	runQueuedWork();
+	EXPECT_EQ(1, protocol->preparedMessages);
+	expectDrained();
+	std::error_code error;
+	EXPECT_EQ(3, peer.available(error));
+	EXPECT_FALSE(error);
+}
+
+TEST_F(ConnectionWriteDiagnosticsTest, CompletionRetainsNextMessageDuringPreparation) {
+	const auto protocol = useQueuedProtocol();
+	protocol->checkMessageOwnership = true;
+	queuePublicSend();
+	queuePublicSend();
+	runQueuedWork();
+	EXPECT_EQ(2, protocol->preparedMessages);
+	expectDrained();
+	std::error_code error;
+	EXPECT_EQ(6, peer.available(error));
+	EXPECT_FALSE(error);
+}
+
+TEST_F(ConnectionWriteDiagnosticsTest, ProxyReadErrorSurvivesCancellation) {
+	expectProxyReadErrorRetained();
+}
+
+TEST_F(ConnectionWriteDiagnosticsTest, PacketReadErrorSurvivesCancellation) {
+	expectPacketReadErrorRetained();
 }
 
 TEST_F(ConnectionWriteDiagnosticsTest, QueuedGracefulCloseSendsAllMessages) {

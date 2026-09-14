@@ -6,19 +6,20 @@ map canvas, palette, properties and undo history; external changes never become
 OTBM attributes. Stable object identities are independent of AID and UID. AID may
 repeat; a nonzero UID must be unique in the effective world, including containers.
 
-This work extends the existing v1 implementation. The stages below are acceptance
-gates, not a claim that the implementation is already complete.
+This work extends the existing v1 implementation. The table records delivered
+implementation separately from final manual acceptance. Remaining checks are
+listed explicitly instead of leaving completed stages marked as pending.
 
 | Stage | Deliverable | Status |
 | --- | --- | --- |
-| 1 | Reproducible inventory, consumer coverage and legacy characterization | Inventory implemented; explicit exceptional-case characterization remains |
-| 2 | Shared v2 model, schemas, selectors, descriptors and native world-tool | Contract and read-only helper implemented; application adapters follow in stages 3–5 |
-| 3 | Runtime, ownership, compatibility, lifecycle and persistence | General adapter and mode/ownership integration implemented; native runtime validation outstanding |
-| 4 | Lua API, per-instance dispatch, descriptors and consumer adapters | API/dispatch implemented; full consumer migration and native execution validation pending |
-| 5 | Full native RME authoring, container editing and unified history | Pending |
-| 6 | External changes, conflicts, recoverable concurrent publication | Pending |
-| 7 | Static migration analysis, generation, validation, apply and revert | Pending |
-| 8 | Complete repository migration, default switch and integrated acceptance | Pending |
+| 1 | Reproducible inventory, consumer coverage and legacy characterization | Implemented; every declaration has an explicit converted, preserved or excluded destination, including exceptional cases |
+| 2 | Shared v2 model, schemas, selectors, descriptors and native world-tool | Implemented in Canary and RME with parity checks and shared fixtures |
+| 3 | Runtime, ownership, compatibility, lifecycle and persistence | Implemented with transactional application, rollback, effective UID validation and persistence projection |
+| 4 | Lua API, per-instance dispatch, descriptors and consumer adapters | Implemented; repository consumers are adapted and dispatch/behavior tests cover migrated and preserved paths |
+| 5 | Full native RME authoring, container editing and unified history | Implemented and compiled; final post-optimization interactive walkthrough remains an acceptance check |
+| 6 | External changes, conflicts, recoverable concurrent publication | Implemented with revision guards, watchers, journals, coordinated map saves and recovery tests |
+| 7 | Static migration analysis, generation, validation, apply and revert | Implemented; the Python suite and compatible native helper exercise the complete lifecycle |
+| 8 | Complete repository migration, default switch and integrated acceptance | Repository migration and World default implemented; final interactive RME and in-game scenarios remain |
 
 ## Compatibility gates
 
@@ -58,11 +59,14 @@ RME validation uses its maintained build and test entry points.
 - Static inventory: 16 loader files, 25 tables, 1,661 declarations and 29 direct
   table-consumer usages. Thirty declarations require explicit treatment, including
   duplicates and unresolved example positions. Empty tables are included.
-- Python 3.12: 15 parser, inventory and native-helper fixture tests passed.
-- RME's maintained headless Visual Studio target: v1 regressions and v2 authoring
-  contract passed. Coverage includes inherited/cleared UIDs, repeated AIDs, base
-  container selection, occurrence fingerprints, descriptor capabilities, unknown
-  fields, relation cycles, teleport cycles and depth/number bounds.
+- Python 3.12: all 49 migration tests passed with a compatible native `world-tool`;
+  no native-helper tests were skipped. Coverage includes static analysis, dispatch,
+  repository completeness, bundle generation, guarded publication, idempotence,
+  reversal, UID census and stale/conflicting revisions.
+- RME's maintained Release x64 solution, `WorldTool` and `WorldLayersTests` targets
+  built locally. The native tests passed v1 regressions and the v2 authoring
+  contract. CI also compiled the final formatting head on Linux, macOS, Windows
+  CMake, Windows Solution Debug/Release and Docker.
 - Additional shared contract checks passed for separate base selection/live UID
   state, persisted children, migration revisions/claims, disabled-layer ownership,
   duplicate ownership and consumed container originals. Loader Lua syntax checks
@@ -70,13 +74,18 @@ RME validation uses its maintained build and test entry points.
 - Shared nested parameter defaults and copy isolation passed in RME's native
   contract target. Lua characterization passed for behavior allow/deny paths,
   missing related items and failed transformations, and for legacy routing with
-  repeated AIDs. Native World Lua bindings and dispatcher tests are authored but
-  have not been executed. The new door descriptor passed JSON Schema validation.
+  repeated AIDs. Canary CI executes the native World Lua binding, dispatcher,
+  runtime and contract tests. The door descriptor passed JSON Schema validation.
+- The runtime acceptance probe generated valid Lua for all 3,940 enabled Global
+  declarations and is part of the maintained legacy, World and mixed startup
+  smoke. It verifies published identities, items, positions, initial item IDs,
+  attributes, reverse bindings, tokens, containers and teleport destinations.
 - JSON Schema 2020-12 validation with jsonschema 4.26.0 accepted the complete
   example catalog, layer and descriptor used by the native tests.
 - Read-only inspection of the global map scanned 17,972,761 tiles and 23,359,453
   items in approximately 16 seconds, retained 2,934 requested positions and found
   587 UID occurrences with no duplicates. This is a local observation, not a
   portable performance guarantee or a gameplay test.
-- No Canary build, server launch, migration application or new GUI walkthrough
-  has been performed during these stages.
+- No full local Canary build or local server launch was performed. Final acceptance
+  still requires a post-optimization RME walkthrough and in-game interaction tests
+  for representative actions, movement, rewards and equipment behavior.

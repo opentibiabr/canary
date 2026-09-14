@@ -113,6 +113,11 @@ void Connection::close(bool force, const std::source_location &source) {
 	ip = 0;
 
 	if (connectionState == CONNECTION_STATE_CLOSED) {
+		if (force && socket.is_open()) {
+			closeSource = source;
+			forcedClose = true;
+			closeSocket();
+		}
 		return;
 	}
 	connectionState = CONNECTION_STATE_CLOSED;
@@ -433,6 +438,11 @@ void Connection::send(const OutputMessage_ptr &outputMessage) {
 
 void Connection::internalWorker() {
 	std::unique_lock lock(connectionLock);
+	if (!socket.is_open()) {
+		messageQueue.clear();
+		return;
+	}
+
 	if (messageQueue.empty()) {
 		if (connectionState == CONNECTION_STATE_CLOSED) {
 			closeSocket();
@@ -440,7 +450,7 @@ void Connection::internalWorker() {
 		return;
 	}
 
-	const auto &outputMessage = messageQueue.front();
+	const auto outputMessage = messageQueue.front();
 	lock.unlock();
 	protocol->onSendMessage(outputMessage);
 	lock.lock();
@@ -491,6 +501,12 @@ InitialTransportState Connection::getInitialTransportState() const {
 }
 
 void Connection::internalSend(const OutputMessage_ptr &outputMessage) {
+	// A forced close can occur while protocol preparation releases the connection lock.
+	if (!socket.is_open()) {
+		messageQueue.clear();
+		return;
+	}
+
 	writeTimer.expires_from_now(std::chrono::seconds(CONNECTION_WRITE_TIMEOUT));
 	writeTimer.async_wait([self = std::weak_ptr<Connection>(shared_from_this())](const std::error_code &error) { Connection::handleTimeout(self, error); });
 
@@ -540,10 +556,15 @@ void Connection::onWriteOperation(const std::error_code &error, size_t bytesTran
 		return;
 	}
 
+	if (!socket.is_open()) {
+		messageQueue.clear();
+		return;
+	}
+
 	messageQueue.pop_front();
 
 	if (!messageQueue.empty()) {
-		const auto &outputMessage = messageQueue.front();
+		const auto outputMessage = messageQueue.front();
 		lock.unlock();
 		protocol->onSendMessage(outputMessage);
 		lock.lock();

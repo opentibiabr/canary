@@ -462,7 +462,7 @@ void Connection::onWriteOperation(const std::error_code &error) {
 	writeTimer.cancel();
 
 	if (error) {
-		g_logger().error("[Connection::onWriteOperation] - Write error: {}", error.message());
+		g_logger().debug("[Connection::onWriteOperation] - Write error: {}", error.message());
 		messageQueue.clear();
 		close(FORCE_CLOSE);
 		return;

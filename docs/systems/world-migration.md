@@ -92,6 +92,8 @@ Mixed mode verifies normalized source hashes before loading scripts. UTF-8 Lua
 text normalizes CRLF to LF for portable provenance; publication guards still
 compare exact bytes. Changed sources require analysis and reconciliation. An
 unclaimed overlapping legacy write aborts startup instead of applying partially.
+If World takes over creation of a legacy book, its dependent text write must also
+be migrated; incomplete ownership fails startup instead of dropping the text.
 
 To return the entire installation to compatibility configuration, explicitly set
 `worldConfiguration = "legacy"` and restart. That uses the frozen Lua settings;

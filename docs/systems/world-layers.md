@@ -1,170 +1,262 @@
-# World layers v1
+# World configuration format
 
-World layers describe external map objects in JSON. Canary and RME read the same
-project. The OTBM supplies terrain and existing items; a layer supplies stable
-object identities, positions, attributes, replacement selectors and relationships.
-Canary creates native teleport items during startup. RME displays and edits the
-external objects over the native map canvas without saving those changes into OTBM.
+World JSON in the datapack's `world/` directory is the source of configuration
+for Canary and RME. The OTBM supplies terrain and base items. JSON supplies stable
+identities, bindings, created content, attributes, relationships and behavior
+parameters. RME edits these files through its normal map canvas, palette,
+properties and history. There is no export step or OTBM format extension.
 
-## Start with Black Knight
+The Global datapack includes a migrated catalog at
+`data-otservbr-global/world/otservbr.world.json`. Install its matching normal
+`otservbr.otbm` alongside it. See [configuration and migration](world-migration.md)
+for compatibility modes, customized installations and returning to legacy.
 
-The global datapack includes `data-otservbr-global/world/otservbr.world.json` and
-`data-otservbr-global/world/layers/black_knight.layer.json`. Install the normal
-`otservbr.otbm` alongside the project, as with the existing datapack setup.
+## Catalog and discovery
 
-Select `worldConfiguration = "world"` to apply World configuration, or `mixed`
-with complete ownership records for a selective migration. `worldProject = "auto"`
-discovers `<dataPackDirectory>/world/<mapName>.world.json`. In these modes the file
-must exist and validate; its map and item catalog must match the server paths.
-See [configuration and migration](world-migration.md) before activating a partial
-project.
-
-Set `worldConfiguration = "legacy"` and restart to return to the original Black Knight
-teleports and legacy UID loader. Changes to this setting or the layer require a
-restart. Reloading Lua does not reread world layers.
-
-Open `otservbr.otbm` normally in a compatible RME; its sibling world catalog loads
-automatically. For a catalog stored elsewhere, use **Map > Load Server Worlds...**
-or configure its path beside the NPC and monster paths in Preferences. **Worlds**
-is a category of the normal palette. Select and drag external portals on the map,
-or double-click them to edit their normal item properties. **Go to arrival**
-navigates across floors. Terrain and ordinary items remain editable in the same
-tab. Ctrl+S writes world changes to layers and base-map changes to OTBM; changing
-only a world object does not serialize the OTBM. Undo/redo follows one timeline.
-
-## Project and layer contract
-
-The schemas are `schemas/world-project-v1.schema.json` and
-`schemas/world-layer-v1.schema.json`. `schemaVersion` is 1. Unknown fields,
-unknown components, unsupported versions and duplicate JSON properties are errors.
-Each document is limited to 16 MiB. Paths are relative to the project file and
-use forward slashes. Layer loading follows an explicit ordered list, with no glob
-search or implicit override precedence.
+The current contract is `schemaVersion: 2`. Its schemas are
+[`world-project-v2`](../../schemas/world-project-v2.schema.json),
+[`world-layer-v2`](../../schemas/world-layer-v2.schema.json),
+[`world-common-v2`](../../schemas/world-common-v2.schema.json),
+[`world-behavior-v2`](../../schemas/world-behavior-v2.schema.json) and
+[`world-migration-v2`](../../schemas/world-migration-v2.schema.json).
+Unknown fields, duplicate JSON properties, invalid types and unsupported versions
+are errors. Parsing does not silently discard unsupported configuration.
 
 ```json
 {
-  "schemaVersion": 1,
-  "map": "otservbr.otbm",
+  "schemaVersion": 2,
+  "id": "example",
+  "map": "example.otbm",
   "items": "../../data/items/items.xml",
-  "layers": ["layers/black_knight.layer.json"]
+  "layers": [{ "file": "quests/example.layer.json", "enabled": true }],
+  "behaviorCatalog": ["behaviors/quest_gated_door.behavior.json"],
+  "migrations": []
 }
 ```
 
-A layer has an `id`, optional display `name`, and `objects`. An object has an `id`,
-optional display `name`, `position`, `origin`, optional `attributes` and optional
-`components`. Qualified identity is `<layer.id>.<object.id>`, such as
-`black_knight.entry`. Object identity is independent of AID and UID.
+Resolve paths relative to the file declaring them, using forward slashes.
+The catalog explicitly lists layers, behavior descriptors and migration records.
+Directory discovery never activates an unlisted file. Backups, drafts and
+publication journals are not active configuration.
 
-- Layer IDs use lowercase letters, digits and underscores, starting with a letter.
-  Local object IDs additionally allow dots and hyphens. Each part is at most 128 characters.
-- Positions have integer X/Y in 0..65535 and floor in 0..15. The null position is invalid.
-- `origin.type` is `layer`; `origin.itemId` must identify a native teleport in v1.
-- `origin.replaces`, when present, selects one original teleport by its original
-  position and item ID. Exactly one match is required. This anchor does not move
-  when the external object moves, and two objects cannot consume the same original.
-- AID may repeat. UID must be unique across layers and the effective map, including
-  container contents. Zero means unset. A UID on a consumed original is permitted;
-  the same UID anywhere else is an error.
-- The optional `teleport` component names a qualified destination object plus an
-  optional integer `destinationOffset`. The arrival is the target object's current
-  position plus this offset. Without the component, the native teleport is inert.
-- Version 1 allows one external object per tile. Creation and arrival tiles need
-  ground and must be unblocked and outside houses. Competing base-map teleports,
-  missing references, out-of-range arrivals and effective teleport cycles are errors.
+With `worldProject = "auto"`, Canary resolves
+`<dataPackDirectory>/world/<mapName>.world.json`. Explicit World/mixed mode requires
+a valid catalog matching the configured map and item catalog. RME opens the OTBM
+first, then looks for its sibling catalog or explicit association and parses the
+World project in the background. A session/revision guard prevents a late result
+from attaching to another map. Without a catalog, the map opens normally and the
+Worlds palette offers catalog creation.
 
-The model and map-independent validator are maintained in `src/world` and in the
-editor's corresponding `source/world` directory. A contract change must update both
-implementations, schemas and fixtures together. Runtime and editor adapters supply
-map snapshots to the same validator; neither adapter executes layer files as Lua.
+## Objects and selectors
 
-## Runtime ownership and load order
+Each layer has `id`, optional `name` and `objects`. Version 2 objects carry their
+full stable identity, such as `example.lever`. Moving an object or its document
+does not change its identity. Explicit renaming updates references. IDs begin
+with a lowercase letter and contain lowercase letters, digits, dots, underscores
+or hyphens, up to 256 characters. AID and UID are never object identities.
 
-```mermaid
-flowchart LR
-  J[Project and layers] --> D[Parse declarations before Lua scripts]
-  O[OTBM and legacy startup] --> V[Validate effective map]
-  D --> V
-  V --> S[Stage native teleport items]
-  S --> A[Replace originals and register UIDs]
-  A --> N[Server accepts connections]
+| Kind/source | Meaning |
+| --- | --- |
+| `anchor` | Reference position without a gameplay item |
+| `item`, `map` | Bind and configure one existing base item |
+| `item`, `create` | Create an externally owned item |
+| `item`, `replace` | Consume one selected original and place its replacement |
+
+```json
+{
+  "schemaVersion": 2,
+  "id": "example",
+  "objects": [
+    {
+      "id": "example.sign",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "position": { "x": 100, "y": 100, "z": 7 },
+          "part": "item",
+          "itemId": 2012
+        }
+      },
+      "attributes": { "text": "Entrance to the library." }
+    },
+    {
+      "id": "example.arrival",
+      "kind": "anchor",
+      "position": { "x": 110, "y": 110, "z": 7 }
+    },
+    {
+      "id": "example.portal",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 1949,
+        "count": 1,
+        "placement": { "position": { "x": 102, "y": 100, "z": 7 } }
+      },
+      "lifecycle": "fixture",
+      "components": [{
+        "type": "teleport",
+        "destination": {
+          "object": "example.arrival",
+          "offset": { "x": 0, "y": -1, "z": 0 }
+        }
+      }]
+    }
+  ]
+}
 ```
 
-The runtime is owned by `Game`. Declarations load before datapack scripts register
-events. After maps, legacy startup and house transfers, the runtime validates the
-whole project, stages its items, removes consumed originals, inserts replacements
-and registers their UIDs. Normal validation failures mutate no items. An application
-failure restores staged changes through a rollback journal and aborts startup.
-No live reload or background mutation is introduced.
+Root selectors specify position, `part` (`ground` or `item`) and expected item ID.
+Optional attributes constrain the original further. Container selectors identify
+the parent by its World identity and match a child inside that container.
+Selection requires exactly one match. Indistinguishable items require an explicit
+`occurrence` with zero-based `index`, expected `count` and base-set `fingerprint`.
+A changed precondition requires reassociation; no implicit first match is used.
 
-UID validation reads both materialized items and cached `BasicTile`/`BasicItem`
-records, descending into containers. It does not materialize the complete map.
-The existing unique-item registry is also checked for items outside map tiles.
-Only the small set of affected tiles and teleport-chain destinations need resolution.
+Selection observes original OTBM content before external children are inserted.
+Canary retains the authored item ID when its native map loader normalizes fields
+such as fire into their persistent item types. This provenance is transient and
+is not serialized into OTBM or copied to ordinary cloned items.
 
-The created objects use `Teleport::setDestPos` and the existing native teleport
-behavior for players, monsters, NPCs, items and effects. There is no additional Lua
-movement handler for migrated portals.
+Creation specifies `itemId`, optional `count`/`subtype`, and a placement containing
+either a position or a parent `container` identity and insertion `order`.
+Parents resolve before children. Replacement has both a selector and creation
+placement: moving the replacement does not move the original selection anchor.
+Several compatible items may share a tile; two declarations cannot consume the
+same original. Positions use X/Y 0..65535 and floors 0..15; the null position is
+invalid. Offsets use signed X/Y and floor deltas and must resolve in range.
 
-`Game.isWorldObjectDeclared(id)` reports a declaration, not current item existence.
-It is available during script registration and remains stable through Lua reload.
-The two pilot legacy entries keep their original values and add `worldObject`.
-That marker suppresses legacy UID assignment and movement registration only while
-the corresponding object is declared. Invalid declarations stop startup; they do
-not silently fall back to a partially migrated world.
+## Attributes and effective UIDs
 
-## Pilot behavior
+Supported overrides are `aid`, `uid`, `text`, `description`, `name`, `article`,
+`plural`, `writer`, `date`, and `custom`. Custom values are scalar booleans,
+integers, finite numbers or strings; names under `__world.` are reserved for
+runtime ownership metadata. Date is an unsigned 32-bit value.
 
-| Object | Position | Arrival | UID |
-| --- | --- | --- | --- |
-| `black_knight.entry` | 32874,31941,12 | 32874,31948,11 | 38012 |
-| `black_knight.exit` | 32874,31955,11 | 32874,31942,12 | 38013 |
+A missing override inherits the base value. A present override applies its value;
+`aid: 0` and `uid: 0` explicitly clear. Removing an override restores inheritance.
+RME distinguishes inherited values from overrides and shows the destination file.
 
-Both retain item 1949. Entry targets exit with offset `(0,-7,0)`; exit targets
-entry with `(0,1,0)`. These offsets preserve the existing quest arrivals and avoid
-landing directly on the opposite portal. Moving an endpoint moves the corresponding
-arrival while the replacement selector continues to identify the original OTBM item.
+AID may repeat. A nonzero UID must be unique in the effective world, including
+inherited attributes, replacements and nested container contents. Validation
+accounts for consumed originals rather than reporting their replaced UID twice.
+It also checks the server's live unique-item registry. The complete base-map UID
+census includes cached items without materializing every tile.
 
-## Validation
+## Relations, components and behaviors
 
-Run the standalone legacy ownership regression from the repository root:
+A reference contains `object` and an optional spatial `offset`. Named relations
+can hold one reference or a list. Descriptor relations declare target kind,
+capabilities, cardinality and whether offsets are allowed. Moving the referenced
+object updates the effective destination without changing the reference.
 
-```sh
-lua tests/world_layers/legacy_test.lua
-```
+`teleport` is a native component with a destination reference. It requires a
+compatible teleport item, valid arrival and an acyclic effective teleport chain.
+These restrictions do not prohibit doors or general relation cycles. Containment
+cycles and teleport arrival cycles are checked separately.
 
-The `WorldLayers.*` unit tests cover identity-based arrivals, UID/AID rules,
-replacement ambiguity, missing ground, houses, map UID conflicts, serialization,
-unsupported fields and effective cycles. Build and run them only through the
-authorized local build workflow in `docs/building/local-validation.md`.
+Behavior descriptors declare a versioned Lua implementation, events, parameters,
+defaults, limits, relations and editor help. Instance bindings live on objects.
+RME builds controls from descriptors, including typed lists and records. Canary
+passes typed configuration copies and resolved references to the implementation.
+See [World behaviors and Lua](world-behaviors.md) for APIs, events and deferred
+work. An assigned World event consumes that instance's event even when denied;
+other events retain their native or legacy dispatch.
 
-Before releasing changes to this contract, also run the editor's headless contract
-test and the following integration scenario on a local server and map copy:
+The Global migration preserves Lua teleport rules through World behaviors when
+those rules differ from native teleport semantics. The two Black Knight objects
+use native components, retaining UIDs 38012/38013 and arrival offsets `(0,-7,0)`
+and `(0,1,0)`. This example does not limit the supported configuration model.
 
-1. Record the OTBM hash, open the OTBM in RME and inspect both original locations.
-   Each effective portal must appear once. Hide the layer to inspect the originals.
-2. Move the exit to a valid tile, undo, redo and save. Reopen the OTBM. The exit
-   and entry's resolved arrival must follow the edit, and the OTBM hash must match.
-3. Start Canary with the edited project. Verify native travel with a player, an NPC
-   or monster, and a movable item, including arrival position and effects.
-4. Verify failure before online state for an ambiguous original, missing tile,
-   duplicate UID, missing target and a cycle. Check a UID conflict in a cached tile
-   and a container, not just a materialized tile.
-5. Select `worldConfiguration = "legacy"` and restart. Confirm the original Black Knight positions,
-   destinations and legacy registration return. Unrelated quests must be unchanged.
+## Lifecycle, containers and persistence
 
-## Scope
+Map bindings normally keep `native` lifecycle. Explicit `fixture` bindings are
+fixed. External items choose `fixture` or `refillOnStartup`.
 
-Temporary/decaying teleport items are not supported as replacements in v1.
+| Policy | Runtime behavior |
+| --- | --- |
+| `native` | Keep native item movement and invalidate or update its World binding as needed |
+| `fixture` | Keep one managed fixed instance; ordinary inventory transfer is denied |
+| `refillOnStartup` | Reconcile collectible content after persistence loads |
 
-Version 1 edits existing external objects: position, AID/UID and teleport relation.
-It does not move base items, change the OTBM format, execute arbitrary components,
-rename/create/delete identities in the GUI, provide a generic Lua object API, or
-migrate the remaining legacy tables. Custom map loads that replace an active
-object's region are not a supported world-layer reload mechanism.
+For refill content, the runtime searches the declared destination for ownership
+metadata: zero matches creates an item, one reuses it, and multiple matches are a
+conflict. It does not delete duplicates automatically. Removing a collectible
+from its source domain makes it an ordinary item and retires its World binding.
+It is not refilled immediately; a later startup may replace the missing content.
+Refill declarations cannot reserve an exclusive UID.
 
-RME can save a structurally valid draft with semantic diagnostics. Canary rejects
-that draft at startup. RME validates against the base map and project catalog;
-Canary performs the final validation after legacy scripts, so runtime-only changes
-can produce additional diagnostics. Layer files are saved atomically one at a time;
-a multi-layer save is not a filesystem-wide transaction. External project/layer
-changes block overwrite and remain available for manual reconciliation.
+The runtime stores ownership metadata through existing item persistence, not a
+parallel configuration database. Player-owned items keep ordinary persistence.
+Movement, removal, transformation and stack operations update bindings and retire
+stale generations. Deferred Lua work resolves an identity/generation/epoch token
+before accessing an item.
+
+House serialization projects underlying attributes into a clone instead of
+mutating the live item during save. World overrides are not saved as inherited
+base values that could reappear after their JSON override is removed. RME shows
+initial configuration; live quest state and player persistence remain server
+responsibilities.
+
+## Server load and failure boundary
+
+1. Determine the compatibility mode; load and validate declarations, descriptors
+   and migration ownership before script registration.
+2. Load scripts and register matching behavior implementations.
+3. Read OTBM and capture original selections before auxiliary configuration and
+   persisted content change the effective items.
+4. Run allowed legacy startup and complete existing house operations.
+5. Revalidate live targets, prepare creations and attribute snapshots, then apply
+   the declarative plan and publish instance bindings before opening the server.
+
+Preparation/validation errors abort startup. Application failures roll back
+attributes, UIDs, created/replaced content and instance bindings. This boundary
+does not promise rollback of arbitrary Lua/database effects. Declarations can be
+queried before publication; live items are unavailable until they are bound.
+
+Startup applies configuration once. Lua reload validates and rebinds compatible
+implementations but does not reread World JSON. Invalid callbacks remain
+unavailable, without permissive fallback. Custom map-region replacement is not a
+supported live World reload mechanism.
+
+## Editing and file changes
+
+Open the normal OTBM in RME and use the Worlds palette, canvas and item properties.
+Map bindings, external items, replacements, anchors, layers, attributes,
+behaviors, relations and container content share the native undo timeline.
+Moving a base item updates its OTBM position and selector together; moving an
+external item changes JSON only. Replacement originals remain in the base OTBM.
+
+Ctrl+S saves each dirty destination. JSON-only edits whose selectors already match
+the persisted map skip OTBM serialization. When a World declaration depends on a
+created, moved, retyped or reparented unsaved base item, RME stages and publishes
+the OTBM and World files as one recoverable operation; an OTBM serialization
+failure publishes no dependent JSON. Invalid configuration blocks normal
+publication and can be preserved in a separate inactive draft. External JSON is
+validated before replacing the scene; invalid syntax or missing files preserve
+the last valid state and local work. Conflicts offer base/local/disk comparison,
+a draft copy or confirmed reload. History tied to superseded document revisions
+cannot overwrite external changes.
+
+Catalog/layer publication uses exact revision guards, cooperative locks,
+recoverable displaced versions and a pending marker. Canary rejects incomplete
+publications. See [file publication and recovery](world-file-publication.md).
+
+## Version 1 compatibility and validation
+
+Version 1 catalogs and layers remain readable. They use layer-qualified local
+object IDs, external teleport origins and the original restricted placement
+rules. Opening alone does not rewrite them. Structural v2 authoring requires
+explicit conversion, which preserves their fully qualified identities. Older
+v1-only readers reject v2 instead of guessing at its fields.
+
+The shared native contract, map validator, file service and schemas are maintained
+in Canary's `src/world/` and RME's `source/world/`. Changes must keep their common
+implementations and fixtures equivalent. The Python migrator calls the packaged
+native [world-tool](../../tools/world_tool/README.md); it does not duplicate map
+or contract validation in Python.
+
+See [the implementation record](world-implementation.md) for executed checks and
+outstanding acceptance. Native unit tests, a visual editor walkthrough and actual
+gameplay/persistence tests are separate evidence.

@@ -4788,8 +4788,13 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				}
 				const auto &task = createPlayerTask(
 					400,
-					[this, playerId, pos, stackPos, index, itemId] {
-						playerUseItem(playerId, pos, stackPos, index, itemId);
+					[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
+						const auto client = originatingClient.lock();
+						const auto &currentPlayer = g_game().getPlayerByID(playerId);
+						if (!client || !currentPlayer || currentPlayer->getClient() != client) {
+							return;
+						}
+						g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
 					},
 					__FUNCTION__
 				);
@@ -4820,8 +4825,13 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		}
 		const auto &task = createPlayerTask(
 			delay,
-			[this, playerId, pos, stackPos, index, itemId] {
-				playerUseItem(playerId, pos, stackPos, index, itemId);
+			[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
+				const auto client = originatingClient.lock();
+				const auto &currentPlayer = g_game().getPlayerByID(playerId);
+				if (!client || !currentPlayer || currentPlayer->getClient() != client) {
+					return;
+				}
+				g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
 			},
 			__FUNCTION__
 		);

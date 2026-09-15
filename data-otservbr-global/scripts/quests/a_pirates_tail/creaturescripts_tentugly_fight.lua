@@ -75,7 +75,6 @@ local TENTACLE_CONFIG = {
 		bodyPositions = {
 			Position(33718, 31180, 7),
 			Position(33718, 31179, 7),
-			Position(33718, 31179, 7),
 			Position(33718, 31178, 7),
 			Position(33718, 31177, 7),
 		},

@@ -4736,6 +4736,17 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 	}
 }
 
+namespace {
+	void retryPlayerUseItemForSession(const std::weak_ptr<ProtocolGame> &originatingClient, uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
+		const auto client = originatingClient.lock();
+		const auto &currentPlayer = g_game().getPlayerByID(playerId);
+		if (!client || !currentPlayer || currentPlayer->getClient() != client) {
+			return;
+		}
+		g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
+	}
+} // namespace
+
 void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	const auto &player = getPlayerByID(playerId);
@@ -4789,12 +4800,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				const auto &task = createPlayerTask(
 					400,
 					[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
-						const auto client = originatingClient.lock();
-						const auto &currentPlayer = g_game().getPlayerByID(playerId);
-						if (!client || !currentPlayer || currentPlayer->getClient() != client) {
-							return;
-						}
-						g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
+						retryPlayerUseItemForSession(originatingClient, playerId, pos, stackPos, index, itemId);
 					},
 					__FUNCTION__
 				);
@@ -4826,12 +4832,7 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		const auto &task = createPlayerTask(
 			delay,
 			[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
-				const auto client = originatingClient.lock();
-				const auto &currentPlayer = g_game().getPlayerByID(playerId);
-				if (!client || !currentPlayer || currentPlayer->getClient() != client) {
-					return;
-				}
-				g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
+				retryPlayerUseItemForSession(originatingClient, playerId, pos, stackPos, index, itemId);
 			},
 			__FUNCTION__
 		);

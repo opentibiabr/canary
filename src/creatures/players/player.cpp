@@ -2062,9 +2062,6 @@ std::shared_ptr<DepotLocker> Player::activateDepotLocker(uint32_t depotId) {
 	}
 
 	activeDepotLocker = getDepotLocker(depotId);
-	if (activeDepotLocker) {
-		depotStorageLoaded = true;
-	}
 	return activeDepotLocker;
 }
 

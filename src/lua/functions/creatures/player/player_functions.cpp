@@ -1331,7 +1331,6 @@ int PlayerFunctions::luaPlayerGetDepotChest(lua_State* L) {
 	const bool autoCreate = Lua::getBoolean(L, 3, false);
 	const auto &depotChest = player->getDepotChest(depotId, autoCreate);
 	if (depotChest) {
-		player->markDepotStorageLoaded();
 		if (player->getClient() && !player->getActiveDepotLocker()) {
 			player->activateDepotLocker(0);
 		}

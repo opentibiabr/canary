@@ -15,6 +15,7 @@ references in the surrounding subdirectories:
 | [`architecture.md`](architecture.md)      | System design, components and technical architecture                 |
 | [`development.md`](development.md)        | Development environment, coding standards and contribution workflow  |
 | [`operations.md`](operations.md)          | Deployment, monitoring, security, backups and production operations  |
+| [`building/recompile.md`](building/recompile.md) | Linux recompilation, executable history, crash analysis and WSL validation |
 | [`hardware-sizing.md`](hardware-sizing.md) | RAM/CPU estimates, player activity and hardware capacity planning |
 | [`systems/content-reference-auditor.md`](systems/content-reference-auditor.md) | Profile-aware gameplay content and identifier auditing |
 

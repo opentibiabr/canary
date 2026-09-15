@@ -59,6 +59,8 @@ environment variables, test account, and troubleshooting guide.
 
 ## Documentation
 
+- [Recompile on Linux with executable backups](docs/building/recompile.md).
+  Covers seven-day retention, crash analysis, optional restart and WSL tests.
 - [Hardware sizing and capacity planning](docs/hardware-sizing.md). Measure
   RAM and CPU, compare training and hunting workloads, and review capacity.
 - [Shared build cache for worktrees and forks](docs/development/shared-build-cache.md).

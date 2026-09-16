@@ -800,9 +800,11 @@ int GlobalFunctions::luaIsInWar(lua_State* L) {
 int GlobalFunctions::luaFsCreateDirectories(lua_State* L) {
 	// fsCreateDirectories(path)
 	// Private bridge for FS.mkdir()/FS.mkdir_p() (data/libs/functions/fs.lua) --
-	// lua_register() only reaches the global table, so fs.lua captures this
-	// into a local and clears the global immediately on load; it is not meant
-	// to be called directly by scripts, hence no Lua API docgen entry.
+	// fs.lua captures this into a local instead of calling it directly, and
+	// deliberately leaves the global registered: a core reload re-executes
+	// fs.lua in the same Lua environment, and a cleared global would leave
+	// that second capture as nil. It is not meant to be called directly by
+	// scripts, hence no Lua API docgen entry.
 	// Creates path and any missing parent directories, matching std::filesystem::create_directories.
 	// No shell is ever started, so there is no command-injection surface and no denylist of
 	// "unsafe" characters needed -- any path std::filesystem accepts is valid here.

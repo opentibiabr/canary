@@ -2,16 +2,13 @@ FS = {}
 
 -- Private bridge to the native fsCreateDirectories() binding
 -- (src/lua/functions/core/game/global_functions.cpp -> std::filesystem::create_directories).
--- lua_register() has no narrower scope than the global table, so it's
--- captured into a local here and immediately removed from _G -- otherwise
--- it would sit alongside FS.mkdir() as a second, undocumented global entry
--- point (no Lua API docgen coverage, no path validation of its own) instead
--- of being purely implementation plumbing for FS.mkdir()/FS.mkdir_p(). This
--- file loads as part of the core library bootstrap (data/core.lua ->
--- libs/libs.lua), before any datapack/custom script runs, so nothing else
--- ever observes the global existing.
+-- Capture the native binding for these wrappers, but keep it registered:
+-- core reload executes this file again in the same Lua environment, and
+-- clearing the global here would leave that second execution capturing
+-- nil, breaking FS.mkdir()/FS.mkdir_p() after every reload. Hiding a
+-- binding behind a local is not an access-control boundary anyway --
+-- preserving reload behavior matters more than removing this entry point.
 local nativeCreateDirectories = fsCreateDirectories
-fsCreateDirectories = nil
 
 function FS.exists(path)
 	local file = io.open(path, "r")

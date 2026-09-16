@@ -41,11 +41,31 @@ end
 dofile("data/libs/functions/fs.lua")
 
 ---------------------------------------------------------------------------
--- The native binding must not survive as a bare global
+-- The native binding must survive a core reload
 ---------------------------------------------------------------------------
 
-test("fsCreateDirectories is removed from _G once fs.lua has loaded", function()
-	assert_nil(fsCreateDirectories, "must not be reachable as a second, undocumented entry point")
+test("fsCreateDirectories stays registered so a core reload can re-capture it", function()
+	assert_equal(type(fsCreateDirectories), "function", "must still be reachable: core reload re-executes fs.lua in the same Lua environment")
+end)
+
+test("reloading fs.lua (as GameReload::reloadCore() does) leaves FS.mkdir working", function()
+	-- core.lua -> libs/libs.lua loads fs.lua again in the same Lua state on
+	-- every core reload; this must not leave FS.mkdir()/FS.mkdir_p() calling
+	-- a nil upvalue the way it did when the global was cleared on first load.
+	dofile("data/libs/functions/fs.lua")
+
+	nativeCalls = {}
+	local ok, err = FS.mkdir("second-load/dir")
+	assert_equal(ok, true)
+	assert_nil(err)
+	assert_equal(#nativeCalls, 1)
+	assert_equal(nativeCalls[1], "second-load/dir")
+
+	-- Native failures must still propagate after a reload, not just succeed silently.
+	nativeCalls = {}
+	local ok2, err2 = FS.mkdir("trigger-native-failure")
+	assert_equal(ok2, false)
+	assert_equal(err2, "simulated filesystem error")
 end)
 
 ---------------------------------------------------------------------------

@@ -66,7 +66,7 @@ function RegenSoul(id, delay)
 
 		if currentSoul < maxSoul then
 			player:addSoul(1)
-			player:sendTextMessage(MESSAGE_FAILURE,	"One soul point has been restored.")
+			player:sendTextMessage(MESSAGE_FAILURE, "One soul point has been restored.")
 		end
 	end
 

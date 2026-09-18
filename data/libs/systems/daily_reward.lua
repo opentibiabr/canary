@@ -59,7 +59,10 @@ function RegenSoul(id, delay)
 		return false
 	end
 
-	local maxSoul = vocation:getMaxSoul()
+local maxSoul = vocation:getMaxSoul()
+if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) or player:isPremium() then
+	maxSoul = math.max(maxSoul, 200)
+end
 
 	if maxSoul and player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
 		local currentSoul = player:getSoul()

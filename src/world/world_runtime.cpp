@@ -209,7 +209,9 @@ struct WorldLayerRuntime::State {
 	uint64_t epoch = 1;
 	uint32_t movementDepth = 0;
 	std::vector<std::weak_ptr<Item>> moving;
-	bool captured = false, failed = false, applied = false;
+	bool captured = false;
+	bool failed = false;
+	bool applied = false;
 };
 
 WorldLayerRuntime::WorldLayerRuntime() :
@@ -442,11 +444,22 @@ bool WorldLayerRuntime::apply() {
 	struct Change {
 		std::string id;
 		const world_layers::Object* definition = nullptr;
-		std::shared_ptr<Item> original, item;
-		std::shared_ptr<Cylinder> oldParent, destination, relocationParent;
-		world_layers::Value::Record before, values;
-		std::optional<world_layers::Position> beforeDestination, destinationPosition;
-		bool registered = false, removed = false, added = false, mutated = false, reused = false, relocated = false, detached = false;
+		std::shared_ptr<Item> original;
+		std::shared_ptr<Item> item;
+		std::shared_ptr<Cylinder> oldParent;
+		std::shared_ptr<Cylinder> destination;
+		std::shared_ptr<Cylinder> relocationParent;
+		world_layers::Value::Record before;
+		world_layers::Value::Record values;
+		std::optional<world_layers::Position> beforeDestination;
+		std::optional<world_layers::Position> destinationPosition;
+		bool registered = false;
+		bool removed = false;
+		bool added = false;
+		bool mutated = false;
+		bool reused = false;
+		bool relocated = false;
+		bool detached = false;
 	};
 	std::vector<Change> changes;
 	std::map<uint16_t, std::shared_ptr<Item>> oldRegistry;

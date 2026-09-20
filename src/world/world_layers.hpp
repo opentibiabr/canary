@@ -85,10 +85,13 @@ namespace world_layers {
 	};
 
 	struct Parameter {
-		std::string type, label, help;
+		std::string type;
+		std::string label;
+		std::string help;
 		bool required = false;
 		std::optional<Value> defaultValue;
-		std::optional<double> minimum, maximum;
+		std::optional<double> minimum;
+		std::optional<double> maximum;
 		std::vector<Value> choices;
 		std::vector<std::string> capabilities;
 		std::map<std::string, Parameter> fields;
@@ -96,15 +99,21 @@ namespace world_layers {
 	};
 
 	struct RelationType {
-		std::string targetKind, label, help;
+		std::string targetKind;
+		std::string label;
+		std::string help;
 		std::vector<std::string> capabilities;
-		uint32_t minimum = 0, maximum = 1;
+		uint32_t minimum = 0;
+		uint32_t maximum = 1;
 		bool allowOffset = false;
 	};
 
 	struct BehaviorDescriptor {
-		std::filesystem::path file, script;
-		std::string id, name, targetKind;
+		std::filesystem::path file;
+		std::filesystem::path script;
+		std::string id;
+		std::string name;
+		std::string targetKind;
 		uint32_t contractVersion = 1;
 		std::vector<std::string> events;
 		std::map<std::string, Parameter> parameters;
@@ -128,7 +137,8 @@ namespace world_layers {
 		uint32_t order = 0;
 		uint16_t count = 1;
 		std::optional<uint16_t> subtype;
-		bool aidOverride = false, uidOverride = false;
+		bool aidOverride = false;
+		bool uidOverride = false;
 		Value::Record attributes;
 		std::map<std::string, std::vector<Reference>> relations;
 		std::vector<BehaviorBinding> behaviors;
@@ -164,8 +174,15 @@ namespace world_layers {
 	struct MigrationClaim {
 		MigrationSourceKind kind = MigrationSourceKind::LuaTable;
 		std::filesystem::path file;
-		std::string table, key, occurrence, fingerprint, object;
-		std::string registration, selector, value, event;
+		std::string table;
+		std::string key;
+		std::string occurrence;
+		std::string fingerprint;
+		std::string object;
+		std::string registration;
+		std::string selector;
+		std::string value;
+		std::string event;
 		uint32_t declaration = 1;
 		std::vector<std::string> responsibilities;
 	};
@@ -188,7 +205,8 @@ namespace world_layers {
 		std::vector<Layer> layers;
 		std::unordered_map<std::string, std::pair<size_t, size_t>> objects;
 		uint32_t schemaVersion = 1;
-		std::string id, schema;
+		std::string id;
+		std::string schema;
 		std::vector<BehaviorDescriptor> behaviors;
 		std::vector<std::filesystem::path> migrations;
 		std::vector<MigrationRecord> migrationRecords;

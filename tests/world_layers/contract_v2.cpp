@@ -255,7 +255,7 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	EffectiveWorldModel effective;
 	diagnostics.clear();
 	require(buildEffectiveWorldModel(project, map, EffectiveMode::Mixed, { legacyWrite }, effective, diagnostics), diagnostics.empty() ? "effective model accepts exact ownership claim" : diagnostics.front().describe());
-	const auto effectiveLever = std::find_if(effective.instances.begin(), effective.instances.end(), [](const auto &entry) { return entry.object == "example.lever"; });
+	const auto effectiveLever = std::ranges::find_if(effective.instances, [](const auto &entry) { return entry.object == "example.lever"; });
 	require(effectiveLever != effective.instances.end() && effectiveLever->aid.effective == 12107 && effectiveLever->aid.owner == EffectiveOwner::World, "claimed legacy write is suppressed before the World override");
 	project.migrationRecords.clear();
 	diagnostics.clear();
@@ -264,7 +264,7 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	project.layers[0].enabled = false;
 	diagnostics.clear();
 	require(buildEffectiveWorldModel(project, map, EffectiveMode::Mixed, { legacyWrite }, effective, diagnostics), "disabled World ownership remains resolvable");
-	const auto suspendedLever = std::find_if(effective.instances.begin(), effective.instances.end(), [](const auto &entry) { return entry.object == "example.lever"; });
+	const auto suspendedLever = std::ranges::find_if(effective.instances, [](const auto &entry) { return entry.object == "example.lever"; });
 	require(suspendedLever != effective.instances.end() && suspendedLever->aid.effective == 100 && suspendedLever->aid.owner == EffectiveOwner::SuspendedWorld, "disabled claim suppresses legacy while leaving the base value effective");
 	require(check(), "disabled layer retains migration ownership");
 	project.layers[0].enabled = true;

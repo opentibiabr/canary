@@ -23,7 +23,8 @@ namespace {
 		return *revision;
 	}
 	std::string atStage;
-	std::filesystem::path atFile, competingFile;
+	std::filesystem::path atFile;
+	std::filesystem::path competingFile;
 	int fault = 0;
 	void inject(const char* stage, const std::filesystem::path &file) {
 		if (atStage != stage || (!atFile.empty() && file != atFile)) {
@@ -58,7 +59,8 @@ void runWorldFileTests(const std::filesystem::path &scratch) {
 	using namespace world_files;
 	const auto root = scratch / ("files-" + std::to_string(std::chrono::steady_clock::now().time_since_epoch().count()));
 	check(std::filesystem::create_directory(root), "reserve file test directory");
-	const auto catalog = root / "map.world.json", layer = root / "layer.json";
+	const auto catalog = root / "map.world.json";
+	const auto layer = root / "layer.json";
 	std::string error;
 	{
 		const auto first = root / "first.world.json";

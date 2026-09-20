@@ -170,7 +170,8 @@ struct WorldBehaviors::State {
 	uint64_t epoch = 1;
 	std::filesystem::path loading;
 	bool fileFailed = false;
-	std::map<std::string, WorldBehaviorRegistration> staged, registered;
+	std::map<std::string, WorldBehaviorRegistration> staged;
+	std::map<std::string, WorldBehaviorRegistration> registered;
 	std::set<int32_t> callbackIds;
 	std::map<std::string, std::map<std::string, const world_layers::BehaviorBinding*>> bindings;
 	std::map<std::string, std::set<std::string>> owned;

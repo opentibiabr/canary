@@ -20,8 +20,16 @@ namespace world_layers {
 			return { p.x, p.y, p.z };
 		}
 		struct ItemType {
-			bool known = false, ground = false, container = false, teleport = false, door = false;
-			bool blocking = false, movable = true, stackable = false, readable = false, fluid = false;
+			bool known = false;
+			bool ground = false;
+			bool container = false;
+			bool teleport = false;
+			bool door = false;
+			bool blocking = false;
+			bool movable = true;
+			bool stackable = false;
+			bool readable = false;
+			bool fluid = false;
 			uint8_t topOrder = 0;
 		};
 
@@ -130,7 +138,8 @@ namespace world_layers {
 				return false;
 			}
 			Bytes reader { content };
-			uint32_t field = 0, wire = 0;
+			uint32_t field = 0;
+			uint32_t wire = 0;
 			uint64_t scalar = 0;
 			std::span<const uint8_t> data;
 			while (reader.field(field, wire, scalar, data)) {
@@ -534,7 +543,8 @@ namespace world_layers {
 		std::map<Key, MapTile> tiles;
 		std::vector<UniqueOccurrence> ids;
 		std::vector<IdentifierOccurrence> identifiers;
-		uint64_t tileCount = 0, itemCount = 0;
+		uint64_t tileCount = 0;
+		uint64_t itemCount = 0;
 		void census(const std::vector<MapItem> &siblings, const Position &position, const std::vector<uint64_t> &containers = {}) {
 			for (const auto &item : siblings) {
 				++itemCount;
@@ -566,7 +576,8 @@ namespace world_layers {
 		auto value = snapshotValue(position, snapshot);
 		auto &record = std::get<Value::Record>(value.data);
 		Value::List items;
-		Value::Record legacy, first;
+		Value::Record legacy;
+		Value::Record first;
 		for (const auto &item : snapshot.items) {
 			items.push_back(inspectedItem(item, snapshot.items, position, false));
 			if (item.ground) {

@@ -11,10 +11,12 @@ namespace world_files {
 	using Revision = std::optional<std::string>; // absent file is distinct from empty content
 	struct Change {
 		std::filesystem::path file;
-		Revision before, after;
+		Revision before;
+		Revision after;
 	};
 	struct Publication {
-		std::filesystem::path catalog, root;
+		std::filesystem::path catalog;
+		std::filesystem::path root;
 		std::vector<Change> changes; // dependency order; catalog last
 		std::map<std::filesystem::path, Revision> guards;
 	};

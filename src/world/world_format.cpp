@@ -82,7 +82,7 @@ namespace world_layers {
 					return fail(field, "Expected an object");
 				}
 				for (const auto &entry : value.items()) {
-					if (std::none_of(allowed.begin(), allowed.end(), [&](const char* name) { return name == entry.key(); })) {
+					if (std::ranges::none_of(allowed, [&](const char* name) { return name == entry.key(); })) {
 						return fail(field + "/" + entry.key(), "Unsupported field");
 					}
 				}
@@ -770,7 +770,8 @@ namespace world_layers {
 
 	bool loadMigration(const std::filesystem::path &file, MigrationRecord &record, Diagnostics &diagnostics, SourceFiles* sources) {
 		FormatReader reader(file, diagnostics);
-		std::string source, error;
+		std::string source;
+		std::string error;
 		Json json;
 		if (!readProjectSource(file, source, error, sources)) {
 			return reader.fail("", error);
@@ -800,7 +801,8 @@ namespace world_layers {
 		};
 		for (const auto &entry : json["sources"]) {
 			std::filesystem::path path;
-			std::string digest, format = "utf8-lf";
+			std::string digest;
+			std::string format = "utf8-lf";
 			if (!reader.keys(entry, "/sources", { "file", "sha256", "format" }) || !reader.relative(entry.value("file", Json()), "/sources/file", path) || !hash(entry.value("sha256", Json()), "/sources/sha256", digest)
 			    || (entry.contains("format") && !reader.text(entry["format"], "/sources/format", format))) {
 				return false;
@@ -905,7 +907,8 @@ namespace world_layers {
 
 	bool loadProjectV2(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources) {
 		FormatReader reader(file, diagnostics);
-		std::string source, error;
+		std::string source;
+		std::string error;
 		Json value;
 		Project parsed;
 		parsed.file = file;
@@ -1446,7 +1449,7 @@ namespace world_layers {
 					}
 					if (responsibility.starts_with("on")) {
 						const auto* target = project.find(claim.object);
-						const bool behaviorBound = target && std::any_of(target->behaviors.begin(), target->behaviors.end(), [&](const auto &binding) { return std::find(binding.events.begin(), binding.events.end(), responsibility) != binding.events.end(); });
+						const bool behaviorBound = target && std::ranges::any_of(target->behaviors, [&](const auto &binding) { return std::ranges::find(binding.events, responsibility) != binding.events.end(); });
 						const bool componentBound = target && responsibility == "onStepIn" && target->teleport.has_value();
 						const bool bound = behaviorBound || componentBound;
 						if (!bound) {

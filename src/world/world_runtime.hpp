@@ -23,7 +23,10 @@ struct WorldObjectToken {
 
 struct WorldLegacyWrite {
 	std::filesystem::path file;
-	std::string table, key, occurrence, responsibility;
+	std::string table;
+	std::string key;
+	std::string occurrence;
+	std::string responsibility;
 	world_layers::Position position;
 	uint16_t itemId = 0;
 };

@@ -59,7 +59,9 @@ namespace {
 			throw std::runtime_error("Expected a manifest or catalog path");
 		}
 		std::filesystem::path root;
-		bool offline = false, rollback = false, finish = false;
+		bool offline = false;
+		bool rollback = false;
+		bool finish = false;
 		for (int i = 3; i < argc; ++i) {
 			const std::string name = argv[i];
 			if (name == "--root" && root.empty() && i + 1 < argc) {
@@ -199,7 +201,8 @@ int main(int argc, char** argv) {
 		SourceFiles projectSources;
 		Diagnostics diagnostics;
 		std::vector<Position> positions;
-		std::filesystem::path map, items;
+		std::filesystem::path map;
+		std::filesystem::path items;
 		if (!projectFile.empty()) {
 			if (!loadProject(projectFile, project, diagnostics, &projectSources)) {
 				return diagnosticsResult(diagnostics);

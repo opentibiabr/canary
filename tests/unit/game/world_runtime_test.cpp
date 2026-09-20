@@ -11,7 +11,8 @@
 
 class WorldRuntimeItemsTest : public ::testing::Test {
 protected:
-	static constexpr uint16_t itemId = 65010, containerId = 65011;
+	static constexpr uint16_t itemId = 65010;
+	static constexpr uint16_t containerId = 65011;
 	static void SetUpTestSuite() {
 		previous = DI::getTestContainer();
 		InMemoryLogger::install(injector);
@@ -55,7 +56,8 @@ protected:
 	inline static di::extension::injector<> injector;
 	inline static di::extension::injector<>* previous = nullptr;
 	inline static size_t originalSize = 0;
-	inline static std::optional<ItemType> originalItem, originalContainer;
+	inline static std::optional<ItemType> originalItem;
+	inline static std::optional<ItemType> originalContainer;
 };
 
 TEST_F(WorldRuntimeItemsTest, AttributeRollbackRestoresAbsenceAndScalarTypes) {
@@ -85,7 +87,10 @@ TEST_F(WorldRuntimeItemsTest, AttributeRollbackRestoresAbsenceAndScalarTypes) {
 
 TEST_F(WorldRuntimeItemsTest, OrderedPlacementRejectsOverflowWithoutChangingContents) {
 	const auto container = std::make_shared<Container>(containerId, 3);
-	const auto first = makeItem(), second = makeItem(), third = makeItem(), extra = makeItem();
+	const auto first = makeItem();
+	const auto second = makeItem();
+	const auto third = makeItem();
+	const auto extra = makeItem();
 	ASSERT_TRUE(container->insertWorldItem(first, 0));
 	ASSERT_TRUE(container->insertWorldItem(second, 0));
 	ASSERT_TRUE(container->insertWorldItem(third, 1));

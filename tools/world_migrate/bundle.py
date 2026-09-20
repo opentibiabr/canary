@@ -29,7 +29,9 @@ def read_json(path: Path, root: Path | None = None) -> Any:
 				raise ValueError(f"{path}: duplicate JSON field {key}")
 			result[key] = value
 		return result
-	return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=pairs, parse_constant=lambda value: (_ for _ in ()).throw(ValueError(f"Non-finite JSON number: {value}")))
+	def reject_non_finite(value):
+		raise ValueError(f"Non-finite JSON number: {value}")
+	return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=pairs, parse_constant=reject_non_finite)
 
 
 def digest(path: Path) -> str | None:

@@ -29,7 +29,7 @@ namespace world_layers {
 					return fail(field, "Expected an object");
 				}
 				for (const auto &entry : value.items()) {
-					if (std::none_of(allowed.begin(), allowed.end(), [&](const char* key) { return entry.key() == key; })) {
+					if (std::ranges::none_of(allowed, [&](const char* key) { return entry.key() == key; })) {
 						return fail(field + "/" + entry.key(), "Unsupported field");
 					}
 				}
@@ -317,7 +317,8 @@ namespace world_layers {
 
 	static bool loadProjectDocuments(const std::filesystem::path &file, Project &project, Diagnostics &diagnostics, SourceFiles* sources) {
 		Reader reader(file, diagnostics);
-		std::string source, error;
+		std::string source;
+		std::string error;
 		Json json;
 		Project parsed;
 		parsed.file = file;

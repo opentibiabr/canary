@@ -337,7 +337,7 @@ namespace world_files {
 			if (!value.is_object() || value.size() != names.size()) {
 				return false;
 			}
-			return std::all_of(names.begin(), names.end(), [&](const char* name) { return value.contains(name); });
+			return std::ranges::all_of(names, [&](const char* name) { return value.contains(name); });
 		}
 		bool wasDisplaced(const std::filesystem::path &directory, size_t index, const Change &change, std::string &error) {
 			const auto suffix = std::to_string(index) + ".displaced";
@@ -637,7 +637,8 @@ namespace world_files {
 			if (!inside(root, catalog) || !lock.acquire(sidecar(catalog, ".lock"), true, false, error)) {
 				return false;
 			}
-			Json marker, journal;
+			Json marker;
+			Json journal;
 			if (!jsonFile(sidecar(catalog, ".pending"), marker, error) || !fields(marker, { "version", "directory" }) || marker.value("version", 0) != 1 || !marker["directory"].is_string()) {
 				error = "Invalid pending publication marker";
 				return false;

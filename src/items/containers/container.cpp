@@ -1101,7 +1101,7 @@ bool Container::restoreWorldItemOrder(const std::vector<std::shared_ptr<Item>> &
 	if (order.size() != itemlist.size() || !std::is_permutation(order.begin(), order.end(), itemlist.begin())) {
 		return false;
 	}
-	std::copy(order.begin(), order.end(), itemlist.begin());
+	std::ranges::copy(order, itemlist.begin());
 	return true;
 }
 

@@ -554,13 +554,6 @@ public:
 	void setExerciseTraining(bool isTraining) {
 		exerciseTraining = isTraining;
 	}
-	void setLastDepotId(int16_t newId) {
-		lastDepotId = newId;
-	}
-	int16_t getLastDepotId() const {
-		return lastDepotId;
-	}
-
 	void resetIdleTime() {
 		idleTime = 0;
 	}
@@ -696,6 +689,16 @@ public:
 
 	std::shared_ptr<DepotChest> getDepotChest(uint32_t depotId, bool autoCreate);
 	std::shared_ptr<DepotLocker> getDepotLocker(uint32_t depotId);
+	std::shared_ptr<DepotLocker> activateDepotLocker(uint32_t depotId);
+	const std::shared_ptr<DepotLocker> &getActiveDepotLocker() const {
+		return activeDepotLocker;
+	}
+	void markDepotStorageLoaded() {
+		depotStorageLoaded = true;
+	}
+	bool hasLoadedDepotStorage() const {
+		return depotStorageLoaded;
+	}
 	void onReceiveMail();
 	bool isNearDepotBox() const;
 
@@ -1105,7 +1108,7 @@ public:
 	void sendShop(const std::shared_ptr<Npc> &npc) const;
 	void sendSaleItemList(const std::map<uint16_t, uint16_t> &inventoryMap) const;
 	void sendCloseShop() const;
-	void sendMarketEnter(uint32_t depotId) const;
+	void sendMarketEnter() const;
 	void sendMarketLeave();
 	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier) const;
 	void sendMarketBrowseOwnOffers(const MarketOfferList &buyOffers, const MarketOfferList &sellOffers) const;
@@ -1671,6 +1674,7 @@ private:
 	std::map<uint8_t, OpenContainer> openContainers;
 	std::map<uint32_t, std::shared_ptr<DepotLocker>> depotLockerMap;
 	std::map<uint32_t, std::shared_ptr<DepotChest>> depotChests;
+	std::shared_ptr<DepotLocker> activeDepotLocker;
 	std::map<uint8_t, int64_t> moduleDelayMap;
 	std::map<uint16_t, uint64_t> itemPriceMap;
 
@@ -1822,9 +1826,9 @@ private:
 	uint16_t grindingXpBoost = 0;
 	uint16_t xpBoostPercent = 0;
 	uint16_t staminaXpBoost = 100;
-	int16_t lastDepotId = -1;
 	StashItemList stashItems; // [ItemID] = amount
 	uint32_t movedItems = 0;
+	bool depotStorageLoaded = false;
 
 	// Depot search system
 	bool depotSearch = false;

@@ -429,7 +429,7 @@ private:
 	void sendCharmResourcesBalance(uint32_t charm = 0, uint32_t minorCharm = 0, uint32_t maxCharm = 0, uint32_t maxMinorCharm = 0);
 	void sendCharmResourceBalance(CharmResource_t resourceType, uint32_t value);
 	void sendSaleItemList(const std::vector<ShopBlock> &shopVector, const std::map<uint16_t, uint16_t> &inventoryMap);
-	void sendMarketEnter(uint32_t depotId);
+	void sendMarketEnter();
 	void updateCoinBalance();
 	void sendMarketLeave();
 	void sendMarketBrowseItem(uint16_t itemId, const MarketOfferList &buyOffers, const MarketOfferList &sellOffers, uint8_t tier);

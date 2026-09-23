@@ -58,6 +58,7 @@ public:
 	bool executeQuery(std::string_view query);
 
 	DBResult_ptr storeQuery(std::string_view query);
+	DBResult_ptr storeQuery(std::string_view query, bool &querySucceeded);
 
 	std::string escapeString(const std::string &s) const;
 

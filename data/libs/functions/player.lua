@@ -652,7 +652,7 @@ function Player.setDayStreak(self, value)
 end
 
 function Player.getStreakLevel(self)
-	return self:kv():scoped("daily-reward"):get("streak") or 7
+	return self:kv():scoped("daily-reward"):get("streak") or 0
 end
 
 function Player.setStreakLevel(self, value)

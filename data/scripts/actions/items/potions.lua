@@ -62,7 +62,7 @@ local potions = {
 	[23375] = { health = { 875, 1125 }, vocations = { VOCATION.BASE_ID.KNIGHT }, level = 200, flask = 284, description = "Only knights of level 200 or above may drink this fluid." },
 	[35563] = { vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID }, level = 14, func = magicshield, effect = CONST_ME_ENERGYAREA, description = "Only sorcerers and druids of level 14 or above may drink this potion." },
 	[49271] = { vocations = { VOCATION.BASE_ID.MONK }, condition = transcendence, effect = CONST_ME_MAGIC_GREEN, description = "Only monks may drink this potion.", text = "You feel more balanced." },
-		-- Vocation Adjustment mana potions
+	-- Vocation Adjustment mana potions
 	[53162] = { mana = { 240, 360 }, vocations = { VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID, VOCATION.BASE_ID.MONK }, level = 100, flask = 284, description = "Only paladins, monks, sorcerers and druids of level 100 or above may drink this fluid." },
 	[53163] = { mana = { 240, 360 }, vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID, VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.KNIGHT, VOCATION.BASE_ID.MONK }, level = 130, flask = 284, description = "Only players of level 130 or above may drink this fluid." },
 	[53164] = { mana = { 425, 575 }, vocations = { VOCATION.BASE_ID.SORCERER, VOCATION.BASE_ID.DRUID, VOCATION.BASE_ID.PALADIN, VOCATION.BASE_ID.KNIGHT, VOCATION.BASE_ID.MONK }, level = 200, flask = 284, description = "Only players of level 200 or above may drink this fluid." },

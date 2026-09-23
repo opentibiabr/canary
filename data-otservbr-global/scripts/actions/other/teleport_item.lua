@@ -4,7 +4,7 @@
 local teleportItem = Action()
 
 function teleportItem.onUse(player, item, fromPosition, target, toPosition, isHotkey)
-	local setting = TeleportItemUnique[item.uid]
+	local setting = TeleportItemUnique and TeleportItemUnique[item.uid]
 	if setting then
 		player:teleportTo(setting.destination)
 		player:getPosition():sendMagicEffect(setting.effect)

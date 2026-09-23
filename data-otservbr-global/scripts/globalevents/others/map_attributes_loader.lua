@@ -20,7 +20,6 @@ local function loadMapActionsAndUniques()
 	loadLuaMapUnique(TileUnique)
 	loadLuaMapAction(TilePickAction)
 	CreateMapItem(CreateItemOnMap)
-	updateKeysStorage(QuestKeysUpdate)
 end
 
 local function loadMapAttributes()
@@ -47,7 +46,10 @@ end
 local mapAttributesLoader = GlobalEvent("Map Attributes Loader")
 
 function mapAttributesLoader.onStartup()
-	loadMapAttributes()
+	if configManager.getString(configKeys.WORLD_CONFIGURATION) ~= "world" then
+		loadMapAttributes()
+	end
+	updateKeysStorage(QuestKeysUpdate)
 	resetGlobalStorages()
 	resetFerumbrasAscendantQuestHabitats()
 end

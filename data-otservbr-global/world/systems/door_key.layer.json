@@ -1,0 +1,1812 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-door_key",
+  "name": "Door Key",
+  "objects": [
+    {
+      "id": "legacy.keydooraction.3001.d4962b60ffc7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32814,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3001
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3001.20d9b92f48cb",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32814,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3001
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3002.90b0198a2c5e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32796,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3002
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3002.258d9474df6c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32796,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3002
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3003.11d3845ce76e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32811,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3003
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3003.858792a091d3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32811,
+            "y": 31597,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3003
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3004.40c8148db34e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32809,
+            "y": 31593,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3004
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3004.fadb5dab5c3a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32809,
+            "y": 31593,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3004
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3005.25e7635e9719",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32794,
+            "y": 31582,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3005
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3005.2ca6ca416486",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32794,
+            "y": 31582,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3005
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3006.54f10310ea9c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32814,
+            "y": 31595,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3006
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3006.a872b13e6a16",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32814,
+            "y": 31595,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3006
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3007.7b160a529e1f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32797,
+            "y": 31592,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3007
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3007.a70a3b938d6b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32797,
+            "y": 31592,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3007
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3008.02db84b62d7e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32804,
+            "y": 31585,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3008
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3008.3aeb4eed7fe0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32804,
+            "y": 31585,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3008
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3012.375e86652bf6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32675,
+            "y": 31649,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3012
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3012.9c2385b53b0a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32675,
+            "y": 31649,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3012
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3012.60af40cf5ecb",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32676,
+            "y": 31671,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3012
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3012.43773330b68a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 32676,
+            "y": 31671,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3012
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3610.946afab775bc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32462,
+            "y": 32153,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3610
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3610.84c3321e99a4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32462,
+            "y": 32153,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3610
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3610.d6e40c0e95a3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1628,
+          "part": "item",
+          "position": {
+            "x": 32462,
+            "y": 32151,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3610
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3610.0ebd7c4717b0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32462,
+            "y": 32151,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3610
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.469bb7d911a4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6251,
+          "part": "item",
+          "position": {
+            "x": 32393,
+            "y": 32136,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.e3dd8d8cadd5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32393,
+            "y": 32136,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.0834aeac383b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32395,
+            "y": 32117,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.500bdbfee144",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32395,
+            "y": 32117,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.a42e8f4666f1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32397,
+            "y": 32114,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.fa095bc3bdd6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32397,
+            "y": 32114,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.f3abed366033",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32400,
+            "y": 32117,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3620.220da2012a91",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32400,
+            "y": 32117,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3620
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3666.a2133f954292",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32578,
+            "y": 32197,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3666
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3667.865c0b488786",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5106,
+          "part": "item",
+          "position": {
+            "x": 32592,
+            "y": 32102,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3667
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.14c2e30da0b2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6248,
+          "part": "item",
+          "position": {
+            "x": 32400,
+            "y": 31788,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.8b47324e8ec0",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32400,
+            "y": 31788,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.a660cfba6d5d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6248,
+          "part": "item",
+          "position": {
+            "x": 32400,
+            "y": 31789,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.d4348dbabde3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32400,
+            "y": 31789,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.0b7d8fceb511",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6248,
+          "part": "item",
+          "position": {
+            "x": 32398,
+            "y": 31804,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3520.f1ac7112dca6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 429,
+          "part": "ground",
+          "position": {
+            "x": 32398,
+            "y": 31804,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3520
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3700.d41113a9c292",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1628,
+          "part": "item",
+          "position": {
+            "x": 32827,
+            "y": 32246,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3700
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3800.7f290ff8a277",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7714,
+          "part": "item",
+          "position": {
+            "x": 32645,
+            "y": 31906,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3800
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3800.6607775fce92",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32645,
+            "y": 31906,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3800
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3801.e14ac834160d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7711,
+          "part": "item",
+          "position": {
+            "x": 32600,
+            "y": 31926,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3801
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3801.f0a597b17b9d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 416,
+          "part": "ground",
+          "position": {
+            "x": 32600,
+            "y": 31926,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3801
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.69203b01d12a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5106,
+          "part": "item",
+          "position": {
+            "x": 32450,
+            "y": 31967,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.29f8231475b7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 354,
+          "part": "ground",
+          "position": {
+            "x": 32450,
+            "y": 31967,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.ba4cbf735e3e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32452,
+            "y": 31972,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.812a9b7d0bad",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 353,
+          "part": "ground",
+          "position": {
+            "x": 32452,
+            "y": 31972,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.9867b3cc52fe",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 32456,
+            "y": 31972,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.0e3db7cef627",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32456,
+            "y": 31972,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.fcdc4cd6c20a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5106,
+          "part": "item",
+          "position": {
+            "x": 32457,
+            "y": 31966,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.a7ce499ba487",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32457,
+            "y": 31966,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.411d8c028e97",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7714,
+          "part": "item",
+          "position": {
+            "x": 32602,
+            "y": 31975,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.47c61fd0485f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 416,
+          "part": "ground",
+          "position": {
+            "x": 32602,
+            "y": 31975,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.4d52add06944",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7714,
+          "part": "item",
+          "position": {
+            "x": 32603,
+            "y": 31975,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.121172fc9c62",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 416,
+          "part": "ground",
+          "position": {
+            "x": 32603,
+            "y": 31975,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.620363ea25b3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7714,
+          "part": "item",
+          "position": {
+            "x": 32624,
+            "y": 31929,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3802.e7ffc2d3c242",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32624,
+            "y": 31929,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3802
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3899.afcb54e09391",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32479,
+            "y": 31903,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3899
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3899.475c3fd67b41",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32479,
+            "y": 31903,
+            "z": 4
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3899
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3940.6cd2c612bf61",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32190,
+            "y": 32432,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3940
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3940.4ee7046d5b49",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32190,
+            "y": 32432,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3940
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3980.13a144f29050",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32277,
+            "y": 32420,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3980
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3980.4b8fdeafe466",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32277,
+            "y": 32420,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3980
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4055.538e930c8cee",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32643,
+            "y": 32128,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4055
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4055.ac22147c4c24",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32643,
+            "y": 32128,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4055
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4502.ddb01a9ac812",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7033,
+          "part": "item",
+          "position": {
+            "x": 32107,
+            "y": 31568,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4502
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4502.202dbd70b345",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6967,
+          "part": "ground",
+          "position": {
+            "x": 32107,
+            "y": 31568,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4502
+      }
+    },
+    {
+      "id": "legacy.keydooraction.5010.908def46909a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6248,
+          "part": "item",
+          "position": {
+            "x": 32824,
+            "y": 31969,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 5010
+      }
+    },
+    {
+      "id": "legacy.keydooraction.5010.d91285adf745",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32824,
+            "y": 31969,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 5010
+      }
+    },
+    {
+      "id": "legacy.keydooraction.6010.c89681524ef4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5097,
+          "part": "item",
+          "position": {
+            "x": 33211,
+            "y": 31634,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 6010
+      }
+    },
+    {
+      "id": "legacy.keydooraction.6010.785b6a2066df",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 410,
+          "part": "ground",
+          "position": {
+            "x": 33211,
+            "y": 31634,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 6010
+      }
+    },
+    {
+      "id": "legacy.keydooraction.808.770065ea62c4",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6251,
+          "part": "item",
+          "position": {
+            "x": 33363,
+            "y": 31360,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 808
+      }
+    },
+    {
+      "id": "legacy.keydooraction.808.8b76a5adbc3f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 16484,
+          "part": "ground",
+          "position": {
+            "x": 33363,
+            "y": 31360,
+            "z": 3
+          }
+        }
+      },
+      "attributes": {
+        "aid": 808
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4601.8cf1db0a535d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32145,
+            "y": 32100,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4601
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4601.6680d340e985",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32145,
+            "y": 32100,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4601
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4603.fad20f34fb2f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5106,
+          "part": "item",
+          "position": {
+            "x": 32179,
+            "y": 32149,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4603
+      }
+    },
+    {
+      "id": "legacy.keydooraction.4603.670ab2798159",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32179,
+            "y": 32149,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 4603
+      }
+    },
+    {
+      "id": "legacy.keydooraction.909.896484c0e863",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5115,
+          "part": "item",
+          "position": {
+            "x": 33368,
+            "y": 31331,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 909
+      }
+    },
+    {
+      "id": "legacy.keydooraction.909.07c5ccbcdcc9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 499,
+          "part": "ground",
+          "position": {
+            "x": 33368,
+            "y": 31331,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 909
+      }
+    },
+    {
+      "id": "legacy.keydooraction.909.78741ce8d106",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5124,
+          "part": "item",
+          "position": {
+            "x": 33360,
+            "y": 31350,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 909
+      }
+    },
+    {
+      "id": "legacy.keydooraction.909.99a0a68f2382",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 499,
+          "part": "ground",
+          "position": {
+            "x": 33360,
+            "y": 31350,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 909
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3600.681cc48c7451",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5106,
+          "part": "item",
+          "position": {
+            "x": 32506,
+            "y": 32175,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3600
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3600.ef70e444c3e3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 409,
+          "part": "ground",
+          "position": {
+            "x": 32506,
+            "y": 32175,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3600
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3142.2d3b643759c7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6248,
+          "part": "item",
+          "position": {
+            "x": 32450,
+            "y": 32044,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3142
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3142.c2d770616e14",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32450,
+            "y": 32044,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3142
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3301.8b8cd1bcbcc2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 12035,
+          "part": "item",
+          "position": {
+            "x": 32619,
+            "y": 32241,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3301
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3301.fb488eaea799",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 11733,
+          "part": "ground",
+          "position": {
+            "x": 32619,
+            "y": 32241,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3301
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3302.46b73b797eb9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 12035,
+          "part": "item",
+          "position": {
+            "x": 32619,
+            "y": 32240,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3302
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3302.7122217798bc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 11733,
+          "part": "ground",
+          "position": {
+            "x": 32619,
+            "y": 32240,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3302
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3303.e6e43741c283",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1631,
+          "part": "item",
+          "position": {
+            "x": 32614,
+            "y": 32175,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3303
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3303.c227fb6a9f2a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 351,
+          "part": "ground",
+          "position": {
+            "x": 32614,
+            "y": 32175,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3303
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3304.f73dccabbd76",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6251,
+          "part": "item",
+          "position": {
+            "x": 32620,
+            "y": 32199,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3304
+      }
+    },
+    {
+      "id": "legacy.keydooraction.3304.560c27418463",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 408,
+          "part": "ground",
+          "position": {
+            "x": 32620,
+            "y": 32199,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 3304
+      }
+    }
+  ]
+}

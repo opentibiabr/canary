@@ -18,6 +18,14 @@
     <ClInclude Include="..\src\config\configmanager.hpp" />
     <ClInclude Include="..\src\config\config_definitions.hpp" />
     <ClInclude Include="..\src\core.hpp" />
+    <ClInclude Include="..\src\world\world_files.hpp" />
+    <ClInclude Include="..\src\world\world_layers.hpp" />
+    <ClInclude Include="..\src\world\world_effective.hpp" />
+    <ClInclude Include="..\src\world\world_validation.hpp" />
+    <ClInclude Include="..\src\world\world_snapshot.hpp" />
+    <ClInclude Include="..\src\world\world_runtime.hpp" />
+    <ClInclude Include="..\src\world\world_behaviors.hpp" />
+    <ClInclude Include="..\src\world\world_runtime_items.hpp" />
     <ClInclude Include="..\src\creatures\appearance\mounts\mounts.hpp" />
     <ClInclude Include="..\src\creatures\appearance\outfit\outfit.hpp" />
     <ClInclude Include="..\src\creatures\appearance\attached_effects\attached_effects.hpp" />
@@ -155,6 +163,7 @@
     <ClInclude Include="..\src\lua\functions\core\game\config_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\core_game_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\game_functions.hpp" />
+    <ClInclude Include="..\src\lua\functions\core\game\world_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\global_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\batch_update_functions.hpp" />
     <ClInclude Include="..\src\lua\functions\core\game\bank_functions.hpp" />
@@ -380,6 +389,7 @@
     <ClCompile Include="..\src\lua\functions\core\game\batch_update_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\config_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\game_functions.cpp" />
+    <ClCompile Include="..\src\lua\functions\core\game\world_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\global_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\bank_functions.cpp" />
     <ClCompile Include="..\src\lua\functions\core\game\zone_functions.cpp" />
@@ -448,6 +458,16 @@
     <ClCompile Include="..\src\map\mapcache.cpp" />
     <ClCompile Include="..\src\main.cpp" />
     <ClCompile Include="..\src\canary_server.cpp" />
+    <ClCompile Include="..\src\world\world_layers.cpp" />
+    <ClCompile Include="..\src\world\world_effective.cpp" />
+    <ClCompile Include="..\src\world\world_files.cpp" />
+    <ClCompile Include="..\src\world\world_format.cpp" />
+    <ClCompile Include="..\src\world\world_selectors.cpp" />
+    <ClCompile Include="..\src\world\world_snapshot.cpp" />
+    <ClCompile Include="..\src\world\world_validation.cpp" />
+    <ClCompile Include="..\src\world\world_runtime.cpp" />
+    <ClCompile Include="..\src\world\world_behaviors.cpp" />
+    <ClCompile Include="..\src\world\world_runtime_items.cpp" />
     <ClCompile Include="..\src\security\argon.cpp" />
     <ClCompile Include="..\src\security\rsa_backend_mbedtls.cpp" />
     <ClCompile Include="..\src\security\rsa.cpp" />

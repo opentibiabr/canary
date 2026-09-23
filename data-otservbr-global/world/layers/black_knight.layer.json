@@ -1,0 +1,93 @@
+{
+  "id": "black_knight",
+  "name": "Black Knight",
+  "objects": [
+    {
+      "attributes": {
+        "uid": 38012
+      },
+      "components": [
+        {
+          "destination": {
+            "object": "black_knight.exit",
+            "offset": {
+              "x": 0,
+              "y": -7,
+              "z": 0
+            }
+          },
+          "type": "teleport"
+        }
+      ],
+      "id": "black_knight.entry",
+      "kind": "item",
+      "lifecycle": "fixture",
+      "name": "Entrance",
+      "source": {
+        "count": 1,
+        "itemId": 1949,
+        "mode": "replace",
+        "placement": {
+          "position": {
+            "x": 32874,
+            "y": 31941,
+            "z": 12
+          }
+        },
+        "selector": {
+          "itemId": 1949,
+          "part": "item",
+          "position": {
+            "x": 32874,
+            "y": 31941,
+            "z": 12
+          }
+        }
+      }
+    },
+    {
+      "attributes": {
+        "uid": 38013
+      },
+      "components": [
+        {
+          "destination": {
+            "object": "black_knight.entry",
+            "offset": {
+              "x": 0,
+              "y": 1,
+              "z": 0
+            }
+          },
+          "type": "teleport"
+        }
+      ],
+      "id": "black_knight.exit",
+      "kind": "item",
+      "lifecycle": "fixture",
+      "name": "Exit",
+      "source": {
+        "count": 1,
+        "itemId": 1949,
+        "mode": "replace",
+        "placement": {
+          "position": {
+            "x": 32874,
+            "y": 31955,
+            "z": 11
+          }
+        },
+        "selector": {
+          "itemId": 1949,
+          "part": "item",
+          "position": {
+            "x": 32874,
+            "y": 31955,
+            "z": 11
+          }
+        }
+      }
+    }
+  ],
+  "schemaVersion": 2
+}

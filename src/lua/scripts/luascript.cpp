@@ -645,6 +645,19 @@ int32_t LuaScriptInterface::getEvent() {
 	return runningEventId++;
 }
 
+void LuaScriptInterface::removeEvent(int32_t eventId) {
+	if (!luaState || eventTableRef < 0) {
+		return;
+	}
+	lua_rawgeti(luaState, LUA_REGISTRYINDEX, eventTableRef);
+	if (lua_istable(luaState, -1)) {
+		lua_pushnil(luaState);
+		lua_rawseti(luaState, -2, eventId);
+	}
+	lua_pop(luaState, 1);
+	cacheFiles.erase(eventId);
+}
+
 int32_t LuaScriptInterface::getMetaEvent(const std::string &globalName, const std::string &eventName) {
 	// get our events table
 	lua_rawgeti(luaState, LUA_REGISTRYINDEX, eventTableRef);

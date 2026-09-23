@@ -1,0 +1,197 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "World layer v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "id",
+    "objects"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9_]*$",
+      "maxLength": 128
+    },
+    "name": {
+      "type": "string"
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/object"
+      }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "z": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "not": {
+        "properties": {
+          "x": {
+            "const": 0
+          },
+          "y": {
+            "const": 0
+          },
+          "z": {
+            "const": 0
+          }
+        }
+      }
+    },
+    "offset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": -65535,
+          "maximum": 65535
+        },
+        "y": {
+          "type": "integer",
+          "minimum": -65535,
+          "maximum": 65535
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -15,
+          "maximum": 15
+        }
+      }
+    },
+    "object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "position",
+        "origin"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_.-]*$",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string"
+        },
+        "position": {
+          "$ref": "#/$defs/position"
+        },
+        "origin": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "itemId"
+          ],
+          "properties": {
+            "type": {
+              "const": "layer"
+            },
+            "itemId": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "replaces": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "position",
+                "itemId"
+              ],
+              "properties": {
+                "position": {
+                  "$ref": "#/$defs/position"
+                },
+                "itemId": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              }
+            }
+          }
+        },
+        "attributes": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "aid": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            },
+            "uid": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 65535
+            }
+          }
+        },
+        "components": {
+          "type": "array",
+          "maxItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "type",
+              "destination"
+            ],
+            "properties": {
+              "type": {
+                "const": "teleport"
+              },
+              "destination": {
+                "type": "string"
+              },
+              "destinationOffset": {
+                "$ref": "#/$defs/offset"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

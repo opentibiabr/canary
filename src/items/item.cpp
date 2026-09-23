@@ -28,6 +28,7 @@
 #include "lua/creature/actions.hpp"
 #include "map/house/house.hpp"
 #include "map/spectators.hpp"
+#include "world/world_runtime.hpp"
 #include "creatures/players/grouping/party.hpp"
 
 #define ITEM_IMBUEMENT_SLOT 500
@@ -660,6 +661,7 @@ std::shared_ptr<Container> Item::CreateItemAsContainer(const uint16_t type, uint
 }
 
 std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) {
+	const auto originalId = itemId;
 	switch (itemId) {
 		case ITEM_FIREFIELD_PVP_FULL:
 			itemId = ITEM_FIREFIELD_PERSISTENT_FULL;
@@ -693,7 +695,15 @@ std::shared_ptr<Item> Item::CreateItem(uint16_t itemId, Position &itemPosition) 
 			break;
 	}
 
-	return Item::CreateItem(itemId, 0, &itemPosition);
+	auto item = Item::CreateItem(itemId, 0, &itemPosition);
+	if (item && itemId != originalId) {
+		item->mapSourceId = originalId;
+	}
+	return item;
+}
+
+uint16_t Item::getMapSourceId() const {
+	return mapSourceId ? mapSourceId : id;
 }
 
 Item::Item(const uint16_t itemId, uint16_t itemCount /*= 0*/) :
@@ -738,6 +748,7 @@ std::shared_ptr<Item> Item::clone() const {
 		item->attributePtr = std::make_unique<ItemAttribute>(*attributePtr);
 	}
 
+	g_game().worldLayers().cloned(item);
 	return item;
 }
 
@@ -797,6 +808,7 @@ void Item::setDefaultSubtype() {
 }
 
 void Item::onRemoved() {
+	g_game().worldLayers().removed(static_self_cast<Item>());
 	ScriptEnvironment::removeTempItem(static_self_cast<Item>());
 
 	if (hasAttribute(ItemAttribute_t::UNIQUEID)) {
@@ -805,6 +817,9 @@ void Item::onRemoved() {
 }
 
 void Item::setID(uint16_t newid) {
+	if (newid != id) {
+		g_game().worldLayers().transformed(static_self_cast<Item>(), static_self_cast<Item>());
+	}
 	const ItemType &prevIt = Item::items[id];
 	id = newid;
 
@@ -908,6 +923,14 @@ bool Item::isItemStorable() {
 	}
 	const auto isContainerAndHasSomethingInside = (getContainer() != nullptr) && (!getContainer()->getItemList().empty());
 	return (isStowable() || isContainerAndHasSomethingInside);
+}
+
+void Item::setItemCount(uint8_t n) {
+	count = n;
+	// Construction and detached staging do not have a published World binding.
+	if (getParent()) {
+		g_game().worldLayers().quantityChanged(this);
+	}
 }
 
 void Item::setSubType(uint16_t n) {
@@ -1360,6 +1383,28 @@ Attr_ReadValue Item::readAttr(AttrTypes_t attr, PropStream &propStream) {
 	}
 
 	return ATTR_READ_CONTINUE;
+}
+
+bool Item::inspectAttributes(PropStream propStream) {
+	if (getParent()) {
+		return false;
+	}
+	uint8_t type;
+	while (propStream.read<uint8_t>(type)) {
+		if (type == 0) {
+			return true;
+		}
+		if (type == ATTR_UNIQUE_ID) {
+			if (!propStream.skip(sizeof(uint16_t))) {
+				return false;
+			}
+		} else if (type == ATTR_CONTAINER_ITEMS) {
+			return propStream.skip(sizeof(uint32_t));
+		} else if (Item::readAttr(static_cast<AttrTypes_t>(type), propStream) != ATTR_READ_CONTINUE) {
+			return false;
+		}
+	}
+	return false;
 }
 
 bool Item::unserializeAttr(PropStream &propStream) {
@@ -2341,6 +2386,10 @@ std::string Item::parseImbuementDescription(const std::shared_ptr<Item> &item) {
 	}
 
 	return s.str();
+}
+
+bool Item::isCleanable() const {
+	return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID) && !g_game().worldLayers().isFixture(this);
 }
 
 bool Item::isSavedToHouses() {
@@ -3541,6 +3590,7 @@ std::shared_ptr<Item> Item::transform(uint16_t itemId, uint16_t itemCount /*= -1
 	}
 
 	cylinder->replaceThing(itemIndex, newItem);
+	g_game().worldLayers().transformed(static_self_cast<Item>(), newItem);
 	cylinder->postAddNotification(newItem, cylinder, itemIndex);
 
 	resetParent();

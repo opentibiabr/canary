@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "World project v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "map",
+    "items",
+    "layers"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "map": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*[:\\\\]).+$"
+    },
+    "items": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*[:\\\\]).+$"
+    },
+    "layers": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?!/)(?!.*[:\\\\]).+$"
+      }
+    }
+  }
+}

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import glob
+import importlib.util
 import os
 import re
 import shutil
@@ -144,6 +145,7 @@ def write_smoke_config(args: argparse.Namespace) -> None:
     replacements = {
         "dataPackDirectory": lua_string(args.data_pack),
         "mapName": lua_string(args.map_name),
+        "worldConfiguration": lua_string(args.world_configuration),
         "mapDownloadUrl": lua_string(""),
         "toggleDownloadMap": "false",
         "toggleMapCustom": "false",
@@ -246,12 +248,27 @@ def restore_config(config_path: Path, existed: bool, previous_content: bytes | N
         pass
 
 
-def assert_clean_log(log_text: str, fail_on_warnings: bool) -> None:
+def legacy_warning(data_pack: str) -> str:
+    return (
+        "Legacy world configuration is active and will be discontinued in a future release. "
+        "See docs/systems/world-migration.md. Analyze with: python -m tools.world_migrate analyze "
+        f"--datapack {data_pack} --all"
+    )
+
+
+def assert_clean_log(log_text: str, fail_on_warnings: bool, expected_legacy_warning: str | None = None) -> None:
     if not log_text.strip():
         raise RuntimeError("Canary produced no runtime log output")
 
     pattern = r"\b(warn|warning|error|critical|fatal)\b" if fail_on_warnings else r"\b(error|critical|fatal)\b"
-    bad_lines = [line for line in log_text.splitlines() if re.search(pattern, line, re.IGNORECASE)]
+    lines = log_text.splitlines()
+    if expected_legacy_warning is not None:
+        expected = re.compile(r"^\[[^\]]+\](?: \[thread \d+\])? \[warning\] " + re.escape(expected_legacy_warning) + r"\s*$")
+        matched = [line for line in lines if expected.fullmatch(line)]
+        if len(matched) != 1:
+            raise RuntimeError("Legacy startup must report its deprecation warning exactly once")
+        lines = [line for line in lines if not expected.fullmatch(line)]
+    bad_lines = [line for line in lines if re.search(pattern, line, re.IGNORECASE)]
     if bad_lines:
         message = "\n".join(bad_lines[:40])
         print(f"::error title=Canary runtime log issue::{github_escape(message)}")
@@ -269,18 +286,32 @@ def run_smoke(args: argparse.Namespace) -> None:
     config_path = REPO_ROOT / "config.lua"
     config_existed = config_path.exists()
     previous_config = config_path.read_bytes() if config_existed else None
+    probe_path = None
+    probe_bytes = None
+    probe_marker = None
     try:
         prepare_map(args)
         initialize_database(args)
         write_smoke_config(args)
+        if args.world_probe:
+            spec = importlib.util.spec_from_file_location("world_runtime_probe", Path(__file__).with_name("world_runtime_probe.py"))
+            probe = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(probe)
+            project = REPO_ROOT / args.data_pack / "world" / f"{args.map_name}.world.json"
+            source, probe_marker = probe.build_probe(project, args.world_configuration)
+            probe_bytes = source.encode("utf-8")
+            target = REPO_ROOT / args.data_pack / "scripts" / f"world_runtime_probe_{uuid.uuid4().hex}.lua"
+            with target.open("xb") as stream:
+                stream.write(probe_bytes)
+            probe_path = target
 
         log_dir = REPO_ROOT / "build/runtime-smoke-logs"
         log_dir.mkdir(parents=True, exist_ok=True)
-        label = f"{args.data_pack}-{args.map_name}-{uuid.uuid4().hex[:8]}"
+        label = f"{args.data_pack}-{args.map_name}-{args.world_configuration}-{uuid.uuid4().hex[:8]}"
         stdout_path = log_dir / f"{label}.stdout.log"
         stderr_path = log_dir / f"{label}.stderr.log"
 
-        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} binary={binary}")
+        print(f"Starting Canary runtime smoke: datapack={args.data_pack} map={args.map_name} world={args.world_configuration} binary={binary}")
         with stdout_path.open("wb") as stdout_file, stderr_path.open("wb") as stderr_file:
             process = subprocess.Popen([str(binary)], cwd=REPO_ROOT, stdout=stdout_file, stderr=stderr_file)
 
@@ -297,9 +328,12 @@ def run_smoke(args: argparse.Namespace) -> None:
 
                 log_text = read_logs(log_paths)
                 saw_online_log = "server online!" in log_text.lower()
-                online = saw_online_log
+                online = saw_online_log and (probe_marker is None or probe_marker in log_text)
                 if online:
                     break
+                if "[error]" in log_text or "[critical]" in log_text:
+                    print(log_text)
+                    raise RuntimeError("Canary reported an error before completing startup acceptance")
 
             if not online:
                 log_text = read_logs(log_paths)
@@ -319,10 +353,15 @@ def run_smoke(args: argparse.Namespace) -> None:
         time.sleep(1)
         runtime_log = read_logs(log_paths)
         print(runtime_log)
-        assert_clean_log(runtime_log, args.fail_on_warnings)
-        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name}.")
+        expected = legacy_warning(args.data_pack) if args.world_configuration in {"legacy", "mixed"} else None
+        assert_clean_log(runtime_log, args.fail_on_warnings, expected)
+        print(f"Canary runtime smoke passed for datapack={args.data_pack} map={args.map_name} world={args.world_configuration}.")
     finally:
         restore_config(config_path, config_existed, previous_config)
+        if probe_path is not None:
+            if probe_path.read_bytes() != probe_bytes:
+                raise RuntimeError(f"The temporary runtime probe changed externally; preserved '{probe_path}'")
+            probe_path.unlink()
 
 
 def parse_args() -> argparse.Namespace:
@@ -330,6 +369,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--binary-path", required=True)
     parser.add_argument("--data-pack", choices=["data-canary", "data-otservbr-global"], default="data-canary")
     parser.add_argument("--map-name", default="")
+    parser.add_argument("--world-configuration", choices=["legacy", "world", "mixed"], default="legacy")
+    parser.add_argument("--world-probe", action="store_true", help="Verify every v2 declaration through the live Lua API after startup.")
     parser.add_argument("--map-download-url", default="")
     parser.add_argument("--map-cache-path", default="")
     parser.add_argument("--db-host", default="127.0.0.1")

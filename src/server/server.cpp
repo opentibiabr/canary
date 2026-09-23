@@ -13,6 +13,7 @@
 #include "config/configmanager.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "creatures/players/management/ban.hpp"
+#include "lib/di/container.hpp"
 
 ServiceManager::~ServiceManager() {
 	try {

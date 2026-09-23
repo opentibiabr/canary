@@ -411,7 +411,7 @@
 	<item id="238" article="a" name="great mana potion">
 		<attribute key="primarytype" value="liquids"/>
 		<attribute key="weight" value="310"/>
-		<attribute key="description" value="This potion can only be consumed by sorcerers, druids, paladins and monks of level 80 or higher."/>
+		<attribute key="description" value="This potion can only be consumed by players of level 80 or higher."/>
 	</item>
 	<item id="239" article="a" name="great health potion">
 		<attribute key="primarytype" value="liquids"/>
@@ -85454,7 +85454,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="450" />
 			<attribute key="unproperly" value="true" />
-			<attribute key="weaponType" value="club" />
+			<attribute key="weaponType" value="fist" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 			<attribute key="slot" value="hand" />
 		</attribute>
@@ -85873,7 +85873,7 @@ Granted by TibiaGoals.com"/>
 	<item id="52559" article="a" name="dead roaming dread">
 		<attribute key="fluidsource" value="blood" />
 		<attribute key="duration" value="300" />
-		<attribute key="decayTo" value="52559" />
+		<attribute key="decayTo" value="52558" />
 		<attribute key="containersize" value="10" />
 	</item>
 	<item id="52560" article="a" name="dead crypt mage">

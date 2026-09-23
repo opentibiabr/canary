@@ -11,7 +11,9 @@ function tentuglysHeadDeath.onDeath(creature, corpse, killer, mostDamage, unjust
 		if player then
 			player:setStorageValue(Storage.Quest.U12_60.APiratesTail.TentuglyKilled, 1) -- Access to wreckoning
 			player:addAchievement("Release the Kraken")
-			player:addMount(175)
+			if not player:hasMount(175) then
+				player:addMount(175)
+			end
 		end
 	end
 end

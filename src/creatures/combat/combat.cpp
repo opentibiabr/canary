@@ -21,6 +21,7 @@
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
 #include "io/iobestiary.hpp"
+#include "kv/kv.hpp"
 #include "io/ioprey.hpp"
 #include "creatures/players/vocations/vocation.hpp"
 #include "items/weapons/weapons.hpp"

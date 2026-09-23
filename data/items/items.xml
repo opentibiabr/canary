@@ -411,7 +411,7 @@
 	<item id="238" article="a" name="great mana potion">
 		<attribute key="primarytype" value="liquids"/>
 		<attribute key="weight" value="310"/>
-		<attribute key="description" value="This potion can only be consumed by sorcerers, druids, paladins and monks of level 80 or higher."/>
+		<attribute key="description" value="This potion can only be consumed by players of level 80 or higher."/>
 	</item>
 	<item id="239" article="a" name="great health potion">
 		<attribute key="primarytype" value="liquids"/>
@@ -27188,25 +27188,24 @@
 		</attribute>
 	</item>
 	<item id="10389" article="a" name="traditional sai">
-		<attribute key="primarytype" value="fist weapons"/>
-		<attribute key="weaponType" value="fist"/>
-		<attribute key="slotType" value="two-handed"/>
-		<attribute key="attack" value="28"/>
-		<attribute key="defense" value="15"/>
-		<attribute key="weight" value="5000"/>
-		<attribute key="elementalbond" value="physical"/>
-		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="50"/>
-			<attribute key="unproperly" value="true"/>
-			<attribute key="weaponType" value="sword"/>
-			<attribute key="vocation" value="Knight;true, Elite Knight"/>
-		</attribute>
+		<attribute key="primarytype" value="fist weapons" />
+		<attribute key="weaponType" value="fist" />
+		<attribute key="elementalbond" value="physical" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="attack" value="28" />
+		<attribute key="defense" value="15" />
+		<attribute key="weight" value="5000" />
 		<attribute key="imbuementslot" value="2">
-			<attribute key="elemental damage" value="3"/>
-			<attribute key="life leech" value="3"/>
-			<attribute key="mana leech" value="3"/>
-			<attribute key="critical hit" value="3"/>
-			<attribute key="skillboost axe" value="3"/>
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost fist" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="30" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="fist" />
+			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
 	</item>
 	<item id="10390" article="a" name="Zaoan sword">
@@ -27238,6 +27237,12 @@
 		<attribute key="attack" value="33"/>
 		<attribute key="defense" value="15"/>
 		<attribute key="weight" value="6000"/>
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost fist" value="3" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
 			<attribute key="level" value="40"/>
 			<attribute key="unproperly" value="true"/>
@@ -83564,21 +83569,26 @@ Granted by TibiaGoals.com"/>
 			<attribute key="slot" value="hand"/>
 		</attribute>
 	</item>
-	<item id="50183" name="sais">
-		<attribute key="primarytype" value="fist weapons"/>
-		<attribute key="weapontype" value="fist"/>
-		<attribute key="attack" value="38"/>
-		<attribute key="defense" value="16"/>
-		<attribute key="skillfist" value="1"/>
-		<attribute key="elementalbond" value="energy"/>
-		<attribute key="slottype" value="dualwielding"/>
-		<attribute key="weight" value="4900"/>
+	<item id="50183" article="a" name="sai">
+		<attribute key="primarytype" value="fist weapons" />
+		<attribute key="weaponType" value="fist" />
+		<attribute key="elementalbond" value="energy" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="attack" value="38" />
+		<attribute key="defense" value="16" />
+		<attribute key="skillfist" value="1" />
+		<attribute key="weight" value="4900" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost fist" value="3" />
+		</attribute>
 		<attribute key="script" value="moveevent;weapon">
-			<attribute key="level" value="60"/>
-			<attribute key="unproperly" value="true"/>
-			<attribute key="weaponType" value="fist"/>
-			<attribute key="vocation" value="Monk;true, Exalted Monk"/>
-			<attribute key="slot" value="hand"/>
+			<attribute key="level" value="60" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="fist" />
+			<attribute key="vocation" value="Monk;true, Exalted Monk" />
 		</attribute>
 	</item>
 	<item id="50184" name="mutant hide trousers">
@@ -85279,8 +85289,1484 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="imbuement scrolls"/>
 		<attribute key="weight" value="250"/>
 	</item>
+
+	<item id="51760" article="a" name="refined bow">
+		<attribute key="primarytype" value="distance weapons" />
+		<attribute key="weaponType" value="distance" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="hitchance" value="1" />
+		<attribute key="range" value="6" />
+		<attribute key="weight" value="3250" />
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="weaponType" value="distance" />
+		</attribute>
+	</item>
+	<item fromid="51777" toid="51778" article="a" name="sealed door" />
+	<item fromid="51782" toid="51785" article="a" name="glowing sign" />
+	<item id="51895" article="a" name="brooch">
+		<attribute key="weight" value="090" />
+	</item>
+	<item id="51976" name="jade dragon head">
+		<attribute key="description" value="A talisman, imbued with ancient magic." />
+	</item>
+	<item id="51977" article="a" name="book of wisdom">
+		<attribute key="description" value="Its written in an unrecognizable language. Showing strange drawings, multiple notes and mystic figures. It might be useful for someone." />
+		<attribute key="writeable" value="1" />
+		<attribute key="maxtextlen" value="1023" />
+		<attribute key="weight" value="100" />
+	</item>
 	<item id="51978" article="a" name="bounty talisman">
-		<attribute key="primarytype" value="extra slot"/>
-		<attribute key="weight" value="75"/>
+		<attribute key="description" value="A mysterious talisman, studded with colourful jewels, that can be upgraded to grant bonuses against Bounty Task creatures." />
+		<attribute key="weight" value="75" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52113" article="a" name="dead the corruptor">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52114" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52114" article="a" name="dead the corruptor">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52115" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52115" article="a" name="dead the corruptor">
+		<attribute key="duration" value="10" />
+		<attribute key="decayTo" value="52116" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52116" article="a" name="dead the corruptor">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="52117" article="the" name="dead Muglex Clan Chief">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52118" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52118" article="the" name="dead Muglex Clan Chief">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52119" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52119" article="the" name="dead Muglex Clan Chief">
+		<attribute key="duration" value="10" />
+		<attribute key="decayTo" value="52120" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52120" article="the" name="dead Muglex Clan Chief">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="52332" article="a" name="crypt spine">
+		<attribute key="description" value="Used by silent assassins of bygone aeons, once known as Deathwhisper, this bow carries the last sighs of those who fell to its arrows. One of the creations of a mysterious soul-smith." />
+		<attribute key="primarytype" value="distance weapons" />
+		<attribute key="weaponType" value="distance" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="absorbpercentice" value="5" />
+		<attribute key="skilldist" value="3" />
+		<attribute key="hitchance" value="5" />
+		<attribute key="range" value="6" />
+		<attribute key="attack" value="8" />
+		<attribute key="weight" value="4400" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost distance" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="distance" />
+			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
+		</attribute>
+	</item>
+	<item id="52333" article="a" name="crypt splitter">
+		<attribute key="description" value="Forged from fused vertebrae and cursed steel, this weapon was long feared as the Spine Splitter on long forgotten battlefields. One of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="axe weapons" />
+		<attribute key="weaponType" value="axe" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="skillaxe" value="4" />
+		<attribute key="attack" value="58" />
+		<attribute key="defense" value="33" />
+		<attribute key="weight" value="8000" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost axe" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="axe" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52334" article="a" name="crypt breaker">
+		<attribute key="description" value="Ancient text fragments refer to this weapon as Deathknell, for its blows echoed like funeral bells across the catacombs. Said to be one of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="club weapons" />
+		<attribute key="weaponType" value="club" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="skillclub" value="4" />
+		<attribute key="attack" value="58" />
+		<attribute key="defense" value="33" />
+		<attribute key="weight" value="8000" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost club" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="club" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52335" article="a" name="crypt strike">
+		<attribute key="description" value="Referred to as Wailing Wrecker in ancient scriptures, this bone-forged staff channels both agony and focus into devastating echoing strikes. One of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="fist weapons" />
+		<attribute key="weaponType" value="fist" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="skillfist" value="4" />
+		<attribute key="magiclevelpoints" value="2" />
+		<attribute key="attack" value="12" />
+		<attribute key="mantra" value="58" />
+		<attribute key="defense" value="33" />
+		<attribute key="weight" value="3500" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost fist" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="fist" />
+			<attribute key="vocation" value="Monk;true, Exalted Monk" />
+			<attribute key="slot" value="hand" />
+		</attribute>
+	</item>
+	<item id="52336" article="a" name="crypt bile">
+		<attribute key="description" value="For long only rumored among necromancers to exist, this wand, known as Bonechant, hums with the faint chorus of the dead. One of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="wands" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="shootType" value="energy" />
+		<attribute key="absorbpercentfire" value="6" />
+		<attribute key="magiclevelpoints" value="4" />
+		<attribute key="range" value="5" />
+		<attribute key="weight" value="2000" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="critical hit" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="skillboost magic level" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="mana" value="23" />
+			<attribute key="fromDamage" value="94" />
+			<attribute key="toDamage" value="116" />
+			<attribute key="weaponType" value="wand" />
+			<attribute key="wandType" value="energy" />
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
+			<attribute key="slot" value="hand" />
+		</attribute>
+	</item>
+	<item id="52337" article="a" name="crypt jaw">
+		<attribute key="description" value="Priests of decay called it Eternal Rest, believing it could grant true silence to the restless dead. One of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="rods" />
+		<attribute key="weaponType" value="wand" />
+		<attribute key="shootType" value="earth" />
+		<attribute key="absorbpercentenergy" value="6" />
+		<attribute key="magiclevelpoints" value="4" />
+		<attribute key="range" value="5" />
+		<attribute key="weight" value="2000" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="critical hit" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="skillboost magic level" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="mana" value="22" />
+			<attribute key="fromDamage" value="95" />
+			<attribute key="toDamage" value="115" />
+			<attribute key="weaponType" value="wand" />
+			<attribute key="wandType" value="earth" />
+			<attribute key="vocation" value="Druid;true, Elder Druid" />
+			<attribute key="slot" value="hand" />
+		</attribute>
+	</item>
+	<item id="52338" article="a" name="crypt slicer">
+		<attribute key="description" value="Hailed in old war tales as the Grave Cleaver, this blade was said to carve open the veil between life and death. One of the creations of the mysterious soul-smith." />
+		<attribute key="primarytype" value="sword weapons" />
+		<attribute key="weaponType" value="sword" />
+		<attribute key="slotType" value="two-handed" />
+		<attribute key="skillsword" value="4" />
+		<attribute key="attack" value="58" />
+		<attribute key="defense" value="33" />
+		<attribute key="weight" value="8000" />
+		<attribute key="imbuementslot" value="3">
+			<attribute key="elemental damage" value="3" />
+			<attribute key="life leech" value="3" />
+			<attribute key="mana leech" value="3" />
+			<attribute key="critical hit" value="3" />
+			<attribute key="skillboost sword" value="3" />
+		</attribute>
+		<attribute key="script" value="moveevent;weapon">
+			<attribute key="level" value="450" />
+			<attribute key="unproperly" value="true" />
+			<attribute key="weaponType" value="sword" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52348" article="a" name="stag helmet">
+		<attribute key="primarytype" value="helmets" />
+		<attribute key="firemagiclevelpoints" value="2" />
+		<attribute key="absorbpercentenergy" value="8" />
+		<attribute key="magiclevelpoints" value="2" />
+		<attribute key="absorbpercentphysical" value="2" />
+		<attribute key="armor" value="8" />
+		<attribute key="weight" value="1400" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="mana leech" value="3" />
+			<attribute key="skillboost axe" value="3" />
+			<attribute key="skillboost sword" value="3" />
+			<attribute key="skillboost club" value="3" />
+			<attribute key="skillboost shielding" value="3" />
+			<attribute key="skillboost distance" value="3" />
+			<attribute key="skillboost magic level" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="great fire wave" value="critical hit chance">
+				<attribute key="value" value="650" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="head" />
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
+		</attribute>
+	</item>
+	<item id="52349" article="a" name="stag robe">
+		<attribute key="primarytype" value="armors" />
+		<attribute key="absorbpercentphysical" value="4" />
+		<attribute key="skillfist" value="4" />
+		<attribute key="armor" value="10" />
+		<attribute key="mantra" value="17" />
+		<attribute key="weight" value="8000" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3" />
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="spiritual outburst" value="critical hit chance">
+				<attribute key="value" value="100" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="armor" />
+			<attribute key="vocation" value="Monk;true, Exalted Monk" />
+		</attribute>
+	</item>
+	<item id="52350" article="a" name="stag plate">
+		<attribute key="primarytype" value="armors" />
+		<attribute key="absorbpercentphysical" value="6" />
+		<attribute key="skillshield" value="3" />
+		<attribute key="skilldist" value="3" />
+		<attribute key="armor" value="17" />
+		<attribute key="weight" value="13000" />
+		<attribute key="imbuementslot" value="2">
+			<attribute key="life leech" value="3" />
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine grenade" value="critical hit chance">
+				<attribute key="value" value="1000" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="armor" />
+			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
+		</attribute>
+	</item>
+	<item id="52351" name="stag legs">
+		<attribute key="primarytype" value="legs" />
+		<attribute key="absorbpercentfire" value="7" />
+		<attribute key="absorbpercentphysical" value="7" />
+		<attribute key="skillsword" value="3" />
+		<attribute key="skillaxe" value="3" />
+		<attribute key="skillclub" value="3" />
+		<attribute key="skillshield" value="2" />
+		<attribute key="armor" value="10" />
+		<attribute key="weight" value="1150" />
+		<attribute key="augments" value="1">
+			<attribute key="fierce berserk" value="critical extra damage">
+				<attribute key="value" value="1000" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="legs" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52352" name="stag shinguards">
+		<attribute key="primarytype" value="boots" />
+		<attribute key="absorbpercentenergy" value="5" />
+		<attribute key="absorbpercentphysical" value="2" />
+		<attribute key="speed" value="10" />
+		<attribute key="skilldist" value="1" />
+		<attribute key="armor" value="2" />
+		<attribute key="weight" value="1700" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="2" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="divine grenade" value="critical hit chance">
+				<attribute key="value" value="800" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="feet" />
+			<attribute key="vocation" value="Paladin;true, Royal Paladin" />
+		</attribute>
+	</item>
+	<item id="52353" article="a" name="stag boots">
+		<attribute key="primarytype" value="boots" />
+		<attribute key="magiclevelpoints" value="1" />
+		<attribute key="earthmagiclevelpoints" value="1" />
+		<attribute key="absorbpercentenergy" value="8" />
+		<attribute key="armor" value="2" />
+		<attribute key="weight" value="1400" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="terra wave" value="critical hit chance">
+				<attribute key="value" value="650" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="feet" />
+			<attribute key="vocation" value="Druid;true, Elder Druid" />
+		</attribute>
+	</item>
+	<item id="52354" article="a" name="stag footwraps">
+		<attribute key="primarytype" value="boots" />
+		<attribute key="skillfist" value="2" />
+		<attribute key="absorbpercentdeath" value="3" />
+		<attribute key="absorbpercentphysical" value="2" />
+		<attribute key="armor" value="2" />
+		<attribute key="weight" value="1400" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="increase speed" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="spiritual outburst" value="critical hit chance">
+				<attribute key="value" value="800" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="feet" />
+			<attribute key="vocation" value="Monk;true, Exalted Monk" />
+		</attribute>
+	</item>
+	<item id="52355" article="a" name="stag spellbook">
+		<attribute key="primarytype" value="spellbooks" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="absorbpercentphysical" value="2" />
+		<attribute key="absorbpercentenergy" value="6" />
+		<attribute key="magiclevelpoints" value="5" />
+		<attribute key="defense" value="21" />
+		<attribute key="weight" value="2000" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+			<attribute key="skillboost shielding" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="great fire wave" value="critical hit chance">
+				<attribute key="value" value="100" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="shield" />
+			<attribute key="vocation" value="Sorcerer;true, Master Sorcerer" />
+		</attribute>
+	</item>
+	<item id="52356" article="a" name="stag scrolls">
+		<attribute key="primarytype" value="spellbooks" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="absorbpercentphysical" value="2" />
+		<attribute key="absorbpercentdeath" value="5" />
+		<attribute key="magiclevelpoints" value="5" />
+		<attribute key="defense" value="21" />
+		<attribute key="weight" value="2000" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+			<attribute key="skillboost shielding" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="terra wave" value="critical hit chance">
+				<attribute key="value" value="100" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="shield" />
+			<attribute key="vocation" value="Druid;true, Elder Druid" />
+		</attribute>
+	</item>
+	<item id="52357" article="a" name="stag shield">
+		<attribute key="primarytype" value="shields" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="absorbpercentphysical" value="5" />
+		<attribute key="absorbpercentice" value="10" />
+		<attribute key="defense" value="40" />
+		<attribute key="weight" value="6000" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+			<attribute key="skillboost shielding" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="berserk" value="critical hit chance">
+				<attribute key="value" value="100" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="shield" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52358" article="a" name="muglex clan footman soul core">
+		<attribute key="primarytype" value="soul cores" />
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="52359" article="a" name="muglex clan assassin soul core">
+		<attribute key="primarytype" value="soul cores" />
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="52360" article="a" name="corrupted ghost soul core">
+		<attribute key="primarytype" value="soul cores" />
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="52361" article="a" name="corrupted skeleton soul core">
+		<attribute key="primarytype" value="soul cores" />
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="100" />
+	</item>
+	<item id="52548" article="a" name="dead cyclursus">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52549" article="a" name="dead cyclursus">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52548" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52550" article="a" name="dead cyclursus">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52549" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52551" article="a" name="dead cyclursus">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52550" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52552" article="a" name="dead crypt fiend">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52553" article="a" name="dead crypt fiend">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52552" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52554" article="a" name="dead crypt fiend">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52553" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52555" article="a" name="dead crypt fiend">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52554" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52556" article="a" name="dead roaming dread">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52557" article="a" name="dead roaming dread">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52556" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52558" article="a" name="dead roaming dread">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52557" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52559" article="a" name="dead roaming dread">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52558" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52560" article="a" name="dead crypt mage">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52561" article="a" name="dead crypt mage">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52560" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52562" article="a" name="dead crypt mage">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52561" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52563" article="a" name="dead crypt mage">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52562" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52564" article="a" name="dead bone bear">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52565" article="a" name="dead bone bear">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52564" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52566" article="a" name="dead bone bear">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52565" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52567" article="a" name="dead bone bear">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52566" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52568" article="a" name="dead haunted hunter">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52569" article="a" name="dead haunted hunter">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52568" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52570" article="a" name="dead haunted hunter">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52569" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52571" article="a" name="dead haunted hunter">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52570" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52572" article="a" name="dead creepy crawler">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52573" article="a" name="dead creepy crawler">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52572" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52574" article="a" name="dead creepy crawler">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52573" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52575" article="a" name="dead creepy crawler">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52574" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52586" article="an" name="ice-covered certificate of ancestry">
+		<attribute key="description" value="This certificate affirms the birth of Eldoran, son of Cadwgan Etzel. By decree it has to be returned to the Bounacean court within a month, due time." />
+		<attribute key="weight" value="50" />
+	</item>
+	<item id="52589" article="a" name="folded artefact carpet VIII">
+		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight." />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="52632" name="night harpy beak">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52633" name="night harpy feathers">
+		<attribute key="weight" value="750" />
+	</item>
+	<item id="52634" article="an" name="oak wood">
+		<attribute key="description" value="Excellent oak wood in a wieldy sized block." />
+		<attribute key="weight" value="1250" />
+	</item>
+	<item id="52635" name="salvaged iron parts">
+		<attribute key="description" value="Salvaged iron parts in good quality that can be reused for repairs and maintenance." />
+		<attribute key="weight" value="2000" />
+	</item>
+	<item id="52636" name="tender venison">
+		<attribute key="description" value="Exquisite venison from the Adan wilds." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52637" name="repair kit for boats">
+		<attribute key="description" value="A practical repair kit for small boats, complete with tar and all the necessary tools." />
+		<attribute key="weight" value="1500" />
+	</item>
+	<item id="52638" article="a" name="marinated sturgeon">
+		<attribute key="description" value="This sturgeon has been prepared in a tasty marinade and a special and rare delicacy." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52649" article="a" name="refined stag shield">
+		<attribute key="description" value="A refined silver stag shield." />
+		<attribute key="primarytype" value="shields" />
+		<attribute key="weaponType" value="shield" />
+		<attribute key="absorbpercentphysical" value="5" />
+		<attribute key="absorbpercentice" value="12" />
+		<attribute key="skillsword" value="2" />
+		<attribute key="skillaxe" value="2" />
+		<attribute key="skillclub" value="2" />
+		<attribute key="defense" value="41" />
+		<attribute key="weight" value="6200" />
+		<attribute key="imbuementslot" value="1">
+			<attribute key="elemental protection death" value="3" />
+			<attribute key="elemental protection earth" value="3" />
+			<attribute key="elemental protection fire" value="3" />
+			<attribute key="elemental protection ice" value="3" />
+			<attribute key="elemental protection energy" value="3" />
+			<attribute key="elemental protection holy" value="3" />
+			<attribute key="skillboost shielding" value="3" />
+		</attribute>
+		<attribute key="augments" value="1">
+			<attribute key="berserk" value="critical hit chance">
+				<attribute key="value" value="100" />
+			</attribute>
+		</attribute>
+		<attribute key="script" value="moveevent">
+			<attribute key="level" value="350" />
+			<attribute key="slot" value="shield" />
+			<attribute key="vocation" value="Knight;true, Elite Knight" />
+		</attribute>
+	</item>
+	<item id="52657" article="a" name="fiery crypt rune">
+		<attribute key="description" value="This rune pulses with corrupt magic bound into bone. Only by offering a complete set to the guardian spirit may its blight be undone." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52658" article="an" name="icy crypt rune">
+		<attribute key="description" value="This rune pulses with corrupt magic bound into bone. Only by offering a complete set to the guardian spirit may its blight be undone." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52659" article="a" name="deathly crypt rune">
+		<attribute key="description" value="This rune pulses with corrupt magic bound into bone. Only by offering a complete set to the guardian spirit may its blight be undone." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52660" article="an" name="ancient crypt rune">
+		<attribute key="description" value="This rune pulses with corrupt magic bound into bone. Only by offering a complete set to the guardian spirit may its blight be undone." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52661" article="a" name="necromantic crypt rune">
+		<attribute key="description" value="This rune pulses with corrupt magic bound into bone. Only by offering a complete set to the guardian spirit may its blight be undone." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52662" article="a" name="silver poniard">
+		<attribute key="weight" value="750" />
+	</item>
+	<item id="52663" article="a" name="cuirass plate">
+		<attribute key="weight" value="750" />
+	</item>
+	<item id="52664" article="a" name="stag parchment">
+		<attribute key="weight" value="750" />
+	</item>
+	<item id="52677" article="a" name="dead night harpy">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52678" article="a" name="dead night harpy">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52677" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52679" article="a" name="dead night harpy">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52678" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52680" article="a" name="dead night harpy">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52679" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52681" article="a" name="dead raubritter skirmisher">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52682" article="a" name="dead raubritter skirmisher">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52681" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52683" article="a" name="dead raubritter skirmisher">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52682" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52684" article="a" name="dead raubritter skirmisher">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52683" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52685" article="a" name="dead raubritter marksman">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52686" article="a" name="dead raubritter marksman">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52685" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52687" article="a" name="dead raubritter marksman">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52686" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52688" article="a" name="dead raubritter marksman">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52687" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52689" article="a" name="dead raubritter chastener">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52690" article="a" name="dead raubritter chastener">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52689" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52691" article="a" name="dead raubritter chastener">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52690" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52692" article="a" name="dead raubritter chastener">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52691" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52693" article="a" name="dead Court Warlock">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52694" article="a" name="dead Court Warlock">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52693" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52695" article="a" name="dead Court Warlock">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52694" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52696" article="a" name="dead Court Warlock">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52695" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52705" article="a" name="necromantic core">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52706" article="a" name="toe nails">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52707" article="a" name="giant tusk">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52708" article="a" name="fetid heart">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52709" article="a" name="cryptic fossil">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52710" article="a" name="worn guide book">
+		<attribute key="description" value="Compiled Quest Solutions for Dummies." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52711" article="a" name="golden claw">
+		<attribute key="weight" value="455" />
+	</item>
+	<item id="52712" article="a" name="shrunken head">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52713" article="an" name="ancient scales">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52714" article="a" name="soul trap">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52715" article="a" name="skull tendril">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52716" article="an" name="ancient eye stalk">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52717" article="a" name="bone spikes">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52718" article="a" name="deadly fangs">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52719" article="a" name="crystallized death">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52720" article="a" name="cluster of crystallized death">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52725" article="an" name="ancient bonelord santa">
+		<attribute key="weight" value="650" />
+	</item>
+	<item id="52726" article="an" name="icy scales">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52727" article="an" name="icy horns">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52728" article="a" name="frozen crapace">
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52729" article="a" name="frozen claw">
+		<attribute key="weight" value="455" />
+	</item>
+	<item id="52732" article="a" name="guardian ring">
+		<attribute key="primarytype" value="rings" />
+		<attribute key="armor" value="1" />
+		<attribute key="weight" value="90" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ring" />
+		</attribute>
+	</item>
+	<item id="52743" name="salvaged silver parts">
+		<attribute key="description" value="Salvaged silver parts in good quality that can be reused for embellishments and ornaments." />
+		<attribute key="weight" value="2000" />
+	</item>
+	<item id="52744" article="a" name="personal letter of Michael the Stalwart I">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 1/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52745" article="a" name="bottle of Raubritter Lager">
+		<attribute key="description" value="A sealed bottle of 'Raubritter Lager'. Bottled by brewmaster Bhaan of the Order of the Stag on the Isle of Ada." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52746" article="a" name="twisted marionette">
+		<attribute key="description" value="A twisted marionette once in the possession of an evil warlock." />
+		<attribute key="weight" value="1001" />
+	</item>
+	<item id="52747" article="a" name="broken staff of mind control">
+		<attribute key="description" value="A broken staff with a skull on one end. One of the means of which an evil warlock controlled the minds of others." />
+		<attribute key="weight" value="1001" />
+	</item>
+	<item id="52748" name="battle tactics">
+		<attribute key="description" value="These plans show various tactical formations, troop locations and supply depots around the Isle of Ada." />
+	</item>
+	<item id="52750" article="a" name="dead goblin scavenger">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52751" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52751" article="a" name="dead goblin scavenger">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="52752" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52752" article="a" name="dead goblin scavenger">
+		<attribute key="duration" value="10" />
+		<attribute key="decayTo" value="52753" />
+		<attribute key="containersize" value="48" />
+	</item>
+	<item id="52753" article="a" name="dead goblin scavenger">
+		<attribute key="duration" value="600" />
+		<attribute key="decayTo" value="0" />
+	</item>
+	<item id="52758" name="salvaged bronze parts">
+		<attribute key="description" value="Salvaged bronze parts in good quality that can be reused to for various refinements." />
+		<attribute key="weight" value="2000" />
+	</item>
+	<item id="52759" name="the mariner's compass from the Antoinette">
+		<attribute key="description" value="The compass from the legendary Emmanuelle, flagship of the Bounacean Order of the Lion and pride of Bounac. The signs JT(O~X are engraved in its underside." />
+		<attribute key="armor" value="0" />
+		<attribute key="weight" value="3000" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52781" name="stag shield refinement plans">
+		<attribute key="description" value="These plans are instructing a blacksmith on how to refine a stag shield." />
+		<attribute key="weight" value="3000" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52783" article="a" name="falcon circlet">
+		<attribute key="description" value="A high-carat silver copy of the falcon circlet." />
+		<attribute key="armor" value="0" />
+		<attribute key="weight" value="3000" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52785" article="a" name="cool bottle of Raubritter Lager">
+		<attribute key="description" value="A sealed bottle of 'Raubritter Lager'. Cool and fresh. Bottled by brewmaster Bhaan of the Order of the Stag on the Isle of Ada." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52788" article="a" name="meal from the beak of a night harpy">
+		<attribute key="description" value="This meal has been finely grinded from a night harpy beak." />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="52789" article="a" name="bottle of enhanced Raubritter Lager">
+		<attribute key="description" value="A bottle of 'Raubritter Lager', refined with the meal of grinded night harpy beaks. Additionally, it comes without any of the side effects from a regular lager. For better or worse." />
+		<attribute key="weight" value="500" />
+	</item>
+	<item id="52800" article="a" name="raubritter skirmisher soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52801" article="a" name="raubritter marksman soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52802" article="a" name="raubritter chastener soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52807" article="a" name="cyclursus soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52808" article="a" name="crypt fiend soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52809" article="a" name="walking dread soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52810" article="a" name="crypt construct soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52811" article="a" name="haunted hunter soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52812" article="a" name="creepy crawler soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52813" article="a" name="night harpy soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52814" article="a" name="roaming dread soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52815" article="a" name="crypt mage soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52816" article="a" name="personal letter of Clavius I">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 1/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52817" article="a" name="personal letter of Clavius II">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 2/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52818" article="a" name="personal letter of Clavius III">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 3/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52819" article="a" name="personal letter of Adlerauge I">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 1/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52820" article="a" name="personal letter of Adlerauge II">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 2/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52821" article="a" name="personal letter of Adlerauge III">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 3/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52822" article="a" name="personal letter of Michael the Stalwart II">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 2/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52823" article="a" name="personal letter of Michael the Stalwart III">
+		<attribute key="description" value="A personal letter of a knight of the Order of the Stag 3/3." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="52824" article="a" name="the broken sword of Eldoran Etzel">
+		<attribute key="description" value="This sword once belonged to Eldoran Etzel who found it on his travels before settling down on the Isle of Ada. It is broken and of no use in battle anymore. It is said that Eldoran found it like that." />
+		<attribute key="armor" value="0" />
+		<attribute key="weight" value="3000" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52828" article="a" name="brass-shod chest">
+		<attribute key="description" value="Use it in your house to place a brass-shod chest." />
+	</item>
+	<item id="52830" article="a" name="lit candlestick">
+		<attribute key="primarytype" value="light sources" />
+		<attribute key="weight" value="680" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="ammo" />
+		</attribute>
+	</item>
+	<item id="52838" article="a" name="dead stag">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52839" article="a" name="dead stag">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52838" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52840" article="a" name="dead stag">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52839" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52841" article="a" name="dead stag">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52840" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52842" article="a" name="dead imperial">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52843" article="a" name="dead imperial">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52842" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52844" article="a" name="dead imperial">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52843" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52845" article="a" name="dead imperial">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52844" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52846" article="a" name="dead Michael the Stalwart">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52847" article="a" name="dead Michael the Stalwart">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52846" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52848" article="a" name="dead Michael the Stalwart">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52847" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52849" article="a" name="dead Michael the Stalwart">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52848" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52850" article="a" name="dead Adlerauge">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52851" article="a" name="dead Adlerauge">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52850" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52852" article="a" name="dead Adlerauge">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52851" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52853" article="a" name="dead Adlerauge">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52852" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52854" article="a" name="dead Clavius">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52855" article="a" name="dead Clavius">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52854" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52856" article="a" name="dead Clavius">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52855" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52857" article="a" name="dead Clavius">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52856" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52858" article="a" name="dead Overseer Osverger">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="0" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52859" article="a" name="dead Overseer Osverger">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52858" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52860" article="a" name="dead Overseer Osverger">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52859" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52861" article="a" name="dead Overseer Osverger">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="duration" value="300" />
+		<attribute key="decayTo" value="52860" />
+		<attribute key="containersize" value="10" />
+	</item>
+	<item id="52864" article="a" name="test proficiency catalyst">
+		<attribute key="weight" value="750" />
+	</item>
+	<item id="52865" article="a" name="stag soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52866" article="a" name="imperial soul core">
+		<attribute key="description" value="Offers a soul to the Soulpit. Combine with another soul core to create a random new soul core." />
+		<attribute key="weight" value="1000" />
+	</item>
+	<item id="52867" name="barebone grill" />
+	<item id="52868" name="barebone grill" />
+	<item id="52869" name="barebone grill" />
+	<item id="52870" name="barebone grill" />
+	<item id="52871" name="barebone grill" />
+	<item id="52873" article="a" name="inert dragon head">
+		<attribute key="description" value="A talisman, imbued with ancient magic, rechaging it's power." />
+	</item>
+	<item id="52874" article="a" name="jade dragon head">
+		<attribute key="description" value="A talisman, imbued with ancient magic, now in full power." />
+	</item>
+	<item id="52963" article="a" name="skill trainer">
+		<attribute key="description" value="Use this statue to train your shielding skill and your melee or distance fighting or your magic level offline." />
+	</item>
+	<item id="52964" article="a" name="charred mask">
+		<attribute key="slotType" value="head" />
+		<attribute key="weight" value="800" />
+		<attribute key="description" value="A mask scorched by infernal flames." />
+	</item>
+	<item id="53002" article="a" name="gold tooth">
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="10" />
+	</item>
+	<item id="53003" article="a" name="lizard tail">
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="weight" value="55" />
+	</item>
+	<item id="53004" article="an" name="infernoid ember">
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="description" value="A glowing ember pulsing with infernal heat." />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="53005" article="a" name="sailor's burn cure">
+		<attribute key="primarytype" value="creature products" />
+		<attribute key="description" value="An ointment sailors use to soothe burns." />
+		<attribute key="weight" value="90" />
+	</item>
+	<item id="53073" article="a" name="bunch of turnips">
+		<attribute key="description" value="A bunch of fresh turnips. A certain lonely ram might enjoy these." />
+		<attribute key="weight" value="200" />
+	</item>
+	<item id="53074" article="an" name="adventurer backpack">
+		<attribute key="primarytype" value="containers" />
+		<attribute key="containersize" value="20" />
+		<attribute key="weight" value="1800" />
+		<attribute key="script" value="moveevent">
+			<attribute key="slot" value="backpack" />
+		</attribute>
+	</item>
+	<item id="53078" article="a" name="dead lizard henchman">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53082" article="a" name="dead lizard magician">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53086" article="a" name="dead lizard swordmaster">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53090" article="a" name="dead lizard commander">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53094" article="a" name="dead lizard executioner">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53098" article="a" name="dead pirate navigator">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53103" article="a" name="dead pirate quartermaster">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53108" article="a" name="dead herald of fire">
+		<attribute key="containersize" value="30" />
+	</item>
+	<item id="53110" article="a" name="dead pirate gunner">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53113" article="a" name="dead pirate cook">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53119" article="a" name="dead sea captain">
+		<attribute key="fluidsource" value="blood" />
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53122" article="a" name="dead infernoid hound">
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53125" article="a" name="dead infernoid soul">
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53128" article="a" name="dead infernoid spiritual">
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53132" article="a" name="dead infernoid blob">
+		<attribute key="containersize" value="20" />
+	</item>
+	<item id="53158" article="an" name="old treasure map">
+		<attribute key="description" value="It shows encrypted coordinates, someone related to Aragonia should take a look at it." />
+		<attribute key="weight" value="400" />
+	</item>
+	<item id="53162" article="an" name="superior mana potion">
+		<attribute key="primarytype" value="liquids" />
+		<attribute key="description" value="This potion can only be consumed by paladins, monks, sorcerers and druids of level 100 or higher." />
+		<attribute key="weight" value="310" />
+	</item>
+	<item id="53163" article="an" name="distilled superior mana potion">
+		<attribute key="primarytype" value="liquids" />
+		<attribute key="description" value="This potion can only be consumed by players of level 130 or higher." />
+		<attribute key="weight" value="310" />
+	</item>
+	<item id="53164" article="an" name="distilled ultimate mana potion">
+		<attribute key="primarytype" value="liquids" />
+		<attribute key="description" value="This potion can only be consumed by players of level 200 or higher." />
+		<attribute key="weight" value="310" />
+	</item>
+	<item id="53167" article="a" name="sail pass">
+		<attribute key="weight" value="10" />
+		<attribute key="description" value="A pass that grants passage by sail." />
+	</item>
+	<item id="53168" article="a" name="shatterstorm arrow">
+		<attribute key="primarytype" value="ammunition" />
+		<attribute key="weaponType" value="ammunition" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="shootType" value="shatterstormarrow" />
+		<attribute key="maxhitchance" value="100" />
+		<attribute key="attack" value="27" />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="53169" article="a" name="firestorm arrow">
+		<attribute key="primarytype" value="ammunition" />
+		<attribute key="weaponType" value="ammunition" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="shootType" value="firestormarrow" />
+		<attribute key="maxhitchance" value="100" />
+		<attribute key="attack" value="21" />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="53170" article="a" name="terrastorm arrow">
+		<attribute key="primarytype" value="ammunition" />
+		<attribute key="weaponType" value="ammunition" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="shootType" value="terrastormarrow" />
+		<attribute key="maxhitchance" value="100" />
+		<attribute key="attack" value="21" />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="53171" article="a" name="froststorm arrow">
+		<attribute key="primarytype" value="ammunition" />
+		<attribute key="weaponType" value="ammunition" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="shootType" value="froststormarrow" />
+		<attribute key="maxhitchance" value="100" />
+		<attribute key="attack" value="21" />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="53172" article="a" name="thunderstorm arrow">
+		<attribute key="primarytype" value="ammunition" />
+		<attribute key="weaponType" value="ammunition" />
+		<attribute key="ammotype" value="arrow" />
+		<attribute key="shootType" value="thunderstormarrow" />
+		<attribute key="maxhitchance" value="100" />
+		<attribute key="attack" value="21" />
+		<attribute key="weight" value="80" />
+	</item>
+	<item id="54266" article="a" name="lesser proficiency catalyst">
+		<attribute key="primarytype" value="valuables" />
+		<attribute key="description" value="A catalyst used to enhance proficiencies." />
+		<attribute key="weight" value="100" />
 	</item>
 </items>

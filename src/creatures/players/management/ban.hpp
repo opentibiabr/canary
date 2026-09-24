@@ -31,7 +31,10 @@ public:
 	bool acceptConnection(uint32_t clientIP);
 
 private:
+	void pruneStaleEntries(uint64_t currentTime);
+
 	IpConnectMap ipConnectMap;
+	uint64_t lastPrune {};
 	std::recursive_mutex lock;
 };
 

@@ -13,10 +13,34 @@
 #include "database/databasetasks.hpp"
 #include "utils/tools.hpp"
 
+namespace {
+	// An entry can no longer influence acceptConnection() once its block has
+	// expired and its last attempt fell out of the 5s burst window, so keeping
+	// it around only costs memory and lookup time.
+	constexpr uint64_t CONNECT_BLOCK_BURST_WINDOW = 5000;
+	// How often the map is swept. Amortises the O(n) scan so the hot path stays
+	// O(log n).
+	constexpr uint64_t CONNECT_BLOCK_PRUNE_INTERVAL = 60000;
+} // namespace
+
+void Ban::pruneStaleEntries(uint64_t currentTime) {
+	if (currentTime - lastPrune < CONNECT_BLOCK_PRUNE_INTERVAL) {
+		return;
+	}
+
+	lastPrune = currentTime;
+	std::erase_if(ipConnectMap, [currentTime](const auto &entry) {
+		const ConnectBlock &connectBlock = entry.second;
+		return connectBlock.blockTime <= currentTime
+			&& currentTime - connectBlock.lastAttempt > CONNECT_BLOCK_BURST_WINDOW;
+	});
+}
+
 bool Ban::acceptConnection(uint32_t clientIP) {
 	std::scoped_lock<std::recursive_mutex> lockClass(lock);
 
 	const uint64_t currentTime = OTSYS_TIME();
+	pruneStaleEntries(currentTime);
 
 	auto it = ipConnectMap.find(clientIP);
 	if (it == ipConnectMap.end()) {

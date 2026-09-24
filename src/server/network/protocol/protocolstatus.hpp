@@ -37,5 +37,8 @@ public:
 	static std::string SERVER_DEVELOPERS;
 
 private:
+	static void pruneStaleEntries(int64_t currentTime);
+
 	static std::map<uint32_t, int64_t> ipConnectMap;
+	static int64_t lastPrune;
 };

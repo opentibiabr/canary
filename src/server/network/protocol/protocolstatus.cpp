@@ -21,9 +21,32 @@ std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+int64_t ProtocolStatus::lastPrune = 0;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
+namespace {
+	// How often the map is swept. Amortises the O(n) scan so the hot path stays
+	// O(log n).
+	constexpr int64_t STATUS_PRUNE_INTERVAL = 60000;
+} // namespace
+
+void ProtocolStatus::pruneStaleEntries(int64_t currentTime) {
+	if (currentTime - lastPrune < STATUS_PRUNE_INTERVAL) {
+		return;
+	}
+
+	lastPrune = currentTime;
+	// Mirrors the throttle check below: once the timeout has elapsed the entry
+	// can never reject a query again, so it is dead weight.
+	const auto timeout = g_configManager().getNumber(STATUSQUERY_TIMEOUT);
+	std::erase_if(ipConnectMap, [currentTime, timeout](const auto &entry) {
+		return currentTime >= entry.second + timeout;
+	});
+}
+
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
+	pruneStaleEntries(OTSYS_TIME());
+
 	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
 		const std::string ipStr = convertIPToString(ip);

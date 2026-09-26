@@ -31,7 +31,9 @@ namespace {
 } // namespace
 
 void ProtocolStatus::pruneStaleEntries(int64_t currentTime) {
-	if (currentTime - lastPrune < STATUS_PRUNE_INTERVAL) {
+	// A backward clock step restarts the schedule instead of suspending pruning
+	// until the clock catches up again.
+	if (currentTime >= lastPrune && currentTime - lastPrune < STATUS_PRUNE_INTERVAL) {
 		return;
 	}
 

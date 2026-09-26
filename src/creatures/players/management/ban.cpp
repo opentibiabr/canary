@@ -24,14 +24,20 @@ namespace {
 } // namespace
 
 void Ban::pruneStaleEntries(uint64_t currentTime) {
-	if (currentTime - lastPrune < CONNECT_BLOCK_PRUNE_INTERVAL) {
+	// OTSYS_TIME() follows the system clock, which can step backward (NTP, manual
+	// change). A backward step restarts the schedule instead of wrapping the
+	// unsigned difference.
+	if (currentTime >= lastPrune && currentTime - lastPrune < CONNECT_BLOCK_PRUNE_INTERVAL) {
 		return;
 	}
 
 	lastPrune = currentTime;
 	std::erase_if(ipConnectMap, [currentTime](const auto &entry) {
 		const ConnectBlock &connectBlock = entry.second;
+		// An attempt recorded "in the future" (before a backward step) is recent:
+		// acceptConnection() still counts it inside the burst window, so it stays.
 		return connectBlock.blockTime <= currentTime
+			&& connectBlock.lastAttempt <= currentTime
 			&& currentTime - connectBlock.lastAttempt > CONNECT_BLOCK_BURST_WINDOW;
 	});
 }

@@ -85,6 +85,17 @@ TeleportAction = {
 			{ x = 33443, y = 31532, z = 13 },
 		},
 	},
+	-- The Dream Courts: the movement script owns admission and destination.
+	[23103] = {
+		scriptedTeleport = true,
+		itemPos = {
+			{ x = 33619, y = 32526, z = 15 },
+			{ x = 32211, y = 32081, z = 15 },
+			{ x = 32720, y = 32270, z = 8 },
+			{ x = 33618, y = 32546, z = 13 },
+			{ x = 32208, y = 32033, z = 13 },
+		},
+	},
 	-- Barbarian Test - Temple Citizen Svargrond
 	[30032] = {
 		itemId = 1949,

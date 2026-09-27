@@ -669,7 +669,13 @@ void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player
 	ItemsMap depotItems;
 	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
 	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_depotitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
-	if ((result = g_database().storeQuery(query))) {
+	bool depotQuerySucceeded = false;
+	result = g_database().storeQuery(query, depotQuerySucceeded);
+	if (!depotQuerySucceeded) {
+		return;
+	}
+
+	if (result) {
 		loadItems(depotItems, result, player);
 		for (auto it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
 			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
@@ -705,6 +711,7 @@ void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player
 	for (const auto &item : itemsToStartDecaying) {
 		item->startDecaying();
 	}
+	player->markDepotStorageLoaded();
 }
 
 void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {

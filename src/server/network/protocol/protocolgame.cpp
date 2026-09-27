@@ -49,6 +49,7 @@
 #include "lua/modules/modules.hpp"
 #include "server/network/connection/connection.hpp"
 #include "server/network/message/outputmessage.hpp"
+#include "server/network/protocol/market_payload.hpp"
 #include "server/network/protocol/protocol_port_utils.hpp"
 #include "server/network/protocol/transport_codec.hpp"
 #include "utils/tools.hpp"
@@ -4425,7 +4426,7 @@ void ProtocolGame::parseMarketBrowse(NetworkMessage &msg) {
 		if (Item::items[itemId].upgradeClassification > 0) {
 			tier = msg.get<uint8_t>();
 		}
-		player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter();
 		g_game().playerBrowseMarket(player->getID(), itemId, tier);
 	} else {
 		g_game().playerBrowseMarket(player->getID(), browseId, 0);
@@ -6735,7 +6736,7 @@ void ProtocolGame::sendSaleItemList(const std::vector<ShopBlock> &shopVector, co
 	writeToOutputBuffer(msg);
 }
 
-void ProtocolGame::sendMarketEnter(uint32_t depotId) {
+void ProtocolGame::sendMarketEnter() {
 	if (!player) {
 		return;
 	}
@@ -6754,45 +6755,45 @@ void ProtocolGame::sendMarketEnter(uint32_t depotId) {
 
 	msg.addByte(static_cast<uint8_t>(std::min<uint32_t>(IOMarket::getPlayerOfferCount(player->getGUID()), std::numeric_limits<uint8_t>::max())));
 
-	std::shared_ptr<DepotLocker> depotLocker = player->getDepotLocker(depotId);
+	const auto &depotLocker = player->getActiveDepotLocker();
 	if (!depotLocker) {
 		msg.add<uint16_t>(0x00);
 		writeToOutputBuffer(msg);
 		return;
 	}
 
-	player->setInMarket(true);
-
 	// Only use here locker items, itemVector is for use of Game::createMarketOffer
 	auto [itemVector, lockerItems] = player->requestLockerItems(depotLocker, true);
-	auto totalItemsCountPosition = msg.getBufferPosition();
-	msg.skipBytes(2); // Total items count
+	MarketPayload::LockerWriter lockerWriter(msg);
+	if (!lockerWriter.valid()) {
+		g_logger().warn("[{}] Market locker header does not fit in one network message", __FUNCTION__);
+		return;
+	}
+	player->setInMarket(true);
 
-	const uint16_t entriesLimit = std::numeric_limits<uint16_t>::max();
-	uint16_t entriesSent = 0;
 	bool limitReached = false;
 	for (const auto &[itemId, tierAndCountMap] : lockerItems) {
 		for (const auto &[tier, count] : tierAndCountMap) {
-			if (entriesSent >= entriesLimit) {
+			const bool hasTier = !oldProtocol && Item::items[itemId].upgradeClassification > 0;
+			const auto result = lockerWriter.add({
+				.itemId = itemId,
+				.tier = tier,
+				.amount = count,
+				.hasTier = hasTier,
+			});
+			if (result != MarketPayload::AddLockerResult::Added) {
 				limitReached = true;
 				break;
 			}
-			msg.add<uint16_t>(itemId);
-			if (!oldProtocol && Item::items[itemId].upgradeClassification > 0) {
-				msg.addByte(tier);
-			}
-			msg.add<uint16_t>(static_cast<uint16_t>(count));
-			++entriesSent;
 		}
 		if (limitReached) {
 			break;
 		}
 	}
-
-	auto endPosition = msg.getBufferPosition();
-	msg.setBufferPosition(totalItemsCountPosition);
-	msg.add<uint16_t>(entriesSent);
-	msg.setBufferPosition(endPosition);
+	lockerWriter.finish();
+	if (limitReached) {
+		g_logger().warn("[{}] Market locker snapshot reached the wire boundary after {} complete records; truncating safely", __FUNCTION__, lockerWriter.count());
+	}
 
 	writeToOutputBuffer(msg);
 

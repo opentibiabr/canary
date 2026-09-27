@@ -573,7 +573,7 @@ bool IOLoginDataSave::savePlayerDepotItems(const std::shared_ptr<Player> &player
 	PropWriteStream propWriteStream;
 	ItemDepotList depotList;
 	const uint32_t playerGuid = player->getGUID();
-	if (player->lastDepotId != -1) {
+	if (player->hasLoadedDepotStorage()) {
 		const std::string deleteQuery = fmt::format("DELETE FROM `player_depotitems` WHERE `player_id` = {}", playerGuid);
 
 		if (!db.executeQuery(deleteQuery)) {

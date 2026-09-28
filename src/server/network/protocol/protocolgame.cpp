@@ -10017,8 +10017,8 @@ void ProtocolGame::AddPlayerSkills(NetworkMessage &msg) {
 	// Imbuements
 	msg.addDouble(player->getSkillLevel(SKILL_LIFE_LEECH_AMOUNT) / 10000.); // Life Leech
 	msg.addDouble(player->getSkillLevel(SKILL_MANA_LEECH_AMOUNT) / 10000.); // Mana Leech
-	msg.addDouble(player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10000.); // Crit Chance
-	msg.addDouble(player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) / 10000.); // Crit Extra Damage
+	msg.addDouble(player->getBaseCritical().chance + (player->getSkillLevel(SKILL_CRITICAL_HIT_CHANCE) / 10000.0)); // Total Critical Hit Chance
+	msg.addDouble(player->getBaseCritical().damage + (player->getSkillLevel(SKILL_CRITICAL_HIT_DAMAGE) / 10000.0)); // Total Critical Extra Damage
 	msg.addDouble(getForgeSkillStat(CONST_SLOT_LEFT)); // Onslaught
 
 	msg.add<uint16_t>(player->getDefense(true));

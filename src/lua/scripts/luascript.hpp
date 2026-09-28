@@ -49,6 +49,7 @@ public:
 	const std::string &getFileById(int32_t scriptId);
 	int32_t getEvent(const std::string &eventName);
 	int32_t getEvent();
+	void removeEvent(int32_t eventId);
 	int32_t getMetaEvent(const std::string &globalName, const std::string &eventName);
 
 	const std::string &getInterfaceName() const {

@@ -317,6 +317,9 @@ public:
 	// serialization
 	virtual Attr_ReadValue readAttr(AttrTypes_t attr, PropStream &propStream);
 	bool unserializeAttr(PropStream &propStream);
+	// Detached preview for identifying persisted World ownership. Never invokes
+	// subclass callbacks or registers UIDs/sleepers; leaves the source unchanged.
+	bool inspectAttributes(PropStream propStream);
 	virtual bool unserializeItemNode(OTB::Loader &, const OTB::Node &, PropStream &propStream, Position &itemPosition);
 
 	virtual void serializeAttr(PropWriteStream &propWriteStream) const;
@@ -331,6 +334,7 @@ public:
 	uint16_t getID() const {
 		return id;
 	}
+	uint16_t getMapSourceId() const;
 	void setID(uint16_t newid);
 
 	// Returns the player that is holding this item in his inventory
@@ -607,9 +611,7 @@ public:
 	uint32_t getItemAmount() const {
 		return count;
 	}
-	void setItemCount(uint8_t n) {
-		count = n;
-	}
+	void setItemCount(uint8_t n);
 
 	static uint32_t countByType(const std::shared_ptr<Item> &item, int32_t subType) {
 		if (!item) {
@@ -672,9 +674,7 @@ public:
 		return loadedFromMap;
 	}
 
-	bool isCleanable() const {
-		return !loadedFromMap && canRemove() && isPickupable() && !hasAttribute(ItemAttribute_t::UNIQUEID) && !hasAttribute(ItemAttribute_t::ACTIONID);
-	}
+	bool isCleanable() const;
 
 	bool hasMarketAttributes() const;
 
@@ -772,6 +772,9 @@ protected:
 	std::weak_ptr<Cylinder> m_parent;
 
 	uint16_t id; // the same id as in ItemType
+	// Transient OTBM provenance, before native persistent-field conversion.
+	// This is not an item attribute and must not be cloned or serialized.
+	uint16_t mapSourceId = 0;
 	uint8_t count = 1; // number of stacked items
 
 	bool loadedFromMap = false;

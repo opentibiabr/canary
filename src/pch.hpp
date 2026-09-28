@@ -34,6 +34,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <deque>
+#include <exception>
 #include <filesystem>
 #include <fstream>
 #include <forward_list>
@@ -51,6 +52,7 @@
 #include <algorithm>
 #include <regex>
 #include <set>
+#include <tuple>
 #include <thread>
 #include <utility>
 #include <vector>

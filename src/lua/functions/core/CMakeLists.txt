@@ -2,6 +2,7 @@ target_sources(
     ${CORE_TARGET_NAME}
     PRIVATE game/config_functions.cpp
             game/game_functions.cpp
+            game/world_functions.cpp
             game/bank_functions.cpp
             game/batch_update_functions.cpp
             game/global_functions.cpp

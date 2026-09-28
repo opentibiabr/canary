@@ -10,6 +10,7 @@
 #pragma once
 
 #include "mapcache.hpp"
+#include "world/world_validation.hpp"
 #include "map/navigation_snapshot.hpp"
 #include "map/town.hpp"
 #include "map/house/house.hpp"
@@ -43,6 +44,8 @@ public:
 	 * \returns true if the map was loaded successfully
 	 */
 	void load(const std::string &identifier, const Position &pos = Position());
+	/** Make the configured main-map file available before consumers inspect it. */
+	void ensureMainMapAvailable(const std::string &identifier);
 	/**
 	 * Load the main map
 	 * \param identifier Is the main map name (name of file .otbm)
@@ -63,6 +66,8 @@ public:
 	void loadMapCustom(const std::string &mapName, bool loadHouses, bool loadMonsters, bool loadNpcs, bool loadZones, int customMapIndex);
 
 	void loadHouseInfo();
+	// Startup-only census: cached tiles are inspected without materializing them.
+	std::vector<world_layers::UniqueOccurrence> worldUniqueIds(const std::unordered_set<uint16_t> &requested);
 
 	/**
 	 * Save a map.

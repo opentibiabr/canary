@@ -31,10 +31,14 @@ public:
 	bool acceptConnection(uint32_t clientIP);
 
 private:
+	// Upper bound on the entries one acceptConnection() examines while pruning.
+	// Each call adds at most one entry, so the sweep always keeps up with growth.
+	static constexpr size_t PRUNE_BUDGET = 32;
+
 	void pruneStaleEntries(uint64_t currentTime);
 
 	IpConnectMap ipConnectMap;
-	uint64_t lastPrune {};
+	uint32_t pruneCursor {};
 	std::recursive_mutex lock;
 };
 

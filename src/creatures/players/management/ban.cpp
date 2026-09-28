@@ -18,28 +18,29 @@ namespace {
 	// expired and its last attempt fell out of the 5s burst window, so keeping
 	// it around only costs memory and lookup time.
 	constexpr uint64_t CONNECT_BLOCK_BURST_WINDOW = 5000;
-	// How often the map is swept. Amortises the O(n) scan so the hot path stays
-	// O(log n).
-	constexpr uint64_t CONNECT_BLOCK_PRUNE_INTERVAL = 60000;
 } // namespace
 
 void Ban::pruneStaleEntries(uint64_t currentTime) {
-	// OTSYS_TIME() follows the system clock, which can step backward (NTP, manual
-	// change). A backward step restarts the schedule instead of wrapping the
-	// unsigned difference.
-	if (currentTime >= lastPrune && currentTime - lastPrune < CONNECT_BLOCK_PRUNE_INTERVAL) {
-		return;
-	}
-
-	lastPrune = currentTime;
-	std::erase_if(ipConnectMap, [currentTime](const auto &entry) {
-		const ConnectBlock &connectBlock = entry.second;
-		// An attempt recorded "in the future" (before a backward step) is recent:
+	// Incremental: examine at most PRUNE_BUDGET entries, resuming where the
+	// previous call stopped and wrapping at the end, so the time spent under the
+	// lock is bounded no matter how large the map has grown.
+	auto it = ipConnectMap.lower_bound(pruneCursor);
+	// At most one lap: a small map is not re-examined within the same call.
+	const size_t steps = std::min(PRUNE_BUDGET, ipConnectMap.size());
+	for (size_t examined = 0; examined < steps; ++examined) {
+		if (it == ipConnectMap.end()) {
+			it = ipConnectMap.begin();
+		}
+		const ConnectBlock &connectBlock = it->second;
+		// OTSYS_TIME() follows the system clock, which can step backward. An
+		// attempt recorded "in the future" (before a backward step) is recent:
 		// acceptConnection() still counts it inside the burst window, so it stays.
-		return connectBlock.blockTime <= currentTime
+		const bool stale = connectBlock.blockTime <= currentTime
 			&& connectBlock.lastAttempt <= currentTime
 			&& currentTime - connectBlock.lastAttempt > CONNECT_BLOCK_BURST_WINDOW;
-	});
+		it = stale ? ipConnectMap.erase(it) : std::next(it);
+	}
+	pruneCursor = it == ipConnectMap.end() ? 0 : it->first;
 }
 
 bool Ban::acceptConnection(uint32_t clientIP) {

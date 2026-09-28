@@ -21,29 +21,27 @@ std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
-int64_t ProtocolStatus::lastPrune = 0;
+uint32_t ProtocolStatus::pruneCursor = 0;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
-namespace {
-	// How often the map is swept. Amortises the O(n) scan so the hot path stays
-	// O(log n).
-	constexpr int64_t STATUS_PRUNE_INTERVAL = 60000;
-} // namespace
-
 void ProtocolStatus::pruneStaleEntries(int64_t currentTime) {
-	// A backward clock step restarts the schedule instead of suspending pruning
-	// until the clock catches up again.
-	if (currentTime >= lastPrune && currentTime - lastPrune < STATUS_PRUNE_INTERVAL) {
-		return;
-	}
-
-	lastPrune = currentTime;
-	// Mirrors the throttle check below: once the timeout has elapsed the entry
-	// can never reject a query again, so it is dead weight.
+	// Incremental: examine at most PRUNE_BUDGET entries, resuming where the
+	// previous query stopped and wrapping at the end, so the work done inside the
+	// network callback is bounded no matter how large the map has grown.
+	// Mirrors the throttle check below: once the timeout has elapsed the entry can
+	// never reject a query again. A query recorded before a backward clock step
+	// is still in the future here, so it stays until it expires.
 	const auto timeout = g_configManager().getNumber(STATUSQUERY_TIMEOUT);
-	std::erase_if(ipConnectMap, [currentTime, timeout](const auto &entry) {
-		return currentTime >= entry.second + timeout;
-	});
+	auto it = ipConnectMap.lower_bound(pruneCursor);
+	// At most one lap: a small map is not re-examined within the same call.
+	const size_t steps = std::min(PRUNE_BUDGET, ipConnectMap.size());
+	for (size_t examined = 0; examined < steps; ++examined) {
+		if (it == ipConnectMap.end()) {
+			it = ipConnectMap.begin();
+		}
+		it = currentTime >= it->second + timeout ? ipConnectMap.erase(it) : std::next(it);
+	}
+	pruneCursor = it == ipConnectMap.end() ? 0 : it->first;
 }
 
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {

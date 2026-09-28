@@ -1023,6 +1023,9 @@ void ItemParse::createAndRegisterScript(ItemType &itemType, pugi::xml_node attri
 		moveevent = std::make_shared<MoveEvent>();
 		moveevent->setItemId(itemType.id);
 		moveevent->setEventType(eventType);
+		if (eventType == MOVE_EVENT_DEEQUIP) {
+			itemType.hasDeEquipEvent = true;
+		}
 
 		if (eventType == MOVE_EVENT_EQUIP) {
 			moveevent->equipFunction = moveevent->EquipItem;

@@ -26,6 +26,9 @@ function elevator.onUse(player, item, fromPosition, target, toPosition, isHotkey
 
 	local elevatorStructureItem = fromTile:getItemById(elevatorStructureItemId, -1)
 	local elevatorBaseItem = fromTile:getItemById(elevatorBaseItemId, -1)
+	if not elevatorStructureItem or not elevatorBaseItem then
+		return true
+	end
 
 	elevatorBaseItem:moveTo(toTile)
 	player:teleportTo(toTile:getPosition())
@@ -34,7 +37,9 @@ function elevator.onUse(player, item, fromPosition, target, toPosition, isHotkey
 	local elevatorPusherItem = toTile:getItemById(elevatorPusherItemId, -1)
 	if not elevatorPusherItem then
 		elevatorPusherItem = fromTile:getItemById(elevatorPusherItemId, -1)
-		elevatorPusherItem:moveTo(toTile)
+		if elevatorPusherItem then
+			elevatorPusherItem:moveTo(toTile)
+		end
 	else
 		elevatorPusherItem:moveTo(fromTile)
 	end

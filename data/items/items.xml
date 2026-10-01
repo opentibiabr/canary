@@ -85317,6 +85317,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weight" value="100" />
 	</item>
 	<item id="51978" article="a" name="bounty talisman">
+		<attribute key="primarytype" value="light sources"/>
 		<attribute key="description" value="A mysterious talisman, studded with colourful jewels, that can be upgraded to grant bonuses against Bounty Task creatures." />
 		<attribute key="weight" value="75" />
 		<attribute key="script" value="moveevent">
@@ -85456,7 +85457,6 @@ Granted by TibiaGoals.com"/>
 			<attribute key="unproperly" value="true" />
 			<attribute key="weaponType" value="fist" />
 			<attribute key="vocation" value="Monk;true, Exalted Monk" />
-			<attribute key="slot" value="hand" />
 		</attribute>
 	</item>
 	<item id="52336" article="a" name="crypt bile">

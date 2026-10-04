@@ -267,6 +267,7 @@ DailyReward.pickedReward = function(playerId)
 
 	player:setStreakLevel(player:getStreakLevel() + 1)
 	player:setStorageValue(DailyReward.storages.avoidDouble, GetDailyRewardLastServerSave())
+	player:setDailyRewardClaimedServerSave(GetDailyRewardServerSaveCount())
 	player:setDailyReward(DAILY_REWARD_COLLECTED)
 	player:setNextRewardTime(GetDailyRewardLastServerSave() + DailyReward.serverTimeThreshold)
 	player:getPosition():sendMagicEffect(CONST_ME_FIREWORK_YELLOW)
@@ -292,6 +293,27 @@ DailyReward.isRewardTaken = function(playerId)
 	return false
 end
 
+-- Returns how many claim windows (periods between two server saves) passed without a claim.
+DailyReward.getMissedDays = function(player, lastServerSave)
+	local claimedServerSave = player:getDailyRewardClaimedServerSave()
+	if claimedServerSave then
+		return math.max(0, GetDailyRewardServerSaveCount() - claimedServerSave - 1)
+	end
+
+	-- Legacy players (claimed before the server save counter existed): rounding tolerates late or irregular server saves
+	local nextRewardTime = player:getNextRewardTime()
+	if nextRewardTime >= lastServerSave then
+		return 0
+	end
+	return math.floor((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold + 0.5)
+end
+
+-- The current window is the one the player must claim in to keep the streak.
+DailyReward.settleMissedDays = function(player, lastServerSave)
+	player:setDailyRewardClaimedServerSave(GetDailyRewardServerSaveCount() - 1)
+	player:setNextRewardTime(lastServerSave)
+end
+
 DailyReward.init = function(playerId)
 	local player = Player(playerId)
 
@@ -304,22 +326,26 @@ DailyReward.init = function(playerId)
 		player:setJokerTokens(player:getJokerTokens() + 1)
 	end
 
-	local timeMath = GetDailyRewardLastServerSave() - player:getNextRewardTime()
-	if player:getNextRewardTime() < GetDailyRewardLastServerSave() then
-		if player:getStorageValue(DailyReward.storages.notifyReset) ~= GetDailyRewardLastServerSave() then
-			player:setStorageValue(DailyReward.storages.notifyReset, GetDailyRewardLastServerSave())
-			timeMath = math.ceil(timeMath / DailyReward.serverTimeThreshold)
-			if player:getJokerTokens() >= timeMath then
-				player:setJokerTokens(player:getJokerTokens() - timeMath)
-				player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. timeMath .. " joker tokens to prevent loosing your streak.")
-			else
-				player:setStreakLevel(0)
-				if player:getLastLoginSaved() > 0 then -- message wont appear at first character login
-					player:setJokerTokens(-(player:getJokerTokens()))
-					player:sendTextMessage(MESSAGE_LOGIN, "You just lost your daily reward streak.")
-				end
+	local lastServerSave = GetDailyRewardLastServerSave()
+	if not player:getDailyRewardClaimedServerSave() and player:getNextRewardTime() == 0 then
+		-- Never claimed: start tracking from the current window so a configured start streak is kept until it is missed
+		DailyReward.settleMissedDays(player, lastServerSave)
+	end
+
+	local missedDays = DailyReward.getMissedDays(player, lastServerSave)
+	if missedDays > 0 and player:getStorageValue(DailyReward.storages.notifyReset) ~= lastServerSave then
+		player:setStorageValue(DailyReward.storages.notifyReset, lastServerSave)
+		if player:getJokerTokens() >= missedDays then
+			player:setJokerTokens(player:getJokerTokens() - missedDays)
+			player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. missedDays .. " joker tokens to prevent loosing your streak.")
+		else
+			player:setStreakLevel(0)
+			if player:getLastLoginSaved() > 0 then -- message wont appear at first character login
+				player:setJokerTokens(0)
+				player:sendTextMessage(MESSAGE_LOGIN, "You just lost your daily reward streak.")
 			end
 		end
+		DailyReward.settleMissedDays(player, lastServerSave)
 	end
 
 	-- Daily reward golden icon
@@ -398,12 +424,10 @@ function Player.selectDailyReward(self, msg)
 	end
 
 	local target = msg:getByte() -- 0 -> shrine / 1 -> tibia panel
-	if not DailyReward.isShrine(target) then
-		if self:getCollectionTokens() < 1 then
-			self:sendError("You do not have enough collection tokens to proceed.")
-			return false
-		end
-		self:setCollectionTokens(self:getCollectionTokens() - 1)
+	local usesToken = not DailyReward.isShrine(target)
+	if usesToken and self:getCollectionTokens() < 1 then
+		self:sendError("You do not have enough collection tokens to proceed.")
+		return false
 	end
 
 	local dailyTable = DailyReward.rewards[self:getDayStreak() + 1]
@@ -428,58 +452,85 @@ function Player.selectDailyReward(self, msg)
 		end
 
 		-- Creating items table
-		local columnsPicked = msg:getByte() -- Columns picked
-		local orderedCounter = 0
+		local allowedItems = {}
+		for _, possibleItemId in ipairs(possibleItems) do
+			allowedItems[possibleItemId] = true
+		end
+
+		-- Only entries with a positive count are picks; duplicates are merged
+		local columnsPicked = msg:getByte()
+		local pickedIndex = {}
 		local totalCounter = 0
-		for i = 1, columnsPicked do
+		for _ = 1, columnsPicked do
 			local itemId = msg:getU16()
 			local count = msg:getByte()
-			orderedCounter = orderedCounter + count
-			for index, val in ipairs(possibleItems) do
-				if val == itemId then
-					items[i] = { itemId = itemId, count = count }
-					totalCounter = totalCounter + count
-					break
+			if count > 0 then
+				if not allowedItems[itemId] then
+					logger.warn("Player {} tried to pick invalid daily reward item {}", self:getName(), itemId)
+					self:sendError("Invalid reward selection.")
+					return false
 				end
+				local entry = pickedIndex[itemId]
+				if not entry then
+					entry = { itemId = itemId, count = 0 }
+					pickedIndex[itemId] = entry
+					items[#items + 1] = entry
+				end
+				entry.count = entry.count + count
+				totalCounter = totalCounter + count
 			end
 		end
 
-		if totalCounter > rewardCount then
-			logger.info("Player with name {} is trying to get totalCounter: {} more than rewardCount: {}!", self:getName(), totalCounter, rewardCount)
+		if totalCounter == 0 then
+			self:sendError("You must select at least one reward item.")
+			return false
 		end
-		if totalCounter ~= orderedCounter then
-			logger.error("Player with name {} is trying to get wrong daily reward", self:getName())
+		if totalCounter > rewardCount then
+			logger.warn("Player {} tried to pick {} daily reward items, limit is {}", self:getName(), totalCounter, rewardCount)
+			self:sendError(string.format("You can select at most %d reward items.", rewardCount))
 			return false
 		end
 
-		-- Adding items to store inbox
 		local inbox = self:getStoreInbox()
-		local inboxItems = inbox:getItems()
-		if not inbox or #inboxItems >= inbox:getMaxCapacity() then
+		if not inbox then
 			self:sendError("You do not have enough space in your store inbox.")
 			return false
 		end
 
-		local description = ""
+		local requiredSlots = dailyTable.itemCharges and totalCounter or #items
+		if #inbox:getItems() + requiredSlots > inbox:getMaxCapacity() then
+			self:sendError("You do not have enough space in your store inbox.")
+			return false
+		end
+
+		if usesToken then
+			self:setCollectionTokens(self:getCollectionTokens() - 1)
+			usesToken = false
+		end
+
+		local descriptionParts = {}
 		local batchUpdate = BatchUpdate(self)
 		batchUpdate:add(inbox)
 
-		for k, v in ipairs(items) do
+		for _, v in ipairs(items) do
 			if dailyTable.itemCharges then
-				local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges) -- adding charges for each item
-				if inboxItem then
-					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				-- Charged items do not stack: one item per picked unit, each with the configured charges
+				for _ = 1, v.count do
+					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges)
+					if inboxItem then
+						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+					end
 				end
 			else
-				local inboxItem = inbox:addItem(v.itemId, v.count) -- adding single item w/o charges
+				local inboxItem = inbox:addItem(v.itemId, v.count)
 				if inboxItem then
 					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			end
-			description = description .. "" .. rewardCount .. "x " .. ItemType(v.itemId):getName() .. (k ~= columnsPicked and ", " or ".")
+			descriptionParts[#descriptionParts + 1] = v.count .. "x " .. ItemType(v.itemId):getName()
 		end
 		batchUpdate:delete()
-		dailyRewardMessage = "Picked items: " .. description
+		dailyRewardMessage = "Picked items: " .. table.concat(descriptionParts, ", ") .. "."
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then
 		local rewardCountReviewed = rewardCount
 		local xpBoostLeftMinutes = self:kv():get("daily-reward-xp-boost") or 0
@@ -494,6 +545,10 @@ function Player.selectDailyReward(self, msg)
 	elseif dailyTable.type == DAILY_REWARD_TYPE_PREY_REROLL then
 		self:addPreyCards(rewardCount)
 		dailyRewardMessage = "Picked reward: " .. rewardCount .. "x Prey bonus reroll(s)."
+	end
+
+	if dailyRewardMessage and usesToken then
+		self:setCollectionTokens(self:getCollectionTokens() - 1)
 	end
 
 	if dailyRewardMessage then

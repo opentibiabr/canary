@@ -337,7 +337,7 @@ DailyReward.init = function(playerId)
 		player:setStorageValue(DailyReward.storages.notifyReset, lastServerSave)
 		if player:getJokerTokens() >= missedDays then
 			player:setJokerTokens(player:getJokerTokens() - missedDays)
-			player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. missedDays .. " joker tokens to prevent loosing your streak.")
+			player:sendTextMessage(MESSAGE_LOGIN, "You lost " .. missedDays .. " joker tokens to prevent losing your streak.")
 		else
 			player:setStreakLevel(0)
 			if player:getLastLoginSaved() > 0 then -- message wont appear at first character login

@@ -82,8 +82,27 @@ function string.diff(self)
 	return ret
 end
 
+local DAILY_REWARD_SERVER_SAVE_COUNT_KEY = "daily-reward-save-count"
+
 function GetDailyRewardLastServerSave()
 	return RetrieveGlobalStorage(DailyReward.storages.lastServerSave)
+end
+
+-- Number of global server saves performed; each one opens a new daily reward claim window.
+function GetDailyRewardServerSaveCount()
+	local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY))
+	if resultId ~= false then
+		local val = Result.getNumber(resultId, "value")
+		Result.free(resultId)
+		return val
+	end
+	return 0
+end
+
+function UpdateDailyRewardServerSave()
+	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())
+	local count = GetDailyRewardServerSaveCount() + 1
+	db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY) .. ", " .. count .. ") ON DUPLICATE KEY UPDATE `value` = " .. count)
 end
 
 function UpdateDailyRewardGlobalStorage(key, value)

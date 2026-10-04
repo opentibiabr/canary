@@ -1,4 +1,7 @@
 local function ServerSave()
+	-- Open the next daily reward claim window before players are kicked and saved
+	UpdateDailyRewardServerSave()
+
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_CLEAN_MAP) then
 		cleanMap()
 	end
@@ -9,9 +12,6 @@ local function ServerSave()
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_SHUTDOWN) then
 		Game.setGameState(GAME_STATE_SHUTDOWN)
 	end
-
-	-- Update daily reward next server save timestamp
-	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())
 
 	-- Reset raid daily counters
 	for name, raid in pairs(Raid.registry) do

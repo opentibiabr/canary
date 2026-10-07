@@ -340,6 +340,7 @@ TeleportUnique = {
 	},
 	-- Black knight quest entrance
 	[38012] = {
+		worldObject = "black_knight.entry",
 		itemId = 1949,
 		itemPos = { x = 32874, y = 31941, z = 12 },
 		destination = { x = 32874, y = 31948, z = 11 },
@@ -347,6 +348,7 @@ TeleportUnique = {
 	},
 	-- Black knight quest exit
 	[38013] = {
+		worldObject = "black_knight.exit",
 		itemId = 1949,
 		itemPos = { x = 32874, y = 31955, z = 11 },
 		destination = { x = 32874, y = 31942, z = 12 },

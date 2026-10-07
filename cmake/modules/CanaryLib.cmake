@@ -17,6 +17,7 @@ add_subdirectory(protobuf)
 add_subdirectory(security)
 add_subdirectory(server)
 add_subdirectory(utils)
+add_subdirectory(world)
 
 # Add more global sources Note: target_sources works on a specific target, we
 # use the primary core name

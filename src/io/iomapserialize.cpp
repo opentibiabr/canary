@@ -8,6 +8,7 @@
  */
 
 #include "io/iomapserialize.hpp"
+#include "world/world_runtime.hpp"
 
 #include "config/configmanager.hpp"
 #include "io/iologindata.hpp"
@@ -56,7 +57,10 @@ void IOMapSerialize::loadHouseItems(Map* map) {
 				}
 			}
 
-			loadItem(propStream, tile, true);
+			if (!loadItem(propStream, tile, true) && g_game().worldLayers().declarations()) {
+				g_game().worldLayers().persistenceError();
+				return;
+			}
 		}
 	} while (result->next());
 
@@ -106,7 +110,9 @@ bool IOMapSerialize::SaveHouseItemsGuard() {
 	for (const auto &[key, house] : g_game().map.houses.getHouses()) {
 		// save house items
 		for (const auto &tile : house->getTiles()) {
-			saveTile(stream, tile);
+			if (!saveTile(stream, tile)) {
+				return false;
+			}
 
 			size_t attributesSize;
 			const char* attributes = stream.getStream(attributesSize);
@@ -156,6 +162,33 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 	}
 
 	const ItemType &iType = Item::items[id];
+	if (g_game().worldLayers().declarations()) {
+		const auto preview = Item::CreateItem(id);
+		if (preview && preview->inspectAttributes(propStream)) {
+			const auto ownership = g_game().worldLayers().persistence(preview);
+			if (ownership == WorldPersistence::Conflict) {
+				return false;
+			}
+			if (ownership == WorldPersistence::External) {
+				// Use the ownership marker before legacy matching by itemId. This
+				// also restores a fixed external container absent from the OTBM.
+				const auto managed = Item::CreateItem(id);
+				if (!managed || !managed->unserializeAttr(propStream)) {
+					return false;
+				}
+				if (const auto container = managed->getContainer(); container && !loadContainer(propStream, container)) {
+					return false;
+				}
+				parent->internalAddThing(managed);
+				g_game().worldLayers().restored(managed);
+				if (const auto bed = managed->getBed(); bed && bed->getSleeper() != 0) {
+					bedsToCheck.push_back(bed);
+				}
+				managed->startDecaying();
+				return parent->getThingIndex(managed) >= 0;
+			}
+		}
+	}
 	if (iType.isBed() || iType.movable || !tile || iType.isCarpet() || iType.isTrashHolder()) {
 		// create a new item
 		auto item = Item::CreateItem(id);
@@ -239,29 +272,34 @@ bool IOMapSerialize::loadItem(PropStream &propStream, const std::shared_ptr<Cyli
 	return true;
 }
 
-void IOMapSerialize::saveItem(PropWriteStream &stream, const std::shared_ptr<Item> &item) {
+bool IOMapSerialize::saveItem(PropWriteStream &stream, const std::shared_ptr<Item> &item) {
 	const auto &container = item->getContainer();
 
 	// Write ID & props
 	stream.write<uint16_t>(item->getID());
-	item->serializeAttr(stream);
+	if (!g_game().worldLayers().serializeHouseAttributes(item, stream)) {
+		return false;
+	}
 
 	if (container) {
 		// Hack our way into the attributes
 		stream.write<uint8_t>(ATTR_CONTAINER_ITEMS);
 		stream.write<uint32_t>(container->size());
 		for (auto it = container->getReversedItems(), end = container->getReversedEnd(); it != end; ++it) {
-			saveItem(stream, *it);
+			if (!saveItem(stream, *it)) {
+				return false;
+			}
 		}
 	}
 
 	stream.write<uint8_t>(0x00); // attr end
+	return true;
 }
 
-void IOMapSerialize::saveTile(PropWriteStream &stream, const std::shared_ptr<Tile> &tile) {
+bool IOMapSerialize::saveTile(PropWriteStream &stream, const std::shared_ptr<Tile> &tile) {
 	const TileItemVector* tileItems = tile->getItemList();
 	if (!tileItems) {
-		return;
+		return true;
 	}
 
 	std::list<std::shared_ptr<Item>> items;
@@ -288,9 +326,12 @@ void IOMapSerialize::saveTile(PropWriteStream &stream, const std::shared_ptr<Til
 
 		stream.write<uint32_t>(count);
 		for (const std::shared_ptr<Item> &item : items) {
-			saveItem(stream, item);
+			if (!saveItem(stream, item)) {
+				return false;
+			}
 		}
 	}
+	return true;
 }
 
 bool IOMapSerialize::loadHouseInfo() {

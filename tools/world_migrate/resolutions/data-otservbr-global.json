@@ -1,0 +1,578 @@
+{
+  "schemaVersion": 1,
+  "datapack": "data-otservbr-global",
+  "mapSha256": "0069eb0378c901455304eb8066588d94cb8054ecaecc5690c9427a44276fccb7",
+  "decisions": [
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6117",
+      "occurrence": 1,
+      "fingerprint": "532178d099d000449b88566451efb7a8ac75438a8cb4c02ef06e98bea91d3251",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6117",
+      "occurrence": 2,
+      "fingerprint": "657314e3f2f03131d41194aa45a8b371f02c14774baa52008a5ab6a2a83fcc6f",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6121",
+      "occurrence": 1,
+      "fingerprint": "2c48493085ee5d1cd9d5e0473b5ba6ed9ee534faa794cc75891e8e547ad7a924",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6121",
+      "occurrence": 2,
+      "fingerprint": "d419d4f847a07cea8399e90753a6cde300fbcbe1ca98a720b914946bc6630ff6",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorAction",
+      "key": "45216",
+      "occurrence": 1,
+      "fingerprint": "7b03f3286c0d1f002d8f99feeb840221ab82348c3cfce5f820f5e6de7f49ad98",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/door_quest.lua",
+      "table": "QuestDoorAction",
+      "key": "45216",
+      "occurrence": 2,
+      "fingerprint": "2f9c7442b2c3d82470c57797fd3d22e0a60703701662db93f0397cf9240f23c6",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "4649",
+      "occurrence": 1,
+      "fingerprint": "ec7a4564963f49d595248cbf84e9ae5cbd9e9cf988d8d86e1f03363ab16dc4b7",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "4649",
+      "occurrence": 2,
+      "fingerprint": "ec7a4564963f49d595248cbf84e9ae5cbd9e9cf988d8d86e1f03363ab16dc4b7",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "12107",
+      "occurrence": 1,
+      "fingerprint": "ad91884a799e5b7091e4dad400e1349828fbef7753e7ef76ad90c573997b1e98",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "12107",
+      "occurrence": 2,
+      "fingerprint": "017b155ea2c68bcc6322c29ea59bcfd3c02474b95fafa5d9ece716ef3ac7ba5b",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 1,
+      "fingerprint": "2dcf5e611e04273ed367ff867ce7996c3b4b238e19fdd1d07e0a663518922805",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 2,
+      "fingerprint": "0d38a670c02314c11a67a49a0a384df023900c8e42dc108804da05abc35cef90",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 3,
+      "fingerprint": "87f27d330ae777bb11a9515ecaa829d9bc468f0101f8250c106f6369364cf25c",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 4,
+      "fingerprint": "092bcfbc008fe736ef042808278182f2c1532b9de537c273a01c428f7dcd6210",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 5,
+      "fingerprint": "961a9789258964397031bd324b3d57e14946f82132f7d0075f951bc692329bf4",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 6,
+      "fingerprint": "ad7e8bdcb83e26000bcf777625080c7fd22aabaf789a40d81f615c217a689c07",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 7,
+      "fingerprint": "1b8b0a97a19bd241d9e9e96a25c21ab91e2130eb1b47c2d1e89e76799d05a44b",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 8,
+      "fingerprint": "afaf65b1a8a548149c92b23047e48a1b9a95126b140cb57e81f7f5d677483940",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 9,
+      "fingerprint": "5192d845417969d31c013c8cd13221bac494cdf36bdcbd61826ca6f6677acd04",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 10,
+      "fingerprint": "6e3f45d8abd877d14a040045a5724ffa7451450157b98b555128fc31e2e1df37",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 11,
+      "fingerprint": "b0aaca66986aa75b95bcc4bf741e7d2a872a9b3f322d7c391b48bbd581d20b5d",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 12,
+      "fingerprint": "5b7fc699cd38353ce76666d76359ca366102eeb9fcb2ddbe917da4ce0cb03d03",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 13,
+      "fingerprint": "5a34ad34280d08c6d7fc6ad2453dca1cfda685b5c1e0a7010daf2baedd62cd29",
+      "action": "inactive",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/teleport_item.lua",
+      "table": "TeleportItemAction",
+      "key": "24873",
+      "occurrence": 14,
+      "fingerprint": "8003325a7676df93a4d18bb1d63f572217e518f0198ec0827a9eeb27bd5c5f88",
+      "action": "convert",
+      "reason": "Lua table construction retains only the last declaration of this repeated key; earlier declarations are never visited by the loader."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestAction",
+      "key": "5002",
+      "occurrence": 1,
+      "fingerprint": "a43b8eee357f531c3fdcdbd3ab68e6a411892b0aa8262759036ae980fd5df7e6",
+      "action": "attributes-only",
+      "reason": "The action loader assigns AID 5002. The common reward handler reads ChestUnique by UID and never consumes these ChestAction reward fields. Preserve the AID and do not activate a new reward."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "6093",
+      "occurrence": 1,
+      "fingerprint": "aec90c739a8ffdcf5e0926465b696ae6ad4e0fca9635282c333139b22c00024d",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/corpse.lua",
+      "table": "CorpseAction",
+      "key": "20001",
+      "occurrence": 1,
+      "fingerprint": "e170754dbb125dbaf5e421f24206a51db0f6aac4d558e1d6a7c9de3e4a492c0b",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemAction",
+      "key": "2023",
+      "occurrence": 1,
+      "fingerprint": "5624d47b981a6a3f53b4083000b99a2eb5d187266699a219a90daa846875491c",
+      "action": "inactive",
+      "reason": "The declared tile or required book container is absent from the inspected repository OTBM; the existing loader skips this occurrence. This decision is pinned to that OTBM hash."
+    },
+    {
+      "file": "startup/tables/item_unmovable.lua",
+      "table": "ItemUnmovableAction",
+      "key": "100",
+      "occurrence": 1,
+      "fingerprint": "a68ae78b0b04f3f88b36e7d8a5e02f27ab357a04de72a936648300cab2abc75d",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "26",
+      "occurrence": 1,
+      "fingerprint": "4ee5fd3cc4a891a9b93ade30e354fc87c25cf22de2e262b711ce0de018ee6d3e",
+      "action": "inactive",
+      "reason": "The declared tile or required book container is absent from the inspected repository OTBM; the existing loader skips this occurrence. This decision is pinned to that OTBM hash."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "27",
+      "occurrence": 1,
+      "fingerprint": "81fb9509117aaafd1db57902b40dcfbcbd906b6ed957ea3906ff9a4f468d3e68",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "29",
+      "occurrence": 1,
+      "fingerprint": "553398692316971dcceb166304f6708e63daf5ee4184d4614398a78f47569c2c",
+      "action": "inactive",
+      "reason": "The declared tile or required book container is absent from the inspected repository OTBM; the existing loader skips this occurrence. This decision is pinned to that OTBM hash."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "30",
+      "occurrence": 1,
+      "fingerprint": "67645e03b1f416f66bf9b8a1b146a77461352d0a1c691a423e402aea7cbbc017",
+      "action": "inactive",
+      "reason": "The declared tile or required book container is absent from the inspected repository OTBM; the existing loader skips this occurrence. This decision is pinned to that OTBM hash."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "34",
+      "occurrence": 1,
+      "fingerprint": "ec724697d5d0d9ea48c8c8fb8b95e7e4464a7d4c9e5034771cc2b030ec5f839b",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "35",
+      "occurrence": 1,
+      "fingerprint": "eeed1f1461c3b188eb39512eaf463fadcfaf94f8c22eb04fdef089576b5935b4",
+      "action": "inactive",
+      "reason": "The declared tile or required book container is absent from the inspected repository OTBM; the existing loader skips this occurrence. This decision is pinned to that OTBM hash."
+    },
+    {
+      "file": "startup/tables/writeable.lua",
+      "table": "BookDocumentTable",
+      "key": "38",
+      "occurrence": 1,
+      "fingerprint": "e1b921f29bb919aad668a0466d40ba8a91c59a33ac5795570223f380d9a4e88f",
+      "action": "inactive",
+      "reason": "The repository declaration contains an unresolved placeholder, absent position or malformed UID position. It is retained in the frozen compatibility source and is not activated as a new World object; repairing it would be a separate gameplay change."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "5000",
+      "occurrence": 1,
+      "fingerprint": "dbc87613dc347978f07a039bb16bf03e25a361fdcf935dc7df6742fcd6a5a1bf",
+      "action": "world-identity",
+      "reason": "The OTBM already contains another instance of this UID. Preserve its native UID and existing dispatch, and bind the configured target through World identity with an explicit replacement behavior. Table-driven base UID consumers are migrated as additional bindings with the same reward/configuration; no item or reward is silently removed."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "5001",
+      "occurrence": 1,
+      "fingerprint": "c497473d16f3c8f7e84ff7d3485edae681810a94f32adfc99b628ce501b8eac8",
+      "action": "world-identity",
+      "reason": "The OTBM already contains another instance of this UID. Preserve its native UID and existing dispatch, and bind the configured target through World identity with an explicit replacement behavior. Table-driven base UID consumers are migrated as additional bindings with the same reward/configuration; no item or reward is silently removed."
+    },
+    {
+      "file": "startup/tables/chest.lua",
+      "table": "ChestUnique",
+      "key": "5002",
+      "occurrence": 1,
+      "fingerprint": "2e1a450688e2da96883d2fb628fa709d6b02cfdbe763c980a1d6c246caa83a66",
+      "action": "world-identity",
+      "reason": "The OTBM already contains another instance of this UID. Preserve its native UID and existing dispatch, and bind the configured target through World identity with an explicit replacement behavior. Table-driven base UID consumers are migrated as additional bindings with the same reward/configuration; no item or reward is silently removed."
+    },
+    {
+      "file": "startup/tables/item.lua",
+      "table": "ItemUnique",
+      "key": "2250",
+      "occurrence": 1,
+      "fingerprint": "241c80daef722f62048ce969d4facffecab0218d3e4a7977a6d2a27b6b6fd227",
+      "action": "world-identity",
+      "reason": "The OTBM already contains another instance of this UID. Preserve its native UID and existing dispatch, and bind the configured target through World identity with an explicit replacement behavior. Table-driven base UID consumers are migrated as additional bindings with the same reward/configuration; no item or reward is silently removed.",
+      "behavior": {
+        "id": "world.player_teleport",
+        "contractVersion": 1,
+        "events": [
+          "onStepIn"
+        ],
+        "parameters": {
+          "effect": 11,
+          "nonPlayerResult": false
+        },
+        "positions": {
+          "destination": {
+            "x": 32915,
+            "y": 32263,
+            "z": 14
+          }
+        }
+      },
+      "dependencies": [
+        {
+          "file": "data-otservbr-global/scripts/quests/dreamers_challenge_quest/movement_teleport.lua",
+          "sha256": "50e9040b4195ded42fe17c1da43d462f11520e31101cd8ed2109d8b755922513"
+        },
+        {
+          "file": "src/utils/utils_definitions.hpp",
+          "sha256": "bdd23ca8e86ab433bef04766f0c183d46fc2ca1796a81bab1d44db8d3fd685d1"
+        }
+      ]
+    },
+    {
+      "file": "startup/tables/lever.lua",
+      "table": "LeverUnique",
+      "key": "3304",
+      "occurrence": 1,
+      "fingerprint": "5878de2eed0291475b5762b9dfb021d8099284a2da30335608145585efb0a060",
+      "action": "world-identity",
+      "reason": "The OTBM already contains another instance of this UID. Preserve its native UID and existing dispatch, and bind the configured target through World identity with an explicit replacement behavior. Table-driven base UID consumers are migrated as additional bindings with the same reward/configuration; no item or reward is silently removed.",
+      "behavior": {
+        "id": "world.lever_remove_item",
+        "contractVersion": 1,
+        "events": [
+          "onUse"
+        ],
+        "parameters": {
+          "firstItemId": 2772,
+          "secondItemId": 2773,
+          "targetItem": 1772
+        },
+        "positions": {
+          "target": {
+            "x": 32826,
+            "y": 32274,
+            "z": 11
+          }
+        }
+      },
+      "dependencies": [
+        {
+          "file": "data-otservbr-global/scripts/quests/the_pits_of_inferno_quest/actions_trap_lever.lua",
+          "sha256": "8aaa8050736937ad0c6ac8e9c63007e4360c02afed097d34ee0c5ea6feb89bfe"
+        }
+      ]
+    }
+  ],
+  "conflicts": [
+    {
+      "attribute": "uid",
+      "sources": [
+        {
+          "file": "startup/tables/chest.lua",
+          "table": "ChestUnique",
+          "key": "5009",
+          "occurrence": 1,
+          "fingerprint": "00eac7c424b99c4a5fa8e55ab75d25bf76fb60385809055dab91a09bc35b148c"
+        },
+        {
+          "file": "startup/tables/chest.lua",
+          "table": "ChestUnique",
+          "key": "5010",
+          "occurrence": 1,
+          "fingerprint": "6b686c0588f96dbe86437e765877307649a695ea493eb20105e51eb62f98ca40"
+        }
+      ],
+      "winner": "6b686c0588f96dbe86437e765877307649a695ea493eb20105e51eb62f98ca40",
+      "reason": "Characterized by tests/lua/test_world_legacy_iteration.lua under LuaJIT 2.1.1703358377 in CI. The final write wins; JSON freezes that effective result. Both entries grant the same key and storage."
+    },
+    {
+      "attribute": "uid",
+      "sources": [
+        {
+          "file": "startup/tables/chest.lua",
+          "table": "ChestUnique",
+          "key": "6100",
+          "occurrence": 1,
+          "fingerprint": "95cba6d5dd290fc11879f9dcd1098dd7e2b66d85983eff09713625eb5041a778"
+        },
+        {
+          "file": "startup/tables/chest.lua",
+          "table": "ChestUnique",
+          "key": "14036",
+          "occurrence": 1,
+          "fingerprint": "8d751c47ea895e872db1b31563894d6050e8620e81d64b3c96bdf1022c343a66"
+        }
+      ],
+      "winner": "95cba6d5dd290fc11879f9dcd1098dd7e2b66d85983eff09713625eb5041a778",
+      "reason": "Characterized by tests/lua/test_world_legacy_iteration.lua under LuaJIT 2.1.1703358377 in CI. The final write wins; JSON freezes that effective result."
+    },
+    {
+      "attribute": "aid",
+      "sources": [
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "25020",
+          "occurrence": 1,
+          "fingerprint": "baf7941125c4d5e5b7e5bb19073761f5795563a0776221a76c0aee360caa2a7a"
+        },
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "25021",
+          "occurrence": 1,
+          "fingerprint": "049e0660e3add00ad797adb816d7a0af8431b1d8d8148f59c872b92206b912da"
+        }
+      ],
+      "winner": "049e0660e3add00ad797adb816d7a0af8431b1d8d8148f59c872b92206b912da",
+      "reason": "Characterized by tests/lua/test_world_legacy_iteration.lua under LuaJIT 2.1.1703358377 in CI. The final write wins; JSON freezes that effective result."
+    },
+    {
+      "attribute": "aid",
+      "sources": [
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "50339",
+          "occurrence": 1,
+          "fingerprint": "cf62894081c2997b754af5bbb94ecb2aad844c0145e6e4af538cecaedd3cea40"
+        },
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "50340",
+          "occurrence": 1,
+          "fingerprint": "977ca38e6f909cd9167ad8205103fca95f8299cc696a1cf4c714bda1a640a0b8"
+        }
+      ],
+      "winner": "cf62894081c2997b754af5bbb94ecb2aad844c0145e6e4af538cecaedd3cea40",
+      "reason": "Characterized by tests/lua/test_world_legacy_iteration.lua under LuaJIT 2.1.1703358377 in CI. The final write wins; JSON freezes that effective result."
+    },
+    {
+      "attribute": "aid",
+      "sources": [
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "50322",
+          "occurrence": 1,
+          "fingerprint": "6a69d8f1c78269243653e9b5bc7e7827ed81ae79ff2940bc8ef47774588fe6b9"
+        },
+        {
+          "file": "startup/tables/tile.lua",
+          "table": "TileAction",
+          "key": "50346",
+          "occurrence": 1,
+          "fingerprint": "ee5a6e7ba12bdb3fffdcc354f1e3772dc9cfda20e6c64a64b31e385bc56a5a57"
+        }
+      ],
+      "winner": "6a69d8f1c78269243653e9b5bc7e7827ed81ae79ff2940bc8ef47774588fe6b9",
+      "reason": "Characterized by tests/lua/test_world_legacy_iteration.lua under LuaJIT 2.1.1703358377 in CI. The final write wins; JSON freezes that effective result."
+    },
+    {
+      "attribute": "uid",
+      "sources": [
+        {
+          "file": "startup/tables/chest.lua",
+          "table": "ChestUnique",
+          "key": "6180",
+          "occurrence": 1,
+          "fingerprint": "a5a10f7c537be3d1d60b081729c815e6301ee74bed15216e53641d95d0ac28a7"
+        },
+        {
+          "file": "startup/tables/corpse.lua",
+          "table": "CorpseUnique",
+          "key": "20004",
+          "occurrence": 1,
+          "fingerprint": "2145522bf1315f5780f729c7a7482c3481fb4e4107e3f6949b3b4e943dc3cba1"
+        }
+      ],
+      "winner": "2145522bf1315f5780f729c7a7482c3481fb4e4107e3f6949b3b4e943dc3cba1",
+      "reason": "loadMapActionsAndUniques applies CorpseUnique after ChestUnique; UID 20004 is the effective value and the overwritten reward does not own onUse there."
+    },
+    {
+      "attribute": "aid",
+      "sources": [
+        {
+          "file": "startup/tables/item.lua",
+          "table": "ItemAction",
+          "key": "102",
+          "occurrence": 1,
+          "fingerprint": "df4bb866ab1223bd574b835fa1c5772ec4b8ba6e345968277f48d081ae7a41ea"
+        },
+        {
+          "file": "startup/tables/teleport_item.lua",
+          "table": "TeleportItemAction",
+          "key": "15005",
+          "occurrence": 1,
+          "fingerprint": "6eff52449a5d3ddae74fee87f5674971030ed205b979e7a89db316055548158a"
+        }
+      ],
+      "winner": "6eff52449a5d3ddae74fee87f5674971030ed205b979e7a89db316055548158a",
+      "reason": "loadMapActionsAndUniques applies TeleportItemAction after ItemAction; only the overlapping occurrences take AID 15005."
+    }
+  ]
+}

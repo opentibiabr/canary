@@ -4736,6 +4736,17 @@ void Game::playerUseItemEx(uint32_t playerId, const Position &fromPos, uint8_t f
 	}
 }
 
+namespace {
+	void retryPlayerUseItemForSession(const std::weak_ptr<ProtocolGame> &originatingClient, uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
+		const auto client = originatingClient.lock();
+		const auto &currentPlayer = g_game().getPlayerByID(playerId);
+		if (!client || !currentPlayer || currentPlayer->getClient() != client) {
+			return;
+		}
+		g_game().playerUseItem(playerId, pos, stackPos, index, itemId);
+	}
+} // namespace
+
 void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPos, uint8_t index, uint16_t itemId) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	const auto &player = getPlayerByID(playerId);
@@ -4788,8 +4799,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 				}
 				const auto &task = createPlayerTask(
 					400,
-					[this, playerId, pos, stackPos, index, itemId] {
-						playerUseItem(playerId, pos, stackPos, index, itemId);
+					[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
+						retryPlayerUseItemForSession(originatingClient, playerId, pos, stackPos, index, itemId);
 					},
 					__FUNCTION__
 				);
@@ -4820,8 +4831,8 @@ void Game::playerUseItem(uint32_t playerId, const Position &pos, uint8_t stackPo
 		}
 		const auto &task = createPlayerTask(
 			delay,
-			[this, playerId, pos, stackPos, index, itemId] {
-				playerUseItem(playerId, pos, stackPos, index, itemId);
+			[playerId, pos, stackPos, index, itemId, originatingClient = std::weak_ptr<ProtocolGame>(player->getClient())] {
+				retryPlayerUseItemForSession(originatingClient, playerId, pos, stackPos, index, itemId);
 			},
 			__FUNCTION__
 		);
@@ -10753,12 +10764,6 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			return;
 		}
 
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
-		if (depotLocker == nullptr) {
-			offerStatus << "Depot locker is nullptr for player " << player->getName();
-			return;
-		}
-
 		if (it.id == ITEM_STORE_COIN) {
 			auto [transferableCoins, result] = player->getAccount()->getCoins(CoinType::Transferable);
 
@@ -10770,6 +10775,12 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 			// Do not register a transaction for coins creating an offer
 			player->getAccount()->removeCoins(CoinType::Transferable, static_cast<uint32_t>(amount), "");
 		} else {
+			const std::shared_ptr<DepotLocker> &depotLocker = player->getActiveDepotLocker();
+			if (!depotLocker) {
+				offerStatus << "Depot locker is nullptr for player " << player->getName();
+				return;
+			}
+
 			if (!removeOfferItems(player, depotLocker, it, amount, tier, offerStatus)) {
 				g_logger().error("[{}] failed to remove item with id {}, from player {}, errorcode: {}", __FUNCTION__, it.id, player->getName(), offerStatus.str());
 				return;
@@ -10791,7 +10802,7 @@ void Game::playerCreateMarketOffer(uint32_t playerId, uint8_t type, uint16_t ite
 	}
 
 	// Send market window again for update item stats and avoid item clone
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 
 	// If there is any error, then we will send the log and block the creation of the offer to avoid clone of items
 	// The player may lose the item as it will have already been removed, but will not clone
@@ -10840,7 +10851,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		player->setBankBalance(player->getBankBalance() + offer.price * offer.amount);
 		g_metrics().addCounter("balance_decrease", offer.price * offer.amount, { { "player", player->getName() }, { "context", "market_purchase" } });
 		// Send market window again for update stats
-		player->sendMarketEnter(player->getLastDepotId());
+		player->sendMarketEnter();
 	} else {
 		const ItemType &it = Item::items[offer.itemId];
 		if (it.id == 0) {
@@ -10875,7 +10886,7 @@ void Game::playerCancelMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	offer.timestamp += g_configManager().getNumber(MARKET_OFFER_DURATION);
 	player->sendMarketCancelOffer(offer);
 	// Send market window again for update stats
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 	// Exhausted for cancel offer in the market
 	player->updateUIExhausted();
 	g_saveManager().savePlayer(player);
@@ -10925,10 +10936,13 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	// The player has an offer to by something and someone is going to sell to item type
 	// so the market action is 'buy' as who created the offer is buying.
 	if (offer.type == MARKETACTION_BUY) {
-		const std::shared_ptr<DepotLocker> &depotLocker = player->getDepotLocker(player->getLastDepotId());
-		if (depotLocker == nullptr) {
-			offerStatus << "Depot locker is nullptr";
-			return;
+		std::shared_ptr<DepotLocker> depotLocker;
+		if (it.id != ITEM_STORE_COIN) {
+			depotLocker = player->getActiveDepotLocker();
+			if (!depotLocker) {
+				offerStatus << "Depot locker is nullptr";
+				return;
+			}
 		}
 
 		const std::shared_ptr<Player> &buyerPlayer = getPlayerByGUID(offer.playerId, true);
@@ -10964,7 +10978,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 		if (!offerStatus.str().empty()) {
 			player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
-			player->sendMarketEnter(player->getLastDepotId());
+			player->sendMarketEnter();
 			return;
 		}
 
@@ -11007,7 +11021,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 				player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");
 			}
 			g_logger().error("{} - Player {} had an error accepting an offer on the market, error code: {}", __FUNCTION__, player->getName(), offerStatus.str());
-			player->sendMarketEnter(player->getLastDepotId());
+			player->sendMarketEnter();
 			return;
 		}
 
@@ -11082,7 +11096,7 @@ void Game::playerAcceptMarketOffer(uint32_t playerId, uint32_t timestamp, uint16
 	}
 
 	// Send market window again for update item stats and avoid item clone
-	player->sendMarketEnter(player->getLastDepotId());
+	player->sendMarketEnter();
 
 	if (!offerStatus.str().empty()) {
 		player->sendTextMessage(MESSAGE_MARKET, "There was an error processing your offer, please contact the administrator.");

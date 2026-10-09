@@ -95,8 +95,8 @@ DailyReward = {
 	strikeBonuses = {
 		-- day
 		[1] = { text = "No bonus for first day" },
-		[2] = { text = "Allow Hit Point Regeneration" },
-		[3] = { text = "Allow Mana Regeneration" },
+		[2] = { text = "Hit Point Regeneration" },
+		[3] = { text = "Mana Regeneration" },
 		[4] = { text = "Stamina Regeneration" },
 		[5] = { text = "Double Hit Point Regeneration" },
 		[6] = { text = "Double Mana Regeneration" },
@@ -497,38 +497,115 @@ function Player.selectDailyReward(self, msg)
 			return false
 		end
 
-		local requiredSlots = dailyTable.itemCharges and totalCounter or #items
+		local requiredSlots = 0
+		if dailyTable.itemCharges then
+			requiredSlots = totalCounter
+		else
+			for _, v in ipairs(items) do
+				local itemType = ItemType(v.itemId)
+				if itemType:isStackable() then
+					requiredSlots = requiredSlots + math.ceil(v.count / itemType:getStackSize())
+				else
+					requiredSlots = requiredSlots + v.count
+				end
+			end
+		end
 		if #inbox:getItems() + requiredSlots > inbox:getMaxCapacity() then
 			self:sendError("You do not have enough space in your store inbox.")
 			return false
 		end
 
-		if usesToken then
-			self:setCollectionTokens(self:getCollectionTokens() - 1)
-			usesToken = false
+		local maxInboxItems = configManager.getNumber(configKeys.MAX_INBOX_ITEMS)
+		if maxInboxItems > 0 and inbox:getItemHoldingCount() + requiredSlots > maxInboxItems then
+			self:sendError("You do not have enough space in your store inbox.")
+			return false
 		end
 
 		local descriptionParts = {}
 		local batchUpdate = BatchUpdate(self)
 		batchUpdate:add(inbox)
+		local originalItems = {}
+		for _, item in ipairs(inbox:getItems()) do
+			originalItems[#originalItems + 1] = { item = item, count = item:getCount() }
+		end
+
+		local deliveryFailed = false
+		local failedItemId
+		local function addRewardItem(itemId, count)
+			local inboxItem = inbox:addItem(itemId, count)
+			if not inboxItem then
+				deliveryFailed = true
+				failedItemId = itemId
+				return
+			end
+
+			inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+		end
 
 		for _, v in ipairs(items) do
 			if dailyTable.itemCharges then
 				-- Charged items do not stack: one item per picked unit, each with the configured charges
 				for _ = 1, v.count do
-					local inboxItem = inbox:addItem(v.itemId, dailyTable.itemCharges)
-					if inboxItem then
-						inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+					addRewardItem(v.itemId, dailyTable.itemCharges)
+					if deliveryFailed then
+						break
 					end
 				end
 			else
-				local inboxItem = inbox:addItem(v.itemId, v.count)
-				if inboxItem then
-					inboxItem:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+				local itemType = ItemType(v.itemId)
+				if itemType:isStackable() then
+					local stackSize = itemType:getStackSize()
+					for count = 1, v.count, stackSize do
+						addRewardItem(v.itemId, math.min(stackSize, v.count - count + 1))
+						if deliveryFailed then
+							break
+						end
+					end
+				else
+					for _ = 1, v.count do
+						-- Zero preserves the item's default charges instead of treating the quantity as charges.
+						addRewardItem(v.itemId, 0)
+						if deliveryFailed then
+							break
+						end
+					end
 				end
+			end
+			if deliveryFailed then
+				break
 			end
 			descriptionParts[#descriptionParts + 1] = v.count .. "x " .. ItemType(v.itemId):getName()
 		end
+
+		if deliveryFailed then
+			for _, item in ipairs(inbox:getItems()) do
+				local originalCount
+				for _, original in ipairs(originalItems) do
+					if item == original.item then
+						originalCount = original.count
+						break
+					end
+				end
+
+				local removeCount
+				if originalCount then
+					if ItemType(item:getId()):isStackable() then
+						removeCount = item:getCount() - originalCount
+					end
+				else
+					removeCount = -1
+				end
+
+				if removeCount and (removeCount == -1 or removeCount > 0) and not item:remove(removeCount) then
+					logger.error("Failed to roll back daily reward item {} for player {}", item:getId(), self:getName())
+				end
+			end
+			batchUpdate:delete()
+			logger.warn("Could not deliver daily reward item {} to player {}", failedItemId, self:getName())
+			self:sendError("Something went wrong and we could not deliver your daily reward.")
+			return false
+		end
+
 		batchUpdate:delete()
 		dailyRewardMessage = "Picked items: " .. table.concat(descriptionParts, ", ") .. "."
 	elseif dailyTable.type == DAILY_REWARD_TYPE_XP_BOOST then

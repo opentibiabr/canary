@@ -100,9 +100,13 @@ function GetDailyRewardServerSaveCount()
 end
 
 function UpdateDailyRewardServerSave()
-	UpdateDailyRewardGlobalStorage(DailyReward.storages.lastServerSave, os.time())
-	local count = GetDailyRewardServerSaveCount() + 1
-	db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY) .. ", " .. count .. ") ON DUPLICATE KEY UPDATE `value` = " .. count)
+	local counterKey = db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY)
+	local updated = db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. DailyReward.storages.lastServerSave .. ", " .. os.time() .. "), (" .. counterKey .. ", 1) ON DUPLICATE KEY UPDATE `value` = CASE WHEN `key` = " .. counterKey .. " THEN `value` + 1 ELSE VALUES(`value`) END")
+	if not updated then
+		logger.error("[UpdateDailyRewardServerSave] Failed to update the daily reward claim window and save counter.")
+		return false
+	end
+	return true
 end
 
 function UpdateDailyRewardGlobalStorage(key, value)

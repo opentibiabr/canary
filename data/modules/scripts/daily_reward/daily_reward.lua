@@ -305,7 +305,7 @@ DailyReward.getMissedDays = function(player, lastServerSave)
 	if nextRewardTime >= lastServerSave then
 		return 0
 	end
-	return math.floor((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold + 0.5)
+	return math.ceil((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold)
 end
 
 -- The current window is the one the player must claim in to keep the streak.

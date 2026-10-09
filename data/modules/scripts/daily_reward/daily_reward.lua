@@ -497,30 +497,6 @@ function Player.selectDailyReward(self, msg)
 			return false
 		end
 
-		local requiredSlots = 0
-		if dailyTable.itemCharges then
-			requiredSlots = totalCounter
-		else
-			for _, v in ipairs(items) do
-				local itemType = ItemType(v.itemId)
-				if itemType:isStackable() then
-					requiredSlots = requiredSlots + math.ceil(v.count / itemType:getStackSize())
-				else
-					requiredSlots = requiredSlots + v.count
-				end
-			end
-		end
-		if #inbox:getItems() + requiredSlots > inbox:getMaxCapacity() then
-			self:sendError("You do not have enough space in your store inbox.")
-			return false
-		end
-
-		local maxInboxItems = configManager.getNumber(configKeys.MAX_INBOX_ITEMS)
-		if maxInboxItems > 0 and inbox:getItemHoldingCount() + requiredSlots > maxInboxItems then
-			self:sendError("You do not have enough space in your store inbox.")
-			return false
-		end
-
 		local descriptionParts = {}
 		local batchUpdate = BatchUpdate(self)
 		batchUpdate:add(inbox)

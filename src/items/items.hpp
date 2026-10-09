@@ -188,6 +188,10 @@ public:
 	bool hasSubType() const {
 		return (isFluidContainer() || isSplash() || stackable || charges != 0);
 	}
+	[[nodiscard]] bool isActiveEquipment() const {
+		// Legacy timed equipment may omit a move event but decay directly to the same inactive state used on de-equip.
+		return transformDeEquipTo != 0 && (hasDeEquipEvent || (decayTime != 0 && decayTo == transformDeEquipTo));
+	}
 	bool isWeapon() const {
 		return weaponType != WEAPON_NONE && weaponType != WEAPON_SHIELD && weaponType != WEAPON_AMMO;
 	}
@@ -367,6 +371,7 @@ public:
 	bool allowDistRead = false;
 	bool lookThrough = false;
 	bool stopTime = false;
+	bool hasDeEquipEvent = false;
 	bool showCount = true;
 	bool stackable = false;
 	bool isPodium = false;

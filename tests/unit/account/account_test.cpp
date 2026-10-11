@@ -654,6 +654,23 @@ TEST_F(AccountTest, AuthenticatePasswordUsingSha1) {
 	EXPECT_TRUE(acc.authenticate("123456"));
 }
 
+TEST_F(AccountTest, AuthenticatePasswordFailureDoesNotLogStoredHash) {
+	Account acc { 1 };
+	repository().addAccount(
+		"canary@test.com",
+		AccountInfo { 1, 1, 1, AccountType::ACCOUNT_TYPE_GOD, { { "Canary", 1 }, { "Canary2", 2 } } }
+	);
+
+	EXPECT_TRUE(eqEnum(acc.load(), AccountErrors_t::Ok));
+	const std::string storedHash = "7c4a8d09ca3762af61e59520943dc26494f8941b";
+	repository().password_ = storedHash;
+	EXPECT_FALSE(acc.authenticate("wrong-password"));
+
+	for (const auto &entry : testLogger().logs) {
+		EXPECT_EQ(std::string::npos, entry.message.find(storedHash)) << entry.message;
+	}
+}
+
 TEST_F(AccountTest, AuthenticateUsingSessions) {
 	Account acc { 1 };
 	repository().addAccount(

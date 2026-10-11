@@ -308,7 +308,7 @@ bool Account::authenticatePassword(const std::string &password) {
 		return true;
 	}
 
-	g_logger().error("Password '{}' doesn't match any account", getPassword());
+	g_logger().error("Password doesn't match for account id [{}]", m_account->id);
 	return false;
 }
 

@@ -8380,9 +8380,10 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 		realHealthChange = target->getHealth() - realHealthChange;
 
 		if (realHealthChange > 0 && !target->isInGhostMode()) {
-			// Impact Analyser: the healing a player does, on themselves or on others
-			if (attackerPlayer) {
-				attackerPlayer->updateImpactTracker(COMBAT_HEALING, realHealthChange);
+			// Impact Analyser: the healing a player does, on themselves or on others; a heal with no source (life leech,
+			// food, Lua addHealth) is the healed player's own, a monster's heal is nobody's
+			if (const std::shared_ptr<Player> healer = attackerPlayer ? attackerPlayer : (attacker ? nullptr : targetPlayer)) {
+				healer->updateImpactTracker(COMBAT_HEALING, realHealthChange);
 			}
 
 			// Party hunt analyzer

@@ -305,7 +305,7 @@ DailyReward.getMissedDays = function(player, lastServerSave)
 	if nextRewardTime >= lastServerSave then
 		return 0
 	end
-	return math.ceil((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold)
+	return math.floor((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold + 0.5)
 end
 
 -- The current window is the one the player must claim in to keep the streak.
@@ -580,6 +580,12 @@ function Player.selectDailyReward(self, msg)
 			logger.warn("Could not deliver daily reward item {} to player {}", failedItemId, self:getName())
 			self:sendError("Something went wrong and we could not deliver your daily reward.")
 			return false
+		end
+
+		for _, original in ipairs(originalItems) do
+			if original.item:getCount() > original.count then
+				original.item:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
+			end
 		end
 
 		batchUpdate:delete()

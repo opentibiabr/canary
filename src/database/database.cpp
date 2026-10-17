@@ -259,6 +259,12 @@ bool Database::executeQuery(std::string_view query) {
 }
 
 DBResult_ptr Database::storeQuery(std::string_view query) {
+	bool querySucceeded = false;
+	return storeQuery(query, querySucceeded);
+}
+
+DBResult_ptr Database::storeQuery(std::string_view query, bool &querySucceeded) {
+	querySucceeded = false;
 	if (!handle) {
 		g_logger().error("Database not initialized!");
 		return nullptr;
@@ -284,6 +290,7 @@ retry:
 	// Retrieving results of query
 	MYSQL_RES* res = mysql_store_result(handle);
 	if (res != nullptr) {
+		querySucceeded = true;
 		DBResult_ptr result = std::make_shared<DBResult>(res);
 		if (!result->hasNext()) {
 			return nullptr;

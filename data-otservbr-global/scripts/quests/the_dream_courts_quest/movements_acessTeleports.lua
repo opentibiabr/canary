@@ -74,52 +74,56 @@ function movements_acessTeleports.onStepIn(creature, item, position, fromPositio
 	local iPos = item:getPosition()
 	local dreamScarTeleport = Position(32208, 32033, 13)
 	local nightmareTeleport = Position(32211, 32081, 15)
+	local destination = fromPosition
+	local message
+	local successMessage
 
-	if item:getPosition() == nightmareTeleport then
+	if iPos == nightmareTeleport then
 		if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.BossCount) >= 5 then
 			if player:getStorageValue(Storage.Quest.U12_00.TheDreamCourts.DreamScar.NightmareTimer) > os.time() then
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge The Nightmare Beast again!")
-				player:teleportTo(fromPosition)
+				message = "You have to wait to challenge The Nightmare Beast again!"
 			else
-				player:teleportTo(Position(32211, 32075, 15))
+				destination = Position(32211, 32075, 15)
 			end
 		else
-			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You can not use this teleport yet.")
-			player:teleportTo(fromPosition)
+			message = "You can not use this teleport yet."
 		end
-	end
-
-	for _, k in pairs(default) do
-		if k.itemPosition == iPos then
-			if player:getStorageValue(k.neededStorage) >= k.value then
-				player:teleportTo(k.toPosition)
-				if k.msg then
-					player:sendTextMessage(MESSAGE_EVENT_ADVANCE, k.msg)
-				end
-			else
-				player:teleportTo(fromPosition)
-				player:sendTextMessage(MESSAGE_EVENT_ADVANCE, k.blockedText)
-			end
-		end
-	end
-
-	if iPos == dreamScarTeleport then
+	elseif iPos == dreamScarTeleport then
 		if player:getStorageValue(permission) >= 1 then
 			for i = 1, #dreamScar do
 				if os.date("%A") == dreamScar[i].day then
 					if player:getStorageValue(dreamScar[i].storageTimer) > os.time() then
-						player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait to challenge " .. dreamScar[i].bossName .. " again!")
-						player:teleportTo(fromPosition)
+						message = "You have to wait to challenge " .. dreamScar[i].bossName .. " again!"
 					else
-						player:teleportTo(Position(32208, 32026, 13))
+						destination = Position(32208, 32026, 13)
 					end
+					break
 				end
 			end
-		else
-			player:teleportTo(fromPosition)
+		end
+	else
+		for _, k in pairs(default) do
+			if k.itemPosition == iPos then
+				if player:getStorageValue(k.neededStorage) >= k.value then
+					destination = k.toPosition
+					successMessage = k.msg
+				else
+					message = k.blockedText
+				end
+				break
+			end
 		end
 	end
 
+	if message then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, message)
+	end
+	if not player:teleportTo(destination) then
+		return false
+	end
+	if successMessage then
+		player:sendTextMessage(MESSAGE_EVENT_ADVANCE, successMessage)
+	end
 	player:getPosition():sendMagicEffect(CONST_ME_TELEPORT)
 
 	return true

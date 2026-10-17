@@ -296,16 +296,21 @@ end
 -- Returns how many claim windows (periods between two server saves) passed without a claim.
 DailyReward.getMissedDays = function(player, lastServerSave)
 	local claimedServerSave = player:getDailyRewardClaimedServerSave()
+	local serverSaveCount = GetDailyRewardServerSaveCount()
 	if claimedServerSave then
-		return math.max(0, GetDailyRewardServerSaveCount() - claimedServerSave - 1)
+		return math.max(0, serverSaveCount - claimedServerSave - 1)
 	end
 
-	-- Legacy players (claimed before the server save counter existed): rounding tolerates late or irregular server saves
+	-- A legacy claim predates the counter: all completed windows since its
+	-- introduction were missed, except the window before the first server save.
+	local missedServerSaves = math.max(0, serverSaveCount - 1)
+	-- Keep the elapsed-time fallback for older gaps, but do not let rounding or
+	-- a changed save time erase windows already recorded by the counter.
 	local nextRewardTime = player:getNextRewardTime()
 	if nextRewardTime >= lastServerSave then
-		return 0
+		return missedServerSaves
 	end
-	return math.floor((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold + 0.5)
+	return math.max(missedServerSaves, math.floor((lastServerSave - nextRewardTime) / DailyReward.serverTimeThreshold + 0.5))
 end
 
 -- The current window is the one the player must claim in to keep the streak.

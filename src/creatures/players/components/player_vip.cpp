@@ -213,6 +213,10 @@ void PlayerVIP::editGroup(uint8_t groupId, const std::string &newName, bool cust
 	}
 
 	const auto &vipGroup = getGroupByID(groupId);
+	// The group id comes from the client (0xDF, action 0x02): an id the account does not own must be ignored.
+	if (!vipGroup) {
+		return;
+	}
 	vipGroup->name = newName;
 	vipGroup->customizable = customizable;
 

@@ -139,10 +139,7 @@ end
 local function parseOpenStore(playerId, msg)
 	openStore(playerId)
 
-	local category = GameStore.Categories and GameStore.Categories[1] or nil
-	if category then
-		addPlayerEvent(sendShowStoreOffers, 50, playerId, category)
-	end
+		addPlayerEvent(sendHomePage, 50, playerId)
 end
 
 local function parseRequestStoreOffers(playerId, msg)
@@ -171,9 +168,6 @@ local function parseRequestStoreOffers(playerId, msg)
 		end
 	elseif actionType == GameStore.ActionType.OPEN_HOME then
 		sendHomePage(player:getId())
-		if category then
-			addPlayerEvent(sendShowStoreOffers, 50, playerId, "Home Offers")
-		end
 	elseif actionType == GameStore.ActionType.OPEN_PREMIUM_BOOST then
 		local subAction = msg:getByte()
 		local category

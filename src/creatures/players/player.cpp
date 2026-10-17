@@ -8793,7 +8793,9 @@ void Player::sendCreatureAppear(const std::shared_ptr<Creature> &creature, const
 	}
 
 	int32_t stackpos = tile->getClientIndexOfCreature(static_self_cast<Player>(), creature);
-	if (stackpos < 0 || stackpos >= 10) {
+	// The player's own appear (0x17 + map description) does not use the stackpos. Replacing it with a tile update
+	// when 10+ creatures share the tile (a crowded temple) left the client stuck on "connecting".
+	if (creature != getPlayer() && (stackpos < 0 || stackpos >= 10)) {
 		sendUpdateTile(tile, pos);
 		return;
 	}

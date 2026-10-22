@@ -659,6 +659,14 @@ function Player.setStreakLevel(self, value)
 	self:kv():scoped("daily-reward"):set("streak", value)
 end
 
+function Player.getDailyRewardClaimedServerSave(self)
+	return self:kv():scoped("daily-reward"):get("claimed-server-save")
+end
+
+function Player.setDailyRewardClaimedServerSave(self, value)
+	self:kv():scoped("daily-reward"):set("claimed-server-save", value)
+end
+
 function Player.setNextRewardTime(self, value)
 	self:setStorageValue(DailyReward.storages.nextRewardTime, value)
 end

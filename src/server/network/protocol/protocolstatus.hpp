@@ -37,5 +37,12 @@ public:
 	static std::string SERVER_DEVELOPERS;
 
 private:
+	// Upper bound on the entries one status query examines while pruning. Each
+	// query adds at most one entry, so the sweep always keeps up with growth.
+	static constexpr size_t PRUNE_BUDGET = 32;
+
+	static void pruneStaleEntries(int64_t currentTime);
+
 	static std::map<uint32_t, int64_t> ipConnectMap;
+	static uint32_t pruneCursor;
 };

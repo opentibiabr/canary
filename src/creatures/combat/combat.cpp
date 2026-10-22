@@ -918,7 +918,7 @@ void Combat::CombatHealthFunc(const std::shared_ptr<Creature> &caster, const std
 
 		// Auto-attacks (e.g. AoE ammunition) only trigger charms on the main target
 		if ((damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_FIST)
-			&& target != attackerPlayer->getAttackedCreature()) {
+		    && target != attackerPlayer->getAttackedCreature()) {
 			return;
 		}
 

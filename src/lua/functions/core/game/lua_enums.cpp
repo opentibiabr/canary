@@ -483,6 +483,11 @@ void LuaEnums::initConstAniEnums(lua_State* L) {
 	registerEnum(L, CONST_ANI_ROYALSTAR);
 	registerEnum(L, CONST_ANI_CANDYCANE);
 	registerEnum(L, CONST_ANI_CHERRYBOMB);
+	registerEnum(L, CONST_ANI_SHATTERSTORMARROW);
+	registerEnum(L, CONST_ANI_FIRESTORMARROW);
+	registerEnum(L, CONST_ANI_TERRASTORMARROW);
+	registerEnum(L, CONST_ANI_FROSTSTORMARROW);
+	registerEnum(L, CONST_ANI_THUNDERSTORMARROW);
 	registerEnum(L, CONST_ANI_WEAPONTYPE);
 }
 

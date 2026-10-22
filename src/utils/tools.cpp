@@ -857,6 +857,11 @@ ShootTypeNames shootTypeNames = {
 	{ "diamondarrow", CONST_ANI_DIAMONDARROW },
 	{ "spectralbolt", CONST_ANI_SPECTRALBOLT },
 	{ "royalstar", CONST_ANI_ROYALSTAR },
+	{ "shatterstormarrow", CONST_ANI_SHATTERSTORMARROW },
+	{ "firestormarrow", CONST_ANI_FIRESTORMARROW },
+	{ "terrastormarrow", CONST_ANI_TERRASTORMARROW },
+	{ "froststormarrow", CONST_ANI_FROSTSTORMARROW },
+	{ "thunderstormarrow", CONST_ANI_THUNDERSTORMARROW },
 };
 
 CombatTypeNames combatTypeNames = {

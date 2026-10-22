@@ -85707,7 +85707,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentphysical" value="2" />
 		<attribute key="absorbpercentenergy" value="6" />
 		<attribute key="magiclevelpoints" value="5" />
-		<attribute key="defense" value="21" />
+		<attribute key="defense" value="34" />
 		<attribute key="weight" value="2000" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3" />
@@ -85735,7 +85735,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="absorbpercentphysical" value="2" />
 		<attribute key="absorbpercentdeath" value="5" />
 		<attribute key="magiclevelpoints" value="5" />
-		<attribute key="defense" value="21" />
+		<attribute key="defense" value="34" />
 		<attribute key="weight" value="2000" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3" />
@@ -85762,7 +85762,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="weaponType" value="shield" />
 		<attribute key="absorbpercentphysical" value="5" />
 		<attribute key="absorbpercentice" value="10" />
-		<attribute key="defense" value="40" />
+		<attribute key="defense" value="52" />
 		<attribute key="weight" value="6000" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3" />
@@ -86015,7 +86015,7 @@ Granted by TibiaGoals.com"/>
 		<attribute key="skillsword" value="2" />
 		<attribute key="skillaxe" value="2" />
 		<attribute key="skillclub" value="2" />
-		<attribute key="defense" value="41" />
+		<attribute key="defense" value="54" />
 		<attribute key="weight" value="6200" />
 		<attribute key="imbuementslot" value="1">
 			<attribute key="elemental protection death" value="3" />

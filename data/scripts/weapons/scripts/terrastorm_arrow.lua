@@ -14,6 +14,7 @@ combat:setParameter(COMBAT_PARAM_DISTANCEEFFECT, CONST_ANI_TERRASTORMARROW)
 combat:setParameter(COMBAT_PARAM_BLOCKARMOR, true)
 combat:setParameter(COMBAT_PARAM_CASTSOUND, SOUND_EFFECT_TYPE_DIST_ATK_BOW)
 combat:setFormula(COMBAT_FORMULA_SKILL, 0, 0, 1, 0)
+combat:setOrigin(ORIGIN_RANGED)
 combat:setArea(area)
 
 local terrastormArrow = Weapon(WEAPON_AMMO)

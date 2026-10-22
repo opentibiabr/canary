@@ -8759,7 +8759,7 @@ bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const s
 
 		if (attackerPlayer) {
 			if (!damage.extension && damage.origin != ORIGIN_CONDITION) {
-				applyCharmRune(targetMonster, attackerPlayer, target, realDamage);
+				applyCharmRune(targetMonster, attackerPlayer, target, damage, realDamage);
 				applyLifeLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 				applyManaLeech(attackerPlayer, targetMonster, target, damage, realDamage);
 			}
@@ -8971,9 +8971,16 @@ void Game::sendEffects(
 }
 
 void Game::applyCharmRune(
-	const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer, const std::shared_ptr<Creature> &target, const int32_t &realDamage
+	const std::shared_ptr<Monster> &targetMonster, const std::shared_ptr<Player> &attackerPlayer,
+	const std::shared_ptr<Creature> &target, const CombatDamage &damage, const int32_t &realDamage
 ) const {
 	if (!targetMonster || !attackerPlayer) {
+		return;
+	}
+
+	// Auto-attacks (e.g. AoE ammunition) only trigger offensive charms on the main target
+	if ((damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_FIST)
+		&& target != attackerPlayer->getAttackedCreature()) {
 		return;
 	}
 

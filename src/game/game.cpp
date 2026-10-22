@@ -8980,7 +8980,7 @@ void Game::applyCharmRune(
 
 	// Auto-attacks (e.g. AoE ammunition) only trigger offensive charms on the main target
 	if ((damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_FIST)
-		&& target != attackerPlayer->getAttackedCreature()) {
+	    && target != attackerPlayer->getAttackedCreature()) {
 		return;
 	}
 

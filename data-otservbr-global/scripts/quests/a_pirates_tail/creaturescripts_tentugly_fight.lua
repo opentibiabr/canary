@@ -400,10 +400,11 @@ local function removeBossById(generation, creatureId)
 		return
 	end
 	local boss = Monster(creatureId)
-	if boss then
-		snapshotParticipants(boss, generation)
-		boss:remove()
+	if not boss then
+		return
 	end
+	pcall(snapshotParticipants, boss, generation)
+	boss:remove()
 end
 
 local function respawnTentuglyBoss(bossId)
@@ -536,7 +537,7 @@ function TentuglyFight.reset()
 end
 
 function TentuglyFight.collectParticipants(creature)
-	snapshotParticipants(creature and creature:getMonster() or nil, fightGeneration)
+	pcall(snapshotParticipants, creature and creature:getMonster() or nil, fightGeneration)
 	return participantsByGeneration[fightGeneration] or {}
 end
 
@@ -556,12 +557,8 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 
-	local isDamaging = (primaryType ~= COMBAT_HEALING and math.abs(primaryDamage) > 0) or (secondaryType ~= COMBAT_HEALING and math.abs(secondaryDamage) > 0)
-	if isDamaging then
-		recordAttacker(attacker, fightGeneration)
-	end
-
 	if monster:getStorageValue(STORAGE_PASSED_PHASE) == 1 then
+		pcall(recordAttacker, attacker, fightGeneration)
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 
@@ -569,6 +566,8 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 	if instances[bossId] then
 		return false
 	end
+
+	pcall(recordAttacker, attacker, fightGeneration)
 
 	local damageAmount = 0
 	if primaryType ~= COMBAT_HEALING then
@@ -601,10 +600,9 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 		tentacles = {},
 	}
 
-	snapshotParticipants(monster, fightGeneration)
-	recordAttacker(attacker, fightGeneration)
 	spawnTentuglyTentacles(bossId, fightGeneration)
 	addEvent(removeBossById, 100, fightGeneration, bossId)
+	pcall(snapshotParticipants, monster, fightGeneration)
 	return false
 end
 

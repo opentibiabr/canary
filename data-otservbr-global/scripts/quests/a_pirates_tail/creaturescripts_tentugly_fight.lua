@@ -156,6 +156,53 @@ local TENTACLE_CONFIG = {
 
 local instances = {}
 local fightGeneration = 1
+local participantsByGeneration = {}
+
+local function addParticipant(generation, playerId)
+	if not playerId or playerId < 1 then
+		return
+	end
+
+	local participants = participantsByGeneration[generation]
+	if not participants then
+		participants = {}
+		participantsByGeneration[generation] = participants
+	end
+	participants[playerId] = true
+end
+
+local function snapshotParticipants(monster, generation)
+	if not monster then
+		return
+	end
+
+	local damageMap = monster:getDamageMap()
+	if not damageMap then
+		return
+	end
+
+	for creatureId, _ in pairs(damageMap) do
+		local player = Player(creatureId)
+		if player then
+			addParticipant(generation, player:getId())
+		end
+	end
+end
+
+local function snapshotAttacker(attacker, generation)
+	if not attacker then
+		return
+	end
+
+	local player = attacker:getPlayer()
+	if not player then
+		local master = attacker:getMaster()
+		player = master and master:getPlayer() or nil
+	end
+	if player then
+		addParticipant(generation, player:getId())
+	end
+end
 
 local function isActiveInstance(bossId, generation)
 	if generation ~= fightGeneration then
@@ -345,6 +392,7 @@ local function removeBossById(generation, creatureId)
 	end
 	local boss = Monster(creatureId)
 	if boss then
+		snapshotParticipants(boss, generation)
 		boss:remove()
 	end
 end
@@ -473,8 +521,14 @@ TentuglyFight = TentuglyFight or {}
 function TentuglyFight.reset()
 	fightGeneration = fightGeneration + 1
 	instances = {}
+	participantsByGeneration = {}
 	restoreLastPositionSprites()
 	removeTentacleCreatures()
+end
+
+function TentuglyFight.collectParticipants(creature)
+	snapshotParticipants(creature and creature:getMonster() or nil, fightGeneration)
+	return participantsByGeneration[fightGeneration] or {}
 end
 
 local tentuglyHealthChange = CreatureEvent("TentuglyHealthChange")
@@ -533,6 +587,8 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 		tentacles = {},
 	}
 
+	snapshotParticipants(monster, fightGeneration)
+	snapshotAttacker(attacker, fightGeneration)
 	spawnTentuglyTentacles(bossId, fightGeneration)
 	addEvent(removeBossById, 100, fightGeneration, bossId)
 	return false

@@ -171,6 +171,27 @@ local function addParticipant(generation, playerId)
 	participants[playerId] = true
 end
 
+local function getResponsiblePlayer(attacker)
+	if not attacker then
+		return nil
+	end
+
+	local player = attacker:getPlayer()
+	if player then
+		return player
+	end
+
+	local master = attacker:getMaster()
+	return master and master:getPlayer() or nil
+end
+
+local function recordAttacker(attacker, generation)
+	local player = getResponsiblePlayer(attacker)
+	if player then
+		addParticipant(generation, player:getId())
+	end
+end
+
 local function snapshotParticipants(monster, generation)
 	if not monster then
 		return
@@ -183,24 +204,12 @@ local function snapshotParticipants(monster, generation)
 
 	for creatureId, _ in pairs(damageMap) do
 		local player = Player(creatureId)
+		if not player then
+			player = getResponsiblePlayer(Creature(creatureId))
+		end
 		if player then
 			addParticipant(generation, player:getId())
 		end
-	end
-end
-
-local function snapshotAttacker(attacker, generation)
-	if not attacker then
-		return
-	end
-
-	local player = attacker:getPlayer()
-	if not player then
-		local master = attacker:getMaster()
-		player = master and master:getPlayer() or nil
-	end
-	if player then
-		addParticipant(generation, player:getId())
 	end
 end
 
@@ -547,6 +556,11 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
 
+	local isDamaging = (primaryType ~= COMBAT_HEALING and math.abs(primaryDamage) > 0) or (secondaryType ~= COMBAT_HEALING and math.abs(secondaryDamage) > 0)
+	if isDamaging then
+		recordAttacker(attacker, fightGeneration)
+	end
+
 	if monster:getStorageValue(STORAGE_PASSED_PHASE) == 1 then
 		return primaryDamage, primaryType, secondaryDamage, secondaryType
 	end
@@ -588,7 +602,7 @@ function tentuglyHealthChange.onHealthChange(creature, attacker, primaryDamage, 
 	}
 
 	snapshotParticipants(monster, fightGeneration)
-	snapshotAttacker(attacker, fightGeneration)
+	recordAttacker(attacker, fightGeneration)
 	spawnTentuglyTentacles(bossId, fightGeneration)
 	addEvent(removeBossById, 100, fightGeneration, bossId)
 	return false

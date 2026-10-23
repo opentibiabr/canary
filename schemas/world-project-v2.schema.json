@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-project-v2.schema.json",
+  "title": "World v2 project",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 2,
+      "type": "integer"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[a-z][a-z0-9_.-]*$"
+    },
+    "map": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:|/)(?!.*[\\\\:]).+$"
+    },
+    "items": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![A-Za-z]:|/)(?!.*[\\\\:]).+$"
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?![A-Za-z]:|/)(?!.*[\\\\:]).+$"
+          },
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "file"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "behaviorCatalog": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?![A-Za-z]:|/)(?!.*[\\\\:]).+$"
+      }
+    },
+    "migrations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "^(?![A-Za-z]:|/)(?!.*[\\\\:]).+$"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "map",
+    "items",
+    "layers"
+  ],
+  "additionalProperties": false
+}

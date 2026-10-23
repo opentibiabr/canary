@@ -1,0 +1,222 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-layer-v2.schema.json",
+  "title": "World v2 layer",
+  "type": "object",
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 2,
+      "type": "integer"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[a-z][a-z0-9_.-]*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "objects": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[a-z][a-z0-9_.-]*$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "item"
+              },
+              "source": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "const": "map"
+                      },
+                      "selector": {
+                        "$ref": "world-common-v2.schema.json#/$defs/selector"
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "selector"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "const": "create"
+                      },
+                      "itemId": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 65535
+                      },
+                      "count": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 65535
+                      },
+                      "subtype": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 65535
+                      },
+                      "placement": {
+                        "$ref": "world-common-v2.schema.json#/$defs/placement"
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "itemId",
+                      "placement"
+                    ],
+                    "additionalProperties": false
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "mode": {
+                        "const": "replace"
+                      },
+                      "selector": {
+                        "$ref": "world-common-v2.schema.json#/$defs/selector"
+                      },
+                      "itemId": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 65535
+                      },
+                      "count": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 65535
+                      },
+                      "subtype": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 65535
+                      },
+                      "placement": {
+                        "$ref": "world-common-v2.schema.json#/$defs/placement"
+                      }
+                    },
+                    "required": [
+                      "mode",
+                      "selector",
+                      "itemId",
+                      "placement"
+                    ],
+                    "additionalProperties": false
+                  }
+                ]
+              },
+              "lifecycle": {
+                "enum": [
+                  "native",
+                  "fixture",
+                  "refillOnStartup"
+                ]
+              },
+              "attributes": {
+                "$ref": "world-common-v2.schema.json#/$defs/attributes"
+              },
+              "components": {
+                "type": "array",
+                "maxItems": 1,
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "teleport"
+                    },
+                    "destination": {
+                      "$ref": "world-common-v2.schema.json#/$defs/reference"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "destination"
+                  ],
+                  "additionalProperties": false
+                }
+              },
+              "relations": {
+                "$ref": "world-common-v2.schema.json#/$defs/relations"
+              },
+              "behaviors": {
+                "type": "array",
+                "items": {
+                  "$ref": "world-common-v2.schema.json#/$defs/binding"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "source"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^[a-z][a-z0-9_.-]*$"
+              },
+              "name": {
+                "type": "string"
+              },
+              "kind": {
+                "const": "anchor"
+              },
+              "position": {
+                "$ref": "world-common-v2.schema.json#/$defs/position"
+              },
+              "relations": {
+                "$ref": "world-common-v2.schema.json#/$defs/relations"
+              },
+              "behaviors": {
+                "type": "array",
+                "items": {
+                  "$ref": "world-common-v2.schema.json#/$defs/binding"
+                }
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "position"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "objects"
+  ],
+  "additionalProperties": false
+}

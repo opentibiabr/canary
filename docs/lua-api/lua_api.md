@@ -35,6 +35,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Action
 
+- Overloads:
+  - `fun(): Action`
+
 #### `Action:aid(aids: number)`
 
 - Returns: `boolean`
@@ -203,6 +206,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Combat
 
+- Overloads:
+  - `fun(): Combat`
+
 #### `Combat:addCondition(condition: Condition)`
 
 - Returns: `boolean|nil`
@@ -239,6 +245,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/combat/combat_functions.cpp`
 
 ### Condition
+
+- Overloads:
+  - `fun(conditionType: integer, conditionId?: integer, subId?: integer, isPersistent?: boolean): Condition?`
 
 #### `Condition:addDamage(rounds: number, time: number, value: number)`
 
@@ -753,6 +762,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### CreatureEvent
 
+- Overloads:
+  - `fun(eventName: string): CreatureEvent`
+
 #### `CreatureEvent:onAdvance(callback: fun(player: Player, skill: integer, oldLevel: integer, newLevel: integer): boolean)`
 
 - Returns: `boolean`
@@ -865,6 +877,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 ### Game
 
 #### `Game.addInfluencedMonster(monster: Monster, stack?: number)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
+#### `Game.canApplyLegacyWorld(file: string, tableName: string, entry: string, occurrence: string, responsibility: string, itemId: integer, position: Position, item?: Item)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1111,6 +1128,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
+#### `Game.isWorldObjectDeclared(id: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
 #### `Game.loadMap(path: string)`
 
 - Returns: `nil`
@@ -1162,6 +1184,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
 ### GlobalEvent
+
+- Overloads:
+  - `fun(name: string): GlobalEvent`
 
 #### `GlobalEvent:interval(interval: number)`
 
@@ -3219,6 +3244,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/events/move_event_functions.cpp`
 
 ### NetworkMessage
+
+- Overloads:
+  - `fun(): NetworkMessage`
 
 #### `NetworkMessage:add16(value: number)`
 
@@ -5461,6 +5489,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Spell
 
+- Overloads:
+  - `fun(nameOrTypeOrId: string|integer): Spell?`
+
 #### `Spell:allowFarUse(value?: boolean)`
 
 - Returns: `boolean|nil`
@@ -5652,6 +5683,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/combat/spell_functions.cpp`
 
 ### TalkAction
+
+- Overloads:
+  - `fun(...: string): TalkAction`
 
 #### `TalkAction:getDescription()`
 
@@ -6002,6 +6036,9 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 ### Weapon
 
+- Overloads:
+  - `fun(type: integer): Weapon?`
+
 #### `Weapon:action(callback: string)`
 
 - Returns: `boolean|nil`
@@ -6163,6 +6200,91 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 
 - Returns: `nil`
 - Source: `src/lua/functions/core/network/webhook_functions.cpp`
+
+### World
+
+#### `World.fromItem(item: Item)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `World.get(id: string)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `World.resolve(token: table)`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldBehavior
+
+- Fields:
+  - `onUse fun(context: WorldContext, player: Player, item: Item, fromPosition: Position, target: Item|Creature|table, toPosition: Position, isHotkey: boolean): boolean`
+  - `onStepIn fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean`
+  - `onStepOut fun(context: WorldContext, creature: Creature, item: Item, position: Position, fromPosition: Position): boolean`
+  - `onAddItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean`
+  - `onRemoveItem fun(context: WorldContext, movingItem: Item, tileItem: Item|nil, position: Position): boolean`
+
+- Overloads:
+  - `fun(id: string, contractVersion: integer): WorldBehavior`
+
+#### `WorldBehavior:register()`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldContext
+
+#### `WorldContext:object()`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldContext:parameter(name: string)`
+
+- Returns: `boolean|integer|number|string|table|Position|WorldReference|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldContext:relation(name: string)`
+
+- Returns: `WorldReference|WorldReference[]|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldObject
+
+#### `WorldObject:getInitialItemId()`
+
+- Returns: `integer|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:getItem()`
+
+- Returns: `Item|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:getPosition()`
+
+- Returns: `Position|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldObject:token()`
+
+- Returns: `table|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+### WorldReference
+
+#### `WorldReference:getObject()`
+
+- Returns: `WorldObject|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
+
+#### `WorldReference:getPosition()`
+
+- Returns: `Position|nil`
+- Source: `src/lua/functions/core/game/world_functions.cpp`
 
 ### Zone
 

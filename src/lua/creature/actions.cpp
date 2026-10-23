@@ -8,6 +8,8 @@
  */
 
 #include "lua/creature/actions.hpp"
+#include "world/world_behaviors.hpp"
+#include "world/world_runtime.hpp"
 
 #include "config/configmanager.hpp"
 #include "creatures/combat/spells.hpp"
@@ -220,6 +222,9 @@ ReturnValue Actions::canUseFar(const std::shared_ptr<Creature> &creature, const 
 }
 
 std::shared_ptr<Action> Actions::getAction(const std::shared_ptr<Item> &item) {
+	if (const auto worldAction = g_game().worldLayers().behaviors().action(item)) {
+		return worldAction;
+	}
 	if (const auto iteratePositions = actionPositionMap.find(item->getPosition());
 	    iteratePositions != actionPositionMap.end()) {
 		if (const auto &tile = item->getTile()) {
@@ -267,6 +272,9 @@ ReturnValue Actions::internalUseItem(const std::shared_ptr<Player> &player, cons
 	const ItemType &itemType = Item::items[itemId];
 	auto transformTo = itemType.m_transformOnUse;
 	const auto &action = getAction(item);
+	if (g_game().worldLayers().behaviors().owns(item, "onUse")) {
+		return action && action->executeUse(player, item, pos, nullptr, pos, isHotkey) ? RETURNVALUE_NOERROR : RETURNVALUE_CANNOTUSETHISOBJECT;
+	}
 	if (!action && transformTo > 0 && itemId != transformTo) {
 		if (g_game().transformItem(item, transformTo) == nullptr) {
 			g_logger().warn("[{}] item with id {} failed to transform to item {}", __FUNCTION__, itemId, transformTo);

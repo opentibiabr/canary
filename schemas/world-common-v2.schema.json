@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "world-common-v2.schema.json",
+  "title": "Shared World v2 definitions",
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256,
+      "pattern": "^[a-z][a-z0-9_.-]*$"
+    },
+    "position": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "y": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "z": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "additionalProperties": false,
+      "not": {
+        "const": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        }
+      }
+    },
+    "offset": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "integer",
+          "minimum": -65535,
+          "maximum": 65535
+        },
+        "y": {
+          "type": "integer",
+          "minimum": -65535,
+          "maximum": 65535
+        },
+        "z": {
+          "type": "integer",
+          "minimum": -15,
+          "maximum": 15
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "additionalProperties": false
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "aid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "uid": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        },
+        "text": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "article": {
+          "type": "string"
+        },
+        "plural": {
+          "type": "string"
+        },
+        "writer": {
+          "type": "string"
+        },
+        "date": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "custom": {
+          "type": "object",
+          "propertyNames": {
+            "minLength": 1,
+            "not": {
+              "pattern": "^__world\\."
+            }
+          },
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "integer",
+              "number",
+              "string"
+            ]
+          }
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    },
+    "occurrence": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 4294967295
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "fingerprint": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "index",
+        "count",
+        "fingerprint"
+      ],
+      "additionalProperties": false
+    },
+    "selector": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "position": {
+              "$ref": "world-common-v2.schema.json#/$defs/position"
+            },
+            "part": {
+              "enum": [
+                "ground",
+                "item"
+              ]
+            },
+            "itemId": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "attributes": {
+              "$ref": "world-common-v2.schema.json#/$defs/attributes"
+            },
+            "occurrence": {
+              "$ref": "world-common-v2.schema.json#/$defs/occurrence"
+            }
+          },
+          "required": [
+            "position",
+            "part",
+            "itemId"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "itemId": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 65535
+            },
+            "attributes": {
+              "$ref": "world-common-v2.schema.json#/$defs/attributes"
+            },
+            "occurrence": {
+              "$ref": "world-common-v2.schema.json#/$defs/occurrence"
+            }
+          },
+          "required": [
+            "container",
+            "itemId"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "placement": {
+      "oneOf": [
+        {
+          "type": "object",
+          "properties": {
+            "position": {
+              "$ref": "world-common-v2.schema.json#/$defs/position"
+            }
+          },
+          "required": [
+            "position"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "properties": {
+            "container": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 256,
+              "pattern": "^[a-z][a-z0-9_.-]*$"
+            },
+            "order": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4294967295
+            }
+          },
+          "required": [
+            "container"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "properties": {
+        "object": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "offset": {
+          "$ref": "world-common-v2.schema.json#/$defs/offset"
+        }
+      },
+      "required": [
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "relations": {
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "$ref": "world-common-v2.schema.json#/$defs/reference"
+          },
+          {
+            "type": "array",
+            "items": {
+              "$ref": "world-common-v2.schema.json#/$defs/reference"
+            }
+          }
+        ]
+      }
+    },
+    "binding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "pattern": "^[a-z][a-z0-9_.-]*$"
+        },
+        "contractVersion": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4294967295
+        },
+        "events": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "onUse",
+              "onStepIn",
+              "onStepOut",
+              "onAddItem",
+              "onRemoveItem",
+              "onEquip",
+              "onDeEquip"
+            ]
+          }
+        },
+        "eventOptions": {
+          "type": "object",
+          "properties": {
+            "onUse": {
+              "type": "object",
+              "properties": {
+                "allowFarUse": { "type": "boolean" },
+                "blockWalls": { "type": "boolean" },
+                "checkFloor": { "type": "boolean" }
+              },
+              "additionalProperties": false
+            },
+            "onEquip": { "$ref": "#/$defs/equipmentOptions" },
+            "onDeEquip": { "$ref": "#/$defs/equipmentOptions" }
+          },
+          "additionalProperties": false
+        },
+        "parameters": {
+          "type": "object"
+        },
+        "relations": {
+          "$ref": "world-common-v2.schema.json#/$defs/relations"
+        }
+      },
+      "required": [
+        "id",
+        "contractVersion",
+        "events"
+      ],
+      "additionalProperties": false
+    },
+    "equipmentOptions": {
+      "type": "object",
+      "properties": {
+        "slots": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": ["head", "necklace", "backpack", "armor", "right-hand", "left-hand", "hand", "legs", "feet", "ring", "ammo"]
+          }
+        },
+        "level": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "magicLevel": { "type": "integer", "minimum": 0, "maximum": 4294967295 },
+        "premium": { "type": "boolean" },
+        "vocations": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "vocationDescription": { "type": "string" }
+      },
+      "required": ["slots"],
+      "additionalProperties": false
+    },
+    "parameter": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "enum": [
+            "boolean",
+            "integer",
+            "number",
+            "string",
+            "enum",
+            "itemId",
+            "position",
+            "offset",
+            "objectRef",
+            "list",
+            "record"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "default": {},
+        "minimum": {
+          "type": "number"
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "values": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": [
+              "boolean",
+              "integer",
+              "number",
+              "string"
+            ]
+          }
+        },
+        "enum": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": [
+              "boolean",
+              "integer",
+              "number",
+              "string"
+            ]
+          }
+        },
+        "label": {
+          "type": "string"
+        },
+        "help": {
+          "type": "string"
+        },
+        "capabilities": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "fields": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "world-common-v2.schema.json#/$defs/parameter"
+          }
+        },
+        "items": {
+          "$ref": "world-common-v2.schema.json#/$defs/parameter"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "record"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "fields"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "list"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "items"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "enum"
+              }
+            }
+          },
+          "then": {
+            "oneOf": [
+              {
+                "required": [
+                  "values"
+                ]
+              },
+              {
+                "required": [
+                  "enum"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "fields"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "record"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "items"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "list"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "values"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "enum"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "enum"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "enum"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "capabilities"
+            ]
+          },
+          "then": {
+            "properties": {
+              "type": {
+                "const": "itemId"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

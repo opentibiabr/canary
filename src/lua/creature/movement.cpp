@@ -8,6 +8,8 @@
  */
 
 #include "lua/creature/movement.hpp"
+#include "world/world_behaviors.hpp"
+#include "world/world_runtime.hpp"
 
 #include "lib/di/container.hpp"
 #include "creatures/combat/combat.hpp"
@@ -308,6 +310,12 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 			continue;
 		}
 
+		if (const auto worldResult = g_game().worldLayers().behaviors().step(tileItem, creature, pos, eventType == MOVE_EVENT_STEP_IN)) {
+			if (!*worldResult) {
+				return 0;
+			}
+			continue;
+		}
 		moveEvent = getEvent(tileItem, eventType);
 		if (moveEvent) {
 			const auto step = moveEvent->fireStepEvent(creature, tileItem, pos);
@@ -322,6 +330,11 @@ uint32_t MoveEvents::onCreatureMove(const std::shared_ptr<Creature> &creature, c
 }
 
 uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot, bool isCheck) {
+	if (const auto worldResult = g_game().worldLayers().behaviors().equip(item, player, slot, isCheck, true)) {
+		g_events().eventPlayerOnInventoryUpdate(player, item, slot, true);
+		g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, true);
+		return *worldResult;
+	}
 	const auto &moveEvent = getEvent(item, MOVE_EVENT_EQUIP, slot);
 	if (!moveEvent) {
 		return 1;
@@ -332,6 +345,11 @@ uint32_t MoveEvents::onPlayerEquip(const std::shared_ptr<Player> &player, const 
 }
 
 uint32_t MoveEvents::onPlayerDeEquip(const std::shared_ptr<Player> &player, const std::shared_ptr<Item> &item, Slots_t slot) {
+	if (const auto worldResult = g_game().worldLayers().behaviors().equip(item, player, slot, false, false)) {
+		g_events().eventPlayerOnInventoryUpdate(player, item, slot, false);
+		g_callbacks().executeCallback(EventCallback_t::playerOnInventoryUpdate, player, item, slot, false);
+		return *worldResult;
+	}
 	const auto &moveEvent = getEvent(item, MOVE_EVENT_DEEQUIP, slot);
 	if (!moveEvent) {
 		return 1;
@@ -358,10 +376,16 @@ uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::sh
 		ret &= moveEvent->fireAddRemItem(item, tile->getPosition());
 	}
 
-	moveEvent = getEvent(item, eventType1);
-	if (moveEvent) {
-		// No tile item
-		ret &= moveEvent->fireAddRemItem(item, tile->getPosition());
+	if (const auto worldResult = g_game().worldLayers().behaviors().move(item, item, nullptr, tile->getPosition(), isAdd)) {
+		if (!*worldResult) {
+			return 0;
+		}
+	} else {
+		moveEvent = getEvent(item, eventType1);
+		if (moveEvent) {
+			// No tile item
+			ret &= moveEvent->fireAddRemItem(item, tile->getPosition());
+		}
 	}
 
 	for (size_t i = tile->getFirstIndex(), j = tile->getLastIndex(); i < j; ++i) {
@@ -375,6 +399,16 @@ uint32_t MoveEvents::onItemMove(const std::shared_ptr<Item> &item, const std::sh
 			continue;
 		}
 
+		if (tileItem != item) {
+			if (const auto worldResult = g_game().worldLayers().behaviors().move(tileItem, item, tileItem, tile->getPosition(), isAdd)) {
+				if (!*worldResult) {
+					return 0;
+				}
+				continue;
+			}
+		} else if (g_game().worldLayers().behaviors().owns(tileItem, isAdd ? "onAddItem" : "onRemoveItem")) {
+			continue;
+		}
 		moveEvent = getEvent(tileItem, eventType2);
 		if (moveEvent) {
 			const auto &moveItem = moveEvent->fireAddRemItem(item, tileItem, tile->getPosition());

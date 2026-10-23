@@ -1,0 +1,330 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-tile_pick",
+  "name": "Tile Pick",
+  "objects": [
+    {
+      "id": "legacy.tilepickaction.101.9daad4838415",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32774,
+            "y": 32289,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.cce4fe32ef67",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 33094,
+            "y": 31626,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.2ce422aeaf30",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 2119,
+          "part": "item",
+          "position": {
+            "x": 33081,
+            "y": 31651,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.312bdeae026c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 33081,
+            "y": 31651,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.6da3da9591e2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32266,
+            "y": 31892,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.6836432ce59a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32266,
+            "y": 31916,
+            "z": 12
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.919c47b8d64f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32204,
+            "y": 31887,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.25412fb44bd9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32165,
+            "y": 31890,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.dafefafc78dd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32162,
+            "y": 31921,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.9c9500471ece",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32149,
+            "y": 32110,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.aee1862b909e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32302,
+            "y": 32257,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.5ef71a82ded2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32437,
+            "y": 32239,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.76fcfbabcaea",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32775,
+            "y": 32012,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.e0bde0813352",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32595,
+            "y": 32068,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.60864ab4bf77",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32580,
+            "y": 32103,
+            "z": 11
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.8ee98c4e6d40",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32517,
+            "y": 32107,
+            "z": 14
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    },
+    {
+      "id": "legacy.tilepickaction.101.457b4638b525",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 355,
+          "part": "ground",
+          "position": {
+            "x": 32295,
+            "y": 31441,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 101
+      }
+    }
+  ]
+}

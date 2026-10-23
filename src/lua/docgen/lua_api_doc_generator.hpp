@@ -76,9 +76,8 @@ public:
 	LuaScanResult scan() const;
 
 private:
-	void scanFile(const std::filesystem::path &filePath, LuaScanResult &result) const;
 	void parseLuaReg(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const;
-	void parseRegistrations(const std::string &content, const std::filesystem::path &filePath, LuaScanResult &result) const;
+	void parseRegistrations(const std::string &content, const std::filesystem::path &filePath, const LuaStringMap &userdataNames, LuaScanResult &result) const;
 	std::vector<std::string> inferParameters(const std::string &content, const std::string &handler, bool skipSelfParameter) const;
 	std::vector<std::string> splitParameters(const std::string &parameters) const;
 	std::string normalizeReturnType(const std::string &content, const std::string &handler) const;

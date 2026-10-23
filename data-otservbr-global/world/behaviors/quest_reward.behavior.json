@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 2,
+  "id": "quest.reward",
+  "name": "Quest reward",
+  "events": [
+    "onUse"
+  ],
+  "parameters": {
+    "storage": {
+      "type": "integer",
+      "label": "Completion storage",
+      "minimum": 1
+    },
+    "useKV": {
+      "type": "boolean",
+      "label": "Use quest key/value state"
+    },
+    "questName": {
+      "type": "string",
+      "label": "Quest state namespace"
+    },
+    "container": {
+      "type": "itemId",
+      "label": "Reward container",
+      "capabilities": [
+        "container"
+      ]
+    },
+    "keyAction": {
+      "type": "integer",
+      "label": "Reward key AID",
+      "minimum": 0,
+      "maximum": 65535
+    },
+    "isKey": {
+      "type": "boolean",
+      "label": "Reward is a key"
+    },
+    "weight": {
+      "type": "number",
+      "label": "Declared container weight",
+      "minimum": 0
+    },
+    "timerStorage": {
+      "type": "integer",
+      "label": "Timer storage",
+      "minimum": 1
+    },
+    "time": {
+      "type": "number",
+      "label": "Timer duration in hours",
+      "minimum": 0
+    },
+    "reward": {
+      "type": "list",
+      "label": "Rewards",
+      "items": {
+        "type": "record",
+        "label": "Reward",
+        "fields": {
+          "itemId": {
+            "type": "itemId",
+            "label": "Item",
+            "required": true
+          },
+          "count": {
+            "type": "integer",
+            "label": "Count",
+            "required": true,
+            "minimum": 1
+          }
+        }
+      },
+      "required": true
+    },
+    "randomReward": {
+      "type": "list",
+      "label": "Random reward choices",
+      "items": {
+        "type": "record",
+        "label": "Reward",
+        "fields": {
+          "itemId": {
+            "type": "itemId",
+            "label": "Item",
+            "required": true
+          },
+          "count": {
+            "type": "integer",
+            "label": "Count",
+            "required": true,
+            "minimum": 1
+          }
+        }
+      }
+    },
+    "rewardText": {
+      "type": "string",
+      "label": "Text written on rewards"
+    },
+    "achievement": {
+      "type": "string",
+      "label": "Achievement"
+    },
+    "emptyItemId": {
+      "type": "itemId",
+      "label": "Item name used by the empty-reward message"
+    }
+  },
+  "relations": {},
+  "contractVersion": 1,
+  "script": "../../scripts/world_behaviors/quest_reward.lua",
+  "targetKind": "item"
+}

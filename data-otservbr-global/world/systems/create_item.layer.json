@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-create_item",
+  "name": "Create Item",
+  "objects": [
+    {
+      "id": "legacy.createitemonmap.4845.28f075f2288d",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32506,
+            "y": 31964,
+            "z": 12
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.4845.fcf1dce0d36c",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32427,
+            "y": 31900,
+            "z": 12
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.4845.c3b46e27ba7a",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32520,
+            "y": 31929,
+            "z": 10
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.4845.e5dfd96f995a",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32503,
+            "y": 31922,
+            "z": 12
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.4845.e32768e33b32",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32447,
+            "y": 31973,
+            "z": 11
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.4845.e49b3fe49f61",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 4845,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 32425,
+            "y": 31948,
+            "z": 12
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    },
+    {
+      "id": "legacy.createitemonmap.11402.88654effc88d",
+      "kind": "item",
+      "source": {
+        "mode": "create",
+        "itemId": 11402,
+        "count": 1,
+        "placement": {
+          "position": {
+            "x": 33239,
+            "y": 31224,
+            "z": 10
+          }
+        }
+      },
+      "lifecycle": "refillOnStartup"
+    }
+  ]
+}

@@ -279,4 +279,7 @@ endif()
 # Add project
 # *****************************************************************************
 add_subdirectory(src)
+add_subdirectory(tools/world_tool)
+setup_target(world-tool)
+set_output_directory(world-tool)
 add_subdirectory(tests)

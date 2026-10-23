@@ -19,6 +19,7 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/movement/teleport.hpp"
 #include "lua/functions/core/core_functions.hpp"
+#include "lua/functions/core/game/world_functions.hpp"
 #include "lua/functions/creatures/creature_functions.hpp"
 #include "lua/functions/events/events_functions.hpp"
 #include "lua/functions/items/item_functions.hpp"
@@ -43,6 +44,7 @@ void Lua::load(lua_State* L) {
 	ItemFunctions::init(L);
 	MapFunctions::init(L);
 	ZoneFunctions::init(L);
+	WorldFunctions::init(L);
 }
 
 std::string Lua::getErrorDesc(ErrorCode_t code) {

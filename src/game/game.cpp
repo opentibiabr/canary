@@ -8,6 +8,7 @@
  */
 
 #include "game/game.hpp"
+#include "world/world_runtime.hpp"
 
 #include "config/configmanager.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
@@ -78,6 +79,22 @@
 std::vector<std::weak_ptr<Creature>> checkCreatureLists[EVENT_CREATURECOUNT];
 
 namespace {
+	class WorldMovementScope {
+	public:
+		WorldMovementScope(WorldLayerRuntime &runtime, const std::shared_ptr<Item> &item) :
+			runtime(runtime) {
+			runtime.beginMovement(item);
+		}
+		~WorldMovementScope() {
+			runtime.endMovement();
+		}
+		WorldMovementScope(const WorldMovementScope &) = delete;
+		WorldMovementScope &operator=(const WorldMovementScope &) = delete;
+
+	private:
+		WorldLayerRuntime &runtime;
+	};
+
 	constexpr size_t VISIBLE_MONSTER_POST_THINK_BATCH_SIZE = 8;
 	constexpr size_t BACKGROUND_MONSTER_POST_THINK_BATCH_SIZE = 64;
 	constexpr size_t MONSTER_POST_THINK_QUEUE_CAPACITY = DISPATCHER_LANE_QUEUE_CAPACITY;
@@ -543,6 +560,7 @@ namespace InternalGame {
 } // Namespace InternalGame
 
 Game::Game() {
+	worldLayerRuntime = std::make_unique<WorldLayerRuntime>();
 	[[maybe_unused]] auto &[choices1_text, choices1_value] = offlineTrainingWindow.choices.emplace_back("Fist Fighting and Shielding", SKILL_FIST);
 	[[maybe_unused]] auto &[choices2_text, choices2_value] = offlineTrainingWindow.choices.emplace_back("Sword Fighting and Shielding", SKILL_SWORD);
 	[[maybe_unused]] auto &[choices3_text, choices3_value] = offlineTrainingWindow.choices.emplace_back("Axe Fighting and Shielding", SKILL_AXE);
@@ -762,6 +780,10 @@ Game::Game() {
 }
 
 Game::~Game() = default;
+
+WorldLayerRuntime &Game::worldLayers() {
+	return *worldLayerRuntime;
+}
 
 Game &Game::getInstance() {
 	return inject<Game>();
@@ -1053,6 +1075,10 @@ void Game::loadItemsPrice() {
 	for (const auto &offer : offers) {
 		itemsPriceMap[offer.itemId][offer.tier] = std::max(itemsPriceMap[offer.itemId][offer.tier], offer.price);
 	}
+}
+
+void Game::ensureMainMapAvailable(const std::string &filename) {
+	map.ensureMainMapAvailable(g_configManager().getString(DATA_DIRECTORY) + "/world/" + filename + ".otbm");
 }
 
 void Game::loadMainMap(const std::string &filename) {
@@ -2443,6 +2469,11 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 		g_logger().error("[{}] toCylinder is nullptr", __FUNCTION__);
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
+	WorldMovementScope worldMovement(worldLayers(), item);
+	const bool worldItem = !worldLayers().identity(item).empty();
+	if (worldItem) {
+		flags |= FLAG_IGNOREAUTOSTACK;
+	}
 
 	if (checkTile) {
 		if (const std::shared_ptr<Tile> &fromTile = fromCylinder->getTile()) {
@@ -2463,7 +2494,7 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 		}
 
 		toCylinder = subCylinder;
-		flags = 0;
+		flags = worldItem ? FLAG_IGNOREAUTOSTACK : 0;
 
 		// to prevent infinite loop
 		if (++floorN >= MAP_MAX_LAYERS) {
@@ -2481,6 +2512,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	if (item->isStackable() && count == 255 && fromCylinder->getParent() == toCylinder) {
 		count = item->getItemCount();
 	}
+	if (!worldLayers().canMove(item, toCylinder, count)
+	    || (toItem && item->equals(toItem) && (worldItem || !worldLayers().identity(toItem).empty()))) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 
 	// check if we can remove this item (using count of 1 since we don't know how
 	// much we can move yet)
@@ -2492,6 +2527,10 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	// check if we can add this item
 	ret = toCylinder->queryAdd(index, item, count, flags, actor);
 	if (ret == RETURNVALUE_NEEDEXCHANGE) {
+		if (!worldLayers().canMove(toItem, fromCylinder, toItem->getItemCount())) {
+			return RETURNVALUE_NOTPOSSIBLE;
+		}
+		WorldMovementScope exchangeMovement(worldLayers(), toItem);
 		// check if we can add it to source cylinder
 		ret = fromCylinder->queryAdd(fromCylinder->getThingIndex(item), toItem, toItem->getItemCount(), 0);
 		if (ret == RETURNVALUE_NOERROR) {
@@ -2542,6 +2581,9 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	}
 
 	std::shared_ptr<Item> moveItem = item;
+	if (!worldLayers().canMove(item, toCylinder, m)) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 	// check if we can remove this item
 	ret = fromCylinder->queryRemove(item, m, flags, actor);
 	if (ret != RETURNVALUE_NOERROR) {
@@ -2596,6 +2638,9 @@ ReturnValue Game::internalMoveItem(std::shared_ptr<Cylinder> fromCylinder, std::
 	// add item
 	if (moveItem /*m - n > 0*/) {
 		toCylinder->addThing(index, moveItem);
+		if (moveItem != item && item->isRemoved()) {
+			worldLayers().transformed(item, moveItem);
+		}
 	}
 
 	if (itemIndex != -1) {
@@ -2711,6 +2756,9 @@ ReturnValue Game::internalAddItem(std::shared_ptr<Cylinder> toCylinder, const st
 	std::shared_ptr<Cylinder> destCylinder = toCylinder;
 	std::shared_ptr<Item> toItem = nullptr;
 	toCylinder = toCylinder->queryDestination(index, item, toItem, flags);
+	if (toItem && item->equals(toItem) && (!worldLayers().identity(item).empty() || !worldLayers().identity(toItem).empty())) {
+		return RETURNVALUE_NOTPOSSIBLE;
+	}
 
 	// check if we can add this item
 	ReturnValue ret = toCylinder->queryAdd(index, item, item->getItemCount(), flags);
@@ -2822,6 +2870,7 @@ ReturnValue Game::internalRemoveItem(const std::shared_ptr<Item> &items, int32_t
 	}
 
 	if (!test) {
+		WorldMovementScope worldRemoval(worldLayers(), item);
 		item->playerUpdateSupplyTracker();
 		int32_t index = cylinder->getThingIndex(item);
 		// remove the item
@@ -11799,6 +11848,10 @@ void Game::removeBedSleeper(uint32_t guid) {
 	}
 }
 
+std::vector<std::pair<uint16_t, std::shared_ptr<Item>>> Game::getUniqueItems() const {
+	return { uniqueItems.begin(), uniqueItems.end() };
+}
+
 std::shared_ptr<Item> Game::getUniqueItem(uint16_t uniqueId) {
 	auto it = uniqueItems.find(uniqueId);
 	if (it == uniqueItems.end()) {
@@ -11844,6 +11897,9 @@ bool Game::hasDistanceEffect(uint16_t effectId) {
 
 void Game::createLuaItemsOnMap() {
 	for (const auto [position, itemId] : mapLuaItemsStored) {
+		if (!worldLayers().allowLuaCreation({ position.x, position.y, position.z }, itemId)) {
+			continue;
+		}
 		const auto &item = Item::CreateItem(itemId, 1);
 		if (!item) {
 			g_logger().warn("[Game::createLuaItemsOnMap] - Cannot create item with id {}", itemId);

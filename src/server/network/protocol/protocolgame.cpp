@@ -1429,6 +1429,9 @@ void ProtocolGame::onRecvFirstMessage(NetworkMessage &msg) {
 		auto output = OutputMessagePool::getOutputMessage();
 		output->addByte(0x14);
 		output->addString(ss.str());
+		if (!oldProtocol && clientVersion >= 1523) {
+			output->addByte(0x00);
+		}
 		send(output);
 		[[maybe_unused]] auto eventId = scheduleProtocolTask(
 			1000, [self = getThis()] { self->disconnect(); }, "ProtocolGame::disconnect"
@@ -1491,6 +1494,9 @@ void ProtocolGame::disconnectClient(const std::string &message) const {
 	auto output = OutputMessagePool::getOutputMessage();
 	output->addByte(0x14);
 	output->addString(message);
+	if (!oldProtocol && clientVersion >= 1523) {
+		output->addByte(0x00);
+	}
 	send(output);
 	disconnect();
 }

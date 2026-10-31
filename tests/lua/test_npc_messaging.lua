@@ -114,6 +114,81 @@ test("MsgContains: keyword with pattern metacharacters", function()
 end)
 
 ---------------------------------------------------------------------------
+-- NPC conversation lifecycle
+---------------------------------------------------------------------------
+dofile("data/npclib/npc_system/keyword_handler.lua")
+dofile("data/npclib/npc_system/npc_handler.lua")
+dofile("data/modules/scripts/npc/npc_dialog.lua")
+
+Player = function(player)
+	return player
+end
+NetworkMessage = function()
+	local message = { values = {} }
+	function message:addByte(value)
+		table.insert(self.values, value)
+	end
+	message.addU32 = message.addByte
+	message.addString = message.addByte
+	function message:sendToPlayer(player)
+		table.insert(player.packets, self.values)
+	end
+	return message
+end
+
+for _, case in ipairs({
+	{ name = "topic reset retains conversation", method = "resetNpc", open = true },
+	{ name = "interaction removal closes conversation", method = "removeInteraction", open = false },
+}) do
+	test("NpcHandler: " .. case.name, function()
+		local player = {
+			packets = {},
+			getId = function()
+				return 1
+			end,
+		}
+		local npc = {
+			interacting = true,
+			getId = function()
+				return 100
+			end,
+			getName = function()
+				return "Guide"
+			end,
+			getSpeechBubble = function()
+				return 0
+			end,
+			isMerchant = function()
+				return false
+			end,
+		}
+		function npc:isInteractingWithPlayer()
+			return self.interacting
+		end
+		function npc:removePlayerInteraction()
+			self.interacting = false
+		end
+		Npc = function(id)
+			return id == npc:getId() and npc or nil
+		end
+		local handler = NpcHandler:new(KeywordHandler:new())
+		NpcDialog.clear(player)
+		NpcDialog.add(player, npc:getId())
+		NpcDialog.sendWindow(player)
+		assert_true(player.packets[1][1] == 0x1C and player.packets[1][2] == 0)
+
+		handler[case.method](handler, npc, player)
+		assert_true(handler:checkInteraction(npc, player) == case.open)
+		if case.open then
+			assert_true(#player.packets == 1, "topic reset must not send a conversation close")
+		else
+			assert_true(#player.packets == 2, "ending interaction must notify the client")
+			assert_true(player.packets[2][1] == 0x1C and player.packets[2][2] == 1)
+		end
+	end)
+end
+
+---------------------------------------------------------------------------
 -- Results
 ---------------------------------------------------------------------------
 print(string.format("\n%d passed, %d failed", passed, failed))

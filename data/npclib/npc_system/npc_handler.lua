@@ -250,6 +250,8 @@ if NpcHandler == nil then
 			npc:closeShopWindow(player)
 		end
 		npc:removePlayerInteraction(player)
+		NpcDialog.remove(player, npc:getId())
+		NpcDialog.sendWindow(player)
 	end
 
 	-- Returns the callback function with the specified id or nil if no such callback function exists
@@ -600,10 +602,6 @@ if NpcHandler == nil then
 	function NpcHandler:resetNpc(npc, player)
 		if self:processModuleCallback(CALLBACK_MODULE_RESET) then
 			self.keywordHandler:reset(player)
-			if npc then
-				NpcDialog.remove(player, npc:getId())
-				NpcDialog.sendWindow(player)
-			end
 		end
 	end
 

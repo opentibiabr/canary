@@ -2,7 +2,7 @@ local mType = Game.createMonsterType("True Midnight Asura")
 local monster = {}
 
 monster.description = "a true midnight asura"
-monster.experience = 7313
+monster.experience = 8200
 monster.outfit = {
 	lookType = 1068,
 	lookHead = 0,

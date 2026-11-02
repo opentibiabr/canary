@@ -161,8 +161,7 @@ end
 local buff = assert(registeredEvents.GoshnarsHatredBuff).onHealthChange
 test("both boss attackers apply the multiplier to the player", function()
 	for _, name in ipairs({ "Goshnar's Hatred", "Goshnar's Megalomania" }) do
-		local primary, primaryType, secondary, secondaryType =
-			buff(actor("Player", true), actor(name, false, 20), -100, 1, -20, 2)
+		local primary, primaryType, secondary, secondaryType = buff(actor("Player", true), actor(name, false, 20), -100, 1, -20, 2)
 		assert(primary == -120, name .. " must multiply primary damage")
 		assert(primaryType == 1 and secondary == -20 and secondaryType == 2)
 	end

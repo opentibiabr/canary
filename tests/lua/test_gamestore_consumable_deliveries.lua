@@ -91,14 +91,7 @@ for _, path in ipairs({ "consumables_exercise_weapons", "consumables_kegs" }) do
 					end,
 					sendTextMessage = function() end,
 				}, { __index = Player })
-				purchases.processChargesPurchase(
-					player,
-					offer.itemtype,
-					offer.name,
-					offer.charges,
-					offer.movable,
-					offer.setOwner
-				)
+				purchases.processChargesPurchase(player, offer.itemtype, offer.name, offer.charges, offer.movable, offer.setOwner)
 				assert(#received == 1, "charged offer delivered no item")
 				local definition = assert(definitions[received[1].id])
 				assert(definition.name == expectedName, "offer delivered a different item")

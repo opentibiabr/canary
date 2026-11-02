@@ -68746,18 +68746,21 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="36952" article="a" name="folded artefact carpet II">
+		<attribute key="primarytype" value="floor decorations"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight"/>
 		<attribute key="weight" value="10"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="36953" article="a" name="folded artefact carpet III">
+		<attribute key="primarytype" value="floor decorations"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight"/>
 		<attribute key="weight" value="10"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="36954" article="a" name="folded artefact carpet IV">
+		<attribute key="primarytype" value="floor decorations"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight"/>
 		<attribute key="weight" value="10"/>
@@ -68771,6 +68774,7 @@ former students at the Noodles Academy. Awarded by TibiaLabs.com"/>
 		<attribute key="wrapableto" value="23473"/>
 	</item>
 	<item id="36956" article="a" name="folded artefact carpet VI">
+		<attribute key="primarytype" value="floor decorations"/>
 		<attribute key="type" value="carpet"/>
 		<attribute key="description" value="This carpet resembles a prime artefact. It feels soft to the touch and seems to have almost no weight"/>
 		<attribute key="weight" value="10"/>

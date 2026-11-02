@@ -407,7 +407,7 @@ return {
 			icons = { "Outfit_Trophy_Hunter_Male_Addon_3.png", "Outfit_Trophy_Hunter_Female_Addon_3.png" },
 			name = "Full Trophy Hunter Outfit",
 			price = 870,
-			sexId = { female = 900, male = 899 },
+			sexId = { female = 958, male = 957 },
 			addon = 3,
 			description = "{character}\n{info} colours can be changed using the Outfit dialog\n{info} includes basic outfit and 2 addons which can be selected individually\n\n<i>You spend hours in the woods in search of wild and rare animals? Countless stuffed skulls of deer, wolves and other creatures are decorating your walls? Now you have the chance to present your trophies in public. Become a Trophy Hunter and cover your shoulders with the finest bear skulls!</i>",
 			type = GameStore.OfferTypes.OFFER_TYPE_OUTFIT,

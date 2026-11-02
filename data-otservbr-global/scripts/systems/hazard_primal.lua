@@ -114,7 +114,7 @@ function deathEvent.onDeath(creature)
 	local chanceTo = math.random(1, 10000)
 	if chanceTo <= (points * configManager.getNumber(configKeys.HAZARD_PODS_DROP_MULTIPLIER)) then
 		local closestFreePosition = player:getClosestFreePosition(monster:getPosition(), 4, true)
-		createPrimalPod(closestFreePosition)
+		createPrimalPod(closestFreePosition.x == 0 and monster:getPosition() or closestFreePosition)
 		return true
 	end
 

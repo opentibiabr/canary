@@ -16,6 +16,11 @@ local config = {
 		to = Position(33736, 31190, 7),
 	},
 	exit = Position(33799, 31356, 7),
+	onUseExtra = function()
+		if TentuglyFight then
+			TentuglyFight.reset()
+		end
+	end,
 }
 
 local lever = BossLever(config)

@@ -21,6 +21,7 @@ monster.manaCost = 0
 
 monster.events = {
 	"TentuglysHeadDeath",
+	"TentuglyHealthChange",
 }
 
 monster.changeTarget = {

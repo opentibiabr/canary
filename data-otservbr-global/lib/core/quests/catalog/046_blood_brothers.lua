@@ -117,7 +117,7 @@ local quest = {
 				[1] = "Defeat Arthei, the master vampire brother. Find him in the deepest part of the castle and bring Julius proof of his death.",
 				[2] = "You have defeated all four vampire brothers and freed Yalahar from their curse. Julius rewarded you with a special crest.",
 			},
-		},		
+		},
 	},
 }
 

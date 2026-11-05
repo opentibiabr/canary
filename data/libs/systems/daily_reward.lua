@@ -39,22 +39,44 @@ end
 function RegenSoul(id, delay)
 	local soulEvent = DailyRewardBonus.Soul[id]
 	local player = Player(id)
+
 	if not player then
-		stopEvent(soulEvent)
+		if soulEvent then
+			stopEvent(soulEvent)
+		end
+
 		DailyRewardBonus.Soul[id] = nil
 		return false
 	end
-	local maxsoul = 100
-	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) or player:isPremium() then
-		maxsoul = 200
+
+	local vocation = player:getVocation()
+	if not vocation then
+		if soulEvent then
+			stopEvent(soulEvent)
+		end
+
+		DailyRewardBonus.Soul[id] = nil
+		return false
 	end
-	if player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
-		if player:getSoul() < maxsoul then
+
+	local maxSoul = vocation:getMaxSoul()
+	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) or player:isPremium() then
+		maxSoul = math.max(maxSoul, 200)
+	end
+
+	if maxSoul and player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
+		local currentSoul = player:getSoul()
+
+		if currentSoul < maxSoul then
 			player:addSoul(1)
 			player:sendTextMessage(MESSAGE_FAILURE, "One soul point has been restored.")
 		end
 	end
-	stopEvent(soulEvent)
+
+	if soulEvent then
+		stopEvent(soulEvent)
+	end
+
 	DailyRewardBonus.Soul[id] = addEvent(RegenSoul, delay, id, delay)
 	return true
 end

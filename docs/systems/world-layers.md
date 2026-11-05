@@ -206,9 +206,12 @@ responsibilities.
 2. Load scripts and register matching behavior implementations.
 3. Read OTBM and capture original selections before auxiliary configuration and
    persisted content change the effective items.
-4. Run allowed legacy startup and complete existing house operations.
+4. Load persisted house items and run allowed legacy startup.
 5. Revalidate live targets, prepare creations and attribute snapshots, then apply
-   the declarative plan and publish instance bindings before opening the server.
+   the declarative plan and publish instance bindings.
+6. Collect house rent and process queued transfers before opening the server.
+   Startup transfers leave World-bound items and their parent containers in place
+   and can still transfer ordinary contents.
 
 Preparation/validation errors abort startup. Application failures roll back
 attributes, UIDs, created/replaced content and instance bindings. This boundary

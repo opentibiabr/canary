@@ -236,11 +236,11 @@ int CanaryServer::run() {
 				logger.info("Initializing gamestate...");
 				g_game().setGameState(GAME_STATE_INIT);
 
-				setupHousesRent();
-				g_game().transferHouseItemsToDepot();
 				if (!g_game().worldLayers().apply()) {
 					throw FailedToInitializeCanary("Cannot apply world project");
 				}
+				setupHousesRent();
+				g_game().transferHouseItemsToDepot();
 
 				IOMarket::checkExpiredOffers();
 				IOMarket::getInstance().updateStatistics();

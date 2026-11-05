@@ -31,7 +31,13 @@
 #include "io/player_storage_repository.hpp"
 #include "kv/kv.hpp"
 
-void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <limits>
+	#include <unordered_set>
+#endif
+
+bool IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player) {
+	bool complete = true;
 	try {
 		do {
 			auto sid = result->getNumber<uint32_t>("sid");
@@ -48,20 +54,27 @@ void IOLoginDataLoad::loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, 
 				if (item) {
 					if (!item->unserializeAttr(propStream)) {
 						g_logger().warn("[{}] - Failed to deserialize item attributes {}, from player {}, from account id {}", __FUNCTION__, item->getID(), player->getName(), player->getAccountId());
+						complete = false;
 						continue;
 					}
-					itemsMap[sid] = std::make_pair(item, pid);
+					if (!itemsMap.insert_or_assign(sid, std::make_pair(item, pid)).second) {
+						g_logger().warn("[{}] - Duplicate item row {} for player {}", __FUNCTION__, sid, player->getName());
+						complete = false;
+					}
 				} else {
 					g_logger().warn("[{}] - Failed to create item of type {} for player {}, from account id {}", __FUNCTION__, type, player->getName(), player->getAccountId());
+					complete = false;
 				}
 			} catch (const std::exception &e) {
 				g_logger().warn("[{}] - Exception during the creation or deserialization of the item: {}", __FUNCTION__, e.what());
-				continue;
+				complete = false;
 			}
 		} while (result->next());
 	} catch (const std::exception &e) {
 		g_logger().error("[{}] - General exception during item loading: {}", __FUNCTION__, e.what());
+		return false;
 	}
+	return complete;
 }
 
 bool IOLoginDataLoad::preLoadPlayer(const std::shared_ptr<Player> &player, const std::string &name) {
@@ -660,51 +673,65 @@ void IOLoginDataLoad::loadRewardItems(const std::shared_ptr<Player> &player) {
 	}
 }
 
-void IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {
-	if (!result || !player) {
-		g_logger().warn("[{}] - Player or Result nullptr", __FUNCTION__);
-		return;
+bool IOLoginDataLoad::loadPlayerDepotItems(const std::shared_ptr<Player> &player) {
+	if (!player) {
+		return false;
 	}
 
 	ItemsMap depotItems;
-	std::vector<std::shared_ptr<Item>> itemsToStartDecaying;
 	auto query = fmt::format("SELECT pid, sid, itemtype, count, attributes FROM player_depotitems WHERE player_id = {} ORDER BY sid DESC", player->getGUID());
-	if ((result = g_database().storeQuery(query))) {
-		loadItems(depotItems, result, player);
-		for (auto it = depotItems.rbegin(), end = depotItems.rend(); it != end; ++it) {
-			const std::pair<std::shared_ptr<Item>, int32_t> &pair = it->second;
-			const auto &item = pair.first;
-			if (!item) {
-				continue;
-			}
+	bool depotQuerySucceeded = false;
+	const auto result = g_database().storeQuery(query, depotQuerySucceeded);
+	if (!depotQuerySucceeded || (result && !loadItems(depotItems, result, player))) {
+		return false;
+	}
 
-			int32_t pid = pair.second;
-			if (pid >= 0 && pid < 100) {
-				const std::shared_ptr<DepotChest> &depotChest = player->getDepotChest(pid, true);
-				if (depotChest) {
-					depotChest->internalAddThing(item);
-					item->startDecaying();
-				}
-			} else {
-				auto depotIt = depotItems.find(pid);
-				if (depotIt == depotItems.end()) {
-					continue;
-				}
-
-				const std::shared_ptr<Container> &container = depotIt->second.first->getContainer();
-				if (container) {
-					container->internalAddThing(item);
-					// Here, the sub-containers do not yet have a parent, since the main backpack has not yet been added to the player, so we need to postpone
-					(void)itemsToStartDecaying.emplace_back(item);
-				}
+	// Validate every parent chain before linking items or creating depot chests.
+	std::unordered_set<uint32_t> validated;
+	std::unordered_set<uint32_t> chain;
+	for (auto it = depotItems.begin(); it != depotItems.end(); ++it) {
+		const auto sid = it->first;
+		if (sid <= 100 || sid > std::numeric_limits<int32_t>::max()) {
+			g_logger().warn("[{}] - Invalid depot item row {} for player {}", __FUNCTION__, sid, player->getName());
+			return false;
+		}
+		for (auto current = it; !validated.contains(current->first);) {
+			if (!chain.insert(current->first).second) {
+				g_logger().warn("[{}] - Cyclic depot parent chain for item row {} of player {}", __FUNCTION__, sid, player->getName());
+				return false;
 			}
+			const auto pid = current->second.second;
+			if (pid < 100) {
+				break;
+			}
+			const auto parent = depotItems.find(pid);
+			if (parent == depotItems.end() || !parent->second.first->getContainer()) {
+				g_logger().warn("[{}] - Invalid depot parent {} for item row {} of player {}", __FUNCTION__, pid, current->first, player->getName());
+				return false;
+			}
+			current = parent;
+		}
+		validated.merge(chain);
+	}
+
+	for (auto it = depotItems.rbegin(); it != depotItems.rend(); ++it) {
+		const auto &[item, pid] = it->second;
+		if (pid < 100) {
+			const auto &depotChest = player->getDepotChest(pid, true);
+			if (!depotChest) {
+				return false;
+			}
+			depotChest->internalAddThing(item);
+		} else {
+			depotItems.find(pid)->second.first->getContainer()->internalAddThing(item);
 		}
 	}
 
-	// Now that all items and containers have been added and parent chain is established, start decay
-	for (const auto &item : itemsToStartDecaying) {
-		item->startDecaying();
+	for (const auto &entry : depotItems) {
+		entry.second.first->startDecaying();
 	}
+	player->markDepotStorageLoaded();
+	return true;
 }
 
 void IOLoginDataLoad::loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result) {

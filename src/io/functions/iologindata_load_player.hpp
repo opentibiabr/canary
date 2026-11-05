@@ -33,7 +33,7 @@ public:
 	static void loadPlayerInstantSpellList(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerInventoryItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerStoreInbox(const std::shared_ptr<Player> &player);
-	static void loadPlayerDepotItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
+	static bool loadPlayerDepotItems(const std::shared_ptr<Player> &player);
 	static void loadRewardItems(const std::shared_ptr<Player> &player);
 	static void loadPlayerInboxItems(const std::shared_ptr<Player> &player, DBResult_ptr result);
 	static void loadPlayerStorageMap(const std::shared_ptr<Player> &player);
@@ -52,5 +52,5 @@ private:
 	static void bindRewardBag(const std::shared_ptr<Player> &player, ItemsMap &rewardItemsMap);
 	static void insertItemsIntoRewardBag(const ItemsMap &rewardItemsMap);
 
-	static void loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player);
+	static bool loadItems(ItemsMap &itemsMap, const DBResult_ptr &result, const std::shared_ptr<Player> &player);
 };

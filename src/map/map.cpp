@@ -22,6 +22,7 @@
 #include "map/map_download.hpp"
 #include "map/spectators.hpp"
 #include "utils/astarnodes.hpp"
+#include "world/world_runtime.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <algorithm>
@@ -154,9 +155,8 @@ void Map::load(const std::string &identifier, const Position &pos) {
 	}
 }
 
-void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, bool loadZones /*= false*/, const Position &pos /*= Position()*/) {
-	// Only download map if is loading the main map and it is not already downloaded
-	if (mainMap && g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
+void Map::ensureMainMapAvailable(const std::string &identifier) {
+	if (g_configManager().getBoolean(TOGGLE_DOWNLOAD_MAP) && !std::filesystem::exists(identifier)) {
 		const auto mapDownloadUrl = g_configManager().getString(MAP_DOWNLOAD_URL);
 		if (mapDownloadUrl.empty()) {
 			g_logger().warn("Map download URL in config.lua is empty, download disabled");
@@ -178,9 +178,18 @@ void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool 
 			fclose(otbm);
 		}
 	}
+}
+
+void Map::loadMap(const std::string &identifier, bool mainMap /*= false*/, bool loadHouses /*= false*/, bool loadMonsters /*= false*/, bool loadNpcs /*= false*/, bool loadZones /*= false*/, const Position &pos /*= Position()*/) {
+	if (mainMap) {
+		ensureMainMapAvailable(identifier);
+	}
 
 	// Load the map
 	load(identifier, pos);
+	if (mainMap && !g_game().worldLayers().captureBaseMap()) {
+		return;
+	}
 
 	// Only create items from lua functions if is loading main map
 	// It needs to be after the load map to ensure the map already exists before creating the items

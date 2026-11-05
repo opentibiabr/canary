@@ -1,0 +1,833 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-teleport_item",
+  "name": "Teleport Item",
+  "objects": [
+    {
+      "id": "legacy.teleportitemaction.15001.dcc8a7a6c5d6",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 150,
+          "part": "item",
+          "position": {
+            "x": 32194,
+            "y": 31418,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.e0f18a4fa5d9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6580,
+          "part": "ground",
+          "position": {
+            "x": 32194,
+            "y": 31418,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.ede28ec38c7b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 152,
+          "part": "item",
+          "position": {
+            "x": 32194,
+            "y": 31419,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.4609d855f1f2",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6588,
+          "part": "ground",
+          "position": {
+            "x": 32194,
+            "y": 31419,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.8e66f33af630",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 151,
+          "part": "item",
+          "position": {
+            "x": 32195,
+            "y": 31418,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.7837a811ec81",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6582,
+          "part": "ground",
+          "position": {
+            "x": 32195,
+            "y": 31418,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.1d8302bc88ea",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 153,
+          "part": "item",
+          "position": {
+            "x": 32195,
+            "y": 31419,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15001.9660c7acdb1f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6582,
+          "part": "ground",
+          "position": {
+            "x": 32195,
+            "y": 31419,
+            "z": 2
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15001
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.c642c44acc5a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 146,
+          "part": "item",
+          "position": {
+            "x": 32910,
+            "y": 32338,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.cd313b7d819a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7065,
+          "part": "ground",
+          "position": {
+            "x": 32910,
+            "y": 32338,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.5cc4a6aa3b02",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 148,
+          "part": "item",
+          "position": {
+            "x": 32910,
+            "y": 32339,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.d05819f078d3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7062,
+          "part": "ground",
+          "position": {
+            "x": 32910,
+            "y": 32339,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.4d13129d883a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 147,
+          "part": "item",
+          "position": {
+            "x": 32911,
+            "y": 32338,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.084e144315d1",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7062,
+          "part": "ground",
+          "position": {
+            "x": 32911,
+            "y": 32338,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.ca28f9fcad5b",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 149,
+          "part": "item",
+          "position": {
+            "x": 32911,
+            "y": 32339,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15002.24b244b2dece",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 7063,
+          "part": "ground",
+          "position": {
+            "x": 32911,
+            "y": 32339,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15002
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.b008ff61801f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 158,
+          "part": "item",
+          "position": {
+            "x": 32973,
+            "y": 32225,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.9dd8cf2a9786",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4515,
+          "part": "ground",
+          "position": {
+            "x": 32973,
+            "y": 32225,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.768530b4f516",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 160,
+          "part": "item",
+          "position": {
+            "x": 32973,
+            "y": 32226,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.2d3fa86cdcd7",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4515,
+          "part": "ground",
+          "position": {
+            "x": 32973,
+            "y": 32226,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.3da57a8b887c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 159,
+          "part": "item",
+          "position": {
+            "x": 32974,
+            "y": 32225,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.91a432babf08",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4522,
+          "part": "ground",
+          "position": {
+            "x": 32974,
+            "y": 32225,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.417a09b9c58f",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 161,
+          "part": "item",
+          "position": {
+            "x": 32974,
+            "y": 32226,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15003.05c1c2f273cd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4515,
+          "part": "ground",
+          "position": {
+            "x": 32974,
+            "y": 32226,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15003
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.947a85e9680c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 154,
+          "part": "item",
+          "position": {
+            "x": 33060,
+            "y": 32713,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.6f937910d2d9",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 231,
+          "part": "ground",
+          "position": {
+            "x": 33060,
+            "y": 32713,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.0baefa8b2d07",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 156,
+          "part": "item",
+          "position": {
+            "x": 33060,
+            "y": 32714,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.2b7518cc9732",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 231,
+          "part": "ground",
+          "position": {
+            "x": 33060,
+            "y": 32714,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.6cd6c9a1f698",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 155,
+          "part": "item",
+          "position": {
+            "x": 33061,
+            "y": 32713,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.96dc74bc6e36",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 231,
+          "part": "ground",
+          "position": {
+            "x": 33061,
+            "y": 32713,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.0983d81fabcd",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 157,
+          "part": "item",
+          "position": {
+            "x": 33061,
+            "y": 32714,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.15004.ff4ed0406ced",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 231,
+          "part": "ground",
+          "position": {
+            "x": 33061,
+            "y": 32714,
+            "z": 5
+          }
+        }
+      },
+      "attributes": {
+        "aid": 15004
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.24873.53700d0fa651",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 10842,
+          "part": "item",
+          "position": {
+            "x": 32906,
+            "y": 32846,
+            "z": 13
+          }
+        }
+      },
+      "attributes": {
+        "aid": 24873
+      }
+    },
+    {
+      "id": "legacy.teleportitemaction.26668.37124aa9c4dc",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1949,
+          "part": "item",
+          "position": {
+            "x": 33396,
+            "y": 31129,
+            "z": 9
+          }
+        }
+      },
+      "attributes": {
+        "aid": 26668
+      }
+    },
+    {
+      "id": "legacy.teleportitemunique.15001.52a74c166e6d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 31673,
+          "part": "item",
+          "position": {
+            "x": 33315,
+            "y": 32647,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "uid": 15001
+      },
+      "behaviors": [
+        {
+          "id": "world.player_teleport",
+          "contractVersion": 1,
+          "events": [
+            "onUse"
+          ],
+          "parameters": {
+            "effect": 11
+          },
+          "relations": {
+            "destination": {
+              "object": "legacy.teleportitemunique.15001.5e28766f6749"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy.teleportitemunique.15002.c54adfc7bdd8",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 1759,
+          "part": "item",
+          "position": {
+            "x": 33383,
+            "y": 32626,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "uid": 15002
+      },
+      "behaviors": [
+        {
+          "id": "world.player_teleport",
+          "contractVersion": 1,
+          "events": [
+            "onUse"
+          ],
+          "parameters": {
+            "effect": 11
+          },
+          "relations": {
+            "destination": {
+              "object": "legacy.teleportitemunique.15002.814a55ca9111"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy.teleportitemunique.15003.fab7924e718c",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 5679,
+          "part": "item",
+          "position": {
+            "x": 33918,
+            "y": 31471,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "uid": 15003
+      },
+      "behaviors": [
+        {
+          "id": "world.player_teleport",
+          "contractVersion": 1,
+          "events": [
+            "onUse"
+          ],
+          "parameters": {
+            "effect": 11
+          },
+          "relations": {
+            "destination": {
+              "object": "legacy.teleportitemunique.15003.a5b41dfe09a8"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy.teleportitemunique.15004.98a60c9bac48",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 29954,
+          "part": "item",
+          "position": {
+            "x": 33619,
+            "y": 32518,
+            "z": 15
+          }
+        }
+      },
+      "attributes": {
+        "uid": 15004
+      },
+      "behaviors": [
+        {
+          "id": "world.player_teleport",
+          "contractVersion": 1,
+          "events": [
+            "onUse"
+          ],
+          "parameters": {
+            "effect": 11
+          },
+          "relations": {
+            "destination": {
+              "object": "legacy.teleportitemunique.15004.d5ddc7b84283"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "legacy.teleportitemunique.15001.5e28766f6749",
+      "kind": "anchor",
+      "position": {
+        "x": 33384,
+        "y": 32627,
+        "z": 7
+      }
+    },
+    {
+      "id": "legacy.teleportitemunique.15002.814a55ca9111",
+      "kind": "anchor",
+      "position": {
+        "x": 33314,
+        "y": 32647,
+        "z": 6
+      }
+    },
+    {
+      "id": "legacy.teleportitemunique.15003.a5b41dfe09a8",
+      "kind": "anchor",
+      "position": {
+        "x": 33916,
+        "y": 31466,
+        "z": 8
+      }
+    },
+    {
+      "id": "legacy.teleportitemunique.15004.d5ddc7b84283",
+      "kind": "anchor",
+      "position": {
+        "x": 33640,
+        "y": 32561,
+        "z": 13
+      }
+    }
+  ]
+}

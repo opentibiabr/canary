@@ -1,0 +1,178 @@
+{
+  "schemaVersion": 2,
+  "id": "legacy-corpse",
+  "name": "Corpse",
+  "objects": [
+    {
+      "id": "legacy.corpseaction.20002.f950887abd2d",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4285,
+          "part": "item",
+          "position": {
+            "x": 32949,
+            "y": 31810,
+            "z": 7
+          }
+        }
+      },
+      "attributes": {
+        "aid": 20002
+      }
+    },
+    {
+      "id": "legacy.corpseaction.40001.aedcb5e87dd5",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4285,
+          "part": "item",
+          "position": {
+            "x": 31974,
+            "y": 32907,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 40001
+      }
+    },
+    {
+      "id": "legacy.corpseaction.40001.ede5d1b1170a",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4285,
+          "part": "item",
+          "position": {
+            "x": 32031,
+            "y": 32914,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 40001
+      }
+    },
+    {
+      "id": "legacy.corpseaction.50806.817008de425e",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 21412,
+          "part": "item",
+          "position": {
+            "x": 32991,
+            "y": 32642,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "aid": 50806
+      }
+    },
+    {
+      "id": "legacy.corpseunique.3112.879aeb328cb3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4024,
+          "part": "item",
+          "position": {
+            "x": 32258,
+            "y": 31098,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3112
+      }
+    },
+    {
+      "id": "legacy.corpseunique.3263.3adaf3384afb",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4285,
+          "part": "item",
+          "position": {
+            "x": 32085,
+            "y": 31025,
+            "z": 1
+          }
+        }
+      },
+      "attributes": {
+        "uid": 3263
+      }
+    },
+    {
+      "id": "legacy.corpseunique.20001.84f7723024da",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 21123,
+          "part": "item",
+          "position": {
+            "x": 33574,
+            "y": 31952,
+            "z": 6
+          }
+        }
+      },
+      "attributes": {
+        "uid": 20001
+      }
+    },
+    {
+      "id": "legacy.corpseunique.20002.baf59be4e0d3",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 6082,
+          "part": "item",
+          "position": {
+            "x": 33146,
+            "y": 32341,
+            "z": 8
+          }
+        }
+      },
+      "attributes": {
+        "uid": 20002
+      }
+    },
+    {
+      "id": "legacy.corpseunique.20003.6efc07f02872",
+      "kind": "item",
+      "source": {
+        "mode": "map",
+        "selector": {
+          "itemId": 4285,
+          "part": "item",
+          "position": {
+            "x": 32211,
+            "y": 31273,
+            "z": 10
+          }
+        }
+      },
+      "attributes": {
+        "uid": 20003
+      }
+    }
+  ]
+}

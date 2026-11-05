@@ -19,6 +19,34 @@
 #include "lib/metrics/metrics.hpp"
 #include "utils/pugicast.hpp"
 #include "creatures/players/player.hpp"
+#include "world/world_runtime.hpp"
+
+namespace {
+	bool containsBoundWorldItem(WorldLayerRuntime &world, const std::shared_ptr<Item> &item) {
+		if (!item) {
+			return false;
+		}
+		if (!world.identity(item).empty()) {
+			return true;
+		}
+		if (const auto &container = item->getContainer()) {
+			for (const auto &child : container->getItemList()) {
+				if (containsBoundWorldItem(world, child)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bool keepWorldContentOnStartup(const std::shared_ptr<Item> &item) {
+		auto &game = g_game();
+		auto &world = game.worldLayers();
+		// Keep declared content and its parent containers in place when house
+		// transfers run after World is bound. Other children can still move out.
+		return game.getGameState() == GAME_STATE_INIT && world.declarations() && containsBoundWorldItem(world, item);
+	}
+}
 
 House::House(uint32_t houseId) :
 	id(houseId) { }
@@ -322,9 +350,10 @@ bool House::transferToDepot(const std::shared_ptr<Player> &player, const std::sh
 	ItemList moveItemList;
 	if (const TileItemVector* items = tile->getItemList()) {
 		for (const auto &item : *items) {
-			if (item->isWrapable()) {
+			const bool keepItem = keepWorldContentOnStartup(item);
+			if (!keepItem && item->isWrapable()) {
 				handleWrapableItem(moveItemList, item, player, tile);
-			} else if (item->isPickupable()) {
+			} else if (!keepItem && item->isPickupable()) {
 				moveItemList.push_back(item);
 			} else if (const auto &container = item->getContainer()) {
 				collectMovableItemsFromContainer(moveItemList, container, player, tile);
@@ -466,16 +495,17 @@ void House::collectMovableItemsFromContainer(ItemList &moveItemList, const std::
 			continue;
 		}
 
-		if (item->isWrapable()) {
+		const bool keepItem = keepWorldContentOnStartup(item);
+		if (!keepItem && item->isWrapable()) {
 			handleWrapableItem(moveItemList, item, player, houseTile);
-		} else if (item->isPickupable()) {
+		} else if (!keepItem && item->isPickupable()) {
 			moveItemList.push_back(item);
 		} else if (const auto &innerContainer = item->getContainer()) {
 			collectMovableItemsFromContainer(moveItemList, innerContainer, player, houseTile);
 		}
 	}
 
-	if (container->isPickupable() && !container->isWrapable()) {
+	if (container->isPickupable() && !container->isWrapable() && !keepWorldContentOnStartup(container)) {
 		moveItemList.push_back(container);
 	}
 }

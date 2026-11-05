@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "map": "world.otbm",
+  "items": "items.xml",
+  "layers": [
+    "black_knight.layer.json"
+  ]
+}

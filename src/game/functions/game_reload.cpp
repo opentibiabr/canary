@@ -16,6 +16,8 @@
 #include "creatures/npcs/npcs.hpp"
 #include "creatures/players/imbuements/imbuements.hpp"
 #include "game/game.hpp"
+#include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 #include "game/zones/zone.hpp"
 #include "lib/di/container.hpp"
 #include "lua/creature/events.hpp"
@@ -189,16 +191,18 @@ bool GameReload::reloadScripts() {
 	const auto &datapackFolder = g_configManager().getString(DATA_DIRECTORY);
 	const auto &coreFolder = g_configManager().getString(CORE_DIRECTORY);
 
-	g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
-	g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
-	g_scripts().loadScripts(coreFolder + "/scripts", false, true);
+	const bool coreLibrariesLoaded = g_scripts().loadScripts(coreFolder + "/scripts/lib", true, false);
+	const bool datapackScriptsLoaded = g_scripts().loadScripts(datapackFolder + "/scripts", false, true);
+	const bool coreScriptsLoaded = g_scripts().loadScripts(coreFolder + "/scripts", false, true);
 
 	// It should come last, after everything else has been cleaned up.
-	reloadMonsters();
-	reloadNpcs();
-	reloadItems();
-	logReloadStatus("Scripts", true);
-	return true;
+	const bool monstersLoaded = reloadMonsters();
+	const bool npcsLoaded = reloadNpcs();
+	const bool itemsLoaded = reloadItems();
+	const bool worldLoaded = g_game().worldLayers().behaviors().load();
+	const bool loaded = coreLibrariesLoaded && datapackScriptsLoaded && coreScriptsLoaded && monstersLoaded && npcsLoaded && itemsLoaded && worldLoaded;
+	logReloadStatus("Scripts", loaded);
+	return loaded;
 }
 
 bool GameReload::reloadItems() {

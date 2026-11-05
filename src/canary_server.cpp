@@ -8,6 +8,8 @@
  */
 
 #include "canary_server.hpp"
+#include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 
 #include "core.hpp"
 #include "config/configmanager.hpp"
@@ -205,9 +207,19 @@ int CanaryServer::run() {
 #endif
 				rsa.start();
 				initializeDatabase();
+				g_game().ensureMainMapAvailable(g_configManager().getString(MAP_NAME));
+				if (!g_game().worldLayers().prepare()) {
+					throw FailedToInitializeCanary("Cannot prepare world project");
+				}
 				loadModules();
+				if (!g_game().worldLayers().behaviors().load()) {
+					throw FailedToInitializeCanary("Cannot load World behavior implementations");
+				}
 				setWorldType();
 				loadMaps();
+				if (!g_game().worldLayers().readyForStartup()) {
+					throw FailedToInitializeCanary("Cannot resolve World base selections");
+				}
 
 				MonsterComputeConfig monsterComputeConfig;
 				monsterComputeConfig.configuredThreads = static_cast<uint32_t>(std::max<int32_t>(0, g_configManager().getNumber(MONSTER_COMPUTE_THREADS)));
@@ -224,6 +236,9 @@ int CanaryServer::run() {
 				logger.info("Initializing gamestate...");
 				g_game().setGameState(GAME_STATE_INIT);
 
+				if (!g_game().worldLayers().apply()) {
+					throw FailedToInitializeCanary("Cannot apply world project");
+				}
 				setupHousesRent();
 				g_game().transferHouseItemsToDepot();
 

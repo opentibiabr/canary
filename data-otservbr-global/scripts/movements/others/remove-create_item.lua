@@ -14,7 +14,7 @@ function movement.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	local setting = TileUnique[item.uid]
+	local setting = TileUnique and TileUnique[item.uid]
 	if not setting then
 		return true
 	end
@@ -45,7 +45,7 @@ function movement.onStepOut(creature, item, position, fromPosition)
 		return true
 	end
 
-	local setting = TileUnique[item.uid]
+	local setting = TileUnique and TileUnique[item.uid]
 	if not setting then
 		return true
 	end

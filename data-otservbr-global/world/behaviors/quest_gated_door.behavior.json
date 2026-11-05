@@ -1,0 +1,20 @@
+{
+  "$schema": "../../../schemas/world-behavior-v2.schema.json",
+  "schemaVersion": 2,
+  "id": "quest.gated_door",
+  "contractVersion": 1,
+  "name": "Open a quest-gated door",
+  "script": "../../scripts/world_behaviors/quest_gated_door.lua",
+  "targetKind": "item",
+  "events": ["onUse"],
+  "parameters": {
+    "requiredLevel": {"type": "integer", "minimum": 1, "default": 1, "label": "Minimum level"},
+    "storageKey": {"type": "integer", "minimum": 1, "required": true, "label": "Quest storage"},
+    "requiredValue": {"type": "integer", "default": 1, "label": "Minimum storage value"},
+    "openDoorItemId": {"type": "itemId", "required": true, "capabilities": ["door"], "label": "Open door item"},
+    "deniedMessage": {"type": "string", "default": "You do not meet the requirements.", "label": "Access denied message"}
+  },
+  "relations": {
+    "door": {"type": "objectRef", "targetKind": "item", "capabilities": ["door"], "required": true, "allowOffset": false, "label": "Controlled door"}
+  }
+}

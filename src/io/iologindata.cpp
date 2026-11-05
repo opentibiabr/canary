@@ -146,7 +146,10 @@ bool IOLoginData::loadPlayer(const std::shared_ptr<Player> &player, const DBResu
 		IOLoginDataLoad::loadPlayerStoreInbox(player);
 
 		// load depot items
-		IOLoginDataLoad::loadPlayerDepotItems(player, result);
+		if (!IOLoginDataLoad::loadPlayerDepotItems(player)) {
+			g_logger().warn("[{}] - Failed to load depot items for player {}", __FUNCTION__, player->getName());
+			return false;
+		}
 
 		// load reward items
 		IOLoginDataLoad::loadRewardItems(player);

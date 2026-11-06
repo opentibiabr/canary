@@ -8343,6 +8343,10 @@ int32_t Game::applyHealthChange(const CombatDamage &damage, const std::shared_pt
 
 bool Game::combatChangeHealth(const std::shared_ptr<Creature> &attacker, const std::shared_ptr<Creature> &target, CombatDamage &damage, bool isEvent /*= false*/) {
 	using namespace std;
+	if (damage.originalOrigin == ORIGIN_NONE) {
+		damage.originalOrigin = damage.origin;
+	}
+
 	const Position &targetPos = target->getPosition();
 	if (damage.primary.value > 0) {
 		if (target->getHealth() <= 0) {
@@ -8979,7 +8983,7 @@ void Game::applyCharmRune(
 	}
 
 	// Auto-attacks (e.g. AoE ammunition) only trigger offensive charms on the main target
-	if ((damage.origin == ORIGIN_RANGED || damage.origin == ORIGIN_MELEE || damage.origin == ORIGIN_FIST)
+	if ((damage.originalOrigin == ORIGIN_RANGED || damage.originalOrigin == ORIGIN_MELEE || damage.originalOrigin == ORIGIN_FIST)
 	    && target != attackerPlayer->getAttackedCreature()) {
 		return;
 	}

@@ -42,6 +42,7 @@ void GlobalFunctions::init(lua_State* L) {
 	lua_register(L, "doTargetCombatDispel", GlobalFunctions::luaDoTargetCombatDispel);
 	lua_register(L, "doTargetCombatHealth", GlobalFunctions::luaDoTargetCombatHealth);
 	lua_register(L, "doTargetCombatMana", GlobalFunctions::luaDoTargetCombatMana);
+	lua_register(L, "fsCreateDirectories", GlobalFunctions::luaFsCreateDirectories);
 	lua_register(L, "getDepotId", GlobalFunctions::luaGetDepotId);
 	lua_register(L, "getWaypointPositionByName", GlobalFunctions::luaGetWaypointPositionByName);
 	lua_register(L, "getWorldLight", GlobalFunctions::luaGetWorldLight);
@@ -794,6 +795,32 @@ int GlobalFunctions::luaIsInWar(lua_State* L) {
 
 	Lua::pushBoolean(L, player->isInWar(targetPlayer));
 	return 1;
+}
+
+int GlobalFunctions::luaFsCreateDirectories(lua_State* L) {
+	// fsCreateDirectories(path)
+	// Private bridge for FS.mkdir()/FS.mkdir_p() (data/libs/functions/fs.lua) --
+	// fs.lua captures this into a local instead of calling it directly, and
+	// deliberately leaves the global registered: a core reload re-executes
+	// fs.lua in the same Lua environment, and a cleared global would leave
+	// that second capture as nil. It is not meant to be called directly by
+	// scripts, hence no Lua API docgen entry.
+	// Creates path and any missing parent directories, matching std::filesystem::create_directories.
+	// No shell is ever started, so there is no command-injection surface and no denylist of
+	// "unsafe" characters needed -- any path std::filesystem accepts is valid here.
+	const std::string path = Lua::getString(L, 1);
+
+	std::error_code errorCode;
+	std::filesystem::create_directories(path, errorCode);
+	if (errorCode) {
+		Lua::pushBoolean(L, false);
+		Lua::pushString(L, errorCode.message());
+		return 2;
+	}
+
+	Lua::pushBoolean(L, true);
+	lua_pushnil(L);
+	return 2;
 }
 
 int GlobalFunctions::luaGetWaypointPositionByName(lua_State* L) {

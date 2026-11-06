@@ -139,7 +139,7 @@ end
 local function parseOpenStore(playerId, msg)
 	openStore(playerId)
 
-		addPlayerEvent(sendHomePage, 50, playerId)
+	addPlayerEvent(sendHomePage, 50, playerId)
 end
 
 local function parseRequestStoreOffers(playerId, msg)

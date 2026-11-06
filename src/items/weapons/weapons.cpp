@@ -692,8 +692,18 @@ bool WeaponDistance::useWeapon(const std::shared_ptr<Player> &player, const std:
 		const WeaponShared_ptr &mainWeapon = g_weapons().getWeapon(mainWeaponItem);
 		if (mainWeapon) {
 			damageModifier = mainWeapon->playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
+			if (damageModifier == 0) {
+				return false;
+			}
+
+			const int32_t ammoModifier = playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
+			if (ammoModifier == 0) {
+				return false;
+			}
+
+			damageModifier = (damageModifier * ammoModifier) / 100;
 		} else {
-			damageModifier = playerWeaponCheck(player, target, mainWeaponItem->getShootRange());
+			damageModifier = playerWeaponCheck(player, target, mainWeaponItem ? mainWeaponItem->getShootRange() : item->getShootRange());
 		}
 	} else {
 		damageModifier = playerWeaponCheck(player, target, item->getShootRange());

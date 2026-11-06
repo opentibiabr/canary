@@ -58,6 +58,12 @@ SupplyShopConfigTable = {
 		{ itemName = "tarsal arrow", clientId = 14251, buy = 6 },
 		{ itemName = "vortex bolt", clientId = 14252, buy = 6 },
 		{ itemName = "hunting spear", clientId = 3347, buy = 25 },
+
+		{ itemName = "shatterstorm arrow", clientId = 53168, buy = 45 },
+		{ itemName = "firestorm arrow", clientId = 53169, buy = 75 },
+		{ itemName = "terrastorm arrow", clientId = 53170, buy = 75 },
+		{ itemName = "froststorm arrow", clientId = 53171, buy = 75 },
+		{ itemName = "thunderstorm arrow", clientId = 53172, buy = 75 },
 	},
 	["runes"] = {
 		{ itemName = "animate dead rune", clientId = 3203, buy = 375 },

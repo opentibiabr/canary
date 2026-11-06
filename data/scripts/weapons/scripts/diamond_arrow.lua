@@ -21,6 +21,7 @@ function onGetFormulaValues(player, skill, attack, factor)
 end
 
 combat:setCallback(CALLBACK_PARAM_SKILLVALUE, "onGetFormulaValues")
+combat:setOrigin(ORIGIN_RANGED)
 combat:setArea(area)
 
 local diamondArrow = Weapon(WEAPON_AMMO)

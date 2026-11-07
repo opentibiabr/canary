@@ -130,7 +130,7 @@ int MonsterFunctions::luaMonsterSetRaidMapMarker(lua_State* L) {
 		Lua::pushBoolean(L, false);
 		return 1;
 	}
-	const auto position = lua_gettop(L) >= 2 ? Lua::getPosition(L, 2) : monster->getPosition();
+	const auto position = lua_isnoneornil(L, 2) ? monster->getPosition() : Lua::getPosition(L, 2);
 	Lua::pushBoolean(L, g_game().raids.addMapMarker(monster, position));
 	return 1;
 }
@@ -217,7 +217,7 @@ int MonsterFunctions::luaMonsterIsInSpawnRange(lua_State* L) {
 	// monster:isInSpawnRange([position])
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (monster) {
-		Lua::pushBoolean(L, monster->isInSpawnRange(lua_gettop(L) >= 2 ? Lua::getPosition(L, 2) : monster->getPosition()));
+		Lua::pushBoolean(L, monster->isInSpawnRange(lua_isnoneornil(L, 2) ? monster->getPosition() : Lua::getPosition(L, 2)));
 	} else {
 		lua_pushnil(L);
 	}

@@ -944,7 +944,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
 
 	// dispatcher thread
-	if (g_configManager().getBoolean(CHARACTER_AUCTION_PROBE) && g_database().storeQuery("SHOW TABLES LIKE 'myaac\\_charbazaar'")) {
+	if (g_database().storeQuery("SHOW TABLES LIKE 'myaac\\_charbazaar'")) {
 		const auto auctionLock = g_database().storeQuery(fmt::format(
 			"SELECT COUNT(*) AS `active` FROM `myaac_charbazaar` AS `a` JOIN `players` AS `p` ON `p`.`id`=`a`.`player_id` "
 			"WHERE `p`.`name`={} AND `a`.`status` IN (0,2)",
@@ -3309,22 +3309,22 @@ std::vector<std::pair<std::string, bool>> ProtocolGame::getCharacterAuctionEligi
 			bidsHouse = bidsHouse || house->getBidder() == static_cast<int32_t>(player->getGUID());
 		}
 	}
-	add("O personagem deve ter pelo menos nivel 8.", player->getLevel() >= 8);
-	add("O personagem nao pode possuir casa ou guildhall.", !ownsHouse);
-	add("O personagem nao pode ter lance ou transferencia de casa pendente.", row && !bidsHouse && row->getNumber<uint32_t>("house_transfer") == 0);
-	add("O personagem nao pode pertencer a uma guild.", !player->getGuild());
-	add("O personagem nao pode ter convite ou solicitacao de guild pendente.", row && row->getNumber<uint32_t>("guild_pending") == 0);
-	add("O personagem nao pode ter ofertas ativas no Market.", row && row->getNumber<uint32_t>("market_pending") == 0);
-	add("O personagem nao pode estar agendado para exclusao.", row && row->getNumber<uint64_t>("deletion") == 0);
-	add("O personagem nao pode estar marcado com skull.", player->getSkull() == SKULL_NONE);
+	add("The character must be at least level 8.", player->getLevel() >= 8);
+	add("The character must not own a house or guildhall.", !ownsHouse);
+	add("The character must not have a pending house bid or transfer.", row && !bidsHouse && row->getNumber<uint32_t>("house_transfer") == 0);
+	add("The character must not belong to a guild.", !player->getGuild());
+	add("The character must not have a pending guild invitation or application.", row && row->getNumber<uint32_t>("guild_pending") == 0);
+	add("The character must not have active Market offers.", row && row->getNumber<uint32_t>("market_pending") == 0);
+	add("The character must not be scheduled for deletion.", row && row->getNumber<uint64_t>("deletion") == 0);
+	add("The character must not have a skull.", player->getSkull() == SKULL_NONE);
 	const auto tile = player->getTile();
-	add("O personagem deve estar em uma protection zone.", tile && tile->hasFlag(TILESTATE_PROTECTIONZONE));
-	add("O personagem nao pode ter bloqueio de logout ou combate.", !player->isPzLocked() && !player->hasCondition(CONDITION_INFIGHT));
-	add("O personagem nao pode ter namelock pendente.", row && row->getNumber<uint32_t>("namelocks") == 0);
-	add("A conta precisa de pelo menos 1 coin transferivel para a taxa configurada.", row && row->getNumber<uint64_t>("coins_transferable") >= 1);
+	add("The character must be in a protection zone.", tile && tile->hasFlag(TILESTATE_PROTECTIONZONE));
+	add("The character must not have a logout or combat lock.", !player->isPzLocked() && !player->hasCondition(CONDITION_INFIGHT));
+	add("The character must not have a pending namelock.", row && row->getNumber<uint32_t>("namelocks") == 0);
+	add("The account needs at least 1 transferable coin for the creation fee.", row && row->getNumber<uint64_t>("coins_transferable") >= 1);
 	// The external Bazaar must enforce its own account conduct and transfer policy.
 	if (!row) {
-		add("Nao foi possivel verificar os requisitos no banco. Tente novamente mais tarde.", false);
+		add("Could not verify the requirements in the database. Please try again later.", false);
 	}
 	return conditions;
 }
@@ -3385,7 +3385,7 @@ void ProtocolGame::sendCharacterAuctionProbe() {
 		response.addByte(satisfied ? 1 : 0);
 	}
 	if (savedDraftPrice) {
-		response.addString(fmt::format("[RASCUNHO] Configuracao anterior salva com preco {}. Revise e selecione novamente antes de publicar.", *savedDraftPrice));
+		response.addString(fmt::format("[DRAFT] Previous configuration saved with price {}. Review and select again before publishing.", *savedDraftPrice));
 		response.addByte(1);
 	}
 	characterAuctionProbeSent = true;
@@ -3424,7 +3424,7 @@ void ProtocolGame::sendCharacterAuctionProbe() {
 	highlights.addByte(3);
 	highlights.addByte(1);
 	highlights.addByte(0); // Diagnostic category, label supplied explicitly.
-	highlights.addString("Personagem");
+	highlights.addString("Character");
 	std::vector<std::pair<uint16_t, std::string>> arguments;
 	const auto addHighlight = [&arguments](uint16_t id, const std::string &text) {
 		arguments.emplace_back(id, text.substr(0, 256));
@@ -3490,16 +3490,16 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 			std::string validationError;
 			std::vector<uint8_t> request;
 			if (msg.getUnreadBytes() > 64) {
-				validationError = "Pedido excede o tamanho permitido para este teste.";
+				validationError = "The request exceeds the allowed size.";
 			} else {
 				const auto* bytes = static_cast<const NetworkMessage &>(msg).getBuffer() + msg.getBufferPosition();
 				request.assign(bytes, bytes + msg.getUnreadBytes());
 			}
 			if (!g_configManager().getBoolean(CHARACTER_AUCTION_PROBE)) {
-				validationError = "Criacao de leiloes desativada no servidor.";
+				validationError = "Auction creation is disabled on this server.";
 			}
 			if (action == 3 && (characterAuctionValidatedRequest.empty() || request != characterAuctionValidatedRequest)) {
-				validationError = "Confirmacao sem configuracao validada identica. Volte e valide novamente.";
+				validationError = "The confirmation does not match a validated configuration. Go back and validate again.";
 			}
 			// Every validation replaces pending approval. Every confirmation consumes
 			// it before any further checks, including rejected attempts and replay.
@@ -3515,14 +3515,14 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 			uint8_t selectedArguments = 0;
 			const auto nowMs = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
 			if (nowMs >= characterAuctionCatalogExpires) {
-				validationError = "Catalogo expirado. Cancele e reabra a janela para atualizar as selecoes.";
+				validationError = "The catalog has expired. Cancel and reopen the window to refresh your selections.";
 			}
 			const auto read = [&msg, &validationError]<typename T>(T &value) {
 				if (!validationError.empty()) {
 					return false;
 				}
 				if (msg.getUnreadBytes() < sizeof(T)) {
-					validationError = "Pedido incompleto.";
+					validationError = "Incomplete request.";
 					return false;
 				}
 				value = msg.get<T>();
@@ -3532,16 +3532,16 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 			read(endTime);
 			const auto nowSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 			if (validationError.empty() && (price < 25 || price > INT32_MAX)) {
-				validationError = "O preco deve estar entre 25 e 2.147.483.647 coins. Confirme a edicao antes de avancar.";
+				validationError = "The price must be between 25 and 2,147,483,647 coins. Confirm the edit before continuing.";
 			}
 			if (validationError.empty() && (endTime <= nowSeconds || endTime < characterAuctionMinimumEnd || endTime > characterAuctionMaximumEnd)) {
-				validationError = "Data fora do intervalo anunciado nesta abertura.";
+				validationError = "The date is outside the range announced in this window.";
 			}
 			const auto depot = player->getDepotChestItemsId();
 			std::set<ItemsTierKey> seenItems;
 			std::vector<ItemsTierKey> itemOrder;
 			if (read(selectedItems) && selectedItems > 4) {
-				validationError = "Selecione no maximo quatro itens.";
+				validationError = "Select at most four items.";
 			}
 			for (uint8_t index = 0; index < selectedItems && validationError.empty(); ++index) {
 				uint16_t itemId = 0;
@@ -3555,16 +3555,16 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 				const ItemsTierKey key { itemId, tier };
 				const auto it = depot.find(key);
 				if (!characterAuctionCatalogItems.contains(key) || it == depot.end() || it->second == 0 || !seenItems.insert(key).second) {
-					validationError = "Item indisponivel no depot deste personagem ou selecao duplicada.";
+					validationError = "The item is unavailable in this character depot or was selected twice.";
 				}
 				itemOrder.push_back(key);
 			}
 			uint8_t storeItems = 0;
 			if (read(storeItems) && storeItems != 0) {
-				validationError = "Itens da Store nao estao habilitados neste teste.";
+				validationError = "Store items are not supported.";
 			}
 			if (read(selectedArguments) && selectedArguments > 5) {
-				validationError = "Selecione no maximo cinco argumentos.";
+				validationError = "Select at most five highlights.";
 			}
 			std::set<uint16_t> seenArguments;
 			std::vector<uint16_t> argumentOrder;
@@ -3579,12 +3579,12 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 				const bool achievement = id >= 1000 && definitions.contains(id - 1000)
 					&& std::ranges::any_of(unlocked, [id](const auto &entry) { return entry.first == id - 1000; });
 				if (!characterAuctionCatalogArguments.contains(id) || (!basic && !achievement) || !seenArguments.insert(id).second) {
-					validationError = "Argumento indisponivel para este personagem ou selecao duplicada.";
+					validationError = "The highlight is unavailable for this character or was selected twice.";
 				}
 				argumentOrder.push_back(id);
 			}
 			if (validationError.empty() && msg.getUnreadBytes() != 0) {
-				validationError = "Pedido com bytes adicionais nao reconhecidos.";
+				validationError = "The request contains unrecognized trailing bytes.";
 			}
 			const bool readyForSimulation = action == 2 && validationError.empty();
 			if (readyForSimulation) {
@@ -3615,7 +3615,7 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 				publishedMetadata["charged"] = true;
 				const auto quotedPublished = db.escapeString(publishedMetadata.dump());
 				if (!draftSaved) {
-					validationError = "Nao foi possivel confirmar a gravacao do rascunho. Nenhuma taxa cobrada.";
+					validationError = "Could not confirm that the draft was saved. No fee was charged.";
 				}
 				if (draftSaved && IOLoginData::savePlayer(player)) {
 					auctionPublished = DBTransaction::executeWithinTransactionRollbackOnFailure([&]() {
@@ -3638,17 +3638,17 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 						return db.executeQuery(fmt::format("UPDATE `accounts` SET `coins_transferable`=`coins_transferable`-1 WHERE `id`={} AND `coins_transferable`>=1", player->getAccountId()));
 					});
 					if (!auctionPublished) {
-						validationError = "Rascunho salvo, mas a publicacao falhou. Nenhuma taxa cobrada. Confira o bazar e tente novamente.";
+						validationError = "The draft was saved, but publication failed. No fee was charged. Check the Bazaar and try again.";
 					}
 				}
 			}
 			const auto diagnostic = auctionPublished
-				? fmt::format("[LEILAO] Publicado no bazar, numero {}. Taxa: 1 coin. Comissao: 12%. Personagem bloqueado ate encerramento ou cancelamento.", publishedAuctionId)
+				? fmt::format("[AUCTION] Published in the Bazaar as {}. Fee: 1 coin. Commission: 12%. Character locked until completion or cancellation.", publishedAuctionId)
 				: !validationError.empty()
-				? fmt::format("Configuracao rejeitada: {}", validationError)
+				? fmt::format("Configuration rejected: {}", validationError)
 				: draftSaved
-				? fmt::format("[RASCUNHO] Salvo: preco={}, itens={}, argumentos={}. Nao publicado; nenhuma taxa cobrada.", price, selectedItems, selectedArguments)
-				: fmt::format("[TESTE] Configuracao rejeitada: {}", validationError);
+				? fmt::format("[DRAFT] Saved: price={}, items={}, highlights={}. Unpublished; no fee was charged.", price, selectedItems, selectedArguments)
+				: fmt::format("[TEST] Configuration rejected: {}", validationError);
 			// Client summary builder 0x1403104A0 treats the u16 as the creation
 			// fee: zero suppresses the entire summary. Every listed string is an
 			// error and sets hasConfirmationError; approval must have none.
@@ -3667,7 +3667,7 @@ void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
 				return;
 			}
 		}
-		player->sendCancelMessage("Revise a configuracao na janela. A publicacao e a taxa so ocorrem na confirmacao final.");
+		player->sendCancelMessage("Review the configuration in the window. Publication and the fee apply only after final confirmation.");
 		return;
 	}
 	if (action == 2 || action == 3) {

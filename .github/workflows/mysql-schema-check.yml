@@ -26,7 +26,7 @@ jobs:
           MYSQL_PASSWORD: canary
         ports:
           - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping --protocol=tcp --host=127.0.0.1" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
     name: Check

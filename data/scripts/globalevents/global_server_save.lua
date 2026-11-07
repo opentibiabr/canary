@@ -1,8 +1,4 @@
-local function ServerSave()
-	-- Open the next daily reward claim window before players are kicked and saved
-	UpdateDailyRewardServerSave()
-	Game.processCyclopediaAndBazaarServerSave()
-
+local function finishServerSave()
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_CLEAN_MAP) then
 		cleanMap()
 	end
@@ -19,6 +15,25 @@ local function ServerSave()
 		raid.kv:set("checks-today", 0)
 		raid.kv:set("last-check-date", os.date("%Y%m%d"))
 	end
+end
+
+-- Both operations are idempotent: committed rotations and auctions are skipped.
+local function processServerSave(attempt)
+	if not Game.processCyclopediaAndBazaarServerSave() then
+		if attempt < 3 then
+			logger.warn("Cyclopedia/Bazaar server-save processing failed; retrying in 5 seconds")
+			addEvent(processServerSave, 5000, attempt + 1)
+			return
+		end
+		logger.error("Cyclopedia/Bazaar server-save processing failed after 3 attempts; preserving configured shutdown")
+	end
+	finishServerSave()
+end
+
+local function ServerSave()
+	-- Open the reward window once, before players are kicked and saved.
+	UpdateDailyRewardServerSave()
+	processServerSave(1)
 end
 
 local function ServerSaveWarning(time)

@@ -73,14 +73,60 @@ local function store(key, value)
 	Result.free(verified)
 end
 
-local function pointArray(points)
+local discoveryMasks
+local function discoveryMask(area)
+	if not discoveryMasks then
+		-- The maintained catalog contains flat area objects and numeric run arrays.
+		-- Read only its masks; the migration Lua state has no JSON extension.
+		local file = assert(io.open("data/XML/cyclopedia-discovery-areas.json", "rb"))
+		local text = file:read(16777217)
+		file:close()
+		if #text > 16777216 then
+			error("Discovery catalog exceeds migration bounds")
+		end
+		discoveryMasks = {}
+		for object in text:gmatch("%b{}") do
+			-- The outer object contains nested area objects; extract each flat one below.
+			for entry in object:gmatch("{[^{}]*}") do
+				local id = entry:match('"id"%s*:%s*(%d+)')
+				local runs = entry:match('"runs"%s*:%s*(%b[])')
+				if id and runs then
+					local mask = {}
+					for z, y, x1, x2 in runs:gmatch("%[%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*,%s*(%d+)%s*%]") do
+						local key = tonumber(z) * 65536 + tonumber(y)
+						mask[key] = mask[key] or {}
+						mask[key][#mask[key] + 1] = { tonumber(x1), tonumber(x2) }
+					end
+					discoveryMasks[id] = mask
+				end
+			end
+		end
+	end
+	return discoveryMasks[area]
+end
+
+local function pointArray(points, area)
+	local mask = discoveryMask(area)
+	if not mask then
+		error("Unknown legacy discovery area")
+	end
 	local compact = points:gsub("%s", "")
 	local rebuilt, seen = {}, {}
 	for x, y, z, state in compact:gmatch("%[(%d+),(%d+),(%d+),(%d+)%]") do
 		if #x > 5 or #y > 5 or #z > 2 or #state ~= 1 or tonumber(x) > 65535 or tonumber(y) > 65535 or tonumber(z) > 15 or tonumber(state) > 2 then
 			error("Invalid legacy discovery point")
 		end
-		local position = x .. "," .. y .. "," .. z
+		local position = tostring(tonumber(x)) .. "," .. tostring(tonumber(y)) .. "," .. tostring(tonumber(z))
+		local inside = false
+		for _, run in ipairs(mask[math.max(7, tonumber(z)) * 65536 + tonumber(y)] or {}) do
+			if tonumber(x) >= run[1] and tonumber(x) <= run[2] then
+				inside = true
+				break
+			end
+		end
+		if not inside then
+			error("Legacy discovery point is outside its area mask")
+		end
 		if seen[position] then
 			error("Duplicate legacy discovery point")
 		end
@@ -156,7 +202,7 @@ function onUpdateDatabase()
 			if total > 512 then
 				error("Too many legacy discovery areas for a character")
 			end
-			discovered[#discovered + 1] = '"' .. area .. '":' .. pointArray(Result.getString(row, "points"))
+			discovered[#discovered + 1] = '"' .. area .. '":' .. pointArray(Result.getString(row, "points"), area)
 		end)
 		flush()
 		store("cyclopedia.atomic.migration-v1", "1")

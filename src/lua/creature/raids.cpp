@@ -177,7 +177,10 @@ void Raids::removeMapMarker(uint32_t monsterId) {
 	const auto position = entry->second;
 	markedMonsters.erase(entry);
 	const auto marker = mapMarkers.find(position);
-	if (marker == mapMarkers.end() || --marker->second != 0) {
+	if (marker == mapMarkers.end()) {
+		return;
+	}
+	if (--marker->second != 0) {
 		return;
 	}
 	mapMarkers.erase(marker);

@@ -19,8 +19,8 @@ the upstream `players` table does not require a `world_id` column. Existing
 website bidding, custody, cancellation and settlement state conventions remain
 external dependencies. The website implementation is not part of this server PR.
 Publication charges one transferable coin in the publication transaction and
-uses a 12 percent commission. Active and processing auctions block login while
-the integration is enabled. Processing auctions settle through scheduled server
+uses a 12 percent commission. Active and processing auctions block login even when
+new publication is disabled. Processing auctions settle through scheduled server
 save. Set `characterAuctionCustodyAccount` to the external website's custody
 account if the website transfers listed characters into a neutral account.
 The default zero accepts only the original seller as the current holder.
@@ -37,9 +37,11 @@ must call `monster:setRaidMapMarker(position)` explicitly.
 ## Donations and discovery
 
 Donations debit the character bank, accumulate the exact area's total and append
-an audit entry in one SQL transaction. Only committed donations update live bank
+a timestamped audit entry in one SQL transaction. Only committed donations update live bank
 state. The scheduled server-save hook rotates the daily winner once per UTC day;
-loading and restarts do not rotate, and losing donations are retained. Matching
+loading and restarts do not rotate, and losing donations are retained.
+Server-save processing retries failures twice at five-second intervals before
+continuing the configured close/shutdown; committed work is not repeated. Matching
 spawn tiles use half their base interval, bounded by the existing minimum. The
 base interval is never overwritten.
 
@@ -61,7 +63,8 @@ its implementation is shared in `data/migrations/cyclopedia_kv.lua`.
 The migration imports world-zero legacy donation totals, active boosts, the
 saved cycle, donation logs and per-character discovery points in one transaction.
 It preserves all source tables, rejects conflicting existing KV values and
-invalid input, and does not overwrite live progress on replay. Nonzero-world
+invalid input (including unknown discovery areas, noncanonical numbers and
+points outside exact masks), and does not overwrite live progress on replay. Nonzero-world
 legacy databases must stay with their matching multiworld server: this upstream
 single-Game migration explicitly refuses those imports. Fresh `schema.sql`
 installs seed the same empty snapshots and migration marker at version 60.
@@ -81,7 +84,7 @@ Character/account ownership is checked under the same transaction.
 
 The Windows Release server was built and linked with the pinned dependency
 baseline. Local C++ fixtures exercised live marker ownership, 28 donation checks,
-28 discovery checks and 16 Bazaar settlement checks. The actual migration ran
+29 discovery checks and 16 Bazaar settlement checks. The actual migration ran
 under LuaJIT 2.1 against a disposable MariaDB database, covering fresh state,
 BIGINT precision, active-cycle preservation, replay, conflicting imports,
 rollback, invalid points and world rejection. These local harnesses are not

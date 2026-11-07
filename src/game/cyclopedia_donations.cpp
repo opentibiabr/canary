@@ -155,7 +155,8 @@ std::string CyclopediaDonations::donate(const std::shared_ptr<Player> &player, u
 		}
 		updated = old + amount;
 		entry["amount"] = updated;
-		const nlohmann::json audit = { { "player_id", player->getGUID() }, { "area_id", area }, { "amount", amount }, { "total", updated } };
+		const auto createdAt = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+		const nlohmann::json audit = { { "player_id", player->getGUID() }, { "area_id", area }, { "amount", amount }, { "total", updated }, { "created_at", createdAt } };
 		return db.executeQuery(fmt::format("UPDATE `players` SET `balance`={} WHERE `id`={} AND `account_id`={}", balance - amount, player->getGUID(), player->getAccountId()))
 			&& CyclopediaStorage::write(CyclopediaStorage::donationsKey, doc.dump())
 			&& CyclopediaStorage::write("cyclopedia.atomic.audit." + KV::generateUUID(), audit.dump());

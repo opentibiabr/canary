@@ -372,7 +372,7 @@ void PlayerCyclopedia::sendDiscoveryEffects() {
 	}
 	discoveryNextEffects = now + 1000;
 	for (const auto &point : discoveryPoints()) {
-		if (point.state != 2 && discoveryDistance(point.position, m_player.getPosition()) <= 7) {
+		if (point.state == 1 && discoveryDistance(point.position, m_player.getPosition()) <= 7) {
 			m_player.sendMagicEffect(point.position, CONST_ME_PINK_VORTEX);
 		}
 	}

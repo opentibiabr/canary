@@ -49,7 +49,8 @@ namespace {
 	}
 
 	bool settleCharacterBazaarAtServerSave() {
-		if (!g_configManager().getBoolean(CHARACTER_AUCTION_PROBE)) {
+		// Existing listings remain protected and settle even when new publication is disabled.
+		if (!g_database().storeQuery("SHOW TABLES LIKE 'myaac\\_charbazaar'")) {
 			return true;
 		}
 		const auto pending = g_database().storeQuery(fmt::format(

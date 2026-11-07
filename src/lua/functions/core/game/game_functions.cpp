@@ -167,6 +167,10 @@ namespace {
 
 } // namespace
 
+/***
+ * @function Game.processCyclopediaAndBazaarServerSave
+ * @return boolean
+ */
 int GameFunctions::luaGameProcessCyclopediaAndBazaarServerSave(lua_State* L) {
 	const bool rotated = g_game().cyclopediaDonations.advance();
 	const bool settled = settleCharacterBazaarAtServerSave();

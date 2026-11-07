@@ -1126,6 +1126,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
+#### `Game.processCyclopediaAndBazaarServerSave(...: any)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/core/game/game_functions.cpp`
+
 #### `Game.registerAchievement(id: number, name: string, description: string, secret: boolean, grade: number, points: number)`
 
 - Returns: `boolean`
@@ -2468,6 +2473,11 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
 
 #### `Monster:setName(name: string, nameDescription?: string)`
+
+- Returns: `boolean`
+- Source: `src/lua/functions/creatures/monster/monster_functions.cpp`
+
+#### `Monster:setRaidMapMarker(position?: Position)`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/creatures/monster/monster_functions.cpp`

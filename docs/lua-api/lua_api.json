@@ -1727,6 +1727,14 @@
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
+        "name": "processCyclopediaAndBazaarServerSave",
+        "params": [
+          "...: any"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
         "name": "registerAchievement",
         "params": [
           "id: number",
@@ -1785,13 +1793,6 @@
           "raidName: string"
         ],
         "return": "number",
-        "source": "src/lua/functions/core/game/game_functions.cpp"
-      },
-      {
-        "name": "processCyclopediaAndBazaarServerSave",
-        "params": [],
-        "description": "Process scheduled Cyclopedia donation rotation and pending Character Bazaar settlement. No rotation occurs on startup.",
-        "return": "boolean",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       }
     ],
@@ -3615,6 +3616,14 @@
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       },
       {
+        "name": "setRaidMapMarker",
+        "params": [
+          "position?: Position"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
+      },
+      {
         "name": "setSpawnPosition",
         "params": [
           "interval: number"
@@ -3645,15 +3654,6 @@
           "soulPit?: boolean"
         ],
         "return": "boolean|nil",
-        "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
-      },
-      {
-        "name": "setRaidMapMarker",
-        "params": [
-          "position?: Position"
-        ],
-        "description": "Register this live monster as an owner of a Cyclopedia raid marker, using its position by default. Released when the creature is removed.",
-        "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
       }
     ],

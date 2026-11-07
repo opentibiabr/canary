@@ -940,6 +940,10 @@ function Game.loadMapChunk(path, position, remove) end
 ---@return number
 function Game.makeFiendishMonster(monsterId) end
 
+---@param ... any
+---@return boolean
+function Game.processCyclopediaAndBazaarServerSave(...) end
+
 ---@param id number
 ---@param name string
 ---@param description string
@@ -1929,6 +1933,10 @@ function Monster:setMonsterForgeClassification(classication) end
 ---@param nameDescription? string
 ---@return boolean
 function Monster:setName(name, nameDescription) end
+
+---@param position? Position
+---@return boolean
+function Monster:setRaidMapMarker(position) end
 
 ---@param interval number
 ---@return boolean|nil

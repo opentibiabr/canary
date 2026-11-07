@@ -118,6 +118,11 @@ int MonsterFunctions::luaMonsterIsMonster(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Monster:setRaidMapMarker
+ * @param position? Position
+ * @return boolean
+ */
 int MonsterFunctions::luaMonsterSetRaidMapMarker(lua_State* L) {
 	// monster:setRaidMapMarker([position]); retain the marker until removal.
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");

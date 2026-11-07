@@ -41,7 +41,8 @@ jobs:
             mysql --user=canary --database=canary --execute="SELECT VERSION(), DATABASE();"
       - name: Import Canary Schema
         env:
-          MYSQL_PWD: canary
+          MYSQL_PWD: root
         run: |
+          # The schema defines triggers, which require the service admin with binlog enabled.
           docker exec --interactive --env MYSQL_PWD "${{ job.services.mysql.id }}" \
-            mysql --user=canary --database=canary < schema.sql
+            mysql --user=root --database=canary < schema.sql

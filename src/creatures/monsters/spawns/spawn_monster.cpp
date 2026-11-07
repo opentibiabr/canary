@@ -294,7 +294,7 @@ void SpawnMonster::checkSpawnMonster() {
 			continue;
 		}
 		const auto effectiveInterval = g_game().cyclopediaDonations.improved(sb.pos)
-			? std::max<uint32_t>(MONSTER_MINSPAWN_INTERVAL, sb.interval / 2)
+			? std::min(sb.interval, std::max<uint32_t>(MONSTER_MINSPAWN_INTERVAL, sb.interval / 2))
 			: sb.interval;
 		if (OTSYS_TIME() < sb.lastSpawn + effectiveInterval) {
 			continue;

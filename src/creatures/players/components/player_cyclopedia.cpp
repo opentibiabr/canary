@@ -202,26 +202,7 @@ std::string PlayerCyclopedia::startDiscovery(uint16_t subarea) {
 			const auto tile = game.map.getTile(position);
 			return area->second.contains(position) && tile && tile->getGround() && !tile->getHouse() && !tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_FLOORCHANGE | TILESTATE_TELEPORT);
 		};
-		bool found = isWalkable(floorOrigin);
-		for (int radius = 1; !found && radius <= 7; ++radius) {
-			for (int dx = -radius; !found && dx <= radius; ++dx) {
-				for (int dy = -radius; !found && dy <= radius; ++dy) {
-					if (std::max(std::abs(dx), std::abs(dy)) != radius) {
-						continue;
-					}
-					const int x = origin.x + dx, y = origin.y + dy;
-					if (x < 0 || y < 0 || x > UINT16_MAX || y > UINT16_MAX) {
-						continue;
-					}
-					const Position candidate(static_cast<uint16_t>(x), static_cast<uint16_t>(y), floorOrigin.z);
-					if (isWalkable(candidate)) {
-						floorOrigin = candidate;
-						found = true;
-					}
-				}
-			}
-		}
-		if (!found) {
+		if (!isWalkable(floorOrigin)) {
 			return std::vector<DiscoveryPoint> {};
 		}
 		std::deque<Position> queue { floorOrigin };
@@ -268,16 +249,11 @@ std::string PlayerCyclopedia::startDiscovery(uint16_t subarea) {
 		}
 		return points;
 	};
-	std::vector<DiscoveryPoint> points;
-	const auto lastFloor = origin.z < 7 ? 7 : origin.z;
-	for (uint8_t floor = origin.z; floor <= lastFloor && remainingVisits != 0; ++floor) {
-		points = generate(Position(origin.x, origin.y, floor));
-		if (points.size() == 5) {
-			break;
-		}
-	}
+	// Seed only the player's actual connected floor; coordinates on another
+	// floor do not prove a walkable connection through stairs or floor changes.
+	auto points = generate(origin);
 	if (points.size() != 5) {
-		return "Not enough reachable points in this subarea on its available floors. No exploration was reset.";
+		return "Not enough reachable points in this subarea on your current floor. No exploration was reset.";
 	}
 	if (!saveDiscovery(subarea, points)) {
 		return "Could not save discovery. Your previous exploration was preserved.";

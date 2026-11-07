@@ -54,7 +54,7 @@ namespace {
 			return true;
 		}
 		const auto pending = g_database().storeQuery(fmt::format(
-			"SELECT `id` FROM `myaac_charbazaar` WHERE `status` = {} ORDER BY `id` ASC",
+			"SELECT `id`, `player_id` FROM `myaac_charbazaar` WHERE `status` = {} ORDER BY `id` ASC",
 			CHARACTER_BAZAAR_PROCESSING
 		));
 		if (!pending) {
@@ -65,6 +65,11 @@ namespace {
 		bool allCommitted = true;
 		do {
 			const uint32_t auctionId = pending->getNumber<uint32_t>("id");
+			// External publication can leave an existing session connected. Remove
+			// and save it before locking and transferring character ownership.
+			if (const auto live = g_game().getPlayerByGUID(pending->getNumber<uint32_t>("player_id"))) {
+				live->removePlayer(true);
+			}
 			const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([auctionId] {
 				auto &db = g_database();
 				const auto auction = db.storeQuery(fmt::format(

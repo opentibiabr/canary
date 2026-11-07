@@ -24,7 +24,8 @@ new publication is disabled. Processing auctions settle through scheduled server
 save. Set `characterAuctionCustodyAccount` to the external website's custody
 account if the website transfers listed characters into a neutral account.
 The default zero accepts only the original seller as the current holder.
-Settlement rejects online characters and unexpected owners, checks commission
+Settlement removes and saves any connected listed character before its transaction,
+then rejects any remaining online character and unexpected owners, checks commission
 and credit bounds, and commits remainders, seller proceeds and ownership together.
 
 ## Raid markers
@@ -46,7 +47,8 @@ spawn tiles use half their base interval, bounded by the existing minimum. The
 base interval is never overwritten.
 
 Discovery creates five separated points using bounded traversal of reachable
-tiles inside exact subarea masks. Only the owning character's ordinary movement
+tiles inside exact subarea masks on the current connected floor. It does not
+seed disconnected floors or substitute an unreachable nearby starting tile. Only the owning character's ordinary movement
 earns progress. Teleports do not earn progress. Transitions persist before
 effects, messages or snapshots expose them; hidden points stay off the wire.
 
@@ -84,7 +86,7 @@ Character/account ownership is checked under the same transaction.
 
 The Windows Release server was built and linked with the pinned dependency
 baseline. Local C++ fixtures exercised live marker ownership, 28 donation checks,
-29 discovery checks and 16 Bazaar settlement checks. The actual migration ran
+31 discovery checks and 17 Bazaar settlement checks. The actual migration ran
 under LuaJIT 2.1 against a disposable MariaDB database, covering fresh state,
 BIGINT precision, active-cycle preservation, replay, conflicting imports,
 rollback, invalid points and world rejection. These local harnesses are not

@@ -33,11 +33,15 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
-      - name: 📌 MySQL Start & init & show db
+      - name: Check MySQL service
+        env:
+          MYSQL_PWD: canary
         run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE canary;' -uroot -proot
-          mysql -e "SHOW DATABASES" -uroot -proot
+          docker exec --env MYSQL_PWD "${{ job.services.mysql.id }}" \
+            mysql --user=canary --database=canary --execute="SELECT VERSION(), DATABASE();"
       - name: Import Canary Schema
+        env:
+          MYSQL_PWD: canary
         run: |
-          mysql -uroot -proot canary < schema.sql
+          docker exec --interactive --env MYSQL_PWD "${{ job.services.mysql.id }}" \
+            mysql --user=canary --database=canary < schema.sql

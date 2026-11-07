@@ -8393,6 +8393,24 @@ void Player::sendTutorial(uint8_t tutorialId) const {
 	}
 }
 
+void Player::sendCyclopediaRaidMarker(const Position &position, bool active) const {
+	if (client) {
+		client->sendCyclopediaRaidMarker(position, active);
+	}
+}
+
+void Player::sendCyclopediaDiscovery() const {
+	if (client) {
+		client->sendCyclopediaDiscovery();
+	}
+}
+
+void Player::sendCyclopediaMapDonations() const {
+	if (client) {
+		client->sendCyclopediaMapDonations();
+	}
+}
+
 void Player::sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) const {
 	if (client) {
 		client->sendAddMarker(pos, markType, desc);
@@ -8617,6 +8635,7 @@ void Player::updateSerenityState() {
 
 void Player::onThink(uint32_t interval) {
 	Creature::onThink(interval);
+	cyclopedia().sendDiscoveryEffects();
 
 	sendPing();
 
@@ -12376,6 +12395,7 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	if (creature != getPlayer()) {
 		return;
 	}
+	cyclopedia().onDiscoveryMove(teleport);
 
 	if (!teleport && oldPos.z == newPos.z) {
 		updateParalyzeWalkExhaust();

@@ -43,9 +43,7 @@ public:
 	void removeMonster(const std::shared_ptr<Monster> &monster);
 	void removeMonsters();
 
-	uint32_t getInterval() const {
-		return interval;
-	}
+	uint32_t getInterval() const;
 	void startup(bool delayed = false);
 
 	void startSpawnMonsterCheck();

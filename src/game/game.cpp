@@ -860,6 +860,9 @@ void Game::loadBoostedCreature() {
 }
 
 void Game::start(ServiceManager* manager) {
+	if (!cyclopediaDonations.load()) {
+		g_logger().warn("Cyclopedia donation state could not be restored; requests will retry loading.");
+	}
 	// Game client protocols
 	const auto modernGamePort = protocol_port_utils::getModernGamePort();
 	manager->add<ProtocolGame>(modernGamePort);
@@ -1599,6 +1602,7 @@ bool Game::removeCreature(const std::shared_ptr<Creature> &creature, bool isLogo
 	creature->getParent()->postRemoveNotification(creature, nullptr, 0);
 	afterCreatureZoneChange(creature, fromZones, {});
 
+	raids.removeMapMarker(creature->getID());
 	creature->removeList();
 	creature->setRemoved();
 

@@ -214,6 +214,10 @@ function Encounter:spawnMonsters(config)
 			if not monster then
 				return false
 			end
+			if self.isRaid then
+				self.raidMapPosition = self.raidMapPosition or monster:getPosition()
+				monster:setRaidMapMarker(self.raidMapPosition)
+			end
 			monster:setRewardBoss()
 			if spawn then
 				spawn(monster)

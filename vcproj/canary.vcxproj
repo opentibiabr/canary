@@ -73,6 +73,7 @@
     <ClInclude Include="..\src\enums\item_attribute.hpp" />
     <ClInclude Include="..\src\game\functions\game_reload.hpp" />
     <ClInclude Include="..\src\game\game.hpp" />
+    <ClInclude Include="..\src\game\cyclopedia_donations.hpp" />
     <ClInclude Include="..\src\game\bank\bank.hpp" />
     <ClInclude Include="..\src\game\zones\zone.hpp" />
     <ClInclude Include="..\src\game\game_definitions.hpp" />
@@ -314,6 +315,7 @@
     <ClCompile Include="..\src\database\databasetasks.cpp" />
     <ClCompile Include="..\src\game\functions\game_reload.cpp" />
     <ClCompile Include="..\src\game\game.cpp" />
+    <ClCompile Include="..\src\game\cyclopedia_donations.cpp" />
     <ClCompile Include="..\src\game\bank\bank.cpp" />
     <ClCompile Include="..\src\game\scheduling\task.cpp" />
     <ClCompile Include="..\src\game\scheduling\save_manager.cpp" />

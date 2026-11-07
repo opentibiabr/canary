@@ -30,6 +30,7 @@ setmetatable(Raid, {
 		raid.initialChance = config.initialChance
 		raid.maxChecksPerDay = config.maxChecksPerDay
 		raid.kv = kv.scoped("raids"):scoped(name)
+		raid.isRaid = true
 		return raid
 	end,
 })
@@ -52,6 +53,7 @@ function Raid:tryStart(force)
 		return false
 	end
 	logger.info("Starting raid {}", self.name)
+	self.raidMapPosition = nil
 	self.kv:set("last-occurrence", os.time())
 	self:start()
 	return true

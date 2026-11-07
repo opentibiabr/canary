@@ -17,6 +17,10 @@
 #include "creatures/players/stash_definitions.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <map>
+	#include <set>
+	#include <utility>
+	#include <vector>
 	#include <optional>
 	#include <string>
 #endif
@@ -393,6 +397,13 @@ private:
 	void sendTutorial(uint8_t tutorialId);
 	void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc);
 
+	void sendCyclopediaRaidMarker(const Position &position, bool active);
+
+	void sendCyclopediaMapDiscoveryData(uint16_t currentAreaId = 0);
+	void sendCyclopediaDiscovery();
+	void sendCyclopediaMapCurrentArea(uint16_t areaId);
+	void sendCyclopediaMapDonations();
+	void sendCyclopediaMapSetDiscoveryArea(uint16_t areaId, uint8_t numberOfPointsToDiscover = 1);
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode);
 	void sendCyclopediaCharacterBaseInformation();
 	void sendCyclopediaCharacterGeneralStats();
@@ -633,6 +644,19 @@ private:
 
 	bool debugAssertSent = false;
 	bool acceptPackets = false;
+
+	uint64_t cyclopediaDonationNextRequest = 0;
+	bool characterAuctionProbeSent = false;
+	uint64_t characterAuctionProbeNextSend = 0;
+	uint64_t characterAuctionCatalogExpires = 0;
+	uint32_t characterAuctionMinimumEnd = 0;
+	uint32_t characterAuctionMaximumEnd = 0;
+	std::set<ItemsTierKey> characterAuctionCatalogItems;
+	std::set<uint16_t> characterAuctionCatalogArguments;
+	std::map<uint16_t, std::string> characterAuctionArgumentLabels;
+	std::vector<uint8_t> characterAuctionValidatedRequest;
+	void sendCharacterAuctionProbe();
+	std::vector<std::pair<std::string, bool>> getCharacterAuctionEligibility() const;
 
 	bool loggedIn = false;
 	bool suppressPreLoginPackets = false;

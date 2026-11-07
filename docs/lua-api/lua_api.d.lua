@@ -823,9 +823,8 @@ function Game.getFiendishMonsters(...) end
 ---@return number
 function Game.getGameState(...) end
 
----@param ... any
 ---@return House[]
-function Game.getHouses(...) end
+function Game.getHouses() end
 
 ---@param ... any
 ---@return table
@@ -843,9 +842,8 @@ function Game.getMonsterCount(...) end
 ---@return boolean|MonsterType
 function Game.getMonsterTypeByName(name) end
 
----@param ... any
 ---@return table<string, MonsterType>
-function Game.getMonsterTypes(...) end
+function Game.getMonsterTypes() end
 
 ---@param stars number
 ---@return table
@@ -876,9 +874,8 @@ function Game.getOfflinePlayer(nameOrId) end
 ---@return number
 function Game.getPlayerCount(...) end
 
----@param ... any
 ---@return Player[]
-function Game.getPlayers(...) end
+function Game.getPlayers() end
 
 ---@param ... any
 ---@return table
@@ -910,9 +907,8 @@ function Game.getSpectators(position, multifloor, onlyPlayer, minRangeX, maxRang
 ---@return table
 function Game.getTalkActions(...) end
 
----@param ... any
 ---@return Town[]
-function Game.getTowns(...) end
+function Game.getTowns() end
 
 ---@param ... any
 ---@return number
@@ -940,9 +936,8 @@ function Game.loadMapChunk(path, position, remove) end
 ---@return number
 function Game.makeFiendishMonster(monsterId) end
 
----@param ... any
 ---@return boolean
-function Game.processCyclopediaAndBazaarServerSave(...) end
+function Game.processCyclopediaAndBazaarServerSave() end
 
 ---@param id number
 ---@param name string

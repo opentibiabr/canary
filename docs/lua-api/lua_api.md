@@ -991,7 +991,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getHouses(...: any)`
+#### `Game.getHouses()`
 
 - Returns: `House[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1016,7 +1016,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|MonsterType`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getMonsterTypes(...: any)`
+#### `Game.getMonsterTypes()`
 
 - Returns: `table<string, MonsterType>`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1056,7 +1056,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getPlayers(...: any)`
+#### `Game.getPlayers()`
 
 - Returns: `Player[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1091,7 +1091,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `table`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.getTowns(...: any)`
+#### `Game.getTowns()`
 
 - Returns: `Town[]`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
@@ -1126,7 +1126,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `number`
 - Source: `src/lua/functions/core/game/game_functions.cpp`
 
-#### `Game.processCyclopediaAndBazaarServerSave(...: any)`
+#### `Game.processCyclopediaAndBazaarServerSave()`
 
 - Returns: `boolean`
 - Source: `src/lua/functions/core/game/game_functions.cpp`

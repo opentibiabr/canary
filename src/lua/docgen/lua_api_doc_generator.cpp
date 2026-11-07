@@ -1276,7 +1276,9 @@ namespace {
 		if (!docBlock.className.empty() || !docBlock.functionName.empty()) {
 			info.hasSelfParameter = docBlock.hasSelfParameter;
 		}
-		if (!docBlock.parameters.empty()) {
+		// An explicitly documented function without @param has no arguments;
+		// do not retain an inferred "...: any" fallback for parameterless APIs.
+		if (!docBlock.parameters.empty() || !docBlock.functionName.empty()) {
 			info.parameters = docBlock.parameters;
 		}
 		if (!docBlock.returns.empty()) {

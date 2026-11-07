@@ -34,15 +34,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
       - name: Check MySQL service
-        env:
-          MYSQL_PWD: canary
         run: |
-          docker exec --env MYSQL_PWD "${{ job.services.mysql.id }}" \
-            mysql --user=canary --database=canary --execute="SELECT VERSION(), DATABASE();"
+          docker exec "${{ job.services.mysql.id }}" sh -c \
+            'MYSQL_PWD="$MYSQL_PASSWORD" exec mysql --user=canary --database=canary --execute="SELECT VERSION(), DATABASE();"'
       - name: Import Canary Schema
-        env:
-          MYSQL_PWD: root
         run: |
           # The schema defines triggers, which require the service admin with binlog enabled.
-          docker exec --interactive --env MYSQL_PWD "${{ job.services.mysql.id }}" \
-            mysql --user=root --database=canary < schema.sql
+          docker exec --interactive "${{ job.services.mysql.id }}" sh -c \
+            'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql --user=root --database=canary' < schema.sql

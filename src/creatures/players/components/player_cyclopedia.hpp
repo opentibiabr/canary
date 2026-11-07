@@ -70,6 +70,7 @@ public:
 private:
 	Player &m_player;
 	bool discoveryLoaded = false;
+	std::string discoverySnapshot;
 	uint64_t discoveryRetryAfter = 0;
 	uint64_t discoveryNextReset = 0;
 	uint64_t discoveryNextWrite = 0;

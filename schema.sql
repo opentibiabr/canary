@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS `server_config` (
     CONSTRAINT `server_config_pk` PRIMARY KEY (`config`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '59'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
+INSERT INTO `server_config` (`config`, `value`) VALUES ('db_version', '60'), ('motd_hash', ''), ('motd_num', '0'), ('players_record', '0');
 
 -- Table structure `accounts`
 CREATE TABLE IF NOT EXISTS `accounts` (
@@ -865,6 +865,11 @@ CREATE TABLE IF NOT EXISTS `kv_store` (
   `value` longblob NOT NULL,
   PRIMARY KEY (`key_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Fresh databases start with the same KV snapshots as migration 60.
+INSERT IGNORE INTO `kv_store` (`key_name`,`timestamp`,`value`) VALUES
+('cyclopedia.atomic.donations',UNIX_TIMESTAMP()*1000,0x0a257b2276657273696f6e223a312c226c6173745f646179223a302c226172656173223a7b7d7d),
+('cyclopedia.atomic.migration-v1',UNIX_TIMESTAMP()*1000,0x0a0131);
 
 -- Create Account god/god
 INSERT INTO `accounts`

@@ -16,9 +16,11 @@
 #include "game/game.hpp"
 #include "kv/kv.hpp"
 #include "database/database.hpp"
+#include "game/cyclopedia_storage.hpp"
 #include "items/tile.hpp"
 #include "server/network/protocol/protocolgame.hpp"
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <charconv>
 	#include <nlohmann/json.hpp>
 	#include <algorithm>
 	#include <chrono>
@@ -99,69 +101,77 @@ bool PlayerCyclopedia::loadDiscovery() {
 		return false;
 	}
 	discoveryRetryAfter = now + 30000;
-	auto &db = g_database();
-	if (!db.executeQuery("CREATE TABLE IF NOT EXISTS `cyclopedia_discovery` (`world_id` INT UNSIGNED NOT NULL,`player_id` INT UNSIGNED NOT NULL,`area_id` SMALLINT UNSIGNED NOT NULL,`active` TINYINT UNSIGNED NOT NULL DEFAULT 0,`points` TEXT NOT NULL,PRIMARY KEY (`world_id`,`player_id`,`area_id`)) ENGINE=InnoDB")) {
+	const auto owner = g_database().storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `id`={} AND `account_id`={}", m_player.getGUID(), m_player.getAccountId()));
+	const auto key = CyclopediaStorage::discoveryKey(m_player.getGUID());
+	if (!owner || !CyclopediaStorage::initialize(key, R"({"version":1,"active":0,"areas":{}})")) {
 		return false;
 	}
-	const auto count = db.storeQuery(fmt::format("SELECT COUNT(*) AS `count` FROM `cyclopedia_discovery` AS `d` JOIN `players` AS `p` ON `p`.`id`=`d`.`player_id` WHERE `d`.`world_id`={} AND `d`.`player_id`={} AND `p`.`account_id`={}", 0, m_player.getGUID(), m_player.getAccountId()));
-	if (!count || count->getNumber<uint32_t>("count") > 512) {
+	const auto stored = CyclopediaStorage::read(key);
+	const auto doc = stored ? nlohmann::json::parse(*stored, nullptr, false) : nlohmann::json();
+	if (!doc.is_object() || !doc.contains("version") || doc["version"] != 1
+	    || !doc.contains("active") || !doc["active"].is_number_unsigned() || doc["active"].get<uint64_t>() > UINT16_MAX
+	    || !doc.contains("areas") || !doc["areas"].is_object() || doc["areas"].size() > 512) {
 		return false;
 	}
 	std::map<uint16_t, std::vector<DiscoveryPoint>> restored;
-	uint16_t active = 0;
-	if (count->getNumber<uint32_t>("count") != 0) {
-		const auto rows = db.storeQuery(fmt::format("SELECT `d`.`area_id`,`d`.`active`,`d`.`points` FROM `cyclopedia_discovery` AS `d` JOIN `players` AS `p` ON `p`.`id`=`d`.`player_id` WHERE `d`.`world_id`={} AND `d`.`player_id`={} AND `p`.`account_id`={}", 0, m_player.getGUID(), m_player.getAccountId()));
-		if (!rows) {
+	for (const auto &[areaKey, points] : doc["areas"].items()) {
+		uint16_t id = 0;
+		const auto [end, error] = std::from_chars(areaKey.data(), areaKey.data() + areaKey.size(), id);
+		const auto area = discoveryRegions().find(id);
+		if (error != std::errc() || end != areaKey.data() + areaKey.size() || std::to_string(id) != areaKey
+		    || area == discoveryRegions().end() || !points.is_array() || points.size() != 5) {
 			return false;
 		}
-		do {
-			const auto id = rows->getNumber<uint16_t>("area_id");
-			const auto area = discoveryRegions().find(id);
-			const auto points = nlohmann::json::parse(rows->getString("points"), nullptr, false);
-			if (area == discoveryRegions().end() || !points.is_array() || points.size() != 5) {
+		std::set<Position> positions;
+		for (const auto &value : points) {
+			if (!value.is_array() || value.size() != 4 || !std::ranges::all_of(value, [](const auto &field) { return field.is_number_unsigned(); })) {
 				return false;
 			}
-			std::set<Position> positions;
-			for (const auto &value : points) {
-				if (!value.is_array() || value.size() != 4 || !std::ranges::all_of(value, [](const auto &field) { return field.is_number_unsigned(); })) {
-					return false;
-				}
-				const auto x = value[0].get<uint64_t>(), y = value[1].get<uint64_t>(), z = value[2].get<uint64_t>(), state = value[3].get<uint64_t>();
-				if (x > UINT16_MAX || y > UINT16_MAX || z > 15 || state > 2) {
-					return false;
-				}
-				const Position pos(static_cast<uint16_t>(x), static_cast<uint16_t>(y), static_cast<uint8_t>(z));
-				if (!area->second.contains(pos) || !positions.insert(pos).second) {
-					return false;
-				}
-				restored[id].push_back({ pos, static_cast<uint8_t>(state) });
+			const auto x = value[0].get<uint64_t>(), y = value[1].get<uint64_t>(), z = value[2].get<uint64_t>(), state = value[3].get<uint64_t>();
+			if (x > UINT16_MAX || y > UINT16_MAX || z > 15 || state > 2) {
+				return false;
 			}
-			if (rows->getNumber<uint8_t>("active")) {
-				if (active != 0) {
-					return false;
-				}
-				active = id;
+			const Position pos(static_cast<uint16_t>(x), static_cast<uint16_t>(y), static_cast<uint8_t>(z));
+			if (!area->second.contains(pos) || !positions.insert(pos).second) {
+				return false;
 			}
-		} while (rows->next());
+			restored[id].push_back({ pos, static_cast<uint8_t>(state) });
+		}
+	}
+	const auto active = doc["active"].get<uint16_t>();
+	if (active != 0 && !restored.contains(active)) {
+		return false;
 	}
 	discoveryState = std::move(restored);
 	discoveryActive = active;
+	discoverySnapshot = *stored;
 	discoveryLoaded = true;
 	return true;
 }
 
 bool PlayerCyclopedia::saveDiscovery(uint16_t area, const std::vector<DiscoveryPoint> &points) {
-	nlohmann::json serialized = nlohmann::json::array();
+	auto doc = nlohmann::json::parse(discoverySnapshot, nullptr, false);
+	if (!doc.is_object()) {
+		return false;
+	}
+	auto &serialized = doc["areas"][std::to_string(area)];
+	serialized = nlohmann::json::array();
 	for (const auto &point : points) {
 		serialized.push_back({ point.position.x, point.position.y, point.position.z, point.state });
 	}
+	doc["active"] = area;
+	const auto updated = doc.dump();
+	const auto key = CyclopediaStorage::discoveryKey(m_player.getGUID());
 	auto &db = g_database();
-	return DBTransaction::executeWithinTransactionRollbackOnFailure([&] {
-		const auto owner = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `id`={} AND {}=0 AND `account_id`={} FOR UPDATE", m_player.getGUID(), 0, m_player.getAccountId()));
-		return owner
-			&& db.executeQuery(fmt::format("UPDATE `cyclopedia_discovery` SET `active`=0 WHERE `world_id`={} AND `player_id`={}", 0, m_player.getGUID()))
-			&& db.executeQuery(fmt::format("INSERT INTO `cyclopedia_discovery` (`world_id`,`player_id`,`area_id`,`active`,`points`) VALUES ({},{},{},1,{}) ON DUPLICATE KEY UPDATE `active`=1,`points`=VALUES(`points`)", 0, m_player.getGUID(), area, db.escapeString(serialized.dump())));
+	const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([&] {
+		const auto owner = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `id`={} AND `account_id`={} FOR UPDATE", m_player.getGUID(), m_player.getAccountId()));
+		const auto previous = CyclopediaStorage::read(key, true);
+		return owner && previous && *previous == discoverySnapshot && CyclopediaStorage::write(key, updated);
 	});
+	if (committed) {
+		discoverySnapshot = updated;
+	}
+	return committed;
 }
 
 std::string PlayerCyclopedia::startDiscovery(uint16_t subarea) {

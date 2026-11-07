@@ -21,7 +21,11 @@ external dependencies. The website implementation is not part of this server PR.
 Publication charges one transferable coin in the publication transaction and
 uses a 12 percent commission. Active and processing auctions block login while
 the integration is enabled. Processing auctions settle through scheduled server
-save; review the external custody contract before enabling the feature.
+save. Set `characterAuctionCustodyAccount` to the external website's custody
+account if the website transfers listed characters into a neutral account.
+The default zero accepts only the original seller as the current holder.
+Settlement rejects online characters and unexpected owners, checks commission
+and credit bounds, and commits remainders, seller proceeds and ownership together.
 
 ## Raid markers
 
@@ -33,7 +37,7 @@ must call `monster:setRaidMapMarker(position)` explicitly.
 ## Donations and discovery
 
 Donations debit the character bank, accumulate the exact area's total and append
-an audit row in one SQL transaction. Only committed donations update live bank
+an audit entry in one SQL transaction. Only committed donations update live bank
 state. The scheduled server-save hook rotates the daily winner once per UTC day;
 loading and restarts do not rotate, and losing donations are retained. Matching
 spawn tiles use half their base interval, bounded by the existing minimum. The
@@ -44,32 +48,48 @@ tiles inside exact subarea masks. Only the owning character's ordinary movement
 earns progress. Teleports do not earn progress. Transitions persist before
 effects, messages or snapshots expose them; hidden points stay off the wire.
 
-The JSON catalogs contain area identities and horizontal tile runs. Re-export
-them using `export_cyclopedia_donation_areas.py` and
-`export_cyclopedia_discovery_areas.py`, passing the client directory and output
-path. Exporters require only Python's standard library.
+The JSON catalogs contain area identities and exact horizontal tile runs for the
+supported client version, rather than approximate bounding rectangles.
 
-## Outstanding upstream compatibility
+## Persistence and migration
 
-The donation and discovery implementations currently create dedicated SQL
-tables. This conflicts with CONTRIBUTING.md's requirement to use KV rather than
-introduce new tables. They are included as an explicit draft review blocker;
-their transactional persistence must be adapted before this contribution can
-claim compliance with that policy. The external Bazaar schema is also an
-integration dependency that upstream maintainers must evaluate.
+Donations, their audit entries and discovery snapshots use the existing
+`kv_store` and the standard protobuf `ValueWrapper.str_value` codec. No new
+tables are created. Migration 60 is registered in both supported data packs;
+its implementation is shared in `data/migrations/cyclopedia_kv.lua`.
 
-The local C++ audits use transactional database and map test doubles. They do
-not prove MariaDB integration, client interoperability or gameplay. Full server
-build/linking, a disposable database run, connected client testing and upstream
-CI remain required before merge. No local server, database, configuration or
-production executable is changed by running these audits.
+The migration imports world-zero legacy donation totals, active boosts, the
+saved cycle, donation logs and per-character discovery points in one transaction.
+It preserves all source tables, rejects conflicting existing KV values and
+invalid input, and does not overwrite live progress on replay. Nonzero-world
+legacy databases must stay with their matching multiworld server: this upstream
+single-Game migration explicitly refuses those imports. Fresh `schema.sql`
+installs seed the same empty snapshots and migration marker at version 60.
 
-From an MSVC developer shell with dependencies installed, run:
+Back up the database before upgrading. A migration error leaves the completion
+marker absent and the features unavailable; fix the reported input or database
+failure before retrying startup. Do not delete source tables until the operator
+has verified the imported state and their backup/rollback plan.
 
-```powershell
-# Optional when dependency headers are outside build/windows-release/vcpkg_installed:
-$env:CANARY_AUDIT_INCLUDE = '<vcpkg-installed>/x64-windows-static-release/include'
-python tools/canary_audit/test_cyclopedia_raid_markers.py
-python tools/canary_audit/test_cyclopedia_donations.py
-python tools/canary_audit/test_cyclopedia_discovery.py
-```
+The `cyclopedia.atomic.*` keyspace is exclusively owned by `CyclopediaStorage`.
+It bypasses the global KV write-back cache so a general save cannot overwrite
+a newer committed snapshot. Row locks serialize donations with cycle rotation;
+discovery additionally compares its previously loaded snapshot before writing.
+Character/account ownership is checked under the same transaction.
+
+## Validation
+
+The Windows Release server was built and linked with the pinned dependency
+baseline. Local C++ fixtures exercised live marker ownership, 28 donation checks,
+28 discovery checks and 16 Bazaar settlement checks. The actual migration ran
+under LuaJIT 2.1 against a disposable MariaDB database, covering fresh state,
+BIGINT precision, active-cycle preservation, replay, conflicting imports,
+rollback, invalid points and world rejection. These local harnesses are not
+included in this contribution.
+
+Connected client gameplay and end-to-end external website operation still need
+operator validation. On a disposable copy, verify an eligible Bazaar publication
+and scheduled settlement; overlapping raid monsters and the final marker
+removal; a donation, rollback and restart; and discovery with ordinary movement,
+teleports and relog. Confirm bank balances, owners and snapshots before using
+the features on a live server. Automated fixtures do not replace these checks.

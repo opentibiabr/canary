@@ -7,6 +7,8 @@
  * Website: https://docs.opentibiabr.com/
  */
 #include "game/cyclopedia_donations.hpp"
+#include "game/cyclopedia_storage.hpp"
+#include "kv/kv.hpp"
 
 #include "creatures/players/player.hpp"
 #include "database/database.hpp"
@@ -66,6 +68,19 @@ namespace {
 		static const Catalog value;
 		return value;
 	}
+	bool validDonationState(const nlohmann::json &doc) {
+		if (!doc.is_object() || !doc.contains("version") || doc["version"] != 1
+		    || !doc.contains("last_day") || !doc["last_day"].is_number_unsigned()
+		    || !doc.contains("areas") || !doc["areas"].is_object() || doc["areas"].size() > 255) {
+			return false;
+		}
+		return std::ranges::all_of(doc["areas"], [](const auto &entry) {
+			return entry.is_object() && entry.contains("amount") && entry["amount"].is_number_unsigned()
+				&& entry["amount"].template get<uint64_t>() <= INT64_MAX
+				&& entry.contains("active") && entry["active"].is_boolean();
+		});
+	}
+
 	uint64_t day() {
 		return std::chrono::duration_cast<std::chrono::hours>(std::chrono::system_clock::now().time_since_epoch()).count() / 24;
 	}
@@ -79,35 +94,21 @@ bool CyclopediaDonations::load() {
 	if (now < retryAfter) {
 		return false;
 	}
-	retryAfter = now + 30; // Isolate database/catalog failures from spawn hot paths.
-	if (!catalog().valid) {
+	retryAfter = now + 30;
+	if (!catalog().valid || !CyclopediaStorage::ready()) {
 		return false;
 	}
-	auto &db = g_database();
-	if (!db.executeQuery("CREATE TABLE IF NOT EXISTS `cyclopedia_donations` (`world_id` INT UNSIGNED NOT NULL,`area_id` SMALLINT UNSIGNED NOT NULL,`amount` BIGINT UNSIGNED NOT NULL DEFAULT 0,`active` TINYINT UNSIGNED NOT NULL DEFAULT 0,PRIMARY KEY (`world_id`,`area_id`)) ENGINE=InnoDB")
-	    || !db.executeQuery("CREATE TABLE IF NOT EXISTS `cyclopedia_donation_cycles` (`world_id` INT UNSIGNED NOT NULL PRIMARY KEY,`last_day` BIGINT UNSIGNED NOT NULL DEFAULT 0) ENGINE=InnoDB")
-	    || !db.executeQuery("CREATE TABLE IF NOT EXISTS `cyclopedia_donation_log` (`id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,`world_id` INT UNSIGNED NOT NULL,`player_id` INT UNSIGNED NOT NULL,`area_id` SMALLINT UNSIGNED NOT NULL,`amount` INT UNSIGNED NOT NULL,`created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB")) {
+	const auto stored = CyclopediaStorage::read(CyclopediaStorage::donationsKey);
+	const auto doc = stored ? nlohmann::json::parse(*stored, nullptr, false) : nlohmann::json();
+	if (!validDonationState(doc)) {
 		return false;
 	}
+	std::map<uint16_t, Entry> restored;
 	for (const auto &[area, rejected] : catalog().areas) {
-		if (!db.executeQuery(fmt::format("INSERT IGNORE INTO `cyclopedia_donations` (`world_id`,`area_id`) VALUES ({},{})", 0, area))) {
-			return false;
-		}
+		const auto entry = doc["areas"].find(std::to_string(area));
+		restored.emplace(area, entry == doc["areas"].end() ? Entry {} : Entry { (*entry)["amount"].get<uint64_t>(), (*entry)["active"].get<bool>() });
 	}
-	if (!db.executeQuery(fmt::format("INSERT IGNORE INTO `cyclopedia_donation_cycles` (`world_id`) VALUES ({})", 0))) {
-		return false;
-	}
-	const auto result = db.storeQuery(fmt::format("SELECT `area_id`,`amount`,`active` FROM `cyclopedia_donations` WHERE `world_id`={}", 0));
-	if (!result) {
-		return false;
-	}
-	state.clear();
-	do {
-		const auto area = result->getNumber<uint16_t>("area_id");
-		if (catalog().areas.contains(area)) {
-			state.emplace(area, Entry { result->getNumber<uint64_t>("amount"), result->getNumber<uint8_t>("active") != 0 });
-		}
-	} while (result->next());
+	state = std::move(restored);
 	loaded = true;
 	return true;
 }
@@ -132,27 +133,32 @@ std::string CyclopediaDonations::donate(const std::shared_ptr<Player> &player, u
 	if (balance < amount) {
 		return "You need enough gold in your bank account to donate.";
 	}
-	// Persist the live balance first. All subsequent debit/area/log writes commit
-	// together; update memory only after commit, on the same dispatcher turn.
 	if (!IOLoginData::savePlayer(player)) {
 		return "Could not save your character. No donation was charged.";
 	}
 	uint64_t updated = 0;
 	auto &db = g_database();
 	const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([&] {
-		const auto owner = db.storeQuery(fmt::format("SELECT `balance` FROM `players` WHERE `id`={} AND {}=0 AND `account_id`={} FOR UPDATE", player->getGUID(), 0, player->getAccountId()));
-		const auto row = db.storeQuery(fmt::format("SELECT `amount`,`active` FROM `cyclopedia_donations` WHERE `world_id`={} AND `area_id`={} FOR UPDATE", 0, area));
-		if (!owner || owner->getNumber<uint64_t>("balance") != balance || !row || row->getNumber<uint8_t>("active") != 0) {
+		const auto owner = db.storeQuery(fmt::format("SELECT `balance` FROM `players` WHERE `id`={} AND `account_id`={} FOR UPDATE", player->getGUID(), player->getAccountId()));
+		const auto stored = CyclopediaStorage::read(CyclopediaStorage::donationsKey, true);
+		auto doc = stored ? nlohmann::json::parse(*stored, nullptr, false) : nlohmann::json();
+		if (!owner || owner->getNumber<uint64_t>("balance") != balance || !validDonationState(doc)) {
 			return false;
 		}
-		const auto old = row->getNumber<uint64_t>("amount");
-		if (old > static_cast<uint64_t>(INT64_MAX) - amount) {
+		auto &entry = doc["areas"][std::to_string(area)];
+		if (entry.is_null()) {
+			entry = { { "amount", uint64_t { 0 } }, { "active", false } };
+		}
+		const auto old = entry["amount"].get<uint64_t>();
+		if (entry["active"].get<bool>() || old > static_cast<uint64_t>(INT64_MAX) - amount) {
 			return false;
 		}
 		updated = old + amount;
-		return db.executeQuery(fmt::format("UPDATE `players` SET `balance`={} WHERE `id`={} AND {}=0", balance - amount, player->getGUID(), 0))
-			&& db.executeQuery(fmt::format("UPDATE `cyclopedia_donations` SET `amount`={} WHERE `world_id`={} AND `area_id`={}", updated, 0, area))
-			&& db.executeQuery(fmt::format("INSERT INTO `cyclopedia_donation_log` (`world_id`,`player_id`,`area_id`,`amount`) VALUES ({},{},{},{})", 0, player->getGUID(), area, amount));
+		entry["amount"] = updated;
+		const nlohmann::json audit = { { "player_id", player->getGUID() }, { "area_id", area }, { "amount", amount }, { "total", updated } };
+		return db.executeQuery(fmt::format("UPDATE `players` SET `balance`={} WHERE `id`={} AND `account_id`={}", balance - amount, player->getGUID(), player->getAccountId()))
+			&& CyclopediaStorage::write(CyclopediaStorage::donationsKey, doc.dump())
+			&& CyclopediaStorage::write("cyclopedia.atomic.audit." + KV::generateUUID(), audit.dump());
 	});
 	if (!committed) {
 		return "Donation could not be completed. No gold was charged.";
@@ -161,7 +167,7 @@ std::string CyclopediaDonations::donate(const std::shared_ptr<Player> &player, u
 	state.at(area).amount = updated;
 	player->sendResourceBalance(RESOURCE_BANK, balance - amount);
 	broadcast();
-	g_logger().info(fmt::format("[CyclopediaDonations] player={} area={} amount={} total={}", player->getGUID(), area, amount, updated));
+	g_logger().info("[CyclopediaDonations] player={} area={} amount={} total={}", player->getGUID(), area, amount, updated);
 	return "";
 }
 
@@ -170,33 +176,45 @@ bool CyclopediaDonations::advance() {
 		return false;
 	}
 	uint16_t winner = 0;
-	auto &db = g_database();
+	bool rotated = false;
 	const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([&] {
-		const auto cycle = db.storeQuery(fmt::format("SELECT `last_day` FROM `cyclopedia_donation_cycles` WHERE `world_id`={} FOR UPDATE", 0));
-		if (!cycle || cycle->getNumber<uint64_t>("last_day") >= day()) {
+		const auto stored = CyclopediaStorage::read(CyclopediaStorage::donationsKey, true);
+		auto doc = stored ? nlohmann::json::parse(*stored, nullptr, false) : nlohmann::json();
+		if (!validDonationState(doc)) {
 			return false;
 		}
-		const auto rows = db.storeQuery(fmt::format("SELECT `area_id`,`amount`,`active` FROM `cyclopedia_donations` WHERE `world_id`={} ORDER BY `amount` DESC,`area_id` ASC FOR UPDATE", 0));
-		if (!rows) {
-			return false;
+		if (doc["last_day"].get<uint64_t>() >= day()) {
+			return true;
 		}
-		do {
-			const auto area = rows->getNumber<uint16_t>("area_id");
-			const auto permitted = catalog().areas.find(area);
-			if (!winner && permitted != catalog().areas.end() && !permitted->second && rows->getNumber<uint8_t>("active") == 0 && rows->getNumber<uint64_t>("amount") >= threshold) {
-				winner = area;
+		uint64_t best = threshold - 1;
+		for (const auto &[area, rejected] : catalog().areas) {
+			const auto it = doc["areas"].find(std::to_string(area));
+			if (it == doc["areas"].end()) {
+				continue;
 			}
-		} while (rows->next());
-		if (!db.executeQuery(fmt::format("UPDATE `cyclopedia_donations` SET `active`=0 WHERE `world_id`={}", 0))) {
-			return false;
+			const auto amount = (*it)["amount"].get<uint64_t>();
+			if (!rejected && !(*it)["active"].get<bool>() && amount > best) {
+				winner = area;
+				best = amount;
+			}
 		}
-		if (winner && !db.executeQuery(fmt::format("UPDATE `cyclopedia_donations` SET `active`=1,`amount`=0 WHERE `world_id`={} AND `area_id`={}", 0, winner))) {
-			return false;
+		for (auto &entry : doc["areas"]) {
+			entry["active"] = false;
 		}
-		return db.executeQuery(fmt::format("UPDATE `cyclopedia_donation_cycles` SET `last_day`={} WHERE `world_id`={}", day(), 0));
+		if (winner) {
+			auto &entry = doc["areas"][std::to_string(winner)];
+			entry["active"] = true;
+			entry["amount"] = uint64_t { 0 };
+		}
+		doc["last_day"] = day();
+		rotated = true;
+		return CyclopediaStorage::write(CyclopediaStorage::donationsKey, doc.dump());
 	});
 	if (!committed) {
 		return false;
+	}
+	if (!rotated) {
+		return true;
 	}
 	loaded = false;
 	retryAfter = 0;
@@ -204,7 +222,7 @@ bool CyclopediaDonations::advance() {
 		return false;
 	}
 	broadcast();
-	g_logger().info(fmt::format("[CyclopediaDonations] new cycle, active area={}", winner));
+	g_logger().info("[CyclopediaDonations] new cycle, active area={}", winner);
 	return true;
 }
 

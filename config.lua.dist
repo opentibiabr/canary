@@ -686,3 +686,6 @@ OTCRFeatures = {
     disableFeature = {
     }
 }
+
+-- Enable the experimental official 15.25 Character Bazaar UI (requires MyAAC Bazaar schema).
+characterAuctionProbe = false

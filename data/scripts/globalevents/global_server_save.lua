@@ -1,6 +1,7 @@
 local function ServerSave()
 	-- Open the next daily reward claim window before players are kicked and saved
 	UpdateDailyRewardServerSave()
+	Game.processCyclopediaAndBazaarServerSave()
 
 	if configManager.getBoolean(configKeys.GLOBAL_SERVER_SAVE_CLEAN_MAP) then
 		cleanMap()

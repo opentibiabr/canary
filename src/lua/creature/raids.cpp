@@ -7,7 +7,12 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/players/player.hpp"
 #include "lua/creature/raids.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <optional>
+#endif
 
 #include "config/configmanager.hpp"
 #include "creatures/monsters/monster.hpp"
@@ -146,6 +151,38 @@ void Raids::checkRaids() {
 	);
 	if (checkRaidsEvent == 0) {
 		g_logger().warn("[Raids::checkRaids] Failed to reschedule raid checks");
+	}
+}
+
+bool Raids::addMapMarker(const std::shared_ptr<Monster> &monster, const Position &position) {
+	if (!monster || monster->isRemoved() || monster->getHealth() <= 0
+	    || g_game().getMonsterByID(monster->getID()) != monster
+	    || markedMonsters.size() >= 4096 || markedMonsters.contains(monster->getID())) {
+		return false;
+	}
+	markedMonsters.emplace(monster->getID(), position);
+	if (++mapMarkers[position] == 1) {
+		for (const auto &[id, player] : g_game().getPlayers()) {
+			player->sendCyclopediaRaidMarker(position, true);
+		}
+	}
+	return true;
+}
+
+void Raids::removeMapMarker(uint32_t monsterId) {
+	const auto entry = markedMonsters.find(monsterId);
+	if (entry == markedMonsters.end()) {
+		return;
+	}
+	const auto position = entry->second;
+	markedMonsters.erase(entry);
+	const auto marker = mapMarkers.find(position);
+	if (marker == mapMarkers.end() || --marker->second != 0) {
+		return;
+	}
+	mapMarkers.erase(marker);
+	for (const auto &[id, player] : g_game().getPlayers()) {
+		player->sendCyclopediaRaidMarker(position, false);
 	}
 }
 
@@ -406,6 +443,7 @@ bool SingleSpawnEvent::executeEvent() {
 
 	monster->setForgeMonster(false);
 	monster->onSpawn(position);
+	g_game().raids.addMapMarker(monster, monster->getPosition());
 	return true;
 }
 
@@ -554,6 +592,7 @@ bool AreaSpawnEvent::configureRaidEvent(const pugi::xml_node &eventNode) {
 }
 
 bool AreaSpawnEvent::executeEvent() {
+	std::optional<Position> markerPosition;
 	for (const MonsterSpawn &spawn : spawnMonsterList) {
 		const uint32_t amount = uniform_random(spawn.minAmount, spawn.maxAmount);
 		for (uint32_t i = 0; i < amount; ++i) {
@@ -572,6 +611,10 @@ bool AreaSpawnEvent::executeEvent() {
 				const auto &topCreature = tile->getTopCreature();
 				if (!tile->isMovableBlocking() && !tile->hasFlag(TILESTATE_PROTECTIONZONE) && topCreature == nullptr && g_game().placeCreature(monster, tile->getPosition(), false, true)) {
 					monster->setForgeMonster(false);
+					if (!markerPosition) {
+						markerPosition = monster->getPosition();
+					}
+					g_game().raids.addMapMarker(monster, *markerPosition);
 					break;
 				}
 			}

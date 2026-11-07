@@ -9,6 +9,14 @@
 
 #pragma once
 
+#include "game/movement/position.hpp"
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <cstdint>
+	#include <map>
+	#include <string>
+	#include <vector>
+#endif
+
 class Player;
 class KV;
 
@@ -23,6 +31,27 @@ struct Summary {
 
 class PlayerCyclopedia {
 public:
+	struct DiscoveryPoint {
+		Position position;
+		uint8_t state = 0; // Hidden, close, reached. Wire states are state-1.
+	};
+	struct DiscoveryProgress {
+		uint16_t area;
+		uint8_t grade;
+		uint8_t percent;
+	};
+	bool loadDiscovery();
+	std::string startDiscovery(uint16_t subarea);
+	void onDiscoveryMove(bool teleport);
+	void sendDiscoveryEffects();
+	std::vector<DiscoveryProgress> discoveryProgress();
+	std::vector<uint16_t> discoverableAreas() const;
+	std::vector<uint16_t> completedDiscoveryAreas() const;
+	uint16_t activeDiscoveryArea() const {
+		return discoveryActive;
+	}
+	uint16_t currentDiscoveryArea() const;
+	const std::vector<DiscoveryPoint> &discoveryPoints() const;
 	explicit PlayerCyclopedia(Player &player);
 
 	Summary getSummary() const;
@@ -40,4 +69,13 @@ public:
 
 private:
 	Player &m_player;
+	bool discoveryLoaded = false;
+	uint64_t discoveryRetryAfter = 0;
+	uint64_t discoveryNextReset = 0;
+	uint64_t discoveryNextWrite = 0;
+	uint64_t discoveryNextEffects = 0;
+	uint16_t discoveryActive = 0;
+	uint16_t discoveryLastArea = UINT16_MAX;
+	std::map<uint16_t, std::vector<DiscoveryPoint>> discoveryState;
+	bool saveDiscovery(uint16_t area, const std::vector<DiscoveryPoint> &points);
 };

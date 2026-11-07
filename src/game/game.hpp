@@ -15,6 +15,7 @@
 #include "creatures/players/grouping/familiars.hpp"
 #include "creatures/players/grouping/groups.hpp"
 #include "lua/creature/raids.hpp"
+#include "game/cyclopedia_donations.hpp"
 #include "map/map.hpp"
 #include "modal_window/modal_window.hpp"
 #include "movement/position.hpp"
@@ -628,6 +629,7 @@ public:
 	std::unique_ptr<Mounts> mounts;
 	[[no_unique_address]] Outfits outfits;
 	Raids raids;
+	CyclopediaDonations cyclopediaDonations;
 	std::unique_ptr<Canary::protobuf::appearances::Appearances> m_appearancesPtr;
 
 	auto getTilesToClean() const {

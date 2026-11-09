@@ -132,3 +132,10 @@ transfer cannot attach to a buyer-owned character afterward. Only the creature's
 own walk task opts into discovery movement; player pushes and both Lua move
 variants retain non-walking provenance. Local source-route checks cover these
 entry points; connected authentication and gameplay still need operator testing.
+
+Persisted draft owner and price fields require unsigned JSON integers before
+conversion; ownership comparisons retain the full 64-bit value to reject wrapped
+IDs. Malformed, wrongly typed and oversized drafts are ignored. Local multiworld
+validation applies the same rules to world IDs. Extracted production predicates
+passed malformed JSON, missing/type-invalid fields, changed owners and overflow
+cases in both checkouts.

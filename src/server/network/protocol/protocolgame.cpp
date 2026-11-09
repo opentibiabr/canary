@@ -3377,7 +3377,8 @@ void ProtocolGame::sendCharacterAuctionProbe() {
 	const auto storedDraft = player->kv()->scoped("character-bazaar")->get("draft");
 	if (storedDraft) {
 		const auto saved = nlohmann::json::parse(storedDraft->get<std::string>(), nullptr, false);
-		if (saved.is_object() && saved.value("account_id", uint32_t { 0 }) == player->getAccountId()
+		if (saved.is_object() && saved.contains("account_id") && saved["account_id"].is_number_unsigned()
+		    && saved["account_id"].get<uint64_t>() == player->getAccountId()
 		    && saved.contains("starting_price") && saved["starting_price"].is_number_unsigned()
 		    && saved["starting_price"].get<uint64_t>() <= UINT32_MAX) {
 			savedDraftPrice = saved["starting_price"].get<uint32_t>();

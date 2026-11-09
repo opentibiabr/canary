@@ -125,3 +125,10 @@ fresh-session independence and logout refusal. Discovery
 fixtures covered adjacent native/script/door-rollback provenance, unchanged KV
 and hidden effects; source routing checks covered both walking legs and teleport
 entry points. These are local fixtures, not connected gameplay proof.
+
+The authenticated account is revalidated during preload, full load, and both
+immediate and deferred reconnects. A seller-authenticated login queued before a
+transfer cannot attach to a buyer-owned character afterward. Only the creature's
+own walk task opts into discovery movement; player pushes and both Lua move
+variants retain non-walking provenance. Local source-route checks cover these
+entry points; connected authentication and gameplay still need operator testing.

@@ -140,7 +140,7 @@ private:
 	ProtocolGame_ptr getThis() {
 		return std::static_pointer_cast<ProtocolGame>(shared_from_this());
 	}
-	void connect(const std::string &playerName, OperatingSystem_t operatingSystem);
+	void connect(const std::string &playerName, OperatingSystem_t operatingSystem, uint32_t accountId);
 	void disconnectClient(const std::string &message) const;
 	void writeToOutputBuffer(NetworkMessage &msg);
 	[[nodiscard]] bool shouldSuppressPreLoginPacket() const;

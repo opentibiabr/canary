@@ -956,13 +956,18 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 		}
 	}
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(name);
+	if (foundPlayer && foundPlayer->getAccountId() != accountId) {
+		disconnectClient("This character no longer belongs to your account.");
+		return;
+	}
+
 	if (!foundPlayer) {
 		player = std::make_shared<Player>(getThis());
 		player->setName(name);
 
 		player->setID();
 
-		if (!IOLoginDataLoad::preLoadPlayer(player, name)) {
+		if (!IOLoginDataLoad::preLoadPlayer(player, name) || player->getAccountId() != accountId) {
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
@@ -1037,7 +1042,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false) || player->getAccountId() != accountId) {
 			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 			return;
 		}
@@ -1095,25 +1100,25 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 			eventConnect = scheduleProtocolTask(
 				1000,
-				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }, "ProtocolGame::connect"
+				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem, accountId] { self->connect(playerName, operatingSystem, accountId); }, "ProtocolGame::connect"
 			);
 			if (eventConnect == 0) {
 				foundPlayer->isConnecting = false;
 				return;
 			}
 		} else {
-			connect(foundPlayer->getName(), operatingSystem);
+			connect(foundPlayer->getName(), operatingSystem, accountId);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
 }
 
-void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem) {
+void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem, uint32_t accountId) {
 	eventConnect = 0;
 
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(playerName);
-	if (!foundPlayer) {
+	if (!foundPlayer || foundPlayer->getAccountId() != accountId) {
 		disconnectClient("You are already logged in.");
 		return;
 	}

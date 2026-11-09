@@ -1910,7 +1910,7 @@ void Game::playerMoveCreature(const std::shared_ptr<Player> &player, const std::
 	}
 }
 
-ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, Direction direction, uint32_t flags /*= 0*/) {
+ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, Direction direction, uint32_t flags /*= 0*/, bool ordinaryMovement /*= false*/) {
 	if (!creature) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
@@ -1961,10 +1961,10 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 	if (!toTile) {
 		return RETURNVALUE_NOTPOSSIBLE;
 	}
-	return internalMoveCreature(creature, toTile, flags);
+	return internalMoveCreature(creature, toTile, flags, ordinaryMovement);
 }
 
-ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags /*= 0*/) {
+ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &toTile, uint32_t flags /*= 0*/, bool ordinaryMovement /*= false*/) {
 	metrics::method_latency measure(__METRICS_METHOD_NAME__);
 	if (creature->hasCondition(CONDITION_ROOTED)) {
 		return RETURNVALUE_NOTPOSSIBLE;
@@ -1983,7 +1983,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		}
 	}
 
-	map.moveCreature(creature, toTile, false, true);
+	map.moveCreature(creature, toTile, false, ordinaryMovement);
 	if (creature->getParent() != toTile) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -2000,7 +2000,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 			break;
 		}
 
-		map.moveCreature(creature, subCylinder, false, true);
+		map.moveCreature(creature, subCylinder, false, ordinaryMovement);
 
 		if (creature->getParent() != subCylinder) {
 			// could happen if a script move the creature

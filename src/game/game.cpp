@@ -1983,7 +1983,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 		}
 	}
 
-	map.moveCreature(creature, toTile);
+	map.moveCreature(creature, toTile, false, true);
 	if (creature->getParent() != toTile) {
 		return RETURNVALUE_NOERROR;
 	}
@@ -2000,7 +2000,7 @@ ReturnValue Game::internalMoveCreature(const std::shared_ptr<Creature> &creature
 			break;
 		}
 
-		map.moveCreature(creature, subCylinder);
+		map.moveCreature(creature, subCylinder, false, true);
 
 		if (creature->getParent() != subCylinder) {
 			// could happen if a script move the creature

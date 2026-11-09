@@ -12395,7 +12395,6 @@ void Player::onCreatureMove(const std::shared_ptr<Creature> &creature, const std
 	if (creature != getPlayer()) {
 		return;
 	}
-	cyclopedia().onDiscoveryMove(teleport);
 
 	if (!teleport && oldPos.z == newPos.z) {
 		updateParalyzeWalkExhaust();

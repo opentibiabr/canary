@@ -676,7 +676,7 @@ bool Map::placeCreature(
 	return true;
 }
 
-void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/) {
+void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport /* = false*/, bool ordinaryMovement /* = false*/) {
 	if (!creature || creature->isRemoved() || !newTile) {
 		return;
 	}
@@ -785,6 +785,11 @@ void Map::moveCreature(const std::shared_ptr<Creature> &creature, const std::sha
 		}
 	}
 
+	// Movement provenance is independent of the client animation flag.
+	// Credit before tile notifications can trigger a nested native/script teleport.
+	if (const auto player = creature->getPlayer()) {
+		player->cyclopedia().onDiscoveryMove(!ordinaryMovement || teleport);
+	}
 	// event method
 	for (const auto &spectator : spectators) {
 		spectator->onCreatureMove(creature, newTile, newPos, oldTile, oldPos, teleport);

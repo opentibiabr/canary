@@ -19,6 +19,7 @@
 #include "declarations.hpp"
 #include "game/game.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "game/scheduling/events_scheduler.hpp"
 #include "game/scheduling/monster_compute_service.hpp"
 #include "game/zones/zone.hpp"
@@ -155,6 +156,7 @@ int CanaryServer::generateLuaApiDocsOnly() {
 		g_monsterComputeService().shutdown();
 		g_dispatcher().shutdown();
 		g_threadPool().shutdown();
+		g_saveManager().clearAuctionTransfers();
 	};
 
 	try {
@@ -630,6 +632,7 @@ void CanaryServer::shutdown() {
 	g_dispatcher().shutdown();
 	g_metrics().shutdown();
 	g_threadPool().shutdown();
+	g_saveManager().clearAuctionTransfers();
 
 	// Cached snapshots own creatures and must release them while gameplay services are still alive.
 	Spectators::clearCache();

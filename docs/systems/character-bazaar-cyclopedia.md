@@ -98,3 +98,30 @@ and scheduled settlement; overlapping raid monsters and the final marker
 removal; a donation, rollback and restart; and discovery with ordinary movement,
 teleports and relog. Confirm bank balances, owners and snapshots before using
 the features on a live server. Automated fixtures do not replace these checks.
+
+## Review fixes: persistence and movement provenance
+
+Settlement pins the old player session before logout. A failed final save retains
+that owner for retry and leaves the auction pending. The final synchronous save
+uses the same player lock as every IOLoginData save, waits for active saves, and
+seals the removed session only after commit. Queued old-session saves then fail
+before touching SQL. A transaction-locked account ownership check also rejects
+saves queued before settlement by an already disconnected session; the local
+multiworld project additionally scopes that check to the character world.
+Retained failed sessions are explicitly drained after the
+worker pool stops during controlled shutdown.
+
+Map movement defaults to non-walking provenance. Only ordinary movement opts in;
+native teleports, internalTeleport (including pushMove and door rollback), and
+bed relocation cannot reveal or reach discovery points even when adjacent and
+animated like a step. Discovery evaluates the owning player once before nested
+tile notifications, independently of spectator callbacks.
+
+Review validation executed the actual IOLoginData save wrapper and SaveManager
+transfer preparation in isolated C++ fixtures: async logout queue, injected save
+failure, retained-session retry, an in-flight save blocking finalization, stale
+queued/direct saves, a pre-logout session with a changed SQL owner,
+fresh-session independence and logout refusal. Discovery
+fixtures covered adjacent native/script/door-rollback provenance, unchanged KV
+and hidden effects; source routing checks covered both walking legs and teleport
+entry points. These are local fixtures, not connected gameplay proof.

@@ -192,9 +192,24 @@ void IOLoginData::loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &pla
 	IOLoginDataLoad::loadPlayerExivaRestrictions(player);
 }
 
-bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
+bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player, bool sealForTransfer) {
+	if (!player) {
+		return false;
+	}
+	// All callers, including queued old-session saves, share this barrier.
+	Player::PlayerLock lock(player);
+	if (player->isPersistenceSealed() || (sealForTransfer && !player->isRemoved())) {
+		return false;
+	}
 	try {
 		bool success = DBTransaction::executeWithinTransaction([player]() {
+			// Also reject saves queued by a session that logged out before settlement.
+			const auto owner = Database::getInstance().storeQuery(fmt::format(
+				"SELECT `account_id` FROM `players` WHERE `id` = {} FOR UPDATE", player->getGUID()
+			));
+			if (!owner || owner->getNumber<uint32_t>("account_id") != player->getAccountId()) {
+				return false;
+			}
 			return savePlayerGuard(player);
 		});
 
@@ -202,6 +217,9 @@ bool IOLoginData::savePlayer(const std::shared_ptr<Player> &player) {
 			g_logger().error("[{}] Error occurred saving player", __FUNCTION__);
 		}
 
+		if (success && sealForTransfer) {
+			player->sealPersistence();
+		}
 		return success;
 	} catch (const DatabaseException &e) {
 		g_logger().error("[{}] Exception occurred: {}", __FUNCTION__, e.what());

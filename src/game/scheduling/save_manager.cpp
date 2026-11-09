@@ -155,7 +155,6 @@ bool SaveManager::doSavePlayer(std::shared_ptr<Player> player) {
 	}
 
 	Benchmark bm_savePlayer;
-	Player::PlayerLock lock(player);
 	m_playerMap.erase(player->getGUID());
 	if (g_game().getGameState() == GAME_STATE_NORMAL) {
 		logger.debug("Saving player {}.", player->getName());
@@ -215,4 +214,30 @@ void SaveManager::saveKV() {
 
 	auto duration = bm_saveKV.duration();
 	logger.debug("Key-value store saved in {} milliseconds.", duration);
+}
+
+bool SaveManager::prepareAuctionTransfer(uint32_t playerId, std::shared_ptr<Player> livePlayer) {
+	if (livePlayer) {
+		if (livePlayer->getGUID() != playerId) {
+			return false;
+		}
+		const auto [entry, inserted] = auctionTransfers.try_emplace(playerId, livePlayer);
+		if (!inserted && entry->second != livePlayer) {
+			return false;
+		}
+		livePlayer->removePlayer(true);
+	}
+	const auto entry = auctionTransfers.find(playerId);
+	if (entry == auctionTransfers.end()) {
+		return true;
+	}
+	if (!entry->second->isRemoved() || !IOLoginData::savePlayer(entry->second, true)) {
+		return false;
+	}
+	auctionTransfers.erase(entry);
+	return true;
+}
+
+void SaveManager::clearAuctionTransfers() {
+	auctionTransfers.clear();
 }

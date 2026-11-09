@@ -117,7 +117,7 @@ public:
 		const std::shared_ptr<Tile> &centerTile = nullptr
 	);
 
-	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false);
+	void moveCreature(const std::shared_ptr<Creature> &creature, const std::shared_ptr<Tile> &newTile, bool forceTeleport = false, bool ordinaryMovement = false);
 
 	/**
 	 * Checks if you can throw an object to that position

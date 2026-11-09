@@ -40,7 +40,7 @@ public:
 	 */
 	static void loadOnlyDataForOnlinePlayer(const std::shared_ptr<Player> &player, const std::shared_ptr<DBResult> &result);
 
-	static bool savePlayer(const std::shared_ptr<Player> &player);
+	static bool savePlayer(const std::shared_ptr<Player> &player, bool sealForTransfer = false);
 
 	/**
 	 * @brief Saves data components that are only relevant when the player is online.

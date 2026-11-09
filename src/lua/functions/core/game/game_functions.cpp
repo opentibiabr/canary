@@ -19,6 +19,7 @@
 #include "game/game.hpp"
 #include "database/database.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
 #include "items/item.hpp"
@@ -65,10 +66,11 @@ namespace {
 		bool allCommitted = true;
 		do {
 			const uint32_t auctionId = pending->getNumber<uint32_t>("id");
-			// External publication can leave an existing session connected. Remove
-			// and save it before locking and transferring character ownership.
-			if (const auto live = g_game().getPlayerByGUID(pending->getNumber<uint32_t>("player_id"))) {
-				live->removePlayer(true);
+			const auto playerId = pending->getNumber<uint32_t>("player_id");
+			if (!g_saveManager().prepareAuctionTransfer(playerId, g_game().getPlayerByGUID(playerId))) {
+				allCommitted = false;
+				g_logger().error("[CharacterBazaar] Character {} has no confirmed final save; auction {} remains pending", playerId, auctionId);
+				continue;
 			}
 			const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([auctionId] {
 				auto &db = g_database();

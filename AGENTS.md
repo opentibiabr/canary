@@ -51,3 +51,5 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 
 - For quickstart changes, read `docs/docker/quickstart-for-beginners.md` and `docker/DOCKER.md`; keep CI/build, development, and user quickstart responsibilities separate.
 - The default client path is `login-server` at `http://localhost:8088/login`, never MyAAC `login.php`. MyAAC remains website/admin-only, uses `slawkens/myaac` `2.x`, and keeps `http://localhost:8080`; public config stays `CANARY_*`, and the quickstart uses the published Canary runtime image.
+
+- Bazaar ownership transfer must await a committed final character save and seal the old session under the same persistence lock. Retain failed logout saves until retry; queued and direct old-session saves must not write after transfer. Discovery must use explicit ordinary-movement provenance, never the teleport animation flag; validate adjacent native/script teleports and door rollback.

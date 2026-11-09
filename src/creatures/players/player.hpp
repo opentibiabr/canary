@@ -271,6 +271,13 @@ public:
 	void setOnline(bool value) override {
 		online = value;
 	}
+	// Serialized by PlayerLock; successful auction saves seal the old session.
+	bool isPersistenceSealed() const {
+		return persistenceSealed;
+	}
+	void sealPersistence() {
+		persistenceSealed = true;
+	}
 	bool isOnline() const override {
 		return online;
 	}
@@ -1588,6 +1595,7 @@ public:
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
+	bool persistenceSealed = false;
 
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;

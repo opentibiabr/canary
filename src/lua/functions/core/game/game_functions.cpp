@@ -7,6 +7,7 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "config/configmanager.hpp"
 #include "lua/functions/core/game/game_functions.hpp"
 
 #include "core.hpp"
@@ -16,7 +17,9 @@
 #include "creatures/players/player.hpp"
 #include "game/functions/game_reload.hpp"
 #include "game/game.hpp"
+#include "database/database.hpp"
 #include "game/scheduling/dispatcher.hpp"
+#include "game/scheduling/save_manager.hpp"
 #include "io/io_bosstiary.hpp"
 #include "io/iobestiary.hpp"
 #include "items/item.hpp"
@@ -29,8 +32,163 @@
 #include "map/spectators.hpp"
 #include "lua/functions/lua_functions_loader.hpp"
 
+namespace {
+
+	constexpr uint8_t CHARACTER_BAZAAR_PROCESSING = 2;
+
+	bool creditCharacterBazaarAccount(uint32_t accountId, const std::string &currency, uint64_t amount) {
+		auto &db = g_database();
+		const auto account = db.storeQuery(fmt::format("SELECT `{}` AS `balance` FROM `accounts` WHERE `id`={} FOR UPDATE", currency, accountId));
+		if (!account) {
+			return false;
+		}
+		const auto balance = account->getNumber<uint64_t>("balance");
+		if (balance > UINT32_MAX || amount > UINT32_MAX - balance) {
+			return false;
+		}
+		return db.executeQuery(fmt::format("UPDATE `accounts` SET `{}`={} WHERE `id`={}", currency, balance + amount, accountId));
+	}
+
+	bool settleCharacterBazaarAtServerSave() {
+		// Existing listings remain protected and settle even when new publication is disabled.
+		if (!g_database().storeQuery("SHOW TABLES LIKE 'myaac\\_charbazaar'")) {
+			return true;
+		}
+		const auto pending = g_database().storeQuery(fmt::format(
+			"SELECT `id`, `player_id` FROM `myaac_charbazaar` WHERE `status` = {} ORDER BY `id` ASC",
+			CHARACTER_BAZAAR_PROCESSING
+		));
+		if (!pending) {
+			return true;
+		}
+
+		uint32_t settled = 0;
+		bool allCommitted = true;
+		do {
+			const uint32_t auctionId = pending->getNumber<uint32_t>("id");
+			const auto playerId = pending->getNumber<uint32_t>("player_id");
+			if (!g_saveManager().prepareAuctionTransfer(playerId, g_game().getPlayerByGUID(playerId))) {
+				allCommitted = false;
+				g_logger().error("[CharacterBazaar] Character {} has no confirmed final save; auction {} remains pending", playerId, auctionId);
+				continue;
+			}
+			const bool committed = DBTransaction::executeWithinTransactionRollbackOnFailure([auctionId] {
+				auto &db = g_database();
+				const auto auction = db.storeQuery(fmt::format(
+					"SELECT `player_id`, `world_id`, `account_old`, `account_new`, `price`, `bid_account`, `bid_price`, `is_sold`, "
+					"`offer_type`, `currency`, COALESCE(`commission_percent`, 12) AS `commission_percent` "
+					"FROM `myaac_charbazaar` WHERE `id` = {} AND `status` = {} FOR UPDATE",
+					auctionId, CHARACTER_BAZAAR_PROCESSING
+				));
+				if (!auction) {
+					return true;
+				}
+
+				const uint32_t playerId = auction->getNumber<uint32_t>("player_id");
+				const uint32_t worldId = auction->getNumber<uint32_t>("world_id");
+				const uint32_t sellerId = auction->getNumber<uint32_t>("account_old");
+				const uint32_t targetId = auction->getNumber<uint32_t>("account_new");
+				const bool sold = auction->getNumber<uint8_t>("is_sold") != 0;
+				const auto currency = auction->getString("currency");
+				if (worldId != 0 || playerId == 0 || sellerId == 0 || targetId == 0 || (currency != "premium_points" && currency != "coins_transferable")) {
+					return false;
+				}
+
+				const auto player = db.storeQuery(fmt::format(
+					"SELECT `account_id` FROM `players` WHERE `id` = {} FOR UPDATE",
+					playerId
+				));
+				// Accept only a known holder, never an arbitrary manually changed account.
+				const auto configuredCustodian = g_configManager().getNumber(CHARACTER_AUCTION_CUSTODY_ACCOUNT);
+				const auto holder = player ? player->getNumber<uint32_t>("account_id") : 0;
+				if (!player || (holder != sellerId && (configuredCustodian <= 0 || holder != static_cast<uint32_t>(configuredCustodian)))
+				    || g_game().getPlayerByGUID(playerId) || (sold && sellerId == targetId)) {
+					return false;
+				}
+
+				const uint32_t firstAccountId = std::min(sellerId, targetId);
+				const uint32_t lastAccountId = std::max(sellerId, targetId);
+				const auto accounts = db.storeQuery(fmt::format(
+					"SELECT `id` FROM `accounts` WHERE `id` IN ({}, {}) ORDER BY `id` FOR UPDATE",
+					firstAccountId, lastAccountId
+				));
+				if (!accounts || accounts->countResults() != (sellerId == targetId ? 1 : 2)) {
+					return false;
+				}
+
+				if (sold) {
+					const uint64_t price = auction->getNumber<uint32_t>("offer_type") == 1
+						? auction->getNumber<uint64_t>("bid_price")
+						: auction->getNumber<uint64_t>("price");
+					if (price == 0) {
+						return false;
+					}
+
+					if (auction->getNumber<uint32_t>("offer_type") == 1) {
+						const uint32_t bidderId = auction->getNumber<uint32_t>("bid_account");
+						const auto winningBid = db.storeQuery(fmt::format(
+							"SELECT `bid` FROM `myaac_charbazaar_bid` WHERE `auction_id` = {} AND `account_id` = {} "
+							"ORDER BY `bid` DESC, `id` DESC LIMIT 1 FOR UPDATE",
+							auctionId, bidderId
+						));
+						if (bidderId != targetId || !winningBid || winningBid->getNumber<uint64_t>("bid") < price) {
+							return false;
+						}
+						const uint64_t reserved = winningBid->getNumber<uint64_t>("bid");
+						if (reserved > price && !creditCharacterBazaarAccount(bidderId, currency, reserved - price)) {
+							return false;
+						}
+					}
+
+					const uint64_t commission = auction->getNumber<uint8_t>("commission_percent");
+					if (commission > 100 || price > UINT32_MAX) {
+						return false;
+					}
+					const uint64_t fee = (price / 100) * commission + ((price % 100) * commission) / 100;
+					if (!creditCharacterBazaarAccount(sellerId, currency, price - fee)) {
+						return false;
+					}
+				}
+
+				return db.executeQuery(fmt::format(
+						   "UPDATE `players` SET `account_id` = {} WHERE `id` = {} AND `account_id` = {}",
+						   targetId, playerId, holder
+					   ))
+					&& db.executeQuery(fmt::format(
+						"UPDATE `myaac_charbazaar` SET `status` = 1 WHERE `id` = {} AND `status` = {}",
+						auctionId, CHARACTER_BAZAAR_PROCESSING
+					));
+			});
+			if (committed) {
+				++settled;
+			} else {
+				allCommitted = false;
+				g_logger().error("[CharacterBazaar] Failed to settle pending auction {} during server save", auctionId);
+			}
+		} while (pending->next());
+
+		if (settled != 0) {
+			g_logger().info("[CharacterBazaar] Settled {} pending auction(s) during server save", settled);
+		}
+		return allCommitted;
+	}
+
+} // namespace
+
+/***
+ * @function Game.processCyclopediaAndBazaarServerSave
+ * @return boolean
+ */
+int GameFunctions::luaGameProcessCyclopediaAndBazaarServerSave(lua_State* L) {
+	const bool rotated = g_game().cyclopediaDonations.advance();
+	const bool settled = settleCharacterBazaarAtServerSave();
+	Lua::pushBoolean(L, rotated && settled);
+	return 1;
+}
+
 void GameFunctions::init(lua_State* L) {
 	Lua::registerTable(L, "Game");
+	Lua::registerMethod(L, "Game", "processCyclopediaAndBazaarServerSave", GameFunctions::luaGameProcessCyclopediaAndBazaarServerSave);
 
 	Lua::registerMethod(L, "Game", "createNpcType", GameFunctions::luaGameCreateNpcType);
 	Lua::registerMethod(L, "Game", "createMonsterType", GameFunctions::luaGameCreateMonsterType);

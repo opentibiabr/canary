@@ -9,6 +9,9 @@
 
 #include "server/network/protocol/protocolgame.hpp"
 
+#include "database/database.hpp"
+#include "kv/kv.hpp"
+
 #include "account/account.hpp"
 #include "config/configmanager.hpp"
 #include "core.hpp"
@@ -65,7 +68,10 @@
 #include "enums/imbuement.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
 	#include <chrono>
+	#include <ranges>
+	#include <nlohmann/json.hpp>
 	#include <string_view>
 #endif
 
@@ -938,14 +944,44 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
 
 	// dispatcher thread
+	const auto bazaarTable = g_database().storeQuery(
+		"SELECT COUNT(*) AS `present` FROM `information_schema`.`tables` "
+		"WHERE `table_schema`=DATABASE() AND `table_name`='myaac_charbazaar'"
+	);
+	if (!bazaarTable) {
+		g_logger().error("[CharacterBazaar] Could not verify the auction schema for character {}", name);
+		disconnectClient("Character Bazaar status could not be verified. Please try again later.");
+		return;
+	}
+	if (bazaarTable->getNumber<uint32_t>("present") != 0) {
+		const auto auctionLock = g_database().storeQuery(fmt::format(
+			"SELECT COUNT(*) AS `active` FROM `myaac_charbazaar` AS `a` JOIN `players` AS `p` ON `p`.`id`=`a`.`player_id` "
+			"WHERE `p`.`name`={} AND `a`.`status` IN (0,2)",
+			g_database().escapeString(name)
+		));
+		if (!auctionLock) {
+			g_logger().error("[CharacterBazaar] Login lock query failed for character {}; verify the myaac_charbazaar schema", name);
+			disconnectClient("Character Bazaar status could not be verified. Please try again later.");
+			return;
+		}
+		if (auctionLock->getNumber<uint32_t>("active") > 0) {
+			disconnectClient("This character is listed in the Character Bazaar and cannot log in until the auction ends or is cancelled.");
+			return;
+		}
+	}
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(name);
+	if (foundPlayer && foundPlayer->getAccountId() != accountId) {
+		disconnectClient("This character no longer belongs to your account.");
+		return;
+	}
+
 	if (!foundPlayer) {
 		player = std::make_shared<Player>(getThis());
 		player->setName(name);
 
 		player->setID();
 
-		if (!IOLoginDataLoad::preLoadPlayer(player, name)) {
+		if (!IOLoginDataLoad::preLoadPlayer(player, name) || player->getAccountId() != accountId) {
 			disconnectClient("Your character could not be loaded.");
 			return;
 		}
@@ -1020,7 +1056,7 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 			return;
 		}
 
-		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false)) {
+		if (!IOLoginData::loadPlayerById(player, player->getGUID(), false) || player->getAccountId() != accountId) {
 			disconnectClient("Your character could not be loaded, please contact an adminstrator.");
 			return;
 		}
@@ -1078,25 +1114,25 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 
 			eventConnect = scheduleProtocolTask(
 				1000,
-				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem] { self->connect(playerName, operatingSystem); }, "ProtocolGame::connect"
+				[self = getThis(), playerName = foundPlayer->getName(), operatingSystem, accountId] { self->connect(playerName, operatingSystem, accountId); }, "ProtocolGame::connect"
 			);
 			if (eventConnect == 0) {
 				foundPlayer->isConnecting = false;
 				return;
 			}
 		} else {
-			connect(foundPlayer->getName(), operatingSystem);
+			connect(foundPlayer->getName(), operatingSystem, accountId);
 		}
 	}
 	OutputMessagePool::getInstance().addProtocolToAutosend(shared_from_this());
 	sendBosstiaryCooldownTimer();
 }
 
-void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem) {
+void ProtocolGame::connect(const std::string &playerName, OperatingSystem_t operatingSystem, uint32_t accountId) {
 	eventConnect = 0;
 
 	std::shared_ptr<Player> foundPlayer = g_game().getPlayerByName(playerName);
-	if (!foundPlayer) {
+	if (!foundPlayer || foundPlayer->getAccountId() != accountId) {
 		disconnectClient("You are already logged in.");
 		return;
 	}
@@ -3267,8 +3303,393 @@ void ProtocolGame::parseContainerAction(NetworkMessage &msg) {
 	}
 }
 
+std::vector<std::pair<std::string, bool>> ProtocolGame::getCharacterAuctionEligibility() const {
+	std::vector<std::pair<std::string, bool>> conditions;
+	const auto add = [&conditions](std::string text, bool satisfied) {
+		conditions.emplace_back(std::move(text), satisfied);
+	};
+	// Official eligibility: https://www.tibia.com/support/?entryid=220&subtopic=gethelp
+	// Verify relationships against the authenticated character.
+	const auto row = g_database().storeQuery(fmt::format(
+		"SELECT `p`.`deletion`,`a`.`coins_transferable`,"
+		"(SELECT COUNT(*) FROM `guild_invites` WHERE `player_id`=`p`.`id`) AS `guild_pending`,"
+		"(SELECT COUNT(*) FROM `market_offers` WHERE `player_id`=`p`.`id`) AS `market_pending`,"
+		"(SELECT COUNT(*) FROM `houses` WHERE `new_owner`=`p`.`id`) AS `house_transfer`,"
+		"(SELECT COUNT(*) FROM `player_namelocks` WHERE `player_id`=`p`.`id`) AS `namelocks` "
+		"FROM `players` AS `p` JOIN `accounts` AS `a` ON `a`.`id`=`p`.`account_id` "
+		"WHERE `p`.`id`={} AND `p`.`account_id`={}",
+		player->getGUID(), player->getAccountId()
+	));
+	bool ownsHouse = false;
+	bool bidsHouse = false;
+	for (const auto &[id, house] : g_game().map.houses.getHouses()) {
+		if (house) {
+			ownsHouse = ownsHouse || house->getOwner() == player->getGUID();
+			bidsHouse = bidsHouse || house->getBidder() == static_cast<int32_t>(player->getGUID());
+		}
+	}
+	add("The character must be at least level 8.", player->getLevel() >= 8);
+	add("The character must not own a house or guildhall.", !ownsHouse);
+	add("The character must not have a pending house bid or transfer.", row && !bidsHouse && row->getNumber<uint32_t>("house_transfer") == 0);
+	add("The character must not belong to a guild.", !player->getGuild());
+	add("The character must not have a pending guild invitation or application.", row && row->getNumber<uint32_t>("guild_pending") == 0);
+	add("The character must not have active Market offers.", row && row->getNumber<uint32_t>("market_pending") == 0);
+	add("The character must not be scheduled for deletion.", row && row->getNumber<uint64_t>("deletion") == 0);
+	add("The character must not have a skull.", player->getSkull() == SKULL_NONE);
+	const auto tile = player->getTile();
+	add("The character must be in a protection zone.", tile && tile->hasFlag(TILESTATE_PROTECTIONZONE));
+	add("The character must not have a logout or combat lock.", !player->isPzLocked() && !player->hasCondition(CONDITION_INFIGHT));
+	add("The character must not have a pending namelock.", row && row->getNumber<uint32_t>("namelocks") == 0);
+	add("The account needs at least 1 transferable coin for the creation fee.", row && row->getNumber<uint64_t>("coins_transferable") >= 1);
+	// The external Bazaar must enforce its own account conduct and transfer policy.
+	if (!row) {
+		add("Could not verify the requirements in the database. Please try again later.", false);
+	}
+	return conditions;
+}
+
+void ProtocolGame::sendCharacterAuctionProbe() {
+	if (!g_configManager().getBoolean(CHARACTER_AUCTION_PROBE)
+	    || oldProtocol || isOTC || isOTCR || clientVersion != 1525
+	    || clientVersionString != "15.25.0a00a0d67311e057aa8e659a84cdf51db9c08c03") {
+		return;
+	}
+	const auto nowMs = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+	if (nowMs < characterAuctionProbeNextSend) {
+		return;
+	}
+	characterAuctionProbeNextSend = nowMs + 250;
+	characterAuctionCatalogExpires = nowMs + 120000;
+	characterAuctionCatalogItems.clear();
+	characterAuctionCatalogArguments.clear();
+	characterAuctionArgumentLabels.clear();
+	characterAuctionValidatedRequest.clear();
+
+	// Official 15.25 client.exe: opcode 0x80 -> reader VA 0x1405EAB60.
+	// Subtype 0: base data, then u8 count of (string, bool) sell conditions.
+	// The v2 live-client test confirmed 1=fulfilled and 0=unfulfilled.
+	// Actions 2/3 are validated against this connection catalog below.
+	// No auction, account, item, or currency mutation occurs here.
+	NetworkMessage response;
+	response.addByte(0x80);
+	response.addByte(0); // Base data.
+	response.addString(player->getName());
+	response.add<uint16_t>(static_cast<uint16_t>(std::min<uint32_t>(player->getLevel(), UINT16_MAX)));
+	response.addByte(player->getVocation()->getClientId());
+	AddOutfit(response, player->getDefaultOutfit(), false);
+	response.addByte(0); // Transfer-related base field (experimental semantics).
+	// Reader VAs 0x1405EB0FE / 0x1405EB11A consume exactly TWO u32s.
+	// A third u32 here shifts the condition count and leaves a bogus opcode 0.
+	const auto nowSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	const auto endTimestamp = static_cast<uint32_t>(std::clamp<int64_t>(nowSeconds, 0, static_cast<int64_t>(UINT32_MAX) - 7 * 86400));
+	characterAuctionMinimumEnd = endTimestamp + 86400;
+	characterAuctionMaximumEnd = endTimestamp + 7 * 86400;
+	response.add<uint32_t>(endTimestamp + 86400); // Tomorrow, diagnostic lower bound.
+	response.add<uint32_t>(endTimestamp + 7 * 86400); // One week, diagnostic upper bound.
+	response.add<uint16_t>(25); // Minimum starting bid.
+	std::optional<uint32_t> savedDraftPrice;
+	const auto storedDraft = player->kv()->scoped("character-bazaar")->get("draft");
+	if (storedDraft) {
+		const auto saved = nlohmann::json::parse(storedDraft->get<std::string>(), nullptr, false);
+		if (saved.is_object() && saved.contains("account_id") && saved["account_id"].is_number_unsigned()
+		    && saved["account_id"].get<uint64_t>() == player->getAccountId()
+		    && saved.contains("starting_price") && saved["starting_price"].is_number_unsigned()
+		    && saved["starting_price"].get<uint64_t>() <= UINT32_MAX) {
+			savedDraftPrice = saved["starting_price"].get<uint32_t>();
+		}
+	}
+	const auto eligibility = getCharacterAuctionEligibility();
+	response.addByte(static_cast<uint8_t>(eligibility.size() + (savedDraftPrice ? 1 : 0)));
+	for (const auto &[text, satisfied] : eligibility) {
+		response.addString(text);
+		response.addByte(satisfied ? 1 : 0);
+	}
+	if (savedDraftPrice) {
+		response.addString(fmt::format("[DRAFT] Previous configuration saved with price {}. Review and select again before publishing.", *savedDraftPrice));
+		response.addByte(1);
+	}
+	characterAuctionProbeSent = true;
+	writeToOutputBuffer(response);
+	// CharacterTrade item catalog: u16 count, then u16 item, optional u8 tier,
+	// u32 amount. Only the authenticated owner's depot chests are offered.
+	const auto depotItems = player->getDepotChestItemsId();
+	std::vector<std::pair<ItemsTierKey, uint32_t>> sortedDepotItems(depotItems.begin(), depotItems.end());
+	std::ranges::sort(sortedDepotItems, {}, &std::pair<ItemsTierKey, uint32_t>::first);
+	constexpr size_t maxDepotEntries = 2048; // At most 16 KiB; bounded protocol body.
+	NetworkMessage itemCatalog;
+	itemCatalog.addByte(0x80);
+	itemCatalog.addByte(1);
+	itemCatalog.add<uint16_t>(static_cast<uint16_t>(std::min(sortedDepotItems.size(), maxDepotEntries)));
+	for (size_t index = 0; index < std::min(sortedDepotItems.size(), maxDepotEntries); ++index) {
+		const auto &[key, amount] = sortedDepotItems[index];
+		const auto &[itemId, tier] = key;
+		characterAuctionCatalogItems.insert(key);
+		itemCatalog.add<uint16_t>(itemId);
+		if (Item::items[itemId].upgradeClassification > 0) {
+			itemCatalog.addByte(tier);
+		}
+		itemCatalog.add<uint32_t>(amount);
+	}
+	writeToOutputBuffer(itemCatalog);
+	NetworkMessage storeCatalog;
+	storeCatalog.addByte(0x80);
+	storeCatalog.addByte(2);
+	storeCatalog.add<uint16_t>(0); // Store inbox is outside the depot-only scope.
+	writeToOutputBuffer(storeCatalog);
+
+	// Textual highlights: u8 categories; category u8, string, u16 entries;
+	// each entry is u16 selection ID followed by its display string.
+	NetworkMessage highlights;
+	highlights.addByte(0x80);
+	highlights.addByte(3);
+	highlights.addByte(1);
+	highlights.addByte(0); // Diagnostic category, label supplied explicitly.
+	highlights.addString("Character");
+	std::vector<std::pair<uint16_t, std::string>> arguments;
+	const auto addHighlight = [&arguments](uint16_t id, const std::string &text) {
+		arguments.emplace_back(id, text.substr(0, 256));
+	};
+	addHighlight(1, fmt::format("Level: {}", player->getLevel()));
+	addHighlight(2, fmt::format("Magic level: {}", player->getMagicLevel()));
+	addHighlight(3, fmt::format("Sword fighting: {}", player->getSkillLevel(SKILL_SWORD)));
+	addHighlight(4, fmt::format("Axe fighting: {}", player->getSkillLevel(SKILL_AXE)));
+	addHighlight(5, fmt::format("Club fighting: {}", player->getSkillLevel(SKILL_CLUB)));
+	addHighlight(6, fmt::format("Distance fighting: {}", player->getSkillLevel(SKILL_DISTANCE)));
+	addHighlight(7, fmt::format("Shielding: {}", player->getSkillLevel(SKILL_SHIELD)));
+	addHighlight(8, fmt::format("Fishing: {}", player->getSkillLevel(SKILL_FISHING)));
+	addHighlight(9, fmt::format("Fist fighting: {}", player->getSkillLevel(SKILL_FIST)));
+	addHighlight(10, fmt::format("Achievement points: {}", player->achiev().getPoints()));
+	addHighlight(11, fmt::format("Unlocked achievements: {}", player->achiev().getUnlockedAchievements().size()));
+	addHighlight(12, fmt::format("Available charm points: {}", player->getCharmPoints()));
+	addHighlight(13, fmt::format("Total earned charm points: {}", player->getMaxCharmPoints()));
+	addHighlight(14, fmt::format("Available minor charm echoes: {}", player->getMinorCharmEchoes()));
+	addHighlight(15, fmt::format("Boss points: {}", player->getBossPoints()));
+	addHighlight(16, fmt::format("Hunting Task points: {}", player->getTaskHuntingPoints()));
+	addHighlight(17, fmt::format("Unlocked outfit entries: {}", player->getOutfits().size()));
+	uint32_t blessings = 0;
+	for (uint8_t index = 1; index <= 8; ++index) {
+		if (player->getBlessingCount(index) > 0) {
+			++blessings;
+		}
+	}
+	addHighlight(18, fmt::format("Active blessings: {}", blessings));
+	// Stable local diagnostic IDs; definitions must come from the owner's world.
+	const auto achievementDefinitions = g_game().getAchievements();
+	for (const auto &[id, timestamp] : player->achiev().getUnlockedAchievements()) {
+		if (arguments.size() >= 128) {
+			break;
+		}
+		const auto it = achievementDefinitions.find(id);
+		if (id <= UINT16_MAX - 1000 && it != achievementDefinitions.end()) {
+			addHighlight(static_cast<uint16_t>(1000 + id), fmt::format("Achievement: {}", it->second.name));
+		}
+	}
+	highlights.add<uint16_t>(static_cast<uint16_t>(arguments.size()));
+	for (const auto &[id, text] : arguments) {
+		characterAuctionCatalogArguments.insert(id);
+		characterAuctionArgumentLabels.emplace(id, text);
+		highlights.add<uint16_t>(id);
+		highlights.addString(text);
+	}
+	writeToOutputBuffer(highlights);
+	g_logger().info("[CharacterAuctionProbe:v9] world={} character_id={} depot_entries={} depot_total={} highlights={} navigation_only=true", 0, player->getGUID(), std::min(sortedDepotItems.size(), maxDepotEntries), sortedDepotItems.size(), arguments.size());
+}
+
 void ProtocolGame::parseCharacterTradeConfigurationAction(NetworkMessage &msg) {
+	if (msg.getUnreadBytes() == 0) {
+		return;
+	}
 	const auto action = msg.getByte(true);
+	if (action == 0 && msg.getUnreadBytes() == 0) {
+		sendCharacterAuctionProbe();
+	}
+	if (characterAuctionProbeSent && (action == 2 || action == 3)) {
+		// Validation and confirmation are distinct, single-use operations.
+		g_logger().info("[CharacterAuction:v14] world={} character_id={} action={} payload_bytes={}", 0, player->getGUID(), action, msg.getUnreadBytes());
+		if (action == 2 || action == 3) {
+			std::string validationError;
+			std::vector<uint8_t> request;
+			if (msg.getUnreadBytes() > 64) {
+				validationError = "The request exceeds the allowed size.";
+			} else {
+				const auto* bytes = static_cast<const NetworkMessage &>(msg).getBuffer() + msg.getBufferPosition();
+				request.assign(bytes, bytes + msg.getUnreadBytes());
+			}
+			if (!g_configManager().getBoolean(CHARACTER_AUCTION_PROBE)) {
+				validationError = "Auction creation is disabled on this server.";
+			}
+			if (action == 3 && (characterAuctionValidatedRequest.empty() || request != characterAuctionValidatedRequest)) {
+				validationError = "The confirmation does not match a validated configuration. Go back and validate again.";
+			}
+			// Every validation replaces pending approval. Every confirmation consumes
+			// it before any further checks, including rejected attempts and replay.
+			characterAuctionValidatedRequest.clear();
+			const auto eligibility = getCharacterAuctionEligibility();
+			const auto failedCondition = std::ranges::find_if(eligibility, [](const auto &condition) { return !condition.second; });
+			if (failedCondition != eligibility.end()) {
+				validationError = failedCondition->first;
+			}
+			uint32_t price = 0;
+			uint32_t endTime = 0;
+			uint8_t selectedItems = 0;
+			uint8_t selectedArguments = 0;
+			const auto nowMs = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+			if (nowMs >= characterAuctionCatalogExpires) {
+				validationError = "The catalog has expired. Cancel and reopen the window to refresh your selections.";
+			}
+			const auto read = [&msg, &validationError]<typename T>(T &value) {
+				if (!validationError.empty()) {
+					return false;
+				}
+				if (msg.getUnreadBytes() < sizeof(T)) {
+					validationError = "Incomplete request.";
+					return false;
+				}
+				value = msg.get<T>();
+				return true;
+			};
+			read(price);
+			read(endTime);
+			const auto nowSeconds = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+			if (validationError.empty() && (price < 25 || price > INT32_MAX)) {
+				validationError = "The price must be between 25 and 2,147,483,647 coins. Confirm the edit before continuing.";
+			}
+			if (validationError.empty() && (endTime <= nowSeconds || endTime < characterAuctionMinimumEnd || endTime > characterAuctionMaximumEnd)) {
+				validationError = "The date is outside the range announced in this window.";
+			}
+			const auto depot = player->getDepotChestItemsId();
+			std::set<ItemsTierKey> seenItems;
+			std::vector<ItemsTierKey> itemOrder;
+			if (read(selectedItems) && selectedItems > 4) {
+				validationError = "Select at most four items.";
+			}
+			for (uint8_t index = 0; index < selectedItems && validationError.empty(); ++index) {
+				uint16_t itemId = 0;
+				uint8_t tier = 0;
+				if (!read(itemId)) {
+					break;
+				}
+				if (Item::items[itemId].upgradeClassification > 0 && !read(tier)) {
+					break;
+				}
+				const ItemsTierKey key { itemId, tier };
+				const auto it = depot.find(key);
+				if (!characterAuctionCatalogItems.contains(key) || it == depot.end() || it->second == 0 || !seenItems.insert(key).second) {
+					validationError = "The item is unavailable in this character depot or was selected twice.";
+				}
+				itemOrder.push_back(key);
+			}
+			uint8_t storeItems = 0;
+			if (read(storeItems) && storeItems != 0) {
+				validationError = "Store items are not supported.";
+			}
+			if (read(selectedArguments) && selectedArguments > 5) {
+				validationError = "Select at most five highlights.";
+			}
+			std::set<uint16_t> seenArguments;
+			std::vector<uint16_t> argumentOrder;
+			const auto unlocked = player->achiev().getUnlockedAchievements();
+			const auto definitions = g_game().getAchievements();
+			for (uint8_t index = 0; index < selectedArguments && validationError.empty(); ++index) {
+				uint16_t id = 0;
+				if (!read(id)) {
+					break;
+				}
+				const bool basic = id >= 1 && id <= 18;
+				const bool achievement = id >= 1000 && definitions.contains(id - 1000)
+					&& std::ranges::any_of(unlocked, [id](const auto &entry) { return entry.first == id - 1000; });
+				if (!characterAuctionCatalogArguments.contains(id) || (!basic && !achievement) || !seenArguments.insert(id).second) {
+					validationError = "The highlight is unavailable for this character or was selected twice.";
+				}
+				argumentOrder.push_back(id);
+			}
+			if (validationError.empty() && msg.getUnreadBytes() != 0) {
+				validationError = "The request contains unrecognized trailing bytes.";
+			}
+			const bool readyForSimulation = action == 2 && validationError.empty();
+			if (readyForSimulation) {
+				characterAuctionValidatedRequest = request;
+			}
+			bool draftSaved = false;
+			bool auctionPublished = false;
+			uint64_t publishedAuctionId = 0;
+			if (action == 3 && validationError.empty()) {
+				// A private KV draft belongs to this character and current account.
+				nlohmann::json draft = {
+					{ "version", 1 }, { "state", "draft" }, { "world_id", 0 }, { "player_id", player->getGUID() }, { "account_id", player->getAccountId() }, { "starting_price", price }, { "end_time", endTime }, { "creation_fee", 1 }, { "commission_percent", 12 }, { "lock_on_publish", true }, { "charged", false }, { "published", false }, { "items", nlohmann::json::array() }, { "arguments", nlohmann::json::array() }
+				};
+				for (const auto &[itemId, tier] : itemOrder) {
+					draft["items"].push_back({ { "item_id", itemId }, { "tier", tier }, { "quantity", depot.at({ itemId, tier }) } });
+				}
+				for (const auto id : argumentOrder) {
+					draft["arguments"].push_back({ { "id", id }, { "text", characterAuctionArgumentLabels.at(id) } });
+				}
+				auto &db = g_database();
+				const auto serialized = draft.dump();
+				const auto draftStore = player->kv()->scoped("character-bazaar");
+				draftStore->set("draft", serialized);
+				draftSaved = g_kv().saveAll();
+				auto publishedMetadata = draft;
+				publishedMetadata["state"] = "published";
+				publishedMetadata["published"] = true;
+				publishedMetadata["charged"] = true;
+				const auto quotedPublished = db.escapeString(publishedMetadata.dump());
+				if (!draftSaved) {
+					validationError = "Could not confirm that the draft was saved. No fee was charged.";
+				}
+				if (draftSaved && IOLoginData::savePlayer(player)) {
+					auctionPublished = DBTransaction::executeWithinTransactionRollbackOnFailure([&]() {
+						const auto owner = db.storeQuery(fmt::format("SELECT `id` FROM `players` WHERE `id`={} AND `account_id`={} FOR UPDATE", player->getGUID(), player->getAccountId()));
+						const auto active = db.storeQuery(fmt::format("SELECT COUNT(*) AS `count` FROM `myaac_charbazaar` WHERE `player_id`={} AND `status` IN (0,2)", player->getGUID()));
+						const auto account = db.storeQuery(fmt::format("SELECT `coins_transferable` FROM `accounts` WHERE `id`={} FOR UPDATE", player->getAccountId()));
+						if (!owner || !active || active->getNumber<uint32_t>("count") != 0 || !account || account->getNumber<uint64_t>("coins_transferable") < 1) {
+							return false;
+						}
+						// Existing bazaar custody contract accepts account_new as current
+						// holder. Keep ownership until sale; the active row blocks login.
+						if (!db.executeQuery(fmt::format(
+								"INSERT INTO `myaac_charbazaar` (`player_id`,`account_old`,`account_new`,`price`,`date_start`,`date_end`,`status`,`offer_type`,`is_sold`,`world_id`,`currency`,`commission_percent`,`creation_fee`,`client_metadata`) "
+								"VALUES ({},{},{},{},NOW(),FROM_UNIXTIME({}),0,1,0,{},'coins_transferable',12,1,{})",
+								player->getGUID(), player->getAccountId(), player->getAccountId(), price, endTime, 0, quotedPublished
+							))) {
+							return false;
+						}
+						publishedAuctionId = db.getLastInsertId();
+						return db.executeQuery(fmt::format("UPDATE `accounts` SET `coins_transferable`=`coins_transferable`-1 WHERE `id`={} AND `coins_transferable`>=1", player->getAccountId()));
+					});
+					if (!auctionPublished) {
+						validationError = "The draft was saved, but publication failed. No fee was charged. Check the Bazaar and try again.";
+					}
+				}
+			}
+			const auto diagnostic = auctionPublished
+				? fmt::format("[AUCTION] Published in the Bazaar as {}. Fee: 1 coin. Commission: 12%. Character locked until completion or cancellation.", publishedAuctionId)
+				: !validationError.empty()
+				? fmt::format("Configuration rejected: {}", validationError)
+				: draftSaved
+				? fmt::format("[DRAFT] Saved: price={}, items={}, highlights={}. Unpublished; no fee was charged.", price, selectedItems, selectedArguments)
+				: fmt::format("[TEST] Configuration rejected: {}", validationError);
+			// Client summary builder 0x1403104A0 treats the u16 as the creation
+			// fee: zero suppresses the entire summary. Every listed string is an
+			// error and sets hasConfirmationError; approval must have none.
+			NetworkMessage response;
+			response.addByte(0x80);
+			response.addByte(4);
+			response.add<uint16_t>(1); // Creation fee, including successful validation.
+			response.addByte(readyForSimulation ? 0 : 1);
+			if (!readyForSimulation) {
+				response.addString(diagnostic);
+			}
+			g_logger().info("[CharacterAuction:v14] world={} character_id={} action={} price={} end_time={} items={} arguments={} valid={} published={} auction_id={}", 0, player->getGUID(), action, price, endTime, selectedItems, selectedArguments, validationError.empty(), auctionPublished, publishedAuctionId);
+			writeToOutputBuffer(response);
+			if (auctionPublished) {
+				logout(false, true);
+				return;
+			}
+		}
+		player->sendCancelMessage("Review the configuration in the window. Publication and the fee apply only after final confirmation.");
+		return;
+	}
 	if (action == 2 || action == 3) {
 		msg.get<uint32_t>();
 		msg.get<uint32_t>();
@@ -3330,10 +3751,42 @@ void ProtocolGame::parseInspectPlayer(NetworkMessage &msg) {
 }
 
 void ProtocolGame::parseCyclopediaMapAction(NetworkMessage &msg) {
+	if (!player || oldProtocol || isOTC || isOTCR || clientVersion != 1525
+	    || clientVersionString != "15.25.0a00a0d67311e057aa8e659a84cdf51db9c08c03" || msg.getUnreadBytes() < 1) {
+		return;
+	}
 	const auto action = msg.getByte(true);
+	if (action == 1) {
+		if (msg.getUnreadBytes() != 6) {
+			player->sendCancelMessage("Invalid donation request.");
+			return;
+		}
+		const auto now = static_cast<uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now().time_since_epoch()).count());
+		if (now < cyclopediaDonationNextRequest) {
+			player->sendCancelMessage("Please wait before making another donation.");
+			return;
+		}
+		cyclopediaDonationNextRequest = now + 1000;
+		const auto area = msg.get<uint16_t>();
+		const auto amount = msg.get<uint32_t>();
+		const auto error = g_game().cyclopediaDonations.donate(player, area, amount);
+		if (!error.empty()) {
+			player->sendCancelMessage(error);
+			sendCyclopediaMapDonations();
+		} else {
+			player->sendTextMessage(MESSAGE_EVENT_ADVANCE, fmt::format("Thank you for donating {} gold to the area's next server-save respawn bonus.", amount));
+		}
+		return;
+	}
+	if (msg.getUnreadBytes() != 2) {
+		return;
+	}
 	switch (action) {
 		case 0:
-			msg.get<uint16_t>();
+			if (const auto error = player->cyclopedia().startDiscovery(msg.get<uint16_t>()); !error.empty()) {
+				player->sendCancelMessage(error);
+			}
+			sendCyclopediaDiscovery();
 			break;
 		case 1:
 			msg.get<uint16_t>();
@@ -4770,6 +5223,117 @@ void ProtocolGame::sendAddMarker(const Position &pos, uint8_t markType, const st
 	msg.addPosition(pos);
 	msg.addByte(markType);
 	msg.addString(desc);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCyclopediaRaidMarker(const Position &position, bool active) {
+	if (!player || oldProtocol || isOTC || isOTCR || clientVersion != 1525
+	    || clientVersionString != "15.25.0a00a0d67311e057aa8e659a84cdf51db9c08c03") {
+		return;
+	}
+	NetworkMessage msg;
+	msg.addByte(0xDD);
+	msg.addByte(enumToValue(CyclopediaMapData_t::ActiveRaid));
+	msg.addPosition(position);
+	msg.addByte(active ? 0 : 1); // RAID_CHANGE_ADD / RAID_CHANGE_REMOVE.
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCyclopediaMapDiscoveryData(uint16_t currentAreaId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xDD);
+	msg.addByte(enumToValue(CyclopediaMapData_t::DiscoveryData));
+	const auto progress = player->cyclopedia().discoveryProgress();
+	msg.add<uint16_t>(static_cast<uint16_t>(progress.size()));
+	for (const auto &entry : progress) {
+		msg.add<uint16_t>(entry.area);
+		msg.addByte(entry.grade);
+		msg.addByte(entry.percent);
+	}
+	const auto completed = player->cyclopedia().completedDiscoveryAreas();
+	msg.add<uint16_t>(static_cast<uint16_t>(completed.size()));
+	for (const auto area : completed) {
+		msg.add<uint16_t>(area);
+	}
+	const auto available = player->cyclopedia().discoverableAreas();
+	msg.add<uint16_t>(static_cast<uint16_t>(available.size()));
+	for (const auto area : available) {
+		msg.add<uint16_t>(area);
+	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCyclopediaDiscovery() {
+	if (!player || oldProtocol || isOTC || isOTCR || clientVersion != 1525
+	    || clientVersionString != "15.25.0a00a0d67311e057aa8e659a84cdf51db9c08c03" || !player->cyclopedia().loadDiscovery()) {
+		return;
+	}
+	sendCyclopediaMapDiscoveryData();
+	if (const auto active = player->cyclopedia().activeDiscoveryArea(); active != 0) {
+		sendCyclopediaMapSetDiscoveryArea(active);
+	}
+	if (const auto current = player->cyclopedia().currentDiscoveryArea(); current != 0) {
+		sendCyclopediaMapCurrentArea(current);
+	}
+}
+
+void ProtocolGame::sendCyclopediaMapCurrentArea(uint16_t areaId) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xDD);
+	msg.addByte(enumToValue(CyclopediaMapData_t::SetCurrentArea));
+	msg.add<uint16_t>(areaId);
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCyclopediaMapDonations() {
+	if (!player || oldProtocol || isOTC || isOTCR || clientVersion != 1525
+	    || clientVersionString != "15.25.0a00a0d67311e057aa8e659a84cdf51db9c08c03") {
+		return;
+	}
+	auto &donations = g_game().cyclopediaDonations;
+	if (!donations.load()) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xDD);
+	msg.addByte(enumToValue(CyclopediaMapData_t::Donations));
+	msg.add<uint64_t>(CyclopediaDonations::threshold);
+	msg.addByte(static_cast<uint8_t>(donations.entries().size()));
+	for (const auto &[area, entry] : donations.entries()) {
+		msg.add<uint16_t>(area);
+		msg.addByte(entry.active ? 1 : 0);
+		msg.add<uint64_t>(entry.amount);
+	}
+	writeToOutputBuffer(msg);
+}
+
+void ProtocolGame::sendCyclopediaMapSetDiscoveryArea(uint16_t areaId, uint8_t numberOfPointsToDiscover) {
+	if (!player || oldProtocol) {
+		return;
+	}
+
+	NetworkMessage msg;
+	msg.addByte(0xDD);
+	msg.addByte(enumToValue(CyclopediaMapData_t::SetDiscoveryArea));
+	msg.add<uint16_t>(areaId);
+	const auto &points = player->cyclopedia().discoveryPoints();
+	msg.addByte(static_cast<uint8_t>(points.size()));
+	msg.addByte(static_cast<uint8_t>(std::ranges::count_if(points, [](const auto &point) { return point.state != 0; })));
+	for (const auto &point : points) {
+		if (point.state != 0) {
+			msg.addPosition(point.position);
+			msg.addByte(point.state - 1);
+		}
+	}
 	writeToOutputBuffer(msg);
 }
 
@@ -8692,7 +9256,12 @@ void ProtocolGame::sendAddCreature(const std::shared_ptr<Creature> &creature, co
 		sendEnterWorld();
 	}
 	sendMapDescription(pos);
+	for (const auto &[markerPosition, count] : g_game().raids.getMapMarkers()) {
+		sendCyclopediaRaidMarker(markerPosition, true);
+	}
 	loggedIn = true;
+	sendCyclopediaDiscovery();
+	sendCyclopediaMapDonations();
 
 	if (isLogin) {
 		sendMagicEffect(pos, CONST_ME_TELEPORT);

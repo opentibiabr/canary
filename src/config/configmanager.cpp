@@ -38,6 +38,8 @@ bool ConfigManager::load() {
 	}
 
 	// Parse config
+	loadBoolConfig(L, CHARACTER_AUCTION_PROBE, "characterAuctionProbe", false);
+	loadIntConfig(L, CHARACTER_AUCTION_CUSTODY_ACCOUNT, "characterAuctionCustodyAccount", 0);
 	// Info that must be loaded one time (unless we reset the modules involved)
 	if (!loaded.load(std::memory_order_relaxed)) {
 		loadBoolConfig(L, BIND_ONLY_GLOBAL_ADDRESS, "bindOnlyGlobalAddress", false);

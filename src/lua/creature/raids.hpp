@@ -12,6 +12,11 @@
 #include "lua/global/baseevents.hpp"
 #include "lua/scripts/luascript.hpp"
 #include "utils/utils_definitions.hpp"
+#include "game/movement/position.hpp"
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <map>
+#endif
 
 struct Position;
 
@@ -31,6 +36,7 @@ static constexpr int32_t RAID_MINTICKS = 1000;
 
 class Raid;
 class RaidEvent;
+class Monster;
 
 class Raids {
 public:
@@ -71,6 +77,11 @@ public:
 	}
 
 	void checkRaids();
+	bool addMapMarker(const std::shared_ptr<Monster> &monster, const Position &position);
+	void removeMapMarker(uint32_t monsterId);
+	const std::map<Position, uint32_t> &getMapMarkers() const {
+		return mapMarkers;
+	}
 
 	LuaScriptInterface &getScriptInterface() {
 		return scriptInterface;
@@ -81,6 +92,9 @@ private:
 
 	std::list<std::shared_ptr<Raid>> raidList;
 	std::shared_ptr<Raid> running = nullptr;
+	// Bounded live-monster ownership; released on creature removal.
+	std::map<uint32_t, Position> markedMonsters;
+	std::map<Position, uint32_t> mapMarkers;
 	uint64_t lastRaidEnd = 0;
 	uint32_t checkRaidsEvent = 0;
 	bool loaded = false;

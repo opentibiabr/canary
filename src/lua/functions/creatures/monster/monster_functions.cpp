@@ -23,6 +23,7 @@ void MonsterFunctions::init(lua_State* L) {
 	Lua::registerSharedClass(L, "Monster", "Creature", MonsterFunctions::luaMonsterCreate);
 	Lua::registerMetaMethod(L, "Monster", "__eq", Lua::luaUserdataCompare);
 	Lua::registerMethod(L, "Monster", "isMonster", MonsterFunctions::luaMonsterIsMonster);
+	Lua::registerMethod(L, "Monster", "setRaidMapMarker", MonsterFunctions::luaMonsterSetRaidMapMarker);
 	Lua::registerMethod(L, "Monster", "getType", MonsterFunctions::luaMonsterGetType);
 	Lua::registerMethod(L, "Monster", "setType", MonsterFunctions::luaMonsterSetType);
 	Lua::registerMethod(L, "Monster", "getSpawnPosition", MonsterFunctions::luaMonsterGetSpawnPosition);
@@ -117,6 +118,23 @@ int MonsterFunctions::luaMonsterIsMonster(lua_State* L) {
 	return 1;
 }
 
+/***
+ * @function Monster:setRaidMapMarker
+ * @param position? Position
+ * @return boolean
+ */
+int MonsterFunctions::luaMonsterSetRaidMapMarker(lua_State* L) {
+	// monster:setRaidMapMarker([position]); retain the marker until removal.
+	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
+	if (!monster || monster->isRemoved()) {
+		Lua::pushBoolean(L, false);
+		return 1;
+	}
+	const auto position = lua_isnoneornil(L, 2) ? monster->getPosition() : Lua::getPosition(L, 2);
+	Lua::pushBoolean(L, g_game().raids.addMapMarker(monster, position));
+	return 1;
+}
+
 int MonsterFunctions::luaMonsterGetType(lua_State* L) {
 	// monster:getType()
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
@@ -199,7 +217,7 @@ int MonsterFunctions::luaMonsterIsInSpawnRange(lua_State* L) {
 	// monster:isInSpawnRange([position])
 	const auto &monster = Lua::getUserdataShared<Monster>(L, 1, "Monster");
 	if (monster) {
-		Lua::pushBoolean(L, monster->isInSpawnRange(lua_gettop(L) >= 2 ? Lua::getPosition(L, 2) : monster->getPosition()));
+		Lua::pushBoolean(L, monster->isInSpawnRange(lua_isnoneornil(L, 2) ? monster->getPosition() : Lua::getPosition(L, 2)));
 	} else {
 		lua_pushnil(L);
 	}

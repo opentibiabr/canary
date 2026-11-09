@@ -26,18 +26,19 @@ jobs:
           MYSQL_PASSWORD: canary
         ports:
           - 3306/tcp
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping --protocol=tcp --host=127.0.0.1" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
     name: Check
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6.0.1
-      - name: 📌 MySQL Start & init & show db
+      - name: Check MySQL service
         run: |
-          sudo /etc/init.d/mysql start
-          mysql -e 'CREATE DATABASE canary;' -uroot -proot
-          mysql -e "SHOW DATABASES" -uroot -proot
+          docker exec "${{ job.services.mysql.id }}" sh -c \
+            'MYSQL_PWD="$MYSQL_PASSWORD" exec mysql --user=canary --database=canary --execute="SELECT VERSION(), DATABASE();"'
       - name: Import Canary Schema
         run: |
-          mysql -uroot -proot canary < schema.sql
+          # The schema defines triggers, which require the service admin with binlog enabled.
+          docker exec --interactive "${{ job.services.mysql.id }}" sh -c \
+            'MYSQL_PWD="$MYSQL_ROOT_PASSWORD" exec mysql --user=root --database=canary' < schema.sql

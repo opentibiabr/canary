@@ -10,6 +10,11 @@
 #pragma once
 
 #include "lib/thread/thread_pool.hpp"
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <map>
+	#include <memory>
+	#include <cstdint>
+#endif
 
 class KVStore;
 class Logger;
@@ -31,6 +36,9 @@ public:
 
 	bool savePlayer(std::shared_ptr<Player> player);
 	void saveGuild(std::shared_ptr<Guild> guild);
+	// Dispatcher-only: retain failed logout saves for the next settlement retry.
+	bool prepareAuctionTransfer(uint32_t playerId, std::shared_ptr<Player> livePlayer);
+	void clearAuctionTransfers();
 
 private:
 	void saveMap();
@@ -55,6 +63,7 @@ private:
 	std::atomic<std::chrono::steady_clock::time_point> m_scheduledAt;
 	phmap::parallel_flat_hash_map<uint32_t, std::chrono::steady_clock::time_point> m_playerMap;
 
+	std::map<uint32_t, std::shared_ptr<Player>> auctionTransfers;
 	ThreadPool &threadPool;
 	KVStore &kv;
 	Logger &logger;

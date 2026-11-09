@@ -271,6 +271,13 @@ public:
 	void setOnline(bool value) override {
 		online = value;
 	}
+	// Serialized by PlayerLock; successful auction saves seal the old session.
+	bool isPersistenceSealed() const {
+		return persistenceSealed;
+	}
+	void sealPersistence() {
+		persistenceSealed = true;
+	}
 	bool isOnline() const override {
 		return online;
 	}
@@ -1142,6 +1149,9 @@ public:
 
 	void sendChannel(uint16_t channelId, const std::string &channelName, const UsersMap* channelUsers, const InvitedMap* invitedUsers) const;
 	void sendTutorial(uint8_t tutorialId) const;
+	void sendCyclopediaRaidMarker(const Position &position, bool active) const;
+	void sendCyclopediaDiscovery() const;
+	void sendCyclopediaMapDonations() const;
 	void sendAddMarker(const Position &pos, uint8_t markType, const std::string &desc) const;
 	void sendItemInspection(uint16_t itemId, uint8_t itemCount, const std::shared_ptr<Item> &item, bool cyclopedia) const;
 	void sendCyclopediaCharacterNoData(CyclopediaCharacterInfoType_t characterInfoType, uint8_t errorCode) const;
@@ -1585,6 +1595,7 @@ public:
 private:
 	friend class PlayerLock;
 	std::mutex mutex;
+	bool persistenceSealed = false;
 
 	static uint32_t playerFirstID;
 	static uint32_t playerLastID;

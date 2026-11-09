@@ -240,7 +240,7 @@ void Creature::onCreatureWalk() {
 			Direction dir;
 			uint32_t flags = FLAG_IGNOREFIELDDAMAGE;
 			if (getNextStep(dir, flags)) {
-				ReturnValue ret = g_game().internalMoveCreature(creatureEvent, dir, flags);
+				ReturnValue ret = g_game().internalMoveCreature(creatureEvent, dir, flags, true);
 				if (ret != RETURNVALUE_NOERROR) {
 					if (const auto &player = getPlayer()) {
 						player->sendCancelMessage(ret);

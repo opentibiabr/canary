@@ -10,6 +10,8 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 
 ## Combat, Currency, and Catalog Validation
 
+- Cyclopedia donation debits, totals and audits must commit together in the existing protobuf `kv_store`. Use `CyclopediaStorage` for `cyclopedia.atomic.*`; never put this transaction-owned keyspace in the global KV write-back cache or recreate the legacy tables at runtime. Preserve source SQL during migration, reject conflicting imports, and validate migration rollback, restart persistence and stale-owner behavior.
+
 - Combat transformations must read and write the matching damage component; never use a primary amount to calculate a secondary result or overwrite an already computed primary result. Validate unequal components, secondary-only effects, and both components together.
 - Validate player-entered money as finite, positive, integral, and within the accepted range before monetary bindings or mutations. Exercise rejected values and successful operations; preserve explicitly supported nonnumeric commands such as `all`.
 - Game Store offer IDs must match the advertised registered item, mount, or outfit, and quantity fields must match the purchase handler's `count` or `charges` contract. Validate the real catalog through delivery helpers against the relevant registrations; XML absence alone does not prove an asset-backed item invalid.
@@ -49,3 +51,5 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 
 - For quickstart changes, read `docs/docker/quickstart-for-beginners.md` and `docker/DOCKER.md`; keep CI/build, development, and user quickstart responsibilities separate.
 - The default client path is `login-server` at `http://localhost:8088/login`, never MyAAC `login.php`. MyAAC remains website/admin-only, uses `slawkens/myaac` `2.x`, and keeps `http://localhost:8080`; public config stays `CANARY_*`, and the quickstart uses the published Canary runtime image.
+
+- Bazaar ownership transfer must await a committed final character save and seal the old session under the same persistence lock. Retain failed logout saves until retry; queued and direct old-session saves must not write after transfer. Queued login and reconnect must revalidate the authenticated account against the loaded character owner. Discovery must opt in only from the owning creature walk task, never from pushes, Lua moves or the teleport animation flag; validate adjacent native/script teleports and door rollback.

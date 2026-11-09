@@ -21,6 +21,7 @@ private:
 	static int luaMonsterCreate(lua_State* L);
 
 	static int luaMonsterIsMonster(lua_State* L);
+	static int luaMonsterSetRaidMapMarker(lua_State* L);
 
 	static int luaMonsterGetType(lua_State* L);
 	static int luaMonsterSetType(lua_State* L);

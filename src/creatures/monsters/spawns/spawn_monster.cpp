@@ -162,6 +162,10 @@ bool SpawnsMonster::isInZone(const Position &centerPos, int32_t radius, const Po
 	return ((pos.getX() >= centerPos.getX() - radius) && (pos.getX() <= centerPos.getX() + radius) && (pos.getY() >= centerPos.getY() - radius) && (pos.getY() <= centerPos.getY() + radius));
 }
 
+uint32_t SpawnMonster::getInterval() const {
+	return g_game().cyclopediaDonations.hasActive() ? std::max<uint32_t>(1, interval / 2) : interval;
+}
+
 void SpawnMonster::startSpawnMonsterCheck() {
 	if (checkSpawnMonsterEvent == 0) {
 		const std::weak_ptr<SpawnMonster> weakSelf = static_self_cast<SpawnMonster>();
@@ -289,7 +293,10 @@ void SpawnMonster::checkSpawnMonster() {
 			sb.lastSpawn = OTSYS_TIME();
 			continue;
 		}
-		if (OTSYS_TIME() < sb.lastSpawn + sb.interval) {
+		const auto effectiveInterval = g_game().cyclopediaDonations.improved(sb.pos)
+			? std::min(sb.interval, std::max<uint32_t>(MONSTER_MINSPAWN_INTERVAL, sb.interval / 2))
+			: sb.interval;
+		if (OTSYS_TIME() < sb.lastSpawn + effectiveInterval) {
 			continue;
 		}
 

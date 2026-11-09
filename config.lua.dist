@@ -686,3 +686,9 @@ OTCRFeatures = {
     disableFeature = {
     }
 }
+
+-- Enable the experimental official 15.25 Character Bazaar UI (requires MyAAC Bazaar schema).
+characterAuctionProbe = false
+
+-- External website custody account (0 accepts only the original seller as holder).
+characterAuctionCustodyAccount = 0

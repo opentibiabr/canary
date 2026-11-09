@@ -2,6 +2,10 @@ target_sources(
     ${CORE_TARGET_NAME}
     PRIVATE functions/game_reload.cpp
             game.cpp
+            cyclopedia_storage.cpp
+            cyclopedia_storage.hpp
+            cyclopedia_donations.cpp
+            cyclopedia_donations.hpp
             bank/bank.cpp
             movement/position.cpp
             movement/teleport.cpp

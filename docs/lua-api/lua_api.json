@@ -1503,9 +1503,7 @@
       },
       {
         "name": "getHouses",
-        "params": [
-          "...: any"
-        ],
+        "params": [],
         "return": "House[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1543,9 +1541,7 @@
       },
       {
         "name": "getMonsterTypes",
-        "params": [
-          "...: any"
-        ],
+        "params": [],
         "return": "table<string, MonsterType>",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1608,9 +1604,7 @@
       },
       {
         "name": "getPlayers",
-        "params": [
-          "...: any"
-        ],
+        "params": [],
         "return": "Player[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1670,9 +1664,7 @@
       },
       {
         "name": "getTowns",
-        "params": [
-          "...: any"
-        ],
+        "params": [],
         "return": "Town[]",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
@@ -1724,6 +1716,12 @@
           "monsterId: number"
         ],
         "return": "number",
+        "source": "src/lua/functions/core/game/game_functions.cpp"
+      },
+      {
+        "name": "processCyclopediaAndBazaarServerSave",
+        "params": [],
+        "return": "boolean",
         "source": "src/lua/functions/core/game/game_functions.cpp"
       },
       {
@@ -3603,6 +3601,14 @@
         "params": [
           "name: string",
           "nameDescription?: string"
+        ],
+        "return": "boolean",
+        "source": "src/lua/functions/creatures/monster/monster_functions.cpp"
+      },
+      {
+        "name": "setRaidMapMarker",
+        "params": [
+          "position?: Position"
         ],
         "return": "boolean",
         "source": "src/lua/functions/creatures/monster/monster_functions.cpp"

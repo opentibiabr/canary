@@ -139,3 +139,9 @@ IDs. Malformed, wrongly typed and oversized drafts are ignored. Local multiworld
 validation applies the same rules to world IDs. Extracted production predicates
 passed malformed JSON, missing/type-invalid fields, changed owners and overflow
 cases in both checkouts.
+
+The login gate uses an aggregate table-presence query so successful absence is
+distinct from a failed lookup. Both schema lookup and auction-lock query errors
+fail closed, emit an operator diagnostic and return a verification error instead
+of claiming the character is listed. The extracted production gate passed
+absence, schema-error, no-lock, active-lock and lock-query-error fixtures.

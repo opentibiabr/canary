@@ -944,13 +944,27 @@ void ProtocolGame::login(const std::string &name, uint32_t accountId, OperatingS
 	g_logger().debug("Player logging in in version '{}' and oldProtocol '{}'", getVersion(), oldProtocol);
 
 	// dispatcher thread
-	if (g_database().storeQuery("SHOW TABLES LIKE 'myaac\\_charbazaar'")) {
+	const auto bazaarTable = g_database().storeQuery(
+		"SELECT COUNT(*) AS `present` FROM `information_schema`.`tables` "
+		"WHERE `table_schema`=DATABASE() AND `table_name`='myaac_charbazaar'"
+	);
+	if (!bazaarTable) {
+		g_logger().error("[CharacterBazaar] Could not verify the auction schema for character {}", name);
+		disconnectClient("Character Bazaar status could not be verified. Please try again later.");
+		return;
+	}
+	if (bazaarTable->getNumber<uint32_t>("present") != 0) {
 		const auto auctionLock = g_database().storeQuery(fmt::format(
 			"SELECT COUNT(*) AS `active` FROM `myaac_charbazaar` AS `a` JOIN `players` AS `p` ON `p`.`id`=`a`.`player_id` "
 			"WHERE `p`.`name`={} AND `a`.`status` IN (0,2)",
 			g_database().escapeString(name)
 		));
-		if (!auctionLock || auctionLock->getNumber<uint32_t>("active") > 0) {
+		if (!auctionLock) {
+			g_logger().error("[CharacterBazaar] Login lock query failed for character {}; verify the myaac_charbazaar schema", name);
+			disconnectClient("Character Bazaar status could not be verified. Please try again later.");
+			return;
+		}
+		if (auctionLock->getNumber<uint32_t>("active") > 0) {
 			disconnectClient("This character is listed in the Character Bazaar and cannot log in until the auction ends or is cancelled.");
 			return;
 		}

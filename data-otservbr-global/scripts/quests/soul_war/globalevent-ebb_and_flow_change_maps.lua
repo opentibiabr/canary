@@ -1,5 +1,3 @@
-local eventCallbacks = {}
-
 local function updateWaterPoolsSize()
 	for _, pos in ipairs(SoulWarQuest.ebbAndFlow.poolPositions) do
 		local tile = Tile(pos)
@@ -37,20 +35,31 @@ local function clearPendingEvents()
 	end
 end
 
--- Helper function to unregister all event callbacks
-local function unregisterEventCallbacks()
-	for name, callback in pairs(eventCallbacks) do
-		if callback and callback.unregister then
-			callback:unregister()
-		end
+-- Game.loadMap only queues the load: the map changes later, on the dispatcher, and then the engine calls the
+-- mapOnLoad callbacks. The callback is registered once, here. An EventCallback cannot be unregistered (the Lua
+-- class only has type and register) and EventCallback(name, true) skips the duplicate check, so registering a new
+-- one on every swap, as this script used to, left one more callback behind each time: after a day (720 swaps) a
+-- single load ran about 360 callbacks, and each one refreshed the zone and resent the whole login state of every
+-- player inside it.
+local mapLoaded = EventCallback("EbbAndFlowMapLoaded")
+
+function mapLoaded.mapOnLoad(mapPath)
+	local maps = SoulWarQuest.ebbAndFlow.mapsPath
+	if mapPath ~= maps.empty and mapPath ~= maps.inundate then
+		return
 	end
-	eventCallbacks = {}
+
+	SoulWarQuest.ebbAndFlow.updateZonePlayers()
 end
 
+mapLoaded:register()
+
+-- The creatures are moved before the load is queued, so the client is only told about the new map once, from the
+-- callback above, when the tiles of the other map exist. Sending the player's state here would resend the map that
+-- is about to be replaced.
 local function loadMapEmpty()
 	-- Clean up previous events before loading a new map
 	clearPendingEvents()
-	unregisterEventCallbacks()
 
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
@@ -58,7 +67,6 @@ local function loadMapEmpty()
 		local creatures = SoulWarQuest.ebbAndFlow.getZone():getCreatures()
 		for _, creature in ipairs(creatures) do
 			local creatureMaster = creature:getMaster()
-			local player = creature:getPlayer()
 			if creature:isPlayer() or (creature:isMonster() and creatureMaster and creatureMaster:getPlayer()) then
 				if creature:getPosition().z == 8 then
 					if creature:isInBoatSpot() then
@@ -66,9 +74,6 @@ local function loadMapEmpty()
 						teleportPosition.z = 9
 						creature:teleportTo(teleportPosition)
 						logger.trace("Teleporting player to down.")
-					end
-					if player then
-						player:sendCreatureAppear()
 					end
 				end
 			end
@@ -78,19 +83,6 @@ local function loadMapEmpty()
 	Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.empty)
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(true)
 	SoulWarQuest.ebbAndFlow.setActive(false)
-
-	local updatePlayers = EventCallback("UpdatePlayersEmptyEbbFlowMap", true)
-	function updatePlayers.mapOnLoad(mapPath)
-		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.empty then
-			return
-		end
-
-		SoulWarQuest.ebbAndFlow.updateZonePlayers()
-	end
-
-	updatePlayers:register()
-	-- Store reference for later cleanup
-	eventCallbacks["UpdatePlayersEmptyEbbFlowMap"] = updatePlayers
 
 	local eventId = addEvent(function()
 		updateWaterPoolsSize()
@@ -121,7 +113,6 @@ end
 
 local function loadMapInundate()
 	clearPendingEvents()
-	unregisterEventCallbacks()
 
 	local playersInZone = SoulWarQuest.ebbAndFlow.getZone():countPlayers()
 	local monstersInZone = SoulWarQuest.ebbAndFlow.getZone():countMonsters()
@@ -129,7 +120,6 @@ local function loadMapInundate()
 		local creatures = SoulWarQuest.ebbAndFlow.getZone():getCreatures()
 		for _, creature in ipairs(creatures) do
 			local creatureMaster = creature:getMaster()
-			local player = creature:getPlayer()
 			if creature:isPlayer() or (creature:isMonster() and creatureMaster and creatureMaster:getPlayer()) then
 				local creaturePosition = creature:getPosition()
 				if creaturePosition.z == 9 then
@@ -143,9 +133,6 @@ local function loadMapInundate()
 					end
 					creaturePosition:sendMagicEffect(CONST_ME_TELEPORT)
 				end
-				if player then
-					player:sendCreatureAppear()
-				end
 			end
 		end
 	end
@@ -153,18 +140,6 @@ local function loadMapInundate()
 	Game.loadMap(SoulWarQuest.ebbAndFlow.mapsPath.inundate)
 	SoulWarQuest.ebbAndFlow.setLoadedEmptyMap(false)
 	SoulWarQuest.ebbAndFlow.setActive(true)
-
-	local updatePlayers = EventCallback("UpdatePlayersInundateEbbFlowMap", true)
-	function updatePlayers.mapOnLoad(mapPath)
-		if mapPath ~= SoulWarQuest.ebbAndFlow.mapsPath.inundate then
-			return
-		end
-
-		SoulWarQuest.ebbAndFlow.updateZonePlayers()
-	end
-
-	updatePlayers:register()
-	eventCallbacks["UpdatePlayersInundateEbbFlowMap"] = updatePlayers
 end
 
 local loadEmptyMap = GlobalEvent("SoulWarQuest.ebbAndFlow")
@@ -200,7 +175,6 @@ local cleanupOnSave = GlobalEvent("EbbFlowCleanupOnSave")
 
 function cleanupOnSave.onSave()
 	clearPendingEvents()
-	unregisterEventCallbacks()
 	return true
 end
 

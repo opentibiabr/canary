@@ -30,6 +30,19 @@
 #endif
 
 namespace {
+	std::tm toLocalTime(time_t time) {
+		std::tm localTime {};
+#if defined(_WIN32) || defined(_WIN64)
+		const bool converted = localtime_s(&localTime, &time) == 0;
+#else
+		const bool converted = localtime_r(&time, &localTime) != nullptr;
+#endif
+		if (!converted) {
+			throw std::out_of_range("timestamp cannot be represented in local time");
+		}
+		return localTime;
+	}
+
 	std::string bytesToHex(std::span<const std::byte> bytes) {
 		static constexpr std::array<char, 16> hexDigits = {
 			'0', '1', '2', '3', '4', '5', '6', '7',
@@ -495,8 +508,7 @@ std::string convertIPToString(uint32_t ip) {
 
 std::string formatDate(time_t time) {
 	try {
-		auto tp = std::chrono::system_clock::from_time_t(time);
-		return fmt::format("{:%d/%m/%Y %H:%M:%S}", tp);
+		return fmt::format("{:%d/%m/%Y %H:%M:%S}", toLocalTime(time));
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date with error code {}", exception.what());
 	}
@@ -505,8 +517,7 @@ std::string formatDate(time_t time) {
 
 std::string formatDateShort(time_t time) {
 	try {
-		auto tp = std::chrono::system_clock::from_time_t(time);
-		return fmt::format("{:%Y-%m-%d %X}", tp);
+		return fmt::format("{:%Y-%m-%d %X}", toLocalTime(time));
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format date short with error code {}", exception.what());
 	}
@@ -515,8 +526,7 @@ std::string formatDateShort(time_t time) {
 
 std::string formatDateTime(int64_t ms) {
 	try {
-		auto tp = std::chrono::system_clock::from_time_t(ms / 1000);
-		return fmt::format("{:%Y-%m-%d %H:%M:%S}", tp);
+		return fmt::format("{:%Y-%m-%d %H:%M:%S}", toLocalTime(ms / 1000));
 	} catch (const std::out_of_range &exception) {
 		g_logger().error("Failed to format datetime with error code {}", exception.what());
 	}

@@ -7,6 +7,7 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 - For a reusable defect, inspect analogous paths by behavior and ownership, fix confirmed siblings atomically, and keep the audit proportional; do not turn a one-off into a speculative refactor.
 - Decide whether tooling makes recurrence impossible. If not, add a narrow rule to the nearest `AGENTS.md` that states the unsafe pattern, required alternative, and validation rather than incident history.
 - Prefer enforceable safeguards—types, helpers, static checks, architecture docs, or focused tests—especially for lifetime, arithmetic, identity, ownership, bounds, and cancellation escapes.
+- Send gameplay skill advances through `sendSkillAdvance`. Verify the event-specific IDs against the client decoder and cover the emitted packet bytes when changing the mapping.
 
 ## Combat, Currency, and Catalog Validation
 

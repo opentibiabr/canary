@@ -7,7 +7,13 @@
  * Website: https://docs.opentibiabr.com/
  */
 
+#include "creatures/players/grouping/groups.hpp"
+#include "creatures/players/player.hpp"
+#include "creatures/players/vocations/vocation.hpp"
+#include "injection_fixture.hpp"
+#include "items/item.hpp"
 #include "server/network/protocol/protocol.hpp"
+#include "server/network/protocol/protocolgame.hpp"
 #include "server/network/protocol/protocol_profile.hpp"
 #include "server/network/protocol/protocol_session_hint.hpp"
 #include "server/network/protocol/transport_codec.hpp"
@@ -19,6 +25,7 @@
 	#include <array>
 	#include <cstddef>
 	#include <cstring>
+	#include <memory>
 #endif
 
 namespace {
@@ -41,6 +48,131 @@ namespace {
 	[[nodiscard]] uint32_t readU32(const std::byte* buffer) {
 		return static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[0])) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[1])) << 8) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[2])) << 16) | (static_cast<uint32_t>(std::to_integer<uint8_t>(buffer[3])) << 24);
 	}
+}
+
+class SkillAdvanceGameEventTest : public ::testing::Test {
+protected:
+	struct SkillCase {
+		skills_t skill;
+		uint8_t expectedId;
+	};
+
+	static constexpr std::array cases {
+		SkillCase { SKILL_SHIELD, 7 },
+		SkillCase { SKILL_SWORD, 2 },
+		SkillCase { SKILL_DISTANCE, 6 },
+		SkillCase { SKILL_FISHING, 8 },
+		SkillCase { SKILL_MAGLEVEL, 1 },
+		SkillCase { SKILL_CLUB, 3 },
+		SkillCase { SKILL_AXE, 4 },
+		SkillCase { SKILL_FIST, 5 },
+	};
+
+	/**
+	 * @brief Attach a player with a test vocation to a protocol that buffers outgoing packets.
+	 */
+	void SetUp() override {
+		previousInjector = DI::getTestContainer();
+		injection = std::make_unique<InjectionFixture>();
+		auto &items = Item::items.getItems();
+		originalItemCount = items.size();
+		if (items.empty()) {
+			// The player constructor creates an inbox and needs a fallback item type.
+			items.emplace_back();
+		}
+		protocol = std::make_shared<ProtocolGame>(nullptr);
+		player = std::make_shared<Player>(protocol);
+		player->vocation = std::make_shared<Vocation>(1);
+		player->setGroup(std::make_shared<Group>());
+		protocol->player = player;
+	}
+
+	void TearDown() override {
+		protocol->player.reset();
+		player.reset();
+		protocol.reset();
+		Item::items.getItems().resize(originalItemCount);
+
+		// Lua interfaces can outlive their Lua state during injector destruction.
+		const bool previousShutdown = LuaEnvironment::shuttingDown;
+		LuaEnvironment::shuttingDown = true;
+		DI::setTestContainer(previousInjector);
+		injection.reset();
+		LuaEnvironment::shuttingDown = previousShutdown;
+	}
+
+	/**
+	 * @brief Trigger one level gain per skill and decode the event after the advance text.
+	 * @param offline Selects offline training instead of regular skill or mana progression.
+	 */
+	void expectGameplayAdvances(bool offline) {
+		for (const auto &[skill, expectedId] : cases) {
+			SCOPED_TRACE(getSkillName(skill));
+			protocol->getCurrentBuffer().reset();
+			const bool isMagic = skill == SKILL_MAGLEVEL;
+			const auto nextLevel = (isMagic ? player->getBaseMagicLevel() : player->getBaseSkill(skill)) + 1;
+			const auto &vocation = player->getVocation();
+			const auto tries = isMagic ? vocation->getReqMana(nextLevel) : vocation->getReqSkillTries(skill, nextLevel);
+			ASSERT_GT(tries, 0U);
+
+			if (offline) {
+				ASSERT_TRUE(player->addOfflineTrainingTries(skill, tries));
+			} else if (isMagic) {
+				player->addManaSpent(tries);
+			} else {
+				player->addSkillAdvance(skill, tries);
+			}
+
+			const auto &output = protocol->getCurrentBuffer();
+			ASSERT_NE(nullptr, output);
+			output->setBufferPosition(NetworkMessage::INITIAL_BUFFER_POSITION);
+			ASSERT_EQ(0xB4, output->getByte());
+			output->getByte(); // Text message type.
+			ASSERT_FALSE(output->getString().empty());
+
+			ASSERT_GE(output->getUnreadBytes(), 5U);
+			EXPECT_EQ(0x75, output->getByte());
+			EXPECT_EQ(0x05, output->getByte());
+			EXPECT_EQ(expectedId, output->getByte());
+			EXPECT_EQ(nextLevel, output->get<uint16_t>());
+		}
+	}
+
+	std::shared_ptr<ProtocolGame> protocol;
+	std::shared_ptr<Player> player;
+
+private:
+	di::extension::injector<>* previousInjector = nullptr;
+	std::unique_ptr<InjectionFixture> injection;
+	std::size_t originalItemCount = 0;
+};
+
+/**
+ * @brief Check the opcode, selector, skill ID and both bytes of the level for every skill.
+ */
+TEST_F(SkillAdvanceGameEventTest, UsesClientSkillIdsInAdvancePacket) {
+	for (const auto &[skill, expectedId] : cases) {
+		SCOPED_TRACE(getSkillName(skill));
+		protocol->getCurrentBuffer().reset();
+		player->sendSkillAdvance(skill, 0x0125);
+
+		const auto &output = protocol->getCurrentBuffer();
+		const std::array<uint8_t, 5> expected { 0x75, 0x05, expectedId, 0x25, 0x01 };
+		ASSERT_NE(nullptr, output);
+		ASSERT_EQ(expected.size(), output->getLength());
+		const auto* payload = output->getOutputBuffer();
+		for (std::size_t i = 0; i < expected.size(); ++i) {
+			EXPECT_EQ(expected[i], payload[i]) << "Packet byte " << i;
+		}
+	}
+}
+
+TEST_F(SkillAdvanceGameEventTest, SendsClientSkillIdsOnRegularAdvances) {
+	expectGameplayAdvances(false);
+}
+
+TEST_F(SkillAdvanceGameEventTest, SendsClientSkillIdsOnOfflineTrainingAdvances) {
+	expectGameplayAdvances(true);
 }
 
 TEST(ProtocolProfileRegistryTest, Version860ProfilesAreDifferentProfiles) {

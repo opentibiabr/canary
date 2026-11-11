@@ -1172,6 +1172,7 @@ public:
 
 	void sendOpenStash(bool isNpc = false) const;
 
+	void sendSkillAdvance(skills_t skill, uint16_t skillLevel) const;
 	void sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId = 0, uint16_t skillLevel = 0, const std::string &achievementName = "", uint16_t raceId = 0, uint8_t bestiaryStep = 0) const;
 
 	void onThink(uint32_t interval) override;
@@ -1942,6 +1943,7 @@ private:
 	friend class Actions;
 	friend class IOLoginData;
 	friend class ProtocolGame;
+	friend class SkillAdvanceGameEventTest;
 	friend class MoveEvent;
 	friend class BedItem;
 	friend class PlayerWheel;

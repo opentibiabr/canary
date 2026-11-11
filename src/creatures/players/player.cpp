@@ -1187,6 +1187,9 @@ void Player::updateLastAggressiveAction() {
 	lastAggressiveAction = OTSYS_TIME();
 }
 
+/**
+ * @brief Apply online skill tries after script adjustments and notify each level gained.
+ */
 void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	uint64_t currReqTries = vocation->getReqSkillTries(skill, skills[skill].level);
 	uint64_t nextReqTries = vocation->getReqSkillTries(skill, skills[skill].level + 1);
@@ -1214,7 +1217,7 @@ void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 		if (skill == SKILL_LEVEL) {
 			sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 		} else {
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(skill)), skills[skill].level);
+			sendSkillAdvance(skill, skills[skill].level);
 		}
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), skill, (skills[skill].level - 1), skills[skill].level);
@@ -3551,6 +3554,9 @@ void Player::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLo
 	sendStats();
 }
 
+/**
+ * @brief Apply mana spent to magic level progression and notify each level gained.
+ */
 void Player::addManaSpent(uint64_t amount) {
 	if (hasFlag(PlayerFlags_t::NotGainMana)) {
 		return;
@@ -3579,7 +3585,7 @@ void Player::addManaSpent(uint64_t amount) {
 		std::ostringstream ss;
 		ss << "You advanced to magic level " << magLevel << '.';
 		sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-		sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
+		sendSkillAdvance(SKILL_MAGLEVEL, magLevel);
 
 		g_creatureEvents().playerAdvance(static_self_cast<Player>(), SKILL_MAGLEVEL, magLevel - 1, magLevel);
 
@@ -8127,6 +8133,10 @@ void Player::dismount() {
 	defaultOutfit.lookMount = 0;
 }
 
+/**
+ * @brief Apply offline training tries and report the final level when the skill advances.
+ * @return Whether the skill level or progress changed.
+ */
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	if (tries == 0 || skill == SKILL_LEVEL) {
 		return false;
@@ -8175,7 +8185,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			std::ostringstream ss;
 			ss << "You advanced to magic level " << magLevel << '.';
 			sendTextMessage(MESSAGE_EVENT_ADVANCE, ss.str());
-			sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(SKILL_MAGLEVEL)), magLevel);
+			sendSkillAdvance(SKILL_MAGLEVEL, magLevel);
 		}
 
 		uint8_t newPercent;
@@ -8235,7 +8245,7 @@ bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 			if (skill == SKILL_LEVEL) {
 				sendTakeScreenshot(SCREENSHOT_TYPE_LEVELUP);
 			} else {
-				sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, static_cast<uint8_t>(getCipbiaSkill(skill)), skills[skill].level);
+				sendSkillAdvance(skill, skills[skill].level);
 			}
 		}
 
@@ -8544,6 +8554,15 @@ void Player::receivePing() {
 void Player::sendOpenStash(bool isNpc) const {
 	if (client && ((getLastDepotId() != -1) || isNpc)) {
 		client->sendOpenStash();
+	}
+}
+
+/**
+ * @brief Forward a skill advance and its resulting level when a client is attached.
+ */
+void Player::sendSkillAdvance(skills_t skill, uint16_t skillLevel) const {
+	if (client) {
+		client->sendSkillAdvance(skill, skillLevel);
 	}
 }
 

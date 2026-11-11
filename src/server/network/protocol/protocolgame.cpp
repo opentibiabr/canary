@@ -11725,6 +11725,36 @@ void ProtocolGame::sendDisableLoginMusic() {
 	writeToOutputBuffer(msg);
 }
 
+namespace {
+	// The skill-up game event has its own wire IDs.
+	constexpr uint8_t getSkillAdvanceEventId(skills_t skill) {
+		switch (skill) {
+			case SKILL_MAGLEVEL:
+				return 1;
+			case SKILL_SWORD:
+				return 2;
+			case SKILL_CLUB:
+				return 3;
+			case SKILL_AXE:
+				return 4;
+			case SKILL_FIST:
+				return 5;
+			case SKILL_DISTANCE:
+				return 6;
+			case SKILL_SHIELD:
+				return 7;
+			case SKILL_FISHING:
+				return 8;
+			default:
+				return 0;
+		}
+	}
+}
+
+void ProtocolGame::sendSkillAdvance(skills_t skill, uint16_t skillLevel) {
+	sendTakeScreenshot(SCREENSHOT_TYPE_SKILLUP, getSkillAdvanceEventId(skill), skillLevel);
+}
+
 void ProtocolGame::sendTakeScreenshot(Screenshot_t screenshotType, uint8_t skillId, uint16_t skillLevel, const std::string &achievementName, uint16_t raceId, uint8_t bestiaryStep) {
 	if (screenshotType == SCREENSHOT_TYPE_NONE || oldProtocol) {
 		return;

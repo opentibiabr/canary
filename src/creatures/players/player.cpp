@@ -1187,6 +1187,9 @@ void Player::updateLastAggressiveAction() {
 	lastAggressiveAction = OTSYS_TIME();
 }
 
+/**
+ * @brief Apply online skill tries after script adjustments and notify each level gained.
+ */
 void Player::addSkillAdvance(skills_t skill, uint64_t count) {
 	uint64_t currReqTries = vocation->getReqSkillTries(skill, skills[skill].level);
 	uint64_t nextReqTries = vocation->getReqSkillTries(skill, skills[skill].level + 1);
@@ -3551,6 +3554,9 @@ void Player::drainMana(const std::shared_ptr<Creature> &attacker, int32_t manaLo
 	sendStats();
 }
 
+/**
+ * @brief Apply mana spent to magic level progression and notify each level gained.
+ */
 void Player::addManaSpent(uint64_t amount) {
 	if (hasFlag(PlayerFlags_t::NotGainMana)) {
 		return;
@@ -8127,6 +8133,10 @@ void Player::dismount() {
 	defaultOutfit.lookMount = 0;
 }
 
+/**
+ * @brief Apply offline training tries and report the final level when the skill advances.
+ * @return Whether the skill level or progress changed.
+ */
 bool Player::addOfflineTrainingTries(skills_t skill, uint64_t tries) {
 	if (tries == 0 || skill == SKILL_LEVEL) {
 		return false;
@@ -8547,6 +8557,9 @@ void Player::sendOpenStash(bool isNpc) const {
 	}
 }
 
+/**
+ * @brief Forward a skill advance and its resulting level when a client is attached.
+ */
 void Player::sendSkillAdvance(skills_t skill, uint16_t skillLevel) const {
 	if (client) {
 		client->sendSkillAdvance(skill, skillLevel);

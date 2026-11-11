@@ -11726,7 +11726,10 @@ void ProtocolGame::sendDisableLoginMusic() {
 }
 
 namespace {
-	// The skill-up game event has its own wire IDs.
+	/**
+	 * @brief Map a gameplay skill to the ID used by event 0x75/0x05.
+	 * @return The event ID, or zero if the skill has no advance banner.
+	 */
 	constexpr uint8_t getSkillAdvanceEventId(skills_t skill) {
 		switch (skill) {
 			case SKILL_MAGLEVEL:

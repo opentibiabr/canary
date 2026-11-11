@@ -68,6 +68,9 @@ protected:
 		SkillCase { SKILL_FIST, 5 },
 	};
 
+	/**
+	 * @brief Attach a player with a test vocation to a protocol that buffers outgoing packets.
+	 */
 	void SetUp() override {
 		previousInjector = DI::getTestContainer();
 		injection = std::make_unique<InjectionFixture>();
@@ -98,6 +101,10 @@ protected:
 		LuaEnvironment::shuttingDown = previousShutdown;
 	}
 
+	/**
+	 * @brief Trigger one level gain per skill and decode the event after the advance text.
+	 * @param offline Selects offline training instead of regular skill or mana progression.
+	 */
 	void expectGameplayAdvances(bool offline) {
 		for (const auto &[skill, expectedId] : cases) {
 			SCOPED_TRACE(getSkillName(skill));
@@ -140,6 +147,9 @@ private:
 	std::size_t originalItemCount = 0;
 };
 
+/**
+ * @brief Check the opcode, selector, skill ID and both bytes of the level for every skill.
+ */
 TEST_F(SkillAdvanceGameEventTest, UsesClientSkillIdsInAdvancePacket) {
 	for (const auto &[skill, expectedId] : cases) {
 		SCOPED_TRACE(getSkillName(skill));

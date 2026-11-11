@@ -9,6 +9,81 @@
 
 #include "utils/tools.hpp"
 
+#include <cstdlib>
+#include <ctime>
+
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <limits>
+#endif
+
+class DateFormattingTest : public ::testing::Test {
+protected:
+	void SetUp() override {
+		const char* timezone = std::getenv("TZ");
+		hadTimezone = timezone != nullptr;
+		if (hadTimezone) {
+			originalTimezone = timezone;
+		}
+	}
+
+	void TearDown() override {
+		setTimezone(hadTimezone ? originalTimezone.c_str() : nullptr);
+	}
+
+	static void setTimezone(const char* timezone) {
+#if defined(_WIN32) || defined(_WIN64)
+		ASSERT_EQ(_putenv_s("TZ", timezone ? timezone : ""), 0);
+		_tzset();
+#else
+		ASSERT_EQ(timezone ? setenv("TZ", timezone, 1) : unsetenv("TZ"), 0);
+		tzset();
+#endif
+	}
+
+private:
+	bool hadTimezone = false;
+	std::string originalTimezone;
+};
+
+TEST_F(DateFormattingTest, FormatsUtcWithWholeSeconds) {
+	setTimezone("UTC0");
+	constexpr time_t timestamp = 1792449706;
+	EXPECT_EQ(formatDate(timestamp), "19/10/2026 22:41:46");
+	EXPECT_EQ(formatDateShort(timestamp), "2026-10-19 22:41:46");
+	EXPECT_EQ(formatDateTime(static_cast<int64_t>(timestamp) * 1000 + 987), "2026-10-19 22:41:46");
+}
+
+TEST_F(DateFormattingTest, FormatsLocalTimeAcrossPreviousYearBoundary) {
+	setTimezone("BRT3");
+	constexpr time_t timestamp = 1767229323;
+	EXPECT_EQ(formatDate(timestamp), "31/12/2025 22:02:03");
+	EXPECT_EQ(formatDateShort(timestamp), "2025-12-31 22:02:03");
+	EXPECT_EQ(formatDateTime(static_cast<int64_t>(timestamp) * 1000 + 999), "2025-12-31 22:02:03");
+}
+
+TEST_F(DateFormattingTest, FormatsLocalTimeAcrossNextDayBoundary) {
+	setTimezone("JST-9");
+	constexpr time_t timestamp = 1792449706;
+	EXPECT_EQ(formatDate(timestamp), "20/10/2026 07:41:46");
+	EXPECT_EQ(formatDateShort(timestamp), "2026-10-20 07:41:46");
+	EXPECT_EQ(formatDateTime(static_cast<int64_t>(timestamp) * 1000), "2026-10-20 07:41:46");
+}
+
+TEST_F(DateFormattingTest, ReturnsEmptyWhenLocalTimeConversionFails) {
+	setTimezone("UTC0");
+#if defined(_WIN32) || defined(_WIN64)
+	constexpr time_t timestamp = -1;
+	EXPECT_TRUE(formatDateTime(-1000).empty());
+#else
+	if constexpr (std::numeric_limits<time_t>::digits <= 32) {
+		GTEST_SKIP() << "time_t range fits in std::tm";
+	}
+	constexpr time_t timestamp = std::numeric_limits<time_t>::max();
+#endif
+	EXPECT_TRUE(formatDate(timestamp).empty());
+	EXPECT_TRUE(formatDateShort(timestamp).empty());
+}
+
 struct ReplaceStringTestCase {
 	std::string subject;
 	std::string search;

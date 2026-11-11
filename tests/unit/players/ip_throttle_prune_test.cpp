@@ -9,10 +9,8 @@
 
 #include <gtest/gtest.h>
 
-#define private public
 #include "creatures/players/management/ban.hpp"
 #include "server/network/protocol/protocolstatus.hpp"
-#undef private
 #include "config/configmanager.hpp"
 
 extern int64_t OTSYSTIME;
@@ -28,12 +26,24 @@ class IpThrottlePruneTest : public ::testing::Test {
 protected:
 	int64_t originalSystemTime {};
 
+	static IpConnectMap &banEntries(Ban &ban) {
+		return ban.ipConnectMap;
+	}
+
+	static auto &statusEntries() {
+		return ProtocolStatus::ipConnectMap;
+	}
+
+	static void pruneStatusEntries(int64_t now) {
+		ProtocolStatus::pruneStaleEntries(now);
+	}
+
 	void SetUp() override {
 		originalSystemTime = OTSYSTIME;
 	}
 
 	void TearDown() override {
-		ProtocolStatus::ipConnectMap.clear();
+		statusEntries().clear();
 		OTSYSTIME = originalSystemTime;
 	}
 };
@@ -49,24 +59,24 @@ namespace {
 TEST_F(IpThrottlePruneTest, BanDropsEntriesThatCanNoLongerAffectADecision) {
 	Ban ban;
 	OTSYSTIME = static_cast<int64_t>(T);
-	ban.ipConnectMap.emplace(OLD_IP, ConnectBlock(T - 60'000, 0, 1));
-	ban.ipConnectMap.emplace(RECENT_IP, ConnectBlock(T - 1'000, 0, 3));
+	banEntries(ban).emplace(OLD_IP, ConnectBlock(T - 60'000, 0, 1));
+	banEntries(ban).emplace(RECENT_IP, ConnectBlock(T - 1'000, 0, 3));
 
 	ban.acceptConnection(OTHER_IP);
 
-	EXPECT_FALSE(ban.ipConnectMap.contains(OLD_IP));
-	EXPECT_TRUE(ban.ipConnectMap.contains(RECENT_IP));
-	EXPECT_TRUE(ban.ipConnectMap.contains(OTHER_IP));
+	EXPECT_FALSE(banEntries(ban).contains(OLD_IP));
+	EXPECT_TRUE(banEntries(ban).contains(RECENT_IP));
+	EXPECT_TRUE(banEntries(ban).contains(OTHER_IP));
 }
 
 TEST_F(IpThrottlePruneTest, BanKeepsActiveBlocks) {
 	Ban ban;
 	OTSYSTIME = static_cast<int64_t>(T);
-	ban.ipConnectMap.emplace(OLD_IP, ConnectBlock(T - 60'000, T + 3'000, 0));
+	banEntries(ban).emplace(OLD_IP, ConnectBlock(T - 60'000, T + 3'000, 0));
 
 	ban.acceptConnection(OTHER_IP);
 
-	EXPECT_TRUE(ban.ipConnectMap.contains(OLD_IP));
+	EXPECT_TRUE(banEntries(ban).contains(OLD_IP));
 }
 
 // The system clock can step backward. An attempt recorded before the step is
@@ -80,18 +90,18 @@ TEST_F(IpThrottlePruneTest, BanKeepsAttemptsRecordedBeforeABackwardClockStep) {
 	OTSYSTIME = static_cast<int64_t>(T - 3'600'000);
 	ban.acceptConnection(OTHER_IP);
 
-	EXPECT_TRUE(ban.ipConnectMap.contains(RECENT_IP));
+	EXPECT_TRUE(banEntries(ban).contains(RECENT_IP));
 }
 
 // The status throttle uses a signed difference, so a query recorded before a
 // backward clock step still throttles until its timeout elapses: it must stay.
 TEST_F(IpThrottlePruneTest, StatusKeepsQueriesRecordedBeforeABackwardClockStep) {
 	const auto now = static_cast<int64_t>(T);
-	ProtocolStatus::ipConnectMap[RECENT_IP] = now + 3'600'000;
+	statusEntries()[RECENT_IP] = now + 3'600'000;
 
-	ProtocolStatus::pruneStaleEntries(now);
+	pruneStatusEntries(now);
 
-	EXPECT_TRUE(ProtocolStatus::ipConnectMap.contains(RECENT_IP));
+	EXPECT_TRUE(statusEntries().contains(RECENT_IP));
 }
 
 // The maintainer's point on the first version: the 60 s interval limited how often
@@ -102,23 +112,23 @@ TEST_F(IpThrottlePruneTest, BanExaminesABoundedNumberOfEntriesPerCall) {
 	Ban ban;
 	OTSYSTIME = static_cast<int64_t>(T);
 	for (uint32_t ip = 1; ip <= STALE_ENTRIES; ++ip) {
-		ban.ipConnectMap.emplace(ip, ConnectBlock(T - 60'000, 0, 1));
+		banEntries(ban).emplace(ip, ConnectBlock(T - 60'000, 0, 1));
 	}
 
 	ban.acceptConnection(0xFFFFFFF0);
 
-	EXPECT_GE(ban.ipConnectMap.size(), STALE_ENTRIES + 1 - MAX_ENTRIES_PER_CALL);
+	EXPECT_GE(banEntries(ban).size(), STALE_ENTRIES + 1 - MAX_ENTRIES_PER_CALL);
 }
 
 TEST_F(IpThrottlePruneTest, StatusExaminesABoundedNumberOfEntriesPerCall) {
 	const auto now = static_cast<int64_t>(T);
 	for (uint32_t ip = 1; ip <= STALE_ENTRIES; ++ip) {
-		ProtocolStatus::ipConnectMap[ip] = now - 3'600'000;
+		statusEntries()[ip] = now - 3'600'000;
 	}
 
-	ProtocolStatus::pruneStaleEntries(now);
+	pruneStatusEntries(now);
 
-	EXPECT_GE(ProtocolStatus::ipConnectMap.size(), STALE_ENTRIES - MAX_ENTRIES_PER_CALL);
+	EXPECT_GE(statusEntries().size(), STALE_ENTRIES - MAX_ENTRIES_PER_CALL);
 }
 
 // Bounded steps must still reclaim everything: each call resumes where the last
@@ -128,17 +138,17 @@ TEST_F(IpThrottlePruneTest, BanStepsReclaimTheWholeMapAndKeepFreshEntries) {
 	Ban ban;
 	OTSYSTIME = static_cast<int64_t>(T);
 	for (uint32_t ip = 1; ip <= STALE_ENTRIES; ++ip) {
-		ban.ipConnectMap.emplace(ip, ConnectBlock(T - 60'000, 0, 1));
+		banEntries(ban).emplace(ip, ConnectBlock(T - 60'000, 0, 1));
 	}
-	ban.ipConnectMap.emplace(STALE_ENTRIES / 2 + 1'000'000, ConnectBlock(T - 1'000, 0, 3));
+	banEntries(ban).emplace(STALE_ENTRIES / 2 + 1'000'000, ConnectBlock(T - 1'000, 0, 3));
 
 	for (uint32_t call = 0; call < STALE_ENTRIES; ++call) {
 		ban.acceptConnection(0xFFFFFFF0);
 	}
 
-	EXPECT_EQ(ban.ipConnectMap.size(), 2U); // the fresh entry and the caller's own
-	EXPECT_TRUE(ban.ipConnectMap.contains(STALE_ENTRIES / 2 + 1'000'000));
-	EXPECT_TRUE(ban.ipConnectMap.contains(0xFFFFFFF0));
+	EXPECT_EQ(banEntries(ban).size(), 2U); // the fresh entry and the caller's own
+	EXPECT_TRUE(banEntries(ban).contains(STALE_ENTRIES / 2 + 1'000'000));
+	EXPECT_TRUE(banEntries(ban).contains(0xFFFFFFF0));
 }
 
 TEST_F(IpThrottlePruneTest, StatusStepsReclaimTheWholeMapAndKeepFreshEntries) {
@@ -148,16 +158,16 @@ TEST_F(IpThrottlePruneTest, StatusStepsReclaimTheWholeMapAndKeepFreshEntries) {
 	// inside its window, the stale ones are well past it.
 	const int64_t timeout = g_configManager().getNumber(STATUSQUERY_TIMEOUT);
 	for (uint32_t ip = 1; ip <= STALE_ENTRIES; ++ip) {
-		ProtocolStatus::ipConnectMap[ip] = now - timeout - 3'600'000;
+		statusEntries()[ip] = now - timeout - 3'600'000;
 	}
-	ProtocolStatus::ipConnectMap[OTHER_IP] = now - timeout + 1;
+	statusEntries()[OTHER_IP] = now - timeout + 1;
 
 	for (uint32_t call = 0; call < STALE_ENTRIES; ++call) {
-		ProtocolStatus::pruneStaleEntries(now);
+		pruneStatusEntries(now);
 	}
 
-	EXPECT_EQ(ProtocolStatus::ipConnectMap.size(), 1U);
-	EXPECT_TRUE(ProtocolStatus::ipConnectMap.contains(OTHER_IP));
+	EXPECT_EQ(statusEntries().size(), 1U);
+	EXPECT_TRUE(statusEntries().contains(OTHER_IP));
 }
 
 // A step that restarted from the beginning every time would keep examining the
@@ -169,17 +179,17 @@ TEST_F(IpThrottlePruneTest, BanStepsResumeInsteadOfRestartingAtTheBeginning) {
 	OTSYSTIME = static_cast<int64_t>(T);
 	constexpr uint32_t LIVE = MAX_ENTRIES_PER_CALL * 4;
 	for (uint32_t ip = 1; ip <= LIVE; ++ip) {
-		ban.ipConnectMap.emplace(ip, ConnectBlock(T - 60'000, T + 3'600'000, 0)); // active block
+		banEntries(ban).emplace(ip, ConnectBlock(T - 60'000, T + 3'600'000, 0)); // active block
 	}
 	for (uint32_t ip = LIVE + 1; ip <= LIVE + 1'000; ++ip) {
-		ban.ipConnectMap.emplace(ip, ConnectBlock(T - 60'000, 0, 1));
+		banEntries(ban).emplace(ip, ConnectBlock(T - 60'000, 0, 1));
 	}
 
 	for (uint32_t call = 0; call < 1'000; ++call) {
 		ban.acceptConnection(0xFFFFFFF0);
 	}
 
-	EXPECT_EQ(ban.ipConnectMap.size(), LIVE + 1U);
+	EXPECT_EQ(banEntries(ban).size(), LIVE + 1U);
 }
 
 TEST_F(IpThrottlePruneTest, StatusStepsResumeInsteadOfRestartingAtTheBeginning) {
@@ -187,15 +197,15 @@ TEST_F(IpThrottlePruneTest, StatusStepsResumeInsteadOfRestartingAtTheBeginning) 
 	const int64_t timeout = g_configManager().getNumber(STATUSQUERY_TIMEOUT);
 	constexpr uint32_t LIVE = MAX_ENTRIES_PER_CALL * 4;
 	for (uint32_t ip = 1; ip <= LIVE; ++ip) {
-		ProtocolStatus::ipConnectMap[ip] = now - timeout + 1;
+		statusEntries()[ip] = now - timeout + 1;
 	}
 	for (uint32_t ip = LIVE + 1; ip <= LIVE + 1'000; ++ip) {
-		ProtocolStatus::ipConnectMap[ip] = now - timeout - 3'600'000;
+		statusEntries()[ip] = now - timeout - 3'600'000;
 	}
 
 	for (uint32_t call = 0; call < 1'000; ++call) {
-		ProtocolStatus::pruneStaleEntries(now);
+		pruneStatusEntries(now);
 	}
 
-	EXPECT_EQ(ProtocolStatus::ipConnectMap.size(), LIVE);
+	EXPECT_EQ(statusEntries().size(), LIVE);
 }

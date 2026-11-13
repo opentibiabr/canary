@@ -111,10 +111,7 @@ continuam pendentes de confirmacao.
 
 Passaram os testes isolados com a biblioteca LuaJIT mantida pelo projeto:
 
-```powershell
-python tools/canary_audit/test_grave_danger_flow.py tools/canary_audit/test_grave_danger.lua
-python tools/canary_audit/test_grave_danger_flow.py tools/canary_audit/test_duke_krule.lua
-```
+Os scripts de teste foram executados localmente e nao fazem parte deste PR.
 
 Cobertura acrescentada: imunidade do Count sob dano letal; retorno/janela dos
 Fetters; soldados da arena final e reposicao; repeticao/timeout/cancelamento da

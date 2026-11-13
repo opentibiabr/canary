@@ -77,12 +77,9 @@ Retrieved on 2026-11-12. Wiki resistance/loot tables include uncertainty warning
 
 ## Local validation
 
-From an initialized MSVC x64 environment, using the maintained LuaJIT library:
+Local checks used an initialized MSVC x64 environment and the maintained LuaJIT library:
 
-```powershell
-python tools/canary_audit/test_grave_danger_flow.py tools/canary_audit/test_grave_danger.lua
-python tools/canary_audit/test_grave_danger_flow.py tools/canary_audit/test_duke_krule.lua
-```
+The test scripts were executed locally and are not included in this PR.
 
 Both passed. The harness loads the real monster definitions and healing adapter;
 it tests both soul rounds using actual fragment healing rather than setting soul

@@ -1,6 +1,7 @@
 -- Encounter state is ephemeral, world-owned and replaced on every lever start.
 -- State contains only IDs and values; no timer retains a creature userdata.
 GraveDanger = {}
+local activeLibrary = GraveDanger
 -- Upstream is single-world; retain explicit ownership on multi-world servers.
 local function owningWorldId(owner)
 	if owner then
@@ -39,12 +40,18 @@ local function monsters(state)
 	return Game.getSpectators(state.room.center, false, false, state.room.x, state.room.x, state.room.y, state.room.y)
 end
 local function resolve(state, id)
+	if GraveDanger ~= activeLibrary then
+		return
+	end
 	local creature = id and Monster(id)
 	if creature and owningWorldId(creature) == state.world and creature:getHealth() > 0 and creature:getStorageValue(sessionStorage) == state.token then
 		return creature
 	end
 end
 local function current(creature)
+	if GraveDanger ~= activeLibrary then
+		return
+	end
 	local world = sessions[owningWorldId(creature)]
 	if not world then
 		return
@@ -99,6 +106,9 @@ local function blocked(primaryType, secondaryType)
 	return 0, primaryType, 0, secondaryType
 end
 local function returnNargolAfterMassTimeout(worldId, token, massId, x, y, z)
+	if GraveDanger ~= activeLibrary or owningWorldId() ~= worldId then
+		return
+	end
 	local state = sessions[worldId] and sessions[worldId]["king zelos"]
 	if not state or state.token ~= token or state.mass ~= massId then
 		return
@@ -175,8 +185,18 @@ local function replenishRedKnightSupports(state)
 	end
 end
 function GraveDanger.checkEntry(name, player)
+	if type(name) ~= "string" then
+		return false
+	end
 	local room = rooms[name:lower()]
-	local deadline = player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses[room.timer].Timer)
+	if not room or not room.timer then
+		return false
+	end
+	local entry = Storage.Quest.U12_20.GraveDanger.Bosses[room.timer]
+	if not entry or not entry.Timer then
+		return false
+	end
+	local deadline = math.max(player:getStorageValue(entry.Timer), player:getBossCooldown(name))
 	if name:lower() == "sir nictros" then
 		deadline = math.max(deadline, player:getBossCooldown("Sir Baeloc"))
 	end
@@ -186,7 +206,30 @@ function GraveDanger.checkEntry(name, player)
 	end
 	return true
 end
+local function ritualTick(worldId, token)
+	if GraveDanger ~= activeLibrary or owningWorldId() ~= worldId then
+		return
+	end
+	local state = sessions[worldId] and sessions[worldId]["king zelos"]
+	if not state or state.token ~= token or state.finished then
+		return
+	end
+	local boss = resolve(state, state.boss)
+	if not boss then
+		return
+	end
+	state.clockTicks = (state.clockTicks or 0) + 1
+	if state.clockTicks > 24 * 60 then
+		return
+	end
+	GraveDanger.think(boss, 1000, true)
+	addEvent(ritualTick, 1000, worldId, token)
+end
+
 function GraveDanger.start(name, position)
+	if type(name) ~= "string" or not rooms[name:lower()] then
+		return false
+	end
 	name = name:lower()
 	local world = owningWorldId()
 	sessions[world] = sessions[world] or {}
@@ -200,7 +243,7 @@ function GraveDanger.start(name, position)
 		end
 	end
 	sequence = sequence + 1
-	local state = { world = world, token = os.time() * 100000 + sequence, name = name, room = rooms[name], members = {}, elapsed = 0, phase = 0, accumulated = 0 }
+	local state = { world = world, token = sequence, name = name, room = rooms[name], members = {}, elapsed = 0, phase = 0, accumulated = 0 }
 	sessions[world][name] = state
 	local boss = spawn(state, name, position, "boss")
 	if not boss then
@@ -276,6 +319,9 @@ function GraveDanger.start(name, position)
 	elseif name == "scarlett etzel" then
 		createArmor()
 	end
+	if name == "king zelos" then
+		addEvent(ritualTick, 1000, world, state.token)
+	end
 	return true
 end
 
@@ -311,6 +357,21 @@ end
 
 -- Count: one dark counterpart per participant, and one matching remains per counterpart.
 local darkVocations = { [1] = "Dark Sorcerer", [2] = "Dark Druid", [3] = "Dark Paladin", [4] = "Dark Knight", [9] = "Dark Merudri" }
+local function reconcileCount(state)
+	local present = {}
+	for _, player in ipairs(Game.getSpectators(state.room.center, false, true, 8, 8, 9, 9)) do
+		if player:getHealth() > 0 then
+			present[player:getVocation():getBase():getId()] = true
+		end
+	end
+	for vocation in pairs(state.remaining) do
+		if not present[vocation] then
+			state.remaining[vocation] = nil
+		end
+	end
+	state.shield = next(state.remaining) ~= nil
+end
+
 local function countPhase(state, boss)
 	if (state.countPhases or 0) >= 2 then
 		return
@@ -425,6 +486,9 @@ end
 
 function GraveDanger.health(creature, attacker, primary, primaryType, secondary, secondaryType)
 	local state = current(creature)
+	if state and state.name == "count vlarkorth" and state.shield then
+		reconcileCount(state)
+	end
 	if not state then
 		return primary, primaryType, secondary, secondaryType
 	end
@@ -548,12 +612,56 @@ local function ritualComplete(state, deadId)
 	end
 	state.ritualDuration = state.ritualDuration or math.max(0, os.time() - state.started)
 end
+function GraveDanger.brotherAttackers(creature)
+	local state = sessions[owningWorldId(creature)] and sessions[owningWorldId(creature)]["sir nictros"]
+	if not state or (creature:getId() ~= state.boss and creature:getId() ~= state.brother) then
+		return creature:getDamageMap()
+	end
+	state.attackers = state.attackers or {}
+	for id in pairs(creature:getDamageMap()) do
+		state.attackers[id] = true
+	end
+	return state.attackers
+end
+
+local function finishEncounter(state, lever)
+	if lever.finishEncounter then
+		return lever:finishEncounter(state.world)
+	end
+	-- Match upstream BossLeverOnDeath without requiring personal-server helpers.
+	if lever.timeoutEvent then
+		stopEvent(lever.timeoutEvent)
+		lever.timeoutEvent = nil
+	end
+	if (lever.timeAfterKill or 0) <= 0 then
+		return
+	end
+	local zone = lever:getZone()
+	zone:sendTextMessage(MESSAGE_EVENT_ADVANCE, "The " .. state.name .. " has been defeated. You have " .. lever.timeAfterKill .. " seconds to leave the room.")
+	lever.timeoutEvent = addEvent(function(worldId, token, name)
+		local active = sessions[worldId] and sessions[worldId][name]
+		if GraveDanger ~= activeLibrary or owningWorldId() ~= worldId or not active or active.token ~= token then
+			return
+		end
+		local currentLever = BossLever[name]
+		if not currentLever then
+			return
+		end
+		local currentZone = currentLever:getZone()
+		currentZone:refresh()
+		currentZone:removePlayers()
+	end, lever.timeAfterKill * 1000, state.world, state.token, state.name)
+end
+
 function GraveDanger.death(creature, corpse)
 	local state = current(creature)
 	if not state then
 		return true
 	end
 	local id, role = creature:getId(), state.members[creature:getId()]
+	if state.name == "sir nictros" then
+		GraveDanger.brotherAttackers(creature)
+	end
 	local redKnightSupport = state.redKnightSupports and state.redKnightSupports[id]
 	local darkRole = { ["dark sorcerer"] = 1, ["dark druid"] = 2, ["dark paladin"] = 3, ["dark knight"] = 4, ["dark merudri"] = 9 }
 	if darkRole[role] and corpse then
@@ -632,9 +740,10 @@ function GraveDanger.death(creature, corpse)
 		finished = (id == state.boss or id == state.brother) and not GraveDanger.brothersAlive(creature)
 	end
 	if finished then
+		state.finished = true
 		local lever = BossLever[state.name]
 		if lever then
-			lever:finishEncounter(state.world)
+			finishEncounter(state, lever)
 		end
 	end
 	return true
@@ -644,6 +753,9 @@ function GraveDanger.disappear(creature)
 	local state = current(creature)
 	if state then
 		local id = creature:getId()
+		if id == state.boss then
+			state.finished = true
+		end
 		state.members[id] = nil
 		if state.fetters then
 			state.fetters[id] = nil
@@ -709,10 +821,16 @@ function GraveDanger.brothersAlive(creature)
 	return resolve(state, other) ~= nil
 end
 
-function GraveDanger.think(creature, interval)
+function GraveDanger.think(creature, interval, ritualClock)
 	local state = current(creature)
 	if not state then
 		return true
+	end
+	if state.name == "king zelos" and not ritualClock then
+		return true
+	end
+	if state.name == "count vlarkorth" and state.shield then
+		reconcileCount(state)
 	end
 	if state.members[creature:getId()] == "soul" then
 		if (state.cleansed or 0) >= 3 or (not state.soulStartedFull and creature:getHealth() >= creature:getMaxHealth()) then

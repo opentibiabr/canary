@@ -120,3 +120,24 @@ Suggested separate issues:
    separate participants before deciding how encounter-wide credit is retained.
 
 Merge readiness requires the live regression and review of the isolated PR diff.
+
+## PR 4183 review follow-up (2026-11-13)
+
+Confirmed and corrected: unsupported upstream encounter completion, Count shield
+remaining active after the only matching vocation leaves/dies, idle Zelos ritual
+clocks, lost participation credit for the first brother, and unguarded entry
+lookups. Ritual ticking now uses a world/session-bound one-second event with a
+24-minute bound and no double advancement from native monster think callbacks.
+The upstream completion fallback revalidates the session before removing players;
+the personal server's native world-aware completion method remains supported.
+
+Monster storage methods DO exist in `data/libs/functions/monster.lua`; the
+missing-method finding examined only C++ bindings. These Lua tables retain Lua
+numbers, so player int32 truncation does not apply. Session tokens nevertheless
+now use an incrementing process-local counter rather than epoch multiplication.
+Old library callbacks reject work after replacement of the library.
+
+Local regression flows load the actual Monster storage helpers and cover Count
+participant loss, both completion APIs, shared brother attackers, idle ritual
+support replenishment and stopping after boss removal. Test files remain local
+and are excluded from the PR as requested. Gameplay validation remains pending.

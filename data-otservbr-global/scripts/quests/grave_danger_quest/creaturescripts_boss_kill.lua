@@ -64,14 +64,15 @@ function grave_danger_death.onDeath(creature, corpse, killer, mostDamageKiller)
 		return true
 	end
 	local name = creature:getName():lower()
-	if (name == "sir baeloc" or name == "sir nictros") and GraveDanger.brothersAlive(creature) then
+	local brothers = name == "sir baeloc" or name == "sir nictros"
+	local attackers = brothers and GraveDanger.brotherAttackers(creature) or creature:getDamageMap()
+	if brothers and GraveDanger.brothersAlive(creature) then
 		return true
 	end
 
-	local attackers = creature:getDamageMap()
 	for attackerId, _ in pairs(attackers) do
 		local player = Player(attackerId)
-		if player and player:getStorageValue(bossConfig.stor) < 1 then
+		if player and (not player.getWorldId or player:getWorldId() == creature:getWorldId()) and player:getStorageValue(bossConfig.stor) < 1 then
 			player:setStorageValue(bossConfig.stor, 1)
 
 			if creature:getName():lower() == "scarlett etzel" then

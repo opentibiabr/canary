@@ -85287,4 +85287,3015 @@ Granted by TibiaGoals.com"/>
 		<attribute key="primarytype" value="extra slot"/>
 		<attribute key="weight" value="75"/>
 	</item>
+
+	<!-- Store bundle decoration components (client 15.25). -->
+	<item id="44030" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44031"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="44031" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44032"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="44032" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44033"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="44033" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44034"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="44034" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44035"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="44035" article="a" name="mask of the defiler">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="44030"/>
+		<attribute key="description" value="A dark and mystic aura surrounds this sculpture."/>
+	</item>
+	<item id="48574" article="a" name="candy chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateTo" value="48575"/>
+	</item>
+	<item id="48575" article="a" name="candy chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateTo" value="48574"/>
+	</item>
+	<item id="48576" article="a" name="beehive">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="48577"/>
+	</item>
+	<item id="48577" article="a" name="beehive">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="48576"/>
+	</item>
+	<item id="50435" article="a" name="wooden dummy">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="50436"/>
+		<attribute key="description" value="A wooden dummy used in martial arts training"/>
+	</item>
+	<item id="50436" article="a" name="wooden dummy">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="50435"/>
+		<attribute key="description" value="A wooden dummy used in martial arts training"/>
+	</item>
+	<item id="51706" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51707"/>
+	</item>
+	<item id="51707" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51708"/>
+	</item>
+	<item id="51708" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51709"/>
+	</item>
+	<item id="51709" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51710"/>
+	</item>
+	<item id="51710" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51711"/>
+	</item>
+	<item id="51711" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51712"/>
+	</item>
+	<item id="51712" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51713"/>
+	</item>
+	<item id="51713" article="an" name="effigy of winged vengeance">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateTo" value="51706"/>
+	</item>
+	<item id="52867" article="a" name="barebone grill">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="52868" article="a" name="barebone grill">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="52869" article="a" name="barebone grill">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="52870" article="a" name="barebone grill">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="52871" article="a" name="barebone grill">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50205" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50206"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="50207"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50206" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50205"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="50208"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50207" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50208"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="50205"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50208" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50207"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="50206"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50209" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50210"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="50211"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50210" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50209"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="50212"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50211" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50212"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="50209"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50212" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50211"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="50210"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50213" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50214"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="50215"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="50205"/>
+		<attribute key="femaletransformto" value="50209"/>
+	</item>
+	<item id="50214" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50213"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="50216"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="50206"/>
+		<attribute key="femaletransformto" value="50210"/>
+	</item>
+	<item id="50215" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="50216"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="50213"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="50207"/>
+		<attribute key="femaletransformto" value="50211"/>
+	</item>
+	<item id="50216" article="a" name="sickbed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="50215"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="50214"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="50208"/>
+		<attribute key="femaletransformto" value="50212"/>
+	</item>
+	<!-- Store house additions supported by the 15.25 appearance catalog. -->
+	<item id="43715" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43716"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="43717"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43716" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43715"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="43718"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43717" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43718"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="43715"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43718" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43717"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="43716"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43719" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43720"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="43721"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43720" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43719"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="43722"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43721" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43722"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="43719"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43722" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43721"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="43720"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43723" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43724"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="43725"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="43715"/>
+		<attribute key="femaletransformto" value="43719"/>
+	</item>
+	<item id="43724" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43723"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="43726"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="43716"/>
+		<attribute key="femaletransformto" value="43720"/>
+	</item>
+	<item id="43725" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="43726"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="43723"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="43717"/>
+		<attribute key="femaletransformto" value="43721"/>
+	</item>
+	<item id="43726" article="a" name="witchcraft bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="43725"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="43724"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="43718"/>
+		<attribute key="femaletransformto" value="43722"/>
+	</item>
+	<item id="44098" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44099"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44100"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44099" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44098"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44101"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44100" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44101"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44098"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44101" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44100"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44099"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44102" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44103"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44104"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44103" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44102"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44105"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44104" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44105"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44102"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44105" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44104"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44103"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44106" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44107"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44108"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44098"/>
+		<attribute key="femaletransformto" value="44102"/>
+	</item>
+	<item id="44107" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44106"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44109"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44099"/>
+		<attribute key="femaletransformto" value="44103"/>
+	</item>
+	<item id="44108" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44109"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44106"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44100"/>
+		<attribute key="femaletransformto" value="44104"/>
+	</item>
+	<item id="44109" article="a" name="cave bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44108"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44107"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44101"/>
+		<attribute key="femaletransformto" value="44105"/>
+	</item>
+	<item id="44545" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44546"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44547"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44546" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44545"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44548"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44547" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44548"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44545"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44548" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44547"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44546"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44549" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44550"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44551"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44550" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44549"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44552"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44551" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44552"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44549"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44552" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44551"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44550"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44553" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44554"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="44555"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44545"/>
+		<attribute key="femaletransformto" value="44549"/>
+	</item>
+	<item id="44554" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44553"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="44556"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44546"/>
+		<attribute key="femaletransformto" value="44550"/>
+	</item>
+	<item id="44555" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="44556"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="44553"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44547"/>
+		<attribute key="femaletransformto" value="44551"/>
+	</item>
+	<item id="44556" article="a" name="crystal bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="44555"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="44554"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="44548"/>
+		<attribute key="femaletransformto" value="44552"/>
+	</item>
+	<item id="45333" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45334"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45335"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45334" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45333"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45336"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45335" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45336"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45333"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45336" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45335"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45334"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45337" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45338"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45339"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45338" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45337"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45340"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45339" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45340"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45337"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45340" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45339"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45338"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45341" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45342"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45343"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45333"/>
+		<attribute key="femaletransformto" value="45337"/>
+	</item>
+	<item id="45342" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45341"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45344"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45334"/>
+		<attribute key="femaletransformto" value="45338"/>
+	</item>
+	<item id="45343" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45344"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45341"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45335"/>
+		<attribute key="femaletransformto" value="45339"/>
+	</item>
+	<item id="45344" article="a" name="tomb bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45343"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45342"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45336"/>
+		<attribute key="femaletransformto" value="45340"/>
+	</item>
+	<item id="45505" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45506"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45507"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45506" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45505"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45508"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45507" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45508"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45505"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45508" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45507"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45506"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45509" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45510"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45511"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45510" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45509"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45512"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45511" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45512"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45509"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45512" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45511"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45510"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45513" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45514"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="45515"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45505"/>
+		<attribute key="femaletransformto" value="45509"/>
+	</item>
+	<item id="45514" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45513"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="45516"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45506"/>
+		<attribute key="femaletransformto" value="45510"/>
+	</item>
+	<item id="45515" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="45516"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="45513"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45507"/>
+		<attribute key="femaletransformto" value="45511"/>
+	</item>
+	<item id="45516" article="a" name="blossom bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="45515"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="45514"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="45508"/>
+		<attribute key="femaletransformto" value="45512"/>
+	</item>
+	<item id="49199" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49200"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49201"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49200" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49199"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49202"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49201" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49202"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49199"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49202" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49201"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49200"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49203" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49204"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49205"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49204" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49203"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49206"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49205" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49206"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49203"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49206" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49205"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49204"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49207" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49208"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49209"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49199"/>
+		<attribute key="femaletransformto" value="49203"/>
+	</item>
+	<item id="49208" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49207"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49210"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49200"/>
+		<attribute key="femaletransformto" value="49204"/>
+	</item>
+	<item id="49209" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49210"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49207"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49201"/>
+		<attribute key="femaletransformto" value="49205"/>
+	</item>
+	<item id="49210" article="a" name="wicker bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49209"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49208"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49202"/>
+		<attribute key="femaletransformto" value="49206"/>
+	</item>
+	<item id="49246" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49247"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49248"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49247" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49246"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49249"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49248" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49249"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49246"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49249" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49248"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49247"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49250" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49251"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49252"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49251" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49250"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49253"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49252" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49253"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49250"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49253" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49252"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49251"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49254" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49255"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="49256"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49246"/>
+		<attribute key="femaletransformto" value="49250"/>
+	</item>
+	<item id="49255" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49254"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="49257"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49247"/>
+		<attribute key="femaletransformto" value="49251"/>
+	</item>
+	<item id="49256" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="49257"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="49254"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49248"/>
+		<attribute key="femaletransformto" value="49252"/>
+	</item>
+	<item id="49257" article="a" name="ember bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="49256"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="49255"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="49249"/>
+		<attribute key="femaletransformto" value="49253"/>
+	</item>
+	<item id="51208" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51209"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51210"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51209" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51208"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51211"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51210" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51211"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51208"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51211" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51210"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51209"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51212" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51213"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51214"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51213" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51212"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51215"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51214" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51215"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51212"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51215" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51214"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51213"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51216" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51217"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51218"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51208"/>
+		<attribute key="femaletransformto" value="51212"/>
+	</item>
+	<item id="51217" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51216"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51219"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51209"/>
+		<attribute key="femaletransformto" value="51213"/>
+	</item>
+	<item id="51218" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51219"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51216"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51210"/>
+		<attribute key="femaletransformto" value="51214"/>
+	</item>
+	<item id="51219" article="a" name="voodoo bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51218"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51217"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51211"/>
+		<attribute key="femaletransformto" value="51215"/>
+	</item>
+	<item id="51786" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51787"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51788"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51787" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51786"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51789"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51788" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51789"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51786"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51789" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51788"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51787"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51790" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51791"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51792"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51791" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51790"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51793"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51792" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51793"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51790"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51793" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51792"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51791"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51794" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51795"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="51796"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51786"/>
+		<attribute key="femaletransformto" value="51790"/>
+	</item>
+	<item id="51795" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51794"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="51797"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51787"/>
+		<attribute key="femaletransformto" value="51791"/>
+	</item>
+	<item id="51796" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="51797"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="51794"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51788"/>
+		<attribute key="femaletransformto" value="51792"/>
+	</item>
+	<item id="51797" article="a" name="sighting bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="51796"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="51795"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="51789"/>
+		<attribute key="femaletransformto" value="51793"/>
+	</item>
+	<item id="53573" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53574"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="53575"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53574" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53573"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="53576"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53575" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53576"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="53573"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53576" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53575"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="53574"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53577" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53578"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="53579"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53578" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53577"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="53580"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53579" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53580"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="53577"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53580" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53579"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="53578"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53581" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53582"/>
+		<attribute key="partnerdirection" value="south"/>
+		<attribute key="rotateto" value="53583"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="53573"/>
+		<attribute key="femaletransformto" value="53577"/>
+	</item>
+	<item id="53582" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53581"/>
+		<attribute key="partnerdirection" value="north"/>
+		<attribute key="rotateto" value="53584"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="53574"/>
+		<attribute key="femaletransformto" value="53578"/>
+	</item>
+	<item id="53583" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="pillow"/>
+		<attribute key="bedpartof" value="53584"/>
+		<attribute key="partnerdirection" value="east"/>
+		<attribute key="rotateto" value="53581"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="53575"/>
+		<attribute key="femaletransformto" value="53579"/>
+	</item>
+	<item id="53584" article="a" name="cyclops steel bed">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="type" value="bed"/>
+		<attribute key="bedpart" value="blanket"/>
+		<attribute key="bedpartof" value="53583"/>
+		<attribute key="partnerdirection" value="west"/>
+		<attribute key="rotateto" value="53582"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="maletransformto" value="53576"/>
+		<attribute key="femaletransformto" value="53580"/>
+	</item>
+	<item id="43677" article="a" name="chest full of witchcraft">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="43678"/>
+	</item>
+	<item id="43678" article="a" name="chest full of witchcraft">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="43679"/>
+	</item>
+	<item id="43679" article="a" name="chest full of witchcraft">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="43680"/>
+	</item>
+	<item id="43680" article="a" name="chest full of witchcraft">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="43677"/>
+	</item>
+	<item id="43681" article="a" name="witchcraft chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43682"/>
+	</item>
+	<item id="43682" article="a" name="witchcraft chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43683"/>
+	</item>
+	<item id="43683" article="a" name="witchcraft chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43684"/>
+	</item>
+	<item id="43684" article="a" name="witchcraft chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43681"/>
+	</item>
+	<item id="43687" article="a" name="witchcraft cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="rotateto" value="43688"/>
+	</item>
+	<item id="43688" article="a" name="witchcraft cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="rotateto" value="43687"/>
+	</item>
+	<item id="43689" article="a" name="witchcraft portal">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43690"/>
+	</item>
+	<item id="43690" article="a" name="witchcraft portal">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43691"/>
+	</item>
+	<item id="43691" article="a" name="witchcraft portal">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43692"/>
+	</item>
+	<item id="43692" article="a" name="witchcraft portal">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43689"/>
+	</item>
+	<item id="43693" article="a" name="witchcraft fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43694"/>
+	</item>
+	<item id="43694" article="a" name="witchcraft fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43693"/>
+	</item>
+	<item id="43695" article="a" name="witchcraft fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43696"/>
+	</item>
+	<item id="43696" article="a" name="witchcraft fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43695"/>
+	</item>
+	<item id="43697" article="a" name="witchcraft cupboard">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43699" article="a" name="witchcraft cupboard">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43701" article="a" name="witchcraft summoning circle">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43702" article="a" name="witchcraft summoning circle">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43703" article="a" name="witchcraft bookstand">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43704"/>
+	</item>
+	<item id="43704" article="a" name="witchcraft bookstand">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43705"/>
+	</item>
+	<item id="43705" article="a" name="witchcraft bookstand">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43706"/>
+	</item>
+	<item id="43706" article="a" name="witchcraft bookstand">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="43703"/>
+	</item>
+	<item id="43707" article="a" name="witchcraft cage">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43708" article="a" name="witchcraft cage">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43709" article="a" name="witchcraft scroll">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43711" article="a" name="witchcraft forest herbs">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43713" article="a" name="witchcraft sweet herbs">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44073" article="a" name="cave bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44074"/>
+	</item>
+	<item id="44074" article="a" name="cave bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44075"/>
+	</item>
+	<item id="44075" article="a" name="cave bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44076"/>
+	</item>
+	<item id="44076" article="a" name="cave bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44073"/>
+	</item>
+	<item id="44077" article="a" name="cave chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44182"/>
+	</item>
+	<item id="44182" article="a" name="cave chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44077"/>
+	</item>
+	<item id="44078" article="a" name="cave chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="44079"/>
+	</item>
+	<item id="44079" article="a" name="cave chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="44080"/>
+	</item>
+	<item id="44080" article="a" name="cave chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="44081"/>
+	</item>
+	<item id="44081" article="a" name="cave chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="44078"/>
+	</item>
+	<item id="44082" article="a" name="cave table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44083" article="a" name="cave cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44084"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44084" article="a" name="cave cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44085"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44085" article="a" name="cave cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44086"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44086" article="a" name="cave cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44083"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44087" article="a" name="cave floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44148"/>
+	</item>
+	<item id="44088" article="a" name="cave floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44149"/>
+	</item>
+	<item id="44148" article="a" name="cave floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44087"/>
+	</item>
+	<item id="44149" article="a" name="cave floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44088"/>
+	</item>
+	<item id="44089" article="a" name="cave wall lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44090" article="a" name="cave wall lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44091" article="a" name="gathered cave floor earth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="carpet"/>
+	</item>
+	<item id="44093" article="a" name="skelaptor">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44094" article="a" name="skelaptor">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44095" article="a" name="skelaptor">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44096" article="a" name="skelaptor">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44097" article="a" name="skelaptor">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44114" article="a" name="cave weapon display">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44116" article="a" name="cave firewood">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44117"/>
+	</item>
+	<item id="44117" article="a" name="cave firewood">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44116"/>
+	</item>
+	<item id="44118" article="a" name="cave remains">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44119"/>
+	</item>
+	<item id="44119" article="a" name="cave remains">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44118"/>
+	</item>
+	<item id="44120" article="a" name="cave bones">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44121"/>
+	</item>
+	<item id="44121" article="a" name="cave bones">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44120"/>
+	</item>
+	<item id="44122" article="a" name="cave mural">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44123"/>
+	</item>
+	<item id="44123" article="a" name="cave mural">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44122"/>
+	</item>
+	<item id="44124" article="a" name="low cave mural">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44125"/>
+	</item>
+	<item id="44125" article="a" name="low cave mural">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44124"/>
+	</item>
+	<item id="44126" article="a" name="cave panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44127"/>
+	</item>
+	<item id="44127" article="a" name="cave panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44126"/>
+	</item>
+	<item id="44128" article="a" name="low cave panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44129"/>
+	</item>
+	<item id="44129" article="a" name="low cave panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44128"/>
+	</item>
+	<item id="44130" article="a" name="cave fence">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44131"/>
+	</item>
+	<item id="44131" article="a" name="cave fence">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44130"/>
+	</item>
+	<item id="44132" article="a" name="low cave fence">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44133"/>
+	</item>
+	<item id="44133" article="a" name="low cave fence">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44132"/>
+	</item>
+	<item id="44134" article="a" name="cave rampart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44135"/>
+	</item>
+	<item id="44135" article="a" name="cave rampart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44134"/>
+	</item>
+	<item id="44136" article="a" name="low cave rampart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44137"/>
+	</item>
+	<item id="44137" article="a" name="low cave rampart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44136"/>
+	</item>
+	<item id="44138" article="a" name="cave wall border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44139"/>
+	</item>
+	<item id="44139" article="a" name="cave wall border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44138"/>
+	</item>
+	<item id="44140" article="a" name="cave panel border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44141"/>
+	</item>
+	<item id="44141" article="a" name="cave panel border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44140"/>
+	</item>
+	<item id="44142" article="a" name="cave fence border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44143"/>
+	</item>
+	<item id="44143" article="a" name="cave fence border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44142"/>
+	</item>
+	<item id="44144" article="a" name="cave rampart border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44145"/>
+	</item>
+	<item id="44145" article="a" name="cave rampart border">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44144"/>
+	</item>
+	<item id="44146" article="a" name="cave fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44147" article="a" name="cave fireplace">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44449" article="a" name="crystal chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44450"/>
+	</item>
+	<item id="44450" article="a" name="crystal chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44451"/>
+	</item>
+	<item id="44451" article="a" name="crystal chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44452"/>
+	</item>
+	<item id="44452" article="a" name="crystal chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44449"/>
+	</item>
+	<item id="44453" article="a" name="crystal chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44454"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="44454" article="a" name="crystal chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44455"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="44455" article="a" name="crystal chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44456"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="44456" article="a" name="crystal chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44453"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="44457" article="a" name="crystal table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44458" article="a" name="crystal cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44459"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44459" article="a" name="crystal cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="44458"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="44460" article="a" name="crystal floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44461" article="a" name="crystal floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44462" article="a" name="crystal floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44463" article="a" name="crystal floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44515" article="a" name="crystal wall lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44516" article="a" name="crystal wall lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44517" article="a" name="gnome baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44518" article="a" name="gnome baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44519" article="a" name="gnome baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44520" article="a" name="gnome baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45318" article="a" name="gravestone chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45319"/>
+	</item>
+	<item id="45319" article="a" name="gravestone chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45320"/>
+	</item>
+	<item id="45320" article="a" name="gravestone chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45321"/>
+	</item>
+	<item id="45321" article="a" name="gravestone chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45318"/>
+	</item>
+	<item id="45322" article="a" name="spooky chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45323"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45323" article="a" name="spooky chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45324"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45324" article="a" name="spooky chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45325"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45325" article="a" name="spooky chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45322"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45326" article="a" name="skull cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45327"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="45327" article="a" name="skull cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45326"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="45328" article="a" name="gravestone table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45329" article="a" name="gravestone table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45330" article="a" name="gravestone table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45331" article="a" name="reaper clock">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45332"/>
+	</item>
+	<item id="45332" article="a" name="reaper clock">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45331"/>
+	</item>
+	<item id="45345" article="a" name="morbid floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45347"/>
+	</item>
+	<item id="45346" article="a" name="morbid floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45348"/>
+	</item>
+	<item id="45347" article="a" name="morbid floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45345"/>
+	</item>
+	<item id="45348" article="a" name="morbid floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45346"/>
+	</item>
+	<item id="45349" article="a" name="black heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45350" article="a" name="black heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45351" article="a" name="black heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45352" article="a" name="reaper painting">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45353" article="a" name="spooky mirror">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45354"/>
+	</item>
+	<item id="45354" article="a" name="spooky mirror">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45353"/>
+	</item>
+	<item id="45355" article="a" name="vulture">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45356" article="a" name="vulture">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45357" article="a" name="vulture">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45358" article="a" name="vulture">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45493" article="a" name="blossom chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45494"/>
+	</item>
+	<item id="45494" article="a" name="blossom chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45495"/>
+	</item>
+	<item id="45495" article="a" name="blossom chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45496"/>
+	</item>
+	<item id="45496" article="a" name="blossom chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45493"/>
+	</item>
+	<item id="45497" article="a" name="blossom chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45498"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45498" article="a" name="blossom chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45499"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45499" article="a" name="blossom chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45500"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45500" article="a" name="blossom chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45497"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="45501" article="a" name="lilypad table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45502" article="a" name="lilypad table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45503" article="a" name="blossom cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45504"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="45504" article="a" name="blossom cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45503"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="45517" article="a" name="pink blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45518"/>
+	</item>
+	<item id="45518" article="a" name="pink blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45517"/>
+	</item>
+	<item id="45519" article="a" name="pink blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45520"/>
+	</item>
+	<item id="45520" article="a" name="pink blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="45519"/>
+	</item>
+	<item id="45521" article="a" name="purple blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45522" article="a" name="purple blossom lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45523" article="a" name="red heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45524" article="a" name="red heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45525" article="a" name="red heart">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45526" article="a" name="unicorn painting">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45527" article="a" name="flowering log">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45528" article="a" name="flowering log">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="45530" article="a" name="flowering log">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49188" article="a" name="wicker chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49189"/>
+	</item>
+	<item id="49189" article="a" name="wicker chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49190"/>
+	</item>
+	<item id="49190" article="a" name="wicker chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49191"/>
+	</item>
+	<item id="49191" article="a" name="wicker chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49188"/>
+	</item>
+	<item id="49192" article="a" name="wicker table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49193" article="a" name="wicker cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49194"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="49194" article="a" name="wicker cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49193"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="49195" article="a" name="wicker chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49196"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="49196" article="a" name="wicker chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49197"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="49197" article="a" name="wicker chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49198"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="49198" article="a" name="wicker chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49195"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="49211" article="a" name="overgrown floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49213"/>
+	</item>
+	<item id="49212" article="a" name="overgrown floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49214"/>
+	</item>
+	<item id="49213" article="a" name="overgrown floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49211"/>
+	</item>
+	<item id="49214" article="a" name="overgrown floor lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49212"/>
+	</item>
+	<item id="49215" article="a" name="water floor in a bucket">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="carpet"/>
+	</item>
+	<item id="49217" article="a" name="wall growth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49218" article="a" name="kapok tree">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49219" article="a" name="Cormayan beech">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49220" article="a" name="sycamore tree">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49221" article="a" name="Vanduran tuft palm">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49222" article="a" name="chill nettle shrub">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49223" article="a" name="umbrella fern">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49224" article="a" name="spotted jungle orchid">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49225" article="a" name="blue witches' cauldron flower">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49226" article="a" name="sloth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49227" article="a" name="sloth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49228" article="a" name="sloth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49229" article="a" name="sloth">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49230" article="a" name="ember chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49231"/>
+	</item>
+	<item id="49231" article="a" name="ember chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49232"/>
+	</item>
+	<item id="49232" article="a" name="ember chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49233"/>
+	</item>
+	<item id="49233" article="a" name="ember chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49230"/>
+	</item>
+	<item id="49234" article="a" name="ember bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49235"/>
+	</item>
+	<item id="49235" article="a" name="ember bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49236"/>
+	</item>
+	<item id="49236" article="a" name="ember bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49237"/>
+	</item>
+	<item id="49237" article="a" name="ember bench">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49234"/>
+	</item>
+	<item id="49238" article="a" name="ember chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="49239"/>
+	</item>
+	<item id="49239" article="a" name="ember chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="49240"/>
+	</item>
+	<item id="49240" article="a" name="ember chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="49241"/>
+	</item>
+	<item id="49241" article="a" name="ember chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+		<attribute key="rotateto" value="49238"/>
+	</item>
+	<item id="49242" article="a" name="ember table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49243"/>
+	</item>
+	<item id="49243" article="a" name="ember table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49242"/>
+	</item>
+	<item id="49244" article="a" name="ember cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="rotateto" value="49245"/>
+	</item>
+	<item id="49245" article="a" name="ember cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+		<attribute key="rotateto" value="49244"/>
+	</item>
+	<item id="49258" article="a" name="small volcano">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49259" article="a" name="small volcano">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49260" article="a" name="ember veins">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49261" article="a" name="ember veins">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49262" article="a" name="ember floor crack">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49263"/>
+	</item>
+	<item id="49263" article="a" name="ember floor crack">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49262"/>
+	</item>
+	<item id="49264" article="a" name="small fire elemental">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49265" article="a" name="small fire elemental">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49266" article="a" name="small fire elemental">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49267" article="a" name="small fire elemental">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49268" article="a" name="ember fissure">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49269"/>
+	</item>
+	<item id="49269" article="a" name="ember fissure">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="49268"/>
+	</item>
+	<item id="50172" article="a" name="sickbay table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50173"/>
+	</item>
+	<item id="50173" article="a" name="sickbay table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50174"/>
+	</item>
+	<item id="50174" article="a" name="sickbay table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50175"/>
+	</item>
+	<item id="50175" article="a" name="sickbay table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50172"/>
+	</item>
+	<item id="50177" article="a" name="sickbay cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50178"/>
+	</item>
+	<item id="50178" article="a" name="sickbay cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50179"/>
+	</item>
+	<item id="50179" article="a" name="sickbay cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50180"/>
+	</item>
+	<item id="50180" article="a" name="sickbay cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50177"/>
+	</item>
+	<item id="50217" article="a" name="creatures in jars">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50218"/>
+	</item>
+	<item id="50218" article="a" name="creatures in jars">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50217"/>
+	</item>
+	<item id="50219" article="a" name="small creatures in jars">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50220"/>
+	</item>
+	<item id="50220" article="a" name="small creatures in jars">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50219"/>
+	</item>
+	<item id="50221" article="a" name="brain in a jar">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50223" article="a" name="leech terrarium">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50224"/>
+	</item>
+	<item id="50224" article="a" name="leech terrarium">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50223"/>
+	</item>
+	<item id="50236" article="a" name="several skulls">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50237"/>
+	</item>
+	<item id="50237" article="a" name="several skulls">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="50236"/>
+	</item>
+	<item id="50238" article="a" name="paramedic demon">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="50241" article="a" name="paramedic demon">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51186" article="a" name="voodoo chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51188"/>
+	</item>
+	<item id="51188" article="a" name="voodoo chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51189"/>
+	</item>
+	<item id="51189" article="a" name="voodoo chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51190"/>
+	</item>
+	<item id="51190" article="a" name="voodoo chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51186"/>
+	</item>
+	<item id="51196" article="a" name="voodoo chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51197"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51197" article="a" name="voodoo chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51198"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51198" article="a" name="voodoo chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51199"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51199" article="a" name="voodoo chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51196"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51204" article="a" name="voodoo table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51205"/>
+	</item>
+	<item id="51205" article="a" name="voodoo table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51204"/>
+	</item>
+	<item id="51206" article="a" name="voodoo cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51207"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="51207" article="a" name="voodoo cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51206"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="51220" article="a" name="voodoo lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51221" article="a" name="voodoo lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51222" article="a" name="voodoo carpet">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="carpet"/>
+	</item>
+	<item id="51223" article="a" name="voodoo carpet">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="type" value="carpet"/>
+	</item>
+	<item id="51224" article="a" name="voodoo doll">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51225" article="a" name="voodoo doll">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51226" article="a" name="voodoo doll">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51227" article="a" name="voodoo doll">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51237" article="a" name="voodoo mask">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51761" article="a" name="sighting chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51762"/>
+	</item>
+	<item id="51762" article="a" name="sighting chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51763"/>
+	</item>
+	<item id="51763" article="a" name="sighting chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51764"/>
+	</item>
+	<item id="51764" article="a" name="sighting chair">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51761"/>
+	</item>
+	<item id="51765" article="a" name="sighting chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51766"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51766" article="a" name="sighting chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51767"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51767" article="a" name="sighting chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51768"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51768" article="a" name="sighting chest">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51765"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="18"/>
+	</item>
+	<item id="51769" article="a" name="sighting table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51770" article="a" name="sighting cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51771"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="51771" article="a" name="sighting cabinet">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="51770"/>
+		<attribute key="type" value="container"/>
+		<attribute key="containersize" value="8"/>
+	</item>
+	<item id="51772" article="a" name="sighting lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51773" article="a" name="sighting lamp">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51774" article="a" name="tiny sight of surrender">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51775" article="a" name="tiny sight of surrender">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="51776" article="a" name="tiny sight of surrender">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53609" article="a" name="cyclops baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53610" article="a" name="cyclops baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53611" article="a" name="cyclops baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53612" article="a" name="cyclops baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53613" article="a" name="cyclops baby">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53615" article="a" name="framework room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53616"/>
+	</item>
+	<item id="53616" article="a" name="framework room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53615"/>
+	</item>
+	<item id="53617" article="a" name="dark framework room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53618"/>
+	</item>
+	<item id="53618" article="a" name="dark framework room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53617"/>
+	</item>
+	<item id="53619" article="a" name="ancient stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53620"/>
+	</item>
+	<item id="53620" article="a" name="ancient stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53619"/>
+	</item>
+	<item id="53621" article="a" name="sandstone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53622"/>
+	</item>
+	<item id="53622" article="a" name="sandstone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53621"/>
+	</item>
+	<item id="53623" article="a" name="stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53624"/>
+	</item>
+	<item id="53624" article="a" name="stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53623"/>
+	</item>
+	<item id="53625" article="a" name="white stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53626"/>
+	</item>
+	<item id="53626" article="a" name="white stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53625"/>
+	</item>
+	<item id="53627" article="a" name="gothic stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53628"/>
+	</item>
+	<item id="53628" article="a" name="gothic stone room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53627"/>
+	</item>
+	<item id="53629" article="a" name="bamboo room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53630"/>
+	</item>
+	<item id="53630" article="a" name="bamboo room divider">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+		<attribute key="rotateto" value="53629"/>
+	</item>
+	<item id="43670" article="a" name="cauldron">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43671" article="a" name="cauldron">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43672" article="a" name="cauldron">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43673" article="a" name="cauldron">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43674" article="a" name="table">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43675" article="a" name="table with candles">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="43676" article="a" name="table with burning candles">
+		<attribute key="primarytype" value="furniture"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44110" article="a" name="cave wall panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44111" article="a" name="cave wall panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44112" article="a" name="cave wall panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44113" article="a" name="cave wall panel">
+		<attribute key="primarytype" value="decoration"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="44092" article="a" name="cave floor earth">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="49216" article="a" name="water floor">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53585" article="a" name="skull carpet">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53586" article="a" name="skull carpet">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53587" article="a" name="dark mosaic floor">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53588" article="a" name="dark mosaic floor">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53589" article="a" name="sand floor in a bucket">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
+	<item id="53590" article="a" name="sand floor">
+		<attribute key="primarytype" value="floor decorations"/>
+		<attribute key="type" value="carpet"/>
+		<attribute key="wrapableto" value="23398"/>
+	</item>
 </items>

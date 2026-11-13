@@ -1,0 +1,105 @@
+{
+  "clientVersion": "15.25",
+  "artworkOwner": "CipSoft",
+  "icons": [
+    {
+      "file": "64/Witchcraft_Bed.png",
+      "sha256": "f4f716b8e1e32cb2fc5f50492dacf6da6b452b18c8b241d1f09ae115920046e5",
+      "appearanceIds": [
+        43723,
+        43724
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Cave_Bed.png",
+      "sha256": "c3ccafb2513a8d7c9918eb616269c19d9b3880a2291032a7dda2a49828856791",
+      "appearanceIds": [
+        44106,
+        44107
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Crystal_Bed.png",
+      "sha256": "460e132588d9a72fa158e05b2f717985b6986715b4d695c23f7706493f4d6910",
+      "appearanceIds": [
+        44553,
+        44554
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Tomb_Bed.png",
+      "sha256": "cde82b5ece1c258ca2a65548df097d39a7db694286728e6d21d4f95dc7f6e53a",
+      "appearanceIds": [
+        45341,
+        45342
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Blossom_Bed.png",
+      "sha256": "59d490c1dcb7f5a679e16cce6b88624fc71bbc6f56eb415fa5b23acab5db14da",
+      "appearanceIds": [
+        45513,
+        45514
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Wicker_Bed.png",
+      "sha256": "69c8410e389d4b3eb7dcbb21fce83701487fcef2265bd0537cdb90819f0543e5",
+      "appearanceIds": [
+        49207,
+        49208
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Ember_Bed.png",
+      "sha256": "83293f714b02ac28eac4742bd0b82810fdcf8ca95f80da0ec7e2577f700faea0",
+      "appearanceIds": [
+        49254,
+        49255
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Sickbed.png",
+      "sha256": "05cf2cfd7887aad6ddb7f4d72a4106cf911dfb5d74818ee4ee067a7b5e395f39",
+      "appearanceIds": [
+        50213,
+        50214
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Voodoo_Bed.png",
+      "sha256": "308674081bcaa3164927d58e6947ff28b6f27d045e46a05e0588a044b66bef90",
+      "appearanceIds": [
+        51216,
+        51217
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Sighting_Bed.png",
+      "sha256": "3779be70529732c214867da80c9e7128e723014067f83700381e37dbaf898559",
+      "appearanceIds": [
+        51794,
+        51795
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    },
+    {
+      "file": "64/Cyclops_Steel_Bed.png",
+      "sha256": "98afab9701197dbaa5eb860ecafaccaaac9ba6c8fee0b292f854d53b7eff77e6",
+      "appearanceIds": [
+        53581,
+        53582
+      ],
+      "source": "Tibia 15.25 native sprite sheets"
+    }
+  ]
+}

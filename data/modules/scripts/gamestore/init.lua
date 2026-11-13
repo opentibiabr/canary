@@ -5,6 +5,9 @@ local function moduleLoader(name)
 end
 
 local modulesToPreload = {
+	["gamestore.bundles"] = function()
+		return moduleLoader("bundles")
+	end,
 	["gamestore.constants"] = function()
 		return moduleLoader("constants")
 	end,

@@ -49,3 +49,10 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 
 - For quickstart changes, read `docs/docker/quickstart-for-beginners.md` and `docker/DOCKER.md`; keep CI/build, development, and user quickstart responsibilities separate.
 - The default client path is `login-server` at `http://localhost:8088/login`, never MyAAC `login.php`. MyAAC remains website/admin-only, uses `slawkens/myaac` `2.x`, and keeps `http://localhost:8080`; public config stays `CANARY_*`, and the quickstart uses the published Canary runtime image.
+
+## Store delivery validation
+
+- Store bundles must validate every registered component and prepare all owner-bound decoration kits before charging or granting cosmetics. Roll back prepared kits on delivery/payment failure, charge exactly once through the parser, and recheck duplicate ownership on purchase. Validate with `tests/lua/test_store_bundles.lua` and `tests/store/validate_store_bundles.py`; verify look types and kit targets against the supported client assets.
+- House and bed Store offers must preflight `ITEM_DECORATION_KIT` with the complete part/count total, bind every kit to its buyer, and remove newly created kits on delivery/payment failure. Record furniture-set summary IDs individually only after successful payment. Validate with `tests/lua/test_store_house_purchase.lua`; audit native bed states and unique offers with `tests/lua/test_store_house_catalog.lua`.
+
+- Bundle availability and rollback must use raw ownership for outfits and mounts (`hasOutfit(lookType, addon, true)` and `hasMount(mountId, true)`), not access-based wearability. Verify unlocks before payment and restore exact prior cosmetics on failure; validate access-group buyers, partial ownership and injected failures.

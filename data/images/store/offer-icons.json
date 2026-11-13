@@ -1,0 +1,430 @@
+[
+  {
+    "file": "64/All_PvE_Blessings.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/All_PvE_Blessings.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "c3371d9e5591fa3fd68593279e194617694b45571c5f59f109c8c8524d741964",
+    "bytes": 4403,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Blood_of_the_Mountain.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Blood_of_the_Mountain.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "249b166fadcabe3cde7d9c0caf39ea3a0eeda7ab314310cac7ef6b777b1f0653",
+    "bytes": 4279,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Charm_Expansion_Offer.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Charm_Expansion_Offer.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "1419e7108f9dee6558249dff4955ff6a881cae9737f3ae3e6323c091e58be45b",
+    "bytes": 2085,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Death_Redemption.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Death_Redemption.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "c6028e2ad951b4d54cbe312c5ae7c36eb2298f441c9d36fe7974e58cd82ddb36",
+    "bytes": 4051,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Embrace_of_Tibia.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Embrace_of_Tibia.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "c0e31bb2bf5504d710b62342a8a0aaad14eeaa063b5e880fb6ca73c9e524f77f",
+    "bytes": 3255,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Fire_of_the_Suns.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Fire_of_the_Suns.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "f5bc2bec56cb31dfc5b226616dbfce2d4a2c0bda56469354f0f8ace044a07c8c",
+    "bytes": 3302,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Flower_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Flower_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "5022433a335e72bb3152a3b3e3259461032594279d7ba8186976f776cd0bb32c",
+    "bytes": 7133,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Grandiose_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Grandiose_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "e08b4159b92a51892efe0d6446cfd09996821a21fae192ee771f3e094d360297",
+    "bytes": 1702,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Heart_of_the_Mountain.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Heart_of_the_Mountain.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "c6b7cf9d609d5d572f8b04b9591b2fbefabc8f29a37bdb1e2b81f6f0fc1245e3",
+    "bytes": 4253,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Banker.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Banker.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "f43273e6b43ae43b10b597db2a3393ad98c75629f6dfc29f1b97d64519c3093f",
+    "bytes": 1304,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Bonelord.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Bonelord.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "1d04e5c47b8fec10b2f6a9a99851545c241efee5f5f1eb8e1ab105f271e07fee",
+    "bytes": 1636,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Cook.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Cook.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "3fe963d93c8b67f4dea4599b9458e2868c6682a9f04521549b87520d01c95b8d",
+    "bytes": 1691,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Dragon.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Dragon.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "a55cec27d00a4867895a48744658e22e698c067752eacd05891ce0025779273c",
+    "bytes": 1991,
+    "converted_gif_first_frame": true
+  },
+  {
+    "file": "64/Hireling_Ferumbras.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Ferumbras.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "0154776155cbfabf5da937b58d335babd8ac474b5f84ee0eee9f6d801a42818d",
+    "bytes": 2463,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Hydra.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Hydra.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "f25722b25decb00547b0e954f80baa95aea5e5302c78ee4347eeeedbd35f0d12",
+    "bytes": 2297,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Male.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Male.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "5219b82965af193eae07ec3b3053e50b06e8349162e73e6c6744c7d94ab7e17e",
+    "bytes": 1521,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Servant.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Servant.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "8834b024c3dbd984f88fb9686c2f48acc1fc32a226ea02007afd28f49643cd06",
+    "bytes": 1071,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Steward.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Steward.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "e16bdbed85e1d72d9901b16f85acfcad2299819d007a5c1465e27f1d44fcd5cd",
+    "bytes": 1606,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Hireling_Trader.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Hireling_Trader.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "a7274d81b96c5a03e19f2606ef378698f3e9489d7867f2445f6648d4a0beafa1",
+    "bytes": 1557,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Homely_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Homely_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "2aaeaba542418288183817c3159c09be6d56fbe5f26b474018b0f78c83dffe1f",
+    "bytes": 2585,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Instant_Reward_Access.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Instant_Reward_Access.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "506f1339d2bf2f754dfa304111eb84afc808ad1db55f1b08b74a473fde1a2caf",
+    "bytes": 1747,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Knightly_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Knightly_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "1ef035f75c139f60a2d1ab0ed002c1a19e46767f956beb5ba5cb15388572787b",
+    "bytes": 3181,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Kraken_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Kraken_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "01a9abdb356bd14db03a45f308f892c1fafc93688c7621d4ce09e8c5e2073a28",
+    "bytes": 1793,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Log_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Log_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "768f07daf832f6edfa2ba362341fbc984b429b9b33c5576d9722a97b1e06ee54",
+    "bytes": 1155,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Magnificent_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Magnificent_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "25ebbdf4dbf8c9007538e4b7841bb2d96f38652acd344b085058cd6cd06817fe",
+    "bytes": 5160,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Opulent_Kline.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Opulent_Kline.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "bfd698aaab3f5c6c2971393eda66a2559f1a06e7bd7a6629e0a137431e2434b4",
+    "bytes": 1641,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Ornate_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Ornate_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "d064176cb550b2fd818d8fa166595f0045d0fc83d2447c83c4d998d62ea1ffbc",
+    "bytes": 2069,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Permanent_Hunting_Task_Slot.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Permanent_Hunting_Task_Slot.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "1e5ad04e08faba9a6defb3d78b7a4869ec03a0e90bddfe8ff39da5c9c3d99c0e",
+    "bytes": 2253,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Permanent_Prey_Slot.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Permanent_Prey_Slot.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "b52c2032dd5e35d9a4cbf955ea1c0d5aa4e9959efe7d1bac04c0967863f1c0b9",
+    "bytes": 1460,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Premium_Time_180.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Premium_Time_180.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "8e4d1cf5570f63e3dc61cdb679f4635b95dca6cf4110bd5b1e2ab082326e8e9a",
+    "bytes": 1031,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Premium_Time_30.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Premium_Time_30.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "c81e3536aa575d86ea9c082d8e4e29ca7baa51de6362ba8a0ac8302c4c843ed2",
+    "bytes": 741,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Premium_Time_360.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Premium_Time_360.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "8f6e321986e12bb706f987b7a9fab74ddfbf77ec3ee272ea1766294bf8e6bbfa",
+    "bytes": 1243,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Premium_Time_90.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Premium_Time_90.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "2e8067b1b15aba9af11c9f8c93544e4fbc74cdfb4b3b012714bb019025d34fd4",
+    "bytes": 914,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Prey_Bonus_Reroll.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Prey_Bonus_Reroll.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "3f147c6d3ab8c3aae36db715f38341cd8be087563c91a7b13302eae997b22e9f",
+    "bytes": 1435,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Seafarer_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Seafarer_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "99cab0046df27ee07356214909e4501da696b1eabbffe0792f397745ca99adba",
+    "bytes": 4025,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Sleeping_Mat.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Sleeping_Mat.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "e892c2464f18e31326a8c139d7f2db76cf3f59f81e99e0eefc3908f770faaaa2",
+    "bytes": 1487,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Spark_of_the_Phoenix.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Spark_of_the_Phoenix.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "65478ee39f6b6af70ceedcec7fd7ea6d8172fb24deaaf518031cd15146bd076a",
+    "bytes": 3268,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Spiritual_Shielding.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Spiritual_Shielding.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "66391d51a243d3d336e48ff1d71bc31a640e86b079885e7d2525f4793877648d",
+    "bytes": 3239,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Temple_Teleport.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Temple_Teleport.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "db931d00a574593c807fe90dd8bd595bed3076ffdf2ba9d3956e858ef92876c7",
+    "bytes": 1486,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Tournament_Restricted.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Tournament_Restricted.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "374f159c0c3894b6343e4910f63a2770b0520215eea98fcba61e09d7658872b3",
+    "bytes": 4226,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Twist_of_Fate.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Twist_of_Fate.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "3f31cff0b6953e31afb194746ef2a4dc59cc1f0f424ada41ec9af22f9b5bc365",
+    "bytes": 2970,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Vengothic_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Vengothic_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "7b8177556024e12b196054b3c133aed57390f5a970ec0380ad4ef9672acee3f0",
+    "bytes": 2478,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Verdant_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Verdant_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "79288ad707fb98d1073f8f43030ab82dc818b9ca3c654a8d53c0e07289d3cbe4",
+    "bytes": 2910,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Wisdom_of_Solitude.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Wisdom_of_Solitude.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "e13c3c6ecb33ce97c44c9adf9db9ba598d7ece3d536a8738deb195674e7524a2",
+    "bytes": 3267,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Wrought-Iron_Bed.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Wrought-Iron_Bed.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "ba25201af210a69e3b410856265e54de0a5ca0996b083c634479c0955bfaa91f",
+    "bytes": 1278,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/XP_Boost.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/XP_Boost.png",
+    "archive_sha256": "2c98e7437fcd598bc615f6e38c498d26a96ad81923a242995959616f49242fd9",
+    "sha256": "396c211f2815b76f0f0eae6d1f787eb33d608f42b685532cd50d60e6b264114f",
+    "bytes": 1487,
+    "converted_gif_first_frame": false
+  },
+  {
+    "file": "64/Name_Change.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Name_Change.png",
+    "sha256": "00a0c25e655214d1febd2880124b6e24ff6c1c81b492634d9e41de34078a93a0",
+    "bytes": 1147
+  },
+  {
+    "file": "64/Sex_Change.png",
+    "source": "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip",
+    "archive_entry": "store/64/Sex_Change.png",
+    "sha256": "4a1c6f39be0dcb5372f68a750bf55413a0c5cc93eb37cd5eb27ad6dfb0c56661",
+    "bytes": 765
+  }
+]

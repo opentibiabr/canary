@@ -74,7 +74,7 @@ return {
 			price = 90,
 			itemtype = 50294,
 			charges = 1800,
-			description = "<i>Use it to train your fist skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist skill\n{info} usable 1800 times a piece",
+			description = "<i>Use it to train your fist fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist fighting skill\n{info} usable 1800 times a piece",
 			type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 		},
 		{
@@ -146,7 +146,7 @@ return {
 			price = 25,
 			itemtype = 50293,
 			charges = 500,
-			description = "<i>Use it to train your fist skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist skill\n{info} usable 500 times a piece",
+			description = "<i>Use it to train your fist fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist fighting skill\n{info} usable 500 times a piece",
 			type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 		},
 		{
@@ -218,7 +218,7 @@ return {
 			price = 720,
 			itemtype = 50295,
 			charges = 14400,
-			description = "<i>Use it to train your fist skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist skill\n{info} usable 14400 times a piece",
+			description = "<i>Use it to train your fist fighting skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist fighting skill\n{info} usable 14400 times a piece",
 			type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,
 		},
 	},

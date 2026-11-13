@@ -1,0 +1,158 @@
+[
+  {
+    "file": "13/Category_Beds.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Beds.png",
+    "sha256": "197d169a375ff748a17896c69a6ddec613a1f1635757d5f5b242d5ee59f4c8e8",
+    "bytes": 1160
+  },
+  {
+    "file": "13/Category_Blessings.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Blessings.png",
+    "sha256": "4f3cf82789b4aab5b41e783d39463f3cc5a4201ff1f2122c163417645f37a763",
+    "bytes": 550
+  },
+  {
+    "file": "13/Category_Boosts.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Boosts.png",
+    "sha256": "b976a45e54daf5c76e52340435d7a61d4099f709ee74414bdc789e1475effac5",
+    "bytes": 559
+  },
+  {
+    "file": "13/Category_Bundles.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Bundles.png",
+    "sha256": "3de3fb8eadfc203d1a3fdd2ed29097e21fe0992ee6db3daa645476d439507576",
+    "bytes": 296
+  },
+  {
+    "file": "13/Category_Casks.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Casks.png",
+    "sha256": "3e9e9f2e8f81728e3c06aa5943615a7689b716e5fac64fda7703d134d8b039b3",
+    "bytes": 551
+  },
+  {
+    "file": "13/Category_Consumables.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Consumables.png",
+    "sha256": "f01eaa6d68f59f2a70fe8fd83aaf9544b02145fb6977f4f4746d1920d68c8143",
+    "bytes": 1147
+  },
+  {
+    "file": "13/Category_Cosmetics.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Cosmetics.png",
+    "sha256": "6a48d2a54612cfeb6e3f933ae2e461725d6a3087749eead1735b358ad8da45cc",
+    "bytes": 581
+  },
+  {
+    "file": "13/Category_ExclusiveOffers.png",
+    "source": "https://static.tibia.com/images/store/13/Category_ExclusiveOffers.png",
+    "sha256": "2464f64eed3dc73508255536a80be4366e3e114bea8da5f8f139945568900939",
+    "bytes": 189
+  },
+  {
+    "file": "13/Category_ExerciseWeapons.png",
+    "source": "https://static.tibia.com/images/store/13/Category_ExerciseWeapons.png",
+    "sha256": "f5bcb67bdcd9851ee429e43a1ac37acc02863f619d216bb2967efb89ce9762fb",
+    "bytes": 549
+  },
+  {
+    "file": "13/Category_ExtraServices.png",
+    "source": "https://static.tibia.com/images/store/13/Category_ExtraServices.png",
+    "sha256": "e3b6bf2bb8e2735c5b6c7b3a065e846be2fe963f0140af456c8147af1148c3f8",
+    "bytes": 573
+  },
+  {
+    "file": "13/Category_Extras.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Extras.png",
+    "sha256": "fbb712134539e23c032a500ff35177937cda47fa5c43010336907665863d5a0b",
+    "bytes": 564
+  },
+  {
+    "file": "13/Category_HouseDecorations.png",
+    "source": "https://static.tibia.com/images/store/13/Category_HouseDecorations.png",
+    "sha256": "dbaf9e631379c0c8b9b34425d63bdd06a6c5b4755cc9b7d30904b47ff81c53cf",
+    "bytes": 553
+  },
+  {
+    "file": "13/Category_HouseFurniture.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Furniture.png",
+    "sha256": "f8782015a25d8f0d0d66b1effe3a571a5b95d89fe1b7d6b949336e94c26f77ad",
+    "bytes": 567
+  },
+  {
+    "file": "13/Category_HouseTools.png",
+    "source": "https://static.tibia.com/images/store/13/Category_HouseTools.png",
+    "sha256": "b58ddc8ddf8dd6955fbf1d09f43be45c61176cb18d1fae4e09681832558c3ced",
+    "bytes": 566
+  },
+  {
+    "file": "13/Category_HouseTools_NPCApprenticeships.png",
+    "source": "https://static.tibia.com/images/store/13/Category_HouseTools_NPCApprenticeships.png",
+    "sha256": "f2ba7d0d5a3cf5aa59a3e7e48be31c1977c5fa90f812319bc4835540790a7911",
+    "bytes": 515
+  },
+  {
+    "file": "13/Category_HouseTools_NPCDresses.png",
+    "source": "https://static.tibia.com/images/store/13/Category_HouseTools_NPCDresses.png",
+    "sha256": "b00ad545d871faaadb6fb6da547e919d33df6807373f035c024a25f5e66034d4",
+    "bytes": 557
+  },
+  {
+    "file": "13/Category_HouseUpgrades.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Houseupgrades.png",
+    "sha256": "06769468ef3a3f39c999588657fcf93d06f0e5f715ed084a690f150c04df5b52",
+    "bytes": 554
+  },
+  {
+    "file": "13/Category_Kegs.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Kegs.png",
+    "sha256": "8a553463cb7121408ab236bc7bfc5a19c99898320a187ba15138fb8fc0ca96a5",
+    "bytes": 545
+  },
+  {
+    "file": "13/Category_Mounts.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Mounts.png",
+    "sha256": "946383eaa991afaacd13034a5e325f388c9fc414f95706ae15cee313dc2fde20",
+    "bytes": 571
+  },
+  {
+    "file": "13/Category_Outfits.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Outfits.png",
+    "sha256": "a0ea7499d4b1f579eba30bf7c5dc1ffaaadc857d975057ce0df7fb3ad314b706",
+    "bytes": 542
+  },
+  {
+    "file": "13/Category_Potions.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Potions.png",
+    "sha256": "4f442a5214be0fb756978f4e80d2383a7ec393d8a5328fac5ea1b89d9c6ebaa1",
+    "bytes": 584
+  },
+  {
+    "file": "13/Category_PremiumTime.png",
+    "source": "https://static.tibia.com/images/store/13/Category_PremiumTime.png",
+    "sha256": "996375075c6e4b6b86b0bd5181b6305fafc82c58a533fffe03d6df6f7db89a4c",
+    "bytes": 568
+  },
+  {
+    "file": "13/Category_Runes.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Runes.png",
+    "sha256": "f527cd26f156b26f22fca2842f4f83ed523c1d25f57292950b80985435b7af04",
+    "bytes": 572
+  },
+  {
+    "file": "13/Category_Tickets.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Tournament.png",
+    "sha256": "60e9d1138c27555d3f8b32d6006268b541c701a065e2bd227c9fe7e913c430e1",
+    "bytes": 200
+  },
+  {
+    "file": "13/Category_Tournament.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Tournament.png",
+    "sha256": "60e9d1138c27555d3f8b32d6006268b541c701a065e2bd227c9fe7e913c430e1",
+    "bytes": 200
+  },
+  {
+    "file": "13/Category_UsefulThings.png",
+    "source": "https://static.tibia.com/images/store/13/Category_Convenience.png",
+    "sha256": "cb6a4b2c9af6fa9cbca031ea20235195c9dc405a22e89557fff517bc79b48d40",
+    "bytes": 545
+  }
+]

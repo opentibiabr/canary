@@ -5,6 +5,7 @@ local helpers = {}
 function helpers.convertType(type)
 	local types = {
 		[constants.OfferTypes.OFFER_TYPE_OUTFIT] = constants.ConverType.SHOW_OUTFIT,
+		[constants.OfferTypes.OFFER_TYPE_BUNDLE] = constants.ConverType.SHOW_NONE,
 		[constants.OfferTypes.OFFER_TYPE_OUTFIT_ADDON] = constants.ConverType.SHOW_OUTFIT,
 		[constants.OfferTypes.OFFER_TYPE_MOUNT] = constants.ConverType.SHOW_MOUNT,
 		[constants.OfferTypes.OFFER_TYPE_ITEM] = constants.ConverType.SHOW_ITEM,

@@ -34,6 +34,7 @@ GameStore.OfferTypes = {
 	OFFER_TYPE_WEEKLY_TASK_EXPANSION = 25,
 	OFFER_TYPE_ITEM_BED = 26,
 	OFFER_TYPE_ITEM_UNIQUE = 27,
+	OFFER_TYPE_BUNDLE = 29,
 }
 
 GameStore.SubActions = {

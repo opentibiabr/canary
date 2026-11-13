@@ -117,51 +117,56 @@ local function processHouseRelatedPurchase(player, offer)
 	local function isCaskItem(itemId)
 		return (itemId >= ITEM_HEALTH_CASK_START and itemId <= ITEM_HEALTH_CASK_END) or (itemId >= ITEM_MANA_CASK_START and itemId <= ITEM_MANA_CASK_END) or (itemId >= ITEM_SPIRIT_CASK_START and itemId <= ITEM_SPIRIT_CASK_END)
 	end
-
-	local itemIds = offer.itemtype
-	if type(itemIds) ~= "table" then
-		itemIds = { itemIds }
+	local itemIds = type(offer.itemtype) == "table" and offer.itemtype or { offer.itemtype }
+	local kitCount = 0
+	for _, itemId in ipairs(itemIds) do
+		kitCount = kitCount + (isCaskItem(itemId) and 1 or offer.count)
 	end
-
-	local canReceive, errorMsg = player:canReceiveStoreItems(#itemIds)
+	local canReceive, errorMsg = player:canReceiveStoreItems(ITEM_DECORATION_KIT, kitCount)
 	if not canReceive then
-		return error({ code = 0, message = errorMsg })
+		error({ code = 0, message = errorMsg })
 	end
-
 	local inbox = player:getStoreInbox()
-	if inbox then
-		local batchUpdate = BatchUpdate(player)
-		batchUpdate:add(inbox)
-
+	if not inbox then
+		error({ code = 0, message = "No store inbox found." })
+	end
+	local created = {}
+	local function rollback()
+		for _, kit in ipairs(created) do
+			kit:remove()
+		end
+		created = {}
+	end
+	local batchUpdate = BatchUpdate(player)
+	batchUpdate:add(inbox)
+	local success, failure = pcall(function()
 		for _, itemId in ipairs(itemIds) do
-			if isCaskItem(itemId) then
-				local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
-				if decoKit then
-					decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
-					decoKit:setCustomAttribute("unWrapId", itemId)
-					decoKit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
-
-					if not offer.movable then
-						decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-					end
+			for _ = 1, (isCaskItem(itemId) and 1 or offer.count) do
+				local kit = inbox:addItem(ITEM_DECORATION_KIT, 1)
+				if not kit then
+					error({ code = 0, message = "Unable to deliver all decoration kits. Your purchase has been cancelled." })
 				end
-			else
-				for i = 1, offer.count do
-					local decoKit = inbox:addItem(ITEM_DECORATION_KIT, 1)
-					if decoKit then
-						decoKit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
-						decoKit:setCustomAttribute("unWrapId", itemId)
-
-						if not offer.movable then
-							decoKit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
-						end
-					end
+				table.insert(created, kit)
+				kit:setAttribute(ITEM_ATTRIBUTE_DESCRIPTION, "You bought this item in the Store.\nUnwrap it in your own house to create a <" .. ItemType(itemId):getName() .. ">.")
+				kit:setCustomAttribute("unWrapId", itemId)
+				kit:setOwner(player)
+				if isCaskItem(itemId) then
+					kit:setAttribute(ITEM_ATTRIBUTE_DATE, offer.count)
+				end
+				if not offer.movable then
+					kit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 				end
 			end
 		end
-
-		batchUpdate:delete()
+	end)
+	if not success then
+		rollback()
 	end
+	batchUpdate:delete()
+	if not success then
+		error(failure)
+	end
+	return rollback
 end
 
 local function processOutfitPurchase(player, offerSexIdTable, addon)

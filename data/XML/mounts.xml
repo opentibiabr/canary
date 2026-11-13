@@ -236,4 +236,8 @@
 	<mount id="234" clientid="1834" name="Leaf Locust" speed="10" premium="no" type="store" />
 	<mount id="235" clientid="1835" name="Pearl Locust" speed="10" premium="no" type="store" />
 	<mount id="236" clientid="1866" name="Gloom Maw" speed="10" premium="yes" type="quest" />
+	<mount id="237" clientid="1813" name="Pallbearer" speed="10" premium="no" type="store" />
+	<mount id="238" clientid="1836" name="Satin Moth" speed="10" premium="no" type="store" />
+	<mount id="239" clientid="1873" name="Battle Werewolf" speed="10" premium="no" type="store" />
+	<mount id="240" clientid="1919" name="Flame Bear" speed="10" premium="no" type="store" />
 </mounts>

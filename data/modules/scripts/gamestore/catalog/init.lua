@@ -1,5 +1,6 @@
 local modules = {
 	"premium_time",
+	"bundles",
 	"consumables",
 	"consumables_blessings",
 	"consumables_casks",
@@ -28,6 +29,7 @@ local modules = {
 
 local basePath = CORE_DIRECTORY .. "/modules/scripts/gamestore/catalog/"
 local inlineCategories = dofile(basePath .. "parent_categories.lua")
+local houseAdditions = dofile(basePath .. "house_additions_1525.lua")
 local catalog = {}
 
 for _, moduleName in ipairs(modules) do
@@ -43,6 +45,9 @@ for _, moduleName in ipairs(modules) do
 	end
 	if not category.name or category.rookgaard == nil or (category.offers == nil and category.subclasses == nil) then
 		error(string.format("Invalid Game Store category module: %s", moduleName))
+	end
+	for _, offer in ipairs(houseAdditions[category.name] or {}) do
+		table.insert(category.offers, offer)
 	end
 	table.insert(catalog, category)
 end

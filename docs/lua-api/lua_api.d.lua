@@ -3632,8 +3632,9 @@ function Player:hasMount(mountIdOrMountName) end
 
 ---@param lookType number
 ---@param addon? number
+---@param ownedOnly? boolean
 ---@return boolean|nil
-function Player:hasOutfit(lookType, addon) end
+function Player:hasOutfit(lookType, addon, ownedOnly) end
 
 ---@return boolean|nil
 function Player:hasSecureMode() end

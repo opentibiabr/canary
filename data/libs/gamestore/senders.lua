@@ -82,6 +82,10 @@ local function sendOfferDescription(player, offerId, description)
 	msg:sendToPlayer(player)
 end
 
+local function previewItemId(itemtype)
+	return type(itemtype) == "table" and itemtype[1] or itemtype
+end
+
 local function addStoreProducts(msg, player, products)
 	local client = player:getClient()
 	-- The native 15.25 reader consumes an appearance per product, including
@@ -257,7 +261,7 @@ local function sendShowStoreOffers(playerId, category, redirectId)
 
 				tryOnType = 1
 			elseif type == GameStore.ConverType.SHOW_ITEM then
-				msg:addU16(offer.itemtype)
+				msg:addU16(previewItemId(offer.itemtype))
 			elseif type == GameStore.ConverType.SHOW_OUTFIT then
 				msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 				local outfit = player:getOutfit()
@@ -662,7 +666,7 @@ local function sendHomePage(playerId)
 				msg:addU16(mount:getClientId())
 			end
 		elseif type == GameStore.ConverType.SHOW_ITEM then
-			msg:addU16(offer.itemtype)
+			msg:addU16(previewItemId(offer.itemtype))
 		elseif type == GameStore.ConverType.SHOW_OUTFIT then
 			msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 			local outfit = player:getOutfit()

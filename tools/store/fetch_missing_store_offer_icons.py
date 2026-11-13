@@ -10,12 +10,13 @@ import io
 import json
 import os
 from pathlib import Path
-import re
 import struct
 import subprocess
 import tempfile
 import urllib.request
 import zipfile
+
+from deploy_store_images import collect_images, safe_target
 
 ROOT = Path(__file__).resolve().parents[2]
 URL = "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip"
@@ -42,66 +43,82 @@ def png_content(data):
         return target.read_bytes()
 
 
+def regular_input(path, suffix, maximum):
+    resolved = path.resolve(strict=True)
+    if resolved.suffix.lower() != suffix or not resolved.is_file() or resolved.stat().st_size > maximum:
+        raise ValueError("Expected a bounded regular " + suffix + " input file")
+    return resolved
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("inventory", type=Path)
     parser.add_argument("--deploy", type=Path, required=True, help="HTTP Store asset root")
     parser.add_argument("--archive", type=Path, help="Previously downloaded Store ZIP")
     args = parser.parse_args()
-    names = args.inventory.read_text(encoding="utf-8").splitlines()
-    assert names and len(set(names)) == len(names)
-    assert all(re.fullmatch(r"(?:13|64)/[A-Za-z0-9_.-]+\.png", n) and ".." not in n for n in names)
-    missing = [n for n in names if not (args.deploy / n).is_file()]
+    inventory = regular_input(args.inventory, ".txt", 512 * 1024)
+    names = inventory.read_text(encoding="utf-8").splitlines()
+    if not names or len(set(names)) != len(names):
+        raise ValueError("Expected a nonempty unique image inventory")
+    targets = {name: safe_target(args.deploy, name) for name in names}
+    missing = [name for name in names if not targets[name].is_file()]
     if not missing:
         print(f"PASS: all {len(names)} catalog HTTP images already exist; nothing overwritten")
         return
-    if args.archive:
-        raw = args.archive.read_bytes()
-    else:
-        with urllib.request.urlopen(URL, timeout=30) as response:
-            raw = response.read(32 * 1024 * 1024 + 1)
-    assert len(raw) <= 32 * 1024 * 1024
-    archive_hash = hashlib.sha256(raw).hexdigest()
-    prepared = []
+
+    # Prefer each repository-backed preview individually, even in a mixed list.
+    supplied = collect_images()
+    prepared = {name: supplied[name] for name in missing if name in supplied}
+    unknown = [name for name in missing if name not in supplied]
+    additions = []
+    if unknown:
+        if args.archive:
+            archive_path = regular_input(args.archive, ".zip", 32 * 1024 * 1024)
+            raw = archive_path.read_bytes()
+        else:
+            with urllib.request.urlopen(URL, timeout=30) as response:
+                raw = response.read(32 * 1024 * 1024 + 1)
+        if len(raw) > 32 * 1024 * 1024:
+            raise ValueError("Store archive is too large")
+        archive_hash = hashlib.sha256(raw).hexdigest()
+        with zipfile.ZipFile(io.BytesIO(raw)) as archive:
+            for name in unknown:
+                entry = archive.getinfo("store/" + name)
+                if entry.is_dir() or entry.file_size > 1024 * 1024:
+                    raise ValueError("Invalid Store archive entry")
+                original = archive.read(entry)
+                data = png_content(original)
+                width, height = struct.unpack(">II", data[16:24])
+                if not (1 <= width <= 128 and 1 <= height <= 128):
+                    raise ValueError("Invalid preview dimensions")
+                prepared[name] = data
+                additions.append({"file": name, "source": URL, "archive_entry": "store/" + name,
+                                  "archive_sha256": archive_hash, "sha256": hashlib.sha256(data).hexdigest(),
+                                  "bytes": len(data), "converted_gif_first_frame": data != original})
+    # Prepare everything before creating files, and check repository output paths too.
     assets = ROOT / "data/images/store"
-    with zipfile.ZipFile(io.BytesIO(raw)) as archive:
-        for filename in missing:
-            entry = archive.getinfo("store/" + filename)
-            assert entry.file_size <= 1024 * 1024 and not entry.is_dir()
-            original = archive.read(entry)
-            data = png_content(original)
-            assert data[:8] == b"\x89PNG\r\n\x1a\n", filename
-            size = int(filename.split("/")[0])
-            width, height = struct.unpack_from(">II", data, 16)
-            if size == 13:
-                assert (width, height) == (13, 13), filename
-            else:
-                # Legacy bed artwork includes a 32x64 and a 96x96 source;
-                # retain original pixels and let the Store scale its preview.
-                assert 1 <= width <= 128 and 1 <= height <= 128, filename
-            local = assets / filename
-            assert not local.exists() or local.read_bytes() == data, filename
-            prepared.append((filename, data, data != original))
-    manifest_path = assets / "offer-icons.json"
-    manifest = json.loads(manifest_path.read_text()) if manifest_path.exists() else []
-    by_name = {entry["file"]: entry for entry in manifest}
-    for filename, data, converted in prepared:
-        for base in (assets, args.deploy):
-            target = base / filename
-            target.parent.mkdir(parents=True, exist_ok=True)
-            if target.exists():
-                assert target.read_bytes() == data, target
-            else:
-                with target.open("xb") as output:
+    for name in unknown:
+        local = safe_target(assets, name)
+        if local.exists() and local.read_bytes() != prepared[name]:
+            raise ValueError("Refusing to overwrite a different repository preview")
+    for name, data in prepared.items():
+        target = targets[name]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open("xb") as output:
+            output.write(data)
+        if name in unknown:
+            local = safe_target(assets, name)
+            local.parent.mkdir(parents=True, exist_ok=True)
+            if not local.exists():
+                with local.open("xb") as output:
                     output.write(data)
-        by_name[filename] = {
-            "file": filename, "source": URL, "archive_entry": "store/" + filename,
-            "archive_sha256": archive_hash, "sha256": hashlib.sha256(data).hexdigest(), "bytes": len(data),
-            "converted_gif_first_frame": converted,
-        }
-    manifest_path.write_text(json.dumps([by_name[n] for n in sorted(by_name)], indent=2) + "\n", encoding="utf-8")
-    print(f"PASS: installed {len(prepared)} missing PNGs in the repository and {args.deploy}")
-    print(f"PASS: preserved {len(names) - len(prepared)} existing catalog images")
+    if additions:
+        manifest_path = assets / "offer-icons.json"
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else []
+        by_name = {entry["file"]: entry for entry in manifest}
+        by_name.update({entry["file"]: entry for entry in additions})
+        manifest_path.write_text(json.dumps([by_name[name] for name in sorted(by_name)], indent=2) + "\n", encoding="utf-8")
+    print(f"PASS: installed {len(prepared)} missing previews; repository images take precedence")
 
 
 if __name__ == "__main__":

@@ -107,3 +107,30 @@ for name in ("male", "female", "otclient", "other-version"):
         else:
             raise AssertionError("Accepted missing native outfit colours")
     print(f"PASS: complete actual {name} packet; counts, names, images, colours and rejection cases")
+
+# Independently consume the actual furniture packet; reject item-zero previews.
+if Path(prefix + "-house.bin").exists():
+    expected = {int(row[0]): (int(row[1]), int(row[2])) for row in
+                (line.split("\t") for line in Path(prefix + "-house.tsv").read_text().splitlines())}
+    for case, title in [("house", "Furniture"), ("home", "Home")]:
+        r = Reader(Path(prefix + "-" + case + ".bin").read_bytes())
+        assert r.number("B") == 0xFC and r.string() == title
+        assert r.number("I") == 0 and r.number("B") == 0
+        assert r.number("B") == 0 and r.number("H") == 0
+        assert r.number("H") == 0 and r.number("H") == 33
+        seen = set()
+        for _ in range(33):
+            assert r.string() and r.number("B") == 1
+            offer = r.number("I")
+            item, price = expected[offer]
+            assert offer not in seen
+            seen.add(offer)
+            assert r.number("H") == 1 and r.number("I") == price
+            assert r.number("B") == 1 and r.number("B") == 0 and r.number("B") == 0
+            assert r.number("B") == 3 and r.number("H") == item and item > 0
+            assert r.number("B") == 0 and r.number("H") == 0 and r.number("H") == 0
+            assert r.number("I") == 0 and r.number("B") == 0 and r.number("H") == 0
+        if case == "home":
+            assert r.number("B") == 0 and r.number("B") == 10
+        assert seen == set(expected) and r.offset == len(r.data)
+        print("PASS: independently consumed all 33 actual furniture previews; no zero/table IDs")

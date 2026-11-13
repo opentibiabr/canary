@@ -6866,7 +6866,8 @@
         "name": "hasOutfit",
         "params": [
           "lookType: number",
-          "addon?: number"
+          "addon?: number",
+          "ownedOnly?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

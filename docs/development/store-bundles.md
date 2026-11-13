@@ -89,8 +89,9 @@ The native 15.25 cache contains `Product_December2025_Bundle.png` and
 ## Purchase behavior and validation
 
 The purchase path rechecks availability and funds, prepares every kit, and only
-then calls the existing Store payment method once. Failed kit creation or payment
-removes all kits prepared by that attempt before cosmetic unlocks. No delayed
+then verifies cosmetic unlocks before calling the existing Store payment method
+once. Any delivery, unlock or payment failure removes the prepared kits and
+restores both sexes' exact prior outfit/addon ownership and any existing mount. No delayed
 callbacks or shared world-owned mutable state are introduced. Existing cosmetic
 components are retained at full bundle price; owning both the full outfit and
 mount, or an earlier successful bundle purchase, prevents a duplicate purchase.
@@ -112,8 +113,29 @@ configured ID against XML plus server and installed client appearances.
 These are local checks, not live gameplay or MariaDB crash-recovery proof.
 Payment and player persistence retain the Store's existing service guarantees.
 
-No C++ changes or rebuild are required. Apply the updated scripts and appearance
+The raw-ownership flag on `Player:hasOutfit(lookType, addon, ownedOnly)` requires
+an updated server binary. Its default behavior remains the existing wearability
+check; `ownedOnly=true` bypasses sex/premium/access restrictions to read actual
+ownership, including the opposite-sex outfit, for safe rollback.
+
+Apply the rebuilt binary, updated scripts and appearance
 XML registries through a controlled server restart before testing purchases,
 unwrapping in an owned house, Sickbed sleep/wake, decoration state changes and
 persistence after relog in both worlds. No live restart or purchase was executed
 as part of this change.
+
+## PR review regressions
+
+The category and Home senders use the first item of a furniture set only for its
+preview; the original four-item list remains the purchase source. Both real
+packets are independently decoded by the preview tests.
+
+`tests/store/test_store_icon_install.py` covers a fresh offline installation of
+all 983 icons, mixed repository/archive precedence and rejected path/drive names.
+The destination containment guard also rejects escaping child symlinks; creating
+such a symlink was unavailable on the Windows validation host.
+`tests/store/test_outfit_ownership_binding.py` compiles the actual hasOutfit
+binding against LuaJIT with controlled player state, checking wearability defaults,
+opposite-sex ownership, base-only outfits, addon masks and access-group behavior.
+Bundle flow tests inject unlock failures before mutation, after mutation and
+silent no-ops, then verify exact restoration without payment or purchase markers.

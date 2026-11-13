@@ -14,6 +14,12 @@ end
 local items, outfits, mounts, stored, missing = {}, {}, {}, {}, nil
 local noSpace, failAt, failPayment = false, nil, false
 local sex = 1
+local failUnlock, unlockFailure, failMount = nil, nil, false
+local outfitSex = {}
+for _, entry in ipairs(catalog.offers) do
+	outfitSex[entry.sexId.male] = 1
+	outfitSex[entry.sexId.female] = 0
+end
 local inbox = {}
 local calls = 0
 function inbox:addItem(id, count)
@@ -53,18 +59,42 @@ end
 function player:getSex()
 	return sex
 end
-function player:hasOutfit(id, addon)
-	return outfits[id] == 3
+function player:hasOutfit(id, addon, ownedOnly)
+	if not ownedOnly and outfitSex[id] ~= sex then
+		return false
+	end
+	return outfits[id] ~= nil and bit.band(outfits[id], addon or 0) == (addon or 0)
 end
 function player:hasMount(id)
 	return mounts[id] == true
 end
 function player:addOutfitAddon(id, addon)
-	outfits[id] = addon
-	return true
+	if id == failUnlock and unlockFailure ~= "after" then
+		return unlockFailure == "silent"
+	end
+	outfits[id] = bit.bor(outfits[id] or 0, addon)
+	return id ~= failUnlock
 end
 function player:addMount(id)
+	if failMount then
+		return false
+	end
 	mounts[id] = true
+	return true
+end
+function player:removeOutfit(id)
+	outfits[id] = nil
+	return true
+end
+function player:removeOutfitAddon(id, addons)
+	if outfits[id] == nil then
+		return false
+	end
+	outfits[id] = bit.band(outfits[id], bit.bnot(addons))
+	return true
+end
+function player:removeMount(id)
+	mounts[id] = nil
 	return true
 end
 function player:canReceiveStoreItems(id, count)
@@ -99,6 +129,7 @@ local function reset()
 	items, outfits, mounts, stored = {}, {}, {}, {}
 	noSpace, failAt, failPayment, missing, calls = false, nil, false, nil, 0
 	player.coins, player.charges = 10000, 0
+	failUnlock, unlockFailure, failMount = nil, nil, false
 end
 GameStore.getOfferById = function(id)
 	for _, offer in ipairs(catalog.offers) do
@@ -170,6 +201,38 @@ reset()
 outfits[offer.sexId.male] = 3
 buy(offer)
 assert(player.charges == 1 and outfits[offer.sexId.male] == 3 and mounts[offer.mountId], "partial ownership must preserve unlocks")
+-- Every unlock failure must precede payment and preserve both sexes' exact masks.
+for _, failingLook in ipairs({ offer.sexId.male, offer.sexId.female }) do
+	for _, mode in ipairs({ "before", "after", "silent" }) do
+		reset()
+		outfits[offer.sexId.male] = 1
+		outfits[offer.sexId.female] = 2
+		failUnlock, unlockFailure = failingLook, mode
+		buy(offer)
+		assert(player.coins == 10000 and player.charges == 0)
+		assert(outfits[offer.sexId.male] == 1 and outfits[offer.sexId.female] == 2 and not mounts[offer.mountId])
+		assert(not stored[tostring(offer.id)])
+		for _, kit in ipairs(items) do
+			assert(kit.removed)
+		end
+	end
+end
+reset()
+outfits[offer.sexId.male] = 0
+failMount = true
+buy(offer)
+assert(player.charges == 0 and outfits[offer.sexId.male] == 0 and outfits[offer.sexId.female] == nil)
+reset()
+outfits[offer.sexId.male] = 1
+outfits[offer.sexId.female] = 2
+mounts[offer.mountId] = true
+failPayment = true
+buy(offer)
+assert(outfits[offer.sexId.male] == 1 and outfits[offer.sexId.female] == 2 and mounts[offer.mountId])
+assert(player.charges == 0 and not stored[tostring(offer.id)])
+failPayment = false
+buy(offer)
+assert(player.charges == 1 and stored[tostring(offer.id)])
 print("PASS: six bundles, both sexes, exact single debit, owner-bound kits, duplicate rejection, full inbox, failed second kit/payment, insufficient funds and missing components")
 
 -- Load the real action and exercise every registered cosmetic state transition.

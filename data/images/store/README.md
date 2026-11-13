@@ -6,9 +6,12 @@ For example, `https://example.org/images/store/` must serve category icons at
 Copying files into Canary's data directory alone does not publish them to clients.
 No server URL or administrator-specific web directory is configured by this PR.
 
-The contribution includes all 91 images referenced by the isolated Store catalog:
-26 category icons and 65 static offer previews. Item, mount and outfit appearances
-rendered directly from client assets do not need their optional HTTP filenames.
+The inventory covers both modern and legacy Store senders: 983 HTTP images,
+including 26 category icons and 957 offer previews. Modern clients render many
+offers from native appearances; the legacy sender still requests their HTTP icons.
+The original 91 images are loose PNGs; 892 additional previews are shipped in
+`legacy-offer-icons.zip` with a per-image source/hash manifest. Native extractions
+are representative first frames; furniture sets use their first delivered item.
 Source URLs and hashes are recorded in the adjacent JSON manifests. Original
 artwork belongs to CipSoft.
 
@@ -18,11 +21,12 @@ Export the actual catalog inventory:
 
 ```sh
 CANARY_STORE_IMAGE_LIST=/tmp/store-images.txt luajit tests/store/list_store_http_images.lua
-python tools/store/fetch_store_category_icons.py --deploy /var/www/html/images/store
-python tools/store/fetch_missing_store_offer_icons.py /tmp/store-images.txt --deploy /var/www/html/images/store
+python tools/store/deploy_store_images.py --deploy /var/www/html/images/store
 ```
 
-The fetchers validate PNG signatures/dimensions and retain existing images.
+The deployer validates every archive hash and PNG before writing and refuses to
+overwrite different existing files. It expands only the manifest-listed entries.
+The fetchers remain available for future catalog changes.
 The offer pack is the public Store archive linked by OTClient:
 https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip.
 One legacy Hireling Dragon file contains GIF bytes; converting that entry uses

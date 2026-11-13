@@ -44,6 +44,31 @@ function bundles.purchase(player, offer)
 			kit:remove()
 		end
 	end
+	-- Snapshot raw ownership for both sexes, including partially purchased addons.
+	-- hasOutfit without ownedOnly checks wearability and rejects the opposite sex.
+	local outfits = {}
+	for _, lookType in ipairs({ offer.sexId.male, offer.sexId.female }) do
+		local addons = 0
+		for _, addon in ipairs({ 1, 2 }) do
+			if player:hasOutfit(lookType, addon, true) then
+				addons = addons + addon
+			end
+		end
+		outfits[#outfits + 1] = { id = lookType, owned = player:hasOutfit(lookType, 0, true), addons = addons }
+	end
+	local ownedMount = player:hasMount(offer.mountId)
+	local function restoreCosmetics()
+		for _, outfit in ipairs(outfits) do
+			if not outfit.owned then
+				player:removeOutfit(outfit.id)
+			elseif outfit.addons ~= 3 then
+				player:removeOutfitAddon(outfit.id, 3 - outfit.addons)
+			end
+		end
+		if not ownedMount then
+			player:removeMount(offer.mountId)
+		end
+	end
 	local ok, failure = pcall(function()
 		for _, id in ipairs(offer.decorations) do
 			local kit = inbox:addItem(ITEM_DECORATION_KIT, 1)
@@ -56,20 +81,24 @@ function bundles.purchase(player, offer)
 			kit:setAttribute(ITEM_ATTRIBUTE_STORE, systemTime())
 			kit:setOwner(player)
 		end
+		for _, outfit in ipairs(outfits) do
+			if not player:addOutfitAddon(outfit.id, 3) or not player:hasOutfit(outfit.id, 3, true) then
+				error({ code = 0, message = "Bundle outfit unlock failed. No coins were charged." })
+			end
+		end
+		if not player:addMount(offer.mountId) or not player:hasMount(offer.mountId) then
+			error({ code = 0, message = "Bundle mount unlock failed. No coins were charged." })
+		end
 		if not player:makeCoinTransaction(offer) then
 			error({ code = 0, message = "Bundle payment failed. Your purchase was cancelled." })
 		end
 	end)
 	if not ok then
+		restoreCosmetics()
 		discardKits()
 		error(failure)
 	end
 
-	-- These validated native operations are synchronous. Existing unlocks are
-	-- retained; the full outfit includes both addons for both character sexes.
-	player:addOutfitAddon(offer.sexId.male, 3)
-	player:addOutfitAddon(offer.sexId.female, 3)
-	player:addMount(offer.mountId)
 	player:kv():scoped("store-bundles"):set(tostring(offer.id), true)
 end
 

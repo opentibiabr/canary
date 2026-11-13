@@ -25,13 +25,14 @@ HIRELING_OUTFITS = setmetatable({}, {
 	end,
 })
 local catalog = dofile("data/modules/scripts/gamestore/catalog/init.lua")
-local seen, names = {}, {}
-local function add(size, filename)
+local seen, names, sources = {}, {}, {}
+local function add(size, filename, kind, id)
 	local path = size .. "/" .. filename
 	if not seen[path] then
-		assert(not filename:find("..", 1, true) and filename:match("^[%w_%-%.]+%.png$"))
+		assert(not filename:find("..", 1, true) and not filename:find("[/\\%c]") and filename:match("%.png$"))
 		seen[path] = true
 		names[#names + 1] = path
+		sources[path] = { kind or 0, id or 0 }
 	end
 end
 for _, category in ipairs(catalog) do
@@ -39,9 +40,14 @@ for _, category in ipairs(catalog) do
 		add("13", icon)
 	end
 	for _, offer in ipairs(category.offers or {}) do
-		if helpers.convertType(offer.type) == GameStore.ConverType.SHOW_NONE then
-			for _, icon in ipairs(offer.icons) do
-				add("64", icon)
+		-- Legacy clients request HTTP icons even for modern native appearances.
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
+			add("64", offer.name:gsub(" ", "_") .. ".png", 3, offer.id)
+		else
+			for index, icon in ipairs(offer.icons or {}) do
+				local itemId = type(offer.itemtype) == "table" and offer.itemtype[1] or offer.itemtype
+				local look = offer.sexId and (index == 2 and offer.sexId.female or offer.sexId.male)
+				add("64", icon, itemId and 1 or (look and 2 or 0), itemId or look)
 			end
 		end
 	end
@@ -53,3 +59,12 @@ for _, name in ipairs(names) do
 end
 output:close()
 print("PASS: inventoried " .. #names .. " HTTP images from the real category/offer catalog")
+
+local metadata = os.getenv("CANARY_STORE_IMAGE_SOURCES")
+if metadata then
+	local file = assert(io.open(metadata, "w"))
+	for _, name in ipairs(names) do
+		file:write(name, "\t", sources[name][1], "\t", sources[name][2], "\n")
+	end
+	file:close()
+end

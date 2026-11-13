@@ -4635,7 +4635,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:hasOutfit(lookType: number, addon?: number)`
+#### `Player:hasOutfit(lookType: number, addon?: number, ownedOnly?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`

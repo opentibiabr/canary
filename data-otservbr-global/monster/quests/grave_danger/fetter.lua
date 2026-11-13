@@ -20,9 +20,7 @@ monster.corpse = 0
 monster.speed = 140
 monster.manaCost = 0
 
-monster.events = {
-	"fetter_death",
-}
+monster.events = {}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -44,7 +42,9 @@ monster.flags = {
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 90,
-	targetDistance = 1,
+	-- Behave like a ranged follower: it keeps its target in sight, but never
+	-- engages. Its role is only to protect Rewar while it can see him.
+	targetDistance = 4,
 	runHealth = 0,
 	healthHidden = false,
 	isBlockable = false,
@@ -65,13 +65,7 @@ monster.voices = {
 
 monster.loot = {}
 
-monster.attacks = {
-	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -308, condition = { type = CONDITION_POISON, totalDamage = 300, interval = 4000 } },
-	{ name = "drunk", interval = 2000, chance = 15, radius = 4, effect = CONST_ME_SOUND_PURPLE, target = false, duration = 6000 },
-	{ name = "spectre drown", interval = 2000, chance = 15, target = false },
-	{ name = "combat", interval = 2000, chance = 15, type = COMBAT_MANADRAIN, minDamage = -100, maxDamage = -600, range = 7, target = false },
-	{ name = "combat", interval = 2000, chance = 20, type = COMBAT_LIFEDRAIN, minDamage = -300, maxDamage = -850, range = 7, effect = CONST_ME_MAGIC_RED, target = false },
-}
+monster.attacks = {}
 
 monster.defenses = {
 	defense = 35,
@@ -99,5 +93,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

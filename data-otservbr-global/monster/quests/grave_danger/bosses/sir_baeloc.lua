@@ -13,16 +13,14 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 75000
-monster.maxHealth = 75000
+monster.health = 150000
+monster.maxHealth = 150000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
 monster.manaCost = 0
 
-monster.events = {
-	"BossHealthCheck",
-}
+monster.events = { "grave_danger_death" }
 
 monster.changeTarget = {
 	interval = 4000,
@@ -103,6 +101,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{ name = "grave danger lesser hex", interval = 10000, chance = 30, target = false },
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 3100, chance = 37, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 0, effect = CONST_ME_DRAWBLOOD, target = false },
 	{ name = "combat", interval = 2500, chance = 35, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -625, range = 5, shootEffect = CONST_ANI_WHIRLWINDAXE, effect = CONST_ME_DRAWBLOOD, target = true },
@@ -126,7 +125,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 35 },
 	{ type = COMBAT_HOLYDAMAGE, percent = -10 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
+}
+
+monster.heals = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
@@ -135,5 +138,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

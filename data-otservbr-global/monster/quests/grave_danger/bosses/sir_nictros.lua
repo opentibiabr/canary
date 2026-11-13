@@ -13,8 +13,8 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 75000
-monster.maxHealth = 75000
+monster.health = 150000
+monster.maxHealth = 150000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -25,9 +25,7 @@ monster.changeTarget = {
 	chance = 10,
 }
 
-monster.events = {
-	"BossHealthCheck",
-}
+monster.events = { "grave_danger_death" }
 
 monster.bosstiary = {
 	bossRaceId = 1754,
@@ -58,9 +56,7 @@ monster.flags = {
 	canWalkOnPoison = true,
 }
 
-monster.events = {
-	-- "Sir_Baeloc_Sir_NictrosCharge"
-}
+monster.events = { "grave_danger_death" }
 
 monster.light = {
 	level = 0,
@@ -93,6 +89,7 @@ monster.loot = {}
 --weapon throw: 361, 625
 
 monster.attacks = {
+	{ name = "grave danger lesser hex", interval = 10000, chance = 30, target = false },
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -900, effect = CONST_ME_DRAWBLOOD },
 	{ name = "combat", interval = 3100, chance = 37, type = COMBAT_PHYSICALDAMAGE, minDamage = -400, maxDamage = -1000, length = 7, spread = 0, effect = CONST_ME_DRAWBLOOD, target = false },
 	{ name = "combat", interval = 2500, chance = 35, type = COMBAT_PHYSICALDAMAGE, minDamage = -350, maxDamage = -625, range = 5, shootEffect = CONST_ANI_WHIRLWINDAXE, effect = CONST_ME_DRAWBLOOD, target = true },
@@ -119,11 +116,21 @@ monster.elements = {
 	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
+monster.heals = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 300 },
+}
+
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

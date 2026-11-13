@@ -19,11 +19,7 @@ monster.race = "venom"
 monster.corpse = 31611
 monster.speed = 212
 
-monster.events = {
-	"zelos_damage",
-	"zelos_init",
-	"grave_danger_death",
-}
+monster.events = { "grave_danger_death" }
 
 monster.bosstiary = {
 	bossRaceId = 1784,
@@ -85,6 +81,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{ name = "grave danger greater hex", interval = 10000, chance = 30, target = false },
 	{ name = "melee", type = COMBAT_PHYSICALDAMAGE, interval = 2000, minDamage = -900, maxDamage = -2700 },
 	{ name = "combat", type = COMBAT_FIREDAMAGE, interval = 2000, chance = 15, length = 8, spread = 0, minDamage = -1200, maxDamage = -3200, effect = CONST_ME_HITBYFIRE },
 	{ name = "combat", type = COMBAT_LIFEDRAIN, interval = 2000, chance = 10, length = 8, spread = 0, minDamage = -600, maxDamage = -1600, effect = CONST_ME_SMALLCLOUDS },
@@ -108,7 +105,11 @@ monster.elements = {
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
 	{ type = COMBAT_ICEDAMAGE, percent = 0 },
 	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
-	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
+}
+
+monster.heals = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 monster.immunities = {
@@ -123,5 +124,11 @@ monster.voices = {
 	{ text = "I will rule again and my realm of death will span the world!", yell = false },
 	{ text = "My lich-knights will conquer this world for me!", yell = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

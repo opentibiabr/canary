@@ -13,10 +13,7 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"azaram_health",
-	"azaram_summon",
-}
+monster.events = { "grave_danger_death" }
 
 monster.health = 300000
 monster.maxHealth = 300000
@@ -64,12 +61,9 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 5,
-	summons = {
-		{ name = "Condensed Sins", chance = 50, interval = 2000, count = 5 },
-	},
-}
+-- Condensed Sin is controlled by the encounter script.  Keeping a native
+-- summon here creates a second, much faster spawn loop.
+monster.summon = { maxSummons = 0, summons = {} }
 
 monster.voices = {
 	interval = 5000,
@@ -108,6 +102,7 @@ monster.loot = {
 }
 
 monster.attacks = {
+	{ name = "grave danger lesser hex", interval = 10000, chance = 30, target = false },
 	{ name = "melee", interval = 2000, chance = 100, minDamage = 0, maxDamage = -1000, effect = CONST_ME_DRAWBLOOD },
 	{ name = "lord azaram wave", interval = 3500, chance = 50, minDamage = -360, maxDamage = -900 },
 	{ name = "combat", interval = 2700, chance = 20, type = COMBAT_EARTHDAMAGE, minDamage = -500, maxDamage = -1200, length = 7, spread = 0, effect = CONST_ME_STONES, target = false },
@@ -132,11 +127,21 @@ monster.elements = {
 	{ type = COMBAT_DEATHDAMAGE, percent = 0 },
 }
 
+monster.heals = {
+	{ type = COMBAT_EARTHDAMAGE, percent = 260 },
+}
+
 monster.immunities = {
 	{ type = "paralyze", condition = true },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

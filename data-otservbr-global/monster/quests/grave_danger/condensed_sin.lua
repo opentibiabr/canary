@@ -89,11 +89,22 @@ monster.elements = {
 	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
+-- Public guides document death reflection, but not its exact percentage.
+monster.reflects = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
+}
+
 monster.immunities = {
 	{ type = "paralyze", condition = false },
 	{ type = "outfit", condition = false },
 	{ type = "invisible", condition = false },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

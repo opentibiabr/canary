@@ -1,9 +1,15 @@
 local config = {
 	boss = {
 		name = "Count Vlarkorth",
-		position = Position(33456, 31434, 13),
+		createFunction = function()
+			return GraveDanger.start("Count Vlarkorth", Position(33456, 31434, 13))
+		end,
 	},
 	requiredLevel = 250,
+	timeToFightAgain = 20 * 60 * 60,
+	onUseExtra = function(player)
+		return GraveDanger.checkEntry("Count Vlarkorth", player)
+	end,
 	playerPositions = {
 		{ pos = Position(33455, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33456, 31413, 13), teleport = Position(33454, 31445, 13), effect = CONST_ME_TELEPORT },

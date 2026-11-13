@@ -5,9 +5,7 @@ function zelos_tp.onStepIn(creature, item, position, fromPosition)
 		return false
 	end
 
-	local knights = Creature("Nargol The Impaler") or Creature("Magnor Mournbringer") or Creature("The Red Knight") or Creature("Rewar The Bloody") or Creature("Shard Of Magnor") or Creature("Regenerating Mass")
-
-	if knights then
+	if not GraveDanger.canEnterZelos(creature) then
 		creature:teleportTo(fromPosition)
 	else
 		creature:teleportTo(Position(33443, 31536, 13))

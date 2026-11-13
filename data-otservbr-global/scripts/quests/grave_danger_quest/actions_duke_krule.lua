@@ -4,12 +4,21 @@ local config = {
 		position = Position(33456, 31473, 13),
 	},
 	requiredLevel = 250,
+	timeToFightAgain = 20 * 60 * 60,
+	onUseExtra = function(player)
+		local cooldown = player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Bosses.DukeKrule.Timer)
+		if cooldown > os.time() then
+			player:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You have to wait " .. Game.getTimeInWords(cooldown - os.time()) .. " to face Duke Krule again!")
+			return false
+		end
+		return true
+	end,
 	playerPositions = {
-		{ pos = Position(33455, 31493, 13), teleport = Position(33455, 31464, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33456, 31493, 13), teleport = Position(33455, 31464, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33457, 31493, 13), teleport = Position(33455, 31464, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33458, 31493, 13), teleport = Position(33455, 31464, 13), effect = CONST_ME_TELEPORT },
-		{ pos = Position(33459, 31493, 13), teleport = Position(33455, 31464, 13), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33455, 31493, 13), teleport = Position(33456, 31480, 13), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33456, 31493, 13), teleport = Position(33456, 31480, 13), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33457, 31493, 13), teleport = Position(33456, 31480, 13), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33458, 31493, 13), teleport = Position(33456, 31480, 13), effect = CONST_ME_TELEPORT },
+		{ pos = Position(33459, 31493, 13), teleport = Position(33456, 31480, 13), effect = CONST_ME_TELEPORT },
 	},
 	specPos = {
 		from = Position(33447, 31464, 13),

@@ -13,10 +13,7 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"count_vlarkorth_transform",
-	"grave_danger_death",
-}
+monster.events = { "grave_danger_death" }
 
 monster.health = 75000
 monster.maxHealth = 75000
@@ -64,12 +61,7 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "Soulless Minion", chance = 70, interval = 5500, count = 4 },
-	},
-}
+monster.summon = { maxSummons = 0, summons = {} }
 
 monster.voices = {
 	interval = 5000,
@@ -143,5 +135,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

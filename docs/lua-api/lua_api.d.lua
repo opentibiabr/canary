@@ -3627,8 +3627,9 @@ function Player:hasGroupFlag(flag) end
 function Player:hasLearnedSpell(spellName) end
 
 ---@param mountIdOrMountName number|string
+---@param ownedOnly? boolean
 ---@return boolean|nil
-function Player:hasMount(mountIdOrMountName) end
+function Player:hasMount(mountIdOrMountName, ownedOnly) end
 
 ---@param lookType number
 ---@param addon? number

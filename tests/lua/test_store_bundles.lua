@@ -14,6 +14,7 @@ end
 local items, outfits, mounts, stored, missing = {}, {}, {}, {}, nil
 local noSpace, failAt, failPayment = false, nil, false
 local sex = 1
+local accessGroup = false
 local failUnlock, unlockFailure, failMount = nil, nil, false
 local outfitSex = {}
 for _, entry in ipairs(catalog.offers) do
@@ -60,12 +61,18 @@ function player:getSex()
 	return sex
 end
 function player:hasOutfit(id, addon, ownedOnly)
+	if accessGroup and not ownedOnly then
+		return true
+	end
 	if not ownedOnly and outfitSex[id] ~= sex then
 		return false
 	end
 	return outfits[id] ~= nil and bit.band(outfits[id], addon or 0) == (addon or 0)
 end
-function player:hasMount(id)
+function player:hasMount(id, ownedOnly)
+	if accessGroup and not ownedOnly then
+		return true
+	end
 	return mounts[id] == true
 end
 function player:addOutfitAddon(id, addon)
@@ -130,6 +137,7 @@ local function reset()
 	noSpace, failAt, failPayment, missing, calls = false, nil, false, nil, 0
 	player.coins, player.charges = 10000, 0
 	failUnlock, unlockFailure, failMount = nil, nil, false
+	accessGroup = false
 end
 GameStore.getOfferById = function(id)
 	for _, offer in ipairs(catalog.offers) do
@@ -201,6 +209,36 @@ reset()
 outfits[offer.sexId.male] = 3
 buy(offer)
 assert(player.charges == 1 and outfits[offer.sexId.male] == 3 and mounts[offer.mountId], "partial ownership must preserve unlocks")
+-- Access-based wearability must not masquerade as purchased outfit ownership.
+reset()
+accessGroup = true
+mounts[offer.mountId] = true
+assert(player:hasOutfit(offer.sexId.male, 3))
+assert(not bundles.unavailableReason(player, offer), "access-group buyer does not own this outfit")
+buy(offer)
+assert(player.charges == 1 and outfits[offer.sexId.male] == 3 and outfits[offer.sexId.female] == 3)
+assert(bundles.unavailableReason(player, offer), "an actual completed purchase must still be rejected")
+reset()
+accessGroup = true
+outfits[offer.sexId.male] = 3
+outfits[offer.sexId.female] = 3
+mounts[offer.mountId] = true
+assert(bundles.unavailableReason(player, offer), "raw duplicate ownership remains blocked")
+buy(offer)
+assert(player.charges == 0 and #items == 0)
+-- Mount access is also not raw ownership: no free mount may survive a failure.
+reset()
+accessGroup = true
+outfits[offer.sexId.male] = 3
+outfits[offer.sexId.female] = 3
+assert(player:hasMount(offer.mountId) and not player:hasMount(offer.mountId, true))
+assert(not bundles.unavailableReason(player, offer))
+failPayment = true
+buy(offer)
+assert(player.charges == 0 and not mounts[offer.mountId] and outfits[offer.sexId.male] == 3)
+failPayment = false
+buy(offer)
+assert(player.charges == 1 and mounts[offer.mountId] and bundles.unavailableReason(player, offer))
 -- Every unlock failure must precede payment and preserve both sexes' exact masks.
 for _, failingLook in ipairs({ offer.sexId.male, offer.sexId.female }) do
 	for _, mode in ipairs({ "before", "after", "silent" }) do

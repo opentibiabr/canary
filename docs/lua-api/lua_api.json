@@ -6857,7 +6857,8 @@
       {
         "name": "hasMount",
         "params": [
-          "mountIdOrMountName: number|string"
+          "mountIdOrMountName: number|string",
+          "ownedOnly?: boolean"
         ],
         "return": "boolean|nil",
         "source": "src/lua/functions/creatures/player/player_functions.cpp"

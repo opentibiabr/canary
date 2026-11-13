@@ -20,9 +20,14 @@ artwork belongs to CipSoft.
 Export the actual catalog inventory:
 
 ```sh
+python -m pip install -r tools/store/requirements.txt
 CANARY_STORE_IMAGE_LIST=/tmp/store-images.txt luajit tests/store/list_store_http_images.lua
 python tools/store/deploy_store_images.py --deploy /var/www/html/images/store
 ```
+
+The tools require Python 3.10+ and Pillow (declared in `tools/store/requirements.txt`).
+The shared PNG validator verifies chunks/CRCs, the complete IEND trailer and
+decodes pixel data before either installer writes files.
 
 The deployer validates every archive hash and PNG before writing and refuses to
 overwrite different existing files. It expands only the manifest-listed entries.

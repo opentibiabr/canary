@@ -113,7 +113,8 @@ configured ID against XML plus server and installed client appearances.
 These are local checks, not live gameplay or MariaDB crash-recovery proof.
 Payment and player persistence retain the Store's existing service guarantees.
 
-The raw-ownership flag on `Player:hasOutfit(lookType, addon, ownedOnly)` requires
+The raw-ownership flags on `Player:hasOutfit(lookType, addon, ownedOnly)` and
+`Player:hasMount(mountIdOrMountName, ownedOnly)` require
 an updated server binary. Its default behavior remains the existing wearability
 check; `ownedOnly=true` bypasses sex/premium/access restrictions to read actual
 ownership, including the opposite-sex outfit, for safe rollback.
@@ -139,3 +140,11 @@ binding against LuaJIT with controlled player state, checking wearability defaul
 opposite-sex ownership, base-only outfits, addon masks and access-group behavior.
 Bundle flow tests inject unlock failures before mutation, after mutation and
 silent no-ops, then verify exact restoration without payment or purchase markers.
+
+The duplicate check and rollback snapshots use raw ownership for both outfits and
+mounts. Administrative access must not count as purchasing either component.
+The Python image tools now require `tools/store/requirements.txt`; shared PNG
+validation checks chunks/CRCs, a complete IEND trailer and actual pixel decoding.
+Installer regressions cover signature-only files, dimension-only/truncated
+headers, truncated IEND, invalid CRC and invalid compressed pixels with valid CRC.
+Both installers reject these before writing even a valid prepared companion.

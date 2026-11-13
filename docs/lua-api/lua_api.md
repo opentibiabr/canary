@@ -4630,7 +4630,7 @@ C++ Lua binding handlers and registration lines can override inferred signatures
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`
 
-#### `Player:hasMount(mountIdOrMountName: number|string)`
+#### `Player:hasMount(mountIdOrMountName: number|string, ownedOnly?: boolean)`
 
 - Returns: `boolean|nil`
 - Source: `src/lua/functions/creatures/player/player_functions.cpp`

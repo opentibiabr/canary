@@ -10,13 +10,13 @@ import io
 import json
 import os
 from pathlib import Path
-import struct
 import subprocess
 import tempfile
 import urllib.request
 import zipfile
 
 from deploy_store_images import collect_images, safe_target
+from png_validation import validate_png
 
 ROOT = Path(__file__).resolve().parents[2]
 URL = "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip"
@@ -88,9 +88,7 @@ def main():
                     raise ValueError("Invalid Store archive entry")
                 original = archive.read(entry)
                 data = png_content(original)
-                width, height = struct.unpack(">II", data[16:24])
-                if not (1 <= width <= 128 and 1 <= height <= 128):
-                    raise ValueError("Invalid preview dimensions")
+                validate_png(data)
                 prepared[name] = data
                 additions.append({"file": name, "source": URL, "archive_entry": "store/" + name,
                                   "archive_sha256": archive_hash, "sha256": hashlib.sha256(data).hexdigest(),

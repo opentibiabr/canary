@@ -14,6 +14,7 @@
 #endif
 
 #include "account/account.hpp"
+#include "utils/const.hpp"
 #include "creatures/appearance/mounts/mounts.hpp"
 #include "creatures/combat/spells.hpp"
 #include "creatures/creature.hpp"
@@ -3068,7 +3069,7 @@ int PlayerFunctions::luaPlayerRemoveMount(lua_State* L) {
 }
 
 int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
-	// player:hasMount(mountId or mountName)
+	// player:hasMount(mountId or mountName[, ownedOnly = false])
 	const auto &player = Lua::getUserdataShared<Player>(L, 1, "Player");
 	if (!player) {
 		lua_pushnil(L);
@@ -3083,7 +3084,13 @@ int PlayerFunctions::luaPlayerHasMount(lua_State* L) {
 	}
 
 	if (mount) {
-		Lua::pushBoolean(L, player->hasMount(mount));
+		if (Lua::getBoolean(L, 3, false)) {
+			const uint32_t index = mount->id - 1;
+			const int32_t value = player->getStorageValue(PSTRG_MOUNTS_RANGE_START + index / 31);
+			Lua::pushBoolean(L, value != -1 && (static_cast<uint32_t>(value) & (uint32_t { 1 } << (index % 31))) != 0);
+		} else {
+			Lua::pushBoolean(L, player->hasMount(mount));
+		}
 	} else {
 		lua_pushnil(L);
 	}

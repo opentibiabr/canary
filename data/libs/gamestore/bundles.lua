@@ -11,7 +11,7 @@ function bundles.unavailableReason(player, offer)
 	if not lookType then
 		return "This bundle has no outfit for your character."
 	end
-	if player:kv():scoped("store-bundles"):get(tostring(offer.id)) or (player:hasOutfit(lookType, 3) and player:hasMount(offer.mountId)) then
+	if player:kv():scoped("store-bundles"):get(tostring(offer.id)) or (player:hasOutfit(lookType, 3, true) and player:hasMount(offer.mountId, true)) then
 		return "You already own this bundle's outfit and mount."
 	end
 	for _, id in ipairs(offer.decorations) do
@@ -56,7 +56,7 @@ function bundles.purchase(player, offer)
 		end
 		outfits[#outfits + 1] = { id = lookType, owned = player:hasOutfit(lookType, 0, true), addons = addons }
 	end
-	local ownedMount = player:hasMount(offer.mountId)
+	local ownedMount = player:hasMount(offer.mountId, true)
 	local function restoreCosmetics()
 		for _, outfit in ipairs(outfits) do
 			if not outfit.owned then
@@ -86,7 +86,7 @@ function bundles.purchase(player, offer)
 				error({ code = 0, message = "Bundle outfit unlock failed. No coins were charged." })
 			end
 		end
-		if not player:addMount(offer.mountId) or not player:hasMount(offer.mountId) then
+		if not player:addMount(offer.mountId) or not player:hasMount(offer.mountId, true) then
 			error({ code = 0, message = "Bundle mount unlock failed. No coins were charged." })
 		end
 		if not player:makeCoinTransaction(offer) then

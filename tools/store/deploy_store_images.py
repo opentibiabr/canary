@@ -6,6 +6,8 @@ import re
 from pathlib import Path
 import zipfile
 
+from png_validation import validate_png
+
 ROOT = Path(__file__).resolve().parents[2] / "data/images/store"
 
 
@@ -39,8 +41,10 @@ def collect_images():
                 raise ValueError(f"Conflicting image sources: {name}")
             images[name] = data
     for name, data in images.items():
-        if data[:8] != b"\x89PNG\r\n\x1a\n":
-            raise ValueError(f"Not a PNG: {name}")
+        try:
+            validate_png(data)
+        except ValueError as error:
+            raise ValueError(f"Invalid PNG: {name}") from error
     return images
 
 

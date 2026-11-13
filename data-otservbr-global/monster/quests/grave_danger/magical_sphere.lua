@@ -21,9 +21,7 @@ monster.speed = 0
 monster.manaCost = 0
 monster.maxSummons = 0
 
-monster.events = {
-	"sphere_death",
-}
+monster.events = {}
 
 monster.changeTarget = {
 	interval = 5000,
@@ -80,5 +78,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

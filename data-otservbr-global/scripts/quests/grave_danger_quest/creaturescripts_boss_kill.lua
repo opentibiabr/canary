@@ -32,6 +32,10 @@ local config = {
 			value = 1,
 		},
 	},
+	["sir nictros"] = {
+		stor = Storage.Quest.U12_20.GraveDanger.Bosses.BaelocNictros.Killed,
+		extra = { stor = Storage.Quest.U12_20.GraveDanger.Graves.Darashia, value = 1 },
+	},
 	["duke krule"] = {
 		stor = Storage.Quest.U12_20.GraveDanger.Bosses.DukeKrule.Killed,
 		extra = {
@@ -59,6 +63,10 @@ function grave_danger_death.onDeath(creature, corpse, killer, mostDamageKiller)
 	if not bossConfig then
 		return true
 	end
+	local name = creature:getName():lower()
+	if (name == "sir baeloc" or name == "sir nictros") and GraveDanger.brothersAlive(creature) then
+		return true
+	end
 
 	local attackers = creature:getDamageMap()
 	for attackerId, _ in pairs(attackers) do
@@ -72,7 +80,7 @@ function grave_danger_death.onDeath(creature, corpse, killer, mostDamageKiller)
 
 			if bossConfig.extra then
 				player:setStorageValue(bossConfig.extra.stor, bossConfig.extra.value)
-				local graves = player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Progress)
+				local graves = math.max(0, player:getStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Progress))
 				player:setStorageValue(Storage.Quest.U12_20.GraveDanger.Graves.Progress, graves + 1)
 			end
 		end

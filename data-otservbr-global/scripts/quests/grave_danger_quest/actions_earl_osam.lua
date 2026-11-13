@@ -1,9 +1,15 @@
 local config = {
 	boss = {
 		name = "Earl Osam",
-		position = Position(33488, 31441, 13),
+		createFunction = function()
+			return GraveDanger.start("Earl Osam", Position(33488, 31441, 13))
+		end,
 	},
 	requiredLevel = 250,
+	timeToFightAgain = 20 * 60 * 60,
+	onUseExtra = function(player)
+		return GraveDanger.checkEntry("Earl Osam", player)
+	end,
 	playerPositions = {
 		{ pos = Position(33516, 31444, 13), teleport = Position(33488, 31430, 13), effect = CONST_ME_TELEPORT },
 		{ pos = Position(33517, 31444, 13), teleport = Position(33488, 31430, 13), effect = CONST_ME_TELEPORT },

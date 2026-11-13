@@ -13,13 +13,10 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.events = {
-	"earl_osam_transform",
-	"grave_danger_death",
-}
+monster.events = { "grave_danger_death" }
 
-monster.health = 75000
-monster.maxHealth = 75000
+monster.health = 300000
+monster.maxHealth = 300000
 monster.race = "venom"
 monster.corpse = 31599
 monster.speed = 125
@@ -64,12 +61,8 @@ monster.light = {
 	color = 0,
 }
 
-monster.summon = {
-	maxSummons = 4,
-	summons = {
-		{ name = "Frozen Soul", chance = 50, interval = 2000, count = 4 },
-	},
-}
+-- Frozen Souls are controlled by the encounter script, not the native summon loop.
+monster.summon = { maxSummons = 0, summons = {} }
 
 monster.voices = {
 	interval = 5000,
@@ -121,16 +114,21 @@ monster.defenses = {
 }
 
 monster.elements = {
-	{ type = COMBAT_PHYSICALDAMAGE, percent = 0 },
-	{ type = COMBAT_ENERGYDAMAGE, percent = -5 },
-	{ type = COMBAT_EARTHDAMAGE, percent = 50 },
+	{ type = COMBAT_PHYSICALDAMAGE, percent = 5 },
+	{ type = COMBAT_ENERGYDAMAGE, percent = -7 },
+	{ type = COMBAT_EARTHDAMAGE, percent = 40 },
 	{ type = COMBAT_FIREDAMAGE, percent = -10 },
 	{ type = COMBAT_LIFEDRAIN, percent = 0 },
 	{ type = COMBAT_MANADRAIN, percent = 0 },
 	{ type = COMBAT_DROWNDAMAGE, percent = 0 },
-	{ type = COMBAT_ICEDAMAGE, percent = 50 },
-	{ type = COMBAT_HOLYDAMAGE, percent = 0 },
+	{ type = COMBAT_ICEDAMAGE, percent = 100 },
+	{ type = COMBAT_HOLYDAMAGE, percent = -5 },
 	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
+}
+
+monster.heals = {
+	{ type = COMBAT_DEATHDAMAGE, percent = 200 },
+	{ type = COMBAT_ICEDAMAGE, percent = 50 },
 }
 
 monster.immunities = {
@@ -139,5 +137,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

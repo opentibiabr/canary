@@ -22,10 +22,7 @@ monster.speed = 250
 monster.manaCost = 0
 monster.maxSummons = 0
 
-monster.events = {
-	"blood_death",
-	"rewar_the_bloody",
-}
+monster.events = {}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -102,6 +99,7 @@ monster.immunities = {
 
 monster.heals = {
 	{ type = COMBAT_EARTHDAMAGE, percent = 100 },
+	{ type = COMBAT_DEATHDAMAGE, percent = 100 },
 }
 
 mType.onThink = function(monster, interval) end
@@ -112,7 +110,11 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

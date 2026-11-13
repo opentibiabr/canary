@@ -41,7 +41,7 @@ end
 local grave_enter = MoveEvent()
 
 function grave_enter.onStepIn(creature, item, position, fromPosition)
-	if creature:isMonster() then
+	if not creature:isPlayer() then
 		return true
 	end
 
@@ -51,9 +51,14 @@ function grave_enter.onStepIn(creature, item, position, fromPosition)
 		return true
 	end
 
-	if creature:getStorageValue(thing.stor) > os.time() then
-		local eq = creature:getStorageValue(thing.stor) - os.time()
-		creature:say("You need to wait " .. secondsToClock(eq) .. " before trying to challenge " .. thing.boss .. " again!", TALKTYPE_MONSTER_SAY, false, creature)
+	-- BossLever writes the Bosstiary cooldown; preserve older storage cooldowns too.
+	local cooldown = math.max(creature:getStorageValue(thing.stor), creature:getBossCooldown(thing.boss) or 0)
+	if item.actionid == 14564 then
+		cooldown = math.max(cooldown, creature:getBossCooldown("Sir Nictros") or 0)
+	end
+	if cooldown > os.time() then
+		local eq = cooldown - os.time()
+		creature:sendTextMessage(MESSAGE_EVENT_ADVANCE, "You need to wait " .. secondsToClock(eq) .. " before trying to challenge " .. thing.boss .. " again!")
 		creature:teleportTo(fromPosition)
 		return true
 	end

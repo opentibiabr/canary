@@ -13,16 +13,14 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 20000
-monster.maxHealth = 20000
+monster.health = 205000
+monster.maxHealth = 205000
 monster.race = "venom"
 monster.corpse = 0
 monster.speed = 125
 monster.manaCost = 0
 
-monster.events = {
-	"shard_death",
-}
+monster.events = {}
 
 monster.changeTarget = {
 	interval = 4000,
@@ -98,5 +96,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

@@ -93,4 +93,10 @@ monster.immunities = {
 	{ type = "bleed", condition = false },
 }
 
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
+
 mType:register(monster)

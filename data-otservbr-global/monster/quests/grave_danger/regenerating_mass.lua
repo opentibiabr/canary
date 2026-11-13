@@ -13,11 +13,11 @@ monster.outfit = {
 	lookMount = 0,
 }
 
-monster.health = 100000
-monster.maxHealth = 100000
+monster.health = 110000
+monster.maxHealth = 110000
 monster.race = "venom"
 monster.corpse = 0
-monster.speed = 160
+monster.speed = 0
 monster.manaCost = 0
 monster.maxSummons = 0
 
@@ -36,7 +36,7 @@ monster.strategiesTarget = {
 monster.flags = {
 	summonable = false,
 	attackable = true,
-	hostile = true,
+	hostile = false,
 	convinceable = false,
 	pushable = false,
 	rewardBoss = false,
@@ -44,7 +44,7 @@ monster.flags = {
 	canPushItems = true,
 	canPushCreatures = true,
 	staticAttackChance = 80,
-	targetDistance = 1,
+	targetDistance = 0,
 	runHealth = 85,
 	healthHidden = false,
 	isBlockable = false,
@@ -88,5 +88,11 @@ monster.immunities = {
 	{ type = "invisible", condition = true },
 	{ type = "bleed", condition = false },
 }
+
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType:register(monster)

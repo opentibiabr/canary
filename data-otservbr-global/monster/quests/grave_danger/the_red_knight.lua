@@ -16,7 +16,7 @@ monster.outfit = {
 monster.health = 250000
 monster.maxHealth = 250000
 monster.race = "venom"
-monster.corpse = 36434
+monster.corpse = 0
 monster.speed = 250
 monster.manaCost = 0
 
@@ -103,7 +103,11 @@ mType.onAppear = function(monster, creature)
 	end
 end
 
-mType.onDisappear = function(monster, creature) end
+mType.onDisappear = function(monster, creature)
+	if monster == creature then
+		GraveDanger.disappear(monster)
+	end
+end
 
 mType.onMove = function(monster, creature, fromPosition, toPosition) end
 

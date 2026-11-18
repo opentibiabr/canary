@@ -9,11 +9,13 @@
 
 #pragma once
 
+#include <functional>
+#include <span>
+
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <array>
 	#include <bit>
 	#include <cstring>
-	#include <span>
 #endif
 
 class FileStream {
@@ -81,6 +83,7 @@ public:
 	}
 
 	std::string getString();
+	bool readNodeProperties(const std::function<bool(std::span<const uint8_t>, size_t &)> &decode);
 
 private:
 	bool readEscapedByte(uint8_t &value, const char* errorMessage) {

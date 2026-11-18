@@ -22,6 +22,7 @@ class Tile;
 class Item;
 struct Position;
 class FileStream;
+struct BasicItemMapAttributes;
 
 struct BasicItem {
 	std::string text;
@@ -38,9 +39,11 @@ struct BasicItem {
 	uint8_t destZ { 0 };
 
 	std::vector<std::shared_ptr<BasicItem>> items;
+	std::shared_ptr<const BasicItemMapAttributes> mapAttributes;
 
 	bool unserializeItemNode(FileStream &propStream, uint16_t x, uint16_t y, uint8_t z);
 	void readAttr(FileStream &propStream);
+	void applyAttributes(const std::shared_ptr<Item> &item) const;
 
 	bool isSimple() const {
 		return charges == 0
@@ -51,6 +54,7 @@ struct BasicItem {
 			&& destZ == 0
 			&& doorOrDepotId == 0
 			&& text.empty()
+			&& !mapAttributes
 			&& items.empty();
 	}
 
@@ -190,7 +194,6 @@ private:
 	const BasicTile* getOrCreateBasicTileFromCache(const BasicTile &basicTile);
 	const BasicTile* retainBasicTile(const std::shared_ptr<BasicTile> &tile);
 	void resetBasicTileLookupCache() const;
-	void parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const;
 	std::shared_ptr<Item> createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position);
 
 	// Floor tile caches store observer pointers; these shared owners keep them valid after flush().

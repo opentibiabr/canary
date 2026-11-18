@@ -94,6 +94,39 @@ class NativeWorldToolTests(NativeWorldToolFixture):
 		self.assertEqual(data["identifiers"][1]["uid"], 45000)
 		self.assertEqual(len(data["identifiers"][1]["containers"]), 1)
 
+	def test_otbm_v6_typed_attributes_and_following_nodes(self):
+		def field(name, kind, payload):
+			return struct.pack("<H", len(name)) + name.encode("ascii") + bytes([kind]) + payload
+
+		fields = [
+			field("aid", 2, struct.pack("<i", 0xFEFD)),
+			field("text", 1, struct.pack("<I", 4) + b"sign"),
+			field("enabled", 4, b"\x01"),
+			field("rate", 3, struct.pack("<f", 0.5)),
+			field("weight", 5, struct.pack("<d", 2.5)),
+		]
+		attrs = b"\x80" + struct.pack("<H", len(fields)) + b"".join(fields)
+		child = node(6, struct.pack("<HBH", 400, 128, 1) + field("uid", 2, struct.pack("<i", 65535)))
+		bag = node(6, struct.pack("<H", 300) + attrs, [child])
+		tile = node(5, struct.pack("<BBBH", 100, 100, 9, 100), [bag, node(6, struct.pack("<HBH", 200, 4, 12107))])
+		data = node(2, children=[node(4, struct.pack("<HHB", 0, 0, 7), [tile])])
+		def write_version(version):
+			(self.root / "example.otbm").write_bytes(b"OTBM" + node(0, struct.pack("<IHHII", version, 200, 200, 4, 4), [data]))
+
+		for version in (3, 5):
+			with self.subTest(header_version=version):
+				write_version(version)
+				result = self.command("inspect", "--map", "example.otbm", "--items", "items.xml", "--positions", "positions.json")
+				self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+				items = json.loads(result.stdout)["tiles"][0]["items"]
+				self.assertEqual(items[1]["attributes"]["aid"], 0xFEFD)
+				self.assertEqual(items[1]["attributes"]["text"], "sign")
+				self.assertEqual(items[1]["attributes"]["custom"], {"enabled": True, "rate": 0.5, "weight": 2.5})
+				self.assertEqual(items[1]["children"][0]["attributes"]["uid"], 65535)
+				self.assertEqual(items[2]["attributes"]["aid"], 12107)
+		write_version(6)
+		self.assertNotEqual(self.command("inspect-identifiers", "--map", "example.otbm", "--items", "items.xml").returncode, 0)
+
 	def test_publisher_rejects_missing_offline_confirmation_and_stale_versions(self):
 		self.write_json("publication.json", {"schemaVersion": 1, "catalog": "map.world.json", "changes": [{"file": "config.lua", "before": "before.lua", "after": "after.lua"}], "guards": []})
 		(self.root / "before.lua").write_text("old", encoding="utf-8")

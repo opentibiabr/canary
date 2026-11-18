@@ -320,6 +320,79 @@ namespace world_layers {
 			}
 		};
 
+		bool readAttributeMap(Bytes &reader, uint8_t attribute, MapItem &item, std::string &error) {
+			const auto count = attribute == 128 ? reader.number<uint16_t>() : reader.number<uint64_t>();
+			if (count > 65535) {
+				error = "Too many custom OTBM attributes";
+				return false;
+			}
+			Value::Record custom;
+			for (uint64_t i = 0; i < count && reader.valid; ++i) {
+				const auto name = reader.text();
+				const auto type = reader.number<uint8_t>();
+				Value value;
+				if (type == 1) {
+					value.data = reader.text(attribute == 128);
+				} else if (type == 2) {
+					value.data = attribute == 128 ? int64_t(reader.number<int32_t>()) : reader.number<int64_t>();
+				} else if (type == 3 && attribute == 128) {
+					value.data = double(std::bit_cast<float>(reader.number<uint32_t>()));
+				} else if ((type == 3 && attribute != 128) || (type == 5 && attribute == 128)) {
+					value.data = std::bit_cast<double>(reader.number<uint64_t>());
+				} else if (type == 4) {
+					value.data = reader.number<uint8_t>() != 0;
+				} else {
+					error = "Unsupported custom OTBM attribute type";
+					return false;
+				}
+				if (attribute == 128 && (name == "aid" || name == "uid")) {
+					if (!std::holds_alternative<int64_t>(value.data)) {
+						error = "Expected integer OTBM " + name;
+						return false;
+					}
+					const auto number = std::get<int64_t>(value.data);
+					if (number < 0 || number > 65535) {
+						error = "Invalid OTBM AID/UID";
+						return false;
+					}
+					(name == "aid" ? item.aid : item.uid) = static_cast<uint16_t>(number);
+				} else if (attribute == 128 && (name == "text" || name == "desc" || name == "name" || name == "article" || name == "plural" || name == "writer" || name == "date")) {
+					if (name == "date" ? !std::holds_alternative<int64_t>(value.data) : !std::holds_alternative<std::string>(value.data)) {
+						error = "Invalid OTBM attribute type for " + name;
+						return false;
+					}
+					item.attributes[name == "desc" ? "description" : name] = value;
+				} else {
+					if (attribute == 128 && (name.empty() || name.starts_with("__world."))) {
+						error = "Reserved OTBM custom attribute: " + name;
+						return false;
+					}
+					if (attribute == 128 && name == "subtype") {
+						const auto subtype = std::get_if<int64_t>(&value.data);
+						if (!subtype || *subtype < 0 || *subtype > UINT16_MAX) {
+							error = "Invalid OTBM item subtype";
+							return false;
+						}
+					}
+					custom[name] = std::move(value);
+				}
+			}
+			if (!custom.empty()) {
+				auto &stored = item.attributes["custom"];
+				if (!std::holds_alternative<Value::Record>(stored.data)) {
+					stored.data = Value::Record {};
+				}
+				auto &attributes = std::get<Value::Record>(stored.data);
+				for (auto &[name, value] : custom) {
+					attributes[name] = std::move(value);
+				}
+			}
+			if (!reader.valid) {
+				error = "Truncated OTBM attribute map";
+			}
+			return reader.valid;
+		}
+
 		bool itemAttributes(Bytes &reader, MapItem &item, std::string &error) {
 			while (reader.cursor < reader.bytes.size() && reader.valid) {
 				const auto attribute = reader.number<uint8_t>();
@@ -399,52 +472,8 @@ namespace world_layers {
 					case 37:
 					case 41:
 					case 128: {
-						const auto count = attribute == 128 ? reader.number<uint16_t>() : reader.number<uint64_t>();
-						if (count > 65535) {
-							error = "Too many custom OTBM attributes";
+						if (!readAttributeMap(reader, attribute, item, error)) {
 							return false;
-						}
-						Value::Record custom;
-						for (uint64_t i = 0; i < count && reader.valid; ++i) {
-							const auto name = reader.text();
-							const auto type = reader.number<uint8_t>();
-							Value value;
-							if (type == 1) {
-								value.data = reader.text(attribute == 128);
-							} else if (type == 2) {
-								value.data = attribute == 128 ? int64_t(reader.number<int32_t>()) : reader.number<int64_t>();
-							} else if (type == 3 && attribute == 128) {
-								value.data = double(std::bit_cast<float>(reader.number<uint32_t>()));
-							} else if ((type == 3 && attribute != 128) || (type == 5 && attribute == 128)) {
-								value.data = std::bit_cast<double>(reader.number<uint64_t>());
-							} else if (type == 4) {
-								value.data = reader.number<uint8_t>() != 0;
-							} else {
-								error = "Unsupported custom OTBM attribute type";
-								return false;
-							}
-							if (attribute == 128 && (name == "aid" || name == "uid") && std::holds_alternative<int64_t>(value.data)) {
-								const auto number = std::get<int64_t>(value.data);
-								if (number < 0 || number > 65535) {
-									error = "Invalid OTBM AID/UID";
-									return false;
-								}
-								(name == "aid" ? item.aid : item.uid) = static_cast<uint16_t>(number);
-							} else if (attribute == 128 && (name == "text" || name == "desc" || name == "name" || name == "article" || name == "plural" || name == "writer" || name == "date")) {
-								item.attributes[name == "desc" ? "description" : name] = value;
-							} else {
-								custom[name] = std::move(value);
-							}
-						}
-						if (!custom.empty()) {
-							auto &stored = item.attributes["custom"];
-							if (!std::holds_alternative<Value::Record>(stored.data)) {
-								stored.data = Value::Record {};
-							}
-							auto &attributes = std::get<Value::Record>(stored.data);
-							for (auto &[name, value] : custom) {
-								attributes[name] = std::move(value);
-							}
 						}
 						break;
 					}
@@ -536,6 +565,15 @@ namespace world_layers {
 			record["children"] = Value { children };
 			return value;
 		}
+	}
+
+	bool decodeOtbmAttributeMap(std::span<const uint8_t> bytes, MapItem &item, size_t &consumed, std::string &error) {
+		Bytes reader { bytes };
+		if (!readAttributeMap(reader, 128, item, error)) {
+			return false;
+		}
+		consumed = reader.cursor;
+		return true;
 	}
 
 	struct MapSnapshot::State {
@@ -687,7 +725,8 @@ namespace world_layers {
 		}
 		Bytes header { root.props };
 		const auto version = header.number<uint32_t>();
-		if (!header.valid || version > 4 || root.props.size() < 16) {
+		// OTBM v6 uses header value 5 and the same typed attribute map as v4.
+		if (!header.valid || version > 5 || root.props.size() < 16) {
 			return fail("Unsupported OTBM version or truncated header");
 		}
 		Node data;

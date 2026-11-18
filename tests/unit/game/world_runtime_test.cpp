@@ -4,6 +4,9 @@
 #include "items/containers/container.hpp"
 #include "items/tile.hpp"
 #include "lib/logging/in_memory_logger.hpp"
+#include "io/filestream.hpp"
+#include "io/iomap.hpp"
+#include "map/mapcache.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
 	#include <gtest/gtest.h>
@@ -59,6 +62,61 @@ protected:
 	inline static std::optional<ItemType> originalItem;
 	inline static std::optional<ItemType> originalContainer;
 };
+
+TEST_F(WorldRuntimeItemsTest, LoadsOtbmV6AttributesBeforeFollowingPropertiesAndChildren) {
+	// attr 128 uses a 16-bit name length and a 32-bit length for string values.
+	const uint8_t node[] = {
+		0xfe, 6, 128, 3, 0,
+		3, 0, 'a', 'i', 'd', 2, 0xfd, 0xfe, 0x4f, 0, 0,
+		4, 0, 't', 'e', 'x', 't', 1, 2, 0, 0, 0, 'o', 'k',
+		4, 0, 'f', 'l', 'a', 'g', 4, 1,
+		14, 7,
+		0xfe, 6, 0xf2, 0xfd, 0xfd, 128, 1, 0, 3, 0, 'u', 'i', 'd', 2, 0xfd, 0xfe, 0x4f, 0, 0, 0xff,
+		0xff
+	};
+	const auto begin = reinterpret_cast<const char*>(node);
+	FileStream stream(begin, begin + sizeof(node));
+	ASSERT_TRUE(stream.startNode(6));
+	auto parent = std::make_shared<BasicItem>();
+	parent->id = itemId;
+	ASSERT_TRUE(parent->unserializeItemNode(stream, 100, 100, 7));
+	ASSERT_TRUE(stream.endNode());
+	EXPECT_EQ(stream.tell(), sizeof(node));
+	EXPECT_EQ(parent->doorOrDepotId, 7);
+	const auto actual = makeItem();
+	parent->applyAttributes(actual);
+	EXPECT_EQ(actual->getAttribute<uint16_t>(ItemAttribute_t::ACTIONID), 0x4ffe);
+	EXPECT_EQ(actual->getAttribute<std::string>(ItemAttribute_t::TEXT), "ok");
+	ASSERT_NE(actual->getCustomAttribute("flag"), nullptr);
+	EXPECT_TRUE(actual->getCustomAttribute("flag")->getBool());
+
+	ASSERT_EQ(parent->items.size(), 1);
+	const auto &uidItem = parent->items.front();
+	EXPECT_EQ(uidItem->id, itemId);
+	EXPECT_EQ(uidItem->uniqueId, 0x4ffe);
+	EXPECT_EQ(uidItem->actionId, 0);
+	auto aidItem = std::make_shared<BasicItem>();
+	aidItem->id = uidItem->id;
+	aidItem->actionId = uidItem->uniqueId;
+	MapCache cache;
+	EXPECT_NE(cache.tryReplaceItemFromCache(aidItem), cache.tryReplaceItemFromCache(uidItem));
+	ASSERT_EQ(g_game().getUniqueItem(uidItem->uniqueId), nullptr);
+	const auto registered = makeItem();
+	uidItem->applyAttributes(registered);
+	EXPECT_EQ(registered->getAttribute<uint16_t>(ItemAttribute_t::UNIQUEID), 0x4ffe);
+	EXPECT_EQ(g_game().getUniqueItem(0x4ffe), registered);
+	g_game().removeUniqueItem(0x4ffe);
+	registered->removeAttribute(ItemAttribute_t::UNIQUEID);
+}
+
+TEST_F(WorldRuntimeItemsTest, RejectsTruncatedOtbmAttributesAtTheirOwnNodeBoundary) {
+	const uint8_t node[] = { 0xfe, 6, 128, 1, 0, 3, 0, 'a', 'i', 'd', 2, 42, 0xff, 0xfe, 6, 0xff };
+	const auto begin = reinterpret_cast<const char*>(node);
+	FileStream stream(begin, begin + sizeof(node));
+	ASSERT_TRUE(stream.startNode(6));
+	BasicItem item;
+	EXPECT_THROW(item.unserializeItemNode(stream, 100, 100, 7), IOMapException);
+}
 
 TEST_F(WorldRuntimeItemsTest, AttributeRollbackRestoresAbsenceAndScalarTypes) {
 	using world_layers::Value;

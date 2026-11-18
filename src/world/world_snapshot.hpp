@@ -2,8 +2,12 @@
 
 #include "world/world_validation.hpp"
 #include <memory>
+#include <span>
 
 namespace world_layers {
+	// Reads the payload following OTBM attribute 128, before the next item property or child node.
+	bool decodeOtbmAttributeMap(std::span<const uint8_t> bytes, MapItem &item, size_t &consumed, std::string &error);
+
 	// Standalone, read-only OTBM inspection. Retains requested tiles and teleport
 	// tiles, plus the complete UID census; it does not instantiate a game server.
 	class MapSnapshot final : public MapView {

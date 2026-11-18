@@ -45,6 +45,8 @@ namespace {
 			put(file, "concurrent creation");
 		} else if (fault == 4) {
 			put(competingFile, "later recovery edit");
+		} else if (fault == 5) {
+			put(file, "occupied pending path");
 		}
 	}
 	void arm(const char* stage, const std::filesystem::path &file, int value) {
@@ -125,6 +127,16 @@ void runWorldFileTests(const std::filesystem::path &scratch) {
 	check(!recover(catalog, root, false, error) && get(layer) == "second", "recovery checks external read-only dependencies");
 	put(external, "original implementation");
 	check(recover(catalog, root, true, error), "recover after resolving external dependency");
+	check(beginCoordination(catalog, error) && publish(publication, error), "publish the World part of a coordinated save");
+	const auto pendingFile = root / "map.world.json.pending";
+	arm("rollback-handoff", pendingFile, 5);
+	check(!recoverCoordination(catalog, root, true, error), "an occupied pending path blocks coordinated rollback");
+	check(get(pendingFile) == "occupied pending path" && std::filesystem::exists(root / "map.world.json.coordinated.rollback"), "failed handoff preserves the pending file and the rollback receipt");
+	check(std::filesystem::remove(pendingFile), "remove the test obstruction");
+	arm("recovery-verified", catalog, 1);
+	check(!recoverCoordination(catalog, root, true, error) && transactionPending(catalog), "an interruption after handoff retains the journal");
+	check(recoverCoordination(catalog, root, true, error), "retry coordinated rollback");
+	check(get(layer) == "second" && get(catalog) == "catalog-second" && !pending(catalog), "retry restores both active files");
 	publication.changes = { { root / "map.world.json.pending", {}, "invalid" } };
 	check(!publish(publication, error) && !pending(catalog), "reserved transaction paths cannot be publication targets");
 	world_files::setTestHook(nullptr);

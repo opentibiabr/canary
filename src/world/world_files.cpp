@@ -508,12 +508,11 @@ namespace world_files {
 					error = "Invalid coordinated save recovery directory";
 					return false;
 				}
-				std::error_code code;
-				std::filesystem::remove(receiptFile, code);
-				if (code || !durable(sidecar(catalog, ".pending"), Json { { "version", 1 }, { "directory", name.generic_string() } }.dump(), error)) {
-					if (error.empty()) {
-						error = "Cannot prepare coordinated rollback: " + code.message();
-					}
+				// The receipt and pending marker point to the same journal. Rename it in
+				// one step so an interrupted rollback always retains a recovery pointer.
+				const auto pendingFile = sidecar(catalog, ".pending");
+				checkpoint("rollback-handoff", pendingFile);
+				if (!move(receiptFile, pendingFile, false, error)) {
 					return false;
 				}
 				if (!syncDirectory(catalog.parent_path(), error) || !recover(catalog, root, true, error)) {

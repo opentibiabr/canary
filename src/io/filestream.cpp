@@ -11,6 +11,10 @@
 
 #include "io/fileloader.hpp"
 
+#ifndef USE_PRECOMPILED_HEADERS
+	#include <vector>
+#endif
+
 [[nodiscard]] uint32_t FileStream::tell() const {
 	return m_pos;
 }
@@ -55,6 +59,47 @@ std::string FileStream::getString() {
 
 void FileStream::back(uint32_t pos) {
 	m_pos -= pos;
+}
+
+bool FileStream::readNodeProperties(const std::function<bool(std::span<const uint8_t>, size_t &)> &decode) {
+	size_t end = m_pos;
+	bool escaped = false;
+	while (end < m_data.size() && m_data[end] != OTB::Node::START && m_data[end] != OTB::Node::END) {
+		if (m_data[end++] == OTB::Node::ESCAPE) {
+			if (end == m_data.size()) {
+				return false;
+			}
+			escaped = true;
+			++end;
+		}
+	}
+	if (end == m_data.size()) {
+		return false;
+	}
+	auto bytes = m_data.subspan(m_pos, end - m_pos);
+	std::vector<uint8_t> unescaped;
+	if (escaped) {
+		unescaped.reserve(bytes.size());
+		for (size_t i = 0; i < bytes.size(); ++i) {
+			if (bytes[i] == OTB::Node::ESCAPE) {
+				++i;
+			}
+			unescaped.push_back(bytes[i]);
+		}
+		bytes = unescaped;
+	}
+	size_t consumed = 0;
+	if (!decode(bytes, consumed) || consumed > bytes.size()) {
+		return false;
+	}
+	if (!escaped) {
+		m_pos += static_cast<uint32_t>(consumed);
+	} else {
+		for (size_t i = 0; i < consumed; ++i) {
+			m_pos += m_data[m_pos] == OTB::Node::ESCAPE ? 2 : 1;
+		}
+	}
+	return true;
 }
 
 bool FileStream::isProp(uint8_t prop, bool toNext) {

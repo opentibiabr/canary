@@ -1,0 +1,73 @@
+{
+  "behaviorCatalog": [
+    "behaviors/quest_reward.behavior.json",
+    "behaviors/lever_remove_item.behavior.json",
+    "behaviors/player_teleport.behavior.json",
+    "behaviors/tile_mechanism.behavior.json"
+  ],
+  "id": "world",
+  "items": "../../data/items/items.xml",
+  "layers": [
+    {
+      "enabled": true,
+      "file": "layers/black_knight.layer.json"
+    },
+    {
+      "file": "systems/writeable.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/chest.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/corpse.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/door_key.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/door_level.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/door_quest.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/item.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/lever.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/teleport.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/teleport_item.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/tile.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/tile_pick.layer.json",
+      "enabled": true
+    },
+    {
+      "file": "systems/create_item.layer.json",
+      "enabled": true
+    }
+  ],
+  "map": "otservbr.otbm",
+  "migrations": [
+    "migrations/migration-230b58e139dae15c4335.json"
+  ],
+  "schemaVersion": 2
+}

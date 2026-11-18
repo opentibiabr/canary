@@ -44,6 +44,7 @@ function(
         PUBLIC -DDEBUG_LOG
                -DBUILD_TESTS
                TESTS_SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"
+               TESTS_BINARY_DIR=\"${CMAKE_BINARY_DIR}/tests\"
     )
 
     target_link_libraries(
@@ -130,3 +131,5 @@ endfunction()
 
 add_subdirectory(unit)
 add_subdirectory(integration)
+
+add_subdirectory(world_layers)

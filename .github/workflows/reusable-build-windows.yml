@@ -235,6 +235,13 @@ jobs:
           path: build/runtime-smoke-logs/
           if-no-files-found: ignore
 
+      - name: Validate packaged World helper
+        if: matrix.type == 'CMake'
+        shell: pwsh
+        env:
+          WORLD_TOOL_PATH: ${{ github.workspace }}/build/windows-release/bin/world-tool.exe
+        run: python -m unittest tools.world_migrate.tests.test_world_tool.NativeWorldToolTests -v
+
       - name: Upload artifacts (CMake)
         if: matrix.type == 'CMake'
         uses: actions/upload-artifact@v7

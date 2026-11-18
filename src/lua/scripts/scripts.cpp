@@ -19,8 +19,12 @@
 #include "lua/creature/movement.hpp"
 #include "lua/creature/talkaction.hpp"
 #include "lua/global/globalevent.hpp"
+#include "game/game.hpp"
+#include "world/world_runtime.hpp"
+#include "world/world_behaviors.hpp"
 
 #ifndef USE_PRECOMPILED_HEADERS
+	#include <algorithm>
 	#include <optional>
 #endif
 
@@ -48,6 +52,7 @@ Scripts &Scripts::getInstance() {
 }
 
 void Scripts::clearAllScripts() const {
+	g_game().worldLayers().behaviors().clear();
 	g_actions().clear();
 	g_creatureEvents().clear();
 	g_talkActions().clear();
@@ -109,6 +114,12 @@ bool Scripts::loadScripts(std::string_view folderName, bool isLib, bool reload) 
 
 		if (!entry.is_regular_file() || realPath.extension() != ".lua") {
 			// Skip this entry if it is not a regular file or does not have a .lua extension
+			++skippedFiles;
+			continue;
+		}
+		// World implementations are loaded once, explicitly from active descriptors.
+		const auto reservedFolder = std::find(realPath.begin(), realPath.end(), std::filesystem::path("world_behaviors")) != realPath.end();
+		if (reservedFolder || g_game().worldLayers().behaviors().isScript(realPath)) {
 			++skippedFiles;
 			continue;
 		}

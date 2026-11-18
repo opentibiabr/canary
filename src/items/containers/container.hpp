@@ -300,6 +300,10 @@ public:
 
 	void internalAddThing(const std::shared_ptr<Thing> &thing) final;
 	void internalAddThing(uint32_t index, const std::shared_ptr<Thing> &thing) final;
+	// World startup placement is ordered; deserialization keeps its existing
+	// front-insertion convention in internalAddThing.
+	bool insertWorldItem(const std::shared_ptr<Item> &item, uint32_t order);
+	bool restoreWorldItemOrder(const std::vector<std::shared_ptr<Item>> &order);
 
 	uint32_t removeAllItems(const std::shared_ptr<Player> &actor, bool isRecursive = false);
 	virtual void removeItem(const std::shared_ptr<Thing> &thing, bool sendUpdateToClient = false);

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 2,
+  "id": "world.lever_remove_item",
+  "contractVersion": 1,
+  "name": "Lever removes an obstacle",
+  "script": "../../scripts/world_behaviors/lever_remove_item.lua",
+  "targetKind": "item",
+  "events": [
+    "onUse"
+  ],
+  "parameters": {
+    "firstItemId": {
+      "type": "itemId",
+      "required": true,
+      "label": "First lever state"
+    },
+    "secondItemId": {
+      "type": "itemId",
+      "required": true,
+      "label": "Second lever state"
+    },
+    "targetItem": {
+      "type": "itemId",
+      "required": true,
+      "label": "Obstacle"
+    }
+  },
+  "relations": {
+    "target": {
+      "type": "objectRef",
+      "targetKind": "anchor",
+      "required": true,
+      "allowOffset": true,
+      "label": "Obstacle position"
+    }
+  }
+}

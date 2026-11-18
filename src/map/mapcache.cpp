@@ -23,11 +23,20 @@
 #include "game/scheduling/dispatcher.hpp"
 #include "game/zones/zone.hpp"
 #include "io/filestream.hpp"
+#include "io/io_definitions.hpp"
 #include "io/iomap.hpp"
 #include "items/containers/depot/depotlocker.hpp"
 #include "items/item.hpp"
 #include "map/map.hpp"
 #include "utils/hash.hpp"
+#include "world/world_runtime_items.hpp"
+#include "world/world_snapshot.hpp"
+
+struct BasicItemMapAttributes {
+	world_layers::Value::Record values;
+	size_t hash;
+	bool hasSubtype;
+};
 
 namespace {
 	constexpr size_t kMaxItemCacheReserve = 131072;
@@ -223,38 +232,38 @@ const BasicTile* MapCache::retainBasicTile(const std::shared_ptr<BasicTile> &til
 	return tile.get();
 }
 
-void MapCache::parseItemAttr(const std::shared_ptr<BasicItem> &BasicItem, const std::shared_ptr<Item> &item) const {
-	if (BasicItem->charges > 0) {
-		item->setSubType(BasicItem->charges);
+void BasicItem::applyAttributes(const std::shared_ptr<Item> &item) const {
+	if (charges > 0 || (mapAttributes && mapAttributes->hasSubtype)) {
+		item->setSubType(charges);
 	}
 
-	if (BasicItem->actionId > 0) {
-		item->setAttribute(ItemAttribute_t::ACTIONID, BasicItem->actionId);
+	if (actionId > 0) {
+		item->setAttribute(ItemAttribute_t::ACTIONID, actionId);
 	}
 
-	if (BasicItem->uniqueId > 0) {
-		item->addUniqueId(BasicItem->uniqueId);
+	if (uniqueId > 0) {
+		item->addUniqueId(uniqueId);
 	}
 
-	if (item->getTeleport() && (BasicItem->destX != 0 || BasicItem->destY != 0 || BasicItem->destZ != 0)) {
-		const auto dest = Position(BasicItem->destX, BasicItem->destY, BasicItem->destZ);
+	if (item->getTeleport() && (destX != 0 || destY != 0 || destZ != 0)) {
+		const auto dest = Position(destX, destY, destZ);
 		item->getTeleport()->setDestPos(dest);
 	}
 
-	if (item->getDoor() && BasicItem->doorOrDepotId != 0) {
-		item->getDoor()->setDoorId(BasicItem->doorOrDepotId);
+	if (item->getDoor() && doorOrDepotId != 0) {
+		item->getDoor()->setDoorId(doorOrDepotId);
 	}
 
-	if (item->getContainer() && item->getContainer()->getDepotLocker() && BasicItem->doorOrDepotId != 0) {
-		item->getContainer()->getDepotLocker()->setDepotId(BasicItem->doorOrDepotId);
+	if (item->getContainer() && item->getContainer()->getDepotLocker() && doorOrDepotId != 0) {
+		item->getContainer()->getDepotLocker()->setDepotId(doorOrDepotId);
 	}
 
-	if (!BasicItem->text.empty()) {
-		item->setAttribute(ItemAttribute_t::TEXT, BasicItem->text);
+	if (!text.empty()) {
+		item->setAttribute(ItemAttribute_t::TEXT, text);
 	}
-
-	/* if (BasicItem.description != 0)
-	    item->setAttribute(ItemAttribute_t::DESCRIPTION, STRING_CACHE[BasicItem.description]);*/
+	if (mapAttributes) {
+		world_runtime::applyAttributes(item, mapAttributes->values);
+	}
 }
 
 std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &BasicItem, Position position) {
@@ -263,7 +272,7 @@ std::shared_ptr<Item> MapCache::createItem(const std::shared_ptr<BasicItem> &Bas
 		return nullptr;
 	}
 
-	parseItemAttr(BasicItem, item);
+	BasicItem->applyAttributes(item);
 
 	if (item->getContainer() && !BasicItem->items.empty()) {
 		for (const auto &BasicItemInside : BasicItem->items) {
@@ -474,13 +483,14 @@ void BasicTile::hash(size_t &h) const {
 void BasicItem::hash(size_t &h) const {
 	const std::array<uint32_t, 8> arr = { id, charges, actionId, uniqueId, destX, destY, destZ, doorOrDepotId };
 	for (const auto v : arr) {
-		if (v > 0) {
-			stdext::hash_combine(h, v);
-		}
+		stdext::hash_combine(h, v);
 	}
 
 	if (!text.empty()) {
 		stdext::hash_combine(h, text);
+	}
+	if (mapAttributes) {
+		stdext::hash_combine(h, mapAttributes->hash);
 	}
 
 	if (!items.empty()) {
@@ -557,6 +567,45 @@ void BasicItem::readAttr(FileStream &stream) {
 
 			case ATTR_ACTION_ID: {
 				actionId = stream.getU16();
+			} break;
+
+			case OTBM_ATTR_ATTRIBUTE_MAP: {
+				world_layers::MapItem mapped;
+				mapped.aid = actionId;
+				mapped.uid = uniqueId;
+				if (mapAttributes) {
+					mapped.attributes = mapAttributes->values;
+				}
+				size_t hash = mapAttributes ? mapAttributes->hash : 0;
+				std::string error;
+				if (!stream.readNodeProperties([&](auto bytes, size_t &consumed) {
+						if (!world_layers::decodeOtbmAttributeMap(bytes, mapped, consumed, error)) {
+							return false;
+						}
+						if (!mapped.attributes.empty()) {
+							const auto payload = std::string_view(reinterpret_cast<const char*>(bytes.data()), consumed);
+							stdext::hash_union(hash, std::hash<std::string_view> {}(payload));
+						}
+						return true;
+					})) {
+					throw IOMapException(error.empty() ? "Invalid OTBM item attribute map" : error);
+				}
+				actionId = mapped.aid;
+				uniqueId = mapped.uid;
+				if (const auto value = mapped.attributes.extract("text"); !value.empty()) {
+					text = std::get<std::string>(value.mapped().data);
+				}
+				bool hasSubtype = false;
+				if (const auto found = mapped.attributes.find("custom"); found != mapped.attributes.end()) {
+					const auto &custom = std::get<world_layers::Value::Record>(found->second.data);
+					if (const auto subtype = custom.find("subtype"); subtype != custom.end()) {
+						hasSubtype = true;
+						charges = static_cast<uint16_t>(std::get<int64_t>(subtype->second.data));
+					}
+				}
+				if (!mapped.attributes.empty()) {
+					mapAttributes = std::make_shared<BasicItemMapAttributes>(BasicItemMapAttributes { std::move(mapped.attributes), hash, hasSubtype });
+				}
 			} break;
 
 			case ATTR_UNIQUE_ID: {

@@ -253,6 +253,34 @@ void runWorldV2Tests(const std::filesystem::path &scratch) {
 	legacyWrite.occurrence = "1.item";
 	legacyWrite.evidence = "recognized table assignment";
 	EffectiveWorldModel effective;
+	{
+		auto replaced = project;
+		auto &objects = replaced.layers.front().objects;
+		std::erase_if(objects, [](const auto &object) { return object.id != "example.bookcase"; });
+		auto &replacement = objects.front();
+		replacement.mode = SourceMode::Replace;
+		replacement.uid = 45001;
+		replacement.uidOverride = true;
+		replacement.lifecycle = Lifecycle::Fixture;
+		Diagnostics result;
+		require(replaced.rebuildIndex(result), "index replacement fixture");
+		Map nested;
+		auto &original = nested.tiles[{ 100, 104, 7 }].items.emplace_back(bookcase);
+		original.children.front().itemId = 2435;
+		original.children.front().container = true;
+		original.children.front().children.push_back({ 9, 2828, 45001 });
+		nested.identifierRows.push_back({ 9, { 100, 104, 7 }, 2828, 0, 45001, false, { 4, 5 } });
+		for (const auto mode : { EffectiveMode::World, EffectiveMode::Mixed }) {
+			require(buildEffectiveWorldModel(replaced, nested, mode, {}, effective, result), "replacement can reuse a removed grandchild's UID");
+			require(effective.instances.size() == 1 && effective.instances.front().object == replacement.id, "only the replacement can be adopted");
+		}
+		const auto childRemains = [&] {
+			return std::any_of(effective.instances.begin(), effective.instances.end(), [](const auto &instance) { return instance.base.key == 9 && instance.uid.effective == 45001; });
+		};
+		require(buildEffectiveWorldModel(replaced, nested, EffectiveMode::Legacy, {}, effective, result) && childRemains(), "legacy retains original container content");
+		replaced.layers.front().enabled = false;
+		require(buildEffectiveWorldModel(replaced, nested, EffectiveMode::World, {}, effective, result) && childRemains(), "disabled replacement retains original container content");
+	}
 	diagnostics.clear();
 	require(buildEffectiveWorldModel(project, map, EffectiveMode::Mixed, { legacyWrite }, effective, diagnostics), diagnostics.empty() ? "effective model accepts exact ownership claim" : diagnostics.front().describe());
 	const auto effectiveLever = std::ranges::find_if(effective.instances, [](const auto &entry) { return entry.object == "example.lever"; });

@@ -136,6 +136,13 @@ namespace world_layers {
 		};
 
 		std::map<uint64_t, std::string> identities;
+		std::set<uint64_t> consumedChildren;
+		const auto consumeChildren = [&](const auto &self, const MapItem &parent) -> void {
+			for (const auto &child : parent.children) {
+				consumedChildren.insert(child.key);
+				self(self, child);
+			}
+		};
 		for (auto &[id, definition] : definitions) {
 			if (cancelled && cancelled()) {
 				return false;
@@ -147,6 +154,9 @@ namespace world_layers {
 			}
 			EffectiveIdentifierInstance* instance = nullptr;
 			if (object.selector && resolve(definition)) {
+				if (active && mode != EffectiveMode::Legacy && object.mode == SourceMode::Replace) {
+					consumeChildren(consumeChildren, definition.original);
+				}
 				const auto [owner, inserted] = identities.emplace(definition.original.key, id);
 				if (!inserted && owner->second != id) {
 					diagnostics.push_back({ definition.layer->file, id, "/source/selector", "Base item already has World identity " + owner->second });
@@ -200,6 +210,9 @@ namespace world_layers {
 				return false;
 			}
 			if (!legacyEnabled) {
+				continue;
+			}
+			if (consumedChildren.contains(write.itemKey)) {
 				continue;
 			}
 			auto found = byKey.find(write.itemKey);
@@ -272,6 +285,17 @@ namespace world_layers {
 			}
 		}
 
+		if (!consumedChildren.empty()) {
+			std::erase_if(staged.instances, [&](const auto &instance) {
+				if (!consumedChildren.contains(instance.base.key)) {
+					return false;
+				}
+				if (instance.worldActive) {
+					diagnostics.push_back({ project.file, instance.object, "/source/selector", "This original is inside a replaced container" });
+				}
+				return true;
+			});
+		}
 		std::map<uint16_t, std::string> uids;
 		for (const auto &instance : staged.instances) {
 			if (cancelled && cancelled()) {

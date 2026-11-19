@@ -131,12 +131,6 @@ The category and Home senders use the first item of a furniture set only for its
 preview; the original four-item list remains the purchase source. Both real
 packets are independently decoded by the preview tests.
 
-`tests/store/test_store_icon_install.py` covers an empty checkout, fresh and
-mixed-source installation, documented unavailable previews and rejected
-path/drive names. Nine new bundle/bed icons are unavailable to legacy HTTP
-clients; other missing inventory entries remain errors.
-The destination containment guard also rejects escaping child symlinks; creating
-such a symlink was unavailable on the Windows validation host.
 `tests/store/test_outfit_ownership_binding.py` compiles the actual hasOutfit
 binding against LuaJIT with controlled player state, checking wearability defaults,
 opposite-sex ownership, base-only outfits, addon masks and access-group behavior.
@@ -145,8 +139,7 @@ silent no-ops, then verify exact restoration without payment or purchase markers
 
 The duplicate check and rollback snapshots use raw ownership for both outfits and
 mounts. Administrative access must not count as purchasing either component.
-The Python image tools now require `tools/store/requirements.txt`; shared PNG
-validation checks chunks/CRCs, a complete IEND trailer and actual pixel decoding.
-Installer regressions cover signature-only files, dimension-only/truncated
-headers, truncated IEND, invalid CRC and invalid compressed pixels with valid CRC.
-Both installers reject these before writing even a valid prepared companion.
+The Store image binaries and deployment utilities are not included in this PR.
+Operators provision the HTTP assets separately; the six bundle previews and
+three named bed previews are unavailable in the public image pack and have no
+tile preview on any client version.

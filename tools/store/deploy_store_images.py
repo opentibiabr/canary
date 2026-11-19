@@ -26,20 +26,28 @@ def collect_images():
     for size in ("13", "64"):
         for path in (ROOT / size).glob("*.png"):
             images[f"{size}/{path.name}"] = path.read_bytes()
-    manifest = json.loads((ROOT / "legacy-offer-icons.json").read_text(encoding="utf-8"))
-    with zipfile.ZipFile(ROOT / "legacy-offer-icons.zip") as archive:
-        for entry in manifest:
-            name = entry["file"]
-            safe_target(ROOT, name)
-            parts = Path(name).parts
-            if len(parts) != 2 or parts[0] != "64" or not parts[1].endswith(".png") or ".." in parts[1] or "\\" in name:
-                raise ValueError(f"Unsafe image path: {name}")
-            data = archive.read(name)
-            if hashlib.sha256(data).hexdigest() != entry["sha256"]:
-                raise ValueError(f"Image checksum mismatch: {name}")
-            if name in images and images[name] != data:
-                raise ValueError(f"Conflicting image sources: {name}")
-            images[name] = data
+    manifest_path = ROOT / "legacy-offer-icons.json"
+    archive_path = ROOT / "legacy-offer-icons.zip"
+    if manifest_path.exists() != archive_path.exists():
+        raise ValueError("Legacy Store image manifest and archive must be supplied together")
+    if not manifest_path.exists():
+        manifest = []
+    else:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest:
+        with zipfile.ZipFile(archive_path) as archive:
+            for entry in manifest:
+                name = entry["file"]
+                safe_target(ROOT, name)
+                parts = Path(name).parts
+                if len(parts) != 2 or parts[0] != "64" or not parts[1].endswith(".png") or ".." in parts[1] or "\\" in name:
+                    raise ValueError(f"Unsafe image path: {name}")
+                data = archive.read(name)
+                if hashlib.sha256(data).hexdigest() != entry["sha256"]:
+                    raise ValueError(f"Image checksum mismatch: {name}")
+                if name in images and images[name] != data:
+                    raise ValueError(f"Conflicting image sources: {name}")
+                images[name] = data
     for name, data in images.items():
         try:
             validate_png(data)

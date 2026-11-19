@@ -20,6 +20,17 @@ from png_validation import validate_png
 
 ROOT = Path(__file__).resolve().parents[2]
 URL = "https://dl.dropboxusercontent.com/s/5b00ubu1erapu9q/store.zip"
+UNAVAILABLE_LEGACY_PREVIEWS = {
+    "64/Bundle_Burning_Ash_1525.png",
+    "64/Bundle_Field_Surgeon_1525.png",
+    "64/Bundle_Martial_Artist_1525.png",
+    "64/Bundle_Rotten_Blood_1525.png",
+    "64/Bundle_Shadow_Vengeance_1525.png",
+    "64/Bundle_Sweet_Honey_1525.png",
+    "64/Cyclops_Steel_Bed.png",
+    "64/Sighting_Bed.png",
+    "64/Voodoo_Bed.png",
+}
 
 
 def png_content(data):
@@ -71,6 +82,7 @@ def main():
     prepared = {name: supplied[name] for name in missing if name in supplied}
     unknown = [name for name in missing if name not in supplied]
     additions = []
+    unavailable = []
     if unknown:
         if args.archive:
             archive_path = regular_input(args.archive, ".zip", 32 * 1024 * 1024)
@@ -83,7 +95,13 @@ def main():
         archive_hash = hashlib.sha256(raw).hexdigest()
         with zipfile.ZipFile(io.BytesIO(raw)) as archive:
             for name in unknown:
-                entry = archive.getinfo("store/" + name)
+                try:
+                    entry = archive.getinfo("store/" + name)
+                except KeyError:
+                    if name in UNAVAILABLE_LEGACY_PREVIEWS:
+                        unavailable.append(name)
+                        continue
+                    raise ValueError(f"Store image pack is missing required preview: {name}") from None
                 if entry.is_dir() or entry.file_size > 1024 * 1024:
                     raise ValueError("Invalid Store archive entry")
                 original = archive.read(entry)
@@ -117,6 +135,8 @@ def main():
         by_name.update({entry["file"]: entry for entry in additions})
         manifest_path.write_text(json.dumps([by_name[name] for name in sorted(by_name)], indent=2) + "\n", encoding="utf-8")
     print(f"PASS: installed {len(prepared)} missing previews; repository images take precedence")
+    if unavailable:
+        print("WARNING: no legacy preview is available for: " + ", ".join(sorted(unavailable)))
 
 
 if __name__ == "__main__":

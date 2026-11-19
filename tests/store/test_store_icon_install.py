@@ -18,10 +18,21 @@ from png_validation import validate_png
 
 
 def main():
-    images = deploy.collect_images()
     with tempfile.TemporaryDirectory(prefix="canary-store-icons-") as directory:
         base = Path(directory)
-        fetch.ROOT = base / "repository"
+        repository = base / "repository"
+        (repository / "64").mkdir(parents=True)
+        with Image.new("RGBA", (1, 1), "red") as preview:
+            preview.save(repository / "64/Bundle_Burning_Ash_1525.png", format="PNG")
+        (repository / "legacy-offer-icons.json").write_text("[]", encoding="utf-8")
+        with zipfile.ZipFile(repository / "legacy-offer-icons.zip", "w"):
+            pass
+        with patch.object(deploy, "ROOT", base / "empty-repository"):
+            assert deploy.collect_images() == {}
+        with patch.object(deploy, "ROOT", repository):
+            images = deploy.collect_images()
+        deploy.ROOT = repository
+        fetch.ROOT = repository
         inventory = base / "inventory.txt"
         destination = base / "http"
         # Every shipped icon installs offline, including the composite bundles.
@@ -42,6 +53,13 @@ def main():
         fetch.main()
         assert (mixed / bundle).read_bytes() == images[bundle]
         assert (mixed / probe).read_bytes() == images[bundle]
+        missing_legacy = "64/Voodoo_Bed.png"
+        inventory.write_text(bundle + "\n" + missing_legacy, encoding="utf-8")
+        skipped = base / "known-unavailable"
+        sys.argv = ["fetch", str(inventory), "--deploy", str(skipped), "--archive", str(archive)]
+        fetch.main()
+        assert (skipped / bundle).read_bytes() == images[bundle]
+        assert not (skipped / missing_legacy).exists()
         def chunk(kind, contents):
             return struct.pack(">I", len(contents)) + kind + contents + struct.pack(">I", zlib.crc32(kind + contents))
 

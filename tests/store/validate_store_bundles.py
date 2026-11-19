@@ -1,7 +1,7 @@
 """Read-only verification of 15.25 bundle IDs against XML and native assets."""
 from pathlib import Path
 import re
-import struct
+import sys
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -60,11 +60,13 @@ assert 'price = 1500' in catalog
 assert 'OFFER_TYPE_BUNDLE' in catalog
 icons = re.findall(r'"(Bundle_[A-Za-z_]+_1525\.png)"', catalog)
 assert len(icons) == 6 and len(set(icons)) == 6
+sys.path.insert(0, str(ROOT / "tools/store"))
+from fetch_missing_store_offer_icons import UNAVAILABLE_LEGACY_PREVIEWS
+
 for filename in icons:
-    data = (ROOT / "data/images/store/64" / filename).read_bytes()
-    assert data[:8] == b"\x89PNG\r\n\x1a\n"
-    assert struct.unpack_from(">II", data, 16) == (64, 64)
-print("PASS: all six composed preview icons exist and are valid 64x64 PNGs")
+    assert "64/" + filename in UNAVAILABLE_LEGACY_PREVIEWS
+    assert not (ROOT / "data/images/store/64" / filename).exists()
+print("PASS: six bundle previews are documented as unavailable in legacy HTTP packs")
 
 items = ET.parse(ROOT / "data/items/items.xml").getroot()
 mounts = ET.parse(ROOT / "data/XML/mounts.xml").getroot()

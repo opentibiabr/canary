@@ -3,17 +3,17 @@
 The top-level Bundles category contains the following 1,500 TC offers. Each
 unlocks the full outfit (both addons, both sexes) and mount for the purchasing
 character and delivers owner-bound decoration kits into that character's Store
-Inbox. The initial preview uses a composed 64px PNG showing the outfit, mount
-and decoration together, through the existing static-image display type.
-The selected offer retains its individual native product images and names.
+Inbox. The six composed bundle preview files are not checked in and are missing
+from the public Store image pack, so these offers have no tile preview on any
+client version. The selected offer still exposes its component names and native
+appearances in the package contents.
 Descriptions use ASCII HTML markers to avoid UTF-8 bullet display
 errors in the native client.
 
-Composite icons are tracked under `data/images/store/64/`. Deploy them to the
-HTTP base configured by `coinImagesURL`; see `data/images/store/README.md`.
-The local HTTP verification returned byte-identical PNGs for all six bundles.
-Selecting a bundle displays its contents, and the static composite does not show
-an outfit-only Try On action. Native rendering still requires a live client check.
+Deploy the catalog's available HTTP previews to the root configured by
+`coinImagesURL`; see `data/images/store/README.md`. Selecting a bundle displays
+its contents, and the package content list does not show an outfit-only Try On
+action. Native rendering still requires a live client check.
 
 Descriptions now separate the full outfit, mount and each decoration, with
 their appropriate character/house/box/inbox/use markers. Burning Ash uses the
@@ -131,8 +131,10 @@ The category and Home senders use the first item of a furniture set only for its
 preview; the original four-item list remains the purchase source. Both real
 packets are independently decoded by the preview tests.
 
-`tests/store/test_store_icon_install.py` covers a fresh offline installation of
-all 983 icons, mixed repository/archive precedence and rejected path/drive names.
+`tests/store/test_store_icon_install.py` covers an empty checkout, fresh and
+mixed-source installation, documented unavailable previews and rejected
+path/drive names. Nine new bundle/bed icons are unavailable to legacy HTTP
+clients; other missing inventory entries remain errors.
 The destination containment guard also rejects escaping child symlinks; creating
 such a symlink was unavailable on the Windows validation host.
 `tests/store/test_outfit_ownership_binding.py` compiles the actual hasOutfit

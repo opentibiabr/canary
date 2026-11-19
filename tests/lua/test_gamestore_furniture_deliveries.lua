@@ -66,6 +66,9 @@ for _, path in ipairs({ "house_decorations", "house_furniture" }) do
 					function kit:setAttribute(key, value)
 						self.attributes[key] = value
 					end
+					function kit:setOwner(owner)
+						self.owner = owner
+					end
 					function kit:setCustomAttribute(key, value)
 						self.custom[key] = value
 					end

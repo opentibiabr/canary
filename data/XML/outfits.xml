@@ -255,4 +255,11 @@
 	<outfit type="1" looktype="1824" name="Monk" premium="no" unlocked="yes" enabled="yes" />
 	<outfit type="1" looktype="1837" name="Martial Artist" premium="no" unlocked="no" from="store" enabled="yes" />
 	<outfit type="0" looktype="1860" name="Illuminator" premium="yes" unlocked="no" from="quest" enabled="yes" />
+	<!-- Store bundles available in client 15.25. -->
+	<outfit type="0" looktype="1815" name="Field Surgeon" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="1" looktype="1814" name="Field Surgeon" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="0" looktype="1875" name="Bat Knight" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="1" looktype="1874" name="Bat Knight" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="0" looktype="1921" name="Phoenix Evoker" premium="no" unlocked="no" enabled="yes" from="store" />
+	<outfit type="1" looktype="1920" name="Phoenix Evoker" premium="no" unlocked="no" enabled="yes" from="store" />
 </outfits>

@@ -82,6 +82,36 @@ local function sendOfferDescription(player, offerId, description)
 	msg:sendToPlayer(player)
 end
 
+local function previewItemId(itemtype)
+	return type(itemtype) == "table" and itemtype[1] or itemtype
+end
+
+local function addStoreProducts(msg, player, products)
+	local client = player:getClient()
+	-- The native 15.25 reader consumes an appearance per product, including
+	-- four colour bytes for outfits. Legacy/OTClient readers do not all do so.
+	local native = client.version == 1525 and (client.os == 4 or client.os == 5 or client.os == 6)
+	if not native or not products then
+		msg:addU16(0)
+		return
+	end
+	msg:addU16(#products)
+	for _, product in ipairs(products) do
+		msg:addString(product.name, "store product name")
+		msg:addByte(product.type)
+		if product.type == GameStore.ConverType.SHOW_OUTFIT then
+			msg:addU16(player:getSex() == PLAYERSEX_FEMALE and product.sexId.female or product.sexId.male)
+			local outfit = player:getOutfit()
+			msg:addByte(outfit.lookHead)
+			msg:addByte(outfit.lookBody)
+			msg:addByte(outfit.lookLegs)
+			msg:addByte(outfit.lookFeet)
+		else
+			msg:addU16(product.id)
+		end
+	end
+end
+
 local function sendShowStoreOffers(playerId, category, redirectId)
 	local player = Player(playerId)
 	if not player then
@@ -133,6 +163,7 @@ local function sendShowStoreOffers(playerId, category, redirectId)
 			offers[name].icons = offer.icons
 			offers[name].basePrice = offer.basePrice
 			offers[name].description = offer.description
+			offers[name].products = offer.products
 			if offer.sexId then
 				offers[name].sexId = offer.sexId
 			end
@@ -230,7 +261,7 @@ local function sendShowStoreOffers(playerId, category, redirectId)
 
 				tryOnType = 1
 			elseif type == GameStore.ConverType.SHOW_ITEM then
-				msg:addU16(offer.itemtype)
+				msg:addU16(previewItemId(offer.itemtype))
 			elseif type == GameStore.ConverType.SHOW_OUTFIT then
 				msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 				local outfit = player:getOutfit()
@@ -267,7 +298,7 @@ local function sendShowStoreOffers(playerId, category, redirectId)
 				msg:addByte(0)
 			end
 
-			msg:addU16(0) -- Products Capacity (unnused)
+			addStoreProducts(msg, player, offer.products)
 		end
 	end
 
@@ -635,7 +666,7 @@ local function sendHomePage(playerId)
 				msg:addU16(mount:getClientId())
 			end
 		elseif type == GameStore.ConverType.SHOW_ITEM then
-			msg:addU16(offer.itemtype)
+			msg:addU16(previewItemId(offer.itemtype))
 		elseif type == GameStore.ConverType.SHOW_OUTFIT then
 			msg:addU16(player:getSex() == PLAYERSEX_FEMALE and offer.sexId.female or offer.sexId.male)
 			local outfit = player:getOutfit()
@@ -672,6 +703,7 @@ senders.getCategoriesRook = getCategoriesRook
 senders.openStore = openStore
 senders.sendOfferDescription = sendOfferDescription
 senders.sendShowStoreOffers = sendShowStoreOffers
+senders.addStoreProducts = addStoreProducts
 senders.sendStoreTransactionHistory = sendStoreTransactionHistory
 senders.sendStorePurchaseSuccessful = sendStorePurchaseSuccessful
 senders.sendStoreError = sendStoreError

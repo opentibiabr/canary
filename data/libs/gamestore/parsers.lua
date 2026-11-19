@@ -1,6 +1,7 @@
 local helpers = require("gamestore.helpers")
 local senders = require("gamestore.senders")
 local parsing = {}
+local bundles = require("gamestore.bundles")
 
 local useOfferConfigure = helpers.useOfferConfigure
 local openStore = senders.openStore
@@ -237,6 +238,12 @@ local function insertPlayerTransactionSummary(player, offer)
 	local id = offer.id
 	if offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE then
 		id = offer.itemtype
+		if type(id) == "table" then
+			for _, itemId in ipairs(id) do
+				player:createTransactionSummary(offer.type, math.max(1, offer.count or 1), itemId)
+			end
+			return
+		end
 	elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_BLESSINGS then
 		id = offer.blessid
 	end
@@ -245,6 +252,9 @@ end
 
 local function parseBuyStoreOffer(playerId, msg)
 	local player = Player(playerId)
+	if not player then
+		return false
+	end
 	local id = msg:getU32()
 	local offer = GameStore.getOfferById(id)
 	local productType = msg:getByte()
@@ -316,7 +326,9 @@ local function parseBuyStoreOffer(playerId, msg)
 			configuredByte = msg:getByte()
 		end
 
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
+			bundles.purchase(player, offer)
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			GameStore.processItemPurchase(player, offer.itemtype, offer.count or 1, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS then
 			GameStore.processInstantRewardAccess(player, offer.count)
@@ -331,7 +343,7 @@ local function parseBuyStoreOffer(playerId, msg)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_STACKABLE then
 			GameStore.processStackablePurchase(player, offer.itemtype, offer.count, offer.name, offer.movable, offer.setOwner)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED then
-			GameStore.processHouseRelatedPurchase(player, offer)
+			return GameStore.processHouseRelatedPurchase(player, offer)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT or offer.type == GameStore.OfferTypes.OFFER_TYPE_OUTFIT_ADDON then
 			GameStore.processOutfitPurchase(player, offer.sexId, offer.addon)
 		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_MOUNT then
@@ -383,15 +395,21 @@ local function parseBuyStoreOffer(playerId, msg)
 		return queueSendStoreAlertToUser(alertMessage, 500, playerId)
 	end
 
-	if table.contains({ GameStore.OfferTypes.OFFER_TYPE_HOUSE, GameStore.OfferTypes.OFFER_TYPE_EXPBOOST, GameStore.OfferTypes.OFFER_TYPE_PREYBONUS, GameStore.OfferTypes.OFFER_TYPE_BLESSINGS, GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS, GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS }, offer.type) then
+	if table.contains({ GameStore.OfferTypes.OFFER_TYPE_EXPBOOST, GameStore.OfferTypes.OFFER_TYPE_PREYBONUS, GameStore.OfferTypes.OFFER_TYPE_BLESSINGS, GameStore.OfferTypes.OFFER_TYPE_ALLBLESSINGS, GameStore.OfferTypes.OFFER_TYPE_INSTANT_REWARD_ACCESS }, offer.type) then
 		insertPlayerTransactionSummary(player, offer)
 	end
 	local configure = useOfferConfigure(offer.type)
 	if configure ~= GameStore.ConfigureOffers.SHOW_CONFIGURE then
-		if not player:makeCoinTransaction(offer) then
+		if offer.type ~= GameStore.OfferTypes.OFFER_TYPE_BUNDLE and not player:makeCoinTransaction(offer) then
+			if (offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE or offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_BED) and type(pcallError) == "function" then
+				pcallError()
+			end
 			return player:showInfoModal("Error", "Purchase transaction error")
 		end
 
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_HOUSE then
+			insertPlayerTransactionSummary(player, offer)
+		end
 		local message = string.format("You have purchased %s for %d coins.", offer.name, offerPrice)
 		sendUpdatedStoreBalances(playerId)
 		return addPlayerEvent(sendStorePurchaseSuccessful, 650, playerId, message)

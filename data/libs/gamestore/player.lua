@@ -1,6 +1,7 @@
 local senders = require("gamestore.senders")
 local taskboard = require("gamestore.taskboard")
 local player = {}
+local bundles = require("gamestore.bundles")
 
 local sendStoreBalanceUpdating = senders.sendStoreBalanceUpdating
 local sendShowStoreOffers = senders.sendShowStoreOffers
@@ -34,7 +35,12 @@ local function canBuyOffer(self, offer)
 	end
 
 	if disabled ~= 1 then
-		if offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
+		if offer.type == GameStore.OfferTypes.OFFER_TYPE_BUNDLE then
+			local reason = bundles.unavailableReason(self, offer)
+			if reason then
+				disabled, disabledReason = 1, reason
+			end
+		elseif offer.type == GameStore.OfferTypes.OFFER_TYPE_ITEM_UNIQUE then
 			local item = self:getItemById(offer.itemtype, true)
 			if item then
 				disabled = 1

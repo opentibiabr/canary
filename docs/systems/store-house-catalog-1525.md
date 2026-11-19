@@ -34,16 +34,11 @@ project's 18-slot chest / 8-slot cabinet convention. These capacities have not
 been measured against CipSoft. This catalog addition does not claim reproduction
 of every pet sound, timed animation or interaction in the original game.
 
-## Validation
+## Validation status
 
-Run each Lua script with `luajit` from the repository root:
-
-- `tests/lua/test_store_house_catalog.lua`: production catalog loader, 25 beds,
-  nine upgrades, 179 additions, bed mappings, wrap uniqueness and lamp toggles.
-- `tests/lua/test_store_house_purchase.lua`: actual purchase parser, full inbox,
-  partial delivery, payment failure, owner binding, bed halves and four-piece set.
-- `tests/lua/test_gamestore_furniture_deliveries.lua`: existing furniture delivery regressions.
-
-The XML/native appearance IDs and eleven served PNG hashes were checked locally.
-An actual client purchase, house placement, sleep/wake cycle, rotations and use
-still require gameplay validation after the server loads the updated data.
+The XML/native appearance IDs were checked locally. This PR does not include
+image binaries or test scripts. An actual client purchase, house placement,
+sleep/wake cycle, rotations and item use still require gameplay validation after
+the server loads the updated data. HTTP preview assets must be provisioned
+separately for `coinImagesURL`; three new beds are absent from the public image
+pack and have no tile preview on any client version.

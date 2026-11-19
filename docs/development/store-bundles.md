@@ -10,10 +10,10 @@ appearances in the package contents.
 Descriptions use ASCII HTML markers to avoid UTF-8 bullet display
 errors in the native client.
 
-Deploy the catalog's available HTTP previews to the root configured by
-`coinImagesURL`; see `data/images/store/README.md`. Selecting a bundle displays
-its contents, and the package content list does not show an outfit-only Try On
-action. Native rendering still requires a live client check.
+Provision Store HTTP assets separately at the root configured by `coinImagesURL`.
+Selecting a bundle displays its contents, and the package content list does not
+show an outfit-only Try On action. Native rendering still requires a live client
+check.
 
 Descriptions now separate the full outfit, mount and each decoration, with
 their appropriate character/house/box/inbox/use markers. Burning Ash uses the
@@ -43,14 +43,10 @@ kind 3 reads a u16 item ID, and kind 2 reads a u16 outfit look plus four u8
 colours. Consequently the local OTClient's string/u8/u16-only discard loop is
 not a sufficient interoperability specification for native outfit products.
 
-`tests/lua/test_store_bundle_descriptions.lua` exercises the actual full category
-sender and all six description packets. Set `CANARY_STORE_BUNDLE_PACKET` to a
-temporary filename prefix to export male/female native and fallback packets;
-then run `tests/store/validate_store_bundle_packets.py <prefix>`. Its
-independent byte walker consumes the entire emitted packets, verifies fixed
-component IDs, count/quantity/name/colour fields and rejects truncation, trailing
-bytes and a synthetic missing-colour packet. No captured failed client packet
-was available. Native rendering of the package list still needs a live check.
+The package contents use sex-specific outfit looks, client mount looks and
+unwrapped decoration item IDs. The packet format and native client reader were
+reviewed locally; packet fixtures are not included here, and native rendering
+still needs a live check. No captured failed client packet was available.
 
 | Offer | Bundle | Outfit | Mount (server ID / client look) | Decoration kit targets |
 | --- | --- | --- | --- | --- |
@@ -86,7 +82,7 @@ the TibiaWiki.dev outfit/mount/item endpoints and both local appearance files.
 The native 15.25 cache contains `Product_December2025_Bundle.png` and
 `Category_Bundles.png`. The Broken Moon bundle belongs to 15.30 and is excluded.
 
-## Purchase behavior and validation
+## Purchase behavior
 
 The purchase path rechecks availability and funds, prepares every kit, and only
 then verifies cosmetic unlocks before calling the existing Store payment method
@@ -97,21 +93,10 @@ components are retained at full bundle price; owning both the full outfit and
 mount, or an earlier successful bundle purchase, prevents a duplicate purchase.
 The purchase marker belongs to the purchasing character.
 
-Run with LuaJIT and Python 3 from the repository root. The asset audit additionally
-requires the installed native 15.25 appearance files:
-
-```text
-luajit tests/lua/test_store_bundles.lua
-python tests/store/validate_store_bundles.py
-```
-
-The Lua flow test runs the real parser and purchase module with mocked engine
-objects. It covers all six bundles, both sexes, single charging, duplicates,
-partial ownership, failed second-kit delivery, failed payment, insufficient
-funds and unavailable components. The read-only asset audit validates every
-configured ID against XML plus server and installed client appearances.
-These are local checks, not live gameplay or MariaDB crash-recovery proof.
-Payment and player persistence retain the Store's existing service guarantees.
+Configured bundle IDs were checked against XML and server/client appearance
+data. No automated test scripts are included in this PR. These local checks do
+not prove live gameplay or MariaDB crash recovery. Payment and player persistence
+retain the Store's existing service guarantees.
 
 The raw-ownership flags on `Player:hasOutfit(lookType, addon, ownedOnly)` and
 `Player:hasMount(mountIdOrMountName, ownedOnly)` require
@@ -125,21 +110,13 @@ unwrapping in an owned house, Sickbed sleep/wake, decoration state changes and
 persistence after relog in both worlds. No live restart or purchase was executed
 as part of this change.
 
-## PR review regressions
-
-The category and Home senders use the first item of a furniture set only for its
-preview; the original four-item list remains the purchase source. Both real
-packets are independently decoded by the preview tests.
-
-`tests/store/test_outfit_ownership_binding.py` compiles the actual hasOutfit
-binding against LuaJIT with controlled player state, checking wearability defaults,
-opposite-sex ownership, base-only outfits, addon masks and access-group behavior.
-Bundle flow tests inject unlock failures before mutation, after mutation and
-silent no-ops, then verify exact restoration without payment or purchase markers.
+## Review corrections
 
 The duplicate check and rollback snapshots use raw ownership for both outfits and
 mounts. Administrative access must not count as purchasing either component.
-The Store image binaries and deployment utilities are not included in this PR.
-Operators provision the HTTP assets separately; the six bundle previews and
-three named bed previews are unavailable in the public image pack and have no
-tile preview on any client version.
+The category and Home senders use the first item of a furniture set only for its
+preview; the original four-item list remains the purchase source. Store image
+binaries and deployment utilities are not included in this PR. Operators
+provision HTTP assets separately; the six bundle previews and three named bed
+previews are unavailable in the public image pack and have no tile preview on
+any client version.

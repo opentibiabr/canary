@@ -376,7 +376,7 @@ void Weapon::onUsedWeapon(const std::shared_ptr<Player> &player, const std::shar
 			break;
 
 		case WEAPONACTION_REMOVECHARGE: {
-			if (uint16_t charges = item->getCharges() != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
+			if (uint16_t charges = item->getCharges(); charges != 0 && g_configManager().getBoolean(REMOVE_WEAPON_CHARGES)) {
 				g_game().transformItem(item, item->getID(), charges - 1);
 			}
 			break;

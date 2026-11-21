@@ -252,6 +252,24 @@ When `CANARY_TEST_ACCOUNTS=true`, the container imports:
 The default test account password is `test`.
 For a first login, use account `@test1` with password `test`.
 
+### Custom `config.lua`
+
+Do not bind-mount a file over `/canary/config.lua`. The entrypoint rewrites it
+on every start with `mv`, which fails on a mounted file with
+`Device or resource busy` and stops the container.
+
+To change settings that have no `CANARY_*` variable, build an image with your
+file and set `CANARY_IMAGE` to it:
+
+```dockerfile
+FROM ghcr.io/opentibiabr/canary:latest
+COPY config.lua /canary/config.lua
+```
+
+Your file replaces the whole `config.lua`, so start from a copy of
+`/canary/config.lua` in the image you build `FROM`. The entrypoint still applies
+the `CANARY_*` values on top of your file.
+
 ### MyAAC
 
 ```env

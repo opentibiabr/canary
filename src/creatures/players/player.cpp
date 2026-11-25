@@ -1785,6 +1785,8 @@ void Player::updateSupplyTracker(const std::shared_ptr<Item> &item) {
 	if (m_party) {
 		m_party->addPlayerSupply(getPlayer(), item);
 	}
+
+	g_callbacks().executeCallback(EventCallback_t::playerOnRemoveCount, getPlayer(), item);
 }
 
 void Player::updateImpactTracker(CombatType_t type, int32_t amount) const {

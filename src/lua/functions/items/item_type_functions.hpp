@@ -50,6 +50,8 @@ private:
 	static int luaItemTypeGetFluidSource(lua_State* L);
 	static int luaItemTypeGetCapacity(lua_State* L);
 	static int luaItemTypeGetWeight(lua_State* L);
+	static int luaItemTypeGetBuyPrice(lua_State* L);
+	static int luaItemTypeGetLowestBuyPrice(lua_State* L);
 	static int luaItemTypeGetStackSize(lua_State* L);
 
 	static int luaItemTypeGetHitChance(lua_State* L);

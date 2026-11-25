@@ -90,6 +90,11 @@ public:
 	NpcInfo info;
 
 	void loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock);
+	// Registers this type's shop prices as the global item prices (ItemType
+	// buy/sell price). Called when an NPC of this type is placed in the world, so
+	// only NPCs players can reach set prices, once per type.
+	void registerGlobalPrices();
+	bool globalPricesRegistered = false;
 
 	bool loadCallback(LuaScriptInterface* scriptInterface);
 	bool canSpawn(const Position &pos) const;

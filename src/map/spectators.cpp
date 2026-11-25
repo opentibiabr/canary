@@ -96,17 +96,26 @@ bool Spectators::checkCache(const SpectatorsCache::FloorData &specData, bool onl
 	if (checkDistance) {
 		CreatureVector spectators;
 		spectators.reserve(list->size());
+		const bool anyCreature = !onlyPlayers && !onlyMonsters && !onlyNpcs;
 		for (const auto &creature : *list) {
 			const auto &specPos = creature->getPosition();
-			if ((centerPos.x - specPos.x >= minRangeX
-			     && centerPos.y - specPos.y >= minRangeY
-			     && centerPos.x - specPos.x <= maxRangeX
-			     && centerPos.y - specPos.y <= maxRangeY
-			     && (multifloor || specPos.z == centerPos.z)
-			     && ((onlyPlayers && creature->getPlayerRaw())
-			         || (onlyMonsters && creature->getMonsterRaw())
-			         || (onlyNpcs && creature->getNpcRaw())))
-			    || (!onlyPlayers && !onlyMonsters && !onlyNpcs)) {
+			// Same window as getSpectators: the range is the offset of the
+			// spectator from the center (spec - center), shifted by the floor
+			// difference like the client perspective (Position::getOffsetZ), and it
+			// applies to every query, including the one that asks for all creatures.
+			const int32_t offsetZ = Position::getOffsetZ(centerPos, specPos);
+			const int32_t offsetX = specPos.x - offsetZ - centerPos.x;
+			const int32_t offsetY = specPos.y - offsetZ - centerPos.y;
+			if (offsetX < minRangeX || offsetX > maxRangeX || offsetY < minRangeY || offsetY > maxRangeY) {
+				continue;
+			}
+			if (!multifloor && specPos.z != centerPos.z) {
+				continue;
+			}
+			if (anyCreature
+			    || (onlyPlayers && creature->getPlayerRaw())
+			    || (onlyMonsters && creature->getMonsterRaw())
+			    || (onlyNpcs && creature->getNpcRaw())) {
 				spectators.emplace_back(creature);
 			}
 		}

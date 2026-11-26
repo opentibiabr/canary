@@ -254,7 +254,6 @@ local function creatureSayCallback(npc, creature, type, message)
 		elseif player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblin) == 1 then
 			if player:getStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblinCount) >= 20 then
 				npcHandler:say("Ah, very good job. That should put a crimp in their activities. Here's your reward.", npc, creature)
-				player:setStorageValue(14899, 1)
 				player:setStorageValue(Storage.Quest.U10_55.Dawnport.MorrisGoblin, 2)
 				player:addItem(3031, 50)
 			else

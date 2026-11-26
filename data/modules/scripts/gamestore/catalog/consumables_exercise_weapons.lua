@@ -144,7 +144,7 @@ return {
 			icons = { "Exercise_Wraps.png" },
 			name = "Exercise Wraps",
 			price = 25,
-			itemtype = 50294,
+			itemtype = 50293,
 			charges = 500,
 			description = "<i>Use it to train your fist skill on an exercise dummy!</i>\n\n{character}\n{storeinbox}\n{info} use it on an exercise dummy to train your fist skill\n{info} usable 500 times a piece",
 			type = GameStore.OfferTypes.OFFER_TYPE_CHARGES,

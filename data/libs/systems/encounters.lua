@@ -51,7 +51,7 @@ function EncounterStage:autoAdvance(config)
 	if config.monstersKilled then
 		local originalTick = self.tick
 		function self.tick()
-			if originaTick then
+			if originalTick then
 				originalTick()
 			end
 			if delayElapsed and self.encounter:countMonsters() == 0 then

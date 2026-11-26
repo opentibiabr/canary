@@ -21,9 +21,32 @@ std::string ProtocolStatus::SERVER_VERSION = "3.0";
 std::string ProtocolStatus::SERVER_DEVELOPERS = "OpenTibiaBR Organization";
 
 std::map<uint32_t, int64_t> ProtocolStatus::ipConnectMap;
+uint32_t ProtocolStatus::pruneCursor = 0;
 const uint64_t ProtocolStatus::start = OTSYS_TIME(true);
 
+void ProtocolStatus::pruneStaleEntries(int64_t currentTime) {
+	// Incremental: examine at most PRUNE_BUDGET entries, resuming where the
+	// previous query stopped and wrapping at the end, so the work done inside the
+	// network callback is bounded no matter how large the map has grown.
+	// Mirrors the throttle check below: once the timeout has elapsed the entry can
+	// never reject a query again. A query recorded before a backward clock step
+	// is still in the future here, so it stays until it expires.
+	const auto timeout = g_configManager().getNumber(STATUSQUERY_TIMEOUT);
+	auto it = ipConnectMap.lower_bound(pruneCursor);
+	// At most one lap: a small map is not re-examined within the same call.
+	const size_t steps = std::min(PRUNE_BUDGET, ipConnectMap.size());
+	for (size_t examined = 0; examined < steps; ++examined) {
+		if (it == ipConnectMap.end()) {
+			it = ipConnectMap.begin();
+		}
+		it = currentTime >= it->second + timeout ? ipConnectMap.erase(it) : std::next(it);
+	}
+	pruneCursor = it == ipConnectMap.end() ? 0 : it->first;
+}
+
 void ProtocolStatus::onRecvFirstMessage(NetworkMessage &msg) {
+	pruneStaleEntries(OTSYS_TIME());
+
 	const uint32_t ip = getIP();
 	if (ip != 0x0100007F) {
 		const std::string ipStr = convertIPToString(ip);

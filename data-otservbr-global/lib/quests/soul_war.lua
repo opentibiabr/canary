@@ -1348,7 +1348,7 @@ local damageTable = {
 	5600,
 }
 
-function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetweenExecutions, bossPosition)
+function Monster:onThinkGoshnarTormentCounter(interval, maxLimit, intervalBetweenExecutions, bossPosition, bossName)
 	local interval = os.time() * 1000
 	if interval - lastExecutionTime < intervalBetweenExecutions then
 		return

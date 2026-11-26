@@ -118,6 +118,9 @@ local function creatureSayCallback(npc, creature, type, message)
 	elseif MsgContains(message, "farmine") then
 		if player:getStorageValue(TheNewFrontier.Questline) == 14 then
 			if player:getStorageValue(TheNewFrontier.Mission05.Wyrdin) == 1 then
+				if player:getStorageValue(TheNewFrontier.Mission05.WyrdinKeyword) == 4 then
+					player:setStorageValue(TheNewFrontier.Mission05.WyrdinKeyword, math.random(1, 3))
+				end
 				npcHandler:say("I've heard some odd rumours about this new dwarven outpost. But tell me, what has the Edron academy to do with Farmine?", npc, creature)
 				npcHandler:setTopic(playerId, 2)
 			else

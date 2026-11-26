@@ -22,7 +22,7 @@ function spell.onCastSpell(creature, var)
 end
 
 spell:group("attack")
-spell:id(169)
+spell:id(270)
 spell:name("Lesser Ethereal Spear")
 spell:words("exori infir con")
 spell:castSound(SOUND_EFFECT_TYPE_SPELL_OR_RUNE)

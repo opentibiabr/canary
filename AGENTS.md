@@ -8,6 +8,12 @@ The global Git, commit, PR, C++ header, exception, and documentation policies ap
 - Decide whether tooling makes recurrence impossible. If not, add a narrow rule to the nearest `AGENTS.md` that states the unsafe pattern, required alternative, and validation rather than incident history.
 - Prefer enforceable safeguards—types, helpers, static checks, architecture docs, or focused tests—especially for lifetime, arithmetic, identity, ownership, bounds, and cancellation escapes.
 
+## Combat, Currency, and Catalog Validation
+
+- Combat transformations must read and write the matching damage component; never use a primary amount to calculate a secondary result or overwrite an already computed primary result. Validate unequal components, secondary-only effects, and both components together.
+- Validate player-entered money as finite, positive, integral, and within the accepted range before monetary bindings or mutations. Exercise rejected values and successful operations; preserve explicitly supported nonnumeric commands such as `all`.
+- Game Store offer IDs must match the advertised registered item, mount, or outfit, and quantity fields must match the purchase handler's `count` or `charges` contract. Validate the real catalog through delivery helpers against the relevant registrations; XML absence alone does not prove an asset-backed item invalid.
+
 ## Deferred Callback Lifetime Safety
 
 - Assume scheduled, deferred, timer, and worker callbacks can outlive their source object or state.

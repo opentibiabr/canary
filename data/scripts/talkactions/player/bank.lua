@@ -26,7 +26,7 @@ function deposit.onSay(player, words, param)
 		amount = player:getMoney()
 	else
 		amount = tonumber(param)
-		if not amount or amount <= 0 and isValidMoney(amount) then
+		if not amount or not isValidMoney(amount) or amount ~= math.floor(amount) then
 			player:sendTextMessage(config.messageStyle, "Invalid amount.")
 			return true
 		end
@@ -49,7 +49,7 @@ local withdraw = TalkAction("!withdraw")
 
 function withdraw.onSay(player, words, param)
 	local amount = tonumber(param)
-	if not amount or amount <= 0 and isValidMoney(amount) then
+	if not amount or not isValidMoney(amount) or amount ~= math.floor(amount) then
 		player:sendTextMessage(config.messageStyle, "Invalid amount.")
 		return true
 	end
@@ -72,7 +72,7 @@ local transfer = TalkAction("!transfer")
 function transfer.onSay(player, words, param)
 	local split = param:split(",")
 	local amount = tonumber(split[2])
-	if not amount or amount <= 0 and isValidMoney(amount) then
+	if not amount or not isValidMoney(amount) or amount ~= math.floor(amount) then
 		player:sendTextMessage(config.messageStyle, "Invalid amount.")
 		return true
 	end

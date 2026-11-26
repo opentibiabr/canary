@@ -39,22 +39,44 @@ end
 function RegenSoul(id, delay)
 	local soulEvent = DailyRewardBonus.Soul[id]
 	local player = Player(id)
+
 	if not player then
-		stopEvent(soulEvent)
+		if soulEvent then
+			stopEvent(soulEvent)
+		end
+
 		DailyRewardBonus.Soul[id] = nil
 		return false
 	end
-	local maxsoul = 100
-	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) or player:isPremium() then
-		maxsoul = 200
+
+	local vocation = player:getVocation()
+	if not vocation then
+		if soulEvent then
+			stopEvent(soulEvent)
+		end
+
+		DailyRewardBonus.Soul[id] = nil
+		return false
 	end
-	if player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
-		if player:getSoul() < maxsoul then
+
+	local maxSoul = vocation:getMaxSoul()
+	if (configManager.getBoolean(configKeys.VIP_SYSTEM_ENABLED) and player:isVip()) or player:isPremium() then
+		maxSoul = math.max(maxSoul, 200)
+	end
+
+	if maxSoul and player:getTile():hasFlag(TILESTATE_PROTECTIONZONE) then
+		local currentSoul = player:getSoul()
+
+		if currentSoul < maxSoul then
 			player:addSoul(1)
 			player:sendTextMessage(MESSAGE_FAILURE, "One soul point has been restored.")
 		end
 	end
-	stopEvent(soulEvent)
+
+	if soulEvent then
+		stopEvent(soulEvent)
+	end
+
 	DailyRewardBonus.Soul[id] = addEvent(RegenSoul, delay, id, delay)
 	return true
 end
@@ -82,8 +104,31 @@ function string.diff(self)
 	return ret
 end
 
+local DAILY_REWARD_SERVER_SAVE_COUNT_KEY = "daily-reward-save-count"
+
 function GetDailyRewardLastServerSave()
 	return RetrieveGlobalStorage(DailyReward.storages.lastServerSave)
+end
+
+-- Number of global server saves performed; each one opens a new daily reward claim window.
+function GetDailyRewardServerSaveCount()
+	local resultId = db.storeQuery("SELECT `value` FROM `global_storage` WHERE `key` = " .. db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY))
+	if resultId ~= false then
+		local val = Result.getNumber(resultId, "value")
+		Result.free(resultId)
+		return val
+	end
+	return 0
+end
+
+function UpdateDailyRewardServerSave()
+	local counterKey = db.escapeString(DAILY_REWARD_SERVER_SAVE_COUNT_KEY)
+	local updated = db.query("INSERT INTO `global_storage` (`key`, `value`) VALUES (" .. DailyReward.storages.lastServerSave .. ", " .. os.time() .. "), (" .. counterKey .. ", 1) ON DUPLICATE KEY UPDATE `value` = CASE WHEN `key` = " .. counterKey .. " THEN `value` + 1 ELSE VALUES(`value`) END")
+	if not updated then
+		logger.error("[UpdateDailyRewardServerSave] Failed to update the daily reward claim window and save counter.")
+		return false
+	end
+	return true
 end
 
 function UpdateDailyRewardGlobalStorage(key, value)

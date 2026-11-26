@@ -49,6 +49,8 @@ void ItemTypeFunctions::init(lua_State* L) {
 	Lua::registerMethod(L, "ItemType", "getFluidSource", ItemTypeFunctions::luaItemTypeGetFluidSource);
 	Lua::registerMethod(L, "ItemType", "getCapacity", ItemTypeFunctions::luaItemTypeGetCapacity);
 	Lua::registerMethod(L, "ItemType", "getWeight", ItemTypeFunctions::luaItemTypeGetWeight);
+	Lua::registerMethod(L, "ItemType", "getBuyPrice", ItemTypeFunctions::luaItemTypeGetBuyPrice);
+	Lua::registerMethod(L, "ItemType", "getLowestBuyPrice", ItemTypeFunctions::luaItemTypeGetLowestBuyPrice);
 	Lua::registerMethod(L, "ItemType", "getStackSize", ItemTypeFunctions::luaItemTypeGetStackSize);
 
 	Lua::registerMethod(L, "ItemType", "getHitChance", ItemTypeFunctions::luaItemTypeGetHitChance);
@@ -417,6 +419,33 @@ int ItemTypeFunctions::luaItemTypeGetCapacity(lua_State* L) {
 	} else {
 		lua_pushnil(L);
 	}
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetBuyPrice(lua_State* L) {
+	// itemType:getBuyPrice()
+	// The highest price an NPC shop sells this item for (0 if no shop sells it),
+	// the same value the supply tracker uses.
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (!itemType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, itemType->buyPrice);
+	return 1;
+}
+
+int ItemTypeFunctions::luaItemTypeGetLowestBuyPrice(lua_State* L) {
+	// itemType:getLowestBuyPrice()
+	// The lowest price an NPC shop sells this item for (0 if no shop sells it).
+	const auto* itemType = Lua::getUserdata<const ItemType>(L, 1);
+	if (!itemType) {
+		lua_pushnil(L);
+		return 1;
+	}
+
+	lua_pushnumber(L, itemType->lowestBuyPrice);
 	return 1;
 }
 

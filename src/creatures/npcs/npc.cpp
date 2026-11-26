@@ -436,6 +436,8 @@ Npc::Npc(const std::shared_ptr<NpcType> &npcType) :
 			g_logger().warn("Unknown event name: {}", scriptName);
 		}
 	}
+
+	npcType->registerGlobalPrices();
 }
 
 std::shared_ptr<Npc> Npc::getNpc() {

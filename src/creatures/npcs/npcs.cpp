@@ -74,16 +74,38 @@ bool NpcType::loadCallback(LuaScriptInterface* scriptInterface) {
 	return true;
 }
 
-void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock) {
-	ItemType &iType = Item::items.getItemType(shopBlock.itemId);
+void NpcType::registerGlobalPrices() {
+	if (globalPricesRegistered) {
+		return;
+	}
+	globalPricesRegistered = true;
 
-	// Registering item prices globaly.
-	if (shopBlock.itemSellPrice > iType.sellPrice) {
-		iType.sellPrice = shopBlock.itemSellPrice;
+	// Gold shops only: a shop that takes another currency (tokens) would set
+	// gold prices from token amounts.
+	if (info.currencyId != ITEM_GOLD_COIN) {
+		return;
 	}
-	if (shopBlock.itemBuyPrice > iType.buyPrice) {
-		iType.buyPrice = shopBlock.itemBuyPrice;
+
+	for (const ShopBlock &shopBlock : info.shopItemVector) {
+		ItemType &iType = Item::items.getItemType(shopBlock.itemId);
+		if (shopBlock.itemSellPrice > iType.sellPrice) {
+			iType.sellPrice = shopBlock.itemSellPrice;
+		}
+		if (shopBlock.itemBuyPrice > iType.buyPrice) {
+			iType.buyPrice = shopBlock.itemBuyPrice;
+		}
+		if (shopBlock.itemBuyPrice > 0 && (iType.lowestBuyPrice == 0 || shopBlock.itemBuyPrice < iType.lowestBuyPrice)) {
+			iType.lowestBuyPrice = shopBlock.itemBuyPrice;
+		}
 	}
+}
+
+void NpcType::loadShop(const std::shared_ptr<NpcType> &npcType, ShopBlock shopBlock) {
+	const ItemType &iType = Item::items.getItemType(shopBlock.itemId);
+
+	// Global prices are registered when an NPC of this type is placed in the
+	// world (registerGlobalPrices), not here: a type that is loaded but never
+	// spawned (test NPCs, inactive events) must not set the price of an item.
 
 	// Check if the item already exists in the shop vector and ignore it
 	if (std::ranges::any_of(npcType->info.shopItemVector, [&shopBlock](const auto &shopIterator) {

@@ -281,6 +281,7 @@ public:
 	uint32_t minReqMagicLevel = 0;
 	uint32_t charges = 0;
 	uint32_t buyPrice = 0;
+	uint32_t lowestBuyPrice = 0;
 	uint32_t sellPrice = 0;
 	// Signed, because some items have negative weight, but this will only be necessary for the look so everything else will be uint32_t
 	int32_t weight = 0;
